@@ -97,14 +97,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../nested_array/nested_array.html">Nested array</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Utils</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../utils/backend.html">Backend</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../utils/assertions.html">Assertions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../utils/dynamic_import.html">Dynamic import</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../utils/inspection.html">Inspection</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../utils/verbosity.html">Verbosity</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Testing</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../testing/assertions.html">Assertions</a></li>
@@ -171,110 +163,48 @@
 
 <div class="viewcode-block" id="array_bools"><a class="viewcode-back" href="../../../../../testing/hypothesis_helpers/array_helpers/array_bools.html#ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.array_bools">[docs]</a><span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
 <span class="k">def</span> <span class="nf">array_bools</span><span class="p">(</span>
-    <span class="n">draw</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">shared</span><span class="p">(</span><span class="n">number_helpers</span><span class="o">.</span><span class="n">ints</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;size&quot;</span><span class="p">)</span>
+    <span class="n">draw</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">num_arrays</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">shared</span><span class="p">(</span>
+        <span class="n">number_helpers</span><span class="o">.</span><span class="n">ints</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;num_arrays&quot;</span>
+    <span class="p">),</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Draws a list of booleans with a given size.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Draws a boolean list of a given size.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    draw</span>
 <span class="sd">        special function that draws data randomly (but is reproducible) from a given</span>
 <span class="sd">        data-set (ex. list).</span>
-<span class="sd">    size</span>
+<span class="sd">    num_arrays</span>
 <span class="sd">        size of the list.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        A strategy that draws a list.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; array_bools(size=5)</span>
-<span class="sd">    [False, True, False, False, False]</span>
-<span class="sd">    [False, False, False, False, False]</span>
-<span class="sd">    [True, False, False, False, False]</span>
-
-<span class="sd">    &gt;&gt;&gt; array_bools(size=1)</span>
-<span class="sd">    [True]</span>
-<span class="sd">    [False]</span>
-<span class="sd">    [True]</span>
-
-<span class="sd">    &gt;&gt;&gt; array_bools()</span>
-<span class="sd">    [False, False, False, False]</span>
-<span class="sd">    [True, True, True, False]</span>
-<span class="sd">    [True]</span>
-
+<span class="sd">    A strategy that draws a list.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">size</span> <span class="o">=</span> <span class="n">size</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">else</span> <span class="n">draw</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="n">num_arrays</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num_arrays</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">else</span> <span class="n">draw</span><span class="p">(</span><span class="n">num_arrays</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">lists</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span> <span class="n">min_size</span><span class="o">=</span><span class="n">size</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="n">size</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="list_of_size"><a class="viewcode-back" href="../../../../../testing/hypothesis_helpers/array_helpers/list_of_size.html#ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.list_of_size">[docs]</a><span class="k">def</span> <span class="nf">list_of_size</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a list of the given length with elements drawn randomly from x.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    x</span>
-<span class="sd">        a list to draw elements from.</span>
-<span class="sd">    size</span>
-<span class="sd">        length of the list.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        A strategy that draws a list.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; list_of_size(</span>
-<span class="sd">    ...     x=st.sampled_from([-1, 5, 9]),</span>
-<span class="sd">    ...     size=4,</span>
-<span class="sd">    ... )</span>
-<span class="sd">    [-1, 5, -1, -1]</span>
-<span class="sd">    [9, -1, -1, -1]</span>
-<span class="sd">    [9, 9, -1, 9]</span>
-
-<span class="sd">    &gt;&gt;&gt; list_of_size(</span>
-<span class="sd">    ...     x=st.integers(min_value=0, max_value=4),</span>
-<span class="sd">    ...     size=10,</span>
-<span class="sd">    ... )</span>
-<span class="sd">    [3, 0, 0, 0, 0, 0, 0, 0, 0, 0]</span>
-<span class="sd">    [3, 3, 2, 4, 1, 0, 4, 2, 1, 2]</span>
-<span class="sd">    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]</span>
-
-<span class="sd">    &gt;&gt;&gt; list_of_size(</span>
-<span class="sd">    ...     x=st.booleans(),</span>
-<span class="sd">    ...     size=3,</span>
-<span class="sd">    ... )</span>
-<span class="sd">    [False, False, False]</span>
-<span class="sd">    [True, True, False]</span>
-<span class="sd">    [False, True, False]</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">lists</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">min_size</span><span class="o">=</span><span class="n">size</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span></div>
+<div class="viewcode-block" id="list_of_length"><a class="viewcode-back" href="../../../../../testing/hypothesis_helpers/array_helpers/list_of_length.html#ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.list_of_length">[docs]</a><span class="k">def</span> <span class="nf">list_of_length</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a random list of the given length from elements in x.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">st</span><span class="o">.</span><span class="n">lists</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">min_size</span><span class="o">=</span><span class="n">length</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="n">length</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="lists"><a class="viewcode-back" href="../../../../../testing/hypothesis_helpers/array_helpers/lists.html#ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.lists">[docs]</a><span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
-<span class="k">def</span> <span class="nf">lists</span><span class="p">(</span>
-    <span class="n">draw</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">x</span><span class="p">,</span>
-    <span class="n">min_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">max_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">size_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Draws a list with a random bounded size from the data-set x.</span>
+<span class="k">def</span> <span class="nf">lists</span><span class="p">(</span><span class="n">draw</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">arg</span><span class="p">,</span> <span class="n">min_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">size_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Draws a list from the dataset arg.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    draw</span>
 <span class="sd">        special function that draws data randomly (but is reproducible) from a given</span>
 <span class="sd">        data-set (ex. list).</span>
-<span class="sd">    x</span>
-<span class="sd">        data-set of elements.</span>
+<span class="sd">    arg</span>
+<span class="sd">        dataset of elements.</span>
 <span class="sd">    min_size</span>
-<span class="sd">        minimum size of the list.</span>
+<span class="sd">        least size of the list.</span>
 <span class="sd">    max_size</span>
 <span class="sd">        max size of the list.</span>
 <span class="sd">    size_bounds</span>
@@ -283,49 +213,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        A strategy that draws a list.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; lists(</span>
-<span class="sd">    ...     x=st.sampled_from([-1, 5, 9]),</span>
-<span class="sd">    ...     min_size=4,</span>
-<span class="sd">    ...     max_size=5,</span>
-<span class="sd">    ... )</span>
-<span class="sd">    [5, 5, 5, 9, 9]</span>
-<span class="sd">    [5, 9, -1, -1]</span>
-<span class="sd">    [5, 9, 5, 9]</span>
-
-<span class="sd">    &gt;&gt;&gt; lists(</span>
-<span class="sd">    ...     x=st.integers(min_value=0, max_value=4),</span>
-<span class="sd">    ...     size_bounds=(9, 10),</span>
-<span class="sd">    ... )</span>
-<span class="sd">    [0, 2, 4, 3, 3, 3, 3, 2, 1, 4]</span>
-<span class="sd">    [1, 0, 1, 2, 1, 4, 1, 3, 1]</span>
-<span class="sd">    [1, 0, 1, 2, 1, 4, 1, 3, 1]</span>
-
-<span class="sd">    &gt;&gt;&gt; lists(</span>
-<span class="sd">    ...     x=st.integers(min_value=0, max_value=4),</span>
-<span class="sd">    ...     size_bounds=[9, 10],</span>
-<span class="sd">    ... )</span>
-<span class="sd">    [1, 3, 0, 2, 0, 0, 1, 4, 2, 3]</span>
-<span class="sd">    [0, 0, 0, 0, 0, 0, 0, 0, 0]</span>
-<span class="sd">    [1, 2, 4, 1, 1, 1, 4, 3, 2]</span>
-
-<span class="sd">    &gt;&gt;&gt; lists(</span>
-<span class="sd">    ...     x=st.floats(</span>
-<span class="sd">    ...         min_value=1,</span>
-<span class="sd">    ...         max_value=3,</span>
-<span class="sd">    ...         exclude_max=True,</span>
-<span class="sd">    ...     ),</span>
-<span class="sd">    ...     min_size=5,</span>
-<span class="sd">    ...     max_size=5,</span>
-<span class="sd">    ... )</span>
-<span class="sd">    [1.1, 1.0, 1.0, 1.0, 1.0]</span>
-<span class="sd">    [2.00001, 2.00001, 1.0, 2.999999999999999, 1.9394938006792373]</span>
-<span class="sd">    [1.0, 2.00001, 1.0, 2.999999999999999, 1.9394938006792373]</span>
-
+<span class="sd">    A strategy that draws a list.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">integers</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">number_helpers</span><span class="o">.</span><span class="n">ints</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="n">size_bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">max_value</span><span class="o">=</span><span class="n">size_bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
@@ -336,7 +224,7 @@
         <span class="n">min_size</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">shared</span><span class="p">(</span><span class="n">integers</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">min_size</span><span class="p">))</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">max_size</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">max_size</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">shared</span><span class="p">(</span><span class="n">integers</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">max_size</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">lists</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">min_size</span><span class="o">=</span><span class="n">min_size</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="n">max_size</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">lists</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">min_size</span><span class="o">=</span><span class="n">min_size</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="n">max_size</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="dtype_and_values"><a class="viewcode-back" href="../../../../../testing/hypothesis_helpers/array_helpers/dtype_and_values.html#ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers.dtype_and_values">[docs]</a><span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
@@ -387,7 +275,7 @@
 <span class="sd">    large_abs_safety_factor</span>
 <span class="sd">        A safety factor of 1 means that all values are included without limitation,</span>
 
-<span class="sd">        when a &quot;linear&quot; safety factor scaler is used, a safety factor of 2 means</span>
+<span class="sd">        when a &quot;linear&quot; safety factor scaler is used,  a safety factor of 2 means</span>
 <span class="sd">        that only 50% of the range is included, a safety factor of 3 means that</span>
 <span class="sd">        only 33% of the range is included etc.</span>
 
@@ -437,60 +325,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        A strategy that draws a tuple of a list of dtypes and a list</span>
-<span class="sd">        of their respective arrays.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; dtype_and_values(</span>
-<span class="sd">    ...     num_arrays=3,</span>
-<span class="sd">    ... )</span>
-<span class="sd">    ([&#39;uint16&#39;, &#39;float16&#39;, &#39;uint16&#39;], [array([37915, 6322, 26765, 12413,</span>
-<span class="sd">        26986, 34665], dtype=uint16), array([-5.000e-01, -5.000e-01,</span>
-<span class="sd">        -2.000e+00, -6.711e-05, -1.100e+00, -5.955e+04], dtype=float16),</span>
-<span class="sd">        array([40817, 56193, 29200, 0, 5851, 9746], dtype=uint16)])</span>
-<span class="sd">    ([&#39;bool&#39;, &#39;uint32&#39;, &#39;bool&#39;], [array(False), array(0, dtype=uint32),</span>
-<span class="sd">        array(False)])</span>
-<span class="sd">    ([&#39;int8&#39;, &#39;int8&#39;, &#39;int8&#39;], [array(0, dtype=int8), array(0, dtype=int8),</span>
-<span class="sd">        array(0, dtype=int8)])</span>
-
-<span class="sd">    &gt;&gt;&gt; dtype_and_values(</span>
-<span class="sd">    ...     available_dtypes=get_dtypes(&quot;numeric&quot;),</span>
-<span class="sd">    ...     min_value=-10,</span>
-<span class="sd">    ...     max_value=10,</span>
-<span class="sd">    ...     num_arrays=2,</span>
-<span class="sd">    ...     shared_dtype=True,</span>
-<span class="sd">    ... ),</span>
-<span class="sd">    ([&#39;float32&#39;, &#39;float32&#39;], [array([1.1, 1.5], dtype=float32),</span>
-<span class="sd">        array([-5.9604645e-08, 5.9604645e-08], dtype=float32)])</span>
-<span class="sd">    ([&#39;int32&#39;, &#39;int32&#39;], [array(-5, dtype=int32), array(-1, dtype=int32)])</span>
-<span class="sd">    ([&#39;uint64&#39;, &#39;uint64&#39;], [array([0], dtype=uint64), array([0],</span>
-<span class="sd">        dtype=uint64)])</span>
-
-<span class="sd">    &gt;&gt;&gt; dtype_and_values(</span>
-<span class="sd">    ...     available_dtypes=get_dtypes(&quot;numeric&quot;),</span>
-<span class="sd">    ...     num_arrays=2,</span>
-<span class="sd">    ...     ret_shape=True</span>
-<span class="sd">    ... )</span>
-<span class="sd">    ([&#39;int8&#39;, &#39;int32&#39;], [array([27], dtype=int8), array([192],</span>
-<span class="sd">        dtype=int32)], (1,))</span>
-<span class="sd">    ([&#39;int32&#39;, &#39;int16&#39;], [array(0, dtype=int32), array(0,</span>
-<span class="sd">        dtype=int16)], ())</span>
-<span class="sd">    ([&#39;int32&#39;, &#39;int16&#39;], [array([[-103, 12, -41795, 1170789994,</span>
-<span class="sd">        44251, 44209, 433075925]], dtype=int32), array([[24791,</span>
-<span class="sd">        -24691, 24892, 16711, 7696, 972, 15357]], dtype=int16)],</span>
-<span class="sd">        (1, 7))</span>
-
-<span class="sd">    &gt;&gt;&gt; dtype_and_values(</span>
-<span class="sd">    ...     available_dtypes=get_dtypes(&quot;numeric&quot;),</span>
-<span class="sd">    ...     num_arrays=1,</span>
-<span class="sd">    ...     ret_shape=True,</span>
-<span class="sd">    ... )</span>
-<span class="sd">    ([&#39;uint8&#39;], [array([0], dtype=uint8)], (1,))</span>
-<span class="sd">    ([&#39;float32&#39;], [array(-1., dtype=float32)], ())</span>
-<span class="sd">    ([&#39;int64&#39;], [array(72057594037927936)], ())</span>
-
+<span class="sd">    A strategy that draws a list of dtype and arrays (as lists).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">min_dim_size</span><span class="p">,</span> <span class="n">st</span><span class="o">.</span><span class="n">_internal</span><span class="o">.</span><span class="n">SearchStrategy</span><span class="p">):</span>
         <span class="n">min_dim_size</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">min_dim_size</span><span class="p">)</span>
@@ -604,7 +439,7 @@
 <span class="sd">    large_abs_safety_factor</span>
 <span class="sd">        A safety factor of 1 means that all values are included without limitation,</span>
 
-<span class="sd">        when a &quot;linear&quot; safety factor scaler is used, a safety factor of 2 means</span>
+<span class="sd">        when a &quot;linear&quot; safety factor scaler is used,  a safety factor of 2 means</span>
 <span class="sd">        that only 50% of the range is included, a safety factor of 3 means that</span>
 <span class="sd">        only 33% of the range is included etc.</span>
 
@@ -665,51 +500,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        A strategy that draws a tuple of a list of dtypes,</span>
-<span class="sd">        a list of arrays, and an axis.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    -------</span>
-<span class="sd">    &gt;&gt;&gt; dtype_values_axis()</span>
-<span class="sd">    ([&#39;int16&#39;], [array(29788, dtype=int16)])</span>
-<span class="sd">    ([&#39;complex128&#39;], [array(1.62222885e+156-2.68281172e-257j)])</span>
-<span class="sd">    ([&#39;float64&#39;], [array(-1.40129846e-45)])</span>
-
-<span class="sd">    &gt;&gt;&gt; dtype_values_axis(</span>
-<span class="sd">    ...     available_dtypes=get_dtypes(&quot;numeric&quot;),</span>
-<span class="sd">    ...     num_arrays=2,</span>
-<span class="sd">    ... )</span>
-<span class="sd">    ([&#39;int8&#39;, &#39;int16&#39;], [array([[0]], dtype=int8), array([[1]], dtype=int16)], 0)</span>
-<span class="sd">    ([&#39;uint16&#39;, &#39;uint16&#39;], [array(0, dtype=uint16), array(0, dtype=uint16)], 0)</span>
-<span class="sd">    ([&#39;float64&#39;, &#39;int16&#39;], [array(-2.44758124e-308), array(0, dtype=int16)], 0)</span>
-
-<span class="sd">    &gt;&gt;&gt; dtype_values_axis(</span>
-<span class="sd">    ...     available_dtypes=get_dtypes(&quot;float&quot;),</span>
-<span class="sd">    ...     min_num_dims=2,</span>
-<span class="sd">    ...     max_num_dims=3,</span>
-<span class="sd">    ...     min_dim_size=2,</span>
-<span class="sd">    ...     max_dim_size=5,</span>
-<span class="sd">    ...     min_axis=-2,</span>
-<span class="sd">    ...     max_axis=1,</span>
-<span class="sd">    ... )</span>
-<span class="sd">    ([&#39;float64&#39;], [array([[1.90000000e+000, 1.63426649e+308],</span>
-<span class="sd">        [-1.50000000e+000, -1.91931887e+234]])], -1)</span>
-<span class="sd">    ([&#39;bfloat16&#39;], [array([[-1.29488e-38, -1.29488e-38],</span>
-<span class="sd">        [-1.29488e-38, -1.29488e-38]], dtype=bfloat16)], 0)</span>
-<span class="sd">    ([&#39;float64&#39;], [array([[-2.44758124e-308, -2.44758124e-308],</span>
-<span class="sd">        [-2.44758124e-308, -2.44758124e-308]])], 0)</span>
-
-<span class="sd">    &gt;&gt;&gt; dtype_values_axis(</span>
-<span class="sd">    ...     available_dtypes=get_dtypes(&quot;numeric&quot;),</span>
-<span class="sd">    ...     num_arrays=1,</span>
-<span class="sd">    ...     allow_inf=True,</span>
-<span class="sd">    ...     allow_nan=True,</span>
-<span class="sd">    ... )</span>
-<span class="sd">    ([&#39;float64&#39;], [array([inf, -5.14361019e+16, 5.96046448e-08, 1.50000000e+00])], -51)</span>
-<span class="sd">    ([&#39;int16&#39;], [array(12445, dtype=int16)], 171)</span>
-<span class="sd">    ([&#39;uint32&#39;], [array([0], dtype=uint32)], 0)</span>
-
+<span class="sd">    A strategy that draws a dtype, an array (as list), and an axis.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">results</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span>
         <span class="n">dtype_and_values</span><span class="p">(</span>
@@ -778,18 +569,12 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    draw</span>
-<span class="sd">        special function that draws data randomly (but is reproducible) from a given</span>
-<span class="sd">        data-set (ex. list).</span>
 <span class="sd">    array_dtypes</span>
 <span class="sd">        list of data type to draw the array dtype from.</span>
 <span class="sd">    indices_dtypes</span>
 <span class="sd">        list of data type to draw the indices dtype from.</span>
 <span class="sd">    disable_random_axis</span>
-<span class="sd">        axis is randomly generated with hypothesis if False. If True, axis is set</span>
-<span class="sd">        to 0 if axis_zero is True, -1 otherwise.</span>
-<span class="sd">    axis_zero</span>
-<span class="sd">        If True, axis is set to zero if disable_random_axis is True.</span>
+<span class="sd">        axis is set to -1 when True. Randomly generated with hypothesis if False.</span>
 <span class="sd">    allow_inf</span>
 <span class="sd">        inf values are allowed to be generated in the values array when True.</span>
 <span class="sd">    min_num_dims</span>
@@ -805,9 +590,8 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        A strategy that can be used in the @given hypothesis</span>
-<span class="sd">        decorator which generates arrays of values and indices.</span>
+<span class="sd">    A strategy that can be used in the @given hypothesis decorator</span>
+<span class="sd">    which generates arrays of values and indices.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -821,48 +605,6 @@
 <span class="sd">            max_dim_size=10</span>
 <span class="sd">            )</span>
 <span class="sd">    )</span>
-
-<span class="sd">    &gt;&gt;&gt; array_indices_axis(</span>
-<span class="sd">    ...    array_dtypes=get_dtypes(&quot;valid&quot;),</span>
-<span class="sd">    ...     indices_dtypes=[&quot;int64&quot;],</span>
-<span class="sd">    ...     max_num_dims=1,</span>
-<span class="sd">    ...     indices_same_dims=True,</span>
-<span class="sd">    ...     disable_random_axis=True,</span>
-<span class="sd">    ...     axis_zero=True,</span>
-<span class="sd">    ... )</span>
-<span class="sd">    ([&#39;int64&#39;, &#39;int64&#39;], array([-65536]), array([0]))</span>
-<span class="sd">    ([&#39;bool&#39;, &#39;int64&#39;], array([False, False, False, True,</span>
-<span class="sd">        False, False, False, False]), array([0, 0, 2, 4,</span>
-<span class="sd">        0, 0, 0, 1]))</span>
-<span class="sd">    ([&#39;int64&#39;, &#39;int64&#39;], array([0]), array([0]))</span>
-
-<span class="sd">    &gt;&gt;&gt; array_indices_axis(</span>
-<span class="sd">    ...     array_dtypes=get_dtypes(&quot;valid&quot;),</span>
-<span class="sd">    ...     indices_dtypes=get_dtypes(&quot;integer&quot;),</span>
-<span class="sd">    ...     disable_random_axis=True,</span>
-<span class="sd">    ...     first_dimension_only=True,</span>
-<span class="sd">    ... )</span>
-<span class="sd">    ([&#39;float64&#39;, &#39;uint64&#39;], array([-2.44758124e-308]),</span>
-<span class="sd">        array([0], dtype=uint64))</span>
-<span class="sd">    ([&#39;bool&#39;, &#39;uint64&#39;], array([False]), array([0], dtype=uint64))</span>
-<span class="sd">    ([&#39;bool&#39;, &#39;int8&#39;], array([False]), array([[0, 0, 0, 0],</span>
-<span class="sd">       [0, 0, 0, 0],</span>
-<span class="sd">       [0, 0, 0, 0],</span>
-<span class="sd">       [0, 0, 0, 0]], dtype=int8))</span>
-
-<span class="sd">    &gt;&gt;&gt; array_indices_axis(</span>
-<span class="sd">    ...     array_dtypes=get_dtypes(&quot;valid&quot;),</span>
-<span class="sd">    ...     indices_dtypes=[&quot;int64&quot;],</span>
-<span class="sd">    ...     max_num_dims=1,</span>
-<span class="sd">    ...     indices_same_dims=True,</span>
-<span class="sd">    ... )</span>
-<span class="sd">    ([&#39;float16&#39;, &#39;int64&#39;], array([-256.], dtype=float16),</span>
-<span class="sd">        array([0]), 0, 0)</span>
-<span class="sd">    ([&#39;uint8&#39;, &#39;int64&#39;], array([1], dtype=uint8),</span>
-<span class="sd">        array([0]), -1, 0)</span>
-<span class="sd">    ([&#39;uint64&#39;, &#39;int64&#39;], array([0], dtype=uint64),</span>
-<span class="sd">        array([0]), 0, 0)</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">x_dtype</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">x_shape</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span>
         <span class="n">dtype_and_values</span><span class="p">(</span>
@@ -911,10 +653,9 @@
             <span class="p">)</span>
         <span class="p">)</span>
         <span class="n">indices_shape</span> <span class="o">=</span> <span class="n">batch_shape</span> <span class="o">+</span> <span class="n">shape_var</span>
+    <span class="n">max_axis</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">x_shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">first_dimension_only</span><span class="p">:</span>
         <span class="n">max_axis</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">x_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">max_axis</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">x_shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
     <span class="n">indices_dtype</span><span class="p">,</span> <span class="n">indices</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span>
         <span class="n">dtype_and_values</span><span class="p">(</span>
             <span class="n">available_dtypes</span><span class="o">=</span><span class="n">indices_dtypes</span><span class="p">,</span>
@@ -941,7 +682,7 @@
     <span class="n">min_dim_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">max_dim_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
     <span class="n">num</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-    <span class="n">return_dtype</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">returndtype</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">force_int_axis</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="n">shapes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
@@ -982,7 +723,7 @@
                     <span class="n">st</span><span class="o">.</span><span class="n">one_of</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">none</span><span class="p">(),</span> <span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
                 <span class="p">)</span>
         <span class="n">axes</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">tuples</span><span class="p">(</span><span class="o">*</span><span class="n">all_axes_ranges</span><span class="p">))</span>
-    <span class="k">if</span> <span class="n">return_dtype</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">returndtype</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">arrays</span><span class="p">,</span> <span class="n">axes</span>
     <span class="k">return</span> <span class="n">arrays</span><span class="p">,</span> <span class="n">axes</span></div>
 
@@ -1045,7 +786,7 @@
 <span class="sd">    large_abs_safety_factor</span>
 <span class="sd">        A safety factor of 1 means that all values are included without limitation,</span>
 
-<span class="sd">        when a &quot;linear&quot; safety factor scaler is used, a safety factor of 2 means</span>
+<span class="sd">        when a &quot;linear&quot; safety factor scaler is used,  a safety factor of 2 means</span>
 <span class="sd">        that only 50% of the range is included, a safety factor of 3 means that</span>
 <span class="sd">        only 33% of the range is included etc.</span>
 
@@ -1128,7 +869,9 @@
                 <span class="n">min_value</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="k">if</span> <span class="n">exclude_max</span><span class="p">:</span>
                 <span class="n">max_value</span> <span class="o">-=</span> <span class="mi">1</span>
-            <span class="n">values</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">list_of_size</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="n">min_value</span><span class="p">,</span> <span class="n">max_value</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">))</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span>
+                <span class="n">list_of_length</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="n">min_value</span><span class="p">,</span> <span class="n">max_value</span><span class="p">),</span> <span class="n">length</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+            <span class="p">)</span>
         <span class="k">elif</span> <span class="n">kind_dtype</span> <span class="o">==</span> <span class="s2">&quot;float&quot;</span><span class="p">:</span>
             <span class="n">floats_info</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="s2">&quot;float16&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;cast_type&quot;</span><span class="p">:</span> <span class="s2">&quot;float16&quot;</span><span class="p">,</span> <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mi">16</span><span class="p">},</span>
@@ -1187,21 +930,18 @@
                 <span class="p">)</span>
             <span class="k">if</span> <span class="s2">&quot;complex&quot;</span> <span class="ow">in</span> <span class="n">dtype</span><span class="p">:</span>
                 <span class="n">float_strategy</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">tuples</span><span class="p">(</span><span class="n">float_strategy</span><span class="p">,</span> <span class="n">float_strategy</span><span class="p">)</span>
-            <span class="n">values</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">list_of_size</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">float_strategy</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">))</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span>
+                <span class="n">list_of_length</span><span class="p">(</span>
+                    <span class="n">x</span><span class="o">=</span><span class="n">float_strategy</span><span class="p">,</span>
+                    <span class="n">length</span><span class="o">=</span><span class="n">size</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
             <span class="k">if</span> <span class="s2">&quot;complex&quot;</span> <span class="ow">in</span> <span class="n">dtype</span><span class="p">:</span>
                 <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="nb">complex</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">values</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">list_of_size</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">))</span>
-    <span class="k">if</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s2">&quot;bfloat16&quot;</span><span class="p">:</span>
-        <span class="c1"># check bfloat16 behavior enabled or not</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s2">&quot;bfloat16&quot;</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="c1"># enables bfloat16 behavior with possibly no side-effects</span>
-            <span class="kn">import</span> <span class="nn">paddle_bfloat</span>  <span class="c1"></span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">list_of_length</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span> <span class="n">length</span><span class="o">=</span><span class="n">size</span><span class="p">))</span>
 
     <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
-
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
         <span class="k">return</span> <span class="n">array</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">array</span><span class="p">)</span></div>

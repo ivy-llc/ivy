@@ -108,7 +108,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../padding_ceil_mode.html">padding_ceil_mode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../l2_normalize.html">l2_normalize</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../instance_norm.html">instance_norm</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../lp_normalize.html">lp_normalize</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../binary_cross_entropy_with_logits.html">binary_cross_entropy_with_logits</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../median.html">median</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../nanmean.html">nanmean</a></li>
@@ -117,7 +116,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../corrcoef.html">corrcoef</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../nanmedian.html">nanmedian</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../msort.html">msort</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../lexsort.html">lexsort</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../triu_indices.html">triu_indices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../vorbis_window.html">vorbis_window</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../hann_window.html">hann_window</a></li>
@@ -160,7 +158,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../gradient.html">gradient</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../xlogy.html">xlogy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../real.html">real</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../binarizer.html">binarizer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../bind_custom_gradient_function.html">bind_custom_gradient_function</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../isin.html">isin</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../dirichlet.html">dirichlet</a></li>
@@ -233,7 +230,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../padding_ceil_mode.html">padding_ceil_mode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../l2_normalize.html">l2_normalize</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../instance_norm.html">instance_norm</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../lp_normalize.html">lp_normalize</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../binary_cross_entropy_with_logits.html">binary_cross_entropy_with_logits</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../median.html">median</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../nanmean.html">nanmean</a></li>
@@ -242,7 +238,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../corrcoef.html">corrcoef</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../nanmedian.html">nanmedian</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../msort.html">msort</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../lexsort.html">lexsort</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../triu_indices.html">triu_indices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../vorbis_window.html">vorbis_window</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../hann_window.html">hann_window</a></li>
@@ -285,7 +280,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../gradient.html">gradient</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../xlogy.html">xlogy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../real.html">real</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../binarizer.html">binarizer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../bind_custom_gradient_function.html">bind_custom_gradient_function</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../isin.html">isin</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../dirichlet.html">dirichlet</a></li>
@@ -333,14 +327,6 @@
 <p class="caption" role="heading"><span class="caption-text">Nested array</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../nested_array/nested_array.html">Nested array</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Utils</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../utils/backend.html">Backend</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../utils/assertions.html">Assertions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../utils/dynamic_import.html">Dynamic import</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../utils/inspection.html">Inspection</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../utils/verbosity.html">Verbosity</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Testing</span></p>
 <ul>
@@ -425,9 +411,8 @@ that the inputs broadcast to.</p></li>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]]),</span>    <span class="o">...</span>                   <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],[</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">]]))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">n</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">rot90</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]]),</span>                    <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span>                                <span class="p">[</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">rot90</span><span class="p">()</span>
 <span class="go">{</span>
 <span class="go">    a: ivy.array([[2, 4],</span>
 <span class="go">                  [1, 3]]),</span>

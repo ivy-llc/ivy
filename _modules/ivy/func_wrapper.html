@@ -97,14 +97,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../nested_array/nested_array.html">Nested array</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Utils</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../utils/backend.html">Backend</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../utils/assertions.html">Assertions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../utils/dynamic_import.html">Dynamic import</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../utils/inspection.html">Inspection</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../utils/verbosity.html">Verbosity</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Testing</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../testing/assertions.html">Assertions</a></li>
@@ -157,9 +149,6 @@
 <span></span><span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">weakref</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">import</span> <span class="nn">copy</span> <span class="k">as</span> <span class="nn">python_copy</span>
 <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">FunctionType</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
@@ -167,7 +156,7 @@
 
 <span class="c1"># for wrapping (sequence matters)</span>
 <span class="n">FN_DECORATORS</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">&quot;handle_array_function&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;array_function_wrapper&quot;</span><span class="p">,</span>
     <span class="s2">&quot;infer_device&quot;</span><span class="p">,</span>
     <span class="s2">&quot;infer_dtype&quot;</span><span class="p">,</span>
     <span class="s2">&quot;integer_arrays_to_float&quot;</span><span class="p">,</span>
@@ -176,8 +165,6 @@
     <span class="s2">&quot;inputs_to_native_arrays&quot;</span><span class="p">,</span>
     <span class="s2">&quot;inputs_to_ivy_arrays&quot;</span><span class="p">,</span>
     <span class="s2">&quot;handle_out_argument&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;handle_view_indexing&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;handle_view&quot;</span><span class="p">,</span>
     <span class="s2">&quot;handle_nestable&quot;</span><span class="p">,</span>
     <span class="s2">&quot;handle_exceptions&quot;</span><span class="p">,</span>
     <span class="s2">&quot;with_unsupported_dtypes&quot;</span><span class="p">,</span>
@@ -195,22 +182,22 @@
         <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">None</span>
 
     <span class="k">for</span> <span class="n">overloaded_arg</span> <span class="ow">in</span> <span class="n">overloaded_args</span><span class="p">:</span>
-        <span class="c1"># Note that we&#39;re only calling __ivy_array_function__ on the *first*</span>
+        <span class="c1"># Note that we&#39;re only calling __array_function__ on the *first*</span>
         <span class="c1"># occurence of each argument type. This is necessary for reasonable</span>
         <span class="c1"># performance with a possibly long list of overloaded arguments, for</span>
-        <span class="c1"># which each __ivy_array_function__ implementation might reasonably need to</span>
+        <span class="c1"># which each __array_function__ implementation might reasonably need to</span>
         <span class="c1"># check all argument types.</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="n">overloaded_arg</span><span class="o">.</span><span class="n">__ivy_array_function__</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">types</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">overloaded_arg</span><span class="o">.</span><span class="n">__array_function__</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">types</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyNotImplementedException</span>
+            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyNotImplementedException</span>
 
         <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">NotImplemented</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">result</span>
 
     <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
         <span class="s2">&quot;no implementation found for </span><span class="si">{}</span><span class="s2"> on types that implement &quot;</span>
-        <span class="s2">&quot;__ivy_array_function__: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">overloaded_args</span><span class="p">)))</span>
+        <span class="s2">&quot;__array_function__: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">overloaded_args</span><span class="p">)))</span>
     <span class="p">)</span></div>
 
 
@@ -232,23 +219,6 @@
     <span class="k">return</span> <span class="n">arr</span>
 
 
-<span class="k">def</span> <span class="nf">_build_view</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">original</span><span class="o">.</span><span class="n">_base</span><span class="p">):</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-            <span class="s2">&quot;Creating many views will lead to overhead &quot;</span>
-            <span class="s2">&quot;when performing inplace updates with this backend&quot;</span>
-        <span class="p">)</span>
-        <span class="n">base</span> <span class="o">=</span> <span class="n">original</span><span class="o">.</span><span class="n">_base</span>
-        <span class="n">view</span><span class="o">.</span><span class="n">_base</span> <span class="o">=</span> <span class="n">base</span>
-        <span class="n">view</span><span class="o">.</span><span class="n">_manipulation_stack</span> <span class="o">=</span> <span class="n">python_copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">original</span><span class="o">.</span><span class="n">_manipulation_stack</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">base</span> <span class="o">=</span> <span class="n">original</span>
-        <span class="n">view</span><span class="o">.</span><span class="n">_base</span> <span class="o">=</span> <span class="n">base</span>
-    <span class="n">base</span><span class="o">.</span><span class="n">_view_refs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="n">view</span><span class="p">))</span>
-    <span class="n">view</span><span class="o">.</span><span class="n">_manipulation_stack</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">fn</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">index</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">view</span>
-
-
 <span class="c1"># Array Handling #</span>
 <span class="c1"># ---------------#</span>
 
@@ -267,13 +237,12 @@
         <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
             <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
                 <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">)</span>
-                <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="s2">&quot;__ivy_array_function__&quot;</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="s2">&quot;__array_function__&quot;</span><span class="p">)</span>
             <span class="p">):</span>
                 <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">overloaded_types</span><span class="p">:</span>
                     <span class="n">overloaded_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">arg</span><span class="p">))</span>
                     <span class="k">if</span> <span class="p">(</span>
-                        <span class="n">arg</span><span class="o">.</span><span class="n">__ivy_array_function__</span>
-                        <span class="ow">is</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="o">.</span><span class="n">__ivy_array_function__</span>
+                        <span class="n">arg</span><span class="o">.</span><span class="n">__array_function__</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="o">.</span><span class="n">__array_function__</span>
                         <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">))</span>
                     <span class="p">):</span>
                         <span class="n">index</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">overloaded_args</span><span class="p">)</span>
@@ -285,18 +254,14 @@
             <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
                 <span class="n">arg</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">cont_flatten_key_chains</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
                 <span class="n">indices</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_argwhere</span><span class="p">(</span>
-                    <span class="n">arg</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s2">&quot;__ivy_array_function__&quot;</span><span class="p">)</span>
-                <span class="p">)</span>
+                <span class="n">arg</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s2">&quot;__array_function__&quot;</span><span class="p">)</span>
+                                <span class="p">)</span>
                 <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">:</span>
                     <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">overloaded_types</span><span class="p">:</span>
                         <span class="n">overloaded_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span>
-
-                        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">__ivy_array_function__</span>\
-                            <span class="ow">is</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="o">.</span><span class="n">__ivy_array_function__</span>\
-                            <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
-                                <span class="nb">getattr</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
-                                <span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">)</span>
-
+                        <span class="k">if</span> <span class="p">(</span>
+                            <span class="nb">getattr</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">__array_function__</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="o">.</span><span class="n">__array_function__</span>
+                            <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">))</span>
                         <span class="p">):</span>
                             <span class="n">index</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">overloaded_args</span><span class="p">)</span>
                             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">old_arg</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">overloaded_args</span><span class="p">):</span>
@@ -312,7 +277,7 @@
             <span class="k">return</span> <span class="n">value</span>
         <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="n">new_func</span><span class="o">.</span><span class="n">handle_array_function</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">new_func</span><span class="o">.</span><span class="n">array_function_wrapper</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">return</span> <span class="n">new_func</span></div>
 
 
@@ -504,68 +469,6 @@
 <span class="sd">    and return arrays are all converted to `ivy.Array` instances.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">outputs_to_ivy_arrays</span><span class="p">(</span><span class="n">inputs_to_native_arrays</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span></div>
-
-
-<div class="viewcode-block" id="handle_view"><a class="viewcode-back" href="../../func_wrapper/handle_view.html#ivy.func_wrapper.handle_view">[docs]</a><span class="k">def</span> <span class="nf">handle_view</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Wraps `fn` and performs view handling if copy is False. Used for functional</span>
-<span class="sd">    backends (Jax and TensorFlow). Checks if the first arg is a view or original</span>
-<span class="sd">    array by checking if the ._base attribute is populated. If it&#39;s original</span>
-<span class="sd">    it adds the returned array to its view references, then the returned array</span>
-<span class="sd">    adds the operation to its manipulation stack and stores the original as its</span>
-<span class="sd">    base. If the first arg is a view, then the returned array copies its base and</span>
-<span class="sd">    manipulation stack, appends the new operation to the manipulation stack and</span>
-<span class="sd">    appends its reference to the base array&#39;s view_refs attribute.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">ret</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">copy</span> <span class="ow">or</span> <span class="n">ivy</span><span class="o">.</span><span class="n">backend</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;numpy&quot;</span><span class="p">,</span> <span class="s2">&quot;torch&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_ivy_array</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-            <span class="k">return</span> <span class="n">ret</span>
-        <span class="n">original</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">view</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ret</span><span class="p">):</span>
-                <span class="n">ret</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_build_view</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">ret</span> <span class="o">=</span> <span class="n">_build_view</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="n">ret</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">ret</span>
-
-    <span class="n">new_fn</span><span class="o">.</span><span class="n">handle_view</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="k">return</span> <span class="n">new_fn</span></div>
-
-
-<div class="viewcode-block" id="handle_view_indexing"><a class="viewcode-back" href="../../func_wrapper/handle_view_indexing.html#ivy.func_wrapper.handle_view_indexing">[docs]</a><span class="k">def</span> <span class="nf">handle_view_indexing</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Wraps `fn` and performs view handling specifically for indexing. As with NumPy</span>
-<span class="sd">    it returns a copy if advanced indexing is performed. Used for functional</span>
-<span class="sd">    backends (Jax and TensorFlow). Checks if the first arg is a view or</span>
-<span class="sd">    original array by checking if the ._base attribute is populated. If it&#39;s original</span>
-<span class="sd">    it adds the returned array to its view references, then the returned array</span>
-<span class="sd">    adds the operation to its manipulation stack and stores the original as its</span>
-<span class="sd">    base. If the first arg is a view, then the returned array copies its base and</span>
-<span class="sd">    manipulation stack, appends the new operation to the manipulation stack and</span>
-<span class="sd">    appends its reference to the base array&#39;s view_refs attribute.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">ret</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">backend</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;numpy&quot;</span><span class="p">,</span> <span class="s2">&quot;torch&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_ivy_array</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-            <span class="k">return</span> <span class="n">ret</span>
-        <span class="k">if</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="n">query</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;query&quot;</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">query</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">query</span> <span class="o">=</span> <span class="p">(</span><span class="n">query</span><span class="p">,)</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="k">else</span> <span class="n">query</span>
-        <span class="k">if</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">query</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="nb">slice</span><span class="p">,</span> <span class="nb">int</span><span class="p">))]:</span>
-            <span class="k">return</span> <span class="n">ret</span>
-        <span class="n">original</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">ret</span> <span class="o">=</span> <span class="n">_build_view</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="n">ret</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">ret</span>
-
-    <span class="n">new_fn</span><span class="o">.</span><span class="n">handle_view_indexing</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="k">return</span> <span class="n">new_fn</span></div>
 
 
 <span class="c1"># Data Type Handling #</span>
@@ -1027,7 +930,7 @@
         <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
             <span class="c1"># handle nans based on the selected policy</span>
             <span class="k">if</span> <span class="n">nan_policy</span> <span class="o">==</span> <span class="s2">&quot;raise_exception&quot;</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+                <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
                     <span class="s2">&quot;Nans are not allowed in `raise_exception` policy.&quot;</span>
                 <span class="p">)</span>
             <span class="k">elif</span> <span class="n">nan_policy</span> <span class="o">==</span> <span class="s2">&quot;warns&quot;</span><span class="p">:</span>

@@ -94,6 +94,8 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Converters</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="converters/to_ivy_module.html">to_ivy_module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="converters/ModuleConverters.html">ModuleConverters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="converters/MyTorchModule.html">MyTorchModule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="converters/MyTFModule.html">MyTFModule</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="norms.html">Norms</a></li>
@@ -103,14 +105,6 @@
 <p class="caption" role="heading"><span class="caption-text">Nested array</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../nested_array/nested_array.html">Nested array</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Utils</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../utils/backend.html">Backend</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../utils/assertions.html">Assertions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../utils/dynamic_import.html">Dynamic import</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../utils/inspection.html">Inspection</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../utils/verbosity.html">Verbosity</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Testing</span></p>
 <ul>
@@ -169,16 +163,12 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.stateful.converters.ModuleConverters.from_haiku_module">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_haiku_module</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">native_module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params_hk</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng_seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constructor_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constructor_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">devices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/converters.html#ModuleConverters.from_haiku_module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.converters.ModuleConverters.from_haiku_module" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_haiku_module</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">native_module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constructor_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constructor_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">devices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/converters.html#ModuleConverters.from_haiku_module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.converters.ModuleConverters.from_haiku_module" title="Permalink to this definition"></a></dt>
 <dd><p>Converts a Haiku module instance to an Ivy module instance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>native_module</strong> – The module in the native framework to convert(class or instance).</p></li>
-<li><p><strong>params_hk</strong> – Haiku parameters to pass to the constructor of the native module.
-Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
-<li><p><strong>rng_seed</strong> – Seed used to initialize haiku parameters is initializing from a class.
-Default is <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p></li>
 <li><p><strong>constructor_args</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>]) – Positional arguments to pass to the constructor of the native module. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
 Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>constructor_kwargs</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>]) – <p>(default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
@@ -274,6 +264,121 @@ inplace. Default is <code class="docutils literal notranslate"><span class="pre"
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.stateful.converters.ModuleConverters.to_haiku_module">
+<span class="sig-name descname"><span class="pre">to_haiku_module</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/converters.html#ModuleConverters.to_haiku_module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.converters.ModuleConverters.to_haiku_module" title="Permalink to this definition"></a></dt>
+<dd><p>Converts an ivy Module instance to a Haiku Module instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ivy_module</strong> – The ivy module instance to convert</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – The new trainable hk.Module instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.stateful.converters.ModuleConverters.to_keras_module">
+<span class="sig-name descname"><span class="pre">to_keras_module</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/converters.html#ModuleConverters.to_keras_module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.converters.ModuleConverters.to_keras_module" title="Permalink to this definition"></a></dt>
+<dd><p>Converts an ivy Module instance to a Keras Module instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> – The ivy module instance to convert</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – The new trainable tf.keras.Module instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.stateful.converters.ModuleConverters.to_torch_module">
+<span class="sig-name descname"><span class="pre">to_torch_module</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/converters.html#ModuleConverters.to_torch_module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.converters.ModuleConverters.to_torch_module" title="Permalink to this definition"></a></dt>
+<dd><p>Converts an ivy Module instance to a Torch Module instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>self</strong> – The ivy module instance to convert</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – The new trainable torch.nn.Module instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ivy.stateful.converters.MyTFModule">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy.stateful.converters.</span></span><span class="sig-name descname"><span class="pre">MyTFModule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/converters.html#MyTFModule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.converters.MyTFModule" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.stateful.converters.MyTFModule.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ivy_module</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/converters.html#MyTFModule.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.converters.MyTFModule.__init__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.stateful.converters.MyTFModule.call">
+<span class="sig-name descname"><span class="pre">call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/converters.html#MyTFModule.call"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.converters.MyTFModule.call" title="Permalink to this definition"></a></dt>
+<dd><p>Calls the model on new inputs and returns the outputs as tensors.</p>
+<p>In this case <cite>call()</cite> just reapplies
+all ops in the graph to the new inputs
+(e.g. build a new computational graph from the provided inputs).</p>
+<p>Note: This method should not be called directly. It is only meant to be
+overridden when subclassing <cite>tf.keras.Model</cite>.
+To call a model on an input, always use the <cite>__call__()</cite> method,
+i.e. <cite>model(inputs)</cite>, which relies on the underlying <cite>call()</cite> method.</p>
+<dl>
+<dt>Args:</dt><dd><p>inputs: Input tensor, or dict/list/tuple of input tensors.
+training: Boolean or boolean scalar tensor, indicating whether to run</p>
+<blockquote>
+<div><p>the <cite>Network</cite> in training mode or inference mode.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>mask: A mask or list of masks. A mask can be either a boolean tensor or</dt><dd><dl class="simple">
+<dt>None (no mask). For more details, check the guide</dt><dd><p>[here](<a class="reference external" href="https://www.tensorflow.org/guide/keras/masking_and_padding">https://www.tensorflow.org/guide/keras/masking_and_padding</a>).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>A tensor if there is a single output, or
+a list of tensors if there are more than one outputs.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ivy.stateful.converters.MyTorchModule">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy.stateful.converters.</span></span><span class="sig-name descname"><span class="pre">MyTorchModule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ivy_module</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/converters.html#MyTorchModule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.converters.MyTorchModule" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.stateful.converters.MyTorchModule.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ivy_module</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/converters.html#MyTorchModule.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.converters.MyTorchModule.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.stateful.converters.MyTorchModule.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/converters.html#MyTorchModule.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.converters.MyTorchModule.forward" title="Permalink to this definition"></a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ivy.stateful.converters.MyTorchModule.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#ivy.stateful.converters.MyTorchModule.training" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
