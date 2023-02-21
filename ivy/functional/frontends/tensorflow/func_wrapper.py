@@ -43,26 +43,23 @@ def handle_tf_dtype(fn: Callable) -> Callable:
     return new_fn
 
 
-def _tf_frontend_array_to_ivy(x):
-    if hasattr(x, "ivy_array"):
-        return x.ivy_array
-    return x
-
-
 def _ivy_array_to_tensorflow(x):
     if isinstance(x, ivy.Array) or ivy.is_native_array(x):
         return frontend.EagerTensor(x)
     return x
 
 
-def _native_to_ivy_array(x):
+def _to_ivy_array(x):
+    # if x is a native array return it as an ivy array
     if isinstance(x, ivy.NativeArray):
         return ivy.array(x)
+
+    # else if x is a frontend numpy ndarray (or any frontend "Tensor" actually) return the wrapped ivy array # noqa: E501
+    elif hasattr(x, "ivy_array"):
+        return x.ivy_array
+
+    # else just return x
     return x
-
-
-def _to_ivy_array(x):
-    return _tf_frontend_array_to_ivy(_native_to_ivy_array(x))
 
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
