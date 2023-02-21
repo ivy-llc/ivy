@@ -97,6 +97,14 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../nested_array/nested_array.html">Nested array</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Utils</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../utils/backend.html">Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../utils/assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../utils/dynamic_import.html">Dynamic import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../utils/inspection.html">Inspection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../utils/verbosity.html">Verbosity</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Testing</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../testing/assertions.html">Assertions</a></li>
@@ -421,7 +429,7 @@
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">cont_multi_map_in_function</span><span class="p">(</span>
             <span class="s2">&quot;unravel_index&quot;</span><span class="p">,</span>
             <span class="n">indices</span><span class="p">,</span>
-            <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span>
+            <span class="n">shape</span><span class="p">,</span>
             <span class="n">key_chains</span><span class="o">=</span><span class="n">key_chains</span><span class="p">,</span>
             <span class="n">to_apply</span><span class="o">=</span><span class="n">to_apply</span><span class="p">,</span>
             <span class="n">prune_unapplied</span><span class="o">=</span><span class="n">prune_unapplied</span><span class="p">,</span>
@@ -699,10 +707,10 @@
 <span class="sd">        &gt;&gt;&gt; b = a.quantile(q, axis = 0, interpolation=&quot;lower&quot;)</span>
 <span class="sd">        &gt;&gt;&gt; print(b)</span>
 <span class="sd">        {</span>
-<span class="sd">            x: ivy.array([[3., 2., 1.], </span>
+<span class="sd">            x: ivy.array([[3., 2., 1.],</span>
 <span class="sd">                        [3., 2., 1.]]),</span>
 <span class="sd">            y: ivy.array([1., 3.])</span>
-<span class="sd">        }   </span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_quantile</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
@@ -904,10 +912,12 @@
 <span class="sd">            keepdims any exceptions will be raised.</span>
 <span class="sd">        overwrite_input</span>
 <span class="sd">            If True, then allow use of memory of input array a for calculations.</span>
-<span class="sd">            The input array will be modified by the call to median. This will</span>
-<span class="sd">            save memory when you do not need to preserve the contents of the input array.</span>
-<span class="sd">            Treat the input as undefined, but it will probably be fully or partially sorted.</span>
-<span class="sd">            Default is False. If overwrite_input is True and a is not already an ndarray,</span>
+<span class="sd">            The input array will be modified by the call to median.</span>
+<span class="sd">            This will save memory when you do not need to preserve</span>
+<span class="sd">            the contents of the input array.Treat the input as undefined,</span>
+<span class="sd">            but it will probably be fully or partially sorted.</span>
+<span class="sd">            Default is False. If overwrite_input is True and</span>
+<span class="sd">            a is not already an ndarray,</span>
 <span class="sd">            an error will be raised.</span>
 <span class="sd">        out</span>
 <span class="sd">            optional output array, for writing the result to.</span>

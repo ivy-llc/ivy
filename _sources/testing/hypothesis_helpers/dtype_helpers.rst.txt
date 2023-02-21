@@ -15,3 +15,4 @@ Dtype helpers
 	dtype_helpers/array_dtypes.rst
 	dtype_helpers/get_castable_dtype.rst
 	dtype_helpers/get_dtypes.rst
+	dtype_helpers/make_json_pickable.rst

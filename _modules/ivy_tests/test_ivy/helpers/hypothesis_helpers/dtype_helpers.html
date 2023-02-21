@@ -97,6 +97,14 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../nested_array/nested_array.html">Nested array</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Utils</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../utils/backend.html">Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../utils/assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../utils/dynamic_import.html">Dynamic import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../utils/inspection.html">Inspection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../utils/verbosity.html">Verbosity</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Testing</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../testing/assertions.html">Assertions</a></li>
@@ -151,11 +159,21 @@
 <span class="kn">from</span> <span class="nn">hypothesis</span> <span class="kn">import</span> <span class="n">strategies</span> <span class="k">as</span> <span class="n">st</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">jsonpickle</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="k">pass</span>
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">number_helpers</span> <span class="k">as</span> <span class="n">nh</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">array_helpers</span> <span class="k">as</span> <span class="n">ah</span>
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="nb">globals</span> <span class="k">as</span> <span class="n">test_globals</span>
+
+
+<div class="viewcode-block" id="make_json_pickable"><a class="viewcode-back" href="../../../../../testing/hypothesis_helpers/dtype_helpers/make_json_pickable.html#ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers.make_json_pickable">[docs]</a><span class="k">def</span> <span class="nf">make_json_pickable</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;builtins.bfloat16&quot;</span><span class="p">,</span> <span class="s2">&quot;ivy.bfloat16&quot;</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;jax._src.device_array.reconstruct_device_array&quot;</span><span class="p">,</span> <span class="s2">&quot;jax.numpy.array&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">s</span></div>
 
 
 <div class="viewcode-block" id="get_dtypes"><a class="viewcode-back" href="../../../../../testing/hypothesis_helpers/dtype_helpers/get_dtypes.html#ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers.get_dtypes">[docs]</a><span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
@@ -213,11 +231,34 @@
             <span class="p">),</span>
         <span class="p">}</span>
 
-    <span class="c1"># TODO refactor this so we run the interesection in a chained clean way</span>
+    <span class="c1"># TODO refactor this so we run the intersection in a chained clean way</span>
     <span class="n">backend_dtypes</span> <span class="o">=</span> <span class="n">_get_type_dict</span><span class="p">(</span><span class="n">ivy</span><span class="p">)[</span><span class="n">kind</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_FRONTEND</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">_Notsetval</span><span class="p">:</span>  <span class="c1"># NOQA</span>
-        <span class="n">fw_dtypes</span> <span class="o">=</span> <span class="n">_get_type_dict</span><span class="p">(</span><span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_FRONTEND</span><span class="p">())[</span><span class="n">kind</span><span class="p">]</span>
-        <span class="n">valid_dtypes</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">fw_dtypes</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">backend_dtypes</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_FRONTEND</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">_Notsetval</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span>
+        <span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_FRONTEND_STR</span><span class="p">,</span> <span class="nb">list</span>
+    <span class="p">):</span>  <span class="c1"># NOQA</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_FRONTEND_STR</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">process</span> <span class="o">=</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_FRONTEND_STR</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;1&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="s2">&quot;Something bad happened to the subprocess, here are the logs:</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">process</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">readlines</span><span class="p">())</span>
+                <span class="k">raise</span> <span class="n">e</span>
+            <span class="n">frontend_ret</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">frontend_ret</span><span class="p">:</span>
+                <span class="n">frontend_ret</span> <span class="o">=</span> <span class="n">jsonpickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">make_json_pickable</span><span class="p">(</span><span class="n">frontend_ret</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">process</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">readlines</span><span class="p">())</span>
+                <span class="k">raise</span> <span class="ne">Exception</span>
+            <span class="n">fw_dtypes</span> <span class="o">=</span> <span class="n">frontend_ret</span><span class="p">[</span><span class="n">kind</span><span class="p">]</span>
+            <span class="n">valid_dtypes</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">fw_dtypes</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">backend_dtypes</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fw_dtypes</span> <span class="o">=</span> <span class="n">_get_type_dict</span><span class="p">(</span><span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_FRONTEND</span><span class="p">())[</span><span class="n">kind</span><span class="p">]</span>
+            <span class="n">valid_dtypes</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">fw_dtypes</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">backend_dtypes</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">valid_dtypes</span> <span class="o">=</span> <span class="n">backend_dtypes</span>
 
@@ -291,9 +332,19 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num_arrays</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
         <span class="n">num_arrays</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">num_arrays</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">num_arrays</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">dtypes</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">ah</span><span class="o">.</span><span class="n">list_of_length</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">sampled_from</span><span class="p">(</span><span class="n">available_dtypes</span><span class="p">),</span> <span class="n">length</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">dtypes</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span>
+            <span class="n">ah</span><span class="o">.</span><span class="n">list_of_size</span><span class="p">(</span>
+                <span class="n">x</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">sampled_from</span><span class="p">(</span><span class="n">available_dtypes</span><span class="p">),</span>
+                <span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
     <span class="k">elif</span> <span class="n">shared_dtype</span><span class="p">:</span>
-        <span class="n">dtypes</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">ah</span><span class="o">.</span><span class="n">list_of_length</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">sampled_from</span><span class="p">(</span><span class="n">available_dtypes</span><span class="p">),</span> <span class="n">length</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">dtypes</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span>
+            <span class="n">ah</span><span class="o">.</span><span class="n">list_of_size</span><span class="p">(</span>
+                <span class="n">x</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">sampled_from</span><span class="p">(</span><span class="n">available_dtypes</span><span class="p">),</span>
+                <span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
         <span class="n">dtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">dtypes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_arrays</span><span class="p">)]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">unwanted_types</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">all_dtypes</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">available_dtypes</span><span class="p">))</span>

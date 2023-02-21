@@ -102,6 +102,7 @@
 <li class="toctree-l2"><a class="reference internal" href="padding_ceil_mode.html">padding_ceil_mode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="l2_normalize.html">l2_normalize</a></li>
 <li class="toctree-l2"><a class="reference internal" href="instance_norm.html">instance_norm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lp_normalize.html">lp_normalize</a></li>
 <li class="toctree-l2"><a class="reference internal" href="binary_cross_entropy_with_logits.html">binary_cross_entropy_with_logits</a></li>
 <li class="toctree-l2"><a class="reference internal" href="median.html">median</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nanmean.html">nanmean</a></li>
@@ -116,6 +117,7 @@
 <li class="toctree-l2"><a class="reference internal" href="corrcoef.html">corrcoef</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nanmedian.html">nanmedian</a></li>
 <li class="toctree-l2"><a class="reference internal" href="msort.html">msort</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lexsort.html">lexsort</a></li>
 <li class="toctree-l2"><a class="reference internal" href="triu_indices.html">triu_indices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vorbis_window.html">vorbis_window</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hann_window.html">hann_window</a></li>
@@ -158,6 +160,7 @@
 <li class="toctree-l2"><a class="reference internal" href="gradient.html">gradient</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xlogy.html">xlogy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="real.html">real</a></li>
+<li class="toctree-l2"><a class="reference internal" href="binarizer.html">binarizer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bind_custom_gradient_function.html">bind_custom_gradient_function</a></li>
 <li class="toctree-l2"><a class="reference internal" href="isin.html">isin</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dirichlet.html">dirichlet</a></li>
@@ -224,6 +227,7 @@
 <li class="toctree-l2"><a class="reference internal" href="padding_ceil_mode.html">padding_ceil_mode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="l2_normalize.html">l2_normalize</a></li>
 <li class="toctree-l2"><a class="reference internal" href="instance_norm.html">instance_norm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lp_normalize.html">lp_normalize</a></li>
 <li class="toctree-l2"><a class="reference internal" href="binary_cross_entropy_with_logits.html">binary_cross_entropy_with_logits</a></li>
 <li class="toctree-l2"><a class="reference internal" href="median.html">median</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nanmean.html">nanmean</a></li>
@@ -238,6 +242,7 @@
 <li class="toctree-l2"><a class="reference internal" href="corrcoef.html">corrcoef</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nanmedian.html">nanmedian</a></li>
 <li class="toctree-l2"><a class="reference internal" href="msort.html">msort</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lexsort.html">lexsort</a></li>
 <li class="toctree-l2"><a class="reference internal" href="triu_indices.html">triu_indices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vorbis_window.html">vorbis_window</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hann_window.html">hann_window</a></li>
@@ -280,6 +285,7 @@
 <li class="toctree-l2"><a class="reference internal" href="gradient.html">gradient</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xlogy.html">xlogy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="real.html">real</a></li>
+<li class="toctree-l2"><a class="reference internal" href="binarizer.html">binarizer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bind_custom_gradient_function.html">bind_custom_gradient_function</a></li>
 <li class="toctree-l2"><a class="reference internal" href="isin.html">isin</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dirichlet.html">dirichlet</a></li>
@@ -327,6 +333,14 @@
 <p class="caption" role="heading"><span class="caption-text">Nested array</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../nested_array/nested_array.html">Nested array</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Utils</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils/backend.html">Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils/assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils/dynamic_import.html">Dynamic import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils/inspection.html">Inspection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils/verbosity.html">Verbosity</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Testing</span></p>
 <ul>
@@ -391,10 +405,10 @@
 between 0 and 1 inclusive.</p></li>
 <li><p><strong>axis</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]]) – Axis or axes along which the quantiles are computed. The default (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
 is to compute the quantile(s) along a flattened version of the array.</p></li>
-<li><p><strong>keepdims</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If this is set to True, the axes which are reduced are left in the result (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
+<li><p><strong>keepdims</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]) – If this is set to True, the axes which are reduced are left in the result (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
 as dimensions with size one. With this option, the result will broadcast
 correctly against the original array a.</p></li>
-<li><p><strong>interpolation</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – {‘nearest’, ‘linear’, ‘lower’, ‘higher’, ‘midpoint’}. Default value: ‘linear’. (default: <code class="docutils literal notranslate"><span class="pre">'linear'</span></code>)
+<li><p><strong>interpolation</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – {‘nearest’, ‘linear’, ‘lower’, ‘higher’, ‘midpoint’}. Default value: ‘linear’. (default: <code class="docutils literal notranslate"><span class="pre">'linear'</span></code>)
 This specifies the interpolation method to use when the desired quantile lies
 between two data points i &lt; j:
 - linear: i + (j - i) * fraction, where fraction is the fractional part of the

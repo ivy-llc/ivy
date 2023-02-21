@@ -15,4 +15,5 @@ Norms
 
    norms/l2_normalize.rst
    norms/instance_norm.rst
+   norms/lp_normalize.rst
 
