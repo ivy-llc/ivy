@@ -254,13 +254,6 @@ def handle_numpy_casting_special(fn: Callable) -> Callable:
     return new_fn
 
 
-def _numpy_frontend_to_ivy(x: Any) -> Any:
-    if hasattr(x, "ivy_array"):
-        return x.ivy_array
-    else:
-        return x
-
-
 def _ivy_to_numpy(x: Any) -> Any:
     if isinstance(x, ivy.Array) or ivy.is_native_array(x):
         a = ndarray(x, _init_overload=True)
@@ -277,14 +270,17 @@ def _ivy_to_numpy_order_F(x: Any) -> Any:
         return x
 
 
-def _native_to_ivy_array(x):
+def _to_ivy_array(x):
+    # if x is a native array return it as an ivy array
     if isinstance(x, ivy.NativeArray):
         return ivy.array(x)
+
+    # else if x is a frontend numpy ndarray (or any frontend "Tensor" actually) return the wrapped ivy array # noqa: E501
+    elif hasattr(x, "ivy_array"):
+        return x.ivy_array
+
+    # else just return x
     return x
-
-
-def _to_ivy_array(x):
-    return _numpy_frontend_to_ivy(_native_to_ivy_array(x))
 
 
 def _check_C_order(x):
