@@ -6,7 +6,7 @@ from collections import namedtuple
 # local
 
 from . import backend_version
-from ivy.exceptions import IvyNotImplementedException
+from ivy.utils.exceptions import IvyNotImplementedException
 
 
 def unique_all(
