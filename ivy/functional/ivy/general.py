@@ -2486,7 +2486,8 @@ def supports_inplace_updates(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
 @handle_exceptions
 @handle_array_function
 def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
-    """Asserts that inplace operations are supported for x, else raises IvyBackendException.
+    """Asserts that inplace operations are supported for x, else 
+    raises IvyBackendException.
 
     Parameters
     ----------

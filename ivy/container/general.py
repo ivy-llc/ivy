@@ -1000,7 +1000,8 @@ class ContainerWithGeneral(ContainerBase):
         >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))
         >>> print(x.assert_supports_inplace())
         IvyBackendException: jax: assert_supports_inplace: Inplace operations \
-        are not supported <class 'jaxlib.xla_extension.DeviceArray'> types with jax backend
+        are not supported <class 'jaxlib.xla_extension.DeviceArray'> types
+        with jax backend
         
         """
         return self.static_assert_supports_inplace(
