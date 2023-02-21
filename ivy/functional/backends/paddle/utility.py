@@ -1,7 +1,7 @@
 # global
 import paddle
 from typing import Union, Optional, Sequence
-from ivy.exceptions import IvyNotImplementedException
+from ivy.utils.exceptions import IvyNotImplementedException
 
 
 def all(
