@@ -474,6 +474,9 @@ def reciprocal(
 ) -> JaxArray:
     return jnp.reciprocal(x)
 
+def radians(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jnp.radians(x)
+
 
 def deg2rad(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.deg2rad(x)
