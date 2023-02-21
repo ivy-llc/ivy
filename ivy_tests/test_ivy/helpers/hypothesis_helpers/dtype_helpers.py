@@ -48,7 +48,7 @@ def _get_type_dict(framework, kind):
         return tuple(
             set(framework.valid_int_dtypes).difference(framework.valid_uint_dtypes)
         )
-    elif kind == "valid_complex_dtypes":
+    elif kind == "complex":
         return framework.valid_complex_dtypes
     elif kind == "real_and_complex":
         return tuple(
