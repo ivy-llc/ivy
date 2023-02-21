@@ -9,7 +9,7 @@ from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipul
 )
 
 
-# dsplit
+# vsplit
 @handle_frontend_test(
     fn_tree="numpy.vsplit",
     dtype_value=helpers.dtype_and_values(
