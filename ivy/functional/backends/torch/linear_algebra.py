@@ -521,33 +521,3 @@ def vector_to_skew_symmetric_matrix(
 
 
 vector_to_skew_symmetric_matrix.support_native_out = True
-
-
-def multi_dot(
-    tensors: List[torch.Tensor],
-    /,
-    *,
-    out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
-    n = len(tensors)
-    if n == 0 or tensors[0].dim() not in [1, 2] or tensors[-1].dim() not in [1, 2]:
-        ret = torch.tensor([])
-        if ivy.exists(out):
-            return ivy.inplace_update(out, ret)
-        return ret
-
-    for tensor in tensors[1:-1]:
-        if tensor.dim() != 2:
-            ret = torch.tensor([])
-            if ivy.exists(out):
-                return ivy.inplace_update(out, ret)
-            return ret
-
-    for i in range(n):
-        for j in range(i + 1, n):
-            tensor[i], tensor[j] = ivy.promote_types_of_inputs(tensor[i], tensor[j])
-
-    return torch.multi_dot(tensors, out=out)
-
-
-multi_dot.support_native_out = True
