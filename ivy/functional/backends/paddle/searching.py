@@ -5,7 +5,7 @@ import paddle
 
 
 import ivy
-from ivy.exceptions import IvyNotImplementedException
+from ivy.utils.exceptions import IvyNotImplementedException
 
 from . import backend_version
 
