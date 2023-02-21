@@ -8,10 +8,17 @@ from ivy.func_wrapper import with_unsupported_dtypes
 
 
 class Tensor:
-    def __init__(self, array, device=None):
-        self._ivy_array = ivy.asarray(
-            array, dtype=torch_frontend.float32, device=device
-        )
+    def __init__(self, array, device=None, _init_overload=False):
+
+        if _init_overload:
+            self._ivy_array = (
+                ivy.array(array) if not isinstance(array, ivy.Array) else array
+            )
+
+        else:
+            self._ivy_array = ivy.array(
+                array, dtype=torch_frontend.float32, device=device
+            )
 
     def __repr__(self):
         return str(self._ivy_array.__repr__()).replace(
@@ -250,6 +257,10 @@ class Tensor:
     def amin(self, dim=None, keepdim=False):
         return torch_frontend.amin(self._ivy_array, dim=dim, keepdim=keepdim)
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def aminmax(self, dim=None, keepdim=False):
+        return torch_frontend.aminmax(self._ivy_array, dim=dim, keepdim=keepdim)
+
     def abs(self):
         return torch_frontend.abs(self._ivy_array)
 
@@ -325,6 +336,11 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
     def arctan2(self, other):
         return torch_frontend.arctan2(self._ivy_array, other)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+    def arctan2_(self, other):
+        self._ivy_array = self.arctan2(other).ivy_array
+        return self
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def acos(self):
@@ -524,6 +540,11 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def cumsum(self, dim, dtype):
         return torch_frontend.cumsum(self._ivy_array, dim, dtype=dtype)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def cumsum_(self, dim, *, dtype=None):
+        self._ivy_array = self.cumsum(dim, dtype).ivy_array
+        return self
 
     def inverse(self):
         return torch_frontend.inverse(self._ivy_array)

@@ -1,7 +1,7 @@
 # global
 import ivy
 from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
-from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from ivy.functional.frontends.tensorflow import math
 
 
@@ -24,6 +24,7 @@ def atrous_conv2d(value, filters, rate, padding):
 
 @to_ivy_arrays_and_back
 def atrous_conv2d_transpose(value, filters, output_shape, rate, padding):
+    filters = filters.swapaxes(-2, -1)
     return ivy.conv2d_transpose(
         value, filters, 1, padding, output_shape=output_shape, dilations=[rate] * 2
     )
@@ -51,6 +52,7 @@ def conv1d_transpose(
     name=None,
 ):
     strides, dilations = _reduce_strides_dilations(1, strides, dilations)
+    filters = filters.swapaxes(-2, -1)
     return ivy.conv1d_transpose(
         input,
         filters,
@@ -89,6 +91,7 @@ def conv2d_transpose(
     name=None,
 ):
     strides, dilations = _reduce_strides_dilations(2, strides, dilations)
+    filters = filters.swapaxes(-2, -1)
     return ivy.conv2d_transpose(
         input,
         filters,
@@ -110,6 +113,7 @@ def conv3d(
     )
 
 
+@with_unsupported_dtypes({"2.9.0 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def conv3d_transpose(
     input,
@@ -122,6 +126,7 @@ def conv3d_transpose(
     name=None,
 ):
     strides, dilations = _reduce_strides_dilations(3, strides, dilations)
+    filters = filters.swapaxes(-2, -1)
     return ivy.conv3d_transpose(
         input,
         filters,
@@ -196,7 +201,7 @@ silu.unsupported_dtypes = (
 
 @to_ivy_arrays_and_back
 def sigmoid_cross_entropy_with_logits(labels=None, logits=None, name=None):
-    ivy.assertions.check_shape(labels, logits)
+    ivy.utils.assertions.check_shape(labels, logits)
     zeros = ivy.zeros_like(logits)
     max_logits = ivy.where(logits >= zeros, logits, zeros)
     neg_abs_logits = ivy.negative(ivy.abs(logits))
@@ -218,7 +223,7 @@ sigmoid_cross_entropy_with_logits.unsupported_dtypes = (
 def weighted_cross_entropy_with_logits(
     labels=None, logits=None, pos_weight=1.0, name=None
 ):
-    ivy.assertions.check_shape(labels, logits)
+    ivy.utils.assertions.check_shape(labels, logits)
     ones = ivy.ones_like(labels)
     zeros = ivy.zeros_like(logits)
     log_weight = ivy.add(ones, ivy.multiply(pos_weight - 1, labels))
@@ -251,7 +256,7 @@ def local_response_normalization(
     input, /, *, depth_radius=5, bias=1.0, alpha=1.0, beta=0.5, name=None
 ):
     input_shape = ivy.shape(input)
-    ivy.assertions.check_equal(
+    ivy.utils.assertions.check_equal(
         ivy.get_num_dims(input),
         4,
         message="4D input, but got input with sizes " + str(input_shape),

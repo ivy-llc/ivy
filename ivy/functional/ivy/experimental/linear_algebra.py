@@ -3,21 +3,21 @@ from typing import Union, Optional, Tuple
 
 # local
 import ivy
-from ivy.backend_handler import current_backend
+from ivy.utils.backend import current_backend
 from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
 )
-from ivy.exceptions import handle_exceptions
+from ivy.utils.exceptions import handle_exceptions
 
 # Helpers #
 # ------- #
 
 
 def _check_valid_dimension_size(std):
-    ivy.assertions.check_dimensions(std)
+    ivy.utils.assertions.check_dimensions(std)
 
 
 @to_native_arrays_and_back

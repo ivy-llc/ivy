@@ -12,15 +12,15 @@ def _valid_shapes(input, weight, bias, stride, padding, groups, transpose=False)
     in_channels = input.shape[1]
     out_channels = weight.shape[0] if not transpose else weight.shape[1] * groups
 
-    ivy.assertions.check_equal(
+    ivy.utils.assertions.check_equal(
         in_channels % groups, 0, message="in_channels must be divisible by groups"
     )
-    ivy.assertions.check_equal(
+    ivy.utils.assertions.check_equal(
         out_channels % groups, 0, message="out_channels must be divisible by groups"
     )
 
     if bias is not None:
-        ivy.assertions.check_equal(
+        ivy.utils.assertions.check_equal(
             bias.shape[0],
             out_channels,
             message="bias must be same shape as out_channels",
@@ -28,24 +28,24 @@ def _valid_shapes(input, weight, bias, stride, padding, groups, transpose=False)
 
     if padding == "same":
         if isinstance(stride, int):
-            ivy.assertions.check_equal(
+            ivy.utils.assertions.check_equal(
                 stride, 1, message="padding cannot be 'same' for stride > 1"
             )
         else:
             for i in stride:
-                ivy.assertions.check_equal(
+                ivy.utils.assertions.check_equal(
                     i, 1, message="padding cannot be 'same' for stride > 1"
                 )
 
     if not transpose:
         in_channels_by_groups = weight.shape[1]
-        ivy.assertions.check_equal(
+        ivy.utils.assertions.check_equal(
             in_channels,
             in_channels_by_groups * groups,
             message="in_channels must be consistent between input and weight",
         )
     else:
-        ivy.assertions.check_equal(
+        ivy.utils.assertions.check_equal(
             in_channels,
             weight.shape[0],
             message="in_channels must be consistent between input and weight",
@@ -245,7 +245,7 @@ def conv_transpose3d(
 @to_ivy_arrays_and_back
 def unfold(input, kernel_size, dilation=1, padding=0, stride=1):
     if input.ndim != 4:
-        raise ivy.exceptions.IvyException("only batched 4D inputs are supported")
+        raise ivy.utils.exceptions.IvyException("only batched 4D inputs are supported")
     stride = [stride] * 2 if isinstance(stride, int) else stride
     dilation = [dilation] * 2 if isinstance(dilation, int) else dilation
     padding = [padding] * 2 if isinstance(padding, int) else padding
@@ -284,7 +284,9 @@ def fold(input, output_size, kernel_size, dilation=1, padding=0, stride=1):
     if orig_ndim == 2:
         input = ivy.expand_dims(input, axis=0)
     elif orig_ndim != 3:
-        raise ivy.exceptions.IvyException("only 2D or batched 3D inputs are supported")
+        raise ivy.utils.exceptions.IvyException(
+            "only 2D or batched 3D inputs are supported"
+        )
     stride = [stride] * 2 if isinstance(stride, int) else stride
     dilation = [dilation] * 2 if isinstance(dilation, int) else dilation
     padding = [padding] * 2 if isinstance(padding, int) else padding
