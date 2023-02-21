@@ -176,6 +176,8 @@ def test_diagflat(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=2,
         max_num_dims=2,
+        min_dim_size=1,
+        max_dim_size=10,
         num_arrays=2,
         shared_dtype=True,
     ),
