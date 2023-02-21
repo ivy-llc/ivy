@@ -94,7 +94,7 @@ def floor(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
 
 
 def asin(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return asin(x)
 
 
 def asinh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
