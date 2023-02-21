@@ -737,11 +737,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithGeneral.supports_inplace_updates"><a class="viewcode-back" href="../../../data_classes/array/general/ArrayWithGeneral.html#ivy.array.general.ArrayWithGeneral.supports_inplace_updates">[docs]</a>    <span class="k">def</span> <span class="nf">supports_inplace_updates</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="ArrayWithGeneral.supports_inplace_updates"><a class="viewcode-back" href="../../../data_classes/array/general/ArrayWithGeneral.html#ivy.array.general.ArrayWithGeneral.supports_inplace_updates">[docs]</a>    <span class="k">def</span> <span class="nf">supports_inplace_updates</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Array instance method variant of ivy.supports_inplace_updates. This method</span>
-<span class="sd">        simply wraps the function, and so the docstring for ivy.supports_inplace also</span>
-<span class="sd">        applies to this method with minimal changes.</span>
+<span class="sd">        simply wraps the function, and so the docstring for ivy.supports_inplace_updates</span>
+<span class="sd">        also applies to this method with minimal changes.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -756,12 +756,20 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
+<span class="sd">        With :class:`ivy.Array` input and default backend set as `numpy`:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([0, 1, 2])</span>
+<span class="sd">        &gt;&gt;&gt; ret = x.supports_inplace_updates()</span>
+<span class="sd">        &gt;&gt;&gt; print(ret)</span>
+<span class="sd">        True</span>
+
 <span class="sd">        With `ivy.Array` input and backend set as &quot;tensorflow&quot;:</span>
 
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([1., 4.2, 2.2])</span>
 <span class="sd">        &gt;&gt;&gt; ret = x.supports_inplace_updates()</span>
 <span class="sd">        &gt;&gt;&gt; print(ret)</span>
 <span class="sd">        False</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">supports_inplace_updates</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
@@ -959,7 +967,8 @@
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
 <span class="sd">        &gt;&gt;&gt; print(x.assert_supports_inplace())</span>
 <span class="sd">        IvyBackendException: jax: assert_supports_inplace: Inplace operations \</span>
-<span class="sd">        are not supported &lt;class &#39;jaxlib.xla_extension.DeviceArray&#39;&gt; types with jax backend</span>
+<span class="sd">        are not supported &lt;class &#39;jaxlib.xla_extension.DeviceArray&#39;&gt; types </span>
+<span class="sd">        with jax backend</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">assert_supports_inplace</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
