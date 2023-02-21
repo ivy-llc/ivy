@@ -1470,11 +1470,12 @@ def test_tensorflow_log_softmax(
         logits=x[0],
     )
 
+
 # abs
 @handle_frontend_test(
     fn_tree="tensorflow.math.abs",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
     test_with_out=st.just(False),
 )
