@@ -2470,7 +2470,7 @@ def supports_inplace_updates(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     >>> ret = x.supports_inplace_updates()
     >>> print(ret)
     False
-    
+
     """
     if _is_variable(x):
         return ivy.inplace_variables_supported()
