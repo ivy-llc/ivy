@@ -294,3 +294,17 @@ def nanmedian(
     return ivy.current_backend().nanmedian(
         input, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out
     )
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def bincount(
+    x: ivy.Array,
+    /,
+    *,
+    weights: Optional[ivy.Array] = None,
+    minlength: Optional[int] = 0,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    return ivy.current_backend().bincount(x, weights=weights, minlength=minlength, out=out)
