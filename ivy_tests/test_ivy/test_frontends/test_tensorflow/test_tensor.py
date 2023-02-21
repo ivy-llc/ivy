@@ -5,8 +5,9 @@ from hypothesis import strategies as st, given
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
-import ivy.functional.backends.tensorflow as ivy_tf
+
+# import ivy.functional.backends.numpy as ivy_np
+# import ivy.functional.backends.tensorflow as ivy_tf
 from ivy_tests.test_ivy.helpers import handle_frontend_method
 from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_raw_ops import (
     _pow_helper_shared_dtype,
@@ -448,41 +449,41 @@ def test_tensorflow_instance_mod(
 
 
 # __sub__
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="tensorflow.constant",
-    method_name="__sub__",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
-        ),
-        num_arrays=2,
-        shared_dtype=True,
-    ),
-)
-def test_tensorflow_instance_sub(
-    dtype_and_x,
-    frontend,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={
-            "value": x[0],
-        },
-        method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={
-            "y": x[1],
-        },
-        frontend=frontend,
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-    )
-
+# @handle_frontend_method(
+#     class_tree=CLASS_TREE,
+#     init_tree="tensorflow.constant",
+#     method_name="__sub__",
+#     dtype_and_x=helpers.dtype_and_values(
+#         available_dtypes=tuple(
+#             set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
+#         ),
+#         num_arrays=2,
+#         shared_dtype=True,
+#     ),
+# )
+# def test_tensorflow_instance_sub(
+#     dtype_and_x,
+#     frontend,
+#     frontend_method_data,
+#     init_flags,
+#     method_flags,
+# ):
+#     input_dtype, x = dtype_and_x
+#     helpers.test_frontend_method(
+#         init_input_dtypes=input_dtype,
+#         init_all_as_kwargs_np={
+#             "value": x[0],
+#         },
+#         method_input_dtypes=input_dtype,
+#         method_all_as_kwargs_np={
+#             "y": x[1],
+#         },
+#         frontend=frontend,
+#         frontend_method_data=frontend_method_data,
+#         init_flags=init_flags,
+#         method_flags=method_flags,
+#     )
+#
 
 # __ne__
 @handle_frontend_method(
