@@ -190,7 +190,7 @@ def greater_equal(
 
 
 def acos(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.acos(x)
 
 
 def logical_xor(
