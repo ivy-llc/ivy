@@ -524,3 +524,7 @@ def xlogy(x: JaxArray, y: JaxArray, /, *, out: Optional[JaxArray] = None) -> Jax
 
 def real(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.real(x)
+
+
+def ldexp(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jnp.ldexp(x1, x2)

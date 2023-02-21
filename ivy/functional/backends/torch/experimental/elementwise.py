@@ -433,3 +433,13 @@ def xlogy(
 
 def real(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.real(x)
+
+
+def ldexp(
+    x: torch.Tensor,
+    i: Union[int, torch.Tensor],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.ldexp(x, i, out=out)
