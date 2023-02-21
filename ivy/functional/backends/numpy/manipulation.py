@@ -48,9 +48,13 @@ def expand_dims(
     x: np.ndarray,
     /,
     *,
+    copy: Optional[bool] = None,
     axis: Union[int, Sequence[int]] = 0,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if copy:
+        newarr = x.copy()
+        return np.expand_dims(newarr, axis)
     return np.expand_dims(x, axis)
 
 
@@ -58,6 +62,7 @@ def flip(
     x: np.ndarray,
     /,
     *,
+    copy: Optional[bool] = None,
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
@@ -69,12 +74,23 @@ def flip(
     if type(axis) is int:
         axis = [axis]
     axis = [item + num_dims if item < 0 else item for item in axis]
+    if copy:
+        newarr = x.copy()
+        return np.flip(newarr, axis)
     return np.flip(x, axis)
 
 
 def permute_dims(
-    x: np.ndarray, /, axes: Tuple[int, ...], *, out: Optional[np.ndarray] = None
+    x: np.ndarray, 
+    /, 
+    axes: Tuple[int, ...], 
+    *,
+    copy: Optional[bool] = None,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
+    if copy:
+        newarr = x.copy()
+        return np.transpose(newarr, axes)
     return np.transpose(x, axes)
 
 
@@ -105,9 +121,13 @@ def roll(
     /,
     shift: Union[int, Sequence[int]],
     *,
+    copy: Optional[bool] = None,
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if copy:
+        newarr = x.copy()
+        return np.roll(newarr, shift, axis)
     return np.roll(x, shift, axis)
 
 
@@ -116,6 +136,7 @@ def squeeze(
     /,
     axis: Union[int, Sequence[int]],
     *,
+    copy: Optional[bool] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if isinstance(axis, list):
@@ -126,6 +147,9 @@ def squeeze(
         raise ivy.utils.exceptions.IvyException(
             "tried to squeeze a zero-dimensional input by axis {}".format(axis)
         )
+    if copy:
+        newarr = x.copy()
+        return np.squeeze(newarr, axis=axis)
     return np.squeeze(x, axis=axis)
 
 
@@ -150,6 +174,7 @@ def split(
     x: np.ndarray,
     /,
     *,
+    copy: Optional[bool] = None,
     num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
     axis: Optional[int] = 0,
     with_remainder: Optional[bool] = False,
@@ -174,6 +199,9 @@ def split(
             ]
     if isinstance(num_or_size_splits, (list, tuple)):
         num_or_size_splits = np.cumsum(num_or_size_splits[:-1])
+    if copy:
+        newarr = x.copy()
+        return np.split(newarr, num_or_size_splits, axis)
     return np.split(x, num_or_size_splits, axis)
 
 
@@ -183,15 +211,27 @@ def repeat(
     /,
     repeats: Union[int, List[int]],
     *,
+    copy: Optional[bool] = None,
     axis: int = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if copy:
+        newarr = x.copy()
+        return np.repeat(newarr, repeats, axis)
     return np.repeat(x, repeats, axis)
 
 
 def tile(
-    x: np.ndarray, /, repeats: Sequence[int], *, out: Optional[np.ndarray] = None
+    x: np.ndarray, 
+    /, 
+    repeats: Sequence[int], 
+    *, 
+    copy: Optional[bool] = None,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
+    if copy:
+        newarr = x.copy()
+        return np.tile(newarr, repeats)
     return np.tile(x, repeats)
 
 
@@ -200,21 +240,42 @@ def constant_pad(
     /,
     pad_width: List[List[int]],
     *,
+    copy: Optional[bool] = None,
     value: Number = 0.0,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if copy:
+        newarr = x.copy()
+        return np.pad(_flat_array_to_1_dim_array(newarr), pad_width, constant_values=value)
     return np.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
 
 
 def zero_pad(
-    x: np.ndarray, /, pad_width: List[List[int]], *, out: Optional[np.ndarray] = None
+    x: np.ndarray, 
+    /, 
+    pad_width: List[List[int]], 
+    *, 
+    copy: Optional[bool] = None,
+    out: Optional[np.ndarray] = None
 ):
+    if copy:
+        newarr = x.copy()
+        return np.pad(_flat_array_to_1_dim_array(newarr), pad_width)
     return np.pad(_flat_array_to_1_dim_array(x), pad_width)
 
 
 def swapaxes(
-    x: np.ndarray, axis0: int, axis1: int, /, *, out: Optional[np.ndarray] = None
+    x: np.ndarray, 
+    axis0: int, 
+    axis1: int, 
+    /, 
+    *, 
+    copy: Optional[bool] = None,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
+    if copy:
+        newarr = x.copy()
+        return np.swapaxes(newarr, axis0, axis1)
     return np.swapaxes(x, axis0, axis1)
 
 
@@ -235,11 +296,15 @@ def clip(
     x_max: Union[Number, np.ndarray],
     /,
     *,
+    copy: Optional[bool] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ivy.utils.assertions.check_less(
         ivy.array(x_min), ivy.array(x_max), message="min values must be less than max"
     )
+    if copy:
+        newarr = x.copy()
+        return np.asarray(np.clip(newarr, x_min, x_max, out=out), dtype=x.dtype)
     return np.asarray(np.clip(x, x_min, x_max, out=out), dtype=x.dtype)
 
 
