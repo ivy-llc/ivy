@@ -3,7 +3,7 @@ from typing import Optional, Union, Tuple, List
 from numbers import Number
 from math import pi
 import paddle
-from ivy.exceptions import IvyNotImplementedException
+from ivy.utils.exceptions import IvyNotImplementedException
 
 # local
 import ivy
