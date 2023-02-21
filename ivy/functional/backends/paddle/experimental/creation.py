@@ -2,7 +2,7 @@
 from typing import Optional, Tuple
 import math
 import paddle
-from ivy.exceptions import IvyNotImplementedException
+from ivy.utils.exceptions import IvyNotImplementedException
 from paddle.fluid.libpaddle import Place
 
 # local
