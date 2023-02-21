@@ -14,7 +14,7 @@ def can_cast(from_, to, casting="safe"):
     Returns True if casting betweer two dtypes is possible according to casting rules,
     False otherwise.
     """
-    ivy.assertions.check_elem_in_list(
+    ivy.utils.assertions.check_elem_in_list(
         casting,
         ["no", "equiv", "safe", "same_kind", "unsafe"],
         message="casting must be one of [no, equiv, safe, same_kind, unsafe]",
@@ -27,7 +27,7 @@ def can_cast(from_, to, casting="safe"):
     elif isinstance(from_, np_dtype):
         from_ = from_._ivy_dtype
     else:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             "from_ must be one of dtype, dtype specifier, scalar type, or array, "
         )
 
@@ -36,7 +36,9 @@ def can_cast(from_, to, casting="safe"):
     elif isinstance(to, np_dtype):
         to = to._ivy_dtype
     else:
-        raise ivy.exceptions.IvyException("to must be one of dtype, or dtype specifier")
+        raise ivy.utils.exceptions.IvyException(
+            "to must be one of dtype, or dtype specifier"
+        )
 
     if casting == "no" or casting == "equiv":
         return from_ == to

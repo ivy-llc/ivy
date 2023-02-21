@@ -51,10 +51,10 @@ def nanmean(
 ) -> torch.Tensor:
     if isinstance(dtype, str):
         TORCH_DTYPES = {
-            'float32': torch.float32,
-            'float64': torch.float64,
+            "float32": torch.float32,
+            "float64": torch.float64,
         }
-        temp = Torch_DTYPES[dtype]
+        temp = TORCH_DTYPES[dtype]
     else:
         temp = dtype
     return torch.nanmean(a, dim=axis, keepdim=keepdims, dtype=temp, out=out)

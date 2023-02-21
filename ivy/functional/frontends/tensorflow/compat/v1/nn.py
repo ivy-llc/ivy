@@ -30,7 +30,7 @@ def fused_batch_norm(
         elif dims == 5:
             x = ivy.permute_dims(x, axes=(0, 2, 3, 4, 1))
         else:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "input tensor must be of 4 or 5 dimensions, got {}".format(dims)
             )
 
@@ -84,7 +84,7 @@ def depthwise_conv2d(
     rate=None,
     name=None,
     data_format=None,
-    dilations=None
+    dilations=None,
 ):
     if rate:
         dilations = rate

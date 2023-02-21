@@ -10,7 +10,7 @@ class generic(ndarray):
     _name = "generic"
 
     def __init__(self):
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             f"cannot create 'numpy.{self._name}' instances"
         )
 

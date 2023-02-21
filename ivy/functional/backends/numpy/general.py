@@ -57,7 +57,7 @@ def gather(
 ) -> np.ndarray:
     axis = axis % len(params.shape)
     batch_dims = batch_dims % len(params.shape)
-    ivy.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
+    ivy.utils.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
     result = []
     if batch_dims == 0:
         result = np.take(params, indices, axis)
@@ -117,7 +117,7 @@ def gather_nd(
     batch_dims: Optional[int] = 0,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    ivy.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
+    ivy.utils.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
     batch_dims = batch_dims % len(params.shape)
     result = []
     if batch_dims == 0:
@@ -176,7 +176,7 @@ def inplace_update(
     val: Union[ivy.Array, np.ndarray],
     ensure_in_backend: bool = False,
 ) -> ivy.Array:
-    ivy.assertions.check_inplace_sizes_valid(x, val)
+    ivy.utils.assertions.check_inplace_sizes_valid(x, val)
     if ivy.is_array(x) and ivy.is_array(val):
         (x_native, val_native), _ = ivy.args_to_native(x, val)
 
@@ -229,8 +229,8 @@ def scatter_flat(
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
-        ivy.assertions.check_equal(len(target.shape), 1)
-        ivy.assertions.check_equal(target.shape[0], size)
+        ivy.utils.assertions.check_equal(len(target.shape), 1)
+        ivy.utils.assertions.check_equal(target.shape[0], size)
     if reduction == "sum":
         if not target_given:
             target = np.zeros([size], dtype=updates.dtype)
@@ -258,7 +258,7 @@ def scatter_flat(
                 np.where(target == -1e12, 0.0, target), dtype=updates.dtype
             )
     else:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
                 reduction
             )
@@ -278,7 +278,7 @@ def scatter_nd(
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(shape) and target_given:
-        ivy.assertions.check_equal(ivy.Shape(target.shape), ivy.Shape(shape))
+        ivy.utils.assertions.check_equal(ivy.Shape(target.shape), ivy.Shape(shape))
     shape = list(shape) if ivy.exists(shape) else list(out.shape)
     if indices is not Ellipsis and (
         isinstance(indices, (tuple, list)) and not (Ellipsis in indices)
@@ -325,7 +325,7 @@ def scatter_nd(
             target = np.where(target == -1e12, 0.0, target)
             target = np.asarray(target, dtype=updates.dtype)
     else:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
                 reduction
             )
@@ -358,7 +358,7 @@ def vmap(
 
         # if in_axis is a non-integer, its length should be equal to pos args.
         if isinstance(in_axes, (list, tuple)):
-            ivy.assertions.check_equal(
+            ivy.utils.assertions.check_equal(
                 len(args),
                 len(in_axes),
                 message="""in_axes should have a length equivalent to the number
@@ -378,18 +378,18 @@ def vmap(
                     axis_size.add(arg.shape[axis])
 
         if len(axis_size) > 1:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 """Inconsistent sizes. All mapped axes should have the same size"""
             )
 
         # Making sure not all in_axes are None
         if isinstance(in_axes, (list, tuple)):
-            ivy.assertions.check_any(
+            ivy.utils.assertions.check_any(
                 [ivy.exists(ax) for ax in in_axes],
                 message="At least one of the axes should be specified (not None)",
             )
         else:
-            ivy.assertions.check_exists(
+            ivy.utils.assertions.check_exists(
                 in_axes, message="single value in_axes should not be None"
             )
 

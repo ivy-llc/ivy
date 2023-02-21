@@ -15,8 +15,8 @@ import ivy.functional.frontends.jax as jax_frontend
 
 def _fn(x, check_default=False):
     if check_default and jax_frontend.config.jax_enable_x64:
-        ivy.assertions.check_equal(ivy.default_float_dtype(), "float64")
-        ivy.assertions.check_equal(ivy.default_int_dtype(), "int64")
+        ivy.utils.assertions.check_equal(ivy.default_float_dtype(), "float64")
+        ivy.utils.assertions.check_equal(ivy.default_int_dtype(), "int64")
     return x
 
 

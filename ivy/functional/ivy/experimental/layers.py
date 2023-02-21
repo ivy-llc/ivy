@@ -12,7 +12,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     integer_arrays_to_float,
 )
-from ivy.exceptions import handle_exceptions
+from ivy.utils.exceptions import handle_exceptions
 
 
 @handle_nestable
@@ -666,6 +666,55 @@ def dropout1d(
     )
 
 
+@handle_nestable
+@handle_exceptions
+@to_native_arrays_and_back
+@handle_array_like_without_promotion
+def dropout3d(
+    x: Union[ivy.Array, ivy.NativeArray],
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NDHWC",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Randomly zero out entire channels with probability prob using samples from
+     a Bernoulli distribution and the remaining channels are scaled by (1/1-prob).
+     In this case, dropout3d performs a channel-wise dropout but assumes
+     a channel is a 1D feature map.
+
+    Parameters
+    ----------
+    x
+        a 4D or 5D input array. Should have a floating-point data type.
+    prob
+        probability of a channel to be zero-ed.
+    training
+        controls whether dropout3d is performed during training or ignored
+        during testing.
+    data_format
+        "NDHWC" or "NCDHW". Defaults to "NDHWC".
+    out
+        optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array with some channels zero-ed and the rest of channels are
+         scaled by (1/1-prob).
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    """
+    return ivy.current_backend(x).dropout3d(
+        x, prob, training=training, data_format=data_format, out=out
+    )
+
+
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_exceptions
@@ -771,7 +820,9 @@ def embedding(
     ivy.array([[1., 2., 3.],
                 [7., 8., 9.]])
     """
-    ivy.assertions.check_equal(len(weights.shape), 2, message="weights must be 2-d")
+    ivy.utils.assertions.check_equal(
+        len(weights.shape), 2, message="weights must be 2-d"
+    )
 
     ret = ivy.empty(
         indices.shape + (weights.shape[1],), dtype=ivy.as_ivy_dtype(weights.dtype)
@@ -880,11 +931,11 @@ def interp(x, xp, fp, left=None, right=None, period=None):
     x = ivy.astype(x_arr, "float64")
     xp = ivy.astype(ivy.array(xp), "float64")
     fp = ivy.astype(ivy.array(fp), "float64")
-    ivy.assertions.check_equal(xp.ndim, 1)
-    ivy.assertions.check_equal(fp.ndim, 1)
-    ivy.assertions.check_equal(xp.shape[0], fp.shape[0])
+    ivy.utils.assertions.check_equal(xp.ndim, 1)
+    ivy.utils.assertions.check_equal(fp.ndim, 1)
+    ivy.utils.assertions.check_equal(xp.shape[0], fp.shape[0])
     if period is not None:
-        ivy.assertions.check_equal(period, 0, inverse=True)
+        ivy.utils.assertions.check_equal(period, 0, inverse=True)
         period = ivy.abs(period)
         x = ivy.remainder(x, period)
         xp = ivy.remainder(xp, period)
