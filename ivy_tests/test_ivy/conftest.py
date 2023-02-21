@@ -38,6 +38,13 @@ if "ARRAY_API_TESTS_MODULE" not in os.environ:
 
 def pytest_configure(config):
     global available_frameworks
+    #traceback
+    raw_value = config.getoption("--tb")
+    if raw_value == 'auto':
+        config.option.tbstyle = "line"
+    else:
+        config.option.tbstyle = raw_value
+
     # device
     raw_value = config.getoption("--device")
     if raw_value == "all":
