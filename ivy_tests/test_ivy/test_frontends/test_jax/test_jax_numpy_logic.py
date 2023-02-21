@@ -725,11 +725,11 @@ def test_jax_numpy_logical_not(
     ),
 )
 def test_jax_numpy_logical_or(
-        dtypes_values,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    dtypes_values,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     x_dtypes, x = dtypes_values
     np_helpers.test_frontend_function(

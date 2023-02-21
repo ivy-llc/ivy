@@ -584,7 +584,7 @@ class ArrayWithGeneral(abc.ABC):
     def supports_inplace_updates(self: ivy.Array, /) -> bool:
         """
         ivy.Array instance method variant of ivy.supports_inplace_updates. This method
-        simply wraps the function, and so the docstring for ivy.supports_inplace_updates 
+        simply wraps the function, and so the docstring for ivy.supports_inplace_updates
         also applies to this method with minimal changes.
 
         Parameters
@@ -613,7 +613,7 @@ class ArrayWithGeneral(abc.ABC):
         >>> ret = x.supports_inplace_updates()
         >>> print(ret)
         False
-        
+
         """
         return ivy.supports_inplace_updates(self)
 

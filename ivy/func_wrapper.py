@@ -135,12 +135,10 @@ def handle_array_function(func):
                     if type(getattr(arg, a[0])) not in overloaded_types:
                         overloaded_types.append(type(getattr(arg, a[0])))
 
-                        if getattr(arg, a[0]).__ivy_array_function__\
-                            is not ivy.Array.__ivy_array_function__\
-                            and not isinstance(
-                                getattr(arg, a[0]),
-                                (ivy.Array, ivy.NativeArray)
-
+                        if getattr(
+                            arg, a[0]
+                        ).__ivy_array_function__ is not ivy.Array.__ivy_array_function__ and not isinstance(
+                            getattr(arg, a[0]), (ivy.Array, ivy.NativeArray)
                         ):
                             index = len(overloaded_args)
                             for i, old_arg in enumerate(overloaded_args):
