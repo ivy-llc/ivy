@@ -38,7 +38,24 @@ def arange(
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()
 
+def _stack_tensors(x, dtype):
+    if isinstance(x, (list, tuple)) and len(x) != 0 and isinstance(x[0], (list, tuple)):
+        for i, item in enumerate(x):
+            x[i] = _stack_tensors(item, dtype)
+        x = paddle.stack(x)
+    else:
+        if isinstance(x, (list, tuple)):
+            if isinstance(x[0], paddle.Tensor):
+                x = paddle.stack([paddle.as_tensor(i, dtype=dtype) for i in x])
+            else:
+                x = paddle.as_tensor(x, dtype=dtype)
+    return x
 
+
+
+@asarray_to_native_arrays_and_back
+@asarray_infer_device
+@asarray_handle_nestable
 def asarray(
     obj: Union[
         paddle.Tensor,
