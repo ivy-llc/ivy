@@ -271,8 +271,7 @@ def _ivy_to_numpy(x: Any) -> Any:
 
 def _ivy_to_numpy_order_F(x: Any) -> Any:
     if isinstance(x, ivy.Array) or ivy.is_native_array(x):
-        a = ndarray(0, order="F")  # TODO Find better initialisation workaround
-        a.ivy_array = x
+        a = ndarray(x, order="F", _init_overload=True)
         return a
     else:
         return x
