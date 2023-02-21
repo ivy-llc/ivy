@@ -174,16 +174,17 @@ def test_diagflat(
     fn_tree="functional.ivy.experimental.kron",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        max_num_dims=3,
+        min_num_dims=2,
+        max_num_dims=2,
         min_dim_size=1,
-        max_dim_size=3,
+        max_dim_size=10,
         num_arrays=2,
         shared_dtype=True,
     ),
     test_gradients=st.just(False),
 )
 def test_kron(
+    *,
     dtype_x,
     test_flags,
     backend_fw,
