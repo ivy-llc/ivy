@@ -782,3 +782,94 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         return self.static_nanmedian(
             self, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out
         )
+
+    @staticmethod
+    def static_bincount(
+        x: ivy.Container,
+        /,
+        *,
+        weights: Optional[ivy.Container] = None,
+        minlength: Optional[int] = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.bincount. This method simply wraps
+        the function, and so the docstring for ivy.bincount also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input container including arrays.
+        weights
+            An optional input container including arrays.
+        minlength
+            A minimum number of bins for the output array.
+
+        Returns
+        -------
+        ret
+            The bincount of the array elements.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.array([1, 1, 2, 2, 2, 3]), b=ivy.array([1, 1, 2, 2, 2, 3]))
+        >>> ivy.Container.static_bincount(x).shape
+        {
+            a: (4,)
+            b: (4,)
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "bincount",
+            x,
+            weights=weights,
+            minlength=minlength,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def bincount(
+        self: ivy.Container,
+        /,
+        *,
+        weights: Optional[ivy.Container] = None,
+        minlength: Optional[int] = 0,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Array instance method variant of ivy.bincount. This method simply
+        wraps the function, and so the docstring for ivy.bincount also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        weights
+            An optional input array.
+        minlength
+            A minimum number of bins for the output array.
+
+        Returns
+        -------
+        ret
+            The bincount of the array elements.
+
+        Examples
+        >>> a = ivy.Container([[10.0, ivy.nan, 4], [3, 2, 1]])
+        >>> a.bincount(a)
+            3.0
+        >>> a.bincount(a, axis=0)
+            array([6.5, 2. , 2.5])
+        """
+
+        return self.static_bincount(self, weights=weights, minlength=minlength, out=out)
+    

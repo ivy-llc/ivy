@@ -262,3 +262,43 @@ def test_corrcoef(
         y=x[1],
         rowvar=rowvar,
     )
+
+# bincount
+@handle_test(
+    fn_tree="functional.ivy.experimental.bincount",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["int32", "int64"],
+        num_arrays=1,
+        shared_dtype=True,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=1,
+        max_dim_size=10,
+        min_value=0,
+        max_value=10,
+        allow_nan=False,
+    ),
+    weights=st.booleans(),
+    test_gradients=st.just(False),
+)
+def test_bincount(
+    *,
+    dtype_and_x,
+    weights,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+        weights=np.random.uniform(size=x[0].shape) if weights else None,
+    )

@@ -1,4 +1,4 @@
-# global
+`# global
 import abc
 from typing import Optional, Union, Tuple, Sequence
 
@@ -315,5 +315,51 @@ class ArrayWithStatisticalExperimental(abc.ABC):
             axis=axis,
             keepdims=keepdims,
             overwrite_input=overwrite_input,
+            out=out,
+        )
+
+    def bincount(
+            self,
+            /,
+            *,
+            weights: Optional[ivy.Array] = None,
+            minlength: Optional[int] = 0,
+            out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.bincount. This method simply
+        wraps the function, and so the docstring for ivy.bincount also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array. The array is flattened if it is not already 1-dimensional.
+        weights
+            Optional weights, array of the same shape as self.
+        minlength
+            A minimum number of bins for the output array.
+        out
+            An array of the same shape as the returned array, or of the shape
+            (minlength,) if minlength is specified.
+
+        Returns
+        -------
+        ret
+            The result of binning the input array.
+
+        Examples
+        --------
+        >>> a = ivy.array([0, 1, 1, 3, 2, 1, 7])
+        >>> a.bincount()
+            ivy.array([1, 3, 1, 1, 0, 0, 0, 1])
+        >>> a.bincount(minlength=10)
+            ivy.array([1, 3, 1, 1, 0, 0, 0, 1, 0, 0])
+        >>> a.bincount(weights=ivy.array([0.3, 0.5, 0.2, 0.7, 1., 0.6, 1.]))
+            ivy.array([0.3, 1.3, 1. , 0.7, 0. , 0. , 0. , 1. ])
+        """
+        return ivy.bincount(
+            self._data,
+            weights=weights,
+            minlength=minlength,
             out=out,
         )

@@ -87,3 +87,14 @@ def nanmedian(
     return jnp.nanmedian(
         input, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out
     )
+
+
+def bincount(
+    x: JaxArray,
+    /,
+    *,
+    weights: Optional[JaxArray] = None,
+    minlength: Optional[int] = 0,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.bincount(x, weights=weights, minlength=minlength)
