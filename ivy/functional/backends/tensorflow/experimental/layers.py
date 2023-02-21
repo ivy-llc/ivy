@@ -64,7 +64,7 @@ def max_pool2d(
         padding = [(padding[0],) * 2, (padding[1],) * 2]
 
     if isinstance(padding, (tuple, list)):
-        ivy.assertions.check_kernel_padding_size(kernel, padding)
+        ivy.utils.assertions.check_kernel_padding_size(kernel, padding)
     new_kernel = [kernel[i] + (kernel[i] - 1) * (dilation[i] - 1) for i in range(2)]
     if isinstance(padding, str):
         pad_h = _handle_padding(x.shape[1], strides[0], new_kernel[0], padding)
@@ -212,7 +212,7 @@ def _fft_norm(
     elif norm == "forward":
         return x / n
     else:
-        raise ivy.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
 
 
 def _ifft_norm(
@@ -229,7 +229,7 @@ def _ifft_norm(
     elif norm == "forward":
         return x * n
     else:
-        raise ivy.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
 
 
 def fft(
@@ -242,20 +242,26 @@ def fft(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if not isinstance(dim, int):
-        raise ivy.exceptions.IvyError(f"Expecting <class 'int'> instead of {type(dim)}")
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(dim)}"
+        )
     if n is None:
         n = x.shape[dim]
     if n < -len(x.shape):
-        raise ivy.exceptions.IvyError(
+        raise ivy.utils.exceptions.IvyError(
             f"Invalid dim {dim}, expecting ranging"
             " from {-len(x.shape)} to {len(x.shape)-1}  "
         )
     if not isinstance(n, int):
-        raise ivy.exceptions.IvyError(f"Expecting <class 'int'> instead of {type(n)}")
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(n)}"
+        )
     if n <= 1:
-        raise ivy.exceptions.IvyError(f"Invalid data points {n}, expecting more than 1")
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {n}, expecting more than 1"
+        )
     if norm != "backward" and norm != "ortho" and norm != "forward":
-        raise ivy.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     if x.shape[dim] != n:
         s = list(x.shape)
         if s[dim] > n:
@@ -314,20 +320,26 @@ def ifft(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if not isinstance(dim, int):
-        raise ivy.exceptions.IvyError(f"Expecting <class 'int'> instead of {type(dim)}")
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(dim)}"
+        )
     if n is None:
         n = x.shape[dim]
     if n < -len(x.shape):
-        raise ivy.exceptions.IvyError(
+        raise ivy.utils.exceptions.IvyError(
             f"Invalid dim {dim}, expecting ranging"
             " from {-len(x.shape)} to {len(x.shape)-1}  "
         )
     if not isinstance(n, int):
-        raise ivy.exceptions.IvyError(f"Expecting <class 'int'> instead of {type(n)}")
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(n)}"
+        )
     if n <= 1:
-        raise ivy.exceptions.IvyError(f"Invalid data points {n}, expecting more than 1")
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {n}, expecting more than 1"
+        )
     if norm != "backward" and norm != "ortho" and norm != "forward":
-        raise ivy.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     if x.shape[dim] != n:
         s = list(x.shape)
         if s[dim] > n:

@@ -581,11 +581,11 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.to_list(self)
 
-    def supports_inplace_updates(self: ivy.Array) -> bool:
+    def supports_inplace_updates(self: ivy.Array, /) -> bool:
         """
         ivy.Array instance method variant of ivy.supports_inplace_updates. This method
-        simply wraps the function, and so the docstring for ivy.supports_inplace also
-        applies to this method with minimal changes.
+        simply wraps the function, and so the docstring for ivy.supports_inplace_updates
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -600,12 +600,20 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
+        With :class:`ivy.Array` input and default backend set as `numpy`:
+
+        >>> x = ivy.array([0, 1, 2])
+        >>> ret = x.supports_inplace_updates()
+        >>> print(ret)
+        True
+
         With `ivy.Array` input and backend set as "tensorflow":
 
         >>> x = ivy.array([1., 4.2, 2.2])
         >>> ret = x.supports_inplace_updates()
         >>> print(ret)
         False
+
         """
         return ivy.supports_inplace_updates(self)
 
@@ -774,7 +782,7 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.array_equal(self, x)
 
-    def assert_supports_inplace(self: ivy.Array) -> bool:
+    def assert_supports_inplace(self: ivy.Array, /) -> bool:
         """
         ivy.Array instance method variant of ivy.assert_supports_inplace. This method
         simply wraps the function, and so the docstring for ivy.assert_supports_inplace
@@ -788,7 +796,23 @@ class ArrayWithGeneral(abc.ABC):
         Returns
         -------
         ret
-            True if support, raises exception otherwise
+            True if supports, raises IvyBackendException otherwise
+
+        Examples
+        --------
+        With :class:`ivy.Array` input and default backend set as `numpy`:
+
+        >>> x = ivy.array([1, 2, 3])
+        >>> print(x.assert_supports_inplace())
+        True
+
+        With :class:`ivy.Array` input and default backend set as `jax`:
+
+        >>> x = ivy.array([1, 2, 3])
+        >>> print(x.assert_supports_inplace())
+        IvyBackendException: jax: assert_supports_inplace: Inplace operations \
+        are not supported <class 'jaxlib.xla_extension.DeviceArray'> types 
+        with jax backend
 
         """
         return ivy.assert_supports_inplace(self)

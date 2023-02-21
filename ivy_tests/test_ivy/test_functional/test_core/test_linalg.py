@@ -669,7 +669,7 @@ def test_slogdet(
 
 # solve
 @st.composite
-def _get_first_matrix(draw):
+def _get_first_matrix(draw, adjoint=True):
     # batch_shape, random_size, shared
 
     # float16 causes a crash when filtering out matrices
@@ -685,7 +685,7 @@ def _get_first_matrix(draw):
     shared_size = draw(
         st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
     )
-    return input_dtype, draw(
+    matrix = draw(
         helpers.array_values(
             dtype=input_dtype,
             shape=tuple([shared_size, shared_size]),
@@ -693,6 +693,11 @@ def _get_first_matrix(draw):
             max_value=5,
         ).filter(lambda x: np.linalg.cond(x) < 1 / sys.float_info.epsilon)
     )
+    if adjoint:
+        adjoint = draw(st.booleans())
+        if adjoint:
+            matrix = np.transpose(np.conjugate(matrix))
+    return input_dtype, matrix, adjoint
 
 
 @st.composite
@@ -720,7 +725,7 @@ def _get_second_matrix(draw):
 
 @handle_test(
     fn_tree="functional.ivy.solve",
-    x=_get_first_matrix(),
+    x=_get_first_matrix(adjoint=True),
     y=_get_second_matrix(),
 )
 def test_solve(
@@ -733,7 +738,7 @@ def test_solve(
     on_device,
     ground_truth_backend,
 ):
-    input_dtype1, x1 = x
+    input_dtype1, x1, adjoint = x
     input_dtype2, x2 = y
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
@@ -746,6 +751,7 @@ def test_solve(
         atol_=1e-1,
         x1=x1,
         x2=x2,
+        adjoint=adjoint,
     )
 
 

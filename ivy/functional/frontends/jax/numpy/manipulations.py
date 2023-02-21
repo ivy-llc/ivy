@@ -9,7 +9,7 @@ from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 
 @to_ivy_arrays_and_back
 def clip(a, a_min=None, a_max=None, out=None):
-    ivy.assertions.check_all_or_any_fn(
+    ivy.utils.assertions.check_all_or_any_fn(
         a_min,
         a_max,
         fn=ivy.exists,

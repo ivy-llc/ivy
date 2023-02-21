@@ -1036,8 +1036,16 @@ def array_values(
                 values = [complex(*v) for v in values]
     else:
         values = draw(list_of_size(x=st.booleans(), size=size))
+    if dtype == "bfloat16":
+        # check bfloat16 behavior enabled or not
+        try:
+            np.dtype("bfloat16")
+        except Exception:
+            # enables bfloat16 behavior with possibly no side-effects
+            import paddle_bfloat  # noqa
 
     array = np.asarray(values, dtype=dtype)
+
     if isinstance(shape, (tuple, list)):
         return array.reshape(shape)
     return np.asarray(array)

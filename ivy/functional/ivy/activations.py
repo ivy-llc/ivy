@@ -14,7 +14,7 @@ from ivy.func_wrapper import (
     integer_arrays_to_float,
     handle_array_like_without_promotion,
 )
-from ivy.exceptions import handle_exceptions
+from ivy.utils.exceptions import handle_exceptions
 
 
 # Extra #
@@ -401,10 +401,7 @@ def relu(
 @handle_array_like_without_promotion
 @handle_array_function
 def sigmoid(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
 
     """
@@ -432,9 +429,9 @@ def sigmoid(
     >>> y = ivy.sigmoid(x)
     >>> print(y)
     ivy.array([0.269, 0.731, 0.881])
-    
+
     or
-    
+
     >>> x = ivy.array([-1.0, 1.0, 2.0])
     >>> y = x.sigmoid()
     >>> print(y)
