@@ -734,7 +734,7 @@ Let’s take another example, but compile to Tensorflow, NumPy and JAX:</p>
 Specifically, the same Ivy code compiles to different graphs depending on the selected backend.
 However, when compiling native framework code, we are only able to compile a graph for that same framework.
 For example, we cannot take torch code and compile this into tensorflow code.
-However, we can transpile torch code into tensorflow code (see <a class="reference internal" href="../index.html#ivy-as-a-transpiler"><span class="std std-ref">Ivy as a transpiler</span></a> for more details).</p>
+However, we can transpile torch code into tensorflow code (see <a class="reference internal" href="ivy_as_a_transpiler.html#ivy-as-a-transpiler"><span class="std std-ref">Ivy as a Transpiler</span></a> for more details).</p>
 <p>The graph compiler does not compile to C++, CUDA or any other lower level language.
 It simply traces the backend functional methods in the graph, stores this graph, and then efficiently traverses this graph at execution time, all in Python.
 Compiling to lower level languages (C++, CUDA, TorchScript etc.) is supported for most backend frameworks via <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.compile()</span></code>, which wraps backend-specific compilation code, for example:</p>
