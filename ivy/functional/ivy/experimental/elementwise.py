@@ -1358,3 +1358,40 @@ def binarizer(
     xc = ivy.copy_array(x, out=out)
     bin = ivy.where(xc > threshold, 1, 0)
     return bin
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+def ldexp(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    i: Union[ivy.Array, ivy.NativeArray],
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Returns x * (2**i), element-wise.
+    Parameters
+    ----------
+    x
+        Input array.
+    i
+        Input array.
+    out
+        optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
+    Returns
+    -------
+    ret
+        The next representable values of x1 in the direction of x2.
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, 3])
+    >>> i = ivy.array([0, 1, 2])
+    >>> ivy.ldexp(x, i)
+    ivy.array([1, 4, 12])
+    """
+    return ivy.current_backend(x, i).ldexp(x, i, out=out)

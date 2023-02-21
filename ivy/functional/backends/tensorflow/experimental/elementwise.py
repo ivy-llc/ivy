@@ -613,3 +613,12 @@ def real(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.real(x)
+
+def ldexp(
+    x: Union[tf.Tensor, tf.Variable],
+    i: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.multiply(x, tf.math.pow(2, i))

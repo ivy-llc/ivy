@@ -1164,3 +1164,37 @@ class ArrayWithElementWiseExperimental(abc.ABC):
             Binarized output data
         """
         return ivy.binarizer(self._data, threshold=threshold, out=out)
+
+    def ldexp(
+        self: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+        **kwargs,
+    ) -> bool:
+        """
+        ivy.Array instance method variant of ivy.ldexp. This method simply wraps
+        the function, and so the docstring for ivy.ldexp also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            The next representable values of x1 in the direction of x2.
+
+        Examples
+        --------
+        >>> x = ivy.array([1.0, 2.0, 3.0])
+        >>> y = ivy.array([3.0, 2.0, 1.0])
+        >>> x.ldexp(y)
+        ivy.array([8.0, 8.0, 6.0])
+        """
+        return ivy.ldexp(self._data, out=out, **kwargs)

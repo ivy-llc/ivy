@@ -429,3 +429,13 @@ def xlogy(
 
 def real(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.real(x)
+
+
+def ldexp(
+    x: np.ndarray,
+    i: Union[np.ndarray, int, list, tuple],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.ldexp(x, i, out=out)
