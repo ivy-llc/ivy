@@ -6,7 +6,7 @@ from typing import Optional, Union, Sequence
 
 # local
 import ivy
-from ivy.exceptions import IvyNotImplementedException
+from ivy.utils.exceptions import IvyNotImplementedException
 from . import backend_version
 from paddle.fluid.libpaddle import Place
 # Extra #
