@@ -760,10 +760,17 @@
                 <span class="n">as_variable</span><span class="o">=</span><span class="n">method_as_variable_flags</span><span class="p">,</span>
                 <span class="n">native_arrays</span><span class="o">=</span><span class="n">method_native_arrays</span><span class="p">,</span>
             <span class="p">)</span>
-
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">ivy_init_modules</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">ivy_init_module</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">ivy_init_modules</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ivy_init_module</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">framework_init_modules</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">framework_init_module</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">framework_init_modules</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">framework_init_module</span><span class="p">)</span>
             <span class="n">frontend_helper_data</span> <span class="o">=</span> <span class="n">FrontendMethodData</span><span class="p">(</span>
-                <span class="n">ivy_init_module</span><span class="o">=</span><span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">ivy_init_module</span><span class="p">),</span>
-                <span class="n">framework_init_module</span><span class="o">=</span><span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">framework_init_module</span><span class="p">),</span>
+                <span class="n">ivy_init_module</span><span class="o">=</span><span class="n">ivy_init_modules</span><span class="p">,</span>
+                <span class="n">framework_init_module</span><span class="o">=</span><span class="n">framework_init_modules</span><span class="p">,</span>
                 <span class="n">init_name</span><span class="o">=</span><span class="n">init_name</span><span class="p">,</span>
                 <span class="n">method_name</span><span class="o">=</span><span class="n">method_name</span><span class="p">,</span>
             <span class="p">)</span>

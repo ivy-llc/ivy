@@ -241,7 +241,9 @@
 <span class="k">def</span> <span class="nf">_get_ivy_numpy</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Import Numpy module from ivy&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">version</span><span class="p">:</span>
+
         <span class="k">if</span> <span class="n">version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="s2">&quot;numpy&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">__version__</span><span class="p">:</span>
+
             <span class="n">config</span><span class="o">.</span><span class="n">reset_sys_modules_to_base</span><span class="p">()</span>
         <span class="n">config</span><span class="o">.</span><span class="n">allow_global_framework_imports</span><span class="p">(</span><span class="n">fw</span><span class="o">=</span><span class="p">[</span><span class="n">version</span><span class="p">])</span>
 
