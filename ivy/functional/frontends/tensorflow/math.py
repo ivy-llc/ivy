@@ -22,8 +22,7 @@ def add(x, y, name=None):
 
 @to_ivy_arrays_and_back
 def exp(x, name=None):
-    e = 2.718281828459045
-    return ivy.pow(e, x)
+    return ivy.exp(x)
 
     
 @to_ivy_arrays_and_back
