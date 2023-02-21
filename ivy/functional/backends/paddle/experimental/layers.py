@@ -1,7 +1,7 @@
 # global
 from typing import Optional, Union, Tuple, Literal, Sequence
 import paddle
-from ivy.exceptions import IvyNotImplementedException
+from ivy.utils.exceptions import IvyNotImplementedException
 import math
 
 # local
