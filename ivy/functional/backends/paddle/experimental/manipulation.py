@@ -2,7 +2,7 @@ from typing import Optional, Union, Sequence, Tuple, NamedTuple, List
 from numbers import Number
 from .. import backend_version
 import paddle
-from ivy.exceptions import IvyNotImplementedException
+from ivy.utils.exceptions import IvyNotImplementedException
 import ivy
 
 
