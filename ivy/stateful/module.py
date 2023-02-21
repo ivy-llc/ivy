@@ -78,7 +78,7 @@ class Module(ModuleConverters, ModuleHelpers):
             'cuda:0', 'cuda:1', 'cpu' etc. (Default value = None)
         """
         valid_build_modes = ["on_init", "explicit", "on_call"]
-        ivy.assertions.check_elem_in_list(build_mode, valid_build_modes)
+        ivy.utils.assertions.check_elem_in_list(build_mode, valid_build_modes)
         self._dev = ivy.default(
             device,
             ivy.default(
@@ -366,7 +366,7 @@ class Module(ModuleConverters, ModuleHelpers):
         ------
         NotImplementedError
         """
-        raise ivy.exceptions.IvyNotImplementedException
+        raise ivy.utils.exceptions.IvyNotImplementedException
 
     def _forward_with_tracking(self, *args, **kwargs):
         """

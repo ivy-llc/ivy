@@ -1,6 +1,9 @@
 from typing import Optional, Union, Tuple, Sequence
 import numpy as np
 
+
+import ivy  # noqa
+
 from ivy.func_wrapper import with_supported_dtypes
 from . import backend_version
 
@@ -13,6 +16,8 @@ def median(
     keepdims: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if out is not None:
+        out = np.reshape(out, input.shape)
     return np.median(
         input,
         axis=axis,
@@ -49,7 +54,10 @@ def unravel_index(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.unravel_index(indices, shape).astype(indices.dtype)
+    return np.unravel_index(indices, shape)
+
+
+unravel_index.support_native_out = False
 
 
 def quantile(
@@ -58,8 +66,8 @@ def quantile(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
-    interpolation: str = "linear",
+    keepdims: Optional[bool] = False,
+    interpolation: Optional[str] = "linear",
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     # quantile method in numpy backend, always return an array with dtype=float64.

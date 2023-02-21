@@ -42,7 +42,7 @@ def unravel_index(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.unravel_index(indices, shape)
+    return jnp.unravel_index(indices, shape).astype("int64")
 
 
 def quantile(
@@ -51,8 +51,8 @@ def quantile(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    interpolation: str = "linear",
-    keepdims: bool = False,
+    interpolation: Optional[str] = "linear",
+    keepdims: Optional[bool] = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
 
