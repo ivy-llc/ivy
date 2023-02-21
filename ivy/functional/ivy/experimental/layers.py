@@ -666,6 +666,55 @@ def dropout1d(
     )
 
 
+@handle_nestable
+@handle_exceptions
+@to_native_arrays_and_back
+@handle_array_like_without_promotion
+def dropout3d(
+    x: Union[ivy.Array, ivy.NativeArray],
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NDHWC",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Randomly zero out entire channels with probability prob using samples from
+     a Bernoulli distribution and the remaining channels are scaled by (1/1-prob).
+     In this case, dropout3d performs a channel-wise dropout but assumes
+     a channel is a 1D feature map.
+
+    Parameters
+    ----------
+    x
+        a 4D or 5D input array. Should have a floating-point data type.
+    prob
+        probability of a channel to be zero-ed.
+    training
+        controls whether dropout3d is performed during training or ignored
+        during testing.
+    data_format
+        "NDHWC" or "NCDHW". Defaults to "NDHWC".
+    out
+        optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array with some channels zero-ed and the rest of channels are
+         scaled by (1/1-prob).
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    """
+    return ivy.current_backend(x).dropout3d(
+        x, prob, training=training, data_format=data_format, out=out
+    )
+
+
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_exceptions
