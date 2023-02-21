@@ -311,9 +311,9 @@ import threading
 # ToDo: add gpu and tpu for valid devices when we test for them
 all_devices = ("cpu", "gpu", "tpu")
 
-valid_devices = ("cpu",)
+valid_devices = ("cpu", "gpu")
 
-invalid_devices = ("gpu", "tpu")
+invalid_devices = ("tpu",)
 
 # data types as string (to be used by Dtype classes)
 # any changes here should also be reflected in the data type initialisation underneath
