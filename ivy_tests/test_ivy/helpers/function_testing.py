@@ -317,7 +317,7 @@ def test_function(
             ivy.__dict__[fn_name], *args, test_compile=test_flags.test_compile, **kwargs
         )
     # assert idx of return if the idx of the out array provided
-    if test_flags.with_out:
+    if test_flags.with_out and not test_flags.test_compile:
         test_ret = (
             ret[getattr(ivy.__dict__[fn_name], "out_index")]
             if hasattr(ivy.__dict__[fn_name], "out_index")
@@ -330,7 +330,6 @@ def test_function(
             ret, ret_np_flat = get_ret_and_flattened_np_array(
                 instance.__getattribute__(fn_name),
                 *args,
-                test_compile=test_flags.test_compile,
                 **kwargs,
                 out=out,
             )
@@ -338,7 +337,6 @@ def test_function(
             ret, ret_np_flat = get_ret_and_flattened_np_array(
                 ivy.__dict__[fn_name],
                 *args,
-                test_compile=test_flags.test_compile,
                 **kwargs,
                 out=out,
             )
@@ -378,7 +376,7 @@ def test_function(
         ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
             ivy.__dict__[fn_name], *args, test_compile=test_flags.test_compile, **kwargs
         )
-        if test_flags.with_out:
+        if test_flags.with_out and not test_flags.test_compile:
             test_ret_from_gt = (
                 ret_from_gt[getattr(ivy.__dict__[fn_name], "out_index")]
                 if hasattr(ivy.__dict__[fn_name], "out_index")

@@ -136,8 +136,6 @@ def test_add(
     ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
-    assume(not (test_flags.with_out and test_flags.test_compile))
-
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
