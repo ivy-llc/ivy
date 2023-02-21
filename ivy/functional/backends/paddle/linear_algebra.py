@@ -9,7 +9,7 @@ from collections import namedtuple
 # local
 import ivy
 from ivy import inf
-from ivy.exceptions import IvyNotImplementedException
+from ivy.utils.exceptions import IvyNotImplementedException
 from . import backend_version
 
 
