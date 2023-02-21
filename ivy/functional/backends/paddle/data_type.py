@@ -8,7 +8,7 @@ import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
 from . import backend_version
-from ivy.exceptions import IvyNotImplementedException
+from ivy.utils.exceptions import IvyNotImplementedException
 
 
 ivy_dtype_dict = {
