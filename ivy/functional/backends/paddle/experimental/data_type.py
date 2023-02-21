@@ -2,7 +2,7 @@
 from typing import Union
 
 import paddle
-from ivy.exceptions import IvyNotImplementedException
+from ivy.utils.exceptions import IvyNotImplementedException
 
 # local
 from ivy.functional.backends.paddle import ivy_dtype_dict
