@@ -1,4 +1,4 @@
-`# global
+# global
 import abc
 from typing import Optional, Union, Tuple, Sequence
 
