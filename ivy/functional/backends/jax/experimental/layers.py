@@ -34,7 +34,7 @@ def general_pool(
         padding = [(padding[0],) * 2, (padding[1],) * 2]
 
     if isinstance(padding, (tuple, list)):
-        ivy.assertions.check_kernel_padding_size(window_shape, padding)
+        ivy.utils.assertions.check_kernel_padding_size(window_shape, padding)
 
     assert len(window_shape) == len(
         strides
@@ -362,20 +362,26 @@ def fft(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if not isinstance(dim, int):
-        raise ivy.exceptions.IvyError(f"Expecting <class 'int'> instead of {type(dim)}")
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(dim)}"
+        )
     if n is None:
         n = x.shape[dim]
     if n < -len(x.shape):
-        raise ivy.exceptions.IvyError(
+        raise ivy.utils.exceptions.IvyError(
             f"Invalid dim {dim}, expecting ranging"
             " from {-len(x.shape)} to {len(x.shape)-1}  "
         )
     if not isinstance(n, int):
-        raise ivy.exceptions.IvyError(f"Expecting <class 'int'> instead of {type(n)}")
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(n)}"
+        )
     if n <= 1:
-        raise ivy.exceptions.IvyError(f"Invalid data points {n}, expecting more than 1")
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {n}, expecting more than 1"
+        )
     if norm != "backward" and norm != "ortho" and norm != "forward":
-        raise ivy.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return jnp.fft.fft(x, n, dim, norm)
 
 
@@ -413,20 +419,26 @@ def ifft(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if not isinstance(dim, int):
-        raise ivy.exceptions.IvyError(f"Expecting <class 'int'> instead of {type(dim)}")
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(dim)}"
+        )
     if n is None:
         n = x.shape[dim]
     if n < -len(x.shape):
-        raise ivy.exceptions.IvyError(
+        raise ivy.utils.exceptions.IvyError(
             f"Invalid dim {dim}, expecting ranging"
             " from {-len(x.shape)} to {len(x.shape)-1}  "
         )
     if not isinstance(n, int):
-        raise ivy.exceptions.IvyError(f"Expecting <class 'int'> instead of {type(n)}")
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(n)}"
+        )
     if n <= 1:
-        raise ivy.exceptions.IvyError(f"Invalid data points {n}, expecting more than 1")
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {n}, expecting more than 1"
+        )
     if norm != "backward" and norm != "ortho" and norm != "forward":
-        raise ivy.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return jnp.fft.ifft(x, n, dim, norm)
 
 

@@ -477,7 +477,7 @@ def adaptive_avg_pool1d(input, output_size):
         input = ivy.expand_dims(input, axis=0)
         squeeze = True
     elif len(input.shape) != 3:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             f"Got {len(input.shape)}D input, but only 2D and 3D inputs are supported.",
         )
     input_size = input.shape[-1]
@@ -520,12 +520,12 @@ def adaptive_avg_pool2d(input, output_size):
         input = ivy.expand_dims(input, axis=0)
         squeeze = True
     elif len(input.shape) != 4:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             f"Got {len(shape)}D input, but only 3D and 4D inputs are supported.",
         )
     for d in input.shape[-2:]:
         if d == 0:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "Expected input to have non-zero size for non-batch dimensions, but"
                 f" input has shape {tuple(shape)}."
             )

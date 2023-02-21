@@ -12,7 +12,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     integer_arrays_to_float,
 )
-from ivy.exceptions import handle_exceptions
+from ivy.utils.exceptions import handle_exceptions
 
 
 @handle_nestable
@@ -771,7 +771,9 @@ def embedding(
     ivy.array([[1., 2., 3.],
                 [7., 8., 9.]])
     """
-    ivy.assertions.check_equal(len(weights.shape), 2, message="weights must be 2-d")
+    ivy.utils.assertions.check_equal(
+        len(weights.shape), 2, message="weights must be 2-d"
+    )
 
     ret = ivy.empty(
         indices.shape + (weights.shape[1],), dtype=ivy.as_ivy_dtype(weights.dtype)
@@ -880,11 +882,11 @@ def interp(x, xp, fp, left=None, right=None, period=None):
     x = ivy.astype(x_arr, "float64")
     xp = ivy.astype(ivy.array(xp), "float64")
     fp = ivy.astype(ivy.array(fp), "float64")
-    ivy.assertions.check_equal(xp.ndim, 1)
-    ivy.assertions.check_equal(fp.ndim, 1)
-    ivy.assertions.check_equal(xp.shape[0], fp.shape[0])
+    ivy.utils.assertions.check_equal(xp.ndim, 1)
+    ivy.utils.assertions.check_equal(fp.ndim, 1)
+    ivy.utils.assertions.check_equal(xp.shape[0], fp.shape[0])
     if period is not None:
-        ivy.assertions.check_equal(period, 0, inverse=True)
+        ivy.utils.assertions.check_equal(period, 0, inverse=True)
         period = ivy.abs(period)
         x = ivy.remainder(x, period)
         xp = ivy.remainder(xp, period)
