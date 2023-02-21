@@ -1,5 +1,5 @@
 import paddle
-from ivy.exceptions import IvyNotImplementedException
+from ivy.utils.exceptions import IvyNotImplementedException
 from typing import Optional
 
 from .. import backend_version
