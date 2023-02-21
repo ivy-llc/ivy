@@ -28,7 +28,7 @@ def native_sparse_array(
     format="coo"
 ):
 
-    ivy.assertions.check_exists(
+    ivy.utils.assertions.check_exists(
         data,
         inverse=True,
         message="data cannot be specified, Jax does not support sparse array natively",
@@ -44,7 +44,7 @@ def native_sparse_array(
         dense_shape,
         format,
     ):
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             "format should be one of the strings coo, csr, csc, bsr, and bsc."
         )
     format = format.lower()

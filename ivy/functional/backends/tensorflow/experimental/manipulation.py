@@ -128,7 +128,7 @@ def dsplit(
     /,
 ) -> List[Union[tf.Tensor, tf.Variable]]:
     if len(ary.shape) < 3:
-        raise ivy.exceptions.IvyError(
+        raise ivy.utils.exceptions.IvyError(
             "dsplit only works on arrays of 3 or more dimensions"
         )
     return tf.experimental.numpy.dsplit(ary, indices_or_sections)
@@ -170,7 +170,7 @@ def take_along_axis(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if arr.shape != indices.shape:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             "arr and indices must have the same shape;"
             + f" got {arr.shape} vs {indices.shape}"
         )
