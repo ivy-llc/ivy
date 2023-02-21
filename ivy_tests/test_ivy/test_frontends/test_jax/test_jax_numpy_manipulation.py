@@ -773,7 +773,7 @@ def test_jax_numpy_squeeze(
     number_positional_args=st.just(2),
     test_with_out=st.just(False),
 )
-def test_numpy_dsplit(
+def test_jax_numpy_dsplit(
     *,
     dtype_value,
     indices_or_sections,
