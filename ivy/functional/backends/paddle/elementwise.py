@@ -94,11 +94,11 @@ def floor(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
 
 
 def asin(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return asin(x)
 
 
 def asinh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.asinh(x)
 
 
 def sign(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -110,7 +110,7 @@ def sqrt(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
 
 
 def cosh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.cosh(x)
 
 
 def log10(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -150,7 +150,7 @@ def multiply(
 
 
 def cos(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.cos(x)
 
 
 def logical_not(
@@ -212,7 +212,7 @@ def logical_or(
 
 
 def acosh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.acosh(x)
 
 
 def sin(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -260,7 +260,7 @@ def bitwise_or(
 
 
 def sinh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.sinh(x)
 
 
 def positive(
