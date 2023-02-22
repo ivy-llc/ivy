@@ -36,7 +36,6 @@ TEST_PARAMS_CONFIG = []
 if "ARRAY_API_TESTS_MODULE" not in os.environ:
     os.environ["ARRAY_API_TESTS_MODULE"] = "ivy.functional.backends.numpy"
 
-@pytest.hookimpl(tryfirst=True)
 def pytest_configure(config):
     global available_frameworks
     #traceback
