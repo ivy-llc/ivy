@@ -1,5 +1,4 @@
 # global
-import weakref
 
 # local
 import ivy
@@ -161,7 +160,7 @@ class Tensor:
     def atan2(self, other):
         return torch_frontend.atan2(self._ivy_array, other)
 
-    def view(self, *args, size=None):
+    def view(self, *args, shape=None):
         """
         Reshape Tensor.
 
@@ -174,28 +173,28 @@ class Tensor:
         Parameters
         ----------
         args:int arguments
-        size: optional size
+        shape: optional shape
 
         Returns reshaped tensor
         -------
         """
-        if size and not args:
-            size_tup = size
-        elif args and not size:
+        if shape and not args:
+            shape_tup = shape
+        elif args and not shape:
             if (
                 isinstance(args[0], tuple)
                 or isinstance(args[0], list)
                 or type(args[0]).__name__ == "Size"
             ) and len(args) == 1:
-                size_tup = args[0]
+                shape_tup = args[0]
             else:
-                size_tup = args
+                shape_tup = args
         else:
             raise ValueError(
                 "View only accepts as argument ints, tuple or list of ints or "
                 "the keyword argument size."
             )
-        return torch_frontend.ViewTensor(weakref.ref(self), shape=size_tup)
+        return torch_frontend.reshape(self._ivy_array, shape_tup)
 
     def float(self, memory_format=None):
         cast_tensor = self.clone()
@@ -267,6 +266,9 @@ class Tensor:
     def abs_(self):
         self._ivy_array = self.abs().ivy_array
         return self
+
+    def bitwise_not(self, *, out=None):
+        return torch_frontend.bitwise_not(self._ivy_array)
 
     def bitwise_and(self, other):
         return torch_frontend.bitwise_and(self._ivy_array, other)
@@ -368,7 +370,7 @@ class Tensor:
         device=None,
         requires_grad=False,
         layout=None,
-        pin_memory=False
+        pin_memory=False,
     ):
         dtype = ivy.dtype(self._ivy_array) if dtype is None else dtype
         device = ivy.dev(self._ivy_array) if device is None else device
@@ -428,7 +430,7 @@ class Tensor:
         device=None,
         requires_grad=False,
         layout=None,
-        pin_memory=False
+        pin_memory=False,
     ):
         dtype = ivy.dtype(self._ivy_array) if dtype is None else dtype
         device = ivy.dev(self._ivy_array) if device is None else device
@@ -443,7 +445,7 @@ class Tensor:
         device=None,
         requires_grad=False,
         layout=None,
-        pin_memory=False
+        pin_memory=False,
     ):
         dtype = ivy.dtype(self._ivy_array) if dtype is None else dtype
         device = ivy.dev(self._ivy_array) if device is None else device
@@ -666,9 +668,9 @@ class Tensor:
         cast_tensor.ivy_array = ivy.astype(self._ivy_array, ivy.int64)
         return cast_tensor
 
-    def __getitem__(self, query):
+    def __getitem__(self, query, /):
         ret = ivy.get_item(self._ivy_array, query)
-        return torch_frontend.tensor(ivy.array(ret, dtype=ivy.dtype(ret), copy=False))
+        return torch_frontend.Tensor(ret, _init_overload=True)
 
     def __setitem__(self, key, value):
         if hasattr(value, "ivy_array"):
@@ -699,23 +701,23 @@ class Tensor:
         return torch_frontend.div(self._ivy_array, other)
 
     def __iadd__(self, other):
-        self._ivy_array = self.__add__(other).ivy_array
+        torch_frontend.add(self._ivy_array, other, out=self)
         return self
 
     def __imod__(self, other):
-        self._ivy_array = self.__mod__(other).ivy_array
+        torch_frontend.remainder(self._ivy_array, other, out=self)
         return self
 
     def __imul__(self, other):
-        self._ivy_array = self.__mul__(other).ivy_array
+        torch_frontend.mul(self._ivy_array, other, out=self)
         return self
 
     def __isub__(self, other):
-        self._ivy_array = self.__sub__(other).ivy_array
+        torch_frontend.subtract(self._ivy_array, other, out=self)
         return self
 
     def __itruediv__(self, other):
-        self._ivy_array = self.__truediv__(other).ivy_array
+        torch_frontend.div(self._ivy_array, other, out=self)
         return self
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")

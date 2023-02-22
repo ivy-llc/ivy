@@ -1823,7 +1823,8 @@ def einops_reduce(
     out: Optional[ivy.Array] = None,
     **axes_lengths: Dict[str, int],
 ) -> ivy.Array:
-    """Perform einops reduce operation on input array x.
+    """
+    Perform einops reduce operation on input array x.
 
     Parameters
     ----------
@@ -1852,14 +1853,14 @@ def einops_reduce(
     ...                [3.66, 24.29, 3.64]])
     >>> reduced = ivy.einops_reduce(x, 'a b -> b', 'mean')
     >>> print(reduced)
-    ivy.array([-0.405, 12.6  ,  0.15 ])
+    ivy.array([-0.405, 12.6, 0.15])
 
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([[-4.47, 0.93, -3.34],
     ...                                [3.66, 24.29, 3.64]]),
-    ...                    b=ivy.array([[4.96, 1.52, -10.67],
-    ...                                 [4.36, 13.96, 0.3]]))
+    ...                   b=ivy.array([[4.96, 1.52, -10.67],
+    ...                                [4.36, 13.96, 0.3]]))
     >>> reduced = ivy.einops_reduce(x, 'a b -> a', 'mean')
     >>> print(reduced)
     {
@@ -2438,7 +2439,7 @@ def supports_inplace_updates(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
 
     Raises
     ------
-    ValueError
+    IvyException
         If x isn't a class instance of ivy.Array or ivy.NativeArray, an exception will
         be raised.
 
@@ -2452,7 +2453,7 @@ def supports_inplace_updates(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     >>> x = ivy.array([0, 1, 2])
     >>> y = ivy.supports_inplace_updates(x)
     >>> print(y)
-    False
+    True
 
     With :class:`ivy.Container` input and backend set as `torch`:
 
@@ -2460,9 +2461,17 @@ def supports_inplace_updates(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     >>> y = ivy.supports_inplace_updates(x)
     >>> print(y)
     {
-        a: false,
-        b: false
+        a: True,
+        b: True
     }
+
+    With `ivy.Array` input and backend set as "tensorflow":
+
+    >>> x = ivy.array([1., 4.2, 2.2])
+    >>> ret = x.supports_inplace_updates()
+    >>> print(ret)
+    False
+
     """
     if _is_variable(x):
         return ivy.inplace_variables_supported()
@@ -2478,7 +2487,8 @@ def supports_inplace_updates(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
 @handle_exceptions
 @handle_array_function
 def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
-    """Asserts that inplace operations are supported for x, else raises IvyBackendException.
+    """Asserts that inplace operations are supported for x, else 
+    raises IvyBackendException.
 
     Parameters
     ----------

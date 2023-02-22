@@ -17,6 +17,7 @@ import multiprocessing as _multiprocessing
 # sort of circular import, so haiku is needed
 import haiku  # NOQA
 
+
 from haiku._src.data_structures import FlatMapping
 
 # local

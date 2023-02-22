@@ -285,6 +285,9 @@ class ndarray:
     def tobytes(self, order="C") -> bytes:
         return np_frontend.tobytes(self.data, order=order)
 
+    def view(self):
+        return np_frontend.reshape(self._ivy_array, tuple(self.shape))
+
     def __add__(self, value, /):
         return np_frontend.add(self._ivy_array, value)
 
@@ -387,34 +390,34 @@ class ndarray:
         return key in ivy.reshape(self._ivy_array, -1)
 
     def __iadd__(self, value, /):
-        return np_frontend.add(self._ivy_array, value)
+        return np_frontend.add(self._ivy_array, value, out=self)
 
     def __isub__(self, value, /):
-        return np_frontend.subtract(self._ivy_array, value)
+        return np_frontend.subtract(self._ivy_array, value, out=self)
 
     def __imul__(self, value, /):
-        return np_frontend.multiply(self._ivy_array, value)
+        return np_frontend.multiply(self._ivy_array, value, out=self)
 
     def __itruediv__(self, value, /):
-        return np_frontend.true_divide(self._ivy_array, value)
+        return np_frontend.true_divide(self._ivy_array, value, out=self)
 
     def __ifloordiv__(self, value, /):
         return np_frontend.floor_divide(self._ivy_array, value, out=self)
 
     def __ipow__(self, value, /):
-        return np_frontend.power(self._ivy_array, value)
+        return np_frontend.power(self._ivy_array, value, out=self)
 
     def __iand__(self, value, /):
-        return np_frontend.logical_and(self._ivy_array, value)
+        return np_frontend.logical_and(self._ivy_array, value, out=self)
 
     def __ior__(self, value, /):
-        return np_frontend.logical_or(self._ivy_array, value)
+        return np_frontend.logical_or(self._ivy_array, value, out=self)
 
     def __ixor__(self, value, /):
-        return np_frontend.logical_xor(self._ivy_array, value)
+        return np_frontend.logical_xor(self._ivy_array, value, out=self)
 
     def __imod__(self, value, /):
-        return np_frontend.mod(self._ivy_array, value)
+        return np_frontend.mod(self._ivy_array, value, out=self)
 
     def __abs__(self):
         return np_frontend.absolute(self._ivy_array)
@@ -424,11 +427,9 @@ class ndarray:
             return self
         return np_frontend.array(self, dtype=dtype)
 
-    def __getitem__(self, query):
-        ret = ivy.get_item(self._ivy_array, query)
-        return np_frontend.numpy_dtype_to_scalar[ivy.dtype(self._ivy_array)](
-            ivy.array(ret, dtype=ivy.dtype(ret), copy=False)
-        )
+    def __getitem__(self, key, /):
+        ret = ivy.get_item(self._ivy_array, key)
+        return np_frontend.ndarray(ret, _init_overload=True)
 
     def __setitem__(self, key, value):
         if hasattr(value, "ivy_array"):

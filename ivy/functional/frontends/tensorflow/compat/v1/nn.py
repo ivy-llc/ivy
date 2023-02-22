@@ -84,7 +84,7 @@ def depthwise_conv2d(
     rate=None,
     name=None,
     data_format=None,
-    dilations=None
+    dilations=None,
 ):
     if rate:
         dilations = rate
