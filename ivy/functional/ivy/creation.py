@@ -218,13 +218,28 @@ def arange(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
      
-    Functional Examples
+     Functional Examples
     -------------------
     With float input:
+    
+    >>> print(ivy.arange(12,step=2,dtype=float))
+    ivy.array([ 0., 2., 4., 6., 8., 10.])
     
     >>> print(ivy.arange(10,26,step=2,dtype=int).reshape(2,4))
     ivy.array([[ 10, 12, 14, 16]
                [ 18, 20, 22, 26]])
+               
+    >>> print(ivy.arange(7,9,0.2).reshape(5,2))
+    ivy.array([[7.,  7.2]
+               [7.4, 7.6]
+               [7.8, 8. ]
+               [8.2, 8.4]
+               [8.6, 8.8]])
+    
+    >>> print(ivy.arange(9,dtype=float).reshape((3, 3)))
+    ivy.array([[[0., 1., 2.,]
+                [3., 4., 5.,]
+                [6., 7., 8.,]])
      
     """
     return current_backend().arange(
