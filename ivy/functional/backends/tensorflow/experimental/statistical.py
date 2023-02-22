@@ -52,9 +52,9 @@ def unravel_index(
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.unravel_index(indices, shape)
-    return tf.cast(ret, tf.int64)
+) -> Tuple:
+    ret = tf.cast(tf.unravel_index(indices, shape), tf.int64)
+    return tuple([tf.constant(ret[i]) for i in range(0, len(ret))])
 
 
 def quantile(
