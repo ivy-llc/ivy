@@ -660,8 +660,6 @@ def test_torch_kl_div(
     dtype_and_inputs=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=3,
-        min_value=0.0,
-        max_value=1.0,
         allow_inf=False,
         shared_dtype=True,
     ),
@@ -711,6 +709,8 @@ def test_torch_margin_ranking_loss(
         num_arrays=3,
         allow_inf=False,
         shared_dtype=True,
+        min_value=0.0,
+        max_value=1.0,
         min_num_dims=1,
         max_num_dims=2,
         min_dim_size=1,
