@@ -8,6 +8,9 @@ import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_splits
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa
+    _get_split_locations,
+)
 
 
 # noinspection DuplicatedCode
@@ -938,44 +941,6 @@ def test_torch_split(
         split_size_or_sections=split_size_or_sections,
         dim=dim,
     )
-
-
-@st.composite
-def _get_split_locations(draw, min_num_dims, axis):
-    """
-    Generate valid splits, either by generating an integer that evenly divides the axis
-    or a list of split locations.
-    """
-    shape = draw(
-        st.shared(helpers.get_shape(min_num_dims=min_num_dims), key="value_shape")
-    )
-    if len(shape) == 1:
-        axis = draw(st.just(0))
-    else:
-        axis = draw(st.just(axis))
-
-    @st.composite
-    def get_int_split(draw):
-        if shape[axis] == 0:
-            return 0
-        factors = []
-        for i in range(1, shape[axis] + 1):
-            if shape[axis] % i == 0:
-                factors.append(i)
-        return draw(st.sampled_from(factors))
-
-    @st.composite
-    def get_list_split(draw):
-        return draw(
-            st.lists(
-                st.integers(min_value=0, max_value=shape[axis]),
-                min_size=0,
-                max_size=shape[axis],
-                unique=True,
-            ).map(sorted)
-        )
-
-    return draw(get_list_split() | get_int_split())
 
 
 # dsplit
