@@ -125,13 +125,13 @@ def matmul(
     adjoint_b: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if transpose_a is True:
+    if transpose_a:
         x1 = np.transpose(x1)
-    if transpose_b is True:
+    if transpose_b:
         x2 = np.transpose(x2)
-    if adjoint_a is True:
+    if adjoint_a:
         x1 = np.transpose(np.conjugate(x1))
-    if adjoint_b is True:
+    if adjoint_b:
         x2 = np.transpose(np.conjugate(x2))
     ret = np.matmul(x1, x2, out=out)
     if len(x1.shape) == len(x2.shape) == 1:
@@ -241,8 +241,10 @@ def matrix_rank(
 
 
 def matrix_transpose(
-    x: np.ndarray, /, *, out: Optional[np.ndarray] = None
+    x: np.ndarray, /, *, conjugate: bool = False, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
+    if conjugate:
+        np.conjugate(x)
     return np.swapaxes(x, -1, -2)
 
 
@@ -300,8 +302,15 @@ def slogdet(
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def solve(
-    x1: np.ndarray, x2: np.ndarray, /, *, out: Optional[np.ndarray] = None
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    adjoint: bool = False,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if adjoint:
+        x1 = np.transpose(np.conjugate(x1))
     expanded_last = False
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if len(x2.shape) <= 1:

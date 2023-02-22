@@ -1,8 +1,9 @@
 from typing import Union, Optional, Tuple, Sequence
 import tensorflow as tf
 import tensorflow_probability as tfp
+from tensorflow.python.ops.numpy_ops import np_math_ops
 
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_supported_dtypes
 from . import backend_version
 
 
@@ -32,10 +33,19 @@ def nanmean(
     dtype: Optional[tf.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    np_math_ops.enable_numpy_methods_on_tensor()
     return tf.experimental.numpy.nanmean(a, axis=axis, keepdims=keepdims, dtype=dtype)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("int8", "int16")}, backend_version)
+@with_supported_dtypes(
+    {
+        "2.9.1 and below": (
+            "int32",
+            "int64",
+        )
+    },
+    backend_version,
+)
 def unravel_index(
     indices: Union[tf.Tensor, tf.Variable],
     shape: Tuple[int],
@@ -44,7 +54,8 @@ def unravel_index(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.unravel_index(indices, shape)
-    return [tf.constant(ret[i]) for i in range(0, len(ret))]
+    ret = [tf.constant(ret[i]) for i in range(0, len(ret))]
+    return tf.cast(ret, tf.int64)
 
 
 def quantile(
@@ -53,21 +64,14 @@ def quantile(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    interpolation: str = "linear",
-    keepdims: bool = False,
+    interpolation: Optional[str] = "linear",
+    keepdims: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-
     axis = tuple(axis) if isinstance(axis, list) else axis
 
-    # In tensorflow, it requires percentile in range [0, 100], while in the other
-    # backends the quantile has to be in range [0, 1].
-    q = q * 100
-
-    # The quantile instance method in other backends is equivalent of
-    # percentile instance method in tensorflow_probability
     result = tfp.stats.percentile(
-        a, q, axis=axis, interpolation=interpolation, keepdims=keepdims
+        a, q * 100, axis=axis, interpolation=interpolation, keepdims=keepdims
     )
     return result
 

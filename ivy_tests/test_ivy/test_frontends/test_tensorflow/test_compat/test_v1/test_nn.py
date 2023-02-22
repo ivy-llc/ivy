@@ -5,6 +5,7 @@ import numpy as np
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_nn import _x_and_filters
 
 
 @st.composite
@@ -70,4 +71,39 @@ def test_tensorflow_fused_batch_norm(
         data_format=data_format,
         is_training=training,
         exponential_avg_factor=factor,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.compat.v1.nn.depthwise_conv2d",
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NHWC"]),
+        padding=st.sampled_from(["VALID", "SAME"]),
+        type="depthwise",
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_depthwise_conv2d(
+    *,
+    x_f_d_df,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+        filter=filters,
+        strides=stride,
+        padding=padding,
+        rate=dilation,
+        name=None,
+        data_format=data_format,
     )

@@ -6,11 +6,21 @@ from numbers import Number
 
 # local
 import ivy
+from ivy import handle_view
 
 # ToDo: implement all methods here as public instance methods
 
 
 class ArrayWithManipulation(abc.ABC):
+    def view(
+        self: ivy.Array,
+        /,
+        shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]] = None,
+    ) -> ivy.Array:
+        if shape:
+            return self.reshape(shape)
+        return self.reshape(self.shape)
+
     def concat(
         self: ivy.Array,
         xs: Union[
@@ -50,6 +60,7 @@ class ArrayWithManipulation(abc.ABC):
         """
         return ivy.concat([self._data] + xs, axis=axis, out=out)
 
+    @handle_view
     def expand_dims(
         self: ivy.Array,
         /,
@@ -89,6 +100,7 @@ class ArrayWithManipulation(abc.ABC):
         """
         return ivy.expand_dims(self._data, axis=axis, out=out)
 
+    @handle_view
     def flip(
         self: ivy.Array,
         /,
@@ -136,6 +148,7 @@ class ArrayWithManipulation(abc.ABC):
         """
         return ivy.flip(self._data, axis=axis, out=out)
 
+    @handle_view
     def permute_dims(
         self: ivy.Array,
         /,
@@ -185,6 +198,7 @@ class ArrayWithManipulation(abc.ABC):
         """
         return ivy.permute_dims(self._data, axes, out=out)
 
+    @handle_view
     def reshape(
         self: ivy.Array,
         /,
@@ -313,6 +327,7 @@ class ArrayWithManipulation(abc.ABC):
         """
         return ivy.roll(self._data, shift=shift, axis=axis, out=out)
 
+    @handle_view
     def squeeze(
         self: ivy.Array,
         /,
@@ -511,6 +526,7 @@ class ArrayWithManipulation(abc.ABC):
         """
         return ivy.repeat(self._data, repeats=repeats, axis=axis, out=out)
 
+    @handle_view
     def split(
         self: ivy.Array,
         /,
@@ -556,6 +572,7 @@ class ArrayWithManipulation(abc.ABC):
             with_remainder=with_remainder,
         )
 
+    @handle_view
     def swapaxes(
         self: ivy.Array,
         axis0: int,
@@ -652,6 +669,7 @@ class ArrayWithManipulation(abc.ABC):
         """
         return ivy.tile(self._data, repeats=repeats, out=out)
 
+    @handle_view
     def unstack(
         self: ivy.Array, /, *, axis: int = 0, keepdims: bool = False
     ) -> ivy.Array:

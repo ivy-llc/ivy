@@ -1,6 +1,10 @@
 from typing import Optional, Union, Tuple, Sequence
 import numpy as np
 
+import ivy  # noqa
+from ivy.func_wrapper import with_supported_dtypes
+from . import backend_version
+
 
 def median(
     input: np.ndarray,
@@ -10,12 +14,17 @@ def median(
     keepdims: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if out is not None:
+        out = np.reshape(out, input.shape)
     return np.median(
         input,
         axis=axis,
         keepdims=keepdims,
         out=out,
     )
+
+
+median.support_native_out = True
 
 
 def nanmean(
@@ -27,12 +36,15 @@ def nanmean(
     dtype: Optional[np.dtype] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if isinstance(axis, list):
+        axis = tuple(axis)
     return np.nanmean(a, axis=axis, keepdims=keepdims, dtype=dtype, out=out)
 
 
-nanmean_support_native_out = True
+nanmean.support_native_out = True
 
 
+@with_supported_dtypes({"1.23.0 and below": ("int32", "int64")}, backend_version)
 def unravel_index(
     indices: np.ndarray,
     shape: Tuple[int],
@@ -43,14 +55,17 @@ def unravel_index(
     return np.unravel_index(indices, shape)
 
 
+unravel_index.support_native_out = False
+
+
 def quantile(
     a: np.ndarray,
     q: Union[float, np.ndarray],
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
-    interpolation: str = "linear",
+    keepdims: Optional[bool] = False,
+    interpolation: Optional[str] = "linear",
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     # quantile method in numpy backend, always return an array with dtype=float64.
@@ -86,3 +101,6 @@ def nanmedian(
     return np.nanmedian(
         input, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out
     )
+
+
+nanmedian.support_native_out = True
