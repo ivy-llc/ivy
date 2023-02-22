@@ -96,4 +96,4 @@ def nanargmin(a, /, *, axis=None, out=None, keepdims=False):
 
 @to_ivy_arrays_and_back
 def extract(condition, arr):
-    return ivy.extract(condition, arr)
+    return ivy.where(condition, arr)
