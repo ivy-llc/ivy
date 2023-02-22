@@ -144,12 +144,12 @@ def unravel_index(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    temp = indices.to("int64")
+    temp = indices.detach()
     output = []
     for dim in reversed(shape):
         output.append(temp % dim)
         temp = temp // dim
-    return torch.tensor(reversed(output))
+    return torch.tensor(reversed(output), dtype=torch.int64)
 
 
 unravel_index.support_native_out = False
