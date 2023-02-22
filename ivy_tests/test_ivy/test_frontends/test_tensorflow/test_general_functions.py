@@ -1491,3 +1491,14 @@ def test_tensorflow_roll(
         shift=shift,
         axis=axis,
     )
+
+# testing ivy.where
+ def test_ivy_where():
+    x = ivy.array([1, 2, 3, 4])
+    condition = ivy.array([True, False, True, False])
+    y = ivy.array([-1, -2, -3, -4])
+    expected_output = ivy.array([1, -2, 3, -4])
+    output = ivy.where(condition, x, y)
+    assert ivy.array_equal(output, expected_output), f"Test case 1 failed: {output} != {expected_output}"
+    
+    print("All tests passed.")
