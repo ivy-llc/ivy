@@ -266,7 +266,7 @@ class Tensor:
     def abs_(self):
         self._ivy_array = self.abs().ivy_array
         return self
-    
+
     def bitwise_not(self, *, out=None):
         return torch_frontend.bitwise_not(self._ivy_array)
 
