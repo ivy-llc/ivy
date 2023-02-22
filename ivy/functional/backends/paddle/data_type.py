@@ -32,6 +32,7 @@ native_dtype_dict = {
     "int32": paddle.int32,
     "int64": paddle.int64,
     "uint8": paddle.uint8,
+    "uint16": paddle.bfloat16,
     "bfloat16": paddle.bfloat16,
     "float16": paddle.float16,
     "float32": paddle.float32,

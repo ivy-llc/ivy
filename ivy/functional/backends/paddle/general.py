@@ -3,14 +3,14 @@
 from functools import reduce
 from numbers import Number
 from operator import mul
-from typing import Optional, Union, Sequence, Callable, List
+from typing import Optional, Union, Sequence, Callable, List, Tuple
 import paddle
 import numpy as np
 
 # local
 import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
-
+from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
@@ -34,11 +34,28 @@ def current_backend_str() -> str:
     return "paddle"
 
 
+@with_unsupported_dtypes({"2.4.2 and below": ("float16", "int8", "int16", "uint8",)}, backend_version)
 def get_item(
     x: paddle.Tensor,
-    query: paddle.Tensor,
+    query: Union[paddle.Tensor, Tuple]
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if isinstance(query, tuple):
+        return x.__getitem__(query)
+
+    if not ivy.is_native_array(query):
+        query = paddle.to_tensor(query)
+
+    dtype = ivy.dtype(query, as_native=True)
+    x_dtype = ivy.dtype(x, as_native=True)
+
+    if dtype is paddle.bool:
+        return paddle.masked_select(x, query)
+
+    if x_dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
+        ret = paddle.cast(x, 'float32').__getitem__(tuple(query))
+        return paddle.cast(ret, x_dtype)
+
+    return x.__getitem__(tuple(query))
 
 
 def to_numpy(
