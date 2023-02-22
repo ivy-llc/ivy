@@ -97,3 +97,27 @@ def min_scalar_type(a, /):
             return np_frontend.dtype(validation_dtype)
     else:
         return np_frontend.dtype(a.dtype)
+
+
+@to_ivy_arrays_and_back
+def result_type(*arrays_and_dtypes):
+    if len(arrays_and_dtypes) == 0:
+        raise ivy.utils.exceptions.IvyException(
+            "At least one array or dtype must be provided"
+        )
+    if len(arrays_and_dtypes) == 1:
+        if isinstance(arrays_and_dtypes[0], np_frontend.dtype):
+            return arrays_and_dtypes[0]
+        else:
+            return np_frontend.dtype(arrays_and_dtypes[0].dtype)
+    else:
+        res = (
+            arrays_and_dtypes[0]
+            if not ivy.is_array(arrays_and_dtypes[0])
+            else np_frontend.dtype(arrays_and_dtypes[0].dtype)
+        )
+        for elem in arrays_and_dtypes:
+            if ivy.is_array(elem):
+                elem = np_frontend.dtype(elem.dtype)
+            res = promote_types(res, elem)
+        return res

@@ -77,7 +77,6 @@ def test_numpy_promote_types(
         st.booleans(),
         helpers.floats(min_value=-256, max_value=256),
     ),
-    test_with_out=st.just(False),
 )
 @settings(max_examples=200)
 def test_numpy_min_scalar_type(
