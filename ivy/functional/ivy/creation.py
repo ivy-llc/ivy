@@ -221,25 +221,26 @@ def arange(
      
     Functional Examples
     -------------------
-    With General input:
+    With float input:
     
-    >>> x = ivy.arange(12,step=2)
-    >>> print(x)
-    ivy.array([0., 2., 4., 6., 8., 10.])
+    >>> print(ivy.arange(12,step=2,dtype=float))
+    ivy.array([ 0., 2., 4., 6., 8., 10.])
     
-    >>> x = ivy.arange(start=1,stop=8,step=2).reshape(2,2)
-    >>> print(x)
-    ivy.array([[1., 3.],
-               [5., 7.]])
+    >>> print(ivy.arange(10,26,step=2,dtype=int).reshape(2,4))
+    ivy.array([[ 10, 12, 14, 16]
+               [ 18, 20, 22, 26]])
                
-    >>> x = ivy.arange(1,2,step=0.1)
-    >>> print(x)
-    ivy.array([1., 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9])
+    >>> print(ivy.arange(7,9,0.2).reshape(5,2))
+    ivy.array([[7.,  7.2]
+               [7.4, 7.6]
+               [7.8, 8. ]
+               [8.2, 8.4]
+               [8.6, 8.8]])
     
-    >>> a = ivy.arange(6).reshape((2, 3))
-    >>> print(a)
-    ivy.array([[0., 1., 2.],
-               [3., 4., 5.]])
+    >>> print(ivy.arange(9,dtype=float).reshape((3, 3)))
+    ivy.array([[[0., 1., 2.,]
+                [3., 4., 5.,]
+                [6., 7., 8.,]])
      
     """
     return current_backend().arange(
