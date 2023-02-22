@@ -136,3 +136,8 @@ def atleast_2d(*arys):
 @to_ivy_arrays_and_back
 def squeeze(a, axis=None):
     return ivy.squeeze(a, axis)
+
+
+@to_ivy_arrays_and_back
+def dsplit(ary, indices_or_section):
+    return ivy.dsplit(ary, indices_or_section)
