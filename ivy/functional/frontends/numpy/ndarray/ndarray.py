@@ -424,11 +424,9 @@ class ndarray:
             return self
         return np_frontend.array(self, dtype=dtype)
 
-    def __getitem__(self, query):
-        ret = ivy.get_item(self._ivy_array, query)
-        return np_frontend.numpy_dtype_to_scalar[ivy.dtype(self._ivy_array)](
-            ivy.array(ret, dtype=ivy.dtype(ret), copy=False)
-        )
+    def __getitem__(self, key, /):
+        ret = ivy.get_item(self._ivy_array, key)
+        return np_frontend.ndarray(ret, _init_overload=True)
 
     def __setitem__(self, key, value):
         if hasattr(value, "ivy_array"):
