@@ -41,7 +41,7 @@ trace_mode_dict = dict()
 trace_mode_dict["frontend"] = "ivy/functional/frontends"
 trace_mode_dict["ivy"] = "ivy/"
 trace_mode_dict["full"] = ""
-trace_mode_dict["NULL"] = ""
+trace_mode_dict["none"] = ""
 show_func_wrapper_trace_mode_stack = list()
 
 
