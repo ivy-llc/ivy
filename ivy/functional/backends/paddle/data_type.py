@@ -102,11 +102,14 @@ def astype(
     copy: bool = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    dtype = ivy.as_native_dtype(dtype)
+    if x.dtype == dtype:
+        return x.clone() if copy else x
+    return x.cast(dtype)
 
 
 def broadcast_arrays(*arrays: paddle.Tensor) -> List[paddle.Tensor]:
-    raise IvyNotImplementedException()
+    return list(paddle.broadcast_tensors(*arrays))
 
 
 def broadcast_to(
@@ -116,7 +119,9 @@ def broadcast_to(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if x.ndim > len(shape):
+        return paddle.broadcast_to(x.reshape([-1]), shape)
+    return paddle.broadcast_to(x, shape)
 
 
 def finfo(type: Union[paddle.dtype, str, paddle.Tensor], /) -> Finfo:
@@ -128,7 +133,19 @@ def iinfo(type: Union[paddle.dtype, str, paddle.Tensor], /) -> Iinfo:
 
 
 def result_type(*arrays_and_dtypes: Union[paddle.Tensor, paddle.dtype]) -> ivy.Dtype:
-    raise IvyNotImplementedException()
+    input = []
+    for val in arrays_and_dtypes:
+        paddle_val = as_native_dtype(val)
+        if isinstance(paddle_val, paddle.dtype):
+            paddle_val = paddle.to_tensor(1, dtype=paddle_val)
+        input.append(paddle_val)
+    temp_dtype = paddle.add(input[0], input[1]).dtype
+    result = paddle.to_tensor(1, dtype=temp_dtype)
+
+    for i in range(2, len(input)):
+        temp_dtype = paddle.add(result, input[i]).dtype
+        result = paddle.to_tensor(1, dtype=temp_dtype)
+    return as_ivy_dtype(result.dtype)
 
 
 # Extra #
@@ -136,16 +153,61 @@ def result_type(*arrays_and_dtypes: Union[paddle.Tensor, paddle.dtype]) -> ivy.D
 
 
 def as_ivy_dtype(dtype_in: Union[paddle.dtype, str, bool, int, float], /) -> ivy.Dtype:
-    raise IvyNotImplementedException()
+    if dtype_in is int:
+        return ivy.default_int_dtype()
+    if dtype_in is float:
+        return ivy.default_float_dtype()
+    if dtype_in is complex:
+        return ivy.default_complex_dtype()
+    if dtype_in is bool:
+        return ivy.Dtype("bool")
+    if isinstance(dtype_in, str):
+        if dtype_in in native_dtype_dict:
+            return ivy.Dtype(dtype_in)
+        else:
+            raise ivy.utils.exceptions.IvyException(
+                "Cannot convert to ivy dtype."
+                f" {dtype_in} is not supported by Paddle backend."
+            )
+    return ivy.Dtype(ivy_dtype_dict[dtype_in])
 
 
-def as_native_dtype(dtype_in: Union[paddle.dtype, str, bool, int, float]) -> paddle.dtype:
-    raise IvyNotImplementedException()
+def as_native_dtype(
+    dtype_in: Union[paddle.dtype, str, bool, int, float]
+) -> paddle.dtype:
+    if dtype_in is int:
+        return ivy.default_int_dtype(as_native=True)
+    if dtype_in is float:
+        return ivy.default_float_dtype(as_native=True)
+    if dtype_in is complex:
+        return ivy.default_complex_dtype(as_native=True)
+    if dtype_in is bool:
+        return paddle.bool
+    if not isinstance(dtype_in, str):
+        return dtype_in
+    if dtype_in in native_dtype_dict.keys():
+        return native_dtype_dict[ivy.Dtype(dtype_in)]
+    else:
+        raise ivy.utils.exceptions.IvyException(
+            "Cannot convert to Paddle dtype." f" {dtype_in} is not supported by Paddle."
+        )
 
 
 def dtype(x: paddle.Tensor, *, as_native: bool = False) -> ivy.Dtype:
-    raise IvyNotImplementedException()
+    if as_native:
+        return ivy.to_native(x).dtype
+    return as_ivy_dtype(x.dtype)
 
 
 def dtype_bits(dtype_in: Union[paddle.dtype, str], /) -> int:
-    raise IvyNotImplementedException()
+    dtype_str = as_ivy_dtype(dtype_in)
+    if "bool" in dtype_str:
+        return 1
+    return int(
+        dtype_str.replace("paddle.", "")
+        .replace("uint", "")
+        .replace("int", "")
+        .replace("bfloat", "")
+        .replace("float", "")
+        .replace("complex", "")
+    )

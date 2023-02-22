@@ -12,8 +12,12 @@ from ivy.func_wrapper import (
     with_unsupported_dtypes,
     with_unsupported_device_and_dtypes,
     _get_first_array,
+
 )
 from ivy.functional.ivy.creation import (
+    asarray_to_native_arrays_and_back,
+    asarray_infer_device,
+    asarray_handle_nestable,
     NestedSequence,
     SupportsBufferProtocol,
 )
@@ -46,9 +50,9 @@ def _stack_tensors(x, dtype):
     else:
         if isinstance(x, (list, tuple)):
             if isinstance(x[0], paddle.Tensor):
-                x = paddle.stack([paddle.as_tensor(i, dtype=dtype) for i in x])
+                x = paddle.stack([paddle.to_tensor(i, dtype=dtype) for i in x])
             else:
-                x = paddle.as_tensor(x, dtype=dtype)
+                x = paddle.to_tensor(x, dtype=dtype)
     return x
 
 
@@ -96,7 +100,7 @@ def asarray(
         if isinstance(obj[0], paddle.Tensor) or contain_tensor:
             if copy is True:
                 return (
-                    paddle.stack([paddle.as_tensor(i, dtype=dtype) for i in obj])
+                    paddle.stack([paddle.to_tensor(i, dtype=dtype) for i in obj])
                     .clone()
                     .detach()
                     
@@ -113,16 +117,16 @@ def asarray(
     if dtype == paddle.bfloat16 and isinstance(obj, np.ndarray):
         if copy is True:
             return (
-                paddle.as_tensor(obj.tolist(), dtype=dtype).clone().detach()
+                paddle.to_tensor(obj.tolist(), dtype=dtype).clone().detach()
             )
         else:
-            return paddle.as_tensor(obj.tolist(), dtype=dtype)
+            return paddle.to_tensor(obj.tolist(), dtype=dtype)
 
     if copy is True:
-        ret = paddle.as_tensor(obj, dtype=dtype).clone().detach()
+        ret = paddle.to_tensor(obj, dtype=dtype).clone().detach()
         return ret
     else:
-        ret = paddle.as_tensor(obj, dtype=dtype)
+        ret = paddle.to_tensor(obj, dtype=dtype)
         return ret
 
 
