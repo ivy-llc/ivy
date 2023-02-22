@@ -1,6 +1,7 @@
 # global
 import sys
 import mindspore as ms
+from mindspore._c_expression.typing import Type
 
 # local
 import ivy
@@ -17,17 +18,16 @@ use = ivy.utils.backend.ContextManager(_module_in_memory)
 
 NativeArray = ms.Tensor
 NativeVariable = ms.Tensor
-NativeDevice = ms.device
-NativeDtype = ms.dtype
-NativeShape = ms.Size
-
-NativeSparseArray = ms.Tensor
+NativeDevice = str
+NativeDtype = Type
+NativeShape = tuple
+NativeSparseArray = ms.SparseTensor
 
 
 # devices
-valid_devices = ("cpu", "gpu")
+valid_devices = ("cpu",)
 
-invalid_devices = ("tpu",)
+invalid_devices = ("gpu", "tpu")
 
 
 # native data types
