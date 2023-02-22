@@ -68,6 +68,9 @@ def flip(
 ) -> np.ndarray:
     num_dims = len(x.shape)
     if not num_dims:
+        if copy:
+            newarr = x.copy()
+            return newarr
         return x
     if axis is None:
         axis = list(range(num_dims))
@@ -143,6 +146,9 @@ def squeeze(
         axis = tuple(axis)
     if x.shape == ():
         if axis is None or axis == 0 or axis == -1:
+            if copy:
+                newarr = x.copy()
+                return newarr
             return x
         raise ivy.utils.exceptions.IvyException(
             "tried to squeeze a zero-dimensional input by axis {}".format(axis)
@@ -186,6 +192,9 @@ def split(
                     num_or_size_splits
                 )
             )
+        if copy:
+            newarr = x.copy()
+            return [newarr]
         return [x]
     if num_or_size_splits is None:
         num_or_size_splits = x.shape[axis]
@@ -280,13 +289,29 @@ def swapaxes(
 
 
 def unstack(
-    x: np.ndarray, /, *, axis: int = 0, keepdims: bool = False
+    x: np.ndarray, 
+    /, 
+    *, 
+    copy: Optional[bool] = None,
+    axis: int = 0, 
+    keepdims: bool = False
 ) -> List[np.ndarray]:
     if x.shape == ():
+        if copy:
+            newarr = x.copy()
+            return [newarr]
         return [x]
-    x_split = np.split(x, x.shape[axis], axis)
+    if copy:
+        newarr = x.copy()
+        newarr_split = np.split(newarr, newarr.shape[axis], axis)
+    else:
+        x_split = np.split(x, x.shape[axis], axis)
     if keepdims:
+        if copy:
+            return newarr_split
         return x_split
+    if copy:
+        return [np.squeeze(item, axis) for item in newarr_split]
     return [np.squeeze(item, axis) for item in x_split]
 
 
@@ -304,7 +329,7 @@ def clip(
     )
     if copy:
         newarr = x.copy()
-        return np.asarray(np.clip(newarr, x_min, x_max, out=out), dtype=x.dtype)
+        return np.asarray(np.clip(newarr, x_min, x_max, out=out), dtype=newarr.dtype)
     return np.asarray(np.clip(x, x_min, x_max, out=out), dtype=x.dtype)
 
 
