@@ -17,8 +17,10 @@ def add(
     alpha: Optional[Union[int, float]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
-
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if alpha not in (1, None):
+        x2 = multiply(x2, alpha)
+    return paddle.add(x1, x2)
 
 def bitwise_xor(
     x1: Union[int, bool, paddle.Tensor],
@@ -216,7 +218,7 @@ def acosh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
 
 
 def sin(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.sin(x)
 
 
 def negative(
@@ -236,7 +238,7 @@ def not_equal(
 
 
 def tanh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.tanh(x)
 
 
 def floor_divide(
@@ -304,11 +306,11 @@ def logaddexp(
 
 
 def tan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.tan(x)
 
 
 def atan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.atan(x)
 
   # TODO Fixed in PyTorch 1.12.1 (this note excludes complex)
 
