@@ -13,7 +13,7 @@ def _get_reduction_func(reduction):
     elif reduction == "sum":
         ret = ivy.sum
     else:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             "{} is not a valid value for reduction".format(reduction)
         )
     return ret
@@ -48,7 +48,7 @@ def _get_reduction_method(reduction, to_reduce):
     elif reduction == "sum":
         ret = ivy.sum(to_reduce)
     else:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             f"{reduction} is not a valid value for reduction"
         )
     return ret
@@ -160,7 +160,7 @@ def cosine_embedding_loss(
 
         return loss
 
-    ivy.assertions.check_true(
+    ivy.utils.assertions.check_true(
         target.ndim + 1 == input1.ndim and target.ndim + 1 == input2.ndim,
         "{}D target tensor expects {}D input tensors, but "
         "found inputs with sizes {} and {}.".format(
@@ -168,14 +168,14 @@ def cosine_embedding_loss(
         ),
     )
 
-    ivy.assertions.check_true(
+    ivy.utils.assertions.check_true(
         target.ndim < 2, "0D or 1D target tensor expected, multi-target not supported"
     )
 
-    ivy.assertions.check_shape(input1, input2)
+    ivy.utils.assertions.check_shape(input1, input2)
 
     if target.ndim == 1:
-        ivy.assertions.check_true(
+        ivy.utils.assertions.check_true(
             target.shape[0] == input1.shape[0],
             "The size of target tensor ({}) must match the size of input tensor ({}) "
             "at non-singleton dimension 0 ".format(target.shape[0], input1.shape[0]),

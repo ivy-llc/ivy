@@ -8,7 +8,7 @@ from ivy.func_wrapper import (
     infer_dtype,
     infer_device,
 )
-from ivy.exceptions import handle_exceptions
+from ivy.utils.exceptions import handle_exceptions
 
 
 # dirichlet

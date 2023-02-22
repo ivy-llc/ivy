@@ -273,7 +273,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(
             "unravel_index",
             indices,
-            shape=shape,
+            shape,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

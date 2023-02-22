@@ -10,14 +10,14 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
 )
-from ivy.exceptions import handle_exceptions
+from ivy.utils.exceptions import handle_exceptions
 
 # Helpers #
 # ------- #
 
 
 def _check_valid_dimension_size(std):
-    ivy.assertions.check_dimensions(std)
+    ivy.utils.assertions.check_dimensions(std)
 
 
 @to_native_arrays_and_back

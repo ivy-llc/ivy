@@ -100,7 +100,7 @@ def reshape(
     allowzero: Optional[bool] = True,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    ivy.assertions.check_elem_in_list(order, ["C", "F"])
+    ivy.utils.assertions.check_elem_in_list(order, ["C", "F"])
     if not allowzero:
         shape = [
             new_s if con else old_s
@@ -148,7 +148,7 @@ def squeeze(
                 "dimension size {}".format(-x.dim(), x.dim(), axis)
             )
         if x.shape[axis] != 1:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 f"Expected size of axis to be 1 but was {x.shape[axis]}"
             )
         return torch.squeeze(x, axis)
@@ -201,7 +201,7 @@ def split(
 ) -> List[torch.Tensor]:
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "input array had no shape, but num_sections specified was {}".format(
                     num_or_size_splits
                 )
@@ -300,7 +300,9 @@ def clip(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    ivy.assertions.check_less(x_min, x_max, message="min values must be less than max")
+    ivy.utils.assertions.check_less(
+        x_min, x_max, message="min values must be less than max"
+    )
     if hasattr(x_min, "dtype"):
         promoted_type = torch.promote_types(x_min.dtype, x_max.dtype)
         promoted_type = torch.promote_types(promoted_type, x.dtype)

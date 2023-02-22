@@ -10,7 +10,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
 )
-from ivy.exceptions import handle_exceptions
+from ivy.utils.exceptions import handle_exceptions
 
 
 # Array API Standard #

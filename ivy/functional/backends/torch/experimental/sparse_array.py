@@ -43,7 +43,7 @@ def native_sparse_array(
         values,
         dense_shape,
     ):
-        ivy.assertions.check_true(
+        ivy.utils.assertions.check_true(
             ivy.is_native_sparse_array(data), message="not a sparse array"
         )
         return data
@@ -115,4 +115,4 @@ def native_sparse_array_to_indices_values_and_shape(x):
             x.values(),
             x.size(),
         )
-    raise ivy.exceptions.IvyException("not a sparse COO/CSR/CSC/BSC/BSR Tensor")
+    raise ivy.utils.exceptions.IvyException("not a sparse COO/CSR/CSC/BSC/BSR Tensor")
