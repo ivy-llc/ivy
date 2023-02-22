@@ -704,13 +704,13 @@ def test_torch_margin_ranking_loss(
 @handle_frontend_test(
     fn_tree="torch.nn.functional.hinge_embedding_loss",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         min_value=-1,
         max_value=1,
         allow_inf=False,
     ),
-    margin=st.floats(),
+    margin=st.floats(min_value=-10, max_value=10),
     size_average=st.booleans(),
     reduce=st.booleans(),
     reduction=st.sampled_from(["none", "mean", "sum"]),
@@ -723,12 +723,13 @@ def test_torch_hinge_embedding_loss(
     size_average,
     reduce,
     reduction,
-    frontend,
     test_flags,
     fn_tree,
+    frontend,
     on_device,
 ):
     input_dtype, x = dtype_and_x
+    input, target = x
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -736,10 +737,10 @@ def test_torch_hinge_embedding_loss(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x[0],
-        target=x[1],
+        input=input,
+        target=target,
         margin=margin,
-        reduce=reduce,
         size_average=size_average,
+        reduce=reduce,
         reduction=reduction,
     )

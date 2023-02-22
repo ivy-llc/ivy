@@ -370,6 +370,8 @@ def margin_ranking_loss(
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@to_ivy_arrays_and_back
 def hinge_embedding_loss(
     input,
     target,
@@ -381,9 +383,13 @@ def hinge_embedding_loss(
     margin = ivy.array(margin)
 
     loss = ivy.where(
-        target == 1,
-        input,
-        ivy.maximum(0, margin - input),
+        ivy.logical_or(target == -1, target == 1),
+        ivy.where(
+            target == 1,
+            input,
+            ivy.maximum(0, margin - input)
+        ),
+        ivy.maximum(margin, input)
     )
 
     reduction = _get_reduction(reduction, size_average, reduce)
