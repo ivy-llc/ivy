@@ -1,6 +1,7 @@
 # global
 import math
 from hypothesis import strategies as st
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -132,6 +133,121 @@ def _generate_diag_args(draw):
                 )
 
     return dtype_x, offset, dtype_padding_value, align, num_rows, num_cols
+
+
+@st.composite
+def _generate_eigh_tridiagonal_args(draw):
+    dtype, alpha = draw(
+        helpers.dtype_and_values(
+            min_dim_size=2,
+            min_num_dims=1,
+            max_num_dims=1,
+            min_value=2.0,
+            max_value=5,
+            available_dtypes=helpers.get_dtypes("float"),
+        )
+    )
+    beta_shape = len(alpha[0]) - 1
+    dtype, beta = draw(
+        helpers.dtype_and_values(
+            available_dtypes=dtype,
+            shape=(beta_shape,),
+            min_value=2.0,
+            max_value=5,
+        )
+    )
+
+    select = draw(st.sampled_from(("a", "i", "v")))
+    if select == "a":
+        select_range = None
+    elif select == "i":
+        range_slice = draw(
+            st.slices(beta_shape).filter(
+                lambda x: x.start
+                and x.stop
+                and x.step
+                and x.start >= 0
+                and x.stop >= 0
+                and x.step >= 0
+                and x.start < x.stop
+            )
+        )
+
+        select_range = [range_slice.start, range_slice.stop]
+    else:
+        select_range = [-100, 100]
+
+    eigvals_only = draw(st.booleans())
+    tol = draw(st.floats(1e-5, 1e-3) | st.just(None))
+    return dtype, alpha, beta, eigvals_only, select, select_range, tol
+
+
+# eigh_tridiagonal
+@handle_test(
+    fn_tree="eigh_tridiagonal",
+    args_packet=_generate_eigh_tridiagonal_args(),
+    test_gradients=st.just(False),
+)
+def test_eigh_tridiagonal(
+    *,
+    args_packet,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtype, alpha, beta, eigvals_only, select, select_range, tol = args_packet
+    test_flags.with_out = False
+    results = helpers.test_function(
+        ground_truth_backend="numpy",
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-2,
+        atol_=1e-2,
+        input_dtypes=dtype,
+        alpha=alpha[0],
+        beta=beta[0],
+        eigvals_only=eigvals_only,
+        select=select,
+        select_range=select_range,
+        tol=tol,
+        test_values=eigvals_only,
+        return_flat_np_arrays=True,
+    )
+    if results is None:
+        return
+    ret_np_flat, ret_np_from_gt_flat = results
+    reconstructed_np = None
+    for i in range(len(ret_np_flat) // 2):
+        eigenvalue = ret_np_flat[i]
+        eigenvector = ret_np_flat[len(ret_np_flat) // 2 + i]
+        if reconstructed_np is not None:
+            reconstructed_np += eigenvalue * np.matmul(
+                eigenvector.reshape(1, -1), eigenvector.reshape(-1, 1)
+            )
+        else:
+            reconstructed_np = eigenvalue * np.matmul(
+                eigenvector.reshape(1, -1), eigenvector.reshape(-1, 1)
+            )
+
+    reconstructed_from_np = None
+    for i in range(len(ret_np_from_gt_flat) // 2):
+        eigenvalue = ret_np_from_gt_flat[i]
+        eigenvector = ret_np_from_gt_flat[len(ret_np_flat) // 2 + i]
+        if reconstructed_from_np is not None:
+            reconstructed_from_np += eigenvalue * np.matmul(
+                eigenvector.reshape(1, -1), eigenvector.reshape(-1, 1)
+            )
+        else:
+            reconstructed_from_np = eigenvalue * np.matmul(
+                eigenvector.reshape(1, -1), eigenvector.reshape(-1, 1)
+            )
+    # value test
+    helpers.assert_all_close(
+        reconstructed_np, reconstructed_from_np, rtol=1e-1, atol=1e-2
+    )
 
 
 @handle_test(
