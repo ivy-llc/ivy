@@ -37,7 +37,7 @@ def any(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    x = paddle.as_tensor(x).type(paddle.bool)
+    x = paddle.to_tensor(x).type(paddle.bool)
     if axis is None:
         num_dims = len(x.shape)
         axis = list(range(num_dims))
