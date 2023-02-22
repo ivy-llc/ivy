@@ -37,17 +37,17 @@ def any(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    x = paddle.to_tensor(x).type(paddle.bool)
+    x = paddle.to_tensor(x).dtype(paddle.bool)
     if axis is None:
         num_dims = len(x.shape)
         axis = list(range(num_dims))
     if isinstance(axis, int):
-        return paddle.any(x, dim=axis, keepdim=keepdims, out=out)
+        return paddle.any(x, dim=axis, keepdim=keepdims)
     dims = len(x.shape)
     axis = [i % dims for i in axis]
     axis.sort()
     for i, a in enumerate(axis):
-        x = paddle.any(x, dim=a if keepdims else a - i, keepdim=keepdims, out=out)
+        x = paddle.any(x, dim=a if keepdims else a - i, keepdim=keepdims)
     return x
 
 
