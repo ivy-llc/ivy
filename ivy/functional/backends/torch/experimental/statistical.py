@@ -149,7 +149,7 @@ def unravel_index(
     for dim in reversed(shape):
         output.append(temp % dim)
         temp = temp // dim
-    return tuple(reversed(output))
+    return torch.tensor(reversed(output))
 
 
 unravel_index.support_native_out = False
