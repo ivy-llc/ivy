@@ -22,7 +22,8 @@ def min(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return paddle.min(x, axis=axis, keepdim=keepdims)
 
 
 def max(
