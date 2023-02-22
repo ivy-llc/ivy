@@ -37,6 +37,22 @@ def any(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    x = paddle.as_tensor(x).type(paddle.bool)
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = list(range(num_dims))
+    if isinstance(axis, int):
+        return paddle.any(x, dim=axis, keepdim=keepdims, out=out)
+    dims = len(x.shape)
+    axis = [i % dims for i in axis]
+    axis.sort()
+    for i, a in enumerate(axis):
+        x = paddle.any(x, dim=a if keepdims else a - i, keepdim=keepdims, out=out)
+    return x
+
+
+any.support_native_out = True
+
+
 
 
