@@ -818,7 +818,8 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
-        >>> x = ivy.Container(a=ivy.array([1, 1, 2, 2, 2, 3]), b=ivy.array([1, 1, 2, 2, 2, 3]))
+        >>> x = ivy.Container(a=ivy.array([1, 1, 2, 2, 2, 3]),
+                            b=ivy.array([1, 1, 2, 2, 2, 3]))
         >>> ivy.Container.static_bincount(x).shape
         {
             a: (4,)
@@ -872,4 +873,3 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         """
 
         return self.static_bincount(self, weights=weights, minlength=minlength, out=out)
-    
