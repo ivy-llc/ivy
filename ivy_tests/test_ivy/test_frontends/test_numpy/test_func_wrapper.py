@@ -30,7 +30,7 @@ def _fn(x=None, check_default=False, dtype=None):
 
 @given(
     dtype_x_shape=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
         ret_shape=True,
     ),
 )
@@ -61,7 +61,9 @@ def test_inputs_to_ivy_arrays(dtype_x_shape):
 
 
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False)
+    ),
 )
 def test_outputs_to_numpy_arrays(dtype_and_x):
     x_dtype, x = dtype_and_x
@@ -78,7 +80,7 @@ def test_outputs_to_numpy_arrays(dtype_and_x):
 
 @given(
     dtype_x_shape=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
         ret_shape=True,
     ),
 )
@@ -113,7 +115,9 @@ def test_to_ivy_arrays_and_back(dtype_x_shape):
 @st.composite
 def _zero_dim_to_scalar_helper(draw):
     dtype = draw(
-        helpers.get_dtypes("valid", full=False).filter(lambda x: "bfloat16" not in x)
+        helpers.get_dtypes("valid", prune_function=False, full=False).filter(
+            lambda x: "bfloat16" not in x
+        )
     )[0]
     shape = draw(helpers.get_shape())
     return draw(
@@ -151,8 +155,16 @@ def _dtype_helper(draw):
         st.sampled_from(
             [
                 draw(st.sampled_from([int, float, bool])),
-                ivy.as_native_dtype(draw(helpers.get_dtypes("valid", full=False))[0]),
-                np_frontend.dtype(draw(helpers.get_dtypes("valid", full=False))[0]),
+                ivy.as_native_dtype(
+                    draw(helpers.get_dtypes("valid", full=False, prune_function=False))[
+                        0
+                    ]
+                ),
+                np_frontend.dtype(
+                    draw(helpers.get_dtypes("valid", full=False, prune_function=False))[
+                        0
+                    ]
+                ),
                 draw(st.sampled_from(list(np_frontend.numpy_scalar_to_dtype.keys()))),
                 draw(st.sampled_from(list(np_frontend.numpy_str_to_type_table.keys()))),
             ]
