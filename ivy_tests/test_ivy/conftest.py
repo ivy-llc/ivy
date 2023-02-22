@@ -36,9 +36,10 @@ TEST_PARAMS_CONFIG = []
 if "ARRAY_API_TESTS_MODULE" not in os.environ:
     os.environ["ARRAY_API_TESTS_MODULE"] = "ivy.functional.backends.numpy"
 
+
 def pytest_configure(config):
     global available_frameworks
-    #traceback
+    # traceback
     set_exception_trace_mode("none")
     raw_value = config.getoption("--tb")
     if raw_value == 'auto':
@@ -61,9 +62,7 @@ def pytest_configure(config):
         backend_strs = raw_value.split(",")
 
     # frontend
-
     frontend = config.getoption("--frontend")
-
     if frontend:
         frontend_strs = frontend.split(",")
         for i in frontend_strs:

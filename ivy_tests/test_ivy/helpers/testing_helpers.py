@@ -632,7 +632,6 @@ def handle_frontend_method(
             fn_name=method_name,
             supported_device_dtypes=supported_device_dtypes,
         )
-
         return wrapped_test
 
     return test_wrapper

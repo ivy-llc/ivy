@@ -52,7 +52,8 @@ def assert_all_close(
             ret_from_gt_np = ret_from_gt_np.astype("float64")
         assert np.allclose(
             np.nan_to_num(ret_np), np.nan_to_num(ret_from_gt_np), rtol=rtol, atol=atol
-        ), f" the results from backend {ivy.current_backend_str()} and ground truth framework {ground_truth_backend} " \
+        ), f" the results from backend {ivy.current_backend_str()} " \
+           f"and ground truth framework {ground_truth_backend} " \
            f"do not match\n {ret_np}!={ret_from_gt_np} \n\n"
 
 
