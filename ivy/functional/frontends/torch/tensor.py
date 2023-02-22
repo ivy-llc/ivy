@@ -16,7 +16,7 @@ class Tensor:
             )
 
         else:
-            self._ivy_array = ivy.asarray(
+            self._ivy_array = ivy.array(
                 array, dtype=torch_frontend.float32, device=device
             )
 
