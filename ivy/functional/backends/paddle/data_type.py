@@ -2,7 +2,7 @@
 from typing import Optional, Union, Sequence, List
 
 import paddle
-
+import numpy as np
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
@@ -44,7 +44,7 @@ native_dtype_dict = {
 
 
 class Finfo:
-    def __init__(self, paddle_finfo: None):
+    def __init__(self, paddle_finfo: np.finfo):
         self._paddle_finfo = paddle_finfo
 
     def __repr__(self):
@@ -56,23 +56,23 @@ class Finfo:
 
     @property
     def eps(self):
-        return self._paddle_finfo.eps
+        return float(self._paddle_finfo.eps)
 
     @property
     def max(self):
-        return self._paddle_finfo.max
+        return float(self._paddle_finfo.max)
 
     @property
     def min(self):
-        return self._paddle_finfo.min
+        return float(self._paddle_finfo.min)
 
     @property
     def smallest_normal(self):
-        return self._paddle_finfo.tiny
+        return float(self._paddle_finfo.tiny)
 
 
 class Iinfo:
-    def __init__(self, paddle_iinfo: None):
+    def __init__(self, paddle_iinfo: np.iinfo):
         self._paddle_iinfo = paddle_iinfo
 
     def __repr__(self):
@@ -89,6 +89,21 @@ class Iinfo:
     @property
     def min(self):
         return self._paddle_iinfo.min
+
+
+class Bfloat16Finfo:
+    def __init__(self):
+        self.resolution = 0.01
+        self.bits = 16
+        self.eps = 0.0078125
+        self.max = 3.38953e38
+        self.min = -3.38953e38
+        self.tiny = 1.17549e-38
+
+    def __repr__(self):
+        return "finfo(resolution={}, min={}, max={}, dtype={})".format(
+            self.resolution, self.min, self.max, "bfloat16"
+        )
 
 
 # Array API Standard #
@@ -125,12 +140,27 @@ def broadcast_to(
     return paddle.broadcast_to(x, shape)
 
 
+@_handle_nestable_dtype_info
 def finfo(type: Union[paddle.dtype, str, paddle.Tensor], /) -> Finfo:
-    raise IvyNotImplementedException()
+    if isinstance(type, paddle.Tensor):
+        type = str(type.dtype)[7:]
+    elif isinstance(type, paddle.dtype):
+        type = str(type)[7:]
+
+    if ivy.as_native_dtype(type) == paddle.bfloat16:
+        return Finfo(Bfloat16Finfo())
+    
+    return Finfo(np.finfo(type))
 
 
+@_handle_nestable_dtype_info
 def iinfo(type: Union[paddle.dtype, str, paddle.Tensor], /) -> Iinfo:
-    raise IvyNotImplementedException()
+    if isinstance(type, paddle.Tensor):
+        type = str(type.dtype)[7:]
+    elif isinstance(type, paddle.dtype):
+        type = str(type)[7:]
+        
+    return Iinfo(np.iinfo(type))
 
 
 def result_type(*arrays_and_dtypes: Union[paddle.Tensor, paddle.dtype]) -> ivy.Dtype:
