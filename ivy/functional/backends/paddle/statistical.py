@@ -33,7 +33,7 @@ def max(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.max(x, axis=axis, keepdims=keepdims)
 
 
 def mean(
