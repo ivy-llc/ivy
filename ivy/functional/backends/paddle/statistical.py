@@ -14,7 +14,6 @@ from . import backend_version
 # Array API Standard #
 # -------------------#
 
-
 def min(
     x: paddle.Tensor,
     /,
