@@ -181,6 +181,10 @@
     <span class="n">available_frameworks</span><span class="p">,</span>
     <span class="n">ground_truth</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">_dtype_kind_keys</span><span class="p">,</span>
+    <span class="n">_get_type_dict</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="n">ground_truth</span> <span class="o">=</span> <span class="n">ground_truth</span><span class="p">()</span>
 
@@ -336,7 +340,13 @@
     <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">backends</span><span class="p">:</span>  <span class="c1"># ToDo can optimize this ?</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
         <span class="n">_fn</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">class_module</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">class_name</span><span class="p">],</span> <span class="n">method_name</span><span class="p">)</span>
-        <span class="n">supported_device_dtypes</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">function_supported_devices_and_dtypes</span><span class="p">(</span><span class="n">_fn</span><span class="p">)</span>
+        <span class="n">devices_and_dtypes</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">function_supported_devices_and_dtypes</span><span class="p">(</span><span class="n">_fn</span><span class="p">)</span>
+        <span class="n">organized_dtypes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">device</span> <span class="ow">in</span> <span class="n">devices_and_dtypes</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">organized_dtypes</span><span class="p">[</span><span class="n">device</span><span class="p">]</span> <span class="o">=</span> <span class="n">_partition_dtypes_into_kinds</span><span class="p">(</span>
+                <span class="n">ivy</span><span class="p">,</span> <span class="n">devices_and_dtypes</span><span class="p">[</span><span class="n">device</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="n">supported_device_dtypes</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="n">organized_dtypes</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">unset_backend</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">supported_device_dtypes</span>
 
@@ -368,13 +378,27 @@
 
     <span class="n">backends</span> <span class="o">=</span> <span class="n">available_frameworks</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">backends</span><span class="p">:</span>  <span class="c1"># ToDo can optimize this ?</span>
-
         <span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
         <span class="n">_tmp_mod</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">fn_module</span><span class="p">)</span>
         <span class="n">_fn</span> <span class="o">=</span> <span class="n">_tmp_mod</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">fn_name</span><span class="p">]</span>
-        <span class="n">supported_device_dtypes</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">function_supported_devices_and_dtypes</span><span class="p">(</span><span class="n">_fn</span><span class="p">)</span>
+        <span class="n">devices_and_dtypes</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">function_supported_devices_and_dtypes</span><span class="p">(</span><span class="n">_fn</span><span class="p">)</span>
+        <span class="n">organized_dtypes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">device</span> <span class="ow">in</span> <span class="n">devices_and_dtypes</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">organized_dtypes</span><span class="p">[</span><span class="n">device</span><span class="p">]</span> <span class="o">=</span> <span class="n">_partition_dtypes_into_kinds</span><span class="p">(</span>
+                <span class="n">ivy</span><span class="p">,</span> <span class="n">devices_and_dtypes</span><span class="p">[</span><span class="n">device</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="n">supported_device_dtypes</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="n">organized_dtypes</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">unset_backend</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">supported_device_dtypes</span>
+
+
+<span class="k">def</span> <span class="nf">_partition_dtypes_into_kinds</span><span class="p">(</span><span class="n">framework</span><span class="p">,</span> <span class="n">dtypes</span><span class="p">):</span>
+    <span class="n">partitioned_dtypes</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">kind</span> <span class="ow">in</span> <span class="n">_dtype_kind_keys</span><span class="p">:</span>
+        <span class="n">partitioned_dtypes</span><span class="p">[</span><span class="n">kind</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">_get_type_dict</span><span class="p">(</span><span class="n">framework</span><span class="p">,</span> <span class="n">kind</span><span class="p">))</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span>
+            <span class="n">dtypes</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">partitioned_dtypes</span>
 
 
 <span class="c1"># Decorators</span>
@@ -760,10 +784,17 @@
                 <span class="n">as_variable</span><span class="o">=</span><span class="n">method_as_variable_flags</span><span class="p">,</span>
                 <span class="n">native_arrays</span><span class="o">=</span><span class="n">method_native_arrays</span><span class="p">,</span>
             <span class="p">)</span>
-
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">ivy_init_modules</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">ivy_init_module</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">ivy_init_modules</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ivy_init_module</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">framework_init_modules</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">framework_init_module</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">framework_init_modules</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">framework_init_module</span><span class="p">)</span>
             <span class="n">frontend_helper_data</span> <span class="o">=</span> <span class="n">FrontendMethodData</span><span class="p">(</span>
-                <span class="n">ivy_init_module</span><span class="o">=</span><span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">ivy_init_module</span><span class="p">),</span>
-                <span class="n">framework_init_module</span><span class="o">=</span><span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">framework_init_module</span><span class="p">),</span>
+                <span class="n">ivy_init_module</span><span class="o">=</span><span class="n">ivy_init_modules</span><span class="p">,</span>
+                <span class="n">framework_init_module</span><span class="o">=</span><span class="n">framework_init_modules</span><span class="p">,</span>
                 <span class="n">init_name</span><span class="o">=</span><span class="n">init_name</span><span class="p">,</span>
                 <span class="n">method_name</span><span class="o">=</span><span class="n">method_name</span><span class="p">,</span>
             <span class="p">)</span>

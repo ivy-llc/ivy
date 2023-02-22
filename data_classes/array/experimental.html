@@ -803,7 +803,7 @@ this method with minimal changes.</p>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – Element-wise gcd of <a href="#id1"><span class="problematic" id="id2">|x1|</span></a> and <a href="#id3"><span class="problematic" id="id4">|x2|</span></a>.</p>
+<dd class="field-odd"><p><em>ret</em> – Element-wise gcd of <a href="#id3"><span class="problematic" id="id4">|x1|</span></a> and <a href="#id5"><span class="problematic" id="id6">|x2|</span></a>.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -2018,6 +2018,59 @@ ivy.eig also applies to this method with minimal changes.</p>
 <dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.array.experimental.ArrayWithLinearAlgebraExperimental.eigh_tridiagonal">
+<span class="sig-name descname"><span class="pre">eigh_tridiagonal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beta</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eigvals_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'a'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/experimental/linear_algebra.html#ArrayWithLinearAlgebraExperimental.eigh_tridiagonal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.experimental.ArrayWithLinearAlgebraExperimental.eigh_tridiagonal" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Array instance method variant of ivy.eigh_tridiagonal. This method simply
+wraps the function, and so the docstring for ivy.eigh_tridiagonal also
+applies to this method with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – An array of real or complex arrays each of shape (n),
+the diagonal elements of the matrix.</p></li>
+<li><p><strong>beta</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – An array or of real or complex arrays each of shape (n-1),
+containing the elements of the first super-diagonal of the matrix.</p></li>
+<li><p><strong>eigvals_only</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If False, both eigenvalues and corresponding eigenvectors are computed. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
+If True, only eigenvalues are computed. Default is True.</p></li>
+<li><p><strong>select</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional string with values in {‘a’, ‘v’, ‘i’} (default: <code class="docutils literal notranslate"><span class="pre">'a'</span></code>)
+(default is ‘a’) that determines which eigenvalues
+to calculate: ‘a’: all eigenvalues. ‘v’: eigenvalues
+in the interval (min, max] given by select_range.
+‘i’: eigenvalues with indices min &lt;= i &lt;= max.</p></li>
+<li><p><strong>select_range</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]]) – Size 2 tuple or list or array specifying the range of (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+eigenvalues to compute together with select. If select
+is ‘a’, select_range is ignored.</p></li>
+<li><p><strong>tol</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – Optional scalar. Ignored when backend is not Tensorflow. The (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+absolute tolerance to which each eigenvalue is required. An
+eigenvalue (or cluster) is considered to have converged if
+it lies in an interval of this width. If tol is None (default),
+the value eps*|T|_2 is used where eps is the machine precision,
+and <a href="#id1"><span class="problematic" id="id2">|</span></a>T|_2 is the 2-norm of the matrix T.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><em>eig_vals</em> – The eigenvalues of the matrix in non-decreasing order.</p></li>
+<li><p><em>eig_vectors</em> – If eigvals_only is False the eigenvectors are returned in the second
+output argument.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">alpha</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">beta</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">alpha</span><span class="o">.</span><span class="n">eigh_tridiagonal</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">ivy.array([0., 0.38196, 2.61803])</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">

@@ -272,7 +272,8 @@ also applies to this method with minimal changes.</p>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">assert_supports_inplace</span><span class="p">())</span>
-<span class="go">IvyBackendException: jax: assert_supports_inplace: Inplace operations     are not supported &lt;class &#39;jaxlib.xla_extension.DeviceArray&#39;&gt; types with jax backend</span>
+<span class="go">IvyBackendException: jax: assert_supports_inplace: Inplace operations     are not supported &lt;class &#39;jaxlib.xla_extension.DeviceArray&#39;&gt; types</span>
+<span class="go">with jax backend</span>
 </pre></div>
 </div>
 </dd></dl>
