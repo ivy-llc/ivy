@@ -2647,8 +2647,7 @@ def test_torch_instance_bitwise_not(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
-        method_all_as_kwargs_np={
-        },
+        method_all_as_kwargs_np={},
         frontend=frontend,
     )
 
