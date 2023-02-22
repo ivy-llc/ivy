@@ -2594,7 +2594,7 @@
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
-<span class="sd">    ValueError</span>
+<span class="sd">    IvyException</span>
 <span class="sd">        If x isn&#39;t a class instance of ivy.Array or ivy.NativeArray, an exception will</span>
 <span class="sd">        be raised.</span>
 
@@ -2608,7 +2608,7 @@
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0, 1, 2])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.supports_inplace_updates(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    False</span>
+<span class="sd">    True</span>
 
 <span class="sd">    With :class:`ivy.Container` input and backend set as `torch`:</span>
 
@@ -2616,9 +2616,17 @@
 <span class="sd">    &gt;&gt;&gt; y = ivy.supports_inplace_updates(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
-<span class="sd">        a: false,</span>
-<span class="sd">        b: false</span>
+<span class="sd">        a: True,</span>
+<span class="sd">        b: True</span>
 <span class="sd">    }</span>
+
+<span class="sd">    With `ivy.Array` input and backend set as &quot;tensorflow&quot;:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1., 4.2, 2.2])</span>
+<span class="sd">    &gt;&gt;&gt; ret = x.supports_inplace_updates()</span>
+<span class="sd">    &gt;&gt;&gt; print(ret)</span>
+<span class="sd">    False</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">_is_variable</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">inplace_variables_supported</span><span class="p">()</span>
@@ -2634,7 +2642,8 @@
 <span class="nd">@handle_exceptions</span>
 <span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">assert_supports_inplace</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Asserts that inplace operations are supported for x, else raises IvyBackendException.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Asserts that inplace operations are supported for x, else </span>
+<span class="sd">    raises IvyBackendException.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
