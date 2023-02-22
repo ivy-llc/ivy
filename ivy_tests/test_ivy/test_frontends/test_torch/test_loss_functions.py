@@ -660,6 +660,8 @@ def test_torch_kl_div(
     dtype_and_inputs=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=3,
+        min_value=0.0,
+        max_value=1.0,
         allow_inf=False,
         shared_dtype=True,
     ),
