@@ -12,17 +12,17 @@ def all(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    x = paddle.as_tensor(x).type(paddle.bool)
+    x = paddle.to_tensor(x, dtype=paddle.bool)
     if axis is None:
         num_dims = len(x.shape)
         axis = list(range(num_dims))
     if isinstance(axis, int):
-        return paddle.all(x, dim=axis, keepdim=keepdims, out=out)
+        return paddle.all(x, axis=axis, keepdim=keepdims)
     dims = len(x.shape)
     axis = [i % dims for i in axis]
     axis.sort()
     for i, a in enumerate(axis):
-        x = paddle.all(x, dim=a if keepdims else a - i, keepdim=keepdims, out=out)
+        x = paddle.all(x, axis=a if keepdims else a - i, keepdim=keepdims)
     return x
 
 
