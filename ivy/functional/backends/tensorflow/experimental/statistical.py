@@ -53,7 +53,7 @@ def unravel_index(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Tuple:
-    ret = tf.cast(tf.unravel_index(indices, shape), tf.int64)
+    ret = tf.cast(tf.unravel_index(indices, shape))
     return tuple([tf.constant(ret[i]) for i in range(0, len(ret))])
 
 
