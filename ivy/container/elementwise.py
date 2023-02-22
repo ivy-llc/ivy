@@ -8846,3 +8846,94 @@ class ContainerWithElementwise(ContainerBase):
         }
         """
         return self.static_trapz(self, x=x, dx=dx, axis=axis, out=out)
+
+    @staticmethod
+    def static_ldexp(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        i: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.ldexp. This method simply
+        wraps the function, and so the docstring for ivy.ldexp also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            The container whose arrays should be multiplied by 2**i.
+        i
+            The container whose arrays should be used to multiply x by 2**i.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container including x * 2**i.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 5, 10]))
+        >>> i = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 5, 10]))
+        >>> ivy.Container.static_ldexp(x, i)
+        {
+            a: ivy.array([2, 8, 24]),
+            b: ivy.array([2, 160, 10240])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "ldexp",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            i=i,
+            out=out,
+        )
+
+    def ldexp(
+        self: ivy.Container,
+        /,
+        *,
+        i: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.ldexp. This method simply
+        wraps the function, and so the docstring for ivy.ldexp also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The container whose arrays should be multiplied by 2**i.
+        i
+            The container whose arrays should be used to multiply x by 2**i.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container including x * 2**i.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 5, 10]))
+        >>> i = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 5, 10]))
+        >>> x.ldexp(i)
+        {
+            a: ivy.array([2, 8, 24]),
+            b: ivy.array([2, 160, 10240])
+        }
+        """
+        return self.static_ldexp(self, i=i, out=out)
