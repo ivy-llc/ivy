@@ -1,11 +1,10 @@
 # Testing Function
 # global
-from hypothesis import strategies as st, reproduce_failure
+from hypothesis import strategies as st
 import numpy as np
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
-from ivy.functional.frontends.numpy import shape
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 @handle_frontend_test(
     fn_tree="numpy.diagonal",
@@ -126,6 +125,6 @@ def test_numpy_unravel_index(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        indices=np.asarray(np.asarray(x[0]), dtype=input_dtype[0]),
+        indices=np.asarray(x[0], dtype=input_dtype[0]),
         shape=shape,
     )
