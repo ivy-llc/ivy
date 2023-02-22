@@ -10,6 +10,7 @@ from ivy_tests.test_ivy.helpers import (
     assert_all_close,
 )
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
+from ivy_tests.test_ivy.test_frontends.test_torch.test_tensor import _array_and_index
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_first_matrix_and_dtype,
     _get_second_matrix_and_dtype,
@@ -2398,4 +2399,33 @@ def test_numpy_instance_tobytes__(
         method_flags=method_flags,
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+    )
+
+
+# __getitem__
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__getitem__",
+    dtype_and_x=_array_and_index(available_dtypes=helpers.get_dtypes("numeric")),
+)
+def test_torch_instance_getitem(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    data = x[0]
+    index = x[1]
+    helpers.test_frontend_method(
+        init_input_dtypes=[input_dtype[0]],
+        init_all_as_kwargs_np={"object": data},
+        method_input_dtypes=[input_dtype[1]],
+        method_all_as_kwargs_np={"key": index},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
     )
