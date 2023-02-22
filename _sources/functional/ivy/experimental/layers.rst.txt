@@ -22,7 +22,6 @@ Layers
    layers/dct.rst
    layers/fft.rst
    layers/dropout1d.rst
-   layers/dropout3d.rst
    layers/ifft.rst
    layers/embedding.rst
    layers/dft.rst
