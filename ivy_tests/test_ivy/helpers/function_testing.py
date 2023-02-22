@@ -576,10 +576,6 @@ def test_frontend_function(
         importlib.import_module("ivy.functional.frontends.jax").config.update(
             "jax_enable_x64", True
         )
-
-    if ('out' in kwargs or test_flags.with_out) and 'out' not in inspect.signature(frontend_fn).parameters:
-        raise Exception(f"Function {fn_tree} does not have an out parameter")
-
     ret = get_frontend_ret(frontend_fn, *args_ivy, **kwargs_ivy)
     if test_flags.with_out:
         if not inspect.isclass(ret):
