@@ -59,3 +59,35 @@ def promote_types(type1, type2, /):
     if isinstance(type2, np_frontend.dtype):
         type2 = type2._ivy_dtype
     return np_frontend.dtype(np_frontend.promote_numpy_dtypes(type1, type2))
+
+
+# dtypes as string
+all_int_dtypes = ["int8", "int16", "int32", "int64", "int64"]
+all_uint_dtypes = ["uint8", "uint16", "uint32", "uint64", "uint64"]
+all_float_dtypes = ["float16", "float32", "float64", "float64"]
+all_complex_dtypes = ["complex64", "complex128"]
+
+
+def min_scalar_type(a, /):
+    if np_frontend.isscalar(a):
+        validation_dtype = type(a)
+        if "int" in validation_dtype.__name__:
+            for dtype in all_uint_dtypes:
+                if np_frontend.iinfo(dtype).min <= a <= np_frontend.iinfo(dtype).max:
+                    return np_frontend.dtype(dtype)
+            for dtype in all_int_dtypes:
+                if np_frontend.iinfo(dtype).min <= a <= np_frontend.iinfo(dtype).max:
+                    return np_frontend.dtype(dtype)
+
+        elif "float" in validation_dtype.__name__:
+            for dtype in all_float_dtypes:
+                if np_frontend.finfo(dtype).min <= a <= np_frontend.finfo(dtype).max:
+                    return np_frontend.dtype(dtype)
+        elif "complex" in validation_dtype.__name__:
+            for dtype in all_complex_dtypes:
+                if np_frontend.finfo(dtype).min <= a <= np_frontend.finfo(dtype).max:
+                    return np_frontend.dtype(dtype)
+        else:
+            return np_frontend.dtype(validation_dtype)
+    else:
+        return np_frontend.dtype(a.dtype)
