@@ -1845,6 +1845,10 @@ def einops_reduce(
     ret
         New array with einops.reduce having been applied.
 
+
+    This function is *nestable*, and therefore also accepts :code:'ivy.Container'
+    instance in place of the argument.
+
     Examples
     --------
     With :class:`ivy.Array` input:
@@ -1853,7 +1857,7 @@ def einops_reduce(
     ...                [3.66, 24.29, 3.64]])
     >>> reduced = ivy.einops_reduce(x, 'a b -> b', 'mean')
     >>> print(reduced)
-    ivy.array([-0.405, 12.6, 0.15])
+    ivy.array([-0.40499985, 12.61000061,  0.1500001 ])
 
     With :class:`ivy.Container` input:
 
@@ -1864,8 +1868,8 @@ def einops_reduce(
     >>> reduced = ivy.einops_reduce(x, 'a b -> a', 'mean')
     >>> print(reduced)
     {
-        a: ivy.array([-2.29, 10.5]),
-        b: ivy.array([-1.4, 6.21])
+        a: ivy.array([-2.29333329, 10.53000069]),
+        b: ivy.array([-1.39666676, 6.20666695])
     }
 
     """
