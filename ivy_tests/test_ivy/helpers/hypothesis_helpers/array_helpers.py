@@ -1043,8 +1043,7 @@ def array_values(
         except Exception:
             # enables bfloat16 behavior with possibly no side-effects
 
-            import paddle_bfloat # noqa
-
+            import paddle_bfloat  # noqa
 
     array = np.asarray(values, dtype=dtype)
 
