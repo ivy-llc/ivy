@@ -2089,6 +2089,9 @@ def test_torch_sigmoid(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=3,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
     ),
 )
 def test_torch_lerp(
@@ -2107,7 +2110,7 @@ def test_torch_lerp(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input_start=start,
-        input_end=end,
-        input_weight=weight,
+        input=start,
+        end=end,
+        weight=weight,
     )
