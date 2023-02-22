@@ -310,6 +310,12 @@ def subtract(x, y, name=None):
 
 
 @to_ivy_arrays_and_back
+def squared_difference(x, y, name=None):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.square(ivy.subtract(x, y))
+
+
+@to_ivy_arrays_and_back
 def tan(x, name=None):
     return ivy.tan(x)
 
