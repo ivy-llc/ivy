@@ -310,7 +310,7 @@ def tan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
 
 
 def atan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.atan(x)
 
   # TODO Fixed in PyTorch 1.12.1 (this note excludes complex)
 
