@@ -432,10 +432,10 @@ def real(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 
 def ldexp(
-    x: np.ndarray,
-    i: Union[np.ndarray, int, list, tuple],
+    x1: np.ndarray,
+    x2: Union[np.ndarray, int, list, tuple],
     /,
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.ldexp(x, i, out=out)
+    return np.ldexp(x1, x2, out=out)
