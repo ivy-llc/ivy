@@ -1912,6 +1912,9 @@ def einops_repeat(
     ret
         New array with einops.repeat having been applied.
 
+    This function is *nestable*, and therefore also accepts :code:'ivy.Container'
+    instance in place of the argument.
+
     Examples
     --------
     With :class:`ivy.Array` input:
