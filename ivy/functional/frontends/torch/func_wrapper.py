@@ -7,12 +7,6 @@ import ivy
 import ivy.functional.frontends.torch as torch_frontend
 
 
-def _from_torch_frontend_tensor_to_ivy_array(x):
-    if hasattr(x, "ivy_array"):
-        return x.ivy_array
-    return x
-
-
 def _from_ivy_array_to_torch_frontend_tensor(x, nested=False, include_derived=None):
     if nested:
         return ivy.nested_map(
@@ -24,14 +18,17 @@ def _from_ivy_array_to_torch_frontend_tensor(x, nested=False, include_derived=No
     return x
 
 
-def _from_native_to_ivy_array(x):
+def _to_ivy_array(x):
+    # if x is a native array return it as an ivy array
     if isinstance(x, ivy.NativeArray):
         return ivy.array(x)
+
+    # else if x is a frontend torch Tensor (or any frontend "Tensor" actually) return the wrapped ivy array # noqa: E501
+    elif hasattr(x, "ivy_array"):
+        return x.ivy_array
+
+    # else just return x
     return x
-
-
-def _to_ivy_array(x):
-    return _from_torch_frontend_tensor_to_ivy_array(_from_native_to_ivy_array(x))
 
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
