@@ -51,8 +51,9 @@ def unravel_index(
     /,
     *,
     out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.unravel_index(indices, shape)
+) -> Tuple:
+    ret = np.asarray(np.unravel_index(indices, shape), dtype=np.int32)
+    return tuple(ret)
 
 
 unravel_index.support_native_out = False
