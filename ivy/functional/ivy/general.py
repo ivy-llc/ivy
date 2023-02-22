@@ -2775,7 +2775,8 @@ def scatter_flat(
     updates
         Values for the new array to hold.
     size
-        The size of the result.
+        The size of the result. Default is `None`, in which case tensor
+        argument out must be provided.
     reduction
         The reduction method for the scatter, one of 'sum', 'min', 'max' or 'replace'
     out
@@ -2786,6 +2787,53 @@ def scatter_flat(
     -------
     ret
         New array of given shape, with the values scattered at the indices.
+
+    This function is *nestable*, and therefore also accepts :code:'ivy.Container'
+    instance in place of the argument.
+
+    Examples
+    --------
+
+    With :class:`ivy.Array` input:
+    >>> indices = ivy.array([0, 0, 1, 0, 2, 2, 3, 3])
+    >>> updates = ivy.array([5, 1, 7, 2, 3, 2, 1, 3])
+    >>> out = ivy.array([0, 0, 0, 0, 0, 0, 0, 0])
+    >>> ivy.scatter_flat(indices, updates, out=out)
+    >>> print(out)
+    ivy.array([8, 7, 5, 4, 0, 0, 0, 0])
+
+
+    With :class:`ivy.Array` input:
+    >>> indices = ivy.array([1, 0, 1, 0, 2, 2, 3, 3])
+    >>> updates = ivy.array([9, 2, 0, 2, 3, 2, 1, 8])
+    >>> size = 8
+    >>> print(ivy.scatter_flat(indices, updates, size=size))
+    ivy.array([4, 9, 5, 9, 0, 0, 0, 0])
+
+
+    With :class:`ivy.Container` and :class:`ivy.Array` input:
+    >>> indices = ivy.array([1, 0, 1, 0, 2, 2, 3, 3])
+    >>> updates = ivy.Container(a=ivy.array([9, 2, 0, 2, 3, 2, 1, 8]), \
+                        b=ivy.array([5, 1, 7, 2, 3, 2, 1, 3]))
+    >>> size = 8
+    >>> print(ivy.scatter_flat(indices, updates, size=size))
+    {
+        a: ivy.array([4, 9, 5, 9, 0, 0, 0, 0]),
+        b: ivy.array([3, 12, 5, 4, 0, 0, 0, 0])
+    }
+
+
+    With :class:`ivy.Container` input:
+    >>> indices = ivy.Container(a=ivy.array([1, 0, 1, 0, 2, 2, 3, 3]), \
+                        b=ivy.array([0, 0, 1, 0, 2, 2, 3, 3]))
+    >>> updates = ivy.Container(a=ivy.array([9, 2, 0, 2, 3, 2, 1, 8]), \
+                        b=ivy.array([5, 1, 7, 2, 3, 2, 1, 3]))
+    >>> size = 8
+    >>> print(ivy.scatter_flat(indices, updates, size=size))
+    {
+        a: ivy.array([4, 9, 5, 9, 0, 0, 0, 0]),
+        b: ivy.array([8, 7, 5, 4, 0, 0, 0, 0])
+    }
 
     """
     return current_backend(indices).scatter_flat(
