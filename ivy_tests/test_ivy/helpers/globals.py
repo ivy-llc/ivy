@@ -36,6 +36,7 @@ CURRENT_GROUND_TRUTH_BACKEND: callable = _Notsetval
 CURRENT_BACKEND: callable = _Notsetval
 CURRENT_FRONTEND: callable = _Notsetval
 CURRENT_RUNNING_TEST = _Notsetval
+CURRENT_DEVICE = _Notsetval
 CURRENT_FRONTEND_STR = ""
 
 
@@ -141,28 +142,34 @@ def _get_ivy_torch(version=None):
 # Setup
 
 
-def setup_api_test(test_data: TestData, backend: str, ground_truth_backend: str):
+def setup_api_test(
+    test_data: TestData, backend: str, ground_truth_backend: str, device: str
+):
     _set_test_data(test_data)
     _set_backend(backend)
+    _set_device(device)
     _set_ground_truth_backend(ground_truth_backend)
 
 
 def teardown_api_test():
     _unset_test_data()
     _unset_backend()
+    _unset_device()
     _unset_ground_truth_backend()
 
 
-def setup_frontend_test(test_data: TestData, frontend: str, backend: str):
+def setup_frontend_test(test_data: TestData, frontend: str, backend: str, device: str):
     _set_test_data(test_data)
     _set_frontend(frontend)
     _set_backend(backend)
+    _set_device(device)
 
 
 def teardown_frontend_test():
     _unset_test_data()
     _unset_frontend()
     _unset_backend()
+    _unset_device()
 
 
 def _set_test_data(test_data: TestData):
@@ -201,6 +208,13 @@ def _set_ground_truth_backend(framework: str):
     CURRENT_GROUND_TRUTH_BACKEND = FWS_DICT[framework]
 
 
+def _set_device(device: str):
+    global CURRENT_DEVICE
+    if CURRENT_DEVICE is not _Notsetval:
+        raise InterruptedTest(CURRENT_RUNNING_TEST)
+    CURRENT_DEVICE = device
+
+
 # Teardown
 
 
@@ -222,3 +236,8 @@ def _unset_backend():
 def _unset_ground_truth_backend():
     global CURRENT_GROUND_TRUTH_BACKEND
     CURRENT_GROUND_TRUTH_BACKEND = _Notsetval
+
+
+def _unset_device():
+    global CURRENT_DEVICE
+    CURRENT_DEVICE = _Notsetval
