@@ -115,7 +115,7 @@ def unravel_index(
     /,
     *,
     out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> Tuple:
     """Converts a flat index or array of flat indices
     into a tuple of coordinate arrays.
 
