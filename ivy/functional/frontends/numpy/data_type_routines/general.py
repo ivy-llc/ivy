@@ -88,7 +88,6 @@ def min_scalar_type(a, /):
         elif "float" in validation_dtype.__name__:
             for dtype in all_float_dtypes:
                 if np_frontend.finfo(dtype).min <= a <= np_frontend.finfo(dtype).max:
-                    print(np_frontend.allclose(a, np_frontend.finfo(dtype).max))
                     return np_frontend.dtype(dtype)
         elif "complex" in validation_dtype.__name__:
             for dtype in all_complex_dtypes:
