@@ -18,11 +18,11 @@ import ivy.functional.frontends.numpy as np_frontend
 
 def _fn(x=None, check_default=False, dtype=None):
     if check_default:
-        ivy.assertions.check_equal(ivy.default_float_dtype(), "float64")
+        ivy.utils.assertions.check_equal(ivy.default_float_dtype(), "float64")
         if platform.system() != "Windows":
-            ivy.assertions.check_equal(ivy.default_int_dtype(), "int64")
+            ivy.utils.assertions.check_equal(ivy.default_int_dtype(), "int64")
         else:
-            ivy.assertions.check_equal(ivy.default_int_dtype(), "int32")
+            ivy.utils.assertions.check_equal(ivy.default_int_dtype(), "int32")
     if ivy.exists(dtype):
         return dtype
     return x

@@ -98,12 +98,12 @@ def to_numpy(
                 return x.detach().cpu().numpy().astype("bfloat16")
             return x.detach().cpu().numpy()
         else:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "Overwriting the same address is not supported for torch."
             )
     elif isinstance(x, list):
         return [ivy.to_numpy(u) for u in x]
-    raise ivy.exceptions.IvyException("Expected a pytorch tensor.")
+    raise ivy.utils.exceptions.IvyException("Expected a pytorch tensor.")
 
 
 def to_scalar(x: torch.Tensor, /) -> Number:
@@ -125,7 +125,7 @@ def to_list(x: torch.Tensor, /) -> list:
             return x.detach().cpu().numpy().astype("bfloat16").tolist()
         else:
             return x.detach().cpu().numpy().tolist()
-    raise ivy.exceptions.IvyException("Expected a pytorch tensor.")
+    raise ivy.utils.exceptions.IvyException("Expected a pytorch tensor.")
 
 
 def gather(
@@ -139,7 +139,7 @@ def gather(
 ) -> torch.Tensor:
     axis = axis % len(params.shape)
     batch_dims = batch_dims % len(params.shape)
-    ivy.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
+    ivy.utils.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
     result = []
     if batch_dims == 0:
         result = params[
@@ -202,7 +202,7 @@ def gather_nd(
     batch_dims: Optional[int] = 0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    ivy.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
+    ivy.utils.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
     batch_dims = batch_dims % len(params.shape)
     result = []
     if batch_dims == 0:
@@ -265,7 +265,7 @@ def inplace_update(
     val: Union[ivy.Array, torch.Tensor],
     ensure_in_backend: bool = False,
 ) -> ivy.Array:
-    ivy.assertions.check_inplace_sizes_valid(x, val)
+    ivy.utils.assertions.check_inplace_sizes_valid(x, val)
     if ivy.is_array(x) and ivy.is_array(val):
         (x_native, val_native), _ = ivy.args_to_native(x, val)
         x_native.data = val_native
@@ -311,8 +311,8 @@ def scatter_flat(
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
-        ivy.assertions.check_equal(len(target.shape), 1)
-        ivy.assertions.check_equal(target.shape[0], size)
+        ivy.utils.assertions.check_equal(len(target.shape), 1)
+        ivy.utils.assertions.check_equal(target.shape[0], size)
     dtype = updates.dtype
     if reduction in ["sum", "replace"]:
         initial_val = torch.tensor(0).type(dtype)
@@ -321,7 +321,7 @@ def scatter_flat(
     elif reduction == "max":
         initial_val = torch.tensor(-1e12).type(dtype)
     else:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
                 reduction
             )
@@ -335,7 +335,7 @@ def scatter_flat(
         try:
             import torch_scatter as torch_scatter
         except ImportError:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "Unable to import torch_scatter, verify this is correctly installed."
             )
     if reduction == "replace":
@@ -469,7 +469,7 @@ def scatter_nd(
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
-        ivy.assertions.check_equal(ivy.Shape(target.shape), ivy.Shape(shape))
+        ivy.utils.assertions.check_equal(ivy.Shape(target.shape), ivy.Shape(shape))
     shape = list(shape) if ivy.exists(shape) else list(out.shape)
     dtype = updates.dtype
     indices_shape = indices.shape
@@ -493,7 +493,7 @@ def scatter_nd(
         else:
             initial_val = int(max(torch.iinfo(dtype).min, -1e12))
     else:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
                 reduction
             )
@@ -518,7 +518,7 @@ def scatter_nd(
         try:
             import torch_scatter as torch_scatter
         except ImportError:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "Unable to import torch_scatter, verify this is correctly installed."
             )
     if reduction == "replace":

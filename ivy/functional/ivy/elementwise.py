@@ -12,7 +12,7 @@ from ivy.func_wrapper import (
     integer_arrays_to_float,
     handle_array_like_without_promotion,
 )
-from ivy.exceptions import handle_exceptions
+from ivy.utils.exceptions import handle_exceptions
 
 
 # Array API Standard #

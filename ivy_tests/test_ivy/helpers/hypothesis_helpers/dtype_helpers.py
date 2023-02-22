@@ -14,6 +14,59 @@ from . import array_helpers as ah
 from .. import globals as test_globals
 
 
+_dtype_kind_keys = {
+    "valid",
+    "numeric",
+    "float",
+    "unsigned",
+    "integer",
+    "signed_integer",
+    "complex",
+    "real_and_complex",
+    "float_and_complex",
+    "bool",
+}
+
+
+def _get_fn_dtypes(framework, kind="valid"):
+    return test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[framework.backend][
+        test_globals.CURRENT_DEVICE
+    ][kind]
+
+
+def _get_type_dict(framework, kind):
+    if kind == "valid":
+        return framework.valid_dtypes
+    elif kind == "numeric":
+        return framework.valid_numeric_dtypes
+    elif kind == "integer":
+        return framework.valid_int_dtypes
+    elif kind == "float":
+        return framework.valid_float_dtypes
+    elif kind == "unsigned":
+        return framework.valid_int_dtypes
+    elif kind == "signed_integer":
+        return tuple(
+            set(framework.valid_int_dtypes).difference(framework.valid_uint_dtypes)
+        )
+    elif kind == "complex":
+        return framework.valid_complex_dtypes
+    elif kind == "real_and_complex":
+        return tuple(
+            set(framework.valid_numeric_dtypes).union(framework.valid_complex_dtypes)
+        )
+    elif kind == "float_and_complex":
+        return tuple(
+            set(framework.valid_float_dtypes).union(framework.valid_complex_dtypes)
+        )
+    elif kind == "bool":
+        return tuple(
+            set(framework.valid_dtypes).difference(framework.valid_numeric_dtypes)
+        )
+    else:
+        raise RuntimeError("{} is an unknown kind!".format(kind))
+
+
 def make_json_pickable(s):
     s = s.replace("builtins.bfloat16", "ivy.bfloat16")
     s = s.replace("jax._src.device_array.reconstruct_device_array", "jax.numpy.array")
@@ -22,7 +75,7 @@ def make_json_pickable(s):
 
 @st.composite
 def get_dtypes(
-    draw, kind, index=0, full=True, none=False, key=None, prune_function=True
+    draw, kind="valid", index=0, full=True, none=False, key=None, prune_function=True
 ):
     """
     Draws a valid dtypes for the test function. For frontend tests,
@@ -51,91 +104,45 @@ def get_dtypes(
         dtype string
     """
 
-    def _get_type_dict(framework):
-        return {
-            "valid": framework.valid_dtypes,
-            "numeric": framework.valid_numeric_dtypes,
-            "float": framework.valid_float_dtypes,
-            "integer": framework.valid_int_dtypes,
-            "unsigned": framework.valid_uint_dtypes,
-            "signed_integer": tuple(
-                set(framework.valid_int_dtypes).difference(framework.valid_uint_dtypes)
-            ),
-            "complex": framework.valid_complex_dtypes,
-            "real_and_complex": tuple(
-                set(framework.valid_numeric_dtypes).union(
-                    framework.valid_complex_dtypes
-                )
-            ),
-            "float_and_complex": tuple(
-                set(framework.valid_float_dtypes).union(framework.valid_complex_dtypes)
-            ),
-            "bool": tuple(
-                set(framework.valid_dtypes).difference(framework.valid_numeric_dtypes)
-            ),
-        }
-
-    # TODO refactor this so we run the intersection in a chained clean way
-    backend_dtypes = _get_type_dict(ivy)[kind]
-
-    if test_globals.CURRENT_FRONTEND is not test_globals._Notsetval or isinstance(
-        test_globals.CURRENT_FRONTEND_STR, list
-    ):  # NOQA
-        if isinstance(test_globals.CURRENT_FRONTEND_STR, list):
-            process = test_globals.CURRENT_FRONTEND_STR[1]
-            try:
-                process.stdin.write("1" + "\n")
-                process.stdin.flush()
-            except Exception as e:
-                print(
-                    "Something bad happened to the subprocess, here are the logs:\n\n"
-                )
-                print(process.stdout.readlines())
-                raise e
-            frontend_ret = process.stdout.readline()
-            if frontend_ret:
-                frontend_ret = jsonpickle.loads(make_json_pickable(frontend_ret))
-            else:
-                print(process.stderr.readlines())
-                raise Exception
-            fw_dtypes = frontend_ret[kind]
-            valid_dtypes = tuple(set(fw_dtypes).intersection(backend_dtypes))
+    if prune_function:
+        retrieval_fn = _get_fn_dtypes
+        if test_globals.CURRENT_RUNNING_TEST is not test_globals._Notsetval:
+            valid_dtypes = set(retrieval_fn(test_globals.CURRENT_BACKEND()))
         else:
-            fw_dtypes = _get_type_dict(test_globals.CURRENT_FRONTEND())[kind]
-            valid_dtypes = tuple(set(fw_dtypes).intersection(backend_dtypes))
+            raise RuntimeError(
+                "No function is set to prune, calling "
+                "prune_function=True without a function is redundant."
+            )
     else:
-        valid_dtypes = backend_dtypes
+        retrieval_fn = _get_type_dict
+        valid_dtypes = set(retrieval_fn(ivy, kind))
 
+    # The function may be called from a frontend test or an IVY api test
+    # In the case of a IVY api test, the function should make sure it returns a valid
+    # dtypes for the backend and also for the ground truth backend, if it is called from
+    # a frontend test, we should also count for the frontend support data types
+    # In conclusion, the following operations will get the intersection of
+    # FN_DTYPES & BACKEND_DTYPES & FRONTEND_DTYPES & GROUND_TRUTH_DTYPES
+
+    # If being called from a frontend test
+    if test_globals.CURRENT_FRONTEND is not test_globals._Notsetval:  # NOQA
+        frontend_dtypes = retrieval_fn(test_globals.CURRENT_FRONTEND(), kind)
+        valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
+
+    # Make sure we return dtypes that are compatiable with ground truth backend
     ground_truth_is_set = (
         test_globals.CURRENT_GROUND_TRUTH_BACKEND is not test_globals._Notsetval  # NOQA
     )
     if ground_truth_is_set:
-        gtb_dtypes = _get_type_dict(test_globals.CURRENT_GROUND_TRUTH_BACKEND())[kind]
-        valid_dtypes = tuple(set(gtb_dtypes).intersection(valid_dtypes))
-
-    # TODO, do this in a better way...
-    if (
-        prune_function
-        and test_globals.CURRENT_RUNNING_TEST is not test_globals._Notsetval
-    ):  # NOQA
-        fn_dtypes = test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes
-        valid_dtypes = set(valid_dtypes).intersection(
-            fn_dtypes[test_globals.CURRENT_BACKEND().backend]["cpu"]
+        valid_dtypes = valid_dtypes.intersection(
+            retrieval_fn(test_globals.CURRENT_GROUND_TRUTH_BACKEND(), kind)
         )
-        if ground_truth_is_set:
-            valid_dtypes = tuple(
-                valid_dtypes.intersection(
-                    fn_dtypes[test_globals.CURRENT_GROUND_TRUTH_BACKEND().backend][
-                        "cpu"
-                    ]
-                )
-            )
-        else:
-            valid_dtypes = tuple(valid_dtypes)
+
+    valid_dtypes = list(valid_dtypes)
     if none:
-        valid_dtypes += (None,)
+        valid_dtypes.append(None)
     if full:
-        return list(valid_dtypes[index:])
+        return valid_dtypes[index:]
     if key is None:
         return [draw(st.sampled_from(valid_dtypes[index:]))]
     return [draw(st.shared(st.sampled_from(valid_dtypes[index:]), key=key))]

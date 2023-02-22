@@ -201,7 +201,7 @@ silu.unsupported_dtypes = (
 
 @to_ivy_arrays_and_back
 def sigmoid_cross_entropy_with_logits(labels=None, logits=None, name=None):
-    ivy.assertions.check_shape(labels, logits)
+    ivy.utils.assertions.check_shape(labels, logits)
     zeros = ivy.zeros_like(logits)
     max_logits = ivy.where(logits >= zeros, logits, zeros)
     neg_abs_logits = ivy.negative(ivy.abs(logits))
@@ -223,7 +223,7 @@ sigmoid_cross_entropy_with_logits.unsupported_dtypes = (
 def weighted_cross_entropy_with_logits(
     labels=None, logits=None, pos_weight=1.0, name=None
 ):
-    ivy.assertions.check_shape(labels, logits)
+    ivy.utils.assertions.check_shape(labels, logits)
     ones = ivy.ones_like(labels)
     zeros = ivy.zeros_like(logits)
     log_weight = ivy.add(ones, ivy.multiply(pos_weight - 1, labels))
@@ -256,7 +256,7 @@ def local_response_normalization(
     input, /, *, depth_radius=5, bias=1.0, alpha=1.0, beta=0.5, name=None
 ):
     input_shape = ivy.shape(input)
-    ivy.assertions.check_equal(
+    ivy.utils.assertions.check_equal(
         ivy.get_num_dims(input),
         4,
         message="4D input, but got input with sizes " + str(input_shape),

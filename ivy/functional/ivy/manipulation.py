@@ -15,7 +15,7 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_view,
 )
-from ivy.exceptions import handle_exceptions
+from ivy.utils.exceptions import handle_exceptions
 
 
 def _calculate_out_shape(axis, array_shape):
@@ -510,7 +510,7 @@ def reshape(
     }
 
     """
-    ivy.assertions.check_elem_in_list(order, ["C", "F"])
+    ivy.utils.assertions.check_elem_in_list(order, ["C", "F"])
     return current_backend(x).reshape(
         x, shape=shape, copy=copy, allowzero=allowzero, out=out, order=order
     )

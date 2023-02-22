@@ -47,7 +47,7 @@ def try_array_function_override(func, overloaded_args, types, args, kwargs):
         try:
             result = overloaded_arg.__ivy_array_function__(func, types, args, kwargs)
         except Exception:
-            raise ivy.exceptions.IvyNotImplementedException
+            raise ivy.utils.exceptions.IvyNotImplementedException
 
         if result is not NotImplemented:
             return True, result
@@ -134,9 +134,10 @@ def handle_array_function(func):
                 for a in indices:
                     if type(getattr(arg, a[0])) not in overloaded_types:
                         overloaded_types.append(type(getattr(arg, a[0])))
+
                         if getattr(
                             arg, a[0]
-                        ).__ivy_array_function__ is not ivy.Array.__ivy_array_function__ and not isinstance(  # noqa
+                        ).__ivy_array_function__ is not ivy.Array.__ivy_array_function__ and not isinstance(  # noqa: E501
                             getattr(arg, a[0]), (ivy.Array, ivy.NativeArray)
                         ):
                             index = len(overloaded_args)
@@ -868,7 +869,7 @@ def handle_nans(fn: Callable) -> Callable:
         if result:
             # handle nans based on the selected policy
             if nan_policy == "raise_exception":
-                raise ivy.exceptions.IvyException(
+                raise ivy.utils.exceptions.IvyException(
                     "Nans are not allowed in `raise_exception` policy."
                 )
             elif nan_policy == "warns":

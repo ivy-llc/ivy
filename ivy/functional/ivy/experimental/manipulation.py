@@ -20,7 +20,7 @@ from ivy.func_wrapper import (
     handle_view,
 )
 from ivy.utils.backend import current_backend
-from ivy.exceptions import handle_exceptions
+from ivy.utils.exceptions import handle_exceptions
 
 
 @handle_out_argument
@@ -860,7 +860,7 @@ def _to_pairs(x, n):
     elif ivy.asarray(list(x)).shape == (2,):
         return ((x[0], x[1]),) * n
     else:
-        ivy.assertions.check_equal(
+        ivy.utils.assertions.check_equal(
             ivy.asarray(list(x)).shape,
             (n, 2),
             message="tuple argument should contain "
@@ -884,7 +884,7 @@ def _check_tuple_arg(arg, name):
     elif not isinstance(arg, int):
         flag_assert = True
     if flag_assert:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             name + " should be int, tuple of ints or tuple of int tuples"
         )
 
@@ -897,7 +897,7 @@ def _check_arguments(
     end_values,
     reflect_type,
 ):
-    ivy.assertions.check_true(
+    ivy.utils.assertions.check_true(
         callable(mode)
         or mode
         in [
@@ -916,36 +916,36 @@ def _check_arguments(
         message="the provided mode is not supported",
     )
     _check_tuple_arg(pad_width, "pad_width")
-    ivy.assertions.check_true(
+    ivy.utils.assertions.check_true(
         all(element[1] >= 0 for element in ivy.ndenumerate(pad_width)),
         message="the pad_widths must be greater or equal to zero",
     )
     if mode in ["maximum", "mean", "median", "minimum"]:
         if stat_length is None:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "stat_length is required for mode: " + mode
             )
         else:
             _check_tuple_arg(stat_length, "stat_length")
-            ivy.assertions.check_true(
+            ivy.utils.assertions.check_true(
                 all(element[1] > 0 for element in ivy.ndenumerate(stat_length)),
                 message="the stat lengths must be greater than zero",
             )
     elif mode == "constant":
         if constant_values is None:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "constant_values is required for mode: " + mode
             )
         else:
             _check_tuple_arg(constant_values, "constant_values")
     elif mode == "linear_ramp":
         if end_values is None:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "end_values is required for mode: " + mode
             )
         else:
             _check_tuple_arg(end_values, "end_values")
-    ivy.assertions.check_true(
+    ivy.utils.assertions.check_true(
         reflect_type in ["even", "odd"],
         message="the provided reflect_type is not supported",
     )
@@ -1171,7 +1171,7 @@ def pad(
         func = stat_functions[mode]
         stat_length = _to_pairs(stat_length, padded.ndim)
         if mode == "median":
-            ivy.assertions.check_true(
+            ivy.utils.assertions.check_true(
                 ivy.is_float_dtype(input),
                 message="median interpolation is only supported for floats",
             )

@@ -14,7 +14,7 @@ import numpy as np
 import ivy
 from ivy.utils.backend import current_backend, backend_stack
 from ivy.functional.ivy.gradients import _is_variable
-from ivy.exceptions import handle_exceptions
+from ivy.utils.exceptions import handle_exceptions
 from ivy.func_wrapper import (
     handle_array_function,
     inputs_to_ivy_arrays,
@@ -276,7 +276,7 @@ def set_array_mode(mode: bool) -> None:
     True
     """
     global array_mode_stack
-    ivy.assertions.check_isinstance(mode, bool)
+    ivy.utils.assertions.check_isinstance(mode, bool)
     array_mode_stack.append(mode)
 
 
@@ -339,7 +339,7 @@ def set_nestable_mode(mode: bool) -> None:
     True
     """
     global nestable_mode_stack
-    ivy.assertions.check_isinstance(mode, bool)
+    ivy.utils.assertions.check_isinstance(mode, bool)
     nestable_mode_stack.append(mode)
 
 
@@ -405,7 +405,7 @@ def set_exception_trace_mode(mode: str) -> None:
     """
     global exception_trace_mode_stack
     trace_modes = list(trace_mode_dict.keys())
-    ivy.assertions.check_elem_in_list(
+    ivy.utils.assertions.check_elem_in_list(
         mode, trace_modes, "trace mode must be one of {}".format(trace_modes)
     )
     exception_trace_mode_stack.append(mode)
@@ -467,7 +467,7 @@ def set_show_func_wrapper_trace_mode(mode: bool) -> None:
     True
     """
     global show_func_wrapper_trace_mode_stack
-    ivy.assertions.check_isinstance(mode, bool)
+    ivy.utils.assertions.check_isinstance(mode, bool)
     show_func_wrapper_trace_mode_stack.append(mode)
 
 
@@ -1457,12 +1457,12 @@ def to_native_shape(shape: Union[ivy.Shape, ivy.NativeShape]) -> ivy.NativeShape
     """
     if len(backend_stack) != 0 and isinstance(shape, ivy.NativeShape):
         return shape
-    ivy.assertions.check_isinstance(shape, (int, list, tuple))
+    ivy.utils.assertions.check_isinstance(shape, (int, list, tuple))
     if isinstance(shape, int):
         shape = (shape,)
     elif isinstance(shape, list):
         shape = tuple(shape)
-    ivy.assertions.check_all(
+    ivy.utils.assertions.check_all(
         [isinstance(v, int) for v in shape], "shape must take integers only"
     )
     return ivy.NativeShape(shape) if len(backend_stack) != 0 else ivy.Shape(shape)
@@ -1823,7 +1823,8 @@ def einops_reduce(
     out: Optional[ivy.Array] = None,
     **axes_lengths: Dict[str, int],
 ) -> ivy.Array:
-    """Perform einops reduce operation on input array x.
+    """
+    Perform einops reduce operation on input array x.
 
     Parameters
     ----------
@@ -1852,14 +1853,14 @@ def einops_reduce(
     ...                [3.66, 24.29, 3.64]])
     >>> reduced = ivy.einops_reduce(x, 'a b -> b', 'mean')
     >>> print(reduced)
-    ivy.array([-0.405, 12.6  ,  0.15 ])
+    ivy.array([-0.405, 12.6, 0.15])
 
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([[-4.47, 0.93, -3.34],
     ...                                [3.66, 24.29, 3.64]]),
-    ...                    b=ivy.array([[4.96, 1.52, -10.67],
-    ...                                 [4.36, 13.96, 0.3]]))
+    ...                   b=ivy.array([[4.96, 1.52, -10.67],
+    ...                                [4.36, 13.96, 0.3]]))
     >>> reduced = ivy.einops_reduce(x, 'a b -> a', 'mean')
     >>> print(reduced)
     {
@@ -2273,7 +2274,7 @@ def set_queue_timeout(timeout: float):
 
     """
     global queue_timeout_stack
-    ivy.assertions.check_isinstance(timeout, (int, float))
+    ivy.utils.assertions.check_isinstance(timeout, (int, float))
     queue_timeout_stack.append(timeout)
 
 
@@ -2438,7 +2439,7 @@ def supports_inplace_updates(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
 
     Raises
     ------
-    ValueError
+    IvyException
         If x isn't a class instance of ivy.Array or ivy.NativeArray, an exception will
         be raised.
 
@@ -2452,7 +2453,7 @@ def supports_inplace_updates(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     >>> x = ivy.array([0, 1, 2])
     >>> y = ivy.supports_inplace_updates(x)
     >>> print(y)
-    False
+    True
 
     With :class:`ivy.Container` input and backend set as `torch`:
 
@@ -2460,15 +2461,25 @@ def supports_inplace_updates(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     >>> y = ivy.supports_inplace_updates(x)
     >>> print(y)
     {
-        a: false,
-        b: false
+        a: True,
+        b: True
     }
+
+    With `ivy.Array` input and backend set as "tensorflow":
+
+    >>> x = ivy.array([1., 4.2, 2.2])
+    >>> ret = x.supports_inplace_updates()
+    >>> print(ret)
+    False
+
     """
     if _is_variable(x):
         return ivy.inplace_variables_supported()
     elif ivy.is_native_array(x):
         return ivy.inplace_arrays_supported()
-    raise ivy.exceptions.IvyException("Input x must be either a variable or an array.")
+    raise ivy.utils.exceptions.IvyException(
+        "Input x must be either a variable or an array."
+    )
 
 
 @inputs_to_native_arrays
@@ -2476,7 +2487,8 @@ def supports_inplace_updates(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
 @handle_exceptions
 @handle_array_function
 def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
-    """Asserts that inplace operations are supported for x, else raises IvyBackendException.
+    """Asserts that inplace operations are supported for x, else 
+    raises IvyBackendException.
 
     Parameters
     ----------
@@ -2523,7 +2535,7 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     are not supported <class 'jaxlib.xla_extension.DeviceArray'> types with jax backend
 
     """
-    ivy.assertions.check_true(
+    ivy.utils.assertions.check_true(
         ivy.supports_inplace_updates(x),
         "Inplace operations are not supported {} types with {} backend".format(
             type(x), ivy.current_backend_str()
@@ -3121,7 +3133,7 @@ def set_shape_array_mode(mode: bool) -> None:
     True
     """
     global shape_array_mode_stack
-    ivy.assertions.check_isinstance(mode, bool)
+    ivy.utils.assertions.check_isinstance(mode, bool)
     shape_array_mode_stack.append(mode)
 
 
@@ -3233,7 +3245,7 @@ def arg_info(fn: Callable, *, name: str = None, idx: int = None):
         a `dict` containing the idx, and the `inspect.Parameter` for the argument,
         which itself contains the parameter name, type, and other helpful information.
     """
-    ivy.assertions.check_all_or_any_fn(
+    ivy.utils.assertions.check_all_or_any_fn(
         name,
         idx,
         fn=ivy.exists,
@@ -3253,7 +3265,7 @@ def _valid_attrib_combinations(fn, backend, dnd_dict, first_attr_name, other_att
         attr_list = getattr(fn, other_attr_name)
         if isinstance(attr_list, dict):
             attr_list = attr_list.get(backend, ())
-    ivy.assertions.check_false(
+    ivy.utils.assertions.check_false(
         dnd_dict and attr_list,
         f"Cannot specify both {first_attr_name} and {other_attr_name} "
         "cannot both be defined for the same function",
@@ -3275,7 +3287,7 @@ def _is_valid_device_and_dtypes_attributes(fn: Callable) -> bool:
         if isinstance(list(fn_supported_dnd.__get__().values())[0], dict):
             fn_supported_dnd = fn_supported_dnd.get(backend, {})
 
-    ivy.assertions.check_false(
+    ivy.utils.assertions.check_false(
         fn_unsupported_dnd and fn_supported_dnd,
         "unsupported_device_and_dtype and supported_device_and_dtype \
         cannot both be defined for the same function",
@@ -3359,7 +3371,7 @@ def _get_devices_and_dtypes(fn, complement=True):
         if "einops" in fn.__name__ and isinstance(fn_supported_dnd, dict):
             fn_supported_dnd = fn_supported_dnd.get(backend, supported)
 
-        ivy.assertions.check_isinstance(list(fn_supported_dnd.values())[0], tuple)
+        ivy.utils.assertions.check_isinstance(list(fn_supported_dnd.values())[0], tuple)
         # dict intersection
         supported = _dnd_dict_intersection(supported, fn_supported_dnd)
 
@@ -3369,7 +3381,9 @@ def _get_devices_and_dtypes(fn, complement=True):
         if "einops" in fn.__name__ and isinstance(fn_unsupported_dnd, dict):
             fn_unsupported_dnd = fn_unsupported_dnd.get(backend, supported)
 
-        ivy.assertions.check_isinstance(list(fn_unsupported_dnd.values())[0], tuple)
+        ivy.utils.assertions.check_isinstance(
+            list(fn_unsupported_dnd.values())[0], tuple
+        )
         # dict difference
         supported = _dnd_dict_difference(supported, fn_unsupported_dnd)
 
@@ -3398,7 +3412,7 @@ def function_supported_devices_and_dtypes(fn: Callable, recurse=True) -> Dict:
     ret
         The unsupported devices of the function
     """
-    ivy.assertions.check_true(
+    ivy.utils.assertions.check_true(
         _is_valid_device_and_dtypes_attributes(fn),
         "supported_device_and_dtypes and unsupported_device_and_dtypes \
          attributes cannot both exist in a particular backend",
@@ -3435,7 +3449,7 @@ def function_unsupported_devices_and_dtypes(fn: Callable, recurse=True) -> Dict:
     ret
         The unsupported combination of devices and dtypes of the function
     """
-    ivy.assertions.check_true(
+    ivy.utils.assertions.check_true(
         _is_valid_device_and_dtypes_attributes(fn),
         "supported_device_and_dtypes and unsupported_device_and_dtypes \
          attributes cannot both exist in a particular backend",
