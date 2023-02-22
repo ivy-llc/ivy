@@ -267,6 +267,9 @@ class Tensor:
         self._ivy_array = self.abs().ivy_array
         return self
 
+    def bitwise_not(self, *, out=None):
+        return torch_frontend.bitwise_not(self._ivy_array)
+
     def bitwise_and(self, other):
         return torch_frontend.bitwise_and(self._ivy_array, other)
 
@@ -698,23 +701,23 @@ class Tensor:
         return torch_frontend.div(self._ivy_array, other)
 
     def __iadd__(self, other):
-        torch_frontend.add(self._ivy_array, other, out=self._ivy_array)
+        torch_frontend.add(self._ivy_array, other, out=self)
         return self
 
     def __imod__(self, other):
-        torch_frontend.remainder(self._ivy_array, other, out=self._ivy_array)
+        torch_frontend.remainder(self._ivy_array, other, out=self)
         return self
 
     def __imul__(self, other):
-        torch_frontend.mul(self._ivy_array, other, out=self._ivy_array)
+        torch_frontend.mul(self._ivy_array, other, out=self)
         return self
 
     def __isub__(self, other):
-        torch_frontend.subtract(self._ivy_array, other, out=self._ivy_array)
+        torch_frontend.subtract(self._ivy_array, other, out=self)
         return self
 
     def __itruediv__(self, other):
-        torch_frontend.div(self._ivy_array, other, out=self._ivy_array)
+        torch_frontend.div(self._ivy_array, other, out=self)
         return self
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
