@@ -63,14 +63,14 @@ def matmul(
 ):
     if adjoint_a:
         if transpose_a:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "Only one of `transpose_a` and `adjoint_a` can be True. "
                 "Received `transpose_a`=True, `adjoint_a`=True."
             )
         a = ivy.adjoint(a)
     if adjoint_b:
         if transpose_b:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "Only one of `transpose_b` and `adjoint_b` can be True. "
                 "Received `transpose_b`=True, `adjoint_b`=True."
             )
@@ -189,7 +189,7 @@ def l2_normalize(x, axis=None, epsilon=1e-12, name=None):
 
 @to_ivy_arrays_and_back
 def trace(x, name=None):
-    return ivy.trace(x)
+    return ivy.trace(x, axis1=-2, axis2=-1)
 
 
 @to_ivy_arrays_and_back

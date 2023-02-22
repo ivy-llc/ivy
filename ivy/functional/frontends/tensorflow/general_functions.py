@@ -23,7 +23,7 @@ def argsort(values, axis=-1, direction="ASCENDING", stable=False, name=None):
 
 @to_ivy_arrays_and_back
 def clip_by_value(t, clip_value_min, clip_value_max):
-    ivy.assertions.check_all_or_any_fn(
+    ivy.utils.assertions.check_all_or_any_fn(
         clip_value_min,
         clip_value_max,
         fn=ivy.exists,
@@ -32,6 +32,23 @@ def clip_by_value(t, clip_value_min, clip_value_max):
     )
     t = ivy.array(t)
     return ivy.clip(t, clip_value_min, clip_value_max)
+
+
+@to_ivy_arrays_and_back
+def clip_by_norm(t, clip_norm, axes=None):
+    t = ivy.array(t)
+    l2sum = ivy.sum(t * t, axis=axes, keepdims=True)
+    pred = l2sum > 0
+
+    l2sum_safe = ivy.where(pred, l2sum, ivy.ones_like(l2sum))
+    l2norm = ivy.where(pred, ivy.sqrt(l2sum_safe), l2sum)
+    intermediate = t * clip_norm
+    assert t.shape == intermediate.shape, "Dimensions %s and %s are not compatible" % (
+        t.shape,
+        intermediate.shape,
+    )
+    t_clip = intermediate / ivy.maximum(l2norm, clip_norm)
+    return t_clip
 
 
 @with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
@@ -153,7 +170,7 @@ def sort(values, axis=-1, direction="ASCENDING", name=None):
     if direction == "ASCENDING":
         descending = False
     else:
-        ivy.assertions.check_equal(
+        ivy.utils.assertions.check_equal(
             direction,
             "DESCENDING",
             message="Argument `direction` should be one of 'ASCENDING' or 'DESCENDING'",
@@ -202,7 +219,7 @@ def boolean_mask(tensor, mask, axis=None, name=None):
         k = ivy.get_num_dims(mask)
         if axis < 0:
             axis = n + axis
-        ivy.assertions.check_less(
+        ivy.utils.assertions.check_less(
             k + axis,
             n,
             allow_equal=True,
@@ -322,3 +339,7 @@ def where(condition: ivy.array, x=None, y=None, name=None):
         return ivy.argwhere(condition)
     else:
         return ivy.where(condition, x, y)
+
+
+def roll(input, shift, axis, name=None):
+    return ivy.roll(input, shift, axis=axis)

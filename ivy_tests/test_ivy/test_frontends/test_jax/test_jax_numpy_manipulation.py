@@ -6,6 +6,9 @@ import numpy as np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa
+    _get_split_locations,
+)
 
 
 @st.composite
@@ -84,18 +87,16 @@ def _arrays_idx_n_dtypes(draw):
         st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays")
     )
     common_shape = draw(
-        helpers.lists(
-            arg=helpers.ints(min_value=2, max_value=3),
-            min_size=num_dims - 1,
-            max_size=num_dims - 1,
+        helpers.list_of_size(
+            x=helpers.ints(min_value=2, max_value=3),
+            size=num_dims - 1,
         )
     )
     unique_idx = draw(helpers.ints(min_value=0, max_value=num_dims - 1))
     unique_dims = draw(
-        helpers.lists(
-            arg=helpers.ints(min_value=2, max_value=3),
-            min_size=num_arrays,
-            max_size=num_arrays,
+        helpers.list_of_size(
+            x=helpers.ints(min_value=2, max_value=3),
+            size=num_arrays,
         )
     )
     xs = list()
@@ -688,4 +689,106 @@ def test_jax_numpy_atleast_2d(
         fn_tree=fn_tree,
         on_device=on_device,
         **arys,
+    )
+
+
+# atleast_1d
+@handle_frontend_test(
+    fn_tree="jax.numpy.atleast_1d",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=helpers.ints(min_value=1, max_value=10),
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_atleast_1d(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, arrays = dtype_and_x
+    arys = {}
+    for i, (array, idtype) in enumerate(zip(arrays, input_dtype)):
+        arys["arrs{}".format(i)] = np.asarray(array, dtype=idtype)
+    test_flags.num_positional_args = len(arys)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        **arys,
+    )
+
+
+@st.composite
+def _squeeze_helper(draw):
+    shape = draw(st.shared(helpers.get_shape(), key="shape"))
+    valid_axes = [idx for idx in range(len(shape)) if shape[idx] == 1] + [None]
+    return draw(st.sampled_from(valid_axes))
+
+
+# squeeze
+@handle_frontend_test(
+    fn_tree="jax.numpy.squeeze",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(), key="shape"),
+    ),
+    axis=_squeeze_helper(),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_squeeze(
+    *,
+    dtype_and_values,
+    axis,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, values = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=values[0],
+        axis=axis,
+    )
+
+
+# dsplit
+@handle_frontend_test(
+    fn_tree="jax.numpy.dsplit",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(min_num_dims=3), key="value_shape"),
+    ),
+    indices_or_sections=_get_split_locations(min_num_dims=3, axis=2),
+    number_positional_args=st.just(2),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_dsplit(
+    *,
+    dtype_value,
+    indices_or_sections,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, value = dtype_value
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        ary=value[0],
+        indices_or_sections=indices_or_sections,
     )

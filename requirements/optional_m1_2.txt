@@ -2,3 +2,6 @@ torch-scatter==2.0.9 # torch_scatter requires a prior existing installation of t
 scipy==1.8.1
 dm-haiku==0.0.6 # mod_name=haiku
 protobuf==3.19.4
+pydriller
+tqdm
+coverage

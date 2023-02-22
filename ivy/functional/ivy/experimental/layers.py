@@ -1,4 +1,9 @@
-from typing import Optional, Union, Tuple, Literal
+# global
+import math
+from typing import Optional, Union, Tuple, Literal, Sequence
+
+
+# local
 import ivy
 from ivy.func_wrapper import (
     handle_array_like_without_promotion,
@@ -7,7 +12,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     integer_arrays_to_float,
 )
-from ivy.exceptions import handle_exceptions
+from ivy.utils.exceptions import handle_exceptions
 
 
 @handle_nestable
@@ -79,10 +84,12 @@ def max_pool2d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int], Tuple[int, int]],
     strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: str,
+    padding: Union[str, int, Tuple[int], Tuple[int, int]],
     /,
     *,
     data_format: str = "NHWC",
+    dilation: Union[int, Tuple[int], Tuple[int, int]] = 1,
+    ceil_mode: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 2-D max pool given 4-D input x.
@@ -98,7 +105,7 @@ def max_pool2d(
         The stride of the sliding window for each dimension of input.
     padding
         SAME" or "VALID" indicating the algorithm, or list
-        indicating the per-dimensio paddings.
+        indicating the per-dimension paddings.
     data_format
         NHWC" or "NCHW". Defaults to "NHWC".
     out
@@ -138,7 +145,16 @@ def max_pool2d(
 
             [[46, 47]]]])
     """
-    return ivy.current_backend(x).max_pool2d(x, kernel, strides, padding, out=out)
+    return ivy.current_backend(x).max_pool2d(
+        x,
+        kernel,
+        strides,
+        padding,
+        data_format=data_format,
+        dilation=dilation,
+        ceil_mode=ceil_mode,
+        out=out,
+    )
 
 
 @to_native_arrays_and_back
@@ -650,6 +666,55 @@ def dropout1d(
     )
 
 
+@handle_nestable
+@handle_exceptions
+@to_native_arrays_and_back
+@handle_array_like_without_promotion
+def dropout3d(
+    x: Union[ivy.Array, ivy.NativeArray],
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NDHWC",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Randomly zero out entire channels with probability prob using samples from
+     a Bernoulli distribution and the remaining channels are scaled by (1/1-prob).
+     In this case, dropout3d performs a channel-wise dropout but assumes
+     a channel is a 1D feature map.
+
+    Parameters
+    ----------
+    x
+        a 4D or 5D input array. Should have a floating-point data type.
+    prob
+        probability of a channel to be zero-ed.
+    training
+        controls whether dropout3d is performed during training or ignored
+        during testing.
+    data_format
+        "NDHWC" or "NCDHW". Defaults to "NDHWC".
+    out
+        optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array with some channels zero-ed and the rest of channels are
+         scaled by (1/1-prob).
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    """
+    return ivy.current_backend(x).dropout3d(
+        x, prob, training=training, data_format=data_format, out=out
+    )
+
+
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_exceptions
@@ -755,7 +820,9 @@ def embedding(
     ivy.array([[1., 2., 3.],
                 [7., 8., 9.]])
     """
-    ivy.assertions.check_equal(len(weights.shape), 2, message="weights must be 2-d")
+    ivy.utils.assertions.check_equal(
+        len(weights.shape), 2, message="weights must be 2-d"
+    )
 
     ret = ivy.empty(
         indices.shape + (weights.shape[1],), dtype=ivy.as_ivy_dtype(weights.dtype)
@@ -849,3 +916,296 @@ def dft(
         slices[axis] = slice(0, res.shape[axis] // 2 + 1)
         res = res[tuple(slices)]
     return res
+
+
+@to_native_arrays_and_back
+@handle_exceptions
+@handle_out_argument
+@handle_nestable
+def interp(x, xp, fp, left=None, right=None, period=None):
+    x_arr = ivy.array(x)
+    fix_later = False
+    if x_arr.shape == ():
+        x_arr = ivy.array([x])
+        fix_later = True
+    x = ivy.astype(x_arr, "float64")
+    xp = ivy.astype(ivy.array(xp), "float64")
+    fp = ivy.astype(ivy.array(fp), "float64")
+    ivy.utils.assertions.check_equal(xp.ndim, 1)
+    ivy.utils.assertions.check_equal(fp.ndim, 1)
+    ivy.utils.assertions.check_equal(xp.shape[0], fp.shape[0])
+    if period is not None:
+        ivy.utils.assertions.check_equal(period, 0, inverse=True)
+        period = ivy.abs(period)
+        x = ivy.remainder(x, period)
+        xp = ivy.remainder(xp, period)
+        asort_xp = ivy.argsort(xp)
+        xp = xp[asort_xp]
+        fp = fp[asort_xp]
+        xp = ivy.concat((xp[-1:] - period, xp, xp[0:1] + period))
+        fp = ivy.concat((fp[-1:], fp, fp[0:1]))
+
+    def interp_inner(value):
+        value = ivy.array(value)
+        if value < xp[0]:
+            return left if left is not None else fp[0]
+        elif value > xp[-1]:
+            return right if right is not None else fp[-1]
+        else:
+            last = None
+            if xp.shape[0] < 3:
+                for i in range(xp.shape[0] - 1, -1, -1):
+                    if xp[i] == value:
+                        return fp[i]
+                    elif xp[i] < value:
+                        last = i
+            else:
+                first = 0
+                last = xp.shape[0]
+                while first < last:
+                    midpoint = (first + last) // 2
+                    if xp[midpoint] == value:
+                        already_exists = ivy.argwhere(xp == value)
+                        if already_exists.shape[0] > 0:
+                            return fp[already_exists[-1][0]]
+                        return fp[midpoint]
+                    else:
+                        if value < xp[midpoint]:
+                            last = midpoint - 1
+                        else:
+                            first = midpoint + 1
+            dist = (value - xp[last]) / (xp[last + 1] - xp[last])
+            return (fp[last + 1] - fp[last]) * dist + fp[last]
+
+    ret = ivy.map(interp_inner, unique={"value": x})
+    if fix_later:
+        return ivy.astype(ivy.array(ret[0]), "float64")
+    else:
+        return ivy.astype(ivy.array(ret), "float64")
+
+
+def _fill_triangle_kernel(x):
+    return ivy.maximum(0, 1 - ivy.abs(x))
+
+
+def compute_weight_mat(
+    input_size, output_size, scale, align_corners, kernel_fn, antialias: bool
+):
+    inv_scale = 1.0 / scale
+    kernel_scale = ivy.maximum(inv_scale, 1.0) if antialias else 1.0
+    if not align_corners or align_corners is None:
+        sample_f = (ivy.arange(output_size) + 0.5) * inv_scale - 0.5
+        x = ivy.abs(sample_f[None, :] - ivy.arange(input_size)[:, None]) / kernel_scale
+    else:
+        sample_f = ivy.linspace(0, input_size - 1, output_size)
+        x = ivy.abs(sample_f[None, :] - ivy.arange(input_size)[:, None]) / (
+            kernel_scale
+        )
+    weights = kernel_fn(x)
+    total_weight_sum = ivy.sum(weights, axis=0, keepdims=True)
+    weights = ivy.where(
+        ivy.abs(total_weight_sum) > 1000.0 * float(ivy.finfo("float32").eps),
+        ivy.divide(weights, ivy.where(total_weight_sum != 0, total_weight_sum, 1)),
+        0,
+    )
+    input_size_minus_0_5 = input_size if align_corners else input_size - 0.5
+    return ivy.where(
+        ivy.logical_and(sample_f >= -0.5, sample_f <= input_size_minus_0_5)[None, :],
+        weights,
+        0,
+    )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def interpolate(
+    x: Union[ivy.Array, ivy.NativeArray],
+    size: Union[Sequence[int], int],
+    /,
+    *,
+    mode: Union[
+        Literal["linear", "bilinear", "trilinear", "nearest", "area", "nearest_exact"]
+    ] = "linear",
+    align_corners: Optional[bool] = None,
+    antialias: Optional[bool] = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Down/up samples the input to the given size.
+    The algorithm used for interpolation is determined by mode.
+
+    Parameters
+    ----------
+    x
+        Input array, Must have the shape
+        [batch x channels x [optional depth] x [optional height] x width].
+    size
+        Output size.
+    mode
+        Interpolation mode. Can be one of the following:
+        - linear
+        - bilinear
+        - trilinear
+        - nearest
+        - area
+    align_corners
+        If True, the corner pixels of the input and output tensors are aligned,
+        and thus preserving the values at the corner pixels. If False, the corner
+        pixels are not aligned, and the interpolation uses edge value padding for
+        out-of-boundary values.
+        only has an effect when mode is 'linear', 'bilinear',
+        'bicubic' or 'trilinear'. Default: False
+    antialias
+        If True, antialiasing is applied when downsampling an image.
+        Supported modes: 'bilinear', 'bicubic'.
+    out
+        Optional output array, for writing the result to. It must
+        have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+        resized array
+
+    """
+    dims = len(x.shape) - 2
+    size = (size,) * dims if isinstance(size, int) else tuple(size)
+    spatial_dims = [2 + i for i in range(dims)]
+    input_shape = ivy.shape(x)
+    scale = [ivy.divide(size[i], input_shape[spatial_dims[i]]) for i in range(dims)]
+    if mode == "bilinear" or mode == "linear" or mode == "trilinear":
+        if mode == "linear":
+            equation = "ijk,km->ijm"
+        elif mode == "bilinear":
+            equation = "ijkl,km,ln->ijmn"
+        elif mode == "trilinear":
+            equation = "ijklm,kn,lo,mp->ijnop"
+        output_shape = tuple(input_shape[:2]) + size
+        operands = []
+        for i, d in enumerate(spatial_dims):
+            m = input_shape[d]
+            n = output_shape[d]
+            w = compute_weight_mat(
+                m, n, scale[i], align_corners, _fill_triangle_kernel, antialias
+            ).astype(x.dtype)
+            operands.append(w)
+        ret = ivy.einsum(equation, x, *operands)
+    elif mode == "nearest" or mode == "nearest_exact":
+        ret = ivy.zeros((x.shape[:2] + tuple(size)))
+        for i, ba in enumerate(x):
+            for j, ch in enumerate(ba):
+                w_scale = size[-1] / x.shape[-1]
+                if dims == 3:
+                    h_scale = size[-2] / x.shape[-2]
+                    d_scale = size[-3] / x.shape[-3]
+                    for d_dim in range(size[0]):
+                        for h_dim in range(size[1]):
+                            for w_dim in range(size[2]):
+                                ret[i, j, d_dim, h_dim, w_dim] = x[i][j][
+                                    round(d_dim // d_scale)
+                                ][round(h_dim // h_scale)][round(w_dim // w_scale)]
+                elif dims == 2:
+                    h_scale = size[-2] / x.shape[-2]
+                    for h_dim in range(size[0]):
+                        for w_dim in range(size[1]):
+                            ret[i, j, h_dim, w_dim] = x[i][j][round(h_dim // h_scale)][
+                                round(w_dim // w_scale)
+                            ]
+                elif dims == 1:
+                    for w_dim in range(size[0]):
+                        ret[i, j, w_dim] = x[i][j][round(w_dim // w_scale)]
+    elif mode == "area":
+        ret = ivy.zeros((x.shape[:2] + size))
+        scale = ivy.divide(ivy.shape(x)[2:], size)
+        for i, ba in enumerate(x):
+            for j, ch in enumerate(ba):
+                if dims == 3:
+                    for d_dim in range(size[0]):
+                        for h_dim in range(size[1]):
+                            for w_dim in range(size[2]):
+                                d_index = (
+                                    int(d_dim * scale[0]),
+                                    math.ceil((d_dim + 1) * scale[0]),
+                                )
+                                h_index = (
+                                    int(h_dim * scale[1]),
+                                    math.ceil((h_dim + 1) * scale[1]),
+                                )
+                                w_index = (
+                                    int(w_dim * scale[2]),
+                                    math.ceil((w_dim + 1) * scale[2]),
+                                )
+                                scale_z = d_index[1] - d_index[0]
+                                scale_y = h_index[1] - h_index[0]
+                                scale_x = w_index[1] - w_index[0]
+                                area = scale_z * scale_y * scale_x
+                                ret[i, j, d_dim, h_dim, w_dim] = ivy.sum(
+                                    ch[
+                                        d_index[0] : d_index[1],
+                                        h_index[0] : h_index[1],
+                                        w_index[0] : w_index[1],
+                                    ]
+                                ) * (1 / area)
+                elif dims == 2:
+                    for h_dim in range(size[0]):
+                        for w_dim in range(size[1]):
+                            h_index = (
+                                int(h_dim * scale[0]),
+                                math.ceil((h_dim + 1) * scale[0]),
+                            )
+                            w_index = (
+                                int(w_dim * scale[1]),
+                                math.ceil((w_dim + 1) * scale[1]),
+                            )
+                            scale_y = h_index[1] - h_index[0]
+                            scale_x = w_index[1] - w_index[0]
+                            area = scale_y * scale_x
+                            ret[i, j, h_dim, w_dim] = ivy.sum(
+                                ch[h_index[0] : h_index[1], w_index[0] : w_index[1]]
+                            ) * (1 / area)
+                else:
+                    for w_dim in range(size[0]):
+                        w_index = (
+                            int(w_dim * scale[0]),
+                            math.ceil((w_dim + 1) * scale[0]),
+                        )
+                        scale_x = w_index[1] - w_index[0]
+                        ret[i, j, w_dim] = ivy.sum(ch[w_index[0] : w_index[1]]) * (
+                            1 / scale_x
+                        )
+    return ivy.astype(ret, ivy.dtype(x), out=out)
+
+
+interpolate.mixed_function = True
+
+
+# Helpers #
+
+
+def _output_ceil_shape(w, f, p, s):
+    return math.ceil((w - f + p) / s) + 1
+
+
+def padding_ceil_mode(w, f, p, s):
+    remaining_pixels = (w - f + sum(p)) % s
+    if s > 1 and remaining_pixels != 0 and f > 1:
+        input_size = w + sum(p)
+        # making sure that the remaining pixels are supposed
+        # to be covered by the window
+        # they won't be covered if stride is big enough to skip them
+        if input_size - remaining_pixels - (f - 1) + s > input_size:
+            return p
+        output_shape = _output_ceil_shape(
+            w,
+            f,
+            sum(p),
+            s,
+        )
+        # calculating new padding with ceil_output_shape
+        new_pad = (output_shape - 1) * s + f - w
+        # updating pad_list with new padding by adding it to the end
+        p = (
+            p[0],
+            p[1] + new_pad - sum(p),
+        )
+    return p

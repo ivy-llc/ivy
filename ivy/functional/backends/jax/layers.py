@@ -73,13 +73,13 @@ def conv1d(
 def conv1d_transpose(
     x: JaxArray,
     filters: JaxArray,
-    strides: int,
+    strides: Union[int, Tuple[int]],
     padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    data_format: Optional[str] = "NWC",
-    dilations: Optional[int] = 1,
+    data_format: str = "NWC",
+    dilations: Union[int, Tuple[int]] = 1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     strides = (strides,) if isinstance(strides, int) else strides
@@ -110,8 +110,8 @@ def conv2d(
     padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
-    data_format: Optional[str] = "NHWC",
-    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
+    data_format: str = "NHWC",
+    dilations: Union[int, Tuple[int, int]] = 1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     strides = [strides] * 2 if isinstance(strides, int) else strides

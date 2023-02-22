@@ -3,8 +3,12 @@
 # local
 import ivy
 from typing import Optional, Union
-from ivy.func_wrapper import handle_nestable, handle_array_like_without_promotion
-from ivy.exceptions import handle_exceptions
+from ivy.func_wrapper import (
+    handle_array_function,
+    handle_nestable,
+    handle_array_like_without_promotion,
+)
+from ivy.utils.exceptions import handle_exceptions
 
 # Helpers #
 # ------- #
@@ -26,6 +30,7 @@ def _reduce_loss(red, loss, axis, out):
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
@@ -71,7 +76,7 @@ def cross_entropy(
     ivy.array(0.35667497)
 
     """
-    ivy.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
+    ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
     log_pred = ivy.log(pred)
     return _reduce_loss(reduction, log_pred * true, axis, out)
@@ -80,6 +85,7 @@ def cross_entropy(
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def binary_cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
@@ -173,7 +179,7 @@ def binary_cross_entropy(
     ivy.array([0.223, 0.223, 0.223, 0.223])
 
     """
-    ivy.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
+    ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
     return _reduce_loss(
         reduction,
@@ -186,6 +192,7 @@ def binary_cross_entropy(
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def sparse_cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
@@ -291,7 +298,7 @@ def sparse_cross_entropy(
      }
 
     """
-    ivy.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
+    ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
     true = ivy.one_hot(true, pred.shape[axis])
     return ivy.cross_entropy(
         true, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out

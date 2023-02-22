@@ -1,5 +1,4 @@
 # global
-import weakref
 
 # local
 import ivy
@@ -8,10 +7,17 @@ from ivy.func_wrapper import with_unsupported_dtypes
 
 
 class Tensor:
-    def __init__(self, array, device=None):
-        self._ivy_array = ivy.asarray(
-            array, dtype=torch_frontend.float32, device=device
-        )
+    def __init__(self, array, device=None, _init_overload=False):
+
+        if _init_overload:
+            self._ivy_array = (
+                ivy.array(array) if not isinstance(array, ivy.Array) else array
+            )
+
+        else:
+            self._ivy_array = ivy.array(
+                array, dtype=torch_frontend.float32, device=device
+            )
 
     def __repr__(self):
         return str(self._ivy_array.__repr__()).replace(
@@ -54,7 +60,7 @@ class Tensor:
         if shape is not None:
             return torch_frontend.reshape(self._ivy_array, shape)
         if args:
-            if isinstance(args[0], tuple):
+            if isinstance(args[0], (tuple, list)):
                 shape = args[0]
                 return torch_frontend.reshape(self._ivy_array, shape)
             else:
@@ -154,7 +160,7 @@ class Tensor:
     def atan2(self, other):
         return torch_frontend.atan2(self._ivy_array, other)
 
-    def view(self, *args, size=None):
+    def view(self, *args, shape=None):
         """
         Reshape Tensor.
 
@@ -167,28 +173,28 @@ class Tensor:
         Parameters
         ----------
         args:int arguments
-        size: optional size
+        shape: optional shape
 
         Returns reshaped tensor
         -------
         """
-        if size and not args:
-            size_tup = size
-        elif args and not size:
+        if shape and not args:
+            shape_tup = shape
+        elif args and not shape:
             if (
                 isinstance(args[0], tuple)
                 or isinstance(args[0], list)
                 or type(args[0]).__name__ == "Size"
             ) and len(args) == 1:
-                size_tup = args[0]
+                shape_tup = args[0]
             else:
-                size_tup = args
+                shape_tup = args
         else:
             raise ValueError(
                 "View only accepts as argument ints, tuple or list of ints or "
                 "the keyword argument size."
             )
-        return torch_frontend.ViewTensor(weakref.ref(self), shape=size_tup)
+        return torch_frontend.reshape(self._ivy_array, shape_tup)
 
     def float(self, memory_format=None):
         cast_tensor = self.clone()
@@ -250,12 +256,19 @@ class Tensor:
     def amin(self, dim=None, keepdim=False):
         return torch_frontend.amin(self._ivy_array, dim=dim, keepdim=keepdim)
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def aminmax(self, dim=None, keepdim=False):
+        return torch_frontend.aminmax(self._ivy_array, dim=dim, keepdim=keepdim)
+
     def abs(self):
         return torch_frontend.abs(self._ivy_array)
 
     def abs_(self):
         self._ivy_array = self.abs().ivy_array
         return self
+
+    def bitwise_not(self, *, out=None):
+        return torch_frontend.bitwise_not(self._ivy_array)
 
     def bitwise_and(self, other):
         return torch_frontend.bitwise_and(self._ivy_array, other)
@@ -326,6 +339,11 @@ class Tensor:
     def arctan2(self, other):
         return torch_frontend.arctan2(self._ivy_array, other)
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+    def arctan2_(self, other):
+        self._ivy_array = self.arctan2(other).ivy_array
+        return self
+
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def acos(self):
         return torch_frontend.acos(self._ivy_array)
@@ -352,7 +370,7 @@ class Tensor:
         device=None,
         requires_grad=False,
         layout=None,
-        pin_memory=False
+        pin_memory=False,
     ):
         dtype = ivy.dtype(self._ivy_array) if dtype is None else dtype
         device = ivy.dev(self._ivy_array) if device is None else device
@@ -362,15 +380,27 @@ class Tensor:
     def view_as(self, other):
         return self.view(other.shape)
 
-    def expand(self, *sizes):
+    def expand(self, *args, size=None):
+        if args and size:
+            raise TypeError("expand() got multiple values for argument 'size'")
+        if args:
+            if isinstance(args[0], (tuple, list)):
+                size = args[0]
+            else:
+                size = args
 
-        sizes = list(sizes)
-        for i, dim in enumerate(sizes):
+        size = list(size)
+        for i, dim in enumerate(size):
             if dim < 0:
-                sizes[i] = self.shape[i]
+                size[i] = self.shape[i]
 
         return torch_frontend.tensor(
-            ivy.broadcast_to(self._ivy_array, shape=tuple(sizes))
+            ivy.broadcast_to(self._ivy_array, shape=tuple(size))
+        )
+
+    def expand_as(self, other):
+        return self.expand(
+            ivy.shape(other.ivy_array if isinstance(other, Tensor) else other)
         )
 
     def detach(self):
@@ -400,7 +430,7 @@ class Tensor:
         device=None,
         requires_grad=False,
         layout=None,
-        pin_memory=False
+        pin_memory=False,
     ):
         dtype = ivy.dtype(self._ivy_array) if dtype is None else dtype
         device = ivy.dev(self._ivy_array) if device is None else device
@@ -415,7 +445,7 @@ class Tensor:
         device=None,
         requires_grad=False,
         layout=None,
-        pin_memory=False
+        pin_memory=False,
     ):
         dtype = ivy.dtype(self._ivy_array) if dtype is None else dtype
         device = ivy.dev(self._ivy_array) if device is None else device
@@ -449,7 +479,7 @@ class Tensor:
         return self
 
     def size(self, dim=None):
-        shape = ivy.shape(self._ivy_array, as_array=True)
+        shape = ivy.shape(self._ivy_array)
         if dim is None:
             return shape
         else:
@@ -489,7 +519,7 @@ class Tensor:
         if dims is not None:
             return torch_frontend.permute(self._ivy_array, dims)
         if args:
-            if isinstance(args[0], tuple):
+            if isinstance(args[0], (tuple, list)):
                 dims = args[0]
                 return torch_frontend.permute(self._ivy_array, dims)
             else:
@@ -512,6 +542,11 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def cumsum(self, dim, dtype):
         return torch_frontend.cumsum(self._ivy_array, dim, dtype=dtype)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def cumsum_(self, dim, *, dtype=None):
+        self._ivy_array = self.cumsum(dim, dtype).ivy_array
+        return self
 
     def inverse(self):
         return torch_frontend.inverse(self._ivy_array)
@@ -573,6 +608,11 @@ class Tensor:
             return torch_frontend.tensor(ivy.array(self._ivy_array).full_like(max))
         return torch_frontend.clamp(self._ivy_array, min=min, max=max, out=out)
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+    def clamp_(self, min=None, max=None, *, out=None):
+        self._ivy_array = self.clamp(min=min, max=max, out=out).ivy_array
+        return self
+
     @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
     def sqrt(self):
         return torch_frontend.sqrt(self._ivy_array)
@@ -624,11 +664,13 @@ class Tensor:
         return torch_frontend.remainder(self._ivy_array, other)
 
     def __long__(self, memory_format=None):
-        return torch_frontend.tensor(ivy.astype(self._ivy_array, ivy.int64))
+        cast_tensor = self.clone()
+        cast_tensor.ivy_array = ivy.astype(self._ivy_array, ivy.int64)
+        return cast_tensor
 
-    def __getitem__(self, query):
+    def __getitem__(self, query, /):
         ret = ivy.get_item(self._ivy_array, query)
-        return torch_frontend.tensor(ivy.array(ret, dtype=ivy.dtype(ret), copy=False))
+        return torch_frontend.Tensor(ret, _init_overload=True)
 
     def __setitem__(self, key, value):
         if hasattr(value, "ivy_array"):
@@ -659,23 +701,23 @@ class Tensor:
         return torch_frontend.div(self._ivy_array, other)
 
     def __iadd__(self, other):
-        self._ivy_array = self.__add__(other).ivy_array
+        torch_frontend.add(self._ivy_array, other, out=self)
         return self
 
     def __imod__(self, other):
-        self._ivy_array = self.__mod__(other).ivy_array
+        torch_frontend.remainder(self._ivy_array, other, out=self)
         return self
 
     def __imul__(self, other):
-        self._ivy_array = self.__mul__(other).ivy_array
+        torch_frontend.mul(self._ivy_array, other, out=self)
         return self
 
     def __isub__(self, other):
-        self._ivy_array = self.__sub__(other).ivy_array
+        torch_frontend.subtract(self._ivy_array, other, out=self)
         return self
 
     def __itruediv__(self, other):
-        self._ivy_array = self.__truediv__(other).ivy_array
+        torch_frontend.div(self._ivy_array, other, out=self)
         return self
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")

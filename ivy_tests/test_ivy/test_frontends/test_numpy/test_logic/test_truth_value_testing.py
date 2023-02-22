@@ -115,3 +115,29 @@ def test_numpy_isscalar(
         on_device=on_device,
         element=element,
     )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.isfortran",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"), min_num_dims=1
+    ),
+    test_with_out=st.just(False),
+)
+def test_numpy_isfortran(
+    dtype_and_x,
+    frontend,
+    on_device,
+    *,
+    fn_tree,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+    )

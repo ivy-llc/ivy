@@ -9,7 +9,7 @@ from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 
 @to_ivy_arrays_and_back
 def clip(a, a_min=None, a_max=None, out=None):
-    ivy.assertions.check_all_or_any_fn(
+    ivy.utils.assertions.check_all_or_any_fn(
         a_min,
         a_max,
         fn=ivy.exists,
@@ -124,5 +124,20 @@ def atleast_3d(*arys):
 
 
 @to_ivy_arrays_and_back
+def atleast_1d(*arys):
+    return ivy.atleast_1d(*arys)
+
+
+@to_ivy_arrays_and_back
 def atleast_2d(*arys):
     return ivy.atleast_2d(*arys)
+
+
+@to_ivy_arrays_and_back
+def squeeze(a, axis=None):
+    return ivy.squeeze(a, axis)
+
+
+@to_ivy_arrays_and_back
+def dsplit(ary, indices_or_section):
+    return ivy.dsplit(ary, indices_or_section)
