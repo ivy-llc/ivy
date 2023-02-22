@@ -58,6 +58,7 @@ Experimental
    experimental/embedding.rst
    experimental/dft.rst
    experimental/interp.rst
+   experimental/compute_weight_mat.rst
    experimental/interpolate.rst
    experimental/padding_ceil_mode.rst
    experimental/l2_normalize.rst
