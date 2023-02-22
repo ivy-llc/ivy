@@ -768,7 +768,7 @@ def test_jax_numpy_isscalar(
         x=x[0],
     )
 
-    
+
 # left_shift
 @handle_frontend_test(
     fn_tree="jax.numpy.left_shift",
@@ -793,4 +793,3 @@ def test_jax_numpy_left_shift(
         on_device=on_device,
         x=x[0],
     )
-    
