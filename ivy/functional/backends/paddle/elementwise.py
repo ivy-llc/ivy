@@ -39,10 +39,7 @@ def expm1(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
 def bitwise_invert(
     x: Union[int, bool, paddle.Tensor], /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    if "int" not in str(x.dtype):
-        return paddle.logical_not(x)
-    else:
-        return paddle.bitwise.invert(x)
+    return paddle.bitwise_not(x)
 
 
 def isfinite(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
