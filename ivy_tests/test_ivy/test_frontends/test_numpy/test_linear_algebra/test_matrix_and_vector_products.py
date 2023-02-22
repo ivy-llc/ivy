@@ -9,6 +9,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_first_matrix_and_dtype,
     _get_second_matrix_and_dtype,
     _get_dtype_value1_value2_axis_for_tensordot,
+    dtype_value1_value2_axis,
 )
 
 
@@ -166,4 +167,41 @@ def test_numpy_tensordot(
         a=a,
         b=b,
         axes=axes,
+    )
+
+
+# cross
+@handle_frontend_test(
+    fn_tree="numpy.cross",
+    dtype_input_other_dim=dtype_value1_value2_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+        min_value=-1e3,
+        max_value=1e3,
+        abs_smallest_val=0.01,
+        large_abs_safety_factor=2,
+        safety_factor_scale="log",
+    ),
+)
+def test_numpy_cross(
+        dtype_input_other_dim,
+        frontend,
+        test_flags,
+        fn_tree,
+
+):
+    dtype, input, other, axis = dtype_input_other_dim
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        rtol=1e-1,
+        atol=1e-2,
+        a=input,
+        b=other,
+        axis=axis,
     )

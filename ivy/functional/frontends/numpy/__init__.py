@@ -486,6 +486,7 @@ from .linalg.matrix_and_vector_products import (
     outer,
     matrix_power,
     tensordot,
+    _cross,
     # einsum,
     # einsum_path,
     # kron,
@@ -663,3 +664,4 @@ logical_xor = ufunc("_logical_xor")
 matmul = ufunc("_matmul")
 maximum = ufunc("_maximum")
 minimum = ufunc("_minimum")
+cross = ufunc("_cross")
