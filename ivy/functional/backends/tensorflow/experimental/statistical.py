@@ -54,7 +54,8 @@ def unravel_index(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = tf.unravel_index(indices, shape)
-    return [tf.constant(ret[i]) for i in range(0, len(ret))]
+    ret = [tf.constant(ret[i]) for i in range(0, len(ret))]
+    return tf.cast(ret, tf.int64)
 
 
 def quantile(
@@ -63,21 +64,14 @@ def quantile(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    interpolation: str = "linear",
-    keepdims: bool = False,
+    interpolation: Optional[str] = "linear",
+    keepdims: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-
     axis = tuple(axis) if isinstance(axis, list) else axis
 
-    # In tensorflow, it requires percentile in range [0, 100], while in the other
-    # backends the quantile has to be in range [0, 1].
-    q = q * 100
-
-    # The quantile instance method in other backends is equivalent of
-    # percentile instance method in tensorflow_probability
     result = tfp.stats.percentile(
-        a, q, axis=axis, interpolation=interpolation, keepdims=keepdims
+        a, q * 100, axis=axis, interpolation=interpolation, keepdims=keepdims
     )
     return result
 

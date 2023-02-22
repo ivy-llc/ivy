@@ -54,8 +54,17 @@ def _x_and_filters(
                 ),
             )
         )
+    fdilations = [dilations] * dim if isinstance(dilations, int) else dilations
     if atrous:
         stride = 1
+    elif type == "depthwise":
+        # if any value in dilations is greater than 1, tensorflow implements
+        # depthwise_covn2d as an atrous depthwise convolution, in which case all values
+        # in strides must be equal to 1.
+        if any(x > 1 for x in fdilations):
+            stride = 1
+        else:
+            stride = draw(st.integers(stride_min, stride_max))
     else:
         stride = draw(
             st.one_of(
@@ -66,7 +75,6 @@ def _x_and_filters(
             )
         )
     fstride = [stride] * dim if isinstance(stride, int) else stride
-    fdilations = [dilations] * dim if isinstance(dilations, int) else dilations
     if dim == 1:
         if not transpose:
             filter_shape = draw(
@@ -86,7 +94,10 @@ def _x_and_filters(
                 )
             )
             min_x_width = 1
-        d_in = filter_shape[1]
+        if transpose:
+            d_in = filter_shape[2]
+        else:
+            d_in = filter_shape[1]
         if data_format == "NWC":
             x_shape = draw(
                 st.tuples(
@@ -111,7 +122,7 @@ def _x_and_filters(
                 _deconv_length(
                     x_w, fstride[0], filter_shape[0], padding, fdilations[0]
                 ),
-                d_in,
+                filter_shape[1],
             ]
     elif dim == 2:
         min_x_height = 1
@@ -127,7 +138,10 @@ def _x_and_filters(
         if not transpose:
             min_x_height = filter_shape[0] + (filter_shape[0] - 1) * (fdilations[0] - 1)
             min_x_width = filter_shape[1] + (filter_shape[1] - 1) * (fdilations[1] - 1)
-        d_in = filter_shape[2]
+        if transpose:
+            d_in = filter_shape[3]
+        else:
+            d_in = filter_shape[2]
         if data_format == "NHWC":
             x_shape = draw(
                 st.tuples(
@@ -157,7 +171,7 @@ def _x_and_filters(
             output_shape_w = _deconv_length(
                 x_w, fstride[1], filter_shape[1], padding, fdilations[1]
             )
-            output_shape = [x_shape[0], output_shape_h, output_shape_w, d_in]
+            output_shape = [x_shape[0], output_shape_h, output_shape_w, filter_shape[2]]
     elif dim == 3:
         filter_shape = draw(
             st.tuples(
@@ -176,7 +190,10 @@ def _x_and_filters(
             min_x_depth = 1
             min_x_height = 1
             min_x_width = 1
-        d_in = filter_shape[3]
+        if transpose:
+            d_in = filter_shape[4]
+        else:
+            d_in = filter_shape[3]
         if data_format == "NDHWC":
             x_shape = draw(
                 st.tuples(
@@ -213,7 +230,13 @@ def _x_and_filters(
             output_shape_w = _deconv_length(
                 x_w, fstride[2], filter_shape[2], padding, fdilations[2]
             )
-            output_shape = [output_shape_d, output_shape_h, output_shape_w]
+            output_shape = [
+                x_shape[0],
+                output_shape_d,
+                output_shape_h,
+                output_shape_w,
+                filter_shape[3],
+            ]
     x = draw(
         helpers.array_values(dtype=dtype[0], shape=x_shape, min_value=0, max_value=1)
     )
@@ -223,9 +246,7 @@ def _x_and_filters(
         )
     )
     if type == "depthwise":
-        if isinstance(stride, int):
-            stride = [stride] * dim
-        stride = [1, *stride, 1]
+        stride = [1, stride, stride, 1]
         if isinstance(dilations, int):
             dilations = [dilations] * dim
     elif not atrous and type is not None:
@@ -234,13 +255,12 @@ def _x_and_filters(
                 stride = [stride]
             else:
                 if draw(st.booleans()):
-                    stride = [0, *stride, 0]
+                    stride = [1, *stride, 1]
             if isinstance(dilations, int):
                 dilations = [dilations]
             else:
                 if draw(st.booleans()):
                     dilations = [1, *dilations, 1]
-
         else:
             if dim != 3:
                 if isinstance(stride, int):
@@ -333,7 +353,7 @@ def test_tensorflow_atrous_conv2d_transpose(
         pad,
         output_shape,
     ) = x_f_d_df
-    _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilations)
+    _assume_tf_dilation_gt_1("tensorflow", on_device, dilations)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -416,7 +436,7 @@ def test_tensorflow_conv1d_transpose(
         pad,
         output_shape,
     ) = x_f_d_df
-    _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilations)
+    _assume_tf_dilation_gt_1("tensorflow", on_device, dilations)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -525,7 +545,7 @@ def test_tensorflow_conv2d_transpose(
         padding,
         output_shape,
     ) = x_f_d_df
-    _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilation)
+    _assume_tf_dilation_gt_1("tensorflow", on_device, dilation)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -606,7 +626,7 @@ def test_tensorflow_conv3d_transpose(
         padding,
         output_shape,
     ) = x_f_d_df
-    _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilation)
+    _assume_tf_dilation_gt_1("tensorflow", on_device, dilation)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,

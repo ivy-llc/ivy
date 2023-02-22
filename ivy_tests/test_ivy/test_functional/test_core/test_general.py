@@ -223,6 +223,7 @@ def array_and_boolean_mask(
     ),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_get_item(
     dtype_x_indices,

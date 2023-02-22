@@ -8,7 +8,10 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     statistical_dtype_values,
 )
-from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_statistical import statistical_dtype_values as statistical_dtype_values_experimental
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_statistical import (
+    statistical_dtype_values as statistical_dtype_values_experimental,
+)
+
 
 @handle_frontend_test(
     fn_tree="torch.dist",
@@ -667,12 +670,12 @@ def test_torch_aminmax(
         keepdim=keepdims,
     )
 
+
 @handle_frontend_test(
     fn_tree="torch.quantile",
     dtype_and_x=statistical_dtype_values_experimental(function="quantile"),
-    keepdims=st.booleans()
+    keepdims=st.booleans(),
 )
-
 def test_torch_quantile(
     *,
     dtype_and_x,
@@ -684,7 +687,7 @@ def test_torch_quantile(
 ):
     input_dtype, x, axis, interpolation, q = dtype_and_x
     if type(axis) is tuple:
-        axis=axis[0]
+        axis = axis[0]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -695,5 +698,5 @@ def test_torch_quantile(
         q=q,
         dim=axis,
         keepdim=keepdims,
-        interpolation=interpolation[0]
+        interpolation=interpolation[0],
     )
