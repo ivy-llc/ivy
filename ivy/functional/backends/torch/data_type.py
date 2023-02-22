@@ -151,7 +151,7 @@ def as_ivy_dtype(dtype_in: Union[torch.dtype, str, bool, int, float], /) -> ivy.
         if dtype_in in native_dtype_dict:
             return ivy.Dtype(dtype_in)
         else:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "Cannot convert to ivy dtype."
                 f" {dtype_in} is not supported by PyTorch backend."
             )
@@ -173,7 +173,7 @@ def as_native_dtype(dtype_in: Union[torch.dtype, str, bool, int, float]) -> torc
     if dtype_in in native_dtype_dict.keys():
         return native_dtype_dict[ivy.Dtype(dtype_in)]
     else:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             "Cannot convert to PyTorch dtype."
             f" {dtype_in} is not supported by PyTorch."
         )

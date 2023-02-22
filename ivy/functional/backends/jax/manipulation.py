@@ -49,7 +49,7 @@ def expand_dims(
         ret = jnp.expand_dims(x, axis)
         return ret
     except IndexError as error:
-        raise ivy.exceptions.IvyException(repr(error))
+        raise ivy.utils.exceptions.IvyException(repr(error))
 
 
 def flip(
@@ -78,7 +78,7 @@ def reshape(
     allowzero: Optional[bool] = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    ivy.assertions.check_elem_in_list(order, ["C", "F"])
+    ivy.utils.assertions.check_elem_in_list(order, ["C", "F"])
     if not allowzero:
         shape = [
             new_s if con else old_s
@@ -113,7 +113,7 @@ def squeeze(
     if x.shape == ():
         if axis is None or axis == 0 or axis == -1:
             return x
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             "tried to squeeze a zero-dimensional input by axis {}".format(axis)
         )
     else:
@@ -146,7 +146,7 @@ def split(
 
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "input array had no shape, but num_sections specified was {}".format(
                     num_or_size_splits
                 )
@@ -192,7 +192,9 @@ def clip(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    ivy.assertions.check_less(x_min, x_max, message="min values must be less than max")
+    ivy.utils.assertions.check_less(
+        x_min, x_max, message="min values must be less than max"
+    )
     if (
         hasattr(x_min, "dtype")
         and hasattr(x_max, "dtype")
