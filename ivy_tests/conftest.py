@@ -61,6 +61,13 @@ def pytest_addoption(parser):
         type=int,
         help="set deadline for testing one example",
     )
+    parser.addoption(
+        "--tb-ivy",
+        action="store",
+        default='none',
+        type=str,
+        help="ivy traceback",
+    )
 
 
 def pytest_configure(config):
