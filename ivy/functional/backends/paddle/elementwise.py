@@ -39,7 +39,7 @@ def expm1(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
 def bitwise_invert(
     x: Union[int, bool, paddle.Tensor], /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.bitwise_not(x)
 
 
 def isfinite(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
