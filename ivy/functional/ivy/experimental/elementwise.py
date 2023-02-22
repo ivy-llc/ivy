@@ -1366,19 +1366,19 @@ def binarizer(
 @handle_exceptions
 @handle_array_like_without_promotion
 def ldexp(
-    x: Union[ivy.Array, ivy.NativeArray],
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    i: Union[ivy.Array, ivy.NativeArray],
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Returns x * (2**i), element-wise.
     Parameters
     ----------
-    x
+    x1
         Input array.
-    i
+    x2
         Input array.
     out
         optional output array, for writing the result to.
@@ -1389,9 +1389,9 @@ def ldexp(
         The next representable values of x1 in the direction of x2.
     Examples
     --------
-    >>> x = ivy.array([1, 2, 3])
-    >>> i = ivy.array([0, 1, 2])
-    >>> ivy.ldexp(x, i)
+    >>> x1 = ivy.array([1, 2, 3])
+    >>> x2 = ivy.array([0, 1, 2])
+    >>> ivy.ldexp(x1, x2)
     ivy.array([1, 4, 12])
     """
-    return ivy.current_backend(x, i).ldexp(x, i, out=out)
+    return ivy.current_backend(x1, x2).ldexp(x1, x2, out=out)
