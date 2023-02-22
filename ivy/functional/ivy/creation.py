@@ -222,8 +222,9 @@ def arange(
     -------------------
     With float input:
     
-    >>> print(ivy.arange(12,step=2,dtype=float))
-    ivy.array([ 0., 2., 4., 6., 8., 10.])
+    >>> print(ivy.arange(10,26,step=2,dtype=int).reshape(2,4))
+    ivy.array([[ 10, 12, 14, 16]
+               [ 18, 20, 22, 26]])
      
     """
     return current_backend().arange(
