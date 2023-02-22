@@ -637,8 +637,7 @@
 <span class="sd">        ret</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lazy_compiled</span><span class="p">:</span>
-            <span class="c1"># we are compiling since we want to transpile module,</span>
-            <span class="c1"># so set the appropriate backend</span>
+            <span class="c1"># we are compiling since we want to transpile module, so set the appropriate backend</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target</span><span class="p">:</span>
                 <span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_target</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="n">kwargs</span><span class="p">)</span>
@@ -871,9 +870,7 @@
         <span class="n">kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">compile_kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Compile the `ivy.Module`&#39;s `_unified_ivy_graph` or `_call` method to the</span>
-<span class="sd">        target backend.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compile the `ivy.Module`&#39;s `_unified_ivy_graph` or `_call` method to the target backend.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            compile_kwargs:</span>
