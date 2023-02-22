@@ -2089,6 +2089,7 @@ def test_torch_sigmoid(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=3,
+        shared_dtype=True,
         large_abs_safety_factor=2.5,
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
