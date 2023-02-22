@@ -141,3 +141,8 @@ def squeeze(a, axis=None):
 @to_ivy_arrays_and_back
 def dsplit(ary, indices_or_section):
     return ivy.dsplit(ary, indices_or_section)
+
+
+@to_ivy_arrays_and_back
+def tril(m, k=0):
+    return ivy.tril(m, k=k)
