@@ -826,4 +826,3 @@ def test_jax_numpy_isreal(
         on_device=on_device,
         x=x[0],
     )
-    
