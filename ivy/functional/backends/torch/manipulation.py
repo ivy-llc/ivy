@@ -50,11 +50,15 @@ def expand_dims(
     x: torch.Tensor,
     /,
     *,
+    copy: Optional[bool] = None,
     axis: Union[int, Sequence[int]] = 0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     out_shape = _calculate_out_shape(axis, x.shape)
     # torch.reshape since it can operate on contiguous and non_contiguous tensors
+    if copy:
+        newarr = torch.clone(x)
+        return newarr.reshape(out_shape)
     return x.reshape(out_shape)
 
 
@@ -62,11 +66,15 @@ def flip(
     x: torch.Tensor,
     /,
     *,
+    copy: Optional[bool] = None,
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     num_dims = len(x.shape)
     if not num_dims:
+        if copy:
+            newarr = torch.clone(x)
+            return newarr
         return x
     if axis is None:
         new_axis = list(range(num_dims))
@@ -77,6 +85,9 @@ def flip(
     else:
         new_axis = new_axis
     new_axis = [item + num_dims if item < 0 else item for item in new_axis]
+    if copy:
+        newarr = torch.clone(x)
+        return torch.flip(newarr, new_axis)
     return torch.flip(x, new_axis)
 
 
@@ -85,8 +96,12 @@ def permute_dims(
     /,
     axes: Tuple[int, ...],
     *,
+    copy: Optional[bool] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if copy:
+        newarr = torch.clone(x)
+        return torch.permute(newarr, axes)
     return torch.permute(x, axes)
 
 
@@ -121,6 +136,7 @@ def roll(
     /,
     shift: Union[int, Sequence[int]],
     *,
+    copy: Optional[bool] = None,
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -131,6 +147,9 @@ def roll(
         shift = [shift for _ in range(len(axis))]
     if isinstance(shift, torch.Tensor):
         shift = shift.tolist()
+    if copy:
+        newarr = torch.clone(x)
+        return torch.roll(newarr, shift, axis)
     return torch.roll(x, shift, axis)
 
 
@@ -139,6 +158,7 @@ def squeeze(
     /,
     axis: Union[int, Sequence[int]],
     *,
+    copy: Optional[bool] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(axis, int):
@@ -151,8 +171,14 @@ def squeeze(
             raise ivy.utils.exceptions.IvyException(
                 f"Expected size of axis to be 1 but was {x.shape[axis]}"
             )
+        if copy:
+            newarr = torch.clone(x)
+            return torch.squeeze(newarr, axis)
         return torch.squeeze(x, axis)
     if axis is None:
+        if copy:
+            newarr = torch.clone(x)
+            return torch.squeeze(newarr)
         return torch.squeeze(x)
     if isinstance(axis, tuple):
         axis = list(axis)
@@ -171,6 +197,9 @@ def squeeze(
             )
         else:
             x = torch.squeeze(x, i)
+    if copy:
+        newarr = torch.clone(x)
+        return newarr
     return x
 
 
@@ -195,6 +224,7 @@ def split(
     x: torch.Tensor,
     /,
     *,
+    copy: Optional[bool] = None,
     num_or_size_splits: Optional[Union[int, List[int]]] = None,
     axis: Optional[int] = 0,
     with_remainder: Optional[bool] = False,
@@ -206,6 +236,9 @@ def split(
                     num_or_size_splits
                 )
             )
+        if copy:
+            newarr = torch.clone(x)
+            return [newarr]
         return [x]
     dim_size: int = x.shape[axis]
     if num_or_size_splits is None:
@@ -230,6 +263,9 @@ def split(
             )
     elif isinstance(num_or_size_splits, list):
         num_or_size_splits = tuple(num_or_size_splits)
+    if copy:
+        newarr = torch.clone(x)
+        return list(torch.split(newarr, num_or_size_splits, axis))
     return list(torch.split(x, num_or_size_splits, axis))
 
 
@@ -239,20 +275,32 @@ def repeat(
     /,
     repeats: Union[int, Iterable[int]],
     *,
+    copy: Optional[bool] = None
     axis: int = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if len(x.shape) == 0 and axis in [0, -1]:
         axis = None
     repeats = torch.tensor(repeats)
+    if copy:
+        newarr = torch.clone(x)
+        return torch.repeat_interleave(newarr, repeats, axis)
     return torch.repeat_interleave(x, repeats, axis)
 
 
 def tile(
-    x: torch.Tensor, /, repeats: Sequence[int], *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor, 
+    /, 
+    repeats: Sequence[int], 
+    *, 
+    copy: Optional[bool] = None,
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     if isinstance(repeats, torch.Tensor):
         repeats = repeats.detach().cpu().numpy().tolist()
+    if copy:
+        newarr = torch.clone(x)
+        return newarr.repeat(repeats)
     return x.repeat(repeats)
 
 
@@ -261,6 +309,7 @@ def constant_pad(
     /,
     pad_width: List[List[int]],
     *,
+    copy: Optional[bool] = None,
     value: Number = 0.0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -272,6 +321,9 @@ def constant_pad(
     for pad_width_sec in reversed(pad_width):
         for item in pad_width_sec:
             pad_width_flat.append(item)
+    if copy:
+        newarr = torch.clone(x)
+        return torch.nn.functional.pad(newarr, pad_width_flat, mode="constant", value=value)
     return torch.nn.functional.pad(x, pad_width_flat, mode="constant", value=value)
 
 
@@ -280,14 +332,27 @@ def zero_pad(
     /,
     pad_width: List[List[int]],
     *,
+    copy: Optional[bool] = None,
     out: Optional[torch.Tensor] = None,
 ):
+    if copy:
+        newarr = torch.clone(x)
+        return constant_pad(newarr, pad_width, value=0.0)
     return constant_pad(x, pad_width, value=0.0)
 
 
 def swapaxes(
-    x: torch.Tensor, axis0: int, axis1: int, /, *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor, 
+    axis0: int, 
+    axis1: int, 
+    /, 
+    *, 
+    copy: Optional[bool] = None,
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
+    if copy:
+        newarr = torch.clone(x)
+        return torch.transpose(newarr, axis0, axis1)
     return torch.transpose(x, axis0, axis1)
 
 
@@ -298,6 +363,7 @@ def clip(
     x_max: Union[Number, torch.Tensor],
     /,
     *,
+    copy: Optional[bool] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     ivy.utils.assertions.check_less(
@@ -309,6 +375,9 @@ def clip(
         x_min = x_min.to(promoted_type)
         x_max = x_max.to(promoted_type)
         x = x.to(promoted_type)
+    if copy:
+        newarr = torch.clone(x)
+        return torch.clamp(newarr, x_min, x_max, out=out)
     return torch.clamp(x, x_min, x_max, out=out)
 
 
@@ -316,11 +385,23 @@ clip.support_native_out = True
 
 
 def unstack(
-    x: torch.Tensor, /, *, axis: int = 0, keepdims: bool = False
+    x: torch.Tensor, 
+    /, 
+    *, 
+    copy: Optional[bool] = None,
+    axis: int = 0, 
+    keepdims: bool = False
 ) -> List[torch.Tensor]:
     if x.shape == ():
+        if copy:
+            newarr = torch.clone(x)
+            return [newarr]
         return [x]
-    ret = list(torch.unbind(x, axis))
+    if copy:
+        newarr = torch.clone(x)
+        ret = list(torch.unbind(newarr, axis))
+    else:
+        ret = list(torch.unbind(x, axis))
     if keepdims:
         return [r.unsqueeze(axis) for r in ret]
     return ret
