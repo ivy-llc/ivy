@@ -52,6 +52,7 @@ Experimental
    experimental/dct.rst
    experimental/fft.rst
    experimental/dropout1d.rst
+   experimental/dropout3d.rst
    experimental/ifft.rst
    experimental/embedding.rst
    experimental/dft.rst
