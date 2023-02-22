@@ -344,10 +344,11 @@ def test_numpy_nanargmin(
         keepdims=keep_dims,
     )
 
+
 # extract
 @handle_frontend_test(
     fn_tree="numpy.extract",
-    dtype_x_condition=helpers.dtype_values_condition(
+    dtype_x_condition=helpers.get_dtypes(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
     ),
@@ -370,4 +371,3 @@ def test_numpy_extract(
         condition=condition[0],
         a=x[0],
     )
-    
