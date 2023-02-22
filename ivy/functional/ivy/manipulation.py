@@ -1012,7 +1012,7 @@ def constant_pad(
     }
 
     """
-    return current_backend(x).constant_pad(x, pad_width, copy=copy, value, out=out)
+    return current_backend(x).constant_pad(x, pad_width, value, copy=copy, out=out)
 
 
 @to_native_arrays_and_back
@@ -1355,7 +1355,12 @@ def tile(
 @handle_array_like_without_promotion
 @handle_array_function
 def unstack(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, axis: int = 0, keepdims: bool = False
+    x: Union[ivy.Array, ivy.NativeArray], 
+    /, 
+    *, 
+    copy: Optional[bool] = None,
+    axis: int = 0, 
+    keepdims: bool = False
 ) -> List[ivy.Array]:
     """Unpacks the given dimension of a rank-R array into rank-(R-1) arrays.
 
@@ -1429,7 +1434,7 @@ def unstack(
     instances in place of any of the arguments.
 
     """
-    return current_backend(x).unstack(x, axis=axis, keepdims=keepdims)
+    return current_backend(x).unstack(x, copy=copy, axis=axis, keepdims=keepdims)
 
 
 @to_native_arrays_and_back
