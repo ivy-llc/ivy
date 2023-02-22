@@ -230,11 +230,13 @@ def _x_and_filters(
             output_shape_w = _deconv_length(
                 x_w, fstride[2], filter_shape[2], padding, fdilations[2]
             )
-            output_shape = [x_shape[0],
-                            output_shape_d,
-                            output_shape_h,
-                            output_shape_w,
-                            filter_shape[3]]
+            output_shape = [
+                x_shape[0],
+                output_shape_d,
+                output_shape_h,
+                output_shape_w,
+                filter_shape[3],
+            ]
     x = draw(
         helpers.array_values(dtype=dtype[0], shape=x_shape, min_value=0, max_value=1)
     )

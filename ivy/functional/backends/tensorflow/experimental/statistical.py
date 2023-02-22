@@ -69,7 +69,7 @@ def quantile(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = tuple(axis) if isinstance(axis, list) else axis
-    
+
     result = tfp.stats.percentile(
         a, q * 100, axis=axis, interpolation=interpolation, keepdims=keepdims
     )

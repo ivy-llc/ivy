@@ -51,8 +51,8 @@ def nanmean(
 ) -> torch.Tensor:
     if isinstance(dtype, str):
         TORCH_DTYPES = {
-            'float32': torch.float32,
-            'float64': torch.float64,
+            "float32": torch.float32,
+            "float64": torch.float64,
         }
         temp = TORCH_DTYPES[dtype]
     else:
