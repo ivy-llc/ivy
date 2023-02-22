@@ -11,6 +11,13 @@ from functools import reduce
 from jaxlib.xla_extension import Buffer
 from typing import Iterable, Optional, Union, Sequence, Callable
 import multiprocessing as _multiprocessing
+
+# necessary import, because stateful imports jax as soon as you import ivy, however,
+# during multiversion # jax is not there, and therefore a later import results in some
+# sort of circular import, so haiku is needed
+import haiku  # NOQA
+
+
 from haiku._src.data_structures import FlatMapping
 
 # local
@@ -50,7 +57,7 @@ def is_native_array(x, /, *, exclusive=False):
     )
 
 
-def get_item(x: JaxArray, query: JaxArray) -> JaxArray:
+def get_item(x: JaxArray, /, query: JaxArray) -> JaxArray:
     return x.__getitem__(query)
 
 
@@ -87,7 +94,7 @@ def gather(
 ) -> JaxArray:
     axis = axis % len(params.shape)
     batch_dims = batch_dims % len(params.shape)
-    ivy.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
+    ivy.utils.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
     result = []
     if batch_dims == 0:
         result = jnp.take(params, indices, axis)
@@ -147,7 +154,7 @@ def gather_nd(
     batch_dims: Optional[int] = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    ivy.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
+    ivy.utils.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
     batch_dims = batch_dims % len(params.shape)
     result = []
     if batch_dims == 0:
@@ -206,19 +213,50 @@ def inplace_update(
 ) -> ivy.Array:
     if ivy.is_array(x) and ivy.is_array(val):
         if ensure_in_backend:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "JAX does not natively support inplace updates"
             )
         (x_native, val_native), _ = ivy.args_to_native(x, val)
         if ivy.is_ivy_array(x):
             x.data = val_native
+            if ivy.exists(x._base):
+                base = x._base
+                base_idx = ivy.arange(base.size).reshape(base.shape)
+                for fn, args, kwargs, index in x._manipulation_stack:
+                    base_idx = fn(base_idx, *args, **kwargs)
+                    base_idx = base[index] if ivy.exists(index) else base_idx
+                base_flat = base.data.flatten()
+                base_flat = base_flat.at[base_idx.data.flatten()].set(
+                    val_native.flatten()
+                )
+
+                base.data = base_flat.reshape(base.shape)
+
+                for ref in base._view_refs:
+                    view = ref()
+                    if ivy.exists(view) and view is not x:
+                        _update_view(view, base)
+
+            else:
+                for ref in x._view_refs:
+                    view = ref()
+                    if ivy.exists(view):
+                        _update_view(view, x)
         else:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "JAX does not natively support inplace updates"
             )
         return x
     else:
         return val
+
+
+def _update_view(view, base):
+    for fn, args, kwargs, index in view._manipulation_stack:
+        base = fn(base, *args, **kwargs)
+        base = base[index] if ivy.exists(index) else base
+    view.data = base.data
+    return view
 
 
 def inplace_variables_supported():
@@ -243,8 +281,8 @@ def scatter_flat(
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
-        ivy.assertions.check_equal(len(target.shape), 1)
-        ivy.assertions.check_equal(target.shape[0], size)
+        ivy.utils.assertions.check_equal(len(target.shape), 1)
+        ivy.utils.assertions.check_equal(target.shape[0], size)
     if reduction == "sum":
         if not target_given:
             target = jnp.zeros([size], dtype=updates.dtype)
@@ -266,7 +304,7 @@ def scatter_flat(
         if not target_given:
             target = jnp.where(target == -1e12, 0.0, target)
     else:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
                 reduction
             )
@@ -285,8 +323,13 @@ def scatter_nd(
 ) -> JaxArray:
 
     # parse numeric inputs
-    if indices not in [Ellipsis, ()] and not (
-        isinstance(indices, Iterable) and Ellipsis in indices
+    if (
+        indices not in [Ellipsis, ()]
+        and not (isinstance(indices, Iterable) and Ellipsis in indices)
+        and not isinstance(indices, slice)
+        and not (
+            isinstance(indices, Iterable) and any(isinstance(k, slice) for k in indices)
+        )
     ):
         indices = [[indices]] if isinstance(indices, Number) else indices
         indices = jnp.array(indices)
@@ -303,7 +346,7 @@ def scatter_nd(
     )
 
     # handle Ellipsis
-    if isinstance(indices, tuple) or indices is Ellipsis:
+    if isinstance(indices, tuple) or indices is Ellipsis or isinstance(indices, slice):
         indices_tuple = indices
     else:
         expected_shape = (
@@ -324,7 +367,7 @@ def scatter_nd(
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
-        ivy.assertions.check_equal(ivy.Shape(target.shape), ivy.Shape(shape))
+        ivy.utils.assertions.check_equal(ivy.Shape(target.shape), ivy.Shape(shape))
     shape = list(shape) if ivy.exists(shape) else list(out.shape)
     if reduction == "sum":
         if not target_given:
@@ -351,7 +394,7 @@ def scatter_nd(
                 jnp.where(target == -1e12, 0.0, target), dtype=updates.dtype
             )
     else:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
                 reduction
             )

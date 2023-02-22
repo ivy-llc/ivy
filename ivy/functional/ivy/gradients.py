@@ -7,7 +7,7 @@ import itertools
 
 # local
 import ivy
-from ivy.backend_handler import current_backend
+from ivy.utils.backend import current_backend
 
 from ivy.func_wrapper import (
     handle_array_function,
@@ -17,7 +17,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
 )
-from ivy.exceptions import handle_exceptions
+from ivy.utils.exceptions import handle_exceptions
 
 
 # Helpers #
@@ -363,7 +363,7 @@ def with_grads(*, with_grads: bool = None) -> bool:
 
     """
     if ivy.exists(with_grads):
-        ivy.assertions.check_elem_in_list(with_grads, [True, False])
+        ivy.utils.assertions.check_elem_in_list(with_grads, [True, False])
         return with_grads
     global with_grads_stack
     if not with_grads_stack:
@@ -413,7 +413,7 @@ def set_with_grads(with_grads: bool):
     False
 
     """
-    ivy.assertions.check_elem_in_list(with_grads, [True, False])
+    ivy.utils.assertions.check_elem_in_list(with_grads, [True, False])
     global with_grads_stack
     with_grads_stack.append(with_grads)
 

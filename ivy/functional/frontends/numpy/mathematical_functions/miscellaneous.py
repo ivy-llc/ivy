@@ -38,7 +38,7 @@ def clip(
     dtype=None,
     subok=True,
 ):
-    ivy.assertions.check_all_or_any_fn(
+    ivy.utils.assertions.check_all_or_any_fn(
         a_min,
         a_max,
         fn=ivy.exists,

@@ -8,7 +8,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
 )
-from ivy.exceptions import handle_exceptions
+from ivy.utils.exceptions import handle_exceptions
 
 # Helpers #
 # ------- #
@@ -76,7 +76,7 @@ def cross_entropy(
     ivy.array(0.35667497)
 
     """
-    ivy.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
+    ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
     log_pred = ivy.log(pred)
     return _reduce_loss(reduction, log_pred * true, axis, out)
@@ -179,7 +179,7 @@ def binary_cross_entropy(
     ivy.array([0.223, 0.223, 0.223, 0.223])
 
     """
-    ivy.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
+    ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
     return _reduce_loss(
         reduction,
@@ -298,7 +298,7 @@ def sparse_cross_entropy(
      }
 
     """
-    ivy.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
+    ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
     true = ivy.one_hot(true, pred.shape[axis])
     return ivy.cross_entropy(
         true, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out

@@ -127,6 +127,7 @@ def run_around_tests(request, on_device, backend_fw, compile_graph, implicit):
                 request.function.test_data,
                 backend_fw.backend,
                 request.function.ground_truth_backend,
+                on_device,
             )
         except Exception as e:
             test_globals.teardown_api_test()

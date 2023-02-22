@@ -86,8 +86,9 @@ def _dtype_pred_and_labels(
         for _ in label_shape:
             length *= _
         indices = draw(
-            helpers.list_of_length(
-                x=st.integers(min_value=0, max_value=len(label_set) - 1), length=length
+            helpers.list_of_size(
+                x=st.integers(min_value=0, max_value=len(label_set) - 1),
+                size=length,
             )
         )
         values = [label_set[_] for _ in indices]
@@ -200,40 +201,6 @@ def test_sparse_categorical_crossentropy(
     test_with_out=st.just(False),
 )
 def test_tensorflow_log_cosh(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        y_true=x[0],
-        y_pred=x[1],
-    )
-
-
-# mean_absolute_error
-@handle_frontend_test(
-    fn_tree="tensorflow.keras.metrics.mean_absolute_error",
-    aliases=["tensorflow.keras.metrics.mae"],
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        shared_dtype=True,
-        num_arrays=2,
-        min_num_dims=1,
-        large_abs_safety_factor=2,
-        small_abs_safety_factor=2,
-    ),
-    test_with_out=st.just(False),
-)
-def test_tensorflow_mean_absolute_error(
     *,
     dtype_and_x,
     frontend,
@@ -538,6 +505,40 @@ def test_categorical_accuracy(
     ),
 )
 def test_tensorflow_kl_divergence(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        y_true=x[0],
+        y_pred=x[1],
+    )
+
+
+# mean_absolute_error
+@handle_frontend_test(
+    fn_tree="tensorflow.keras.metrics.mean_absolute_error",
+    aliases=["tensorflow.keras.metrics.mae"],
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+        min_num_dims=1,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
+    ),
+)
+def test_tensorflow_mean_absolute_error(
     *,
     dtype_and_x,
     frontend,

@@ -10,7 +10,7 @@ import termcolor
 import numpy as np
 import json
 
-from ivy.exceptions import IvyBackendException, IvyException
+from ivy.utils.exceptions import IvyBackendException, IvyException
 
 
 try:
@@ -143,7 +143,7 @@ class ContainerBase(dict, abc.ABC):
             else:
                 dict_in = dict()
         elif kwargs:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "dict_in and **kwargs cannot both be specified for ivy.Container "
                 "constructor, please specify one or the other, not both."
             )
@@ -211,7 +211,9 @@ class ContainerBase(dict, abc.ABC):
             conts = arg_conts + kwarg_conts + out_conts
         else:
             conts = arg_conts + kwarg_conts
-        ivy.assertions.check_exists(conts, message="no containers found in arguments")
+        ivy.utils.assertions.check_exists(
+            conts, message="no containers found in arguments"
+        )
         cont0 = conts[0]
         if isinstance(fn, str):
             fn = cont0.cont_ivy.__dict__[fn]
@@ -496,7 +498,7 @@ class ContainerBase(dict, abc.ABC):
             Compared containers
 
         """
-        ivy.assertions.check_elem_in_list(mode, ["all", "same_only", "diff_only"])
+        ivy.utils.assertions.check_elem_in_list(mode, ["all", "same_only", "diff_only"])
 
         # if inputs are not dicts, then compare their values to determine the diff dict
         num_containers = len(containers)
@@ -538,7 +540,7 @@ class ContainerBase(dict, abc.ABC):
                         elif isinstance(diff_keys, (list, tuple)):
                             key = diff_keys[idx]
                         else:
-                            raise ivy.exceptions.IvyException(
+                            raise ivy.utils.exceptions.IvyException(
                                 "diff_keys must be either a string or list of strings,"
                                 "but found {} of type {}".format(
                                     diff_keys, type(diff_keys)
@@ -587,7 +589,7 @@ class ContainerBase(dict, abc.ABC):
                         elif isinstance(diff_keys, (list, tuple)):
                             diff_dict[diff_keys[i]] = cont[key]
                         else:
-                            raise ivy.exceptions.IvyException(
+                            raise ivy.utils.exceptions.IvyException(
                                 "diff_keys must be either a string or list of strings,"
                                 "but found {} of type {}".format(
                                     diff_keys, type(diff_keys)
@@ -699,7 +701,7 @@ class ContainerBase(dict, abc.ABC):
                     container0 = container
                 keys = keys.union(container.keys())
 
-        ivy.assertions.check_exists(
+        ivy.utils.assertions.check_exists(
             container0,
             message="No containers found in the inputs to ivy.Container.cont_multi_map",
         )
@@ -931,7 +933,7 @@ class ContainerBase(dict, abc.ABC):
             Default is ``False``.
 
         """
-        ivy.assertions.check_true(
+        ivy.utils.assertions.check_true(
             ivy.Container.cont_identical(
                 containers,
                 check_types,
@@ -1030,7 +1032,7 @@ class ContainerBase(dict, abc.ABC):
             Default is ``False``.
 
         """
-        ivy.assertions.check_true(
+        ivy.utils.assertions.check_true(
             ivy.Container.cont_identical_structure(
                 containers, check_types, check_shapes, key_chains, to_apply, partial
             ),
@@ -1050,7 +1052,7 @@ class ContainerBase(dict, abc.ABC):
             containers to check.
 
         """
-        ivy.assertions.check_greater(len(containers), 1)
+        ivy.utils.assertions.check_greater(len(containers), 1)
         configs = [cont.cont_config for cont in containers]
         config0 = configs[0]
         for k, v in config0.items():
@@ -1116,7 +1118,7 @@ class ContainerBase(dict, abc.ABC):
             Container loaded from disk
 
         """
-        ivy.assertions.check_exists(
+        ivy.utils.assertions.check_exists(
             h5py,
             message="You must install python package h5py in order to load hdf5 \
             files from disk into a container.",
@@ -1137,7 +1139,7 @@ class ContainerBase(dict, abc.ABC):
                     list(value[slice_obj])
                 )
             else:
-                raise ivy.exceptions.IvyException(
+                raise ivy.utils.exceptions.IvyException(
                     "Item found inside h5_obj which was neither a Group nor a Dataset."
                 )
         return ivy.Container(container_dict, ivyh=ivyh)
@@ -1200,7 +1202,7 @@ class ContainerBase(dict, abc.ABC):
             Size of h5 file contents, and batch size.
 
         """
-        ivy.assertions.check_exists(
+        ivy.utils.assertions.check_exists(
             h5py,
             message="You must install python package h5py in order to determine \
             the size of hdf5 files.",
@@ -1221,7 +1223,7 @@ class ContainerBase(dict, abc.ABC):
                 size += reduce(mul, value_shape, 1) * value.dtype.itemsize
                 batch_size = value_shape[0]
             else:
-                raise ivy.exceptions.IvyException(
+                raise ivy.utils.exceptions.IvyException(
                     "Item found inside h5_obj which was neither a Group nor a Dataset."
                 )
         return size, batch_size
@@ -1239,7 +1241,7 @@ class ContainerBase(dict, abc.ABC):
             random seed to use for array shuffling (Default value = 0)
 
         """
-        ivy.assertions.check_exists(
+        ivy.utils.assertions.check_exists(
             h5py,
             message="You must install python package h5py in order to shuffle \
             hdf5 files on disk.",
@@ -1259,7 +1261,7 @@ class ContainerBase(dict, abc.ABC):
                 # noinspection PyTypeChecker
                 random.shuffle(value)
             else:
-                raise ivy.exceptions.IvyException(
+                raise ivy.utils.exceptions.IvyException(
                     "Item found inside h5_obj which was neither a Group nor a Dataset."
                 )
         if isinstance(h5_obj, h5py.File):
@@ -1301,7 +1303,7 @@ class ContainerBase(dict, abc.ABC):
             try:
                 return reduction(containers)
             except Exception as e:
-                raise ivy.exceptions.IvyException(
+                raise ivy.utils.exceptions.IvyException(
                     str(e)
                     + "\nContainer reduce operation only valid for containers of arrays"
                 )
@@ -1612,7 +1614,7 @@ class ContainerBase(dict, abc.ABC):
                 )
             )
         else:
-            raise ivy.exceptions.IvyException("invalid input {}".format(dict_in))
+            raise ivy.utils.exceptions.IvyException("invalid input {}".format(dict_in))
         items = sorted(dict_in.items()) if self._alphabetical_keys else dict_in.items()
         for key, value in items:
             if (
@@ -1781,7 +1783,7 @@ class ContainerBase(dict, abc.ABC):
 
         def _ret_bool(x):
             if assert_is_bool:
-                ivy.assertions.check_isinstance(x, bool)
+                ivy.utils.assertions.check_isinstance(x, bool)
                 return x
             return bool(x)
 
@@ -1952,7 +1954,7 @@ class ContainerBase(dict, abc.ABC):
             appending to file. (Default value = None)
 
         """
-        ivy.assertions.check_exists(
+        ivy.utils.assertions.check_exists(
             h5py,
             message="You must install python package h5py in order to save \
             containers to disk as hdf5 files.",
@@ -2320,17 +2322,17 @@ class ContainerBase(dict, abc.ABC):
 
         """
         try:
-            ivy.assertions.check_true(
+            ivy.utils.assertions.check_true(
                 self.cont_contains_sub_container(sub_cont, partial)
             )
-        except ivy.exceptions.IvyException:
+        except ivy.utils.exceptions.IvyException:
             key_chain = self.cont_find_sub_structure(
                 sub_cont, check_shapes=False, partial=True
             )
             if not key_chain:
                 key_chain = ""
             # noinspection PyTypeChecker
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "Containers did not have identical structure and values:\n\n{}".format(
                     ivy.Container.cont_diff(self[key_chain], sub_cont)
                 )
@@ -2423,17 +2425,17 @@ class ContainerBase(dict, abc.ABC):
 
         """
         try:
-            ivy.assertions.check_true(
+            ivy.utils.assertions.check_true(
                 self.cont_contains_sub_structure(sub_cont, check_shapes, partial)
             )
-        except ivy.exceptions.IvyException:
+        except ivy.utils.exceptions.IvyException:
             key_chain = self.cont_find_sub_structure(
                 sub_cont, check_shapes=False, partial=True
             )
             if not key_chain:
                 key_chain = ""
             # noinspection PyTypeChecker
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "Containers did not have identical structure:\n\n{}".format(
                     ivy.Container.cont_structural_diff(
                         self[key_chain],
@@ -2513,7 +2515,7 @@ class ContainerBase(dict, abc.ABC):
             except KeyError as e:
                 if ignore_key_errors:
                     return
-                raise ivy.exceptions.IvyException(repr(e))
+                raise ivy.utils.exceptions.IvyException(repr(e))
         return ret
 
     def cont_at_key_chains(self, key_chains, ignore_none=True, ignore_key_errors=False):
@@ -2550,7 +2552,7 @@ class ContainerBase(dict, abc.ABC):
                 [key_chains], ignore_key_errors=ignore_key_errors
             )
         else:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "Invalid type for input key_chains, must either be a list, tuple, dict"
                 " or ivy.Container, but found type {}".format(type(key_chains))
             )
@@ -2663,14 +2665,14 @@ class ContainerBase(dict, abc.ABC):
             cont = self.cont_copy()
         sub_cont = cont
         for key in keys[:-1]:
-            ivy.assertions.check_elem_in_list(
+            ivy.utils.assertions.check_elem_in_list(
                 key,
                 sub_cont,
                 message="key chain must already exist in container in order to \
                 call cont_overwrite_at_key_chain",
             )
             sub_cont = sub_cont[key]
-        ivy.assertions.check_elem_in_list(
+        ivy.utils.assertions.check_elem_in_list(
             keys[-1],
             sub_cont,
             message="key chain must already exist in container in order to \
@@ -2736,7 +2738,7 @@ class ContainerBase(dict, abc.ABC):
             else:
                 return_dict = self.cont_copy()
         for k, v in target_dict.items():
-            ivy.assertions.check_elem_in_list(
+            ivy.utils.assertions.check_elem_in_list(
                 k,
                 return_dict,
                 message="key chain must already exist in container in order to \
@@ -2851,7 +2853,7 @@ class ContainerBase(dict, abc.ABC):
         elif isinstance(key_chains, str):
             return self._cont_prune_key_chains_input_as_seq([key_chains])
         else:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "Invalid type for input key_chains, must either be a list, tuple, dict "
                 "or ivy.Container, but found type {}".format(type(key_chains))
             )
@@ -2932,7 +2934,7 @@ class ContainerBase(dict, abc.ABC):
             removed from the chain.
 
         """
-        ivy.assertions.check_all_or_any_fn(
+        ivy.utils.assertions.check_all_or_any_fn(
             absolute,
             containing,
             fn=ivy.exists,
@@ -2973,7 +2975,7 @@ class ContainerBase(dict, abc.ABC):
             key chains removed from the chain.
 
         """
-        ivy.assertions.check_all_or_any_fn(
+        ivy.utils.assertions.check_all_or_any_fn(
             absolute,
             containing,
             fn=ivy.exists,
@@ -3389,8 +3391,8 @@ class ContainerBase(dict, abc.ABC):
     def _cont_slice_keys(self, key_slice):
         keys = list(self.keys())
         if isinstance(key_slice, str):
-            ivy.assertions.check_true(len(key_slice) == 3 and key_slice[1] == ":")
-            ivy.assertions.check_true(self._alphabetical_keys)
+            ivy.utils.assertions.check_true(len(key_slice) == 3 and key_slice[1] == ":")
+            ivy.utils.assertions.check_true(self._alphabetical_keys)
             start_char = key_slice[0]
             end_char = key_slice[2]
             start_idx = min([i for i, k in enumerate(keys) if k[0] == start_char])
@@ -3940,7 +3942,7 @@ class ContainerBase(dict, abc.ABC):
                 range(query[0].start, query[0].stop, ivy.default(query[0].step, 1))
             )
         else:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "Invalid slice type, must be one of integer, slice "
                 "or sequences of slices."
             )
@@ -4042,7 +4044,7 @@ class ContainerBase(dict, abc.ABC):
 
         if query == "dynamic_backend":
             from ivy.functional.ivy.gradients import _variable
-            from ivy.backend_handler import _determine_backend_from_args
+            from ivy.utils.backend.handler import _determine_backend_from_args
 
             if not val:
                 self._backend = _determine_backend_from_args(self)

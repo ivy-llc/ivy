@@ -10,7 +10,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
 )
-from ivy.exceptions import handle_exceptions
+from ivy.utils.exceptions import handle_exceptions
 
 
 # Array API Standard #
@@ -235,22 +235,6 @@ def sort(
     return ivy.current_backend(x).sort(
         x, axis=axis, descending=descending, stable=stable, out=out
     )
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
-@handle_exceptions
-@handle_array_like_without_promotion
-@handle_array_function
-def lexsort(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    axis: int = -1,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    return ivy.current_backend(x).lexsort(x, axis=axis)
 
 
 # Extra #

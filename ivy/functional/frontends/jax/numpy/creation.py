@@ -13,7 +13,7 @@ from ivy.functional.frontends.jax.func_wrapper import (
 def array(object, dtype=None, copy=True, order="K", ndmin=0):
     # TODO must ensure the array is created on default device.
     if order is not None and order != "K":
-        raise ivy.exceptions.IvyNotImplementedException(
+        raise ivy.utils.exceptions.IvyNotImplementedException(
             "Only implemented for order='K'"
         )
     ret = ivy.array(object, dtype=dtype)
@@ -104,6 +104,16 @@ def full_like(a, fill_value, dtype=None, shape=None):
 @to_ivy_arrays_and_back
 def ndim(a):
     return ivy.astype(ivy.array(a.ndim), ivy.int64)
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+def empty_like(a, dtype=None, shape=None):
+    # XLA cannot create uninitialized arrays
+    # jax.numpy.empty_like returns an array initialized with zeros.
+    if shape:
+        return ivy.zeros(shape, dtype=dtype)
+    return ivy.zeros_like(a, dtype=dtype)
 
 
 @to_ivy_arrays_and_back

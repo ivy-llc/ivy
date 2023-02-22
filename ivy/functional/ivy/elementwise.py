@@ -12,7 +12,7 @@ from ivy.func_wrapper import (
     integer_arrays_to_float,
     handle_array_like_without_promotion,
 )
-from ivy.exceptions import handle_exceptions
+from ivy.utils.exceptions import handle_exceptions
 
 
 # Array API Standard #
@@ -24,7 +24,6 @@ from ivy.exceptions import handle_exceptions
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
-@handle_array_function
 @handle_array_function
 def abs(
     x: Union[float, ivy.Array, ivy.NativeArray],

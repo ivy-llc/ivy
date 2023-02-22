@@ -65,3 +65,14 @@ def instance_norm(
     if data_format == "NHWC":
         normalized = np.transpose(normalized, (0, 2, 3, 1))
     return normalized
+
+
+def lp_normalize(
+    x: np.ndarray, /, *, p: float = 2, axis: int = None, out=None
+) -> np.ndarray:
+    if axis is None:
+        denorm = np.linalg.norm(x.flatten(), axis=axis, ord=p)
+    else:
+        denorm = np.linalg.norm(x, axis=axis, ord=p, keepdims=True)
+    denorm = np.maximum(denorm, 1e-12)
+    return np.divide(x, denorm, out=out)

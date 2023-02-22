@@ -213,16 +213,23 @@ def matmul(
     *,
     transpose_a: bool = False,
     transpose_b: bool = False,
+    adjoint_a: bool = False,
+    adjoint_b: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
 
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     dtype_from = tf.as_dtype(x1.dtype)
 
-    if transpose_a is True:
+    if transpose_a:
         x1 = tf.transpose(x1)
-    if transpose_b is True:
+    if transpose_b:
         x2 = tf.transpose(x2)
+
+    if adjoint_a:
+        x1 = tf.linalg.adjoint(x1)
+    if adjoint_b:
+        x2 = tf.linalg.adjoint(x2)
 
     if dtype_from.is_unsigned or dtype_from == tf.int8 or dtype_from == tf.int16:
         x1 = tf.cast(x1, tf.int64)
@@ -240,7 +247,7 @@ def matmul(
         or (len(x2.shape) == 1 and len(x1.shape) >= 2 and x2.shape[0] != x1.shape[-1])
         or (len(x1.shape) >= 2 and len(x2.shape) >= 2 and x1.shape[-1] != x2.shape[-2])
     ):
-        raise ivy.exceptions.IvyException("Error,shapes not compatible")
+        raise ivy.utils.exceptions.IvyException("Error,shapes not compatible")
 
     x1_padded = False
     x1_padded_2 = False
@@ -463,8 +470,11 @@ def matrix_transpose(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    conjugate: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if conjugate:
+        tf.math.conj(x)
     return tf.linalg.matrix_transpose(x)
 
 
@@ -518,7 +528,7 @@ def qr(
         q, r = tf.linalg.qr(x, full_matrices=True)
         ret = res(q, r)
     else:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             "Only 'reduced' and 'complete' qr modes are allowed "
             "for the tensorflow backend."
         )
@@ -544,8 +554,11 @@ def solve(
     x2: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    adjoint: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if adjoint:
+        x1 = tf.linalg.adjoint(x1)
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     expanded_last = False
     if len(x2.shape) <= 1:

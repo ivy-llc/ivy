@@ -26,8 +26,9 @@ CLASS_TREE = "ivy.functional.frontends.torch.Tensor"
 def _dtypes(draw):
     return draw(
         st.shared(
-            helpers.list_of_length(
-                x=st.sampled_from(draw(helpers.get_dtypes("numeric"))), length=1
+            helpers.list_of_size(
+                x=st.sampled_from(draw(helpers.get_dtypes("numeric"))),
+                size=1,
             ),
             key="dtype",
         )
@@ -73,7 +74,7 @@ def test_torch_tensor_property_device(
     _, data = dtype_x
     x = Tensor(data[0])
     x.ivy_array = data[0]
-    ivy.assertions.check_equal(x.device, ivy.dev(ivy.array(data[0])))
+    ivy.utils.assertions.check_equal(x.device, ivy.dev(ivy.array(data[0])))
 
 
 @given(
@@ -87,7 +88,7 @@ def test_torch_tensor_property_dtype(
     dtype, data = dtype_x
     x = Tensor(data[0])
     x.ivy_array = data[0]
-    ivy.assertions.check_equal(x.dtype, dtype[0])
+    ivy.utils.assertions.check_equal(x.dtype, dtype[0])
 
 
 @given(
@@ -99,7 +100,7 @@ def test_torch_tensor_property_dtype(
 def test_torch_tensor_property_shape(dtype_x):
     dtype, data, shape = dtype_x
     x = Tensor(data[0])
-    ivy.assertions.check_equal(x.ivy_array.shape, ivy.Shape(shape))
+    ivy.utils.assertions.check_equal(x.ivy_array.shape, ivy.Shape(shape))
 
 
 # chunk
@@ -387,17 +388,15 @@ def test_torch_instance_reshape(
     frontend,
 ):
     input_dtype, x = dtype_x
+    shape = {
+        "shape": shape,
+    }
     if unpack_shape:
-        method_flags.num_positional_args = len(shape) + 1
-        shape = {}
+        method_flags.num_positional_args = len(shape["shape"]) + 1
         i = 0
-        for x_ in shape:
+        for x_ in shape["shape"]:
             shape["x{}".format(i)] = x_
             i += 1
-    else:
-        shape = {
-            "shape": shape,
-        }
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
@@ -1220,6 +1219,41 @@ def test_torch_instance_amin(
     )
 
 
+# aminmax
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="aminmax",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+    ),
+    keepdim=st.booleans(),
+)
+def test_torch_instance_aminmax(
+    dtype_x,
+    keepdim,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "keepdim": keepdim,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+    )
+
+
 # contiguous
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -1704,6 +1738,40 @@ def test_torch_instance_arctan_(
     ),
 )
 def test_torch_instance_arctan2(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+    )
+
+
+# arctan2_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="arctan2_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+    ),
+)
+def test_torch_instance_arctan2_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2249,16 +2317,14 @@ def test_torch_instance_new_empty(
 def _expand_helper(draw):
     num_dims = draw(st.integers(min_value=1, max_value=10))
     shape = draw(
-        helpers.get_shape(
-            min_num_dims=num_dims,
-            max_num_dims=num_dims
-        ).filter(lambda x: any(i == 1 for i in x))
+        helpers.get_shape(min_num_dims=num_dims, max_num_dims=num_dims).filter(
+            lambda x: any(i == 1 for i in x)
+        )
     )
     new_shape = draw(
-        helpers.get_shape(
-            min_num_dims=num_dims,
-            max_num_dims=num_dims
-        ).filter(lambda x: all(x[i] == v if v != 1 else True for i, v in enumerate(shape)))
+        helpers.get_shape(min_num_dims=num_dims, max_num_dims=num_dims).filter(
+            lambda x: all(x[i] == v if v != 1 else True for i, v in enumerate(shape))
+        )
     )
     dtype, x = draw(
         helpers.dtype_and_values(
@@ -2550,6 +2616,38 @@ def test_torch_instance_is_cuda(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        frontend=frontend,
+    )
+
+
+# bitwise_not
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="bitwise_not",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+    ),
+)
+def test_torch_instance_bitwise_not(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        method_all_as_kwargs_np={},
         frontend=frontend,
     )
 
@@ -3670,6 +3768,47 @@ def test_torch_instance_cumsum(
         method_all_as_kwargs_np={
             "dim": dim,
             "dtype": dtypes[0],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+    )
+
+
+# cumsum_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="cumsum_",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+    ),
+    dim=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(), key="shape"),
+        allow_neg=True,
+        force_int=True,
+    ),
+)
+def test_torch_instance_cumsum_(
+    dtype_value,
+    dim,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+):
+    input_dtype, x = dtype_value
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "dim": dim,
+            "dtype": input_dtype[0],
         },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,

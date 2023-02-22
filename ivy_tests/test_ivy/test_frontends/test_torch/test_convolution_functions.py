@@ -24,16 +24,22 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False):
     if not transpose:
         padding = draw(
             st.one_of(
-                st.sampled_from(["same", "valid"]) if strides == 1 else st.just("valid"),
+                st.sampled_from(["same", "valid"])
+                if strides == 1
+                else st.just("valid"),
                 st.integers(min_value=1, max_value=3),
-                st.lists(st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim),
+                st.lists(
+                    st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim
+                ),
             )
         )
     else:
         padding = draw(
             st.one_of(
                 st.integers(min_value=1, max_value=3),
-                st.lists(st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim),
+                st.lists(
+                    st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim
+                ),
             )
         )
     batch_size = draw(st.integers(1, 5))
@@ -103,8 +109,8 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False):
         )
     )
     if transpose:
-        output_padding = draw(st.lists(
-            st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim)
+        output_padding = draw(
+            st.lists(st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim)
         )
         for i, p in enumerate(output_padding):
             m = min(full_strides[i], full_dilations[i])
@@ -112,7 +118,17 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False):
                 output_padding[i] = m - 1
         if draw(st.booleans()):
             output_padding = min(output_padding)
-        return dtype, vals, filters, bias, dilations, strides, padding, output_padding, fc
+        return (
+            dtype,
+            vals,
+            filters,
+            bias,
+            dilations,
+            strides,
+            padding,
+            output_padding,
+            fc,
+        )
     else:
         return dtype, vals, filters, bias, dilations, strides, padding, fc
 
@@ -282,12 +298,12 @@ def test_torch_conv_tranpose2d(
     dtype_vals=x_and_filters(dim=3, transpose=True),
 )
 def test_torch_conv_tranpose3d(
-        *,
-        dtype_vals,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_vals,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, output_pad, fc = dtype_vals
     _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilations)
@@ -336,7 +352,7 @@ def _fold_unfold_helper(draw, dim):
             st.integers(min_value=1, max_value=5),
             helpers.get_shape(
                 min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5
-            )
+            ),
         )
     )
     return stride, padding, dilation, kernel_size
@@ -406,7 +422,9 @@ def _fold_helper(draw, dim=2):
     batch_size = draw(st.integers(1, 5))
     n_channels = draw(st.integers(1, 3))
     x_shape = [
-        (output_shape[i] + 2 * paddings[i] - dilations[i] * (kernel_sizes[i] - 1) - 1) // strides[i] + 1
+        (output_shape[i] + 2 * paddings[i] - dilations[i] * (kernel_sizes[i] - 1) - 1)
+        // strides[i]
+        + 1
         for i in range(2)
     ]
     x_shape = (batch_size, n_channels * math.prod(kernel_sizes), math.prod(x_shape))
@@ -419,10 +437,7 @@ def _fold_helper(draw, dim=2):
         )
     )
     if vals.shape[0] == 1:  # un-batched inputs are also supported
-        vals = draw(st.one_of(
-            st.just(vals),
-            st.just(ivy.squeeze(vals, axis=0))
-        ))
+        vals = draw(st.one_of(st.just(vals), st.just(ivy.squeeze(vals, axis=0))))
     return dtype, vals, kernel_size, output_shape, dilation, stride, padding
 
 

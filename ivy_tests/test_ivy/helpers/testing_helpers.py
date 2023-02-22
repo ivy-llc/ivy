@@ -26,6 +26,10 @@ from ivy_tests.test_ivy.helpers.available_frameworks import (
     available_frameworks,
     ground_truth,
 )
+from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import (
+    _dtype_kind_keys,
+    _get_type_dict,
+)
 
 ground_truth = ground_truth()
 
@@ -182,7 +186,13 @@ def _get_method_supported_devices_dtypes(
     for b in backends:  # ToDo can optimize this ?
         ivy.set_backend(b)
         _fn = getattr(class_module.__dict__[class_name], method_name)
-        supported_device_dtypes[b] = ivy.function_supported_devices_and_dtypes(_fn)
+        devices_and_dtypes = ivy.function_supported_devices_and_dtypes(_fn)
+        organized_dtypes = {}
+        for device in devices_and_dtypes.keys():
+            organized_dtypes[device] = _partition_dtypes_into_kinds(
+                ivy, devices_and_dtypes[device]
+            )
+        supported_device_dtypes[b] = organized_dtypes
         ivy.unset_backend()
     return supported_device_dtypes
 
@@ -214,13 +224,27 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
 
     backends = available_frameworks()
     for b in backends:  # ToDo can optimize this ?
-
         ivy.set_backend(b)
         _tmp_mod = importlib.import_module(fn_module)
         _fn = _tmp_mod.__dict__[fn_name]
-        supported_device_dtypes[b] = ivy.function_supported_devices_and_dtypes(_fn)
+        devices_and_dtypes = ivy.function_supported_devices_and_dtypes(_fn)
+        organized_dtypes = {}
+        for device in devices_and_dtypes.keys():
+            organized_dtypes[device] = _partition_dtypes_into_kinds(
+                ivy, devices_and_dtypes[device]
+            )
+        supported_device_dtypes[b] = organized_dtypes
         ivy.unset_backend()
     return supported_device_dtypes
+
+
+def _partition_dtypes_into_kinds(framework, dtypes):
+    partitioned_dtypes = {}
+    for kind in _dtype_kind_keys:
+        partitioned_dtypes[kind] = set(_get_type_dict(framework, kind)).intersection(
+            dtypes
+        )
+    return partitioned_dtypes
 
 
 # Decorators
@@ -614,10 +638,17 @@ def handle_frontend_method(
                 as_variable=method_as_variable_flags,
                 native_arrays=method_native_arrays,
             )
-
+            try:
+                ivy_init_modules = importlib.import_module(ivy_init_module)
+            except Exception:
+                ivy_init_modules = str(ivy_init_module)
+            try:
+                framework_init_modules = importlib.import_module(framework_init_module)
+            except Exception:
+                framework_init_modules = str(framework_init_module)
             frontend_helper_data = FrontendMethodData(
-                ivy_init_module=importlib.import_module(ivy_init_module),
-                framework_init_module=importlib.import_module(framework_init_module),
+                ivy_init_module=ivy_init_modules,
+                framework_init_module=framework_init_modules,
                 init_name=init_name,
                 method_name=method_name,
             )

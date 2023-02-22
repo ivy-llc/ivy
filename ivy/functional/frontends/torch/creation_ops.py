@@ -116,7 +116,7 @@ def arange(
     elif len(args) == 3:
         start, end, step = args
     else:
-        ivy.assertions.check_true(
+        ivy.utils.assertions.check_true(
             len(args) == 1 or len(args) == 3,
             "only 1 or 3 positional arguments are supported",
         )
@@ -139,7 +139,7 @@ def range(
     elif len(args) == 3:
         start, end, step = args
     else:
-        ivy.assertions.check_true(
+        ivy.utils.assertions.check_true(
             len(args) == 1 or len(args) == 3,
             "only 1 or 3 positional arguments are supported",
         )
@@ -260,3 +260,8 @@ def tensor(
     pin_memory=False,
 ):
     return ivy.array(data, dtype=dtype, device=device)
+
+
+@to_ivy_arrays_and_back
+def as_strided(input, size, stride, storage_offset=None):
+    return ivy.as_strided(input, size, stride, storage_offset)

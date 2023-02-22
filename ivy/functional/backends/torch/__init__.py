@@ -8,7 +8,12 @@ import ivy
 backend_version = {"version": torch.__version__.split("+")[0]}
 
 # noinspection PyUnresolvedReferences
-use = ivy.backend_handler.ContextManager(sys.modules[__name__])
+if not ivy.is_local():
+    _module_in_memory = sys.modules[__name__]
+else:
+    _module_in_memory = sys.modules[ivy.import_module_path].import_cache[__name__]
+
+use = ivy.utils.backend.ContextManager(_module_in_memory)
 
 NativeArray = torch.Tensor
 NativeVariable = torch.Tensor
@@ -20,9 +25,9 @@ NativeSparseArray = torch.Tensor
 
 
 # devices
-valid_devices = ("cpu",)
+valid_devices = ("cpu", "gpu")
 
-invalid_devices = ("gpu", "tpu")
+invalid_devices = ("tpu",)
 
 
 # native data types
