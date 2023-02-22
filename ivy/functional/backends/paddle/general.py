@@ -6,6 +6,7 @@ from operator import mul
 from typing import Optional, Union, Sequence, Callable, List
 import paddle
 import numpy as np
+
 # local
 import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
@@ -43,7 +44,21 @@ def get_item(
 def to_numpy(
     x: Union[paddle.Tensor, List[paddle.Tensor]], /, *, copy: bool = True
 ) -> Union[np.ndarray, List[np.ndarray]]:
-    raise IvyNotImplementedException()
+    if isinstance(x, (float, int, bool)):
+        return x
+    elif isinstance(x, np.ndarray):
+        if copy:
+            return x.copy()
+        else:
+            return x
+    elif paddle.is_tensor(x):
+        if copy:
+            return np.array(x)
+        else:
+            return np.asarray(x)
+    elif isinstance(x, list):
+        return [ivy.to_numpy(u) for u in x]
+    raise ivy.utils.exceptions.IvyException("Expected a Paddle Tensor.")
 
 
 def to_scalar(x: paddle.Tensor, /) -> Number:
@@ -143,7 +158,9 @@ def scatter_nd(
     raise IvyNotImplementedException()
 
 
-def shape(x: paddle.Tensor, /, *, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
+def shape(
+    x: paddle.Tensor, /, *, as_array: bool = False
+) -> Union[ivy.Shape, ivy.Array]:
     raise IvyNotImplementedException()
 
 
