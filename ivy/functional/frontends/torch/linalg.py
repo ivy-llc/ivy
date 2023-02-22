@@ -170,6 +170,10 @@ def tensorinv(input, ind=2, *, out=None):
 def eig(input, *, out=None):
     return ivy.eig(input, out=out)
 
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+def eigh(a, /, UPLO="L", out=None):
+    return ivy.eigh(a, UPLO=UPLO, out=out)
 
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")

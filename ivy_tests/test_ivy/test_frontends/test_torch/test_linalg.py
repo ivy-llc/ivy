@@ -640,6 +640,49 @@ def test_torch_eig(
         ground_truth_backend=frontend,
     )
 
+# eigh
+@handle_frontend_test(
+    fn_tree="torch.linalg.eigh",
+    dtype_and_input=_get_dtype_and_square_matrix(),
+    test_with_out=st.just(False),
+)
+def test_torch_eigh(
+    *,
+    dtype_and_input,
+    UPLO=st.sampled_from(("L", "U")),
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_input
+    x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
+    if x.dtype == ivy.float32:
+        x = x.astype("float64")
+        input_dtype = [ivy.float64]
+    ret, frontend_ret = helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        UPLO=UPLO,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        input=x,
+    )
+    ret = [ivy.to_numpy(x).astype("float64") for x in ret]
+    frontend_ret = [np.asarray(x, dtype=np.float64) for x in frontend_ret]
+
+    l, v = ret
+    front_l, front_v = frontend_ret
+
+    assert_all_close(
+        ret_np=v @ np.diag(l) @ np.linalg.inv(v),
+        ret_from_gt_np=front_v @ np.diag(front_l) @ np.linalg.inv(front_v),
+        rtol=1e-2,
+        atol=1e-2,
+        ground_truth_backend=frontend,
+    )
 
 # svdvals
 @handle_frontend_test(
