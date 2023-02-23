@@ -177,3 +177,20 @@ quantile.unsupported_dtypes = {
     "jax": ("float16", "bfloat16"),
     "tensorflow": ("float16", "bfloat16"),
 }
+
+
+@to_ivy_arrays_and_back
+def norm(input, p="fro", dim=None, keepdim=False, out=None, dtype=None):
+    if "complex" in ivy.as_ivy_dtype(input.dtype):
+        input = ivy.abs(input)
+    if dtype:
+        input = ivy.astype(input, dtype)
+    if p == "nuc":
+        if dim is None:
+            dim = (-2, -1)
+        return ivy.matrix_norm(input, ord="nuc", axis=dim, keepdims=keepdim, out=out)
+    if p == "fro":
+        p = 2
+    return ivy.vector_norm(
+        input, axis=dim, keepdims=keepdim, ord=p, dtype=dtype, out=out
+    )

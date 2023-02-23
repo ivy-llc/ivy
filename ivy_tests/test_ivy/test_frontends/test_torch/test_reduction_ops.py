@@ -700,3 +700,64 @@ def test_torch_quantile(
         keepdim=keepdims,
         interpolation=interpolation[0],
     )
+
+
+@handle_frontend_test(
+    fn_tree="torch.norm",
+    dtype_and_x=helpers.dtype_and_values(
+        num_arrays=1,
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=3,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=5,
+        min_value=-1e20,
+        max_value=1e20,
+        large_abs_safety_factor=10,
+        small_abs_safety_factor=10,
+        safety_factor_scale="log",
+    ),
+    p_and_dim=st.sampled_from(
+        [
+            (p, dim)
+            for p in ["fro", "nuc", 1, 1.5]
+            for dim in [[None], [-2], [-3, -1]]
+            if p != "nuc" or len(dim) == 2
+        ]
+    ),
+    keepdim=st.booleans(),
+    dtype=helpers.get_dtypes("float", none=True, full=False),
+)
+def test_torch_norm(
+    *,
+    dtype_and_x,
+    p_and_dim,
+    keepdim,
+    dtype,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    p, dim = p_and_dim
+    if p in ["fro", "nuc"]:
+        # torch.norm doesn't support dtype argument
+        dtype = [None]
+    if len(dim) == 1:
+        dim = dim[0]
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-04,
+        atol=1e-04,
+        input=x[0],
+        p=p,
+        dim=dim,
+        keepdim=keepdim,
+        dtype=dtype[0],
+    )

@@ -28,3 +28,5 @@ with_time_logs/
 internal_automation_tools/
 .vscode/*
 .idea/*
+.devcontainer/devcontainer.json
+.gitignore
