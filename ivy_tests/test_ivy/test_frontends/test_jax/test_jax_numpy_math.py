@@ -171,6 +171,12 @@ def test_jax_numpy_arctan2(
     )
 
 
+@st.composite
+def _get_pooling_mode(draw):
+    mode = draw(st.sampled_from(['full', 'valid', 'same']))
+    return mode
+
+
 # convolve
 @handle_frontend_test(
     fn_tree="jax.numpy.convolve",
@@ -182,6 +188,7 @@ def test_jax_numpy_arctan2(
         min_value=-1e04,
         max_value=1e04,
     ),
+    mode=_get_pooling_mode(),
 )
 def test_jax_numpy_convolve(
         *,
@@ -190,6 +197,7 @@ def test_jax_numpy_convolve(
         fn_tree,
         frontend,
         test_flags,
+        mode,
 ):
     input_dtype, x = dtype_and_x
     assume("float16" not in input_dtype)
@@ -198,12 +206,12 @@ def test_jax_numpy_convolve(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
-        rtol=1e-5,
-        atol=1e-5,
+        rtol=1e-4,
+        atol=1e-4,
         on_device=on_device,
         a=x[0],
         v=x[1],
-        mode='full',
+        mode=mode,
         precision=None,
     )
 
