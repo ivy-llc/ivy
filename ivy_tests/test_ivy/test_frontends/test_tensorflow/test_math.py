@@ -1498,6 +1498,7 @@ def test_tensorflow_abs(
         x=x[0],
     )
 
+
 # sqrt
 @handle_frontend_test(
     fn_tree="tensorflow.math.sqrt",
