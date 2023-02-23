@@ -550,7 +550,7 @@ def shape(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    as_array: bool = False,
+    as_array: Optional[bool] = False,
 ) -> Union[tf.Tensor, ivy.Shape, ivy.Array]:
     if as_array:
         return ivy.array(tf.shape(x), dtype=ivy.default_int_dtype())
