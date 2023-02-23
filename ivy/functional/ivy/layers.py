@@ -884,7 +884,7 @@ def conv1d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
     strides: Union[int, Tuple[int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: str,
     /,
     *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
@@ -903,9 +903,8 @@ def conv1d_transpose(
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
-        padding), or a sequence of n (low, high) integer pairs that give the padding to
-        apply before and after each spatial dimension.
+        Either ‘SAME’ (padding so that the output's shape is the same as the
+        input's), or ‘VALID’ (padding so that the output's shape is `output_shape`).
     output_shape
         Shape of the output (Default value = None)
     data_format
@@ -1145,7 +1144,7 @@ def conv2d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
     strides: Union[int, Tuple[int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: str,
     /,
     *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
@@ -1164,9 +1163,8 @@ def conv2d_transpose(
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
-        padding), or a sequence of n (low, high) integer pairs that give the padding to
-        apply before and after each spatial dimension.
+        Either ‘SAME’ (padding so that the output's shape is the same as the
+        input's), or ‘VALID’ (padding so that the output's shape is `output_shape`).
     output_shape
         Shape of the output (Default value = None)
     data_format
@@ -1518,7 +1516,7 @@ def conv3d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
     strides: Union[int, Tuple[int, int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: str,
     /,
     *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
@@ -1537,9 +1535,8 @@ def conv3d_transpose(
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
-        padding), or a sequence of n (low, high) integer pairs that give the padding to
-        apply before and after each spatial dimension.
+        Either ‘SAME’ (padding so that the output's shape is the same as the
+        input's), or ‘VALID’ (padding so that the output's shape is `output_shape`).
     output_shape
         Shape of the output (Default value = None)
     data_format
@@ -1706,7 +1703,7 @@ def conv_general_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
     strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: str,
     /,
     *,
     dims: Optional[int] = 2,
@@ -1731,9 +1728,8 @@ def conv_general_transpose(
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
-        padding), or a sequence of n (low, high) integer pairs that give the padding to
-        apply before and after each spatial dimension.
+        Either ‘SAME’ (padding so that the output's shape is the same as the
+        input's), or ‘VALID’ (padding so that the output's shape is `output_shape`).
     dims
         Either 1, 2, or 3 corresponding to 1-D, 2-D, and 3-D convolution.
     output_shape
