@@ -216,15 +216,15 @@ def split(tensor, split_size_or_sections, dim=0):
 
 
 def _get_indices_or_sections(indices_or_sections, indices, sections):
-    if not indices_or_sections:
-        if isinstance(indices_or_sections, (list, tuple)):
-            pass
-        elif indices and not sections:
+    if not isinstance(indices_or_sections, (list, tuple, int)):
+        if indices and not sections:
             indices_or_sections = indices
         elif sections and not indices:
             indices_or_sections = sections
         else:
-            raise TypeError("got invalid argument for indices_or_sections")
+            raise ivy.utils.exception.IvyError(
+                "got invalid argument for indices_or_sections"
+            )
     return indices_or_sections
 
 
