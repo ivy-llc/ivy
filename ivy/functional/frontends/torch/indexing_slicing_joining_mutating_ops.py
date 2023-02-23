@@ -216,7 +216,7 @@ def split(tensor, split_size_or_sections, dim=0):
 
 
 def _get_indices_or_sections(indices_or_sections, indices, sections):
-    if not isinstance(indices_or_sections, (list, tuple, int)):
+    if not ivy.exists(indices_or_sections):
         if indices and not sections:
             indices_or_sections = indices
         elif sections and not indices:
