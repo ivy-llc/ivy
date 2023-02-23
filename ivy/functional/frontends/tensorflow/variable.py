@@ -221,3 +221,47 @@ class Variable:
             "ivy.functional.frontends.tensorflow.Variable object "
             "doesn't support assignment"
         )
+
+
+class IndexedSlices:
+    def __init__(self, values, indices, dense_shape=None):
+        self._values = values
+        self._indices = indices
+        self._dense_shape = dense_shape
+
+    @property
+    def values(self):
+        """A `Tensor` containing the values of the slices."""
+        return self._values
+
+    @property
+    def indices(self):
+        """A 1-D `Tensor` containing the indices of the slices."""
+        return self._indices
+
+    @property
+    def dense_shape(self):
+        """A 1-D `Tensor` containing the shape of the corresponding dense tensor."""
+        return self._dense_shape
+
+    @property
+    def device(self):
+        """The name of the device on which `values` will be produced, or `None`."""
+        return self.values.device
+
+    @property
+    def dtype(self):
+        """The `DType` of elements in this tensor."""
+        return self.values.dtype
+
+    def __repr__(self):
+        return "IndexedSlices(\nindices=%s,\nvalues=%s%s\n)" % (
+            self._indices,
+            self._values,
+            (", dense_shape=%s" % (self._dense_shape,))
+            if self._dense_shape is not None
+            else "",
+        )
+
+    def __neg__(self):
+        return IndexedSlices(-self._values, self._indices, self._dense_shape)
