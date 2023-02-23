@@ -6,7 +6,7 @@ import ivy.functional.frontends.tensorflow as tf_frontend
 
 
 class Variable:
-    def __init__(self, array, trainable=True, name=None, dtype=None, constraint=None):
+    def __init__(self, array, trainable=True, name=None, dtype=None):
         self._ivy_array = (
             ivy.array(array) if not isinstance(array, ivy.Array) else array
         )
@@ -14,7 +14,6 @@ class Variable:
             ivy.astype(self._ivy_array, dtype) if dtype is not None else self._ivy_array
         )
         self.trainable = trainable
-        self.constraint = constraint
 
     def __repr__(self):
         return (
