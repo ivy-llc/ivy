@@ -446,3 +446,12 @@ def abs(x, name=None):
 @to_ivy_arrays_and_back
 def log_softmax(logits, axis=None):
     return ivy.log_softmax(logits, axis=axis)
+
+@to_ivy_arrays_and_back
+def  unsorted_segment_sum(data, segment_ids, num_segments, name='unsorted_segment_sum'):
+    ivy.utils.assertions.check_isinstance(segment_ids, int, message='segment_ids must be an integer')
+    ivy.utils.assertions.check_isinstance(num_segments, int, message='num_segments must be an integer')
+    x = ivy.zeros(tuple([num_segments] + (list(data.shape))[1:]))
+    for i in range((segment_ids).shape[0]):
+        x[segment_ids[i]] = x[segment_ids[i]] + data[i]
+    return x
