@@ -60,8 +60,6 @@ def pytest_configure(config):
         frontend_strs = frontend.split(",")
         for i in frontend_strs:
             process = subprocess.Popen(
-
-
                 [
                     "/opt/miniconda/envs/multienv/bin/python",
                     "multiversion_frontend_test.py",
@@ -74,7 +72,6 @@ def pytest_configure(config):
                 text=True,
             )
             mod_frontend[i.split("/")[0]] = [i, process]
-
 
     # compile_graph
     raw_value = config.getoption("--compile_graph")
@@ -130,6 +127,7 @@ def run_around_tests(request, on_device, backend_fw, compile_graph, implicit):
                 request.function.test_data,
                 backend_fw.backend,
                 request.function.ground_truth_backend,
+                on_device,
             )
         except Exception as e:
             test_globals.teardown_api_test()

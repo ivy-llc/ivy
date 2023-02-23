@@ -1199,7 +1199,8 @@ class ArrayWithGeneral(abc.ABC):
         updates
             Values for the new array to hold.
         size
-            The size of the result.
+            The size of the result. Default is `None`, in which case tensor
+            argument out must be provided.
         reduction
             The reduction method for the scatter, one of 'sum', 'min', 'max' or
             'replace'
@@ -1211,6 +1212,25 @@ class ArrayWithGeneral(abc.ABC):
         -------
         ret
             New array of given shape, with the values scattered at the indices.
+        
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+        >>> indices = ivy.array([0, 0, 1, 0, 2, 2, 3, 3])
+        >>> updates = ivy.array([5, 1, 7, 2, 3, 2, 1, 3])
+        >>> size = 8
+        >>> out = indices.scatter_flat(updates, size=size)
+        >>> print(out)
+        ivy.array([8, 7, 5, 4, 0, 0, 0, 0])
+
+
+        With :class:`ivy.Array` input:
+        >>> indices = ivy.array([0, 0, 1, 0, 2, 2, 3, 3])
+        >>> updates = ivy.array([5, 1, 7, 2, 3, 2, 1, 3])
+        >>> out = ivy.array([0, 0, 0, 0, 0, 0, 0, 0])
+        >>> indices.scatter_flat(updates, out=out)
+        >>> print(out)
+        ivy.array([8, 7, 5, 4, 0, 0, 0, 0])
         """
         return ivy.scatter_flat(self, updates, size=size, reduction=reduction, out=out)
 

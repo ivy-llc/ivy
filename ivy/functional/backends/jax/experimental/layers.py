@@ -478,16 +478,16 @@ def interpolate(
     mode: Union[Literal["linear", "bilinear"]] = "linear",
     align_corners: Optional[bool] = None,
     antialias: Optional[bool] = False,
+    out: Optional[JaxArray] = None,
 ):
-    # keeping the batch and channel dimension same
-    dims = len(x.shape) - 2
-    size = (size,) * dims if isinstance(size, int) else size
-    size = [x.shape[0], *size, x.shape[1]]
-
-    if align_corners or mode == "area":
+    if align_corners or mode in ["area", "nearest"]:
         return ivy.functional.experimental.interpolate(
             x, size, mode=mode, align_corners=align_corners, antialias=antialias
         )
+
+    dims = len(x.shape) - 2
+    size = (size,) * dims if isinstance(size, int) else size
+    size = [x.shape[0], *size, x.shape[1]]
     x = jnp.transpose(x, (0, *range(2, dims + 2), 1))
     return jnp.transpose(
         jax.image.resize(x, shape=size, method=mode, antialias=antialias),
