@@ -1,7 +1,11 @@
+# global
+import math
+
+# local
 import ivy
 from ivy import with_unsupported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
-from ivy.exceptions import IvyNotImplementedException
+from ivy.utils.exceptions import IvyNotImplementedException
 
 
 @to_ivy_arrays_and_back
@@ -9,7 +13,7 @@ def pixel_shuffle(input, upscale_factor):
 
     input_shape = ivy.shape(input)
 
-    ivy.assertions.check_equal(
+    ivy.utils.assertions.check_equal(
         ivy.get_num_dims(input),
         4,
         message="pixel_shuffle expects 4D input, but got input with sizes "
@@ -20,7 +24,7 @@ def pixel_shuffle(input, upscale_factor):
     h = input_shape[2]
     w = input_shape[3]
     upscale_factor_squared = upscale_factor * upscale_factor
-    ivy.assertions.check_equal(
+    ivy.utils.assertions.check_equal(
         c % upscale_factor_squared,
         0,
         message="pixel_shuffle expects input channel to be divisible by square "
@@ -48,7 +52,7 @@ def pixel_unshuffle(input, downscale_factor):
 
     input_shape = ivy.shape(input)
 
-    ivy.assertions.check_equal(
+    ivy.utils.assertions.check_equal(
         ivy.get_num_dims(input),
         4,
         message=(
@@ -63,7 +67,7 @@ def pixel_unshuffle(input, downscale_factor):
     w = input_shape[3]
     downscale_factor_squared = downscale_factor * downscale_factor
 
-    ivy.assertions.check_equal(
+    ivy.utils.assertions.check_equal(
         [h % downscale_factor, w % downscale_factor],
         [0, 0],  # Assert h % downscale_factor == 0 and w % downscale_factor == 0
         message=(
@@ -116,7 +120,7 @@ def pad(input, pad, mode="constant", value=0):
     elif mode == "circular":
         return ivy.pad(input, pad, mode="wrap")
     else:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             (
                 "mode '{}' must be in "
                 + "['constant', 'reflect', 'replicate', 'circular']"
@@ -144,15 +148,15 @@ def _get_new_width_height(w_old, h_old, size=None, scale_factor=None):
 @to_ivy_arrays_and_back
 def upsample_bilinear(input, size=None, scale_factor=None):
     if scale_factor and size:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             ("only one of size or scale_factor should be defined")
         )
     elif (not scale_factor) and (not size):
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             ("either size or scale_factor should be defined")
         )
     elif ivy.get_num_dims(input) != 4:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             (
                 f"Got {ivy.get_num_dims(input)}D input,",
                 "but bilinear mode needs 4D input (n,c,h,w)",
@@ -270,7 +274,7 @@ def interpolate(
     antialias=False,
 ):
     if mode in ["nearest", "area", "nearest-exact"]:
-        ivy.assertions.check_exists(
+        ivy.utils.assertions.check_exists(
             align_corners,
             inverse=True,
             message="align_corners option can only be set with the interpolating modes:"
@@ -283,7 +287,7 @@ def interpolate(
     dim = ivy.get_num_dims(input) - 2  # Number of spatial dimensions.
 
     if ivy.exists(size) and ivy.exists(scale_factor):
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             "only one of size or scale_factor should be defined"
         )
 
@@ -291,7 +295,7 @@ def interpolate(
         scale_factors = None
 
         if isinstance(size, (list, tuple)):
-            ivy.assertions.check_equal(
+            ivy.utils.assertions.check_equal(
                 len(size),
                 dim,
                 inverse=False,
@@ -310,7 +314,7 @@ def interpolate(
         output_size = None
 
         if isinstance(scale_factor, (list, tuple)):
-            ivy.assertions.check_equal(
+            ivy.utils.assertions.check_equal(
                 len(scale_factor),
                 dim,
                 inverse=False,
@@ -326,7 +330,7 @@ def interpolate(
             scale_factors = [scale_factor for _ in range(dim)]
 
     else:
-        ivy.assertions.check_any(
+        ivy.utils.assertions.check_any(
             [ivy.exists(size), ivy.exists(scale_factor)],
             message="either size or scale_factor should be defined",
         )
@@ -336,37 +340,21 @@ def interpolate(
         and ivy.exists(recompute_scale_factor)
         and bool(recompute_scale_factor)
     ):
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             "recompute_scale_factor is not meaningful with an explicit size."
         )
 
-    if mode == "area" and not ivy.exists(output_size):
-        recompute_scale_factor = True
-
-    if ivy.all(
-        [
-            ivy.exists(recompute_scale_factor),
-            bool(recompute_scale_factor),
-            ivy.exists(scale_factors),
-        ]
-    ):
+    if ivy.exists(scale_factors):
         output_size = [
-            ivy.astype(
-                ivy.floor(
-                    ivy.astype(input.size(i + 2)) * scale_factors[i], ivy.FloatDtype
-                ),
-                ivy.IntDtype,
-            )
-            for i in range(dim)
+            math.floor(ivy.shape(input)[i + 2] * scale_factors[i]) for i in range(dim)
         ]
-        scale_factors = None
 
     if (
         bool(antialias)
         and not (mode in ["bilinear", "bicubic"])
         and ivy.get_num_dims(input) == 4
     ):
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             "recompute_scale_factor is not meaningful with an explicit size."
         )
 
@@ -391,7 +379,7 @@ def interpolate(
             "Got 5D input, but bilinear mode needs 4D input"
         )
 
-    ivy.assertions.check_elem_in_list(
+    ivy.utils.assertions.check_elem_in_list(
         ivy.get_num_dims(input),
         range(3, 6),
         message=f"Input Error: Only 3D, 4D and 5D input Tensors supported "
@@ -400,7 +388,7 @@ def interpolate(
     )
 
     return ivy.interpolate(
-        input, size, mode=mode, align_corners=align_corners, antialias=antialias
+        input, output_size, mode=mode, align_corners=align_corners, antialias=antialias
     )
 
 

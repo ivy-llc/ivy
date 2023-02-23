@@ -29,6 +29,7 @@ from .sorting import ArrayWithSorting
 from .statistical import ArrayWithStatistical
 from .utility import ArrayWithUtility
 from .experimental import *
+from ivy.func_wrapper import handle_view_indexing
 
 
 class Array(
@@ -113,12 +114,13 @@ class Array(
         ArrayWithStatisticalExperimental.__init__(self),
         ArrayWithUtilityExperimental.__init__(self),
         self._init(data, dynamic_backend)
+        self._view_attributes(data)
 
     def _init(self, data, dynamic_backend=None):
         if ivy.is_ivy_array(data):
             self._data = data.data
         else:
-            ivy.assertions.check_true(
+            ivy.utils.assertions.check_true(
                 ivy.is_native_array(data), "data must be native array"
             )
             self._data = data
@@ -140,6 +142,16 @@ class Array(
         else:
             self._dynamic_backend = ivy.get_dynamic_backend()
 
+    def _view_attributes(self, data):
+        if hasattr(data, "base"):
+            self._base = data.base
+        elif hasattr(data, "_base"):
+            self._base = data._base
+        else:
+            self._base = None
+        self._view_refs = []
+        self._manipulation_stack = []
+
     # Properties #
     # ---------- #
 
@@ -150,7 +162,7 @@ class Array(
     @dynamic_backend.setter
     def dynamic_backend(self, value):
         from ivy.functional.ivy.gradients import _variable
-        from ivy.backend_handler import _determine_backend_from_args
+        from ivy.utils.backend.handler import _determine_backend_from_args
 
         if value == False:
             self._backend = _determine_backend_from_args(self)
@@ -203,7 +215,7 @@ class Array(
             ``(..., M, N)``, the returned array must have shape ``(..., N, M)``).
             The returned array must have the same data type as the original array.
         """
-        ivy.assertions.check_greater(len(self._data.shape), 2, allow_equal=True)
+        ivy.utils.assertions.check_greater(len(self._data.shape), 2, allow_equal=True)
         return ivy.matrix_transpose(self._data)
 
     @property
@@ -232,7 +244,7 @@ class Array(
             two-dimensional array whose first and last dimensions (axes) are
             permuted in reverse order relative to original array.
         """
-        ivy.assertions.check_equal(len(self._data.shape), 2)
+        ivy.utils.assertions.check_equal(len(self._data.shape), 2)
         return ivy.matrix_transpose(self._data)
 
     # Setters #
@@ -240,7 +252,7 @@ class Array(
 
     @data.setter
     def data(self, data):
-        ivy.assertions.check_true(
+        ivy.utils.assertions.check_true(
             ivy.is_native_array(data), "data must be native array"
         )
         self._init(data)
@@ -253,16 +265,19 @@ class Array(
         args, kwargs = args_to_native(*args, **kwargs)
         return func(*args, **kwargs)
 
-    def __array_function__(self, func, types, args, kwargs):
-        # Cannot handle items that have __array_function__ other than those of
+    def __ivy_array_function__(self, func, types, args, kwargs):
+        # Cannot handle items that have __ivy_array_function__ other than those of
         # ivy arrays or native arrays.
         for t in types:
             if (
-                hasattr(t, "__array_function__")
-                and (t.__array_function__ is not ivy.Array.__array_function__)
+                hasattr(t, "__ivy_array_function__")
+                and (t.__ivy_array_function__ is not ivy.Array.__ivy_array_function__)
                 or (
-                    hasattr(ivy.NativeArray, "__array_function__")
-                    and (t.__array_function__ is not ivy.NativeArray.__array_function__)
+                    hasattr(ivy.NativeArray, "__ivy_array_function__")
+                    and (
+                        t.__ivy_array_function__
+                        is not ivy.NativeArray.__ivy_array_function__
+                    )
                 )
             ):
                 return NotImplemented
@@ -316,6 +331,7 @@ class Array(
             attr = self._data.__getattr__(item)
         return to_ivy(attr)
 
+    @handle_view_indexing
     def __getitem__(self, query):
         return ivy.get_item(self._data, query)
 

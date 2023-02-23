@@ -1,49 +1,10 @@
 # global
 from typing import Optional, Union, Tuple, Sequence
-
 import torch
 
 # local
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
-
-
-# TODO: solve problem with bins error: only int and not also 1D torch.tensor.
-@with_unsupported_dtypes(
-    {
-        "1.11.0 and below": (
-            "bfloat16",
-            "float16",
-        )
-    },
-    backend_version,
-)
-def histogram(
-    a: torch.tensor,
-    /,
-    *,
-    bins: Optional[Union[int, torch.tensor, str]] = None,
-    axis: Optional[torch.Tensor] = None,
-    extend_lower_interval: Optional[bool] = False,
-    extend_upper_interval: Optional[bool] = False,
-    dtype: Optional[torch.dtype] = None,
-    range: Optional[Tuple[float]] = None,
-    weights: Optional[torch.tensor] = None,
-    density: Optional[bool] = False,
-    out: Optional[torch.tensor] = None,
-) -> Tuple[torch.tensor]:
-    ret = torch.histogram(
-        input=a, bins=bins, range=range, weight=weights, density=density, out=out
-    )
-    histogram_values = ret[0]
-    bin_edges = ret[1]
-    if dtype:
-        histogram_values.type(dtype)
-        bin_edges.type(dtype)
-    return histogram_values, bin_edges
-
-
-histogram.support_native_out = True
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
@@ -58,17 +19,21 @@ def median(
     temp = input
     if hasattr(axis, "__iter__"):
         for dim in axis:
-            temp = torch.median(
+            temp = torch.quantile(
                 temp,
+                0.5,
                 dim=dim,
                 keepdim=keepdims,
+                interpolation="midpoint",
             )[0]
-        return input
+        return temp
     else:
-        return torch.median(
+        return torch.quantile(
             input,
+            0.5,
             dim=axis,
             keepdim=keepdims,
+            interpolation="midpoint",
         )[0]
 
 
@@ -84,7 +49,7 @@ def nanmean(
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.nanmean(a, dim=axis, keepdim=keepdims, dtype=dtype, out=out)
+    return torch.nanmean(a, dim=axis, keepdim=keepdims, dtype=temp, out=out)
 
 
 nanmean.support_native_out = True
@@ -99,18 +64,10 @@ def quantile(
     /,
     *,
     axis: Optional[Union[Sequence[int], int]] = None,
-    keepdims: bool = False,
-    interpolation: str = "linear",
+    keepdims: Optional[bool] = False,
+    interpolation: Optional[str] = "linear",
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
-    # a,_ = torch.sort(a)
-    # n_axis = len(a.size())
-
-    # if isinstance(axis, tuple):
-    #     axis = list(axis)
-    #     axis = [item * (-1) - (n_axis - 1)for item in axis]
-    # elif isinstance(axis,int):
-    #     axis = n_axis - 1 - axis
 
     if axis is None:
         return torch.quantile(a, q, keepdim=keepdims, interpolation=interpolation)
@@ -135,7 +92,9 @@ def quantile(
 
         temp = a.reshape((-1,) + tuple(desired_shape))
 
-        return torch.quantile(temp, q, dim=0, keepdim=keepdims, interpolation=interpolation)
+        return torch.quantile(
+            temp, q, dim=0, keepdim=keepdims, interpolation=interpolation
+        )
 
     return torch.quantile(a, q, dim=axis, keepdim=keepdims, interpolation=interpolation)
 
@@ -184,8 +143,8 @@ def unravel_index(
     /,
     *,
     out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    temp = indices
+) -> Tuple:
+    temp = indices.to(torch.int32)
     output = []
     for dim in reversed(shape):
         output.append(temp % dim)
