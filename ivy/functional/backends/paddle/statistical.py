@@ -60,7 +60,7 @@ def prod(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.prod(x, axis, keepdim=keepdims, dtype=dtype)
 
 
 def std(
