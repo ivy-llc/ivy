@@ -1,6 +1,6 @@
 # global
 import ivy
-from ivy import with_supported_dtypes
+from ivy import with_supported_dtypes, with_unsupported_dtypes
 from ivy.functional.frontends.tensorflow import check_tensorflow_casting
 from ivy.functional.frontends.tensorflow.func_wrapper import (
     to_ivy_arrays_and_back,
@@ -423,6 +423,18 @@ def rsqrt(x, name=None):
 @to_ivy_arrays_and_back
 def nextafter(x1, x2, name=None):
     return ivy.nextafter(x1, x2)
+
+
+@with_unsupported_dtypes(
+    {
+        "1.2.0": ("float16", "complex64", "complex128"),
+        "1.8.0 and below": ("float16"),
+        "2.9.0 and below": ("int8", "int16", "uint8", "uint16", "uint32", "uint64"),
+    },
+    "tensorflow",
+)
+def abs(x, name=None):
+    return ivy.abs(x)
 
 
 @to_ivy_arrays_and_back
