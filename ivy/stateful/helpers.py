@@ -467,7 +467,7 @@ class ModuleHelpers(abc.ABC):
                 kwargs["atol"] = atol
             if rtol:
                 kwargs["rtol"] = rtol
-            ivy.assertions.check_true(
+            ivy.utils.assertions.check_true(
                 np.allclose(ret, expected_ret, **kwargs),
                 message="ret: {} and expected_ret: {} were not close enough".format(
                     ret, expected_ret

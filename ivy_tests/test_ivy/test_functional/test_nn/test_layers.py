@@ -322,19 +322,6 @@ def x_and_filters(
 ):
     if not isinstance(dim, int):
         dim = draw(dim)
-    padding = draw(
-        st.one_of(
-            st.lists(
-                st.tuples(
-                    st.integers(min_value=0, max_value=3),
-                    st.integers(min_value=0, max_value=3),
-                ),
-                min_size=dim,
-                max_size=dim,
-            ),
-            st.sampled_from(["SAME", "VALID"]),
-        )
-    )
     batch_size = draw(st.integers(1, 5))
     filter_shape = draw(
         helpers.get_shape(
@@ -374,6 +361,7 @@ def x_and_filters(
     full_strides = [strides] * dim if isinstance(strides, int) else strides
     full_dilations = [dilations] * dim if isinstance(dilations, int) else dilations
     if transpose:
+        padding = draw(st.sampled_from(["SAME", "VALID"]))
         x_dim = draw(
             helpers.get_shape(
                 min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5
@@ -394,6 +382,19 @@ def x_and_filters(
         else:
             output_shape = None
     else:
+        padding = draw(
+            st.one_of(
+                st.lists(
+                    st.tuples(
+                        st.integers(min_value=0, max_value=3),
+                        st.integers(min_value=0, max_value=3),
+                    ),
+                    min_size=dim,
+                    max_size=dim,
+                ),
+                st.sampled_from(["SAME", "VALID"]),
+            )
+        )
         x_dim = []
         for i in range(dim):
             min_x = filter_shape[i] + (filter_shape[i] - 1) * (full_dilations[i] - 1)

@@ -15,13 +15,15 @@ import ivy.functional.frontends.jax as jax_frontend
 
 def _fn(x, check_default=False):
     if check_default and jax_frontend.config.jax_enable_x64:
-        ivy.assertions.check_equal(ivy.default_float_dtype(), "float64")
-        ivy.assertions.check_equal(ivy.default_int_dtype(), "int64")
+        ivy.utils.assertions.check_equal(ivy.default_float_dtype(), "float64")
+        ivy.utils.assertions.check_equal(ivy.default_int_dtype(), "int64")
     return x
 
 
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False)
+    ),
 )
 def test_inputs_to_ivy_arrays(dtype_and_x):
     x_dtype, x = dtype_and_x
@@ -49,7 +51,9 @@ def test_inputs_to_ivy_arrays(dtype_and_x):
 
 
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False)
+    ),
 )
 def test_outputs_to_frontend_arrays(dtype_and_x):
     x_dtype, x = dtype_and_x
@@ -65,7 +69,9 @@ def test_outputs_to_frontend_arrays(dtype_and_x):
 
 
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False)
+    ),
 )
 def test_to_ivy_arrays_and_back(dtype_and_x):
     x_dtype, x = dtype_and_x

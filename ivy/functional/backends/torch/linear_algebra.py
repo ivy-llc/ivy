@@ -304,7 +304,7 @@ def qr(
         q, r = torch.qr(x, some=False, out=out)
         ret = res(q, r)
     else:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             "Only 'reduced' and 'complete' qr modes are allowed for the torch backend."
         )
     return ret

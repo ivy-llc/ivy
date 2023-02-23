@@ -88,7 +88,7 @@ class Optimizer(abc.ABC):
             The updated variables, following update step.
 
         """
-        raise ivy.exceptions.IvyNotImplementedException
+        raise ivy.utils.exceptions.IvyNotImplementedException
 
     # Given #
 
@@ -128,7 +128,7 @@ class Optimizer(abc.ABC):
         state
             Nested state to update.
         """
-        raise ivy.exceptions.IvyNotImplementedException
+        raise ivy.utils.exceptions.IvyNotImplementedException
 
     # Given #
 

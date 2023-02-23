@@ -42,7 +42,7 @@ def native_sparse_array(
         dense_shape,
         format,
     ):
-        ivy.assertions.check_true(
+        ivy.utils.assertions.check_true(
             ivy.is_native_sparse_array(data), message="not a sparse array"
         )
         return data
@@ -102,4 +102,4 @@ sparse array natively. None is returned."
 def native_sparse_array_to_indices_values_and_shape(x):
     if isinstance(x, tf.SparseTensor):
         return {"coo_indices": x.indices}, x.values, x.dense_shape
-    raise ivy.exceptions.IvyException("not a SparseTensor")
+    raise ivy.utils.exceptions.IvyException("not a SparseTensor")

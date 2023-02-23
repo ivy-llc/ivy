@@ -23,7 +23,7 @@ def argsort(values, axis=-1, direction="ASCENDING", stable=False, name=None):
 
 @to_ivy_arrays_and_back
 def clip_by_value(t, clip_value_min, clip_value_max):
-    ivy.assertions.check_all_or_any_fn(
+    ivy.utils.assertions.check_all_or_any_fn(
         clip_value_min,
         clip_value_max,
         fn=ivy.exists,
@@ -170,7 +170,7 @@ def sort(values, axis=-1, direction="ASCENDING", name=None):
     if direction == "ASCENDING":
         descending = False
     else:
-        ivy.assertions.check_equal(
+        ivy.utils.assertions.check_equal(
             direction,
             "DESCENDING",
             message="Argument `direction` should be one of 'ASCENDING' or 'DESCENDING'",
@@ -219,7 +219,7 @@ def boolean_mask(tensor, mask, axis=None, name=None):
         k = ivy.get_num_dims(mask)
         if axis < 0:
             axis = n + axis
-        ivy.assertions.check_less(
+        ivy.utils.assertions.check_less(
             k + axis,
             n,
             allow_equal=True,
