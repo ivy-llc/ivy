@@ -4,6 +4,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
+    infer_dtype,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -52,6 +53,7 @@ def median(
 
 
 @to_native_arrays_and_back
+@infer_dtype
 @handle_out_argument
 @handle_nestable
 @handle_exceptions

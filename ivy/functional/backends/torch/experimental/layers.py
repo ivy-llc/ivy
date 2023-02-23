@@ -561,6 +561,7 @@ def interpolate(
     mode: Optional[Literal["linear", "bilinear", "trilinear"]] = "linear",
     align_corners: Optional[bool] = None,
     antialias: Optional[bool] = False,
+    out: Optional[torch.Tensor] = None,
 ):
     return torch.nn.functional.interpolate(
         x,
