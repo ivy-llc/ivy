@@ -18,7 +18,8 @@ def argsort(
     stable: bool = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    
+    return paddle.argsort(x, axis=axis , descending=descending)
 
 
 def sort(
