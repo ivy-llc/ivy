@@ -5,7 +5,7 @@ from typing import Optional, Tuple, Union, Callable, Sequence
 
 # local
 import ivy
-from ivy.backend_handler import current_backend
+from ivy.utils.backend import current_backend
 from ivy.func_wrapper import (
     handle_array_function,
     inputs_to_ivy_arrays,
@@ -14,7 +14,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
 )
-from ivy.exceptions import handle_exceptions
+from ivy.utils.exceptions import handle_exceptions
 
 
 # Extra #

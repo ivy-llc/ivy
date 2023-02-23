@@ -127,7 +127,7 @@ def Equal(*, x, y, incompatible_shape_error=True, name="Equal"):
 
     try:
         return ivy.equal(x, y)
-    except (ivy.exceptions.IvyError, ivy.exceptions.IvyBackendException):
+    except (ivy.utils.exceptions.IvyError, ivy.utils.exceptions.IvyBackendException):
         return ivy.array(False)
 
 
@@ -310,7 +310,7 @@ def NotEqual(*, x, y, incompatible_shape_error=True, name="NotEqual"):
 
     try:
         return ivy.not_equal(x, y)
-    except (ivy.exceptions.IvyError, ivy.exceptions.IvyBackendException):
+    except (ivy.utils.exceptions.IvyError, ivy.utils.exceptions.IvyBackendException):
         return ivy.array(True)
 
 

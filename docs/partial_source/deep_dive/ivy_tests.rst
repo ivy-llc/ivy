@@ -74,6 +74,7 @@ Testing Pipeline
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/ivy_tests/testing_pipeline.png?raw=true
    :align: center
    :width: 100%
+   :class: dark-light
 *An abstract look at Ivy testing cycle.*
 
 1. **Test Data Generation**: At this stage, we generate our test data for the testing function, using `Hypothesis`_ and `test helpers`_ strategies.

@@ -64,7 +64,7 @@ def max_pool2d(
         padding = [(padding[0],) * 2, (padding[1],) * 2]
 
     if isinstance(padding, (tuple, list)):
-        ivy.assertions.check_kernel_padding_size(kernel, padding)
+        ivy.utils.assertions.check_kernel_padding_size(kernel, padding)
     new_kernel = [kernel[i] + (kernel[i] - 1) * (dilation[i] - 1) for i in range(2)]
     if isinstance(padding, str):
         pad_h = _handle_padding(x.shape[1], strides[0], new_kernel[0], padding)
@@ -212,7 +212,7 @@ def _fft_norm(
     elif norm == "forward":
         return x / n
     else:
-        raise ivy.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
 
 
 def _ifft_norm(
@@ -229,7 +229,7 @@ def _ifft_norm(
     elif norm == "forward":
         return x * n
     else:
-        raise ivy.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
 
 
 def fft(
@@ -242,20 +242,26 @@ def fft(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if not isinstance(dim, int):
-        raise ivy.exceptions.IvyError(f"Expecting <class 'int'> instead of {type(dim)}")
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(dim)}"
+        )
     if n is None:
         n = x.shape[dim]
     if n < -len(x.shape):
-        raise ivy.exceptions.IvyError(
+        raise ivy.utils.exceptions.IvyError(
             f"Invalid dim {dim}, expecting ranging"
             " from {-len(x.shape)} to {len(x.shape)-1}  "
         )
     if not isinstance(n, int):
-        raise ivy.exceptions.IvyError(f"Expecting <class 'int'> instead of {type(n)}")
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(n)}"
+        )
     if n <= 1:
-        raise ivy.exceptions.IvyError(f"Invalid data points {n}, expecting more than 1")
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {n}, expecting more than 1"
+        )
     if norm != "backward" and norm != "ortho" and norm != "forward":
-        raise ivy.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     if x.shape[dim] != n:
         s = list(x.shape)
         if s[dim] > n:
@@ -305,6 +311,32 @@ def dropout1d(
         return x
 
 
+def dropout3d(
+    x: Union[tf.Tensor, tf.Variable],
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NDHWC",
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if training:
+        is_batched = len(x.shape) == 5
+        if data_format == "NCDHW":
+            perm = (0, 2, 3, 4, 1) if is_batched else (1, 2, 3, 0)
+            x = tf.transpose(x, perm)
+        noise_shape = list(x.shape)
+        sl = slice(1, -1) if is_batched else slice(-1)
+        noise_shape[sl] = [1] * 3
+        res = tf.nn.dropout(x, prob, noise_shape=noise_shape)
+        if data_format == "NCDHW":
+            perm = (0, 4, 1, 2, 3) if is_batched else (3, 0, 1, 2)
+            res = tf.transpose(res, perm)
+        return res
+    else:
+        return x
+
+
 def ifft(
     x: Union[tf.Tensor, tf.Variable],
     dim: int,
@@ -314,20 +346,26 @@ def ifft(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if not isinstance(dim, int):
-        raise ivy.exceptions.IvyError(f"Expecting <class 'int'> instead of {type(dim)}")
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(dim)}"
+        )
     if n is None:
         n = x.shape[dim]
     if n < -len(x.shape):
-        raise ivy.exceptions.IvyError(
+        raise ivy.utils.exceptions.IvyError(
             f"Invalid dim {dim}, expecting ranging"
             " from {-len(x.shape)} to {len(x.shape)-1}  "
         )
     if not isinstance(n, int):
-        raise ivy.exceptions.IvyError(f"Expecting <class 'int'> instead of {type(n)}")
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(n)}"
+        )
     if n <= 1:
-        raise ivy.exceptions.IvyError(f"Invalid data points {n}, expecting more than 1")
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {n}, expecting more than 1"
+        )
     if norm != "backward" and norm != "ortho" and norm != "forward":
-        raise ivy.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     if x.shape[dim] != n:
         s = list(x.shape)
         if s[dim] > n:
@@ -370,25 +408,34 @@ def interpolate(
     size: Union[Sequence[int], int],
     /,
     *,
-    mode: Union[Literal["linear", "bilinear", "trilinear"]] = "linear",
+    mode: Union[
+        Literal["linear", "bilinear", "trilinear", "nearest", "area"]
+    ] = "linear",
     align_corners: Optional[bool] = None,
     antialias: Optional[bool] = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
-    if align_corners:
+    dims = len(x.shape) - 2
+    if align_corners or dims > 2 or mode in ["nearest", "area"]:
         return ivy.functional.experimental.interpolate(
             x, size, mode=mode, align_corners=align_corners, antialias=antialias
         )
-    elif mode == "linear":
-        x = tf.transpose(x, (0, 2, 1))
-        return tf.transpose(
-            tf.image.resize(
-                x, size=[x.shape[0], size], method="bilinear", antialias=antialias
-            ),
-            (0, 2, 1),
-        )
-    elif mode == "bilinear":
-        x = tf.transpose(x, (0, 2, 3, 1))
-        return tf.transpose(tf.image.resize(x, size=size, method=mode), (0, 3, 1, 2))
-    elif mode == "trilinear":
-        x = tf.transpose(x, (0, 2, 3, 4, 1))
-        return tf.transpose(tf.image.resize(x, size=size, method=mode), (0, 4, 1, 2, 3))
+    size = (size,) * dims if isinstance(size, int) else size
+    remove_dim = False
+    if mode in ["linear", "area"]:
+        if dims == 1:
+            size = (1,) + tuple(size)
+            x = tf.expand_dims(x, axis=-2)
+            dims = 2
+            remove_dim = True
+        mode = "bilinear" if mode == "linear" else mode
+    x = tf.transpose(x, (0, *range(2, dims + 2), 1))
+    ret = tf.transpose(
+        tf.cast(
+            tf.image.resize(x, size=size, method=mode, antialias=antialias), x.dtype
+        ),
+        (0, dims + 1, *range(1, dims + 1)),
+    )
+    if remove_dim:
+        ret = tf.squeeze(ret, axis=-2)
+    return ret
