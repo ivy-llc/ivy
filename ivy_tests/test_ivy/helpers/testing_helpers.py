@@ -461,7 +461,7 @@ def _import_method(method_tree: str):
 
 def handle_method(
     *,
-    method_tree,
+    method_tree: str = None,
     ground_truth_backend: str = ground_truth,
     test_gradients=BuiltGradientStrategy,
     init_num_positional_args=None,
@@ -486,10 +486,16 @@ def handle_method(
     ground_truth_backend
         The framework to assert test results are equal to
     """
-    method_tree = "ivy." + method_tree
+    is_method_tree_provided = method_tree is not None
+    if is_method_tree_provided:
+        method_tree = "ivy." + method_tree
     is_hypothesis_test = len(_given_kwargs) != 0
+    possible_arguments = {
+        "ground_truth_backend": st.just(ground_truth_backend),
+        "test_gradients": test_gradients,
+    }
 
-    if is_hypothesis_test:
+    if is_hypothesis_test and is_method_tree_provided:
         callable_method, method_name, _, class_name, method_mod = _import_method(
             method_tree
         )
@@ -499,42 +505,35 @@ def handle_method(
                 fn_name=class_name + ".__init__"
             )
 
+        possible_arguments["init_flags"] = pf.method_flags(
+            num_positional_args=init_num_positional_args,
+            as_variable=init_as_variable_flags,
+            native_arrays=init_native_arrays,
+            container_flags=init_container_flags,
+        )
+
         if method_num_positional_args is None:
             method_num_positional_args = num_positional_args_method(
                 method=callable_method
             )
 
-    def test_wrapper(test_fn):
-        supported_device_dtypes = _get_method_supported_devices_dtypes(
-            method_name, method_mod, class_name
+        possible_arguments["method_flags"] = pf.method_flags(
+            num_positional_args=method_num_positional_args,
+            as_variable=method_as_variable_flags,
+            native_arrays=method_native_arrays,
+            container_flags=method_container_flags,
         )
+
+    def test_wrapper(test_fn):
+        if is_method_tree_provided:
+            supported_device_dtypes = _get_method_supported_devices_dtypes(
+                method_name, method_mod, class_name
+            )
+            possible_arguments["class_name"] = st.just(class_name)
+            possible_arguments["method_name"] = st.just(method_name)
 
         if is_hypothesis_test:
             param_names = inspect.signature(test_fn).parameters.keys()
-
-            init_flags = pf.method_flags(
-                num_positional_args=init_num_positional_args,
-                as_variable=init_as_variable_flags,
-                native_arrays=init_native_arrays,
-                container_flags=init_container_flags,
-            )
-
-            method_flags = pf.method_flags(
-                num_positional_args=method_num_positional_args,
-                as_variable=method_as_variable_flags,
-                native_arrays=method_native_arrays,
-                container_flags=method_container_flags,
-            )
-
-            possible_arguments = {
-                "class_name": st.just(class_name),
-                "init_flags": init_flags,
-                "method_flags": method_flags,
-                "test_gradients": test_gradients,
-                "method_name": st.just(method_name),
-                "ground_truth_backend": st.just(ground_truth_backend),
-            }
-
             filtered_args = set(param_names).intersection(possible_arguments.keys())
 
             for key in filtered_args:
@@ -545,12 +544,13 @@ def handle_method(
         else:
             wrapped_test = test_fn
 
-        wrapped_test.test_data = TestData(
-            test_fn=wrapped_test,
-            fn_tree=method_tree,
-            fn_name=method_name,
-            supported_device_dtypes=supported_device_dtypes,
-        )
+        if is_method_tree_provided:
+            wrapped_test.test_data = TestData(
+                test_fn=wrapped_test,
+                fn_tree=method_tree,
+                fn_name=method_name,
+                supported_device_dtypes=supported_device_dtypes,
+            )
         wrapped_test.ground_truth_backend = ground_truth_backend
 
         return wrapped_test
