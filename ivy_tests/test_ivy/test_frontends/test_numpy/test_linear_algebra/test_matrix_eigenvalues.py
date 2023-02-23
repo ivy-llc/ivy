@@ -42,7 +42,7 @@ def test_numpy_eigvalsh(
     x=_get_dtype_and_matrix(symmetric=True),
     UPLO=st.sampled_from(["L", "U"]),
 )
-def test_numpy_eigvalsh(
+def test_numpy_eigh(
     x,
     UPLO,
     frontend,
