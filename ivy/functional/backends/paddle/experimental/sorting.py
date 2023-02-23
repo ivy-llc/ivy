@@ -8,7 +8,7 @@ from typing import Optional, Union
 def msort(
     a: Union[paddle.Tensor, list, tuple], /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    paddle.sort(a, axis=0)
 
 
 # lexsort
