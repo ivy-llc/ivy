@@ -18,7 +18,8 @@ def argsort(
     stable: bool = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    
+    if ivy.as_native_dtype(x.dtype) == paddle.bool:
+        x = x.cast('int32')
     return paddle.argsort(x, axis=axis , descending=descending)
 
 
