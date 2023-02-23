@@ -40,10 +40,10 @@ if "ARRAY_API_TESTS_MODULE" not in os.environ:
 def pytest_configure(config):
     global available_frameworks
     # traceback
-    raw_value = config.getoption("--tb-ivy")
+    raw_value = config.getoption("--tb-mode")
     set_exception_trace_mode(raw_value)
     raw_value = config.getoption("--tb")
-    if raw_value == 'auto':
+    if raw_value == "auto":
         config.option.tbstyle = "line"
     else:
         config.option.tbstyle = raw_value
