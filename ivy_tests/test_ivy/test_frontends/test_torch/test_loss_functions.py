@@ -706,8 +706,8 @@ def test_torch_margin_ranking_loss(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
-        min_value=-1,
-        max_value=1,
+        min_value=-100,
+        max_value=100,
         allow_inf=False,
     ),
     margin=st.floats(min_value=-10, max_value=10),
