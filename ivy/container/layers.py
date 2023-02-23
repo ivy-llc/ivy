@@ -509,6 +509,129 @@ class ContainerWithLayers(ContainerBase):
         )
 
     @staticmethod
+    def static_dropout3d(
+        x: ivy.Container,
+        prob: float,
+        /,
+        *,
+        training: bool = True,
+        data_format: str = "NDHWC",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.dropout3d. This method simply
+        wraps the function, and so the docstring for ivy.dropout3d also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            The input container to perform dropout on.
+        prob
+            The probability of zeroing out each array element, float between 0 and 1.
+        training
+            Turn on dropout if training, turn off otherwise. Default is ``True``.
+        data_format
+            "NDHWC" or "NCDHW". Default is ``"NDHWC"``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Result container of the output after dropout is performed.
+
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "dropout3d",
+            x,
+            prob,
+            training=training,
+            data_format=data_format,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def dropout3d(
+        self: ivy.Container,
+        prob: float,
+        /,
+        *,
+        training: bool = True,
+        data_format: str = "NDHWC",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.dropout3d. This method simply
+        wraps the function, and so the docstring for ivy.dropout3d also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input container to perform dropout on.
+        prob
+            The probability of zeroing out each array element, float between 0 and 1.
+        training
+            Turn on dropout if training, turn off otherwise. Default is ``True``.
+        data_format
+            "NDHWC" or "NCDHW". Default is ``"NDHWC"``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Result container of the output after dropout is performed.
+        """
+        return self.static_dropout3d(
+            self,
+            prob,
+            training=training,
+            data_format=data_format,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
     def static_scaled_dot_product_attention(
         q: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         k: Union[ivy.Array, ivy.NativeArray, ivy.Container],

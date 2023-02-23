@@ -72,7 +72,7 @@ def current_backend_str() -> str:
 @with_unsupported_dtypes(
     {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
 )
-def get_item(x: tf.Tensor, query: tf.Tensor) -> tf.Tensor:
+def get_item(x: tf.Tensor, /, query: tf.Tensor) -> tf.Tensor:
     if not ivy.is_array(query) and not isinstance(query, np.ndarray):
         return x.__getitem__(query)
     dtype = ivy.dtype(query, as_native=True)
@@ -125,7 +125,7 @@ def gather(
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = axis % len(params.shape)
     batch_dims = batch_dims % len(params.shape)
-    ivy.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
+    ivy.utils.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
     return tf.gather(params, indices, axis=axis, batch_dims=batch_dims)
 
 
@@ -137,7 +137,7 @@ def gather_nd(
     batch_dims: Optional[int] = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    ivy.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
+    ivy.utils.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
     return tf.gather_nd(params, indices, batch_dims=batch_dims)
 
 
@@ -204,16 +204,47 @@ def inplace_update(
             else:
                 x = ivy.Array(x_native)
         elif ensure_in_backend:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "TensorFlow does not support inplace updates of the tf.Tensor"
             )
         elif ivy.is_ivy_array(x):
             x.data = val_native
+            if ivy.exists(x._base):
+                base = x._base
+                base_idx = ivy.arange(base.size).reshape(base.shape)
+                for fn, args, kwargs, index in x._manipulation_stack:
+                    base_idx = fn(base_idx, *args, **kwargs)
+                    base_idx = base[index] if ivy.exists(index) else base_idx
+                base_flat = tf.reshape(base.data, -1)
+                base_flat = tf.tensor_scatter_nd_update(
+                    base_flat,
+                    tf.reshape(base_idx.data, (-1, 1)),
+                    tf.reshape(val_native, -1),
+                )
+
+                base.data = tf.reshape(base_flat, base.shape)
+                for ref in base._view_refs:
+                    view = ref()
+                    if ivy.exists(view) and view is not x:
+                        _update_view(view, base)
+            else:
+                for ref in x._view_refs:
+                    view = ref()
+                    if ivy.exists(view):
+                        _update_view(view, x)
         else:
             x = ivy.to_ivy(x_native)
         return x
     else:
         return val
+
+
+def _update_view(view, base):
+    for fn, args, kwargs, index in view._manipulation_stack:
+        base = fn(base, *args, **kwargs)
+        base = base[index] if ivy.exists(index) else base
+    view.data = base.data
+    return view
 
 
 def inplace_variables_supported():
@@ -243,8 +274,8 @@ def scatter_flat(
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
-        ivy.assertions.check_equal(len(target.shape), 1)
-        ivy.assertions.check_equal(target.shape[0], size)
+        ivy.utils.assertions.check_equal(len(target.shape), 1)
+        ivy.utils.assertions.check_equal(target.shape[0], size)
     dtype = updates.dtype
     if reduction == "sum":
         if target_given:
@@ -272,12 +303,15 @@ def scatter_flat(
                 updates,
             )
     else:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
                 reduction
             )
         )
     return res
+
+
+scatter_flat.support_native_out = True
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
@@ -439,7 +473,7 @@ def scatter_nd(
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
-        ivy.assertions.check_equal(ivy.Shape(target.shape), ivy.Shape(shape))
+        ivy.utils.assertions.check_equal(ivy.Shape(target.shape), ivy.Shape(shape))
     shape = list(shape) if ivy.exists(shape) else list(out.shape)
     dtype = updates.dtype
     if reduction == "sum":
@@ -499,7 +533,7 @@ def scatter_nd(
                 tf.zeros(shape, dtype=dtype), indices, updates
             )
     else:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
                 reduction
             )
@@ -537,7 +571,7 @@ def vmap(
 
         # if in_axis is a non-integer, its length should be equal to pos args.
         if isinstance(in_axes, (list, tuple)):
-            ivy.assertions.check_equal(
+            ivy.utils.assertions.check_equal(
                 len(args),
                 len(in_axes),
                 message="""in_axes should have a length equivalent to the number
@@ -557,18 +591,18 @@ def vmap(
                     axis_size.add(arg.shape[axis])
 
         if len(axis_size) > 1:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 """Inconsistent sizes. All mapped axes should have the same size"""
             )
 
         # Making sure not all in_axes are None
         if isinstance(in_axes, (list, tuple)):
-            ivy.assertions.check_any(
+            ivy.utils.assertions.check_any(
                 [ivy.exists(ax) for ax in in_axes],
                 message="At least one of the axes should be specified (not None)",
             )
         else:
-            ivy.assertions.check_exists(
+            ivy.utils.assertions.check_exists(
                 in_axes, message="single value in_axes should not be None"
             )
 

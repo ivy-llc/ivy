@@ -49,14 +49,6 @@ def nanmean(
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if isinstance(dtype, str):
-        TORCH_DTYPES = {
-            'float32': torch.float32,
-            'float64': torch.float64,
-        }
-        temp = Torch_DTYPES[dtype]
-    else:
-        temp = dtype
     return torch.nanmean(a, dim=axis, keepdim=keepdims, dtype=temp, out=out)
 
 
@@ -151,8 +143,8 @@ def unravel_index(
     /,
     *,
     out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    temp = indices.to("int64")
+) -> Tuple:
+    temp = indices.to(torch.int32)
     output = []
     for dim in reversed(shape):
         output.append(temp % dim)

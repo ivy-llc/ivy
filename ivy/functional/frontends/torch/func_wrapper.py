@@ -40,12 +40,12 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
         updated arguments.
         """
         # Remove out argument if present in kwargs
-        has_out = False
-        out = None
-        if "out" in kwargs:
-            out = kwargs["out"]
-            del kwargs["out"]
-            has_out = True
+        if "out" in kwargs and not isinstance(
+            kwargs["out"], (torch_frontend.Tensor, type(None))
+        ):
+            raise ivy.utils.exceptions.IvyException(
+                "Out argument must be an ivy.frontends.torch.Tensor object"
+            )
         # convert all input arrays to ivy.Array instances
         new_args = ivy.nested_map(
             args, _to_ivy_array, include_derived={tuple: True}, shallow=False
@@ -53,12 +53,6 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
         new_kwargs = ivy.nested_map(
             kwargs, _to_ivy_array, include_derived={tuple: True}, shallow=False
         )
-        # add the original out argument back to the keyword arguments
-        if has_out:
-            if hasattr(out, "ivy_array"):
-                new_kwargs["out"] = out.ivy_array
-            else:
-                new_kwargs["out"] = out
         return fn(*new_args, **new_kwargs)
 
     return new_fn
