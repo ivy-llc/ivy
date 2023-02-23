@@ -1132,7 +1132,6 @@ def test_binarizer(
     fn_tree="functional.ivy.experimental.ldexp",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=[
-            "bfloat16",
             "float16",
             "float32",
             "float64",

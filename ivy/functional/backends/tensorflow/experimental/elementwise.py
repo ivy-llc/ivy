@@ -615,7 +615,7 @@ def real(
     return tf.math.real(x)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("unsigned")}, backend_version)
+@with_unsupported_dtypes({"1.11.0 and below": ("unsigned")}, backend_version)
 def ldexp(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -623,4 +623,5 @@ def ldexp(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return tf.math.multiply(x1, tf.math.pow(2, x2))
