@@ -436,10 +436,10 @@ def real(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
 
 
 def ldexp(
-    x: torch.Tensor,
-    i: Union[int, torch.Tensor],
+    x1: torch.Tensor,
+    x2: Union[int, torch.Tensor],
     /,
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.ldexp(x, i, out=out)
+    return torch.ldexp(x1, x2, out=out)

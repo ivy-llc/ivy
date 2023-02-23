@@ -1373,7 +1373,7 @@ def ldexp(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Returns x * (2**i), element-wise.
+    Returns x1 * (2**x2), element-wise.
     Parameters
     ----------
     x1

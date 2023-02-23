@@ -1167,6 +1167,7 @@ class ArrayWithElementWiseExperimental(abc.ABC):
 
     def ldexp(
         self: ivy.Array,
+        x2: ivy.Array,
         /,
         *,
         out: Optional[ivy.Container] = None,
@@ -1181,6 +1182,8 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         ----------
         self
             Input array.
+        x2
+            The array of exponents.
         out
             Alternate output array in which to place the result.
             The default is None.
@@ -1197,4 +1200,4 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         >>> x.ldexp(y)
         ivy.array([8.0, 8.0, 6.0])
         """
-        return ivy.ldexp(self._data, out=out, **kwargs)
+        return ivy.ldexp(self._data, x2, out=out, **kwargs)

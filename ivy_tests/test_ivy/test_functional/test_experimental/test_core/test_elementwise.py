@@ -1126,13 +1126,13 @@ def test_binarizer(
         threshold=threshold,
     )
 
+
 # ldexp
 @handle_test(
     fn_tree="functional.ivy.experimental.ldexp",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-        shared_dtype=True,
         min_value=-100,
         max_value=100,
         min_num_dims=1,
@@ -1160,4 +1160,3 @@ def test_ldexp(
         x1=x[0],
         x2=x[1],
     )
-

@@ -3228,14 +3228,14 @@ class ContainerWithElementWiseExperimental(ContainerBase):
 
     @staticmethod
     def static_ldexp(
-        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        i: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -3245,9 +3245,9 @@ class ContainerWithElementWiseExperimental(ContainerBase):
 
         Parameters
         ----------
-        x
+        x1
             The container whose arrays should be multiplied by 2**i.
-        i
+        x2
             The container whose arrays should be used to multiply x by 2**i.
         out
             optional output container, for writing the result to.
@@ -3255,14 +3255,14 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         Returns
         -------
         ret
-            container including x * 2**i.
+            container including x1 * 2**x2.
 
         Examples
         --------
         With one :class:`ivy.Container` input:
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 5, 10]))
-        >>> i = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 5, 10]))
-        >>> ivy.Container.static_ldexp(x, i)
+        >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 5, 10]))
+        >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 5, 10]))
+        >>> ivy.Container.static_ldexp(x1, x2)
         {
             a: ivy.array([2, 8, 24]),
             b: ivy.array([2, 160, 10240])
@@ -3270,20 +3270,20 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         """
         return ContainerBase.cont_multi_map_in_function(
             "ldexp",
-            x,
+            x1,
+            x2,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            i=i,
             out=out,
         )
 
     def ldexp(
         self: ivy.Container,
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        i: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.ldexp. This method simply
@@ -3293,26 +3293,26 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         Parameters
         ----------
         self
-            The container whose arrays should be multiplied by 2**i.
-        i
-            The container whose arrays should be used to multiply x by 2**i.
+            The container whose arrays should be multiplied by 2**x2.
+        x2
+            The container whose arrays should be used to multiply x1 by 2**x2.
         out
             optional output container, for writing the result to.
 
         Returns
         -------
         ret
-            container including x * 2**i.
+            container including x1 * 2**x2.
 
         Examples
         --------
         With one :class:`ivy.Container` input:
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 5, 10]))
-        >>> i = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 5, 10]))
-        >>> x.ldexp(i)
+        >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 5, 10]))
+        >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 5, 10]))
+        >>> x1.ldexp(x2)
         {
             a: ivy.array([2, 8, 24]),
             b: ivy.array([2, 160, 10240])
         }
         """
-        return self.static_ldexp(self, i=i, out=out)
+        return self.static_ldexp(self, x2, out=out)
