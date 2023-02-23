@@ -1129,6 +1129,7 @@ def test_binarizer(
 
 # ldexp
 @handle_test(
+    # prevent unsigned dtypes
     fn_tree="functional.ivy.experimental.ldexp",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=[
