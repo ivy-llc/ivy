@@ -162,3 +162,8 @@ aminmax.unsupported_dtypes = {
     "jax": ("float16", "bfloat16"),
     "tensorflow": ("float16", "bfloat16"),
 }
+
+
+@to_ivy_arrays_and_back
+def median(input, dim=-1, keepdim=False, *, out=None):
+    return ivy.median(input, axis=dim, keepdims=keepdim, out=out)
