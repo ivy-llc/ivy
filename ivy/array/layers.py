@@ -197,6 +197,48 @@ class ArrayWithLayers(abc.ABC):
             out=out,
         )
 
+    def dropout3d(
+        self: ivy.Array,
+        prob: float,
+        /,
+        *,
+        training: bool = True,
+        data_format: str = "NDHWC",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.dropout3d. This method simply
+        wraps the function, and so the docstring for ivy.droput3d also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input array x to perform dropout on.
+        prob
+            The probability of zeroing out each array element, float between 0 and 1.
+        training
+            Turn on dropout if training, turn off otherwise. Default is ``True``.
+        data_format
+            "NDHWC" or "NCDHW". Default is ``"NDHWC"``.
+        out
+            optional output array, for writing the result to. It must have
+            a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Result array of the output after dropout is performed.
+
+        """
+        return ivy.dropout3d(
+            self._data,
+            prob,
+            training=training,
+            data_format=data_format,
+            out=out,
+        )
+
     def scaled_dot_product_attention(
         self: ivy.Array,
         k: Union[ivy.Array, ivy.NativeArray],
@@ -372,15 +414,60 @@ class ArrayWithLayers(abc.ABC):
     def conv1d_transpose(
         self: ivy.Array,
         filters: Union[ivy.Array, ivy.NativeArray],
-        strides: int,
+        strides: Union[int, Tuple[int]],
         padding: str,
         /,
         *,
         output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
         data_format: str = "NWC",
-        dilations: int = 1,
+        dilations: Union[int, Tuple[int]] = 1,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.conv1d_transpose. This method simply
+        wraps the function, and so the docstring for ivy.conv1d_transpose also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input image *[batch_size,w,d_in]* or *[batch_size,d_in,w]*.
+        filters
+            Convolution filters *[fw,d_in,d_out]*.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+            padding), or a sequence of n (low, high) integer pairs that give the padding
+            to apply before and after each spatial dimension.
+        output_shape
+            Shape of the output (Default value = None)
+        data_format
+            The ordering of the dimensions in the input, one of "NWC" or "NCW". "NWC"
+            corresponds to input with shape (batch_size, width, channels), while "NCW"
+            corresponds to input with shape (batch_size, channels, width).
+        dilations
+            The dilation factor for each dimension of input. (Default value = 1)
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The result of the transpose convolution operation.
+
+        Examples
+        --------
+        >>> x = ivy.array([[[1., 2.], [3., 4.], [6., 7.], [9., 11.]]])  # NWC
+        >>> filters = ivy.array([[[0., 1.], [1., 1.]]])  # WIO (I == C)
+        >>> result = x.conv1d_transpose(filters, (1,), 'VALID')
+        >>> print(result)
+        ivy.array([[[ 2.,  3.],
+        ...         [ 4.,  7.],
+        ...         [ 7., 13.],
+        ...         [11., 20.]]])
+        """
         return ivy.conv1d_transpose(
             self._data,
             filters,

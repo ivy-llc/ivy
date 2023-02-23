@@ -27,6 +27,10 @@ def lcm(
 lcm.support_native_out = True
 
 
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("bfloat16",)},
+    backend_version,
+)
 def fmod(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -39,7 +43,6 @@ def fmod(
 
 
 fmod.support_native_out = True
-fmod.unsupported_dtypes = ("bfloat16",)
 
 
 def fmax(
@@ -192,6 +195,7 @@ def nansum(
     keepdims: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    dtype = ivy.as_native_dtype(dtype)
     return torch.nansum(x, dim=axis, keepdim=keepdims, dtype=dtype)
 
 

@@ -4,6 +4,9 @@ from hypothesis import assume, strategies as st
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers import (
+    _interp_args,
+)
 
 
 # pixel_shuffle
@@ -213,4 +216,95 @@ def test_torch_upsample_bilinear(
         input=input,
         size=size,
         scale_factor=scale_factor,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.interpolate",
+    dtype_and_input_and_other=_interp_args(scale_factor=True),
+    number_positional_args=st.just(2),
+)
+def test_torch_interpolate(
+    *,
+    dtype_and_input_and_other,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    (
+        input_dtype,
+        x,
+        mode,
+        size,
+        align_corners,
+        scale_factor,
+        recompute_scale_factor,
+    ) = dtype_and_input_and_other
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-01,
+        atol=1e-01,
+        input=x[0],
+        size=size,
+        scale_factor=scale_factor,
+        mode=mode,
+        align_corners=align_corners,
+        recompute_scale_factor=recompute_scale_factor,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.upsample",
+    dtype_and_input_and_other=_interp_args(),
+    number_positional_args=st.just(2),
+)
+def test_torch_upsample(
+    *,
+    dtype_and_input_and_other,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x, mode, size, align_corners = dtype_and_input_and_other
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        size=size,
+        mode=mode,
+        align_corners=align_corners,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.upsample_nearest",
+    dtype_and_input_and_other=_interp_args(),
+    number_positional_args=st.just(2),
+)
+def test_torch_upsample_nearest(
+    *,
+    dtype_and_input_and_other,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x, _, size, _ = dtype_and_input_and_other
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        size=size,
     )

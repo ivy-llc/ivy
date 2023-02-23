@@ -73,13 +73,13 @@ def conv1d(
 def conv1d_transpose(
     x: JaxArray,
     filters: JaxArray,
-    strides: int,
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    strides: Union[int, Tuple[int]],
+    padding: str,
     /,
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    data_format: Optional[str] = "NWC",
-    dilations: Optional[int] = 1,
+    data_format: str = "NWC",
+    dilations: Union[int, Tuple[int]] = 1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     strides = (strides,) if isinstance(strides, int) else strides
@@ -131,7 +131,7 @@ def conv2d_transpose(
     x: JaxArray,
     filters: JaxArray,
     strides: Union[int, Tuple[int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: str,
     /,
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
@@ -217,7 +217,7 @@ def conv3d_transpose(
     x: JaxArray,
     filters: JaxArray,
     strides: Union[int, Tuple[int, int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: str,
     /,
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
@@ -322,7 +322,7 @@ def conv_general_transpose(
     x: JaxArray,
     filters: JaxArray,
     strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: str,
     /,
     *,
     dims: Optional[int] = 2,
@@ -342,9 +342,8 @@ def conv_general_transpose(
     filter_df = _get_filter_dataformat(dims)
     if data_format == "channel_first":
         x = jnp.transpose(x, (0, *range(2, dims + 2), 1))
-    x_shape = list(x.shape[1 : dims + 1])
     padding = _get_tranpose_padding(
-        x_shape, filters.shape, strides, padding, dims, dilations, output_shape
+        x.shape[1:], filters.shape, strides, padding, dims, dilations, output_shape
     )
     res = jnp.concatenate(
         [
