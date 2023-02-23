@@ -42,7 +42,8 @@ def unravel_index(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.unravel_index(indices, shape).astype("int64")
+    unravelled = jnp.unravel_index(indices, shape)
+    return tuple(x.astype("int64") for x in unravelled)
 
 
 def quantile(

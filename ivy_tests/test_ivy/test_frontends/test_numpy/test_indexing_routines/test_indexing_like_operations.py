@@ -2,10 +2,13 @@
 # global
 from hypothesis import strategies as st
 import numpy as np
+
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+
+
 @handle_frontend_test(
     fn_tree="numpy.diagonal",
     dtype_x_axis=helpers.dtype_values_axis(
@@ -95,19 +98,32 @@ def test_numpy_diag_indices(
         on_device=on_device,
         n=n,
         ndim=ndim,
-    )
+)
 
-@handle_frontend_test(
-    fn_tree="numpy.unravel_index",
-    dtype_x_shape= helpers.dtype_values_axis(
-            available_dtypes=helpers.get_dtypes("integer"),
-            shape = helpers.get_shape(
+
+@st.composite
+def max_value_as_shape_prod(draw):
+    shape = draw(
+        helpers.get_shape(
             min_num_dims=1,
             max_num_dims=5,
             min_dim_size=1,
             max_dim_size=5,
         )
-        ),
+    )
+    dtype_and_x = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_value=0,
+            max_value=np.prod(shape) - 1,
+        )
+    )
+    return dtype_and_x, shape
+
+
+@handle_frontend_test(
+    fn_tree="numpy.unravel_index",
+    dtype_x_shape=max_value_as_shape_prod(),
     test_with_out=st.just(False),
 )
 def test_numpy_unravel_index(
@@ -118,7 +134,7 @@ def test_numpy_unravel_index(
     on_device,
 ):
     dtype_and_x, shape = dtype_x_shape
-    input_dtype,x= dtype_and_x[0],dtype_and_x[1]
+    input_dtype, x = dtype_and_x[0], dtype_and_x[1]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,

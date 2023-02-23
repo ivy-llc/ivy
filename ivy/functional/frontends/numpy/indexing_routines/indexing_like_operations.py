@@ -18,6 +18,7 @@ def diag_indices(n, ndim=2):
 def diag(v, k=0):
     return ivy.diag(v, k=k)
 
-@to_ivy_arrays_and_back
+
+@outputs_to_numpy_arrays
 def unravel_index(indices, shape):
-    return ivy.unravel_index(indices,shape)
+    return ivy.unravel_index(indices, shape)
