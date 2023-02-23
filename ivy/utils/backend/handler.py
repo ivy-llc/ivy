@@ -1,14 +1,14 @@
 # global
 import sys
 import copy
+import types
 import ivy
 import importlib
 import functools
 import numpy as np
-from ivy import verbosity
 from typing import Optional
 import gc
-from ivy.utils import _importlib
+from ivy.utils import _importlib, verbosity
 from ivy.utils.backend import ast_helpers
 
 # local
@@ -244,17 +244,35 @@ def current_backend(*args, **kwargs):
     return importlib.import_module(_backend_dict[implicit_backend])
 
 
-def _set_backend_as_ivy(original_dict, target, backend):
+def _set_backend_as_ivy(
+    original_dict, target, backend, invalid_dtypes=None, backend_str=None
+):
+    invalid_dtypes = (
+        backend.invalid_dtypes if invalid_dtypes is None else invalid_dtypes
+    )
+    backend_str = backend.current_backend_str() if backend_str is None else backend_str
     for k, v in original_dict.items():
         compositional = k not in backend.__dict__
         if k not in backend.__dict__:
-            if k in backend.invalid_dtypes and k in target.__dict__:
+            if k in invalid_dtypes and k in target.__dict__:
                 del target.__dict__[k]
                 continue
             backend.__dict__[k] = v
         target.__dict__[k] = _wrap_function(
             key=k, to_wrap=backend.__dict__[k], original=v, compositional=compositional
         )
+        if (
+            isinstance(v, types.ModuleType)
+            and "ivy.functional." in v.__name__
+            and "{}/__init__.py".format(backend_str) not in v.__file__
+        ):
+            _set_backend_as_ivy(
+                v.__dict__,
+                target.__dict__[k],
+                backend.__dict__[k],
+                invalid_dtypes=invalid_dtypes,
+                backend_str=backend_str,
+            )
 
 
 def _handle_backend_specific_vars(backend):
@@ -395,7 +413,7 @@ def set_backend(backend: str, dynamic: bool = False):
     >>> print(type(native))
     <class 'jaxlib.xla_extension.DeviceArray'>
     """  # noqa
-    ivy.assertions.check_false(
+    ivy.utils.assertions.check_false(
         isinstance(backend, str) and backend not in _backend_dict,
         "backend must be one from {}".format(list(_backend_dict.keys())),
     )
@@ -587,7 +605,7 @@ def clear_backend_stack():
 def choose_random_backend(excluded=None):
     excluded = list() if excluded is None else excluded
     while True:
-        ivy.assertions.check_equal(
+        ivy.utils.assertions.check_equal(
             len(excluded),
             4,
             inverse=True,

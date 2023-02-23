@@ -102,7 +102,7 @@ def test_array_property_dtype(
     _, data = dtype_x
     data = ivy.native_array(data[0])
     x = Array(data)
-    ivy.assertions.check_equal(x.dtype, ivy.dtype(data))
+    ivy.utils.assertions.check_equal(x.dtype, ivy.dtype(data))
 
 
 # TODO do not use dummy fn_tree
@@ -116,7 +116,7 @@ def test_array_property_device(
     _, data = dtype_x
     data = ivy.native_array(data[0])
     x = Array(data)
-    ivy.assertions.check_equal(x.device, ivy.dev(data))
+    ivy.utils.assertions.check_equal(x.device, ivy.dev(data))
 
 
 # TODO do not use dummy fn_tree
@@ -133,7 +133,7 @@ def test_array_property_ndim(
     _, data, input_shape = dtype_x
     data = ivy.native_array(data[0])
     x = Array(data)
-    ivy.assertions.check_equal(x.ndim, len(input_shape))
+    ivy.utils.assertions.check_equal(x.ndim, len(input_shape))
 
 
 # TODO do not use dummy fn_tree
@@ -150,7 +150,7 @@ def test_array_property_shape(
     _, data, input_shape = dtype_x
     data = ivy.native_array(data[0])
     x = Array(data)
-    ivy.assertions.check_equal(x.shape, ivy.Shape(input_shape))
+    ivy.utils.assertions.check_equal(x.shape, ivy.Shape(input_shape))
 
 
 # TODO do not use dummy fn_tree
@@ -171,7 +171,7 @@ def test_array_property_size(
     size_gt = 1
     for dim in input_shape:
         size_gt *= dim
-    ivy.assertions.check_equal(x.size, size_gt)
+    ivy.utils.assertions.check_equal(x.size, size_gt)
 
 
 # TODO do not use dummy fn_tree

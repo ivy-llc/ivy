@@ -118,10 +118,10 @@ def handle_exceptions(fn: Callable) -> Callable:
             return fn(*args, **kwargs)
         except (IndexError, ValueError, AttributeError) as e:
             _print_traceback_history()
-            raise ivy.exceptions.IvyError(fn.__name__, str(e))
+            raise ivy.utils.exceptions.IvyError(fn.__name__, str(e))
         except Exception as e:
             _print_traceback_history()
-            raise ivy.exceptions.IvyBackendException(fn.__name__, str(e))
+            raise ivy.utils.exceptions.IvyBackendException(fn.__name__, str(e))
 
     new_fn.handle_exceptions = True
     return new_fn

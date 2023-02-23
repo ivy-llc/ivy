@@ -1,39 +1,10 @@
 """Converters from Native Modules to Ivy Modules"""
 # global
-from types import SimpleNamespace
 from typing import Optional, Dict, List
-import re
+import re  # noqa
 import inspect
 from collections import OrderedDict
-
-try:
-    import haiku as hk
-    from haiku._src.data_structures import FlatMapping
-    import jax
-except ImportError:
-    hk = SimpleNamespace()
-    hk.Module = SimpleNamespace
-    hk.transform = SimpleNamespace
-    hk.get_parameter = SimpleNamespace
-    FlatMapping = SimpleNamespace
-    jax = SimpleNamespace()
-    jax.random = SimpleNamespace()
-    jax.random.PRNGKey = SimpleNamespace
-
-try:
-    import torch
-except ImportError:
-    torch = SimpleNamespace()
-    torch.nn = SimpleNamespace()
-    torch.nn.Parameter = SimpleNamespace
-    torch.nn.Module = SimpleNamespace
-
-try:
-    import tensorflow as tf
-except ImportError:
-    tf = SimpleNamespace()
-    tf.keras = SimpleNamespace()
-    tf.keras.Model = SimpleNamespace
+import importlib
 
 # local
 import ivy
@@ -142,6 +113,10 @@ class ModuleConverters:
             The new trainable torch module instance.
 
         """
+        if not importlib.util.find_spec("haiku"):
+            import haiku as hk
+        if not importlib.util.find_spec("FlatMapping", "haiku._src.data_structures"):
+            from haiku._src.data_structures import FlatMapping
 
         def _hk_flat_map_to_dict(hk_flat_map):
             ret_dict = dict()
@@ -209,7 +184,7 @@ class ModuleConverters:
 
         if inspect.isclass(native_module):
             if len(i_args) == 0 and len(i_kwargs) == 0:
-                raise ivy.exceptions.IvyException(
+                raise ivy.utils.exceptions.IvyException(
                     "both instance_args and instance_kwargs cannot be none"
                     " when passing a native class"
                 )
@@ -310,7 +285,7 @@ class ModuleConverters:
 
         if inspect.isclass(native_module):
             if len(i_args) == 0 and len(i_kwargs) == 0:
-                raise ivy.exceptions.IvyException(
+                raise ivy.utils.exceptions.IvyException(
                     "both instance_args and instance_kwargs cannot be none"
                     " when passing a native class"
                 )
@@ -369,6 +344,8 @@ class ModuleConverters:
         ret
             The new trainable ivy.Module instance.
         """
+        if not importlib.util.find_spec("torch"):
+            import torch
 
         class TorchIvyModule(ivy.Module):
             def __init__(
@@ -427,7 +404,7 @@ class ModuleConverters:
                         # noinspection PyProtectedMember
                         native.__setattr__(k, torch.nn.Parameter(v))
                     else:
-                        raise ivy.exceptions.IvyException(
+                        raise ivy.utils.exceptions.IvyException(
                             "found item in variable container {} which was neither a "
                             "sub ivy.Container nor a variable.".format(v)
                         )
