@@ -32,7 +32,17 @@ def sort(
     stable: bool = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    
+    is_bool = ivy.as_native_dtype(x.dtype) == paddle.bool
+    if is_bool:
+        x = x.cast('int32')
+
+    ret = paddle.sort(x, axis=axis , descending=descending)
+    
+    if is_bool:
+        ret = ret.cast('bool')
+    
+    return ret
 
 
 def searchsorted(
