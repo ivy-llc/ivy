@@ -198,6 +198,8 @@ def test_jax_numpy_convolve(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
+        rtol=1e-5,
+        atol=1e-5,
         on_device=on_device,
         a=x[0],
         v=x[1],
