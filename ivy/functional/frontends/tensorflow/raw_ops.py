@@ -607,3 +607,9 @@ Elu.supported_dtypes = {
         "float64",
     ),
 }
+
+
+# @with_unsupported_dtypes({"2.9.1 and below": ()}, "tensorflow")
+@to_ivy_arrays_and_back
+def LinSpace(*, start, stop, num, name=None):
+    return ivy.linspace(start, stop, num)
