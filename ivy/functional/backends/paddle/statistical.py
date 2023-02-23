@@ -60,7 +60,7 @@ def prod(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle.prod(x, axis, keepdim=keepdims, dtype=dtype)
+    return paddle.prod(x, axis=axis, keepdim=keepdims, dtype=dtype)
 
 
 def std(
@@ -72,7 +72,7 @@ def std(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle.std(x, dim=axis, unbiased=False, keepdim=keepdims)
+    return paddle.std(x, axis=axis, unbiased=True, keepdim=keepdims)
 
 
 def sum(
@@ -84,7 +84,7 @@ def sum(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return torch.sum(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
+    return paddle.sum(x, axis=axis, dtype=dtype, keepdim=keepdims)
 
 
 def var(
@@ -96,7 +96,7 @@ def var(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle.var(x, dim=axis, unbiased=False, keepdim=keepdims)
+    return paddle.var(x, axis, unbiased=true, keepdim=keepdims)
 
 
 # Extra #
@@ -112,7 +112,7 @@ def cumprod(
     dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.cumprod(x, dim=None, dtype=None, name=None)
 
 
 def cumsum(
@@ -124,7 +124,7 @@ def cumsum(
     dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.cumsum(x, axis=axis, dtype=dtype)
 
 
 def einsum(
@@ -132,4 +132,4 @@ def einsum(
     *operands: paddle.Tensor,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.einsum(equation, *operands)
