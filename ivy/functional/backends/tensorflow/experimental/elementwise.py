@@ -615,6 +615,7 @@ def real(
     return tf.math.real(x)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("unsigned")}, backend_version)
 def ldexp(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],

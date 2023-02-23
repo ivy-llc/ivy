@@ -1129,6 +1129,7 @@ def test_binarizer(
 
 # ldexp
 @handle_test(
+    # prevent unsigned dtypes
     fn_tree="functional.ivy.experimental.ldexp",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -1137,6 +1138,7 @@ def test_binarizer(
         max_value=100,
         min_num_dims=1,
         max_num_dims=3,
+        min_dim_size=1,
     ),
     test_gradients=st.just(False),
 )
