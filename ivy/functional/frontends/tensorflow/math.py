@@ -33,6 +33,10 @@ def argmax(input, axis, output_type=None, name=None):
 def asinh(x, name="asinh"):
     return ivy.asinh(x)
 
+@to_ivy_arrays_and_back
+def acos(x, name="acos"):
+    return ivy.acos(x)
+
 
 @handle_tf_dtype
 @to_ivy_arrays_and_back
