@@ -440,3 +440,8 @@ def abs(x, name=None):
 @to_ivy_arrays_and_back
 def log_softmax(logits, axis=None):
     return ivy.log_softmax(logits, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def sqrt(x, name=None):
+    return ivy.sqrt(x)
