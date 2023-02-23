@@ -72,7 +72,7 @@ def std(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.std(x, dim=axis, unbiased=False, keepdim=keepdims)
 
 
 def sum(
@@ -84,7 +84,7 @@ def sum(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return torch.sum(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
 
 
 def var(
@@ -96,7 +96,7 @@ def var(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.var(x, dim=axis, unbiased=False, keepdim=keepdims)
 
 
 # Extra #
