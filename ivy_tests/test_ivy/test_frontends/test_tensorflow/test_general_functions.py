@@ -1491,3 +1491,35 @@ def test_tensorflow_roll(
         shift=shift,
         axis=axis,
     )
+
+# split
+@handle_frontend_test(
+    fn_tree="tensorflow.split",
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=st.integers(min_value=1, max_value=4),
+        min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_split(
+    *,
+    dtype_input_axis,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, axis = dtype_input_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        value=x,
+        axis=axis,
+    )

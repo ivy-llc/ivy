@@ -343,3 +343,10 @@ def where(condition: ivy.array, x=None, y=None, name=None):
 
 def roll(input, shift, axis, name=None):
     return ivy.roll(input, shift, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def split(
+    value, num_or_size_splits=None, axis=0, num=None, name=None
+):
+    return ivy.split(value, axis=axis)
