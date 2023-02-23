@@ -259,6 +259,8 @@ def test_function(
         container_flags=container_flags,
     )
 
+    if ('out' in kwargs or test_flags.with_out) and 'out' not in inspect.signature(fn).parameters:
+        raise Exception(f"Function {fn_name} does not have an out parameter")
     # run either as an instance method or from the API directly
     instance = None
     if instance_method:
