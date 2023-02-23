@@ -13,7 +13,9 @@ CLASS_TREE = "ivy.functional.frontends.jax.DeviceArray"
 
 
 @given(
-    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False)
+    ),
 )
 def test_jax_devicearray_property_ivy_array(
     dtype_x,
@@ -30,7 +32,9 @@ def test_jax_devicearray_property_ivy_array(
 
 
 @given(
-    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False)
+    ),
 )
 def test_jax_devicearray_property_dtype(
     dtype_x,
@@ -42,7 +46,7 @@ def test_jax_devicearray_property_dtype(
 
 @given(
     dtype_x_shape=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
         ret_shape=True,
     ),
 )
@@ -58,7 +62,7 @@ def test_jax_devicearray_property_shape(
 def _at_helper(draw):
     _, data, shape = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"),
+            available_dtypes=helpers.get_dtypes("valid", prune_function=False),
             num_arrays=2,
             shared_dtype=True,
             min_num_dims=1,

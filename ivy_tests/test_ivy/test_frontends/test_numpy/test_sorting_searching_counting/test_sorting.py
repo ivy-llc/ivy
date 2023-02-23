@@ -131,7 +131,6 @@ def test_numpy_sort_complex(
     )
 
 
-# All backends need to be implemented for this function.
 @handle_frontend_test(
     fn_tree="numpy.lexsort",
     dtype_x_axis=helpers.dtype_values_axis(

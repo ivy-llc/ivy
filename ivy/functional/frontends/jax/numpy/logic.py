@@ -149,6 +149,11 @@ def invert(x, /):
 
 
 @to_ivy_arrays_and_back
+def isfinite(x, /):
+    return ivy.isfinite(x)
+
+
+@to_ivy_arrays_and_back
 def isinf(x, /):
     return ivy.isinf(x)
 
@@ -162,3 +167,19 @@ def isclose(a, b, rtol=1e-05, atol=1e-08, equal_nan=False):
 @to_ivy_arrays_and_back
 def logical_not(x, /):
     return ivy.logical_not(x)
+
+
+@to_ivy_arrays_and_back
+def logical_or(x1, x2, /):
+    x1, x2 = promote_jax_arrays(x1, x2)
+    return ivy.logical_or(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def isscalar(x, /):
+    return ivy.isscalar(x)
+
+
+@to_ivy_arrays_and_back
+def left_shift(x1, x2):
+    return ivy.isscalar(x1, x2)

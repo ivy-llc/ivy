@@ -44,7 +44,7 @@ def concat(tensors, dim=0, *, out=None):
 @to_ivy_arrays_and_back
 def gather(input, dim, index, *, sparse_grad=False, out=None):
     if sparse_grad:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             "Gather does not yet support the sparse grad functionality"
         )
 
@@ -124,6 +124,19 @@ def swapdims(input, dim0, dim1):
 @to_ivy_arrays_and_back
 def transpose(input, dim0, dim1):
     return ivy.swapaxes(input, dim0, dim1)
+
+
+@to_ivy_arrays_and_back
+def t(input):
+    if input.ndim > 2:
+        raise ivy.utils.exceptions.IvyException(
+            "t(input) expects a tensor with <= 2 dimensions, but self is %dD"
+            % input.ndim
+        )
+    if input.ndim == 2:
+        return ivy.swapaxes(input, 0, 1)
+    else:
+        return input
 
 
 @to_ivy_arrays_and_back
@@ -212,5 +225,11 @@ def hsplit(input, indices_or_sections):
     return tuple(ivy.hsplit(input, indices_or_sections))
 
 
+@to_ivy_arrays_and_back
+def vsplit(input, indices_or_sections):
+    return tuple(ivy.vsplit(input, indices_or_sections))
+
+
+@to_ivy_arrays_and_back
 def row_stack(tensors, *, out=None):
     return ivy.vstack(tensors, out=out)

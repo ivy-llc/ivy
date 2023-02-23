@@ -171,6 +171,51 @@ def test_jax_numpy_arctan2(
     )
 
 
+@st.composite
+def _get_pooling_mode(draw):
+    mode = draw(st.sampled_from(['full', 'valid', 'same']))
+    return mode
+
+
+# convolve
+@handle_frontend_test(
+    fn_tree="jax.numpy.convolve",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_value=-1e04,
+        max_value=1e04,
+    ),
+    mode=_get_pooling_mode(),
+)
+def test_jax_numpy_convolve(
+        *,
+        dtype_and_x,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
+        mode,
+):
+    input_dtype, x = dtype_and_x
+    assume("float16" not in input_dtype)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        rtol=1e-4,
+        atol=1e-4,
+        on_device=on_device,
+        a=x[0],
+        v=x[1],
+        mode=mode,
+        precision=None,
+    )
+
+
 @handle_frontend_test(
     fn_tree="jax.numpy.cos",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
@@ -490,6 +535,41 @@ def test_jax_numpy_mod(
         on_device=on_device,
         x1=x[0],
         x2=x[1],
+    )
+
+
+# divmod
+@handle_frontend_test(
+    fn_tree="jax.numpy.divmod",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        allow_inf=False,
+        large_abs_safety_factor=2,
+        safety_factor_scale="linear",
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_divmod(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x[1], 0)) and "bfloat16" not in input_dtype)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=x[0],
+        x2=x[1],
+        atol=1,
     )
 
 
@@ -1451,6 +1531,32 @@ def test_jax_numpy_negative(
     )
 
 
+# positive
+@handle_frontend_test(
+    fn_tree="jax.numpy.positive",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"), min_num_dims=1
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_positive(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 # rad2deg
 @handle_frontend_test(
     fn_tree="jax.numpy.rad2deg",
@@ -2162,4 +2268,35 @@ def test_jax_numpy_real(
         on_device=on_device,
         test_values=True,
         val=x[0],
+    )
+
+
+# inner
+@handle_frontend_test(
+    fn_tree="jax.numpy.inner",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_value=-10,
+        max_value=10,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_jax_numpy_inner(
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtypes, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=xs[0],
+        b=xs[1],
     )

@@ -1,14 +1,13 @@
 # local
 import ivy
 from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
-from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
+import ivy.functional.frontends.tensorflow.nn as tf_nn
 
 
 # should have float16 as well but sqrt doesn't support it
 @to_ivy_arrays_and_back
-@with_supported_dtypes(
-    {"2.9.0 and below": ("float32",)}, "tensorflow"
-)
+@with_supported_dtypes({"2.9.0 and below": ("float32",)}, "tensorflow")
 def fused_batch_norm(
     x,
     scale,
@@ -16,7 +15,7 @@ def fused_batch_norm(
     mean=None,
     variance=None,
     epsilon=1e-3,
-    data_format='NHWC',
+    data_format="NHWC",
     is_training=True,
     name=None,
     exponential_avg_factor=1.0,
@@ -31,7 +30,7 @@ def fused_batch_norm(
         elif dims == 5:
             x = ivy.permute_dims(x, axes=(0, 2, 3, 4, 1))
         else:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "input tensor must be of 4 or 5 dimensions, got {}".format(dims)
             )
 
@@ -49,16 +48,16 @@ def fused_batch_norm(
         variance = ivy.var(x_rest_by_depth, axis=0, keepdims=True)
         y = ivy.reshape(
             scale * (x_rest_by_depth - mean) / ivy.sqrt(variance + epsilon) + offset,
-            x.shape
+            x.shape,
         )
         variance = variance * rest_size / (rest_size - 1) if rest_size > 1 else variance
         mean = ivy.reshape(
             mean * exponential_avg_factor + old_mean * (1 - exponential_avg_factor),
-            old_mean.shape
+            old_mean.shape,
         )
         variance = ivy.reshape(
             variance * exponential_avg_factor + old_var * (1 - exponential_avg_factor),
-            old_var.shape
+            old_var.shape,
         )
     else:
         y = scale * (x - old_mean) / ivy.sqrt(old_var + epsilon) + offset
@@ -74,3 +73,26 @@ def fused_batch_norm(
         return y, mean, variance
     else:
         return y, old_mean, old_var
+
+
+@with_unsupported_dtypes({"2.9.0 and below": ("float16",)}, "tensorflow")
+def depthwise_conv2d(
+    input,
+    filter,
+    strides,
+    padding,
+    rate=None,
+    name=None,
+    data_format=None,
+    dilations=None,
+):
+    if rate:
+        dilations = rate
+    return tf_nn.depthwise_conv2d(
+        input,
+        filter,
+        strides,
+        padding=padding,
+        data_format=data_format,
+        dilations=dilations,
+    )

@@ -7,6 +7,7 @@ from typing import Optional, Union, Tuple, Literal
 # local
 import ivy
 from ivy.functional.ivy.layers import _handle_padding
+from ivy.functional.backends.numpy.layers import _add_dilations
 
 
 def max_pool1d(
@@ -69,10 +70,12 @@ def max_pool2d(
     x: np.ndarray,
     kernel: Union[int, Tuple[int], Tuple[int, int]],
     strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: str,
+    padding: Union[str, int, Tuple[int], Tuple[int, int]],
     /,
     *,
     data_format: str = "NHWC",
+    dilation: Union[int, Tuple[int], Tuple[int, int]] = 1,
+    ceil_mode: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
 
@@ -86,15 +89,41 @@ def max_pool2d(
     elif len(strides) == 1:
         strides = [strides[0]] * 2
 
+    if isinstance(dilation, int):
+        dilation = [dilation] * 2
+    elif len(dilation) == 1:
+        dilation = [dilation[0]] * 2
+
+    if isinstance(padding, int):
+        padding = [(padding,) * 2] * 2
+    elif isinstance(padding, tuple) and len(padding) == 1:
+        padding = [(padding[0],) * 2] * 2
+    elif isinstance(padding, tuple) and len(padding) == 2:
+        padding = [(padding[0],) * 2, (padding[1],) * 2]
+
+    if isinstance(padding, (tuple, list)):
+        ivy.utils.assertions.check_kernel_padding_size(kernel, padding)
+
     if data_format == "NCHW":
         x = np.transpose(x, (0, 2, 3, 1))
 
     x_shape = list(x.shape[1:3])
+    filters = np.ones((list(kernel)), dtype=x.dtype)
+    for j in range(2):
+        if dilation[j] > 1:
+            filters = _add_dilations(filters, dilation[j], axis=j, values=0)
+    kernel = list(filters.shape)
     pad_list = padding
     if isinstance(padding, str):
         pad_h = _handle_padding(x_shape[0], strides[0], kernel[0], padding)
         pad_w = _handle_padding(x_shape[1], strides[1], kernel[1], padding)
         pad_list = [(pad_h // 2, pad_h - pad_h // 2), (pad_w // 2, pad_w - pad_w // 2)]
+    pad_list = list(pad_list)
+    if ceil_mode:
+        for i in range(2):
+            pad_list[i] = ivy.padding_ceil_mode(
+                x_shape[i], kernel[i], pad_list[i], strides[i]
+            )
 
     x = np.pad(
         x,
@@ -103,7 +132,8 @@ def max_pool2d(
             *pad_list,
             (0, 0),
         ],
-        "edge",
+        "constant",
+        constant_values=-math.inf,
     )
 
     x_shape = x.shape
@@ -112,8 +142,8 @@ def max_pool2d(
     new_shape = [x_shape[0], new_h, new_w] + list(kernel) + [x_shape[-1]]
     new_strides = (
         x.strides[0],
-        x.strides[1] * strides[1],
-        x.strides[2] * strides[0],
+        x.strides[1] * strides[0],
+        x.strides[2] * strides[1],
         x.strides[1],
         x.strides[2],
         x.strides[3],
@@ -121,6 +151,11 @@ def max_pool2d(
     # B x OH x OW x KH x KW x I
     sub_matrices = np.lib.stride_tricks.as_strided(
         x, new_shape, new_strides, writeable=False
+    )
+
+    # B x OH x OW x KH x KW x I
+    sub_matrices = np.where(
+        filters.reshape([1] * 3 + list(kernel) + [1]), sub_matrices, -math.inf
     )
 
     # B x OH x OW x O
@@ -393,20 +428,26 @@ def fft(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if not isinstance(dim, int):
-        raise ivy.exceptions.IvyError(f"Expecting <class 'int'> instead of {type(dim)}")
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(dim)}"
+        )
     if n is None:
         n = x.shape[dim]
     if n < -len(x.shape):
-        raise ivy.exceptions.IvyError(
+        raise ivy.utils.exceptions.IvyError(
             f"Invalid dim {dim}, expecting ranging"
             " from {-len(x.shape)} to {len(x.shape)-1}  "
         )
     if not isinstance(n, int):
-        raise ivy.exceptions.IvyError(f"Expecting <class 'int'> instead of {type(n)}")
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(n)}"
+        )
     if n <= 1:
-        raise ivy.exceptions.IvyError(f"Invalid data points {n}, expecting more than 1")
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {n}, expecting more than 1"
+        )
     if norm != "backward" and norm != "ortho" and norm != "forward":
-        raise ivy.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return np.fft.fft(x, n, dim, norm)
 
 
@@ -529,6 +570,33 @@ def dropout1d(
         return x
 
 
+def dropout3d(
+    x: np.ndarray,
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NDHWC",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if training:
+        is_batched = len(x.shape) == 5
+        if data_format == "NCDHW":
+            perm = (0, 2, 3, 4, 1) if is_batched else (1, 2, 3, 0)
+            x = np.transpose(x, perm)
+        noise_shape = list(x.shape)
+        sl = slice(1, -1) if is_batched else slice(-1)
+        noise_shape[sl] = [1] * 3
+        mask = np.random.binomial(1, 1 - prob, noise_shape)
+        res = np.where(mask, x / (1 - prob), 0)
+        if data_format == "NCDHW":
+            perm = (0, 4, 1, 2, 3) if is_batched else (3, 0, 1, 2)
+            res = np.transpose(res, perm)
+        return res
+    else:
+        return x
+
+
 def ifft(
     x: np.ndarray,
     dim: int,
@@ -538,18 +606,24 @@ def ifft(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if not isinstance(dim, int):
-        raise ivy.exceptions.IvyError(f"Expecting <class 'int'> instead of {type(dim)}")
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(dim)}"
+        )
     if n is None:
         n = x.shape[dim]
     if n < -len(x.shape):
-        raise ivy.exceptions.IvyError(
+        raise ivy.utils.exceptions.IvyError(
             f"Invalid dim {dim}, expecting ranging"
             " from {-len(x.shape)} to {len(x.shape)-1}  "
         )
     if not isinstance(n, int):
-        raise ivy.exceptions.IvyError(f"Expecting <class 'int'> instead of {type(n)}")
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting <class 'int'> instead of {type(n)}"
+        )
     if n <= 1:
-        raise ivy.exceptions.IvyError(f"Invalid data points {n}, expecting more than 1")
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {n}, expecting more than 1"
+        )
     if norm != "backward" and norm != "ortho" and norm != "forward":
-        raise ivy.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return np.asarray(np.fft.ifft(x, n, dim, norm), dtype=x.dtype)

@@ -40,6 +40,8 @@ def _print_new_stack_trace(old_stack_trace, trace_mode, func_wrapper_trace_mode)
 def _custom_exception_handle(type, value, tb_history):
     trace_mode = ivy.get_exception_trace_mode()
     func_wrapper_trace_mode = ivy.get_show_func_wrapper_trace_mode()
+    if trace_mode == 'none':
+        return
     if trace_mode == "full" and func_wrapper_trace_mode:
         print("".join(tb.format_tb(tb_history)))
     else:
@@ -52,6 +54,8 @@ def _custom_exception_handle(type, value, tb_history):
 def _print_traceback_history():
     trace_mode = ivy.get_exception_trace_mode()
     func_wrapper_trace_mode = ivy.get_show_func_wrapper_trace_mode()
+    if trace_mode == 'none':
+        return
     if trace_mode == "full" and func_wrapper_trace_mode:
         print("".join(tb.format_tb(sys.exc_info()[2])))
     else:
@@ -118,10 +122,10 @@ def handle_exceptions(fn: Callable) -> Callable:
             return fn(*args, **kwargs)
         except (IndexError, ValueError, AttributeError) as e:
             _print_traceback_history()
-            raise ivy.exceptions.IvyError(fn.__name__, str(e))
+            raise ivy.utils.exceptions.IvyError(fn.__name__, str(e))
         except Exception as e:
             _print_traceback_history()
-            raise ivy.exceptions.IvyBackendException(fn.__name__, str(e))
+            raise ivy.utils.exceptions.IvyBackendException(fn.__name__, str(e))
 
     new_fn.handle_exceptions = True
     return new_fn
