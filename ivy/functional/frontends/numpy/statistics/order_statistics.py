@@ -13,6 +13,8 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 
 def percentile(a,
                q,
+               /,
+               *,
                axis=None,
                out=None,
                overwrite_input=False,

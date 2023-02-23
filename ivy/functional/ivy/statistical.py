@@ -1283,6 +1283,8 @@ def einsum(
 def percentile(
     x: Union[ivy.Array, ivy.NativeArray],
     q: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
     interpolation: Optional[str] = None,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,

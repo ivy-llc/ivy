@@ -259,6 +259,8 @@ einsum.support_native_out = True
 def percentile(
     x: np.ndarray,
     q: np.ndarray,
+    /,
+    *,
     interpolation: Optional[str] = None,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
