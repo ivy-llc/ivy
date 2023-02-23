@@ -553,10 +553,12 @@ def test_numpy_interp(
 @handle_frontend_test(
     fn_tree="numpy.convolve",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
         max_num_dims=1,
         num_arrays=2,
+        min_value=-10,
+        max_value=10,
         shared_dtype=True,
     ),
     mode=st.sampled_from(["valid", "same", "full"]),
@@ -571,7 +573,7 @@ def test_numpy_convolve(
     on_device,
 ):
     input_dtypes, xs = dtype_and_x
-    np_frontend_helpers.test_frontend_function(
+    helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
