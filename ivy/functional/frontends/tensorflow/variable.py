@@ -48,7 +48,7 @@ class Variable:
         return tf_frontend.gather_nd(params=self._ivy_array, indices=indices)
 
     def read_value(self):
-        return self._ivy_array
+        return tf_frontend.Tensor(self._ivy_array)
 
     def scatter_add(self, sparse_delta, use_locking=None, name=None, read_value=True):
         pass
