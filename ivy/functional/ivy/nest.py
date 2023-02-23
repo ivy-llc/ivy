@@ -8,7 +8,7 @@ from collections import UserDict
 
 # local
 import ivy
-from ivy.exceptions import handle_exceptions
+from ivy.utils.exceptions import handle_exceptions
 
 
 # Extra #

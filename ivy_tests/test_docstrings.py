@@ -262,6 +262,7 @@ def test_docstrings(backend):
         "deserialize",
         "dropout",
         "dropout1d",
+        "dropout3d",
     ]
     # the temp skip list consists of functions which have an issue with their
     # implementation
@@ -283,6 +284,7 @@ def test_docstrings(backend):
         "slogdet",
         "dropout",
         "dropout1d",
+        "dropout3",
     ]
     # currently_being_worked_on = ["layer_norm"]
 

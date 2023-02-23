@@ -101,7 +101,7 @@ def conv1d_transpose(
     if ivy.dev(x) == "cpu" and (
         (dilations > 1) if isinstance(dilations, int) else any(d > 1 for d in dilations)
     ):
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             "Tensorflow does not support dilations greater than 1 when device is cpu"
         )
     if data_format == "NCW":
@@ -156,7 +156,7 @@ def conv2d_transpose(
     if ivy.dev(x) == "cpu" and (
         (dilations > 1) if isinstance(dilations, int) else any(d > 1 for d in dilations)
     ):
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             "Tensorflow does not support dilations greater than 1 when device is cpu"
         )
     if data_format == "NCHW":
@@ -241,7 +241,7 @@ def conv3d_transpose(
     if ivy.dev(x) == "cpu" and (
         (dilations > 1) if isinstance(dilations, int) else any(d > 1 for d in dilations)
     ):
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             "Tensorflow does not support dilations greater than 1 when device is cpu"
         )
     strides = [1] + ([strides] * 3 if isinstance(strides, int) else strides) + [1]
