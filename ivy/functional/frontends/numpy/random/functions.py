@@ -61,3 +61,11 @@ def multinomial(n, pvals, size=None):
     else:
         num_samples = len(pvals)
     return ivy.multinomial(n, num_samples, batch_size=batch_size, probs=pvals)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def permutation(x, /):
+    if isinstance(x, int):
+        x = ivy.arange(x)
+    return ivy.shuffle(x)

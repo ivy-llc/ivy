@@ -44,7 +44,7 @@ class dtype:
         try:
             other = dtype(other)
         except TypeError:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "Attempted to compare a dtype with something which"
                 "couldn't be interpreted as a dtype"
             )
@@ -57,7 +57,7 @@ class dtype:
         try:
             other = dtype(other)
         except TypeError:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "Attempted to compare a dtype with something which"
                 "couldn't be interpreted as a dtype"
             )
@@ -68,7 +68,7 @@ class dtype:
         try:
             other = dtype(other)
         except TypeError:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "Attempted to compare a dtype with something which"
                 "couldn't be interpreted as a dtype"
             )
@@ -81,7 +81,7 @@ class dtype:
         try:
             other = dtype(other)
         except TypeError:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "Attempted to compare a dtype with something which"
                 "couldn't be interpreted as a dtype"
             )
@@ -160,3 +160,7 @@ class dtype:
     @property
     def ivy_dtype(self):
         return self._ivy_dtype
+
+    @property
+    def name(self):
+        return self._ivy_dtype.__repr__()

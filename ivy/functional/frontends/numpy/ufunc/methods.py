@@ -50,8 +50,9 @@ ufuncs = [
     "greater_equal",
     "heaviside",
     "hypot",
-    "imag"
+    "imag",
     "invert",
+    "imag" "invert",
     "isfinite",
     "isinf",
     "isnan",
@@ -84,6 +85,7 @@ ufuncs = [
     "power",
     "rad2deg",
     "radians",
+    "real",
     "reciprocal",
     "remainder",
     "right_shift",
