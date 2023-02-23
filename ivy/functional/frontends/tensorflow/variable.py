@@ -26,6 +26,27 @@ class Variable:
             + str(self._ivy_array.dtype)
             + ")"
         )
+    
+    # Properties #
+    # ---------- #
+
+    @property
+    def ivy_array(self):
+        return self._ivy_array
+
+    @property
+    def device(self):
+        return self._ivy_array.device
+
+    @property
+    def dtype(self):
+        return tf_frontend.DType(
+            tf_frontend.tensorflow_type_to_enum[self._ivy_array.dtype]
+        )
+
+    @property
+    def shape(self):
+        return "TensorShape(" + str(list(self._ivy_array.shape)) + ")"
 
     # Instance Methods #
     # ---------------- #
