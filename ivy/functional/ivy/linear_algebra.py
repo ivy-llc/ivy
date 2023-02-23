@@ -2692,3 +2692,58 @@ def vector_to_skew_symmetric_matrix(
 
     """
     return current_backend(vector).vector_to_skew_symmetric_matrix(vector, out=out)
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_exceptions
+@handle_array_function
+@handle_array_like_without_promotion
+def lu(
+    a: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    pivoting: bool = True,
+    out: Optional[ivy.Array] = None,
+) -> Tuple[ivy.Array, ivy.Array]:
+    """LU decomposition.
+    Factor the matrix `a` as `a = p * l * u`, where `p` is a permutation matrix,
+    `l` lower triangular with unit diagonal elements, and `u` upper triangular.
+
+    Parameters
+    ----------
+    a
+        Matrix to be decomposed.
+    pivoting
+        Whether to use partial pivoting.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        Tuple of the form (p, l, u), where `p` is a permutation matrix, `l` lower
+        triangular with unit diagonal elements, and `u` upper triangular.
+
+    Examples
+    --------
+    With :class:`ivy.Array` inputs:
+
+    >>> a = ivy.array([[1, 2, 3],
+    >>>                [4, 5, 6],
+    >>>                [7, 8, 9]])
+    >>> p, l, u = ivy.lu(a)
+    >>> p
+    ivy.array([[0, 0, 1],
+               [1, 0, 0],
+               [0, 1, 0]])
+    >>> l
+    ivy.array([[1, 0, 0],
+               [0.5, 1, 0],
+               [0.5, 0.5, 1]])
+    >>> u
+    ivy.array([[7, 8, 9],
+               [0, 1.5, 3],
+               [0, 0, -0.5]])
+    """
+    return current_backend(a).lu(a, pivoting=pivoting, out=out)
