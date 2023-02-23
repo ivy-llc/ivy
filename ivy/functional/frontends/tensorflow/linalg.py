@@ -38,6 +38,26 @@ def eigvalsh(tensor, name=None):
 @with_supported_dtypes(
     {
         "2.9.0 and below": (
+            "float32",
+            "float64",
+            "complex64",
+            "complex128",
+        )
+    },
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def eigvals(tensor, name=None):
+    if ivy.dtype(tensor) in [ivy.float32, ivy.complex64]:
+        out_dtype = ivy.complex64
+    if ivy.dtype(tensor) in [ivy.float64, ivy.complex128]:
+        out_dtype = ivy.complex128
+    return ivy.astype(ivy.eigvals(tensor), out_dtype)
+
+
+@with_supported_dtypes(
+    {
+        "2.9.0 and below": (
             "float16",
             "float32",
             "float64",
