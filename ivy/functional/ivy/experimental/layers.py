@@ -917,6 +917,15 @@ def dft(
         res = res[tuple(slices)]
     return res
 
+def _fill_keys_cubic_kernel(x):
+  # http://ieeexplore.ieee.org/document/1163711/
+  # R. G. Keys. Cubic convolution interpolation for digital image processing.
+  # IEEE Transactions on Acoustics, Speech, and Signal Processing,
+  # 29(6):1153–1160, 1981.
+  out = ((1.5 * x - 2.5) * x) * x + 1.
+  out = ivy.where(x >= 1., ((-0.5 * x + 2.5) * x - 4.) * x + 2., out)
+  return ivy.where(x >= 2., 0., out)
+
 
 @to_native_arrays_and_back
 @handle_exceptions
@@ -989,10 +998,11 @@ def paddedRow(arr: ivy.array) -> ivy.array:
 
 # take four points and find the value of P on slop between p[1] and p[2]
 def polynomial_calclulation(arr: ivy.array, p: float) -> float:
-    arr = ivy.astype(arr, 'float64')
+    # arr = ivy.array(arr)
+    # arr = ivy.astype(arr, 'float64')
     x = arr[1] + 0.5 * p * (arr[2] - arr[0] + p * (
                 2.0 * arr[0] - 5.0 * arr[1] + 4.0 * arr[2] - arr[3] + p * (3.0 * (arr[1] - arr[2]) + arr[3] - arr[0])))
-    x = ivy.astype(x, 'float64')
+    # x = ivy.astype(x, 'float64')
     return x
 
 
@@ -1004,13 +1014,15 @@ def cubic(row: ivy.array, size: int, align_corners: bool) -> ivy.array:
     resample = ivy.zeros(size)
 
     if align_corners:
-        delta = (len(row) - 1) / (size - 1);
+        delta = 0
+        if size > 1 and len(row) > 1:
+            delta = len(row) - 1 / (size - 1)
         for i in range(size):
-            resample[i] = i * delta;
+            resample[i] = i * delta
     else:
-        delta = len(row) / size;
+        delta = len(row) / size
         for i in range(size):
-            resample[i] = ((i + 0.5) * delta) - 0.5;
+            resample[i] = ((i + 0.5) * delta) - 0.5
 
     # Calculating interpolated value of every newly distributed pixel
     for i in range(size):
@@ -1019,7 +1031,7 @@ def cubic(row: ivy.array, size: int, align_corners: bool) -> ivy.array:
         frc = p % 1
         resample[i] = polynomial_calclulation(padded[dec:dec + 4], frc)
 
-    return resample
+    return ivy.array(resample)
 
 
 def bicubic(
