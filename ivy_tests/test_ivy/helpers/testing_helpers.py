@@ -250,7 +250,7 @@ def _partition_dtypes_into_kinds(framework, dtypes):
 
 def handle_test(
     *,
-    fn_tree: str,
+    fn_tree: str = None,
     ground_truth_backend: str = ground_truth,
     number_positional_args=None,
     test_instance_method=BuiltInstanceStrategy,
@@ -300,15 +300,18 @@ def handle_test(
         A search strategy that generates a list of boolean flags for array inputs to be
         passed as a Container
     """
-    fn_tree = "ivy." + fn_tree
+    is_fn_tree_provided = fn_tree is not None
+    if is_fn_tree_provided:
+        fn_tree = "ivy." + fn_tree
     is_hypothesis_test = len(_given_kwargs) != 0
 
-    if is_hypothesis_test:
+    possible_arguments = {"ground_truth_backend": ground_truth_backend}
+    if is_hypothesis_test and is_fn_tree_provided:
         # Use the default strategy
         if number_positional_args is None:
             number_positional_args = num_positional_args(fn_name=fn_tree)
         # Generate the test flags strategy
-        test_flags = pf.function_flags(
+        possible_arguments["test_flags"] = pf.function_flags(
             num_positional_args=number_positional_args,
             instance_method=test_instance_method,
             with_out=test_with_out,
@@ -319,18 +322,15 @@ def handle_test(
         )
 
     def test_wrapper(test_fn):
-        callable_fn, fn_name, fn_mod = _import_fn(fn_tree)
-        supported_device_dtypes = _get_supported_devices_dtypes(fn_name, fn_mod)
+        if is_fn_tree_provided:
+            callable_fn, fn_name, fn_mod = _import_fn(fn_tree)
+            supported_device_dtypes = _get_supported_devices_dtypes(fn_name, fn_mod)
+            possible_arguments["fn_name"] = st.just(fn_name)
 
         # If a test is not a Hypothesis test, we only set the test global data
         if is_hypothesis_test:
             param_names = inspect.signature(test_fn).parameters.keys()
             # Check if these arguments are being asked for
-            possible_arguments = {
-                "test_flags": test_flags,
-                "fn_name": st.just(fn_name),
-                "ground_truth_backend": st.just(ground_truth_backend),
-            }
             filtered_args = set(param_names).intersection(possible_arguments.keys())
             for key in filtered_args:
                 _given_kwargs[key] = possible_arguments[key]
@@ -340,12 +340,13 @@ def handle_test(
             wrapped_test = test_fn
 
         # Set the test data to be used by test helpers
-        wrapped_test.test_data = TestData(
-            test_fn=wrapped_test,
-            fn_tree=fn_tree,
-            fn_name=fn_name,
-            supported_device_dtypes=supported_device_dtypes,
-        )
+        if is_fn_tree_provided:
+            wrapped_test.test_data = TestData(
+                test_fn=wrapped_test,
+                fn_tree=fn_tree,
+                fn_name=fn_name,
+                supported_device_dtypes=supported_device_dtypes,
+            )
         wrapped_test.ground_truth_backend = ground_truth_backend
 
         return wrapped_test
