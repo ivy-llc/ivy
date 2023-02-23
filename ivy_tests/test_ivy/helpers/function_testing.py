@@ -444,6 +444,7 @@ def test_frontend_function(
     rtol: float = None,
     atol: float = 1e-06,
     test_values: bool = True,
+    return_flat_np_arrays=False,
     **all_as_kwargs_np,
 ):
     """Tests a frontend function for the current backend by comparing the result with
@@ -746,6 +747,8 @@ def test_frontend_function(
 
     # assuming value test will be handled manually in the test function
     if not test_values:
+        if return_flat_np_arrays:
+            return ret_np_flat, frontend_ret_np_flat
         return ret, frontend_ret
 
     if isinstance(rtol, dict):
