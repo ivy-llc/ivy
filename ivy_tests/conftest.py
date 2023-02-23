@@ -62,7 +62,7 @@ def pytest_addoption(parser):
         help="set deadline for testing one example",
     )
     parser.addoption(
-        "--tb-mode",
+        "--ivy-tb",
         action="store",
         default="full",
         type=str,
