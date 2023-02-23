@@ -1,6 +1,6 @@
 # flake8: noqa
 import ivy
-from ivy.exceptions import handle_exceptions
+from ivy.utils.exceptions import handle_exceptions
 from typing import Union, Iterable, Tuple
 from numbers import Number
 from .data_type_routines import dtype
@@ -405,7 +405,7 @@ def promote_numpy_dtypes(
     try:
         return numpy_promotion_table[(type1, type2)]
     except KeyError:
-        raise ivy.exceptions.IvyException("these dtypes are not type promotable")
+        raise ivy.utils.exceptions.IvyException("these dtypes are not type promotable")
 
 
 @handle_exceptions
@@ -540,6 +540,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functio
 
 from ivy.functional.frontends.numpy.mathematical_functions.handling_complex_numbers import (
     _imag,
+    _real,
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.hyperbolic_functions import (
@@ -663,3 +664,4 @@ logical_xor = ufunc("_logical_xor")
 matmul = ufunc("_matmul")
 maximum = ufunc("_maximum")
 minimum = ufunc("_minimum")
+real = ufunc("_real")
