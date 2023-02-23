@@ -311,6 +311,32 @@ def dropout1d(
         return x
 
 
+def dropout3d(
+    x: Union[tf.Tensor, tf.Variable],
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NDHWC",
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if training:
+        is_batched = len(x.shape) == 5
+        if data_format == "NCDHW":
+            perm = (0, 2, 3, 4, 1) if is_batched else (1, 2, 3, 0)
+            x = tf.transpose(x, perm)
+        noise_shape = list(x.shape)
+        sl = slice(1, -1) if is_batched else slice(-1)
+        noise_shape[sl] = [1] * 3
+        res = tf.nn.dropout(x, prob, noise_shape=noise_shape)
+        if data_format == "NCDHW":
+            perm = (0, 4, 1, 2, 3) if is_batched else (3, 0, 1, 2)
+            res = tf.transpose(res, perm)
+        return res
+    else:
+        return x
+
+
 def ifft(
     x: Union[tf.Tensor, tf.Variable],
     dim: int,
@@ -382,34 +408,34 @@ def interpolate(
     size: Union[Sequence[int], int],
     /,
     *,
-    mode: Union[Literal["linear", "bilinear", "trilinear"]] = "linear",
+    mode: Union[
+        Literal["linear", "bilinear", "trilinear", "nearest", "area"]
+    ] = "linear",
     align_corners: Optional[bool] = None,
     antialias: Optional[bool] = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
-    if align_corners:
+    dims = len(x.shape) - 2
+    if align_corners or dims > 2 or mode in ["nearest", "area"]:
         return ivy.functional.experimental.interpolate(
             x, size, mode=mode, align_corners=align_corners, antialias=antialias
         )
-    elif mode == "linear":
-        x = tf.transpose(x, (0, 2, 1))
-        return tf.cast(
-            tf.transpose(
-                tf.image.resize(
-                    x, size=[x.shape[0], size], method="bilinear", antialias=antialias
-                ),
-                (0, 2, 1),
-            ),
-            x.dtype,
-        )
-    elif mode == "bilinear":
-        x = tf.transpose(x, (0, 2, 3, 1))
-        return tf.cast(
-            tf.transpose(tf.image.resize(x, size=size, method=mode), (0, 3, 1, 2)),
-            x.dtype,
-        )
-    elif mode == "trilinear":
-        x = tf.transpose(x, (0, 2, 3, 4, 1))
-        return tf.cast(
-            tf.transpose(tf.image.resize(x, size=size, method=mode), (0, 4, 1, 2, 3)),
-            x.dtype,
-        )
+    size = (size,) * dims if isinstance(size, int) else size
+    remove_dim = False
+    if mode in ["linear", "area"]:
+        if dims == 1:
+            size = (1,) + tuple(size)
+            x = tf.expand_dims(x, axis=-2)
+            dims = 2
+            remove_dim = True
+        mode = "bilinear" if mode == "linear" else mode
+    x = tf.transpose(x, (0, *range(2, dims + 2), 1))
+    ret = tf.transpose(
+        tf.cast(
+            tf.image.resize(x, size=size, method=mode, antialias=antialias), x.dtype
+        ),
+        (0, dims + 1, *range(1, dims + 1)),
+    )
+    if remove_dim:
+        ret = tf.squeeze(ret, axis=-2)
+    return ret

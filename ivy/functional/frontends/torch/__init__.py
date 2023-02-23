@@ -16,7 +16,6 @@ from ivy import (
 )
 from . import nn
 from . import tensor
-from .view_tensor import ViewTensor
 from .tensor import *
 from . import blas_and_lapack_ops
 from .blas_and_lapack_ops import *

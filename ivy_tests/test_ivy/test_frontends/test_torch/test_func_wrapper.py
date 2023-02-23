@@ -24,7 +24,7 @@ def _fn(x, check_default=False):
 
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid")
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
 def test_inputs_to_ivy_arrays(dtype_and_x):
@@ -55,7 +55,7 @@ def test_inputs_to_ivy_arrays(dtype_and_x):
 
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid")
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
 def test_outputs_to_frontend_arrays(dtype_and_x):
@@ -73,7 +73,7 @@ def test_outputs_to_frontend_arrays(dtype_and_x):
 
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid")
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
 def test_to_ivy_arrays_and_back(dtype_and_x):

@@ -96,7 +96,7 @@ def test_numpy_any(
 
 @handle_frontend_test(
     fn_tree="numpy.isscalar",
-    element=st.booleans() | st.floats() | st.integers(),
+    element=st.booleans() | st.floats() | st.integers() | st.complex_numbers(),
     test_with_out=st.just(False),
 )
 def test_numpy_isscalar(
