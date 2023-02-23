@@ -305,7 +305,7 @@ def handle_test(
         fn_tree = "ivy." + fn_tree
     is_hypothesis_test = len(_given_kwargs) != 0
 
-    possible_arguments = {"ground_truth_backend": ground_truth_backend}
+    possible_arguments = {"ground_truth_backend": st.just(ground_truth_backend)}
     if is_hypothesis_test and is_fn_tree_provided:
         # Use the default strategy
         if number_positional_args is None:
@@ -348,6 +348,7 @@ def handle_test(
                 supported_device_dtypes=supported_device_dtypes,
             )
         wrapped_test.ground_truth_backend = ground_truth_backend
+        wrapped_test._ivy_test = True
 
         return wrapped_test
 
@@ -552,6 +553,7 @@ def handle_method(
                 supported_device_dtypes=supported_device_dtypes,
             )
         wrapped_test.ground_truth_backend = ground_truth_backend
+        wrapped_test._ivy_test = True
 
         return wrapped_test
 
