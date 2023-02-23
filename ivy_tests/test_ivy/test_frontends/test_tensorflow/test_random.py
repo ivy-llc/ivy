@@ -32,7 +32,6 @@ def test_tensorflow_uniform(
     fn_tree,
     on_device,
 ):
-
     input_dtypes, shape = shape
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
@@ -76,7 +75,6 @@ def test_tensorflow_normal(
     seed,
     test_flags,
 ):
-
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -89,4 +87,45 @@ def test_tensorflow_normal(
         stddev=stddev,
         dtype=dtype[0],
         seed=seed,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.random.poisson",
+    shape=helpers.get_shape(
+        allow_none=False,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    dtype=helpers.get_dtypes("float", full=False),
+    lam=helpers.dtype_and_values(
+        dtype="float16",
+    ),
+    seed=helpers.ints(min_value=0, max_value=10),
+)
+def test_tensorflow_poisson(
+    frontend,
+    on_device,
+    *,
+    lam,
+    dtype,
+    seed,
+    shape,
+    fn_tree,
+    test_flags,
+):
+    dtypex, x = lam
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        shape=shape,
+        dtype=dtype[0],
+        seed=seed,
+        lam=x,
     )
