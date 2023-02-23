@@ -37,6 +37,7 @@ These four function categorizations are all **mutually exclusive**, and combined
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/function_types/four_function_types.png?raw=true
    :align: center
    :width: 50%
+   :class: dark-light
 
 Primary Functions
 -----------------
@@ -143,6 +144,7 @@ This categorization is **not** mutually exclusive, as outlined by the Venn diagr
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/function_types/nestable.png?raw=true
    :align: center
    :width: 50%
+   :class: dark-light
 
 The *nestable* property makes it very easy to write a single piece of code that can deal either with individual arguments or arbitrary batches of nested arguments.
 This is very useful in machine learning, where batches of different training data often need to be processed concurrently.
@@ -170,6 +172,7 @@ This is another categorization which is **not** mutually exclusive, as outlined 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/function_types/convenience.png?raw=true
    :align: center
    :width: 50%
+   :class: dark-light
 
 Primary convenience functions include: `ivy.can_cast`_ which determines if one data type can be cast to another data type according to type-promotion rules, `ivy.dtype`_ which gets the data type for the input array, and `ivy.dev`_ which gets the device for the input array.
 

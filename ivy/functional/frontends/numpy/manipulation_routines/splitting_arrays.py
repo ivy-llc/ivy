@@ -19,3 +19,8 @@ def split(ary, indices_or_sections, axis=0):
 @to_ivy_arrays_and_back
 def dsplit(ary, indices_or_sections):
     return ivy.dsplit(ary, indices_or_sections)
+
+
+@to_ivy_arrays_and_back
+def vsplit(ary, indices_or_sections):
+    return ivy.vsplit(ary, indices_or_sections)

@@ -370,7 +370,7 @@ class Tensor:
         device=None,
         requires_grad=False,
         layout=None,
-        pin_memory=False
+        pin_memory=False,
     ):
         dtype = ivy.dtype(self._ivy_array) if dtype is None else dtype
         device = ivy.dev(self._ivy_array) if device is None else device
@@ -430,7 +430,7 @@ class Tensor:
         device=None,
         requires_grad=False,
         layout=None,
-        pin_memory=False
+        pin_memory=False,
     ):
         dtype = ivy.dtype(self._ivy_array) if dtype is None else dtype
         device = ivy.dev(self._ivy_array) if device is None else device
@@ -445,7 +445,7 @@ class Tensor:
         device=None,
         requires_grad=False,
         layout=None,
-        pin_memory=False
+        pin_memory=False,
     ):
         dtype = ivy.dtype(self._ivy_array) if dtype is None else dtype
         device = ivy.dev(self._ivy_array) if device is None else device
@@ -668,9 +668,9 @@ class Tensor:
         cast_tensor.ivy_array = ivy.astype(self._ivy_array, ivy.int64)
         return cast_tensor
 
-    def __getitem__(self, query):
+    def __getitem__(self, query, /):
         ret = ivy.get_item(self._ivy_array, query)
-        return torch_frontend.tensor(ivy.array(ret, dtype=ivy.dtype(ret), copy=False))
+        return torch_frontend.Tensor(ret, _init_overload=True)
 
     def __setitem__(self, key, value):
         if hasattr(value, "ivy_array"):
