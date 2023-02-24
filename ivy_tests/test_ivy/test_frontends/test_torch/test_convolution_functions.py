@@ -225,15 +225,18 @@ def test_torch_conv3d(
 
 
 def _output_shape(
-        dims, dilation, stride, padding, output_padding, input_shape, weight_shape
+    dims, dilation, stride, padding, output_padding, input_shape, weight_shape
 ):
     dilation, stride, padding, output_padding = map(
         lambda x: [x] * dims if isinstance(x, int) else x,
-        [dilation, stride, padding, output_padding]
+        [dilation, stride, padding, output_padding],
     )
     return [
-        (input_shape[2 + i] - 1) * stride[i] - 2 * padding[i] +
-        dilation[i] * (weight_shape[2 + i] - 1) + output_padding[i] + 1
+        (input_shape[2 + i] - 1) * stride[i]
+        - 2 * padding[i]
+        + dilation[i] * (weight_shape[2 + i] - 1)
+        + output_padding[i]
+        + 1
         for i in range(dims)
     ]
 
@@ -251,10 +254,15 @@ def test_torch_conv_tranpose1d(
     test_flags,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, output_pad, fc = dtype_vals
-    dilations = 1   # ToDo: remove this when support for dilation > 1 is added
-    assume(all(x > 0 for x in _output_shape(
-        1, dilations, strides, padding, output_pad, vals.shape, weight.shape
-    )))
+    dilations = 1  # ToDo: remove this when support for dilation > 1 is added
+    assume(
+        all(
+            x > 0
+            for x in _output_shape(
+                1, dilations, strides, padding, output_pad, vals.shape, weight.shape
+            )
+        )
+    )
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -285,10 +293,15 @@ def test_torch_conv_tranpose2d(
     test_flags,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, output_pad, fc = dtype_vals
-    dilations = 1   # ToDo: remove this when support for dilation > 1 is added
-    assume(all(x > 0 for x in _output_shape(
-        2, dilations, strides, padding, output_pad, vals.shape, weight.shape
-    )))
+    dilations = 1  # ToDo: remove this when support for dilation > 1 is added
+    assume(
+        all(
+            x > 0
+            for x in _output_shape(
+                2, dilations, strides, padding, output_pad, vals.shape, weight.shape
+            )
+        )
+    )
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -319,10 +332,15 @@ def test_torch_conv_tranpose3d(
     test_flags,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, output_pad, fc = dtype_vals
-    dilations = 1   # ToDo: remove this when support for dilation > 1 is added
-    assume(all(x > 0 for x in _output_shape(
-        3, dilations, strides, padding, output_pad, vals.shape, weight.shape
-    )))
+    dilations = 1  # ToDo: remove this when support for dilation > 1 is added
+    assume(
+        all(
+            x > 0
+            for x in _output_shape(
+                3, dilations, strides, padding, output_pad, vals.shape, weight.shape
+            )
+        )
+    )
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,

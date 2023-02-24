@@ -429,3 +429,12 @@ def xlogy(
 
 def real(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.real(x)
+
+
+def conj(
+    x: Union[np.ndarray],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.conj(x, out=out)

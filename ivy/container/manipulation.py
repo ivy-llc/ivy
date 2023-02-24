@@ -236,13 +236,13 @@ class ContainerWithManipulation(ContainerBase):
         /,
         *,
         num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
-        axis: Optional[int] = 0,
-        with_remainder: Optional[bool] = False,
+        axis: int = 0,
+        with_remainder: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-    ) -> Union[ivy.Container, List[ivy.Container]]:
+    ) -> List[ivy.Container]:
         """
         ivy.Container static method variant of ivy.split. This method simply
         wraps the function, and so the docstring for ivy.split also applies
@@ -275,7 +275,7 @@ class ContainerWithManipulation(ContainerBase):
 
         Returns
         -------
-            A container with list of sub-arrays.
+            list of containers of sub-arrays.
 
         Examples
         --------
@@ -308,13 +308,13 @@ class ContainerWithManipulation(ContainerBase):
         /,
         *,
         num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
-        axis: Optional[int] = 0,
-        with_remainder: Optional[bool] = False,
+        axis: int = 0,
+        with_remainder: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-    ) -> Union[ivy.Container, List[ivy.Container]]:
+    ) -> List[ivy.Container]:
         """
         ivy.Container instance method variant of ivy.split. This method simply
         wraps the function, and so the docstring for ivy.split also applies
@@ -347,7 +347,7 @@ class ContainerWithManipulation(ContainerBase):
 
         Returns
         -------
-            A container with list of sub-arrays.
+            list of containers of sub-arrays.
 
         Examples
         --------
