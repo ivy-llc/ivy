@@ -596,6 +596,7 @@ from ivy.functional.frontends.numpy.linalg.matrix_and_vector_products import _ma
 from ivy.functional.frontends.numpy.mathematical_functions.extrema_finding import (
     _maximum,
     _minimum,
+    _fmin,
 )
 
 # initializing ufuncs #
@@ -664,4 +665,5 @@ logical_xor = ufunc("_logical_xor")
 matmul = ufunc("_matmul")
 maximum = ufunc("_maximum")
 minimum = ufunc("_minimum")
+fmin = ufunc("_fmin")
 real = ufunc("_real")
