@@ -2272,15 +2272,15 @@ def test_jax_numpy_gradient(
     frontend,
     test_flags,
 ):
-    input_dtype, gradient_inputs = dtype_and_x
+    input_dtype, inputs = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        f=gradient_inputs[0],
-        varargs=gradient_inputs[1],
-        axis=gradient_inputs[2],
-        edge_order=gradient_inputs[3],
+        f=inputs[0],
+        varargs=inputs[1],
+        axis=inputs[2],
+        edge_order=inputs[3],
     )

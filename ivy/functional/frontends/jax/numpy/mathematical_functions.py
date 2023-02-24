@@ -60,8 +60,8 @@ def floor(x):
 
 
 @to_ivy_arrays_and_back
-def gradient(f, *varargs, axis=None, edge_count=None):
-    return ivy.gradient(f, varargs, axis=axis, edge_count=edge_count)
+def gradient(f, *args, ax=None, edge_c=None):
+    return ivy.gradient(f, args, axis=ax, edge_count=edge_c)
 
 
 @to_ivy_arrays_and_back
