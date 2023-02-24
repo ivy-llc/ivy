@@ -414,7 +414,7 @@ def shape(
     x: JaxArray,
     /,
     *,
-    as_array: Optional[bool] = False,
+    as_array: bool = False,
 ) -> Union[ivy.Shape, ivy.Array]:
     if as_array:
         return ivy.array(jnp.shape(x), dtype=ivy.default_int_dtype())

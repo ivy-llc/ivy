@@ -3134,7 +3134,7 @@ def shape(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    as_array: Optional[bool] = False,
+    as_array: bool = False,
 ) -> Union[ivy.Shape, ivy.NativeShape]:
     """Returns the shape of the array ``x``.
 
