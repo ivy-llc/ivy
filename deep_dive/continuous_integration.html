@@ -1,211 +1,1057 @@
-<!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Continuous Integration &mdash; Ivy 1.0 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Continuous Integration &#8212; Ivy Documentation</title>
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
-    <script src="../_static/js/theme.js"></script>
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=796348d33e8b1d947c94" rel="stylesheet">
+<link href="../_static/styles/bootstrap.css?digest=796348d33e8b1d947c94" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=796348d33e8b1d947c94" rel="stylesheet">
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=796348d33e8b1d947c94" rel="stylesheet">
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+      <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=796348d33e8b1d947c94">
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=796348d33e8b1d947c94">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'deep_dive/continuous_integration';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Open Tasks" href="../contributing/open_tasks.html" />
-    <link rel="prev" title="Exception Handling" href="exception_handling.html" /> 
-</head>
+    <link rel="prev" title="Exception Handling" href="exception_handling.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="docsearch:language" content="en">
+  </head>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> Ivy
-          </a>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../design.html">Design</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../related_work.html">Related Work</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="navigating_the_code.html">Navigating the Code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_types.html">Function Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="superset_behaviour.html">Superset Behaviour</a></li>
-<li class="toctree-l2"><a class="reference internal" href="backend_setting.html">Backend Setting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="arrays.html">Arrays</a></li>
-<li class="toctree-l2"><a class="reference internal" href="containers.html">Containers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="data_types.html">Data Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="devices.html">Devices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inplace_updates.html">Inplace Updates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_wrapping.html">Function Wrapping</a></li>
-<li class="toctree-l2"><a class="reference internal" href="formatting.html">Formatting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_arguments.html">Function Arguments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docstrings.html">Docstrings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docstring_examples.html">Docstring Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="array_api_tests.html">Array API Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ivy_tests.html">Ivy Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ivy_frontends.html">Ivy Frontends</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="exception_handling.html">Exception Handling</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Continuous Integration</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#commit-push-pr-triggered-testing">Commit (Push/PR) Triggered Testing</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#ivy-tests">Ivy Tests</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#implementation">Implementation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#a-top-down-view">A Top-Down View</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#storing-and-retrieving-the-mapping">Storing (and retrieving) the Mapping</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#cloning-and-pushing-to-the-repository">Cloning and Pushing to the Repository</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#implementational-nitty-gritties">Implementational Nitty Gritties</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#storage-space-unifyai-mapping">Storage Space (unifyai/Mapping)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#determine-test-coverage-workflow">Determine Test Coverage Workflow</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#multiple-runners">Multiple Runners</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#race-condition">Race Condition</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#array-api-tests">Array API Tests</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#periodic-testing">Periodic Testing</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#manually-dispatched-workflows">Manually Dispatched Workflows</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#ci-pipeline">CI Pipeline ➡️</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#push">Push</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#pull-request">Pull Request</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#dashboard">Dashboard</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/experimental.html">Experimental</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/constants.html">Constants</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/control_flow_ops.html">Control flow ops</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/creation.html">Creation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/data_type.html">Data type</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/device.html">Device</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/elementwise.html">Elementwise</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/experimental.html">Experimental</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/general.html">General</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/gradients.html">Gradients</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/linear_algebra.html">Linear algebra</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/losses.html">Losses</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/manipulation.html">Manipulation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/meta.html">Meta</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/nest.html">Nest</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/random.html">Random</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/searching.html">Searching</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/set.html">Set</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/sorting.html">Sorting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/statistical.html">Statistical</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/utility.html">Utility</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../data_classes/container.html">Container</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../data_classes/array.html">Array</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/helpers.html">Helpers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Nested array</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../nested_array/nested_array.html">Nested array</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Utils</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../utils/backend.html">Backend</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../utils/assertions.html">Assertions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../utils/dynamic_import.html">Dynamic import</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../utils/inspection.html">Inspection</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../utils/verbosity.html">Verbosity</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Testing</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../testing/assertions.html">Assertions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../testing/available_frameworks.html">Available frameworks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../testing/function_testing.html">Function testing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../testing/globals.html">Globals</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../testing/hypothesis_helpers.html">Hypothesis helpers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../testing/structs.html">Structs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../testing/test_parameter_flags.html">Test parameter flags</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../testing/testing_helpers.html">Testing helpers</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Docs</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../ivy"">Ivy</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../mech"">Ivy mech</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../vision"">Ivy vision</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../robot"">Ivy robot</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../gym"">Ivy gym</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../memory"">Ivy memory</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../builder"">Ivy builder</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../models"">Ivy models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../ecosystem"">Ivy ecosystem</a></li>
-</ul>
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
 
-        </div>
+  
+  <input type="checkbox" class="sidebar-toggle" name="__primary" id="__primary">
+  <label class="overlay overlay-primary" for="__primary"></label>
+
+  
+  <input type="checkbox" class="sidebar-toggle" name="__secondary" id="__secondary">
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+      
+<form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+    </div>
+  </div>
+
+  
+  <nav class="bd-header navbar navbar-expand-lg bd-navbar" id="navbar-main"><div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+      <span class="fa-solid fa-bars"></span>
+  </label>
+  <div id="navbar-start">
+    
+    
+  
+
+
+<a class="navbar-brand logo" href="../index.html">
+
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <img src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo.png?raw=true" class="logo__image only-light" alt="Logo image">
+    <img src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo_dark.png?raw=true" class="logo__image only-dark" alt="Logo image">
+  
+  
+</a>
+    
+  </div>
+
+  
+  <div class=" navbar-header-items">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <nav class="navbar-nav">
+    <p class="sidebar-header-items__title" role="heading" aria-level="1" aria-label="Site Navigation">
+        Site Navigation
+    </p>
+    <ul id="navbar-main-elements" class="navbar-nav">
+        
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../background.html">
+                        Background
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../design.html">
+                        Design
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../related_work.html">
+                        Related Work
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../extensions.html">
+                        Extensions
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../contributing.html">
+                        Contributing
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../deep_dive.html">
+                        Deep Dive
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../faq.html">
+                        FAQ
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../glossary.html">
+                        Glossary
+                      </a>
+                    </li>
+                
+            <div class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    More
+                </button>
+                <div class="dropdown-menu">
+                    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../functional/ivy.html">
+                        <no title>
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../data_classes/container.html">
+                        Container
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../data_classes/array.html">
+                        Array
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../stateful/sequential.html">
+                        Sequential
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../stateful/activations.html">
+                        Activations
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../stateful/layers.html">
+                        Layers
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../stateful/helpers.html">
+                        Helpers
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../stateful/module.html">
+                        Module
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../stateful/converters.html">
+                        Converters
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../stateful/norms.html">
+                        Norms
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../stateful/initializers.html">
+                        Initializers
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../stateful/optimizers.html">
+                        Optimizers
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../nested_array/nested_array.html">
+                        Nested array
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../utils/backend.html">
+                        Backend
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../utils/_importlib.html">
+                        <no title>
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../utils/assertions.html">
+                        Assertions
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../utils/dynamic_import.html">
+                        Dynamic import
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../utils/inspection.html">
+                        Inspection
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../utils/verbosity.html">
+                        Verbosity
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../testing/assertions.html">
+                        Assertions
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../testing/available_frameworks.html">
+                        Available frameworks
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../testing/function_testing.html">
+                        Function testing
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../testing/globals.html">
+                        Globals
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../testing/hypothesis_helpers.html">
+                        Hypothesis helpers
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../testing/structs.html">
+                        Structs
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../testing/test_parameter_flags.html">
+                        Test parameter flags
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../testing/testing_helpers.html">
+                        Testing helpers
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../ivy"">
+                        Ivy
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../mech"">
+                        Ivy mech
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../vision"">
+                        Ivy vision
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../robot"">
+                        Ivy robot
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../gym"">
+                        Ivy gym
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../memory"">
+                        Ivy memory
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../builder"">
+                        Ivy builder
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../models"">
+                        Ivy models
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../ecosystem"">
+                        Ivy ecosystem
+                      </a>
+                    </li>
+                
+                </div>
+            </div>
+            
+    </ul>
+</nav>
       </div>
-    </nav>
+      
+    </div>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">Ivy</a>
-      </nav>
+    <div id="navbar-end">
+      
+        <div class="navbar-end-item navbar-persistent--container">
+          
+<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-toggle="tooltip">
+  <i class="fa-solid fa-magnifying-glass"></i>
+</button>
+        </div>
+      
+      
+      <div class="navbar-end-item">
+        <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+</button>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/unifyai/ivy" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/letsunifyai" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fa-brands fa-square-twitter"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
 
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../contributing.html">Contributing</a> &raquo;</li>
-          <li><a href="../deep_dive.html">Deep Dive</a> &raquo;</li>
-      <li>Continuous Integration</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/deep_dive/continuous_integration.rst.txt" rel="nofollow"> View page source</a>
-      </li>
-  </ul>
-  <hr/>
+
+  
+  
+    <div class="navbar-persistent--mobile">
+<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-toggle="tooltip">
+  <i class="fa-solid fa-magnifying-glass"></i>
+</button>
+    </div>
+  
+
+  
+
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
+  </nav>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+      
+      <div class="navbar-center-item">
+        <nav class="navbar-nav">
+    <p class="sidebar-header-items__title" role="heading" aria-level="1" aria-label="Site Navigation">
+        Site Navigation
+    </p>
+    <ul id="navbar-main-elements" class="navbar-nav">
+        
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../background.html">
+                        Background
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../design.html">
+                        Design
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../related_work.html">
+                        Related Work
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../extensions.html">
+                        Extensions
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../contributing.html">
+                        Contributing
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../deep_dive.html">
+                        Deep Dive
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../faq.html">
+                        FAQ
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../glossary.html">
+                        Glossary
+                      </a>
+                    </li>
+                
+            <div class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    More
+                </button>
+                <div class="dropdown-menu">
+                    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../functional/ivy.html">
+                        <no title>
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../data_classes/container.html">
+                        Container
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../data_classes/array.html">
+                        Array
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../stateful/sequential.html">
+                        Sequential
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../stateful/activations.html">
+                        Activations
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../stateful/layers.html">
+                        Layers
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../stateful/helpers.html">
+                        Helpers
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../stateful/module.html">
+                        Module
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../stateful/converters.html">
+                        Converters
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../stateful/norms.html">
+                        Norms
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../stateful/initializers.html">
+                        Initializers
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../stateful/optimizers.html">
+                        Optimizers
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../nested_array/nested_array.html">
+                        Nested array
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../utils/backend.html">
+                        Backend
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../utils/_importlib.html">
+                        <no title>
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../utils/assertions.html">
+                        Assertions
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../utils/dynamic_import.html">
+                        Dynamic import
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../utils/inspection.html">
+                        Inspection
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../utils/verbosity.html">
+                        Verbosity
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../testing/assertions.html">
+                        Assertions
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../testing/available_frameworks.html">
+                        Available frameworks
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../testing/function_testing.html">
+                        Function testing
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../testing/globals.html">
+                        Globals
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../testing/hypothesis_helpers.html">
+                        Hypothesis helpers
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../testing/structs.html">
+                        Structs
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../testing/test_parameter_flags.html">
+                        Test parameter flags
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../testing/testing_helpers.html">
+                        Testing helpers
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../ivy"">
+                        Ivy
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../mech"">
+                        Ivy mech
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../vision"">
+                        Ivy vision
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../robot"">
+                        Ivy robot
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../gym"">
+                        Ivy gym
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../memory"">
+                        Ivy memory
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../builder"">
+                        Ivy builder
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../models"">
+                        Ivy models
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../ecosystem"">
+                        Ivy ecosystem
+                      </a>
+                    </li>
+                
+                </div>
+            </div>
+            
+    </ul>
+</nav>
+      </div>
+      
+      </div>
+    
+
+    
+    
+    <div class="sidebar-header-items__end">
+      
+      <div class="navbar-end-item">
+        <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+</button>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/unifyai/ivy" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/letsunifyai" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-toggle="tooltip"><span><i class="fa-brands fa-square-twitter"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+    
+  </div>
+
+  
+  <div class="sidebar-start-items sidebar-primary__section">
+    <div class="sidebar-start-items__item"><nav class="bd-links" id="bd-docs-nav" aria-label="Section navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">
+    Section Navigation
+  </p>
+  <div class="bd-toc-item navbar-nav">
+    <p aria-level="2" class="caption" role="heading"><span class="caption-text">Deep Dive</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="navigating_the_code.html">Navigating the Code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="function_types.html">Function Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="superset_behaviour.html">Superset Behaviour</a></li>
+<li class="toctree-l1"><a class="reference internal" href="backend_setting.html">Backend Setting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arrays.html">Arrays</a></li>
+<li class="toctree-l1"><a class="reference internal" href="containers.html">Containers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_types.html">Data Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="devices.html">Devices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="inplace_updates.html">Inplace Updates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formatting.html">Formatting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="function_arguments.html">Function Arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docstrings.html">Docstrings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="array_api_tests.html">Array API Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ivy_frontends.html">Ivy Frontends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exception_handling.html">Exception Handling</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Continuous Integration</a></li>
+</ul>
+
+  </div>
+</nav>
+    </div>
+    <div class="sidebar-start-items__item">
+<div class="tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+</div>
+<nav id="bd-toc-nav" class="page-toc">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#commit-push-pr-triggered-testing">
+   Commit (Push/PR) Triggered Testing
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#ivy-tests">
+   Ivy Tests
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#implementation">
+   Implementation
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#a-top-down-view">
+   A Top-Down View
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#storing-and-retrieving-the-mapping">
+   Storing (and retrieving) the Mapping
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#cloning-and-pushing-to-the-repository">
+   Cloning and Pushing to the Repository
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#implementational-nitty-gritties">
+   Implementational Nitty Gritties
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#storage-space-unifyai-mapping">
+     Storage Space (unifyai/Mapping)
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#determine-test-coverage-workflow">
+     Determine Test Coverage Workflow
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#multiple-runners">
+     Multiple Runners
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#race-condition">
+     Race Condition
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#array-api-tests">
+   Array API Tests
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#periodic-testing">
+   Periodic Testing
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#manually-dispatched-workflows">
+   Manually Dispatched Workflows
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#ci-pipeline">
+   CI Pipeline ➡️
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#push">
+     Push
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pull-request">
+     Pull Request
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#dashboard">
+   Dashboard
+  </a>
+ </li>
+</ul>
+
+</nav>
+    </div>
+  </div>
+  
+
+  
+  <div class="sidebar-end-items sidebar-primary__section">
+    <div class="sidebar-end-items__item">
+    </div>
+  </div>
+
+  
+  <div id="rtd-footer-container"></div>
+
+      </div>
+      <main id="main-content" class="bd-main">
+        
+        
+        <div class="bd-content">
+          <div class="bd-article-container">
+            
+            <div class="bd-header-article">
+                
+            </div>
+            
+            
+            <article class="bd-article" role="main">
+              
   <section id="continuous-integration">
-<h1>Continuous Integration<a class="headerlink" href="#continuous-integration" title="Permalink to this heading"></a></h1>
+<h1>Continuous Integration<a class="headerlink" href="#continuous-integration" title="Permalink to this heading">#</a></h1>
 <p>We follow the practice of Continuous Integration (CI), in order to regularly build and test code at Ivy.
 This makes sure that:</p>
 <ol class="arabic simple">
@@ -221,7 +1067,7 @@ This makes sure that:</p>
 <img alt="CI Overview" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/CI.png?raw=true" />
 <p>We use GitHub Actions in order to implement and automate the process of testing. GitHub Actions allow implementing custom workflows that can build the code in the repository and run the tests. All the workflows used by Ivy are defined in the <a class="reference external" href="https://github.com/unifyai/ivy/tree/master/.github/workflows">.github/workflows</a> directory.</p>
 <section id="commit-push-pr-triggered-testing">
-<h2>Commit (Push/PR) Triggered Testing<a class="headerlink" href="#commit-push-pr-triggered-testing" title="Permalink to this heading"></a></h2>
+<h2>Commit (Push/PR) Triggered Testing<a class="headerlink" href="#commit-push-pr-triggered-testing" title="Permalink to this heading">#</a></h2>
 <p>The following Tests are triggered in case of a Commit (Push/PR) made to the Ivy Repository:</p>
 <ol class="arabic simple">
 <li><p>Ivy Tests (A small subset)</p></li>
@@ -229,7 +1075,7 @@ This makes sure that:</p>
 </ol>
 </section>
 <section id="ivy-tests">
-<h2>Ivy Tests<a class="headerlink" href="#ivy-tests" title="Permalink to this heading"></a></h2>
+<h2>Ivy Tests<a class="headerlink" href="#ivy-tests" title="Permalink to this heading">#</a></h2>
 <p>A test is defined as the triplet of (submodule, function, backend). We follow the following notation to identify each test:
 <code class="code docutils literal notranslate"><span class="pre">submodule::function,backend</span></code></p>
 <p>For example, <code class="code docutils literal notranslate"><span class="pre">ivy_tests/test_ivy/test_frontends/test_torch/test_tensor.py::test_torch_instance_arctan_,numpy</span></code></p>
@@ -247,10 +1093,10 @@ This makes sure that:</p>
 <p>How do we (or at least try to) achieve this?</p>
 </section>
 <section id="implementation">
-<h2>Implementation<a class="headerlink" href="#implementation" title="Permalink to this heading"></a></h2>
+<h2>Implementation<a class="headerlink" href="#implementation" title="Permalink to this heading">#</a></h2>
 </section>
 <section id="a-top-down-view">
-<h2>A Top-Down View<a class="headerlink" href="#a-top-down-view" title="Permalink to this heading"></a></h2>
+<h2>A Top-Down View<a class="headerlink" href="#a-top-down-view" title="Permalink to this heading">#</a></h2>
 <p>In order to implement this, we use the magic of Test Coverage!
 Test Coverage refers to finding statements (lines) in your code that are executed (or could have been executed), on running a particular test.</p>
 <p>We use the Python Coverage Package (<a class="reference external" href="https://coverage.readthedocs.io/en/7.0.0/">https://coverage.readthedocs.io/en/7.0.0/</a>) for determining the Test Coverage of our tests.</p>
@@ -326,7 +1172,7 @@ Determine the Tests that impact the lines, and trigger just those tests, and no 
 </ol>
 </section>
 <section id="storing-and-retrieving-the-mapping">
-<h2>Storing (and retrieving) the Mapping<a class="headerlink" href="#storing-and-retrieving-the-mapping" title="Permalink to this heading"></a></h2>
+<h2>Storing (and retrieving) the Mapping<a class="headerlink" href="#storing-and-retrieving-the-mapping" title="Permalink to this heading">#</a></h2>
 <p>As we see in the overview section, we compute a mapping of lines to tests, for each commit to the Ivy Repository. This mapping has to be stored somewhere, in order to be used by a future commit to determine the corresponding mapping (and therefore, trigger the required tests). Therefore, we need a mechanism to store and retrieve the Mapping.
 We use the unifyai/Mapping GitHub Repository for this purpose. We use a GitHub Repository for the following Reasons:
 #. Unlike Specialized Databases (like Google Cloud), we need not store any specialized secrets to access the Database (separately for reading and writing), and no separate API Keys are required for updating the DB, saving us from exposing our secret key Files (from GitHub Actions). In fact, We just except for a single SSH Deploy Key (secrets.SSH_DEPLOY_KEY) required for pushing the DB.
@@ -336,7 +1182,7 @@ We use the unifyai/Mapping GitHub Repository for this purpose. We use a GitHub R
 <p>A GitHub Repository is not the best DB, obviously, with its own set of constraints (ex. 100 MB Space Limit), but works well enough for our requirements.</p>
 </section>
 <section id="cloning-and-pushing-to-the-repository">
-<h2>Cloning and Pushing to the Repository<a class="headerlink" href="#cloning-and-pushing-to-the-repository" title="Permalink to this heading"></a></h2>
+<h2>Cloning and Pushing to the Repository<a class="headerlink" href="#cloning-and-pushing-to-the-repository" title="Permalink to this heading">#</a></h2>
 <p>For Push triggered testing (intelligent-tests.yml Workflow), we use the SSH Cloning Method in order to felicitate the clone and push commands to the Repository, as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="o">./</span><span class="n">ivy</span><span class="o">/</span><span class="n">clone_mapping</span><span class="o">.</span><span class="n">sh</span> <span class="n">master</span>
 <span class="n">Determine</span> <span class="ow">and</span> <span class="n">Run</span> <span class="n">Tests</span><span class="p">,</span> <span class="ow">and</span> <span class="n">Update</span> <span class="n">the</span> <span class="n">Mapping</span> <span class="o">...</span>
@@ -377,15 +1223,15 @@ git clone --single-branch --depth 1 --branch &quot;$TARGET_BRANCH&quot; git@gith
 <p>PRs should not update the Mapping on the Repository, and thus no Push is required in case of PRs.</p>
 </section>
 <section id="implementational-nitty-gritties">
-<h2>Implementational Nitty Gritties<a class="headerlink" href="#implementational-nitty-gritties" title="Permalink to this heading"></a></h2>
+<h2>Implementational Nitty Gritties<a class="headerlink" href="#implementational-nitty-gritties" title="Permalink to this heading">#</a></h2>
 <section id="storage-space-unifyai-mapping">
-<h3>Storage Space (unifyai/Mapping)<a class="headerlink" href="#storage-space-unifyai-mapping" title="Permalink to this heading"></a></h3>
+<h3>Storage Space (unifyai/Mapping)<a class="headerlink" href="#storage-space-unifyai-mapping" title="Permalink to this heading">#</a></h3>
 <p>The GitHub Repository allows only storing 100 MB of files per commit. The current design of the mapping takes a huge space as test names are long strings and are stored repeatedly for each line that is impacted by the tests. In order to reduce the space requirement for storing the Mapping, we restructure the Mapping as follows:</p>
 <img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/Mapping2.png?raw=true" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/Mapping2.png?raw=true" />
 <p>We include the <code class="code docutils literal notranslate"><span class="pre">index_mapping</span></code> and the <code class="code docutils literal notranslate"><span class="pre">test_mapping</span></code> fields, which map indices to tests and tests to indices, respectively. This allows us to just store the test index for each line in the Mapping, reducing the storage requirement significantly.</p>
 </section>
 <section id="determine-test-coverage-workflow">
-<h3>Determine Test Coverage Workflow<a class="headerlink" href="#determine-test-coverage-workflow" title="Permalink to this heading"></a></h3>
+<h3>Determine Test Coverage Workflow<a class="headerlink" href="#determine-test-coverage-workflow" title="Permalink to this heading">#</a></h3>
 <p>Since each of our Update Mapping routine is not precisely correct, the Mapping would keep aggregating incorrections as commits keep coming to the GitHub Repository. In order to prevent this snowball effect from running completely irrelevant tests on each commit, we need to recalibrate the Mapping periodically. This is done by the Determine Test Coverage Workflow (implemented in det-test-coverage.yml).</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">name</span><span class="p">:</span> <span class="n">determine</span><span class="o">-</span><span class="n">test</span><span class="o">-</span><span class="n">coverage</span>
 <span class="n">on</span><span class="p">:</span>
@@ -398,14 +1244,14 @@ git clone --single-branch --depth 1 --branch &quot;$TARGET_BRANCH&quot; git@gith
 <p>The workflow runs all the Ivy tests, determines their coverage, computes the Mapping, and pushes it to the unifyai/Mapping Repository.</p>
 </section>
 <section id="multiple-runners">
-<h3>Multiple Runners<a class="headerlink" href="#multiple-runners" title="Permalink to this heading"></a></h3>
+<h3>Multiple Runners<a class="headerlink" href="#multiple-runners" title="Permalink to this heading">#</a></h3>
 <p>The Determine Test Coverage workflow takes about ~60 hours to complete if run with a single runner. The GitHub Action rules don’t allow running a single Job for more than 6 hours. Further, Determining the Coverage</p>
 <p>Therefore, we need to split the Workflow based on the Tests (into 32 runners). Each runner caters to its own subset of tests, and is responsible for determining the coverage for only those tests, and creates the Mapping based on these tests.</p>
 <p>Therefore, we have 32 branches (master1, master2, …, master32), on the unifyai/Mapping Repository, and also 32 runners on the intelligent-tests and intelligent-tests-pr Workflows.</p>
 <p>Everything sounds good, but Can you think of a potential Race Condition here?</p>
 </section>
 <section id="race-condition">
-<h3>Race Condition<a class="headerlink" href="#race-condition" title="Permalink to this heading"></a></h3>
+<h3>Race Condition<a class="headerlink" href="#race-condition" title="Permalink to this heading">#</a></h3>
 <p>The Synchronized Object here is the unifyai/Mapping Repository, and is accessed
 through push (Write) and pull (Read) to the Repository.
 The Determine Test Coverage Workflow and the Intelligent Tests Workflow can run concurrently, while both of them write to the Mapping Repository.
@@ -426,21 +1272,21 @@ Further, For some other Runner(s), the final push may be done by the Determine T
 </section>
 </section>
 <section id="array-api-tests">
-<h2>Array API Tests<a class="headerlink" href="#array-api-tests" title="Permalink to this heading"></a></h2>
+<h2>Array API Tests<a class="headerlink" href="#array-api-tests" title="Permalink to this heading">#</a></h2>
 <p>The <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/.github/workflows/test-array-api.yml">test-array-api.yml</a> workflow runs the Array API Tests.
 Other than being triggered on push and pull requests with the required labels, It can also be manually dispatched from the <a class="reference external" href="https://github.com/unifyai/ivy/actions">Actions</a> Tab.</p>
 <p>The Workflow runs the Array API Tests for each backend and submodule pair.
 More details about the Array API Tests are available <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/array_api_tests.rst.html">here</a>.</p>
 </section>
 <section id="periodic-testing">
-<h2>Periodic Testing<a class="headerlink" href="#periodic-testing" title="Permalink to this heading"></a></h2>
+<h2>Periodic Testing<a class="headerlink" href="#periodic-testing" title="Permalink to this heading">#</a></h2>
 <p>In order to make sure that none of the Ivy Tests are left ignored for a long time, and to decouple the rate of testing to the rate of committing to the repository, we implement periodic testing on the Ivy Repository.
 The Test Ivy Cron Workflow (Link here) is responsible for implementing this behavior by running Ivy tests every hour. In Each Run, It triggers 150 Ivy Tests, cycling through all of the tests.
 This number of 150 is chosen in order to make sure that the Action completes in 1 hour most of the time.
 The Test Results update the corresponding cell on the Dashboards.</p>
 </section>
 <section id="manually-dispatched-workflows">
-<h2>Manually Dispatched Workflows<a class="headerlink" href="#manually-dispatched-workflows" title="Permalink to this heading"></a></h2>
+<h2>Manually Dispatched Workflows<a class="headerlink" href="#manually-dispatched-workflows" title="Permalink to this heading">#</a></h2>
 <p>In order to trigger any particular test for any reason (maybe Intelligent Testing missed the Test), you can
 follow the following steps:</p>
 <ol class="arabic simple">
@@ -452,16 +1298,16 @@ follow the following steps:</p>
 </ol>
 <p>Manual Tests are also available for PRs.
 You can also run the Manual Tests Workflow on a Fork Repository (while reviewing PRs), as follows:</p>
-<p>1. Visit <a class="reference external" href="https://github.com/RashulChutani/ivy/actions/workflows/manual-tests-pr.yml">https://github.com/RashulChutani/ivy/actions/workflows/manual-tests-pr.yml</a> by going to the
+<p>1. Visit <a class="github reference external" href="https://github.com/RashulChutani/ivy/actions/workflows/manual-tests-pr.yml">RashulChutani/ivy</a> by going to the
 “Actions” Tab on the Fork, and selecting the manual-tests-pr workflow from the left pane.
 2. Trigger the Workflow by following Steps 2-4 described above.</p>
 <p>This might take some time to run as the Fork may have limited runners.</p>
 </section>
 <section id="ci-pipeline">
-<h2>CI Pipeline ➡️<a class="headerlink" href="#ci-pipeline" title="Permalink to this heading"></a></h2>
+<h2>CI Pipeline ➡️<a class="headerlink" href="#ci-pipeline" title="Permalink to this heading">#</a></h2>
 <p>The below subsections provide the roadmap for running workflows and interpreting results in case a push or a pull request is made to the repository.</p>
 <section id="push">
-<h3>Push<a class="headerlink" href="#push" title="Permalink to this heading"></a></h3>
+<h3>Push<a class="headerlink" href="#push" title="Permalink to this heading">#</a></h3>
 <p>Whenever a push is made to the repository, a variety of workflows are triggered automatically (as described above).
 This can be seen on the GitHub Repository Page, with the commit message followed by a yellow dot, indicating that some workflows have been queued to run following this commit, as shown below:</p>
 <img alt="Push" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/push.png?raw=true" />
@@ -479,7 +1325,7 @@ It redirects to the Actions Tab, showing details of the failure, as shown below:
 You can also directly refer to the Dashboard (Updated Every ~20 minutes), to check the result of your test.</p>
 </section>
 <section id="pull-request">
-<h3>Pull Request<a class="headerlink" href="#pull-request" title="Permalink to this heading"></a></h3>
+<h3>Pull Request<a class="headerlink" href="#pull-request" title="Permalink to this heading">#</a></h3>
 <p>In case of a pull request, the test suite is available on the Pull Request Page on Github, as shown below:</p>
 <img alt="PR Test-Suite" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/pull-request1.png?raw=true" />
 <p>Clicking on the “Details” link redirects to the Action Log.
@@ -487,7 +1333,7 @@ The rest of the procedure remains the same as given in the Push section above.</
 </section>
 </section>
 <section id="dashboard">
-<h2>Dashboard<a class="headerlink" href="#dashboard" title="Permalink to this heading"></a></h2>
+<h2>Dashboard<a class="headerlink" href="#dashboard" title="Permalink to this heading">#</a></h2>
 <p>In order to view the status of the tests, at any point in time, we maintain a dashboard containing the results of the latest Workflow that ran each test.
 The Dashboards are available on the <code class="code docutils literal notranslate"><span class="pre">dashboard</span></code> branch of the Ivy Repository.
 The status badges are clickable, and will take you directly to the Action log of the latest workflow that ran the corresponding test.</p>
@@ -499,34 +1345,83 @@ or in the <a class="reference external" href="https://discord.com/channels/79987
 </section>
 
 
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="exception_handling.html" class="btn btn-neutral float-left" title="Exception Handling" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../contributing/open_tasks.html" class="btn btn-neutral float-right" title="Open Tasks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2020-2023, Ivy Team.</p>
-  </div>
-
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
-        </div>
+            </article>
+            
+            
+            
+            <footer class="bd-footer-article">
+                <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+  <a class='left-prev' id="prev-link" href="exception_handling.html" title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+          <p class="prev-next-subtitle">previous</p>
+          <p class="prev-next-title">Exception Handling</p>
       </div>
-    </section>
+  </a>
+  <a class='right-next' id="next-link" href="../contributing/open_tasks.html" title="next page">
+  <div class="prev-next-info">
+      <p class="prev-next-subtitle">next</p>
+      <p class="prev-next-title">Open Tasks</p>
   </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
+  <i class="fa-solid fa-angle-right"></i>
+  </a>
+</div>
+            </footer>
+            
+          </div>
+          
+          
+          
+          
+        </div>
+        <footer class="bd-footer-content">
+          <div class="bd-footer-content__inner">
+            
+          </div>
+        </footer>
+        
+      </main>
+    </div>
+  </div>
 
-</body>
+  
+    
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=796348d33e8b1d947c94"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=796348d33e8b1d947c94"></script>
+
+  <footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    
+<p class="copyright">
+
+    &copy; Copyright 2020-2023, Ivy Team.<br>
+
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    <p class="theme-version">
+    Built with the
+    <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">
+        PyData Sphinx Theme
+    </a>
+    0.12.0.
+</p>
+  </div>
+  
+  <div class="footer-item">
+    
+<p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br>
+</p>
+
+  </div>
+  
+</div>
+  </footer>
+  </body>
 </html>

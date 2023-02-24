@@ -141,3 +141,12 @@ dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.
     width: 60%;
   }
 }
+
+.navbar-brand {
+  font-size: 0.2rem;
+}
+
+.dropdown-menu.show {
+  overflow: auto;
+  max-height: 75vh;
+}
