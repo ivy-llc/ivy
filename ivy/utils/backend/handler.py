@@ -1,4 +1,5 @@
 # global
+import os
 import sys
 import copy
 import types
@@ -264,7 +265,7 @@ def _set_backend_as_ivy(
         if (
             isinstance(v, types.ModuleType)
             and "ivy.functional." in v.__name__
-            and "{}/__init__.py".format(backend_str) not in v.__file__
+            and os.path.join("{}", "__init__.py").format(backend_str) not in v.__file__
         ):
             _set_backend_as_ivy(
                 v.__dict__,

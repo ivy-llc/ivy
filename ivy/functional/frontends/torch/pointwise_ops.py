@@ -450,3 +450,9 @@ def hypot(input, other, *, out=None):
 @to_ivy_arrays_and_back
 def sigmoid(input, *, out=None):
     return ivy.sigmoid(input, out=out)
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@to_ivy_arrays_and_back
+def lerp(input, end, weight, *, out=None):
+    return ivy.add(input, ivy.multiply(weight, ivy.subtract(end, input)), out=out)

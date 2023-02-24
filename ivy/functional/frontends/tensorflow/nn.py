@@ -138,6 +138,7 @@ def conv3d_transpose(
     )
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def depthwise_conv2d(
     input,
@@ -164,9 +165,6 @@ def depthwise_conv2d(
     )
 
 
-depthwise_conv2d.unsupported_dtypes = ("bfloat16",)
-
-
 @to_ivy_arrays_and_back
 def batch_normalization(x, mean, variance, offset, scale, variance_epsilon, name=None):
     inv = 1.0 / ivy.sqrt(variance + variance_epsilon)
@@ -183,22 +181,37 @@ def dropout(x, rate, noise_shape=None, seed=None, name=None):
     return ivy.dropout(x, rate, noise_shape=noise_shape, seed=seed)
 
 
+@with_unsupported_dtypes(
+    {
+        "2.9.1": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "bool",
+            "bfloat16",
+        )
+    },
+    "tensorflow",
+)
 @to_ivy_arrays_and_back
 def silu(features, beta: float = 1.0):
     beta = ivy.astype(ivy.array(beta), ivy.dtype(features))
     return ivy.multiply(features, ivy.sigmoid(ivy.multiply(beta, features)))
 
 
-silu.unsupported_dtypes = (
-    "int8",
-    "int16",
-    "int32",
-    "int64",
-    "bool",
-    "bfloat16",
+@with_unsupported_dtypes(
+    {
+        "2.9.1": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "bool",
+        )
+    },
+    "tensorflow",
 )
-
-
 @to_ivy_arrays_and_back
 def sigmoid_cross_entropy_with_logits(labels=None, logits=None, name=None):
     ivy.utils.assertions.check_shape(labels, logits)
@@ -210,15 +223,18 @@ def sigmoid_cross_entropy_with_logits(labels=None, logits=None, name=None):
     return ivy.add(ret_val, ivy.log1p(ivy.exp(neg_abs_logits)))
 
 
-sigmoid_cross_entropy_with_logits.unsupported_dtypes = (
-    "int8",
-    "int16",
-    "int32",
-    "int64",
-    "bool",
+@with_unsupported_dtypes(
+    {
+        "2.9.1": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "bool",
+        )
+    },
+    "tensorflow",
 )
-
-
 @to_ivy_arrays_and_back
 def weighted_cross_entropy_with_logits(
     labels=None, logits=None, pos_weight=1.0, name=None
@@ -237,15 +253,6 @@ def weighted_cross_entropy_with_logits(
     log_neg_abs_logits = ivy.log1p(ivy.exp(neg_abs_logits))
     second_term = ivy.multiply(log_weight, ivy.add(log_neg_abs_logits, max_neg_logits))
     return ivy.add(first_term, second_term)
-
-
-weighted_cross_entropy_with_logits.unsupported_dtypes = (
-    "int8",
-    "int16",
-    "int32",
-    "int64",
-    "bool",
-)
 
 
 @with_supported_dtypes(

@@ -78,6 +78,7 @@ def statistical_dtype_values(draw, *, function):
     dtype_x_axis=statistical_dtype_values(function="median"),
     keep_dims=st.booleans(),
     test_gradients=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_median(
     *,

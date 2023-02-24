@@ -412,10 +412,7 @@ def test_jax_numpy_vander(
     dtype_and_x,
     N,
     increasing,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
+    test_flags,
     on_device,
     fn_tree,
     frontend,
@@ -423,10 +420,7 @@ def test_jax_numpy_vander(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
