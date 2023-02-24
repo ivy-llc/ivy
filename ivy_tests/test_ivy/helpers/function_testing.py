@@ -303,8 +303,15 @@ def test_function(
             instance = ivy.index_nest(kwargs, instance_idx)
             kwargs = ivy.copy_nest(kwargs, to_mutable=False)
             ivy.prune_nest_at_index(kwargs, instance_idx)
+        if test_flags.test_compile:
+            instance_func = lambda instance, *args, **kwargs: instance.__getattribute__(
+                fn_name
+            )(*args, **kwargs)
+            args = [instance, *args]
+        else:
+            instance_func = instance.__getattribute__(fn_name)
         ret, ret_np_flat = get_ret_and_flattened_np_array(
-            instance.__getattribute__(fn_name),
+            instance_func,
             *args,
             test_compile=test_flags.test_compile,
             **kwargs,
