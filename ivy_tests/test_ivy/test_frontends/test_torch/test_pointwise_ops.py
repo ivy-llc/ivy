@@ -2141,4 +2141,3 @@ def test_torch_angle(
         on_device=on_device,
         input=x[0],
     )
-    

@@ -460,5 +460,4 @@ def lerp(input, end, weight, *, out=None):
 
 @to_ivy_arrays_and_back
 def angle(input, *, out=None):
-    return ivy.angle(input, out=out)
-    
+    return ivy.angle(input, out=out)  
