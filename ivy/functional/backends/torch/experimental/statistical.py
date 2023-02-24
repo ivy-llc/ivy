@@ -118,3 +118,34 @@ def corrcoef(
         xarr = xarr.T if not rowvar else xarr
 
     return torch.corrcoef(xarr)
+
+
+
+#torch
+@staticmethod
+def histtorch(self: ivy.Array, 
+    /, 
+    *,
+    name: Optional[ivy.Array, ivy.NativeArray],
+    data:Optional[Union[Tensorfloat64]],
+    step:Optional[Union[ivyArray,ivy.NativeArray]] = None, 
+    buckets:Optional[ivy.Array[int]], 
+    description:Optional[ivy.Array[str]]
+    ) -> ivy.Array:
+
+
+    torch.histogram(input, bins=100, range=None, weights=None, density=False)
+
+    # Generate some random data
+    data = torch.randn(1000)
+
+    # Compute the histogram with 10 bins
+    hist, bin_edges = torch.histogram(data, bins=10)
+
+    # Print the bin counts and bin edges
+    print(hist)
+    print(bin_edges)
+
+    return hist
+
+    hist = histtorch()

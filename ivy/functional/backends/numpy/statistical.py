@@ -251,3 +251,29 @@ def einsum(
 
 
 einsum.support_native_out = True
+
+#numpy
+@staticmethod
+def histnp(self: ivy.Array, 
+    /, 
+    *,
+    name: Optional[ivy.Array, ivy.NativeArray],
+    data:Optional[Union[Tensorfloat64]],
+    step:Optional[Union[ivyArray,ivy.NativeArray]] = None, 
+    buckets:Optional[ivy.Array[int]], 
+    description:Optional[ivy.Array[str]]
+    ) -> ivy.Array:
+
+        # Generate some random data
+    data = np.random.normal(size=1000)
+    
+    # Compute the histogram with 10 bins
+    hist, bin_edges = np.histogram(data, bins=10)
+    
+    # Plot the histogram
+    plt.bar(bin_edges[:-1], hist, width=0.5)
+    plt.show()
+
+    hist = histnp()
+
+    return hist

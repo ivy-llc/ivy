@@ -101,8 +101,10 @@ def corrcoef(
 
 
 
+
+# tensor flow
 @staticmethod
-def using_file_hystogram(self: ivy.Array, 
+def histtensor(self: ivy.Array, 
     /, 
     *,
     name: Optional[ivy.Array, ivy.NativeArray],
@@ -116,7 +118,7 @@ def using_file_hystogram(self: ivy.Array,
     a = tf.summary.create_file_writer('test/logs')
     with a.as_default():
         for step in range(100):
-        
+
         # Generate fake "activations".
 
             activations = [
@@ -128,5 +130,6 @@ def using_file_hystogram(self: ivy.Array,
             tf.summary.histogram("layer1/activate", activations[0], step=step)
             tf.summary.histogram("layer2/activate", activations[1], step=step)
             tf.summary.histogram("layer3/activate", activations[2], step=step)
-
-    return using_file_hystogram
+    
+    histo = histtensor()
+    return histo
