@@ -85,6 +85,8 @@ from . import ragged
 from .ragged import *
 from . import tensor
 from .tensor import EagerTensor, Tensor
+from . import variable
+from .variable import Variable, IndexedSlices
 from . import keras
 from . import compat
 from . import image

@@ -41,6 +41,7 @@ trace_mode_dict = dict()
 trace_mode_dict["frontend"] = "ivy/functional/frontends"
 trace_mode_dict["ivy"] = "ivy/"
 trace_mode_dict["full"] = ""
+trace_mode_dict["none"] = ""
 show_func_wrapper_trace_mode_stack = list()
 
 
@@ -406,7 +407,7 @@ def set_exception_trace_mode(mode: str) -> None:
     global exception_trace_mode_stack
     trace_modes = list(trace_mode_dict.keys())
     ivy.utils.assertions.check_elem_in_list(
-        mode, trace_modes, "trace mode must be one of {}".format(trace_modes)
+        mode, trace_modes, False, "trace mode must be one of {}".format(trace_modes)
     )
     exception_trace_mode_stack.append(mode)
 
