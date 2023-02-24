@@ -214,32 +214,29 @@ def test_function(
     arg_np_vals, args_idxs, c_arg_vals = _get_nested_np_arrays(args_np)
     kwarg_np_vals, kwargs_idxs, c_kwarg_vals = _get_nested_np_arrays(kwargs_np)
 
-    # TODO temporary, access them directly
-    native_array_flags = test_flags.native_arrays
-    as_variable_flags = test_flags.as_variable
-    container_flags = test_flags.container
-
     # make all lists equal in length
     num_arrays = c_arg_vals + c_kwarg_vals
     if len(input_dtypes) < num_arrays:
         input_dtypes = [input_dtypes[0] for _ in range(num_arrays)]
-    if len(as_variable_flags) < num_arrays:
-        as_variable_flags = [as_variable_flags[0] for _ in range(num_arrays)]
-    if len(native_array_flags) < num_arrays:
-        native_array_flags = [native_array_flags[0] for _ in range(num_arrays)]
-    if len(container_flags) < num_arrays:
-        container_flags = [container_flags[0] for _ in range(num_arrays)]
+    if len(test_flags.as_variable) < num_arrays:
+        test_flags.as_variable = [test_flags.as_variable[0] for _ in range(num_arrays)]
+    if len(test_flags.native_arrays) < num_arrays:
+        test_flags.native_arrays = [
+            test_flags.native_arrays[0] for _ in range(num_arrays)
+        ]
+    if len(test_flags.container) < num_arrays:
+        test_flags.container = [test_flags.container[0] for _ in range(num_arrays)]
 
     # update variable flags to be compatible with float dtype and with_out args
     as_variable_flags = [
         v if ivy.is_float_dtype(d) and not test_flags.with_out else False
-        for v, d in zip(as_variable_flags, input_dtypes)
+        for v, d in zip(test_flags.as_variable, input_dtypes)
     ]
 
     # update instance_method flag to only be considered if the
     # first term is either an ivy.Array or ivy.Container
     instance_method = test_flags.instance_method and (
-        not native_array_flags[0] or container_flags[0]
+        not test_flags.native_arrays[0] or test_flags.container[0]
     )
 
     fn = getattr(ivy, fn_name)
@@ -257,14 +254,18 @@ def test_function(
         test_flags=test_flags,
     )
 
-    if ('out' in kwargs or test_flags.with_out) and 'out' not in inspect.signature(fn).parameters:
+    if ("out" in kwargs or test_flags.with_out) and "out" not in inspect.signature(
+        fn
+    ).parameters:
         raise Exception(f"Function {fn_name} does not have an out parameter")
     # run either as an instance method or from the API directly
     instance = None
     if instance_method:
         is_instance = [
             (not native_flag) or container_flag
-            for native_flag, container_flag in zip(native_array_flags, container_flags)
+            for native_flag, container_flag in zip(
+                test_flags.native_arrays, test_flags.container
+            )
         ]
         arg_is_instance = is_instance[:num_arg_vals]
         kwarg_is_instance = is_instance[num_arg_vals:]
@@ -320,7 +321,7 @@ def test_function(
             ivy.nested_multi_map(lambda x, _: x[0] is x[1], [test_ret, out]),
             lambda x: not x,
         )
-        if not max(container_flags) and ivy.native_inplace_support:
+        if not max(test_flags.container) and ivy.native_inplace_support:
             # these backends do not always support native inplace updates
             assert not ivy.nested_any(
                 ivy.nested_multi_map(
