@@ -855,5 +855,4 @@ def test_jax_numpy_tril(
         m=value[0],
         k=k,
     )
-    
-    
+
