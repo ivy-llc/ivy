@@ -436,3 +436,13 @@ def xlogy(
 
 def real(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.real(x)
+
+
+def conj(
+    x: Union[torch.Tensor],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    conj_x = torch.conj(x)
+    return torch.resolve_conj(input=conj_x)
