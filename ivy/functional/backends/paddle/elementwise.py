@@ -352,7 +352,7 @@ def remainder(
 
 
 def atanh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.atanh(x)
 
 
 def bitwise_right_shift(
