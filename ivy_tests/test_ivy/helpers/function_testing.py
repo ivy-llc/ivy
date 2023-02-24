@@ -228,7 +228,7 @@ def test_function(
         test_flags.container = [test_flags.container[0] for _ in range(num_arrays)]
 
     # update variable flags to be compatible with float dtype and with_out args
-    as_variable_flags = [
+    test_flags.as_variable = [
         v if ivy.is_float_dtype(d) and not test_flags.with_out else False
         for v, d in zip(test_flags.as_variable, input_dtypes)
     ]
@@ -992,6 +992,7 @@ def test_method(
         kwargs_np=kwargs_np_constructor,
         kwarg_np_vals=con_kwarg_np_vals,
         kwargs_idxs=con_kwargs_idxs,
+        input_dtypes=init_input_dtypes,
         test_flags=init_flags,
     )
     # end constructor #
