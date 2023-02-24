@@ -96,7 +96,7 @@ def test_tensorflow_tan(
     
     
 # exp
- @handle_frontend_test(
+@handle_frontend_test(
     fn_tree="tensorflow.math.exp",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
