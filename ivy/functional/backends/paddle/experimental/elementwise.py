@@ -19,7 +19,7 @@ def lcm(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.lcm(x1, x2)
 
 
 def fmod(
@@ -39,7 +39,7 @@ def fmax(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.fmax(x1, x2)
 
 
 def fmin(
@@ -49,11 +49,15 @@ def fmin(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.fmin(x1, x2)
 
 
 def sinc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.where(
+        x == 0,
+        1,
+        paddle.divide(paddle.sin(x), x)
+    )
 
 
 def trapz(
