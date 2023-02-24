@@ -5,7 +5,7 @@ import paddle
 
 # local
 import ivy
-from . import backend_version
+from . import backend_version  # noqa
 from ivy.utils.exceptions import IvyNotImplementedException
 
 
@@ -21,6 +21,7 @@ def add(
     if alpha not in (1, None):
         x2 = multiply(x2, alpha)
     return paddle.add(x1, x2)
+
 
 def bitwise_xor(
     x1: Union[int, bool, paddle.Tensor],
@@ -42,7 +43,9 @@ def bitwise_invert(
     return paddle.bitwise_not(x)
 
 
-def isfinite(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+def isfinite(
+        x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
     return paddle.isfinite(x)
 
 
@@ -65,6 +68,7 @@ def isinf(
 
     # TODO: What should happen if both detect positive and detect negative are False?
     raise IvyNotImplementedException()
+
 
 def equal(
     x1: Union[float, paddle.Tensor],
@@ -135,8 +139,10 @@ def log2(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
 def log1p(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     return paddle.log1p(x)
 
+
 def isnan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     return paddle.isnan(x)
+
 
 def less(
     x1: Union[float, paddle.Tensor],
@@ -146,6 +152,7 @@ def less(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.less_than(x1, x2)
+
 
 def multiply(
     x1: Union[float, paddle.Tensor],
@@ -176,6 +183,7 @@ def divide(
 ) -> paddle.Tensor:
     return paddle.divide(x1, x2)
 
+
 def greater(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],
@@ -184,6 +192,7 @@ def greater(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.greater_than(x1, x2)
+
 
 def greater_equal(
     x1: Union[float, paddle.Tensor],
@@ -275,7 +284,9 @@ def positive(
     return logical_not(negative(x))
 
 
-def square(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+def square(
+        x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
     return paddle.square(x)
 
 
@@ -317,7 +328,8 @@ def tan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
 def atan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     return paddle.atan(x)
 
-  # TODO Fixed in PyTorch 1.12.1 (this note excludes complex)
+
+# TODO Fixed in PyTorch 1.12.1 (this note excludes complex)
 
 
 def atan2(
@@ -362,6 +374,7 @@ def remainder(
 
 def atanh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     return paddle.atanh(x)
+
 
 def bitwise_right_shift(
     x1: Union[int, bool, paddle.Tensor],
@@ -421,11 +434,15 @@ def reciprocal(
     raise IvyNotImplementedException()
 
 
-def deg2rad(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+def deg2rad(
+        x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
     return paddle.reciprocal(x)
 
 
-def rad2deg(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+def rad2deg(
+        x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
     return paddle.rad2deg(x)
 
 
@@ -439,5 +456,7 @@ def trunc_divide(
     return paddle.trunc(paddle.divide(x1, x2))
 
 
-def isreal(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+def isreal(
+        x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
     return paddle.equal(x, paddle.real(x))
