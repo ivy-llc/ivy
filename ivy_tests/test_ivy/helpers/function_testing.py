@@ -1552,8 +1552,7 @@ def create_frontend_args_kwargs(
 
     Returns
     -------
-    Arguments, Keyword-arguments, number of arguments, and indexes on arguments and
-    keyword-arguments.
+    Arguments, Keyword-arguments
     """
     # create args
     def _apply_flags(args_to_iterate):
