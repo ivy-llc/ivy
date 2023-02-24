@@ -968,9 +968,11 @@
             <span class="n">ret_from_gt_np</span> <span class="o">=</span> <span class="n">ret_from_gt_np</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span>
         <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span>
             <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">ret_np</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">ret_from_gt_np</span><span class="p">),</span> <span class="n">rtol</span><span class="o">=</span><span class="n">rtol</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">atol</span>
-        <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot; the results from backend </span><span class="si">{</span><span class="n">ivy</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span><span class="si">}</span><span class="s2"> &quot;</span> \
-           <span class="sa">f</span><span class="s2">&quot;and ground truth framework </span><span class="si">{</span><span class="n">ground_truth_backend</span><span class="si">}</span><span class="s2"> &quot;</span> \
-           <span class="sa">f</span><span class="s2">&quot;do not match</span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">ret_np</span><span class="si">}</span><span class="s2">!=</span><span class="si">{</span><span class="n">ret_from_gt_np</span><span class="si">}</span><span class="s2"> </span><span class="se">\n\n</span><span class="s2">&quot;</span></div>
+        <span class="p">),</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot; the results from backend </span><span class="si">{</span><span class="n">ivy</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span><span class="si">}</span><span class="s2"> &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;and ground truth framework </span><span class="si">{</span><span class="n">ground_truth_backend</span><span class="si">}</span><span class="s2"> &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;do not match</span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">ret_np</span><span class="si">}</span><span class="s2">!=</span><span class="si">{</span><span class="n">ret_from_gt_np</span><span class="si">}</span><span class="s2"> </span><span class="se">\n\n</span><span class="s2">&quot;</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="assert_same_type_and_shape"><a class="viewcode-back" href="../../../../testing/assertions/assert_same_type_and_shape.html#ivy_tests.test_ivy.helpers.assertions.assert_same_type_and_shape">[docs]</a><span class="k">def</span> <span class="nf">assert_same_type_and_shape</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">this_key_chain</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -1022,7 +1024,10 @@
         <span class="s2">&quot;The length of results from backend </span><span class="si">{}</span><span class="s2"> and ground truth framework </span><span class="si">{}</span><span class="s2"> does not match</span><span class="se">\n\n</span><span class="s2">&quot;</span>
         <span class="s2">&quot;len(ret_np_flat) != len(ret_np_from_gt_flat):</span><span class="se">\n\n</span><span class="s2">&quot;</span>
         <span class="s2">&quot;ret_np_flat:</span><span class="se">\n\n</span><span class="si">{}</span><span class="se">\n\n</span><span class="s2">ret_np_from_gt_flat:</span><span class="se">\n\n</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">(),</span> <span class="n">ground_truth_backend</span><span class="p">,</span> <span class="n">ret_np_flat</span><span class="p">,</span> <span class="n">ret_np_from_gt_flat</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">(),</span>
+            <span class="n">ground_truth_backend</span><span class="p">,</span>
+            <span class="n">ret_np_flat</span><span class="p">,</span>
+            <span class="n">ret_np_from_gt_flat</span><span class="p">,</span>
         <span class="p">)</span>
     <span class="p">)</span>
     <span class="c1"># value tests, iterating through each array in the flattened returns</span>
