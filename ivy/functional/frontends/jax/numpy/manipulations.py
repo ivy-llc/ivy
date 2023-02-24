@@ -143,7 +143,6 @@ def vsplit(ary, indices_or_section):
     return ivy.vsplit(ary, indices_or_section)
 
 
-
 @to_ivy_arrays_and_back
 def atleast_2d(*arys):
     return ivy.atleast_2d(*arys)
