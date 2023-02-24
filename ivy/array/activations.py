@@ -123,7 +123,6 @@ class ArrayWithActivations(abc.ABC):
         self
             Input array
         out
-
             optional output array for writing the result to. It must have the same shape
             the input broadcast to default: None
 
