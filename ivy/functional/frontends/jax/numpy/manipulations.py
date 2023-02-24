@@ -88,14 +88,14 @@ def stack(arrays, axis=0, out=None, dtype=None):
 
 @to_ivy_arrays_and_back
 def take(
-        a,
-        indices,
-        axis=None,
-        out=None,
-        mode=None,
-        unique_indices=False,
-        indices_are_sorted=False,
-        fill_value=None,
+    a,
+    indices,
+    axis=None,
+    out=None,
+    mode=None,
+    unique_indices=False,
+    indices_are_sorted=False,
+    fill_value=None,
 ):
     return ivy.take_along_axis(a, indices, axis, out=out)
 
@@ -141,8 +141,3 @@ def dsplit(ary, indices_or_section):
 @to_ivy_arrays_and_back
 def vsplit(ary, indices_or_section):
     return ivy.vsplit(ary, indices_or_section)
-
-
-@to_ivy_arrays_and_back
-def atleast_2d(*arys):
-    return ivy.atleast_2d(*arys)
