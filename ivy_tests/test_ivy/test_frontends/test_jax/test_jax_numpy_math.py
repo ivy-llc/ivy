@@ -2258,9 +2258,10 @@ def test_jax_numpy_inner(
 
 @handle_frontend_test(
     fn_tree="jax.numpy.gradient",
-    dtype_and_x = helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-    ),
+    dtype_and_x = helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=1,
+    )
 )
 def test_jax_numpy_gradient(
     *,
