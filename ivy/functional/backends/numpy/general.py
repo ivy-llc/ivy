@@ -341,7 +341,12 @@ def scatter_nd(
 scatter_nd.support_native_out = True
 
 
-def shape(x: np.ndarray, /, *, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
+def shape(
+    x: np.ndarray,
+    /,
+    *,
+    as_array: bool = False,
+) -> Union[ivy.Shape, ivy.Array]:
     if as_array:
         return ivy.array(np.shape(x), dtype=ivy.default_int_dtype())
     else:
