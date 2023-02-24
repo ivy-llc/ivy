@@ -1,12 +1,8 @@
-import numpy as np
-
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     outputs_to_numpy_arrays,
 )
-
-
 @to_ivy_arrays_and_back
 def diagonal(a, offset, axis1, axis2):
     return ivy.diagonal(a, offset=offset, axis1=axis1, axis2=axis2)

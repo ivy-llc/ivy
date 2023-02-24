@@ -143,8 +143,8 @@ def unravel_index(
     /,
     *,
     out: Optional[torch.Tensor] = None,
-) -> Tuple:
-    temp = indices.to(torch.int32)
+) -> torch.Tensor:
+    temp = indices.to(torch.int64)
     output = []
     for dim in reversed(shape):
         output.append(temp % dim)
