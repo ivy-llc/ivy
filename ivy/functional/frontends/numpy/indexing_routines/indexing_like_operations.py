@@ -1,8 +1,12 @@
+import numpy as np
+
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     outputs_to_numpy_arrays,
 )
+
+
 @to_ivy_arrays_and_back
 def diagonal(a, offset, axis1, axis2):
     return ivy.diagonal(a, offset=offset, axis1=axis1, axis2=axis2)
@@ -19,6 +23,7 @@ def diag(v, k=0):
     return ivy.diag(v, k=k)
 
 
-@outputs_to_numpy_arrays
+@to_ivy_arrays_and_back
 def unravel_index(indices, shape):
-    return ivy.unravel_index(indices, shape)
+    ret = ivy.unravel_index(indices, shape)
+    return tuple(np.asarray(x, dtype=np.int64) for x in ret)
