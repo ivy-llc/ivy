@@ -93,6 +93,31 @@ def test_tensorflow_tan(
         on_device=on_device,
         x=x[0],
     )
+    
+    
+# exp
+@handle_frontend_test(
+    fn_tree="tensorflow.math.exp",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_exp(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
 
 
 # multiply
@@ -166,6 +191,36 @@ def test_tensorflow_maximum(
     test_with_out=st.just(False),
 )
 def test_tensorflow_subtract(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
+
+
+# squared_difference
+@handle_frontend_test(
+    fn_tree="tensorflow.math.squared_difference",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_squared_difference(
     *,
     dtype_and_x,
     frontend,

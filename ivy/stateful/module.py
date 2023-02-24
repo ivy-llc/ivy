@@ -148,7 +148,7 @@ class Module(ModuleConverters, ModuleHelpers):
         new_fn.wrapped = True
         return new_fn
 
-    def _find_variables(self, /, *, obj=None):
+    def _find_variables(self, /, *, obj=None, _visited=None):
         """
         Find all interval variables in obj. Return empty Container if obj is None.
 
@@ -157,13 +157,19 @@ class Module(ModuleConverters, ModuleHelpers):
         obj
             The submodule whose internal variables are to be returned. Default
             is None.
+        _visited
+            Placeholder for tracking the visited nodes, do not set this parameter.
 
         Returns
         -------
         ret
             The internal variables of the submodule passed in the argument.
         """
+        _visited = ivy.default(_visited, {})
         vs = Container()
+        if id(obj) in _visited:
+            return vs
+        _visited[id(obj)] = True
         # ToDo: add support for finding local variables, if/when JAX supports
         #  uniquely flagging variables
         if isinstance(obj, Module) and obj is not self:
@@ -175,13 +181,13 @@ class Module(ModuleConverters, ModuleHelpers):
             return obj.v
         elif isinstance(obj, (list, tuple)):
             for i, v in enumerate(obj):
-                ret = self._find_variables(obj=v)
+                ret = self._find_variables(obj=v, _visited=_visited)
                 if ret:
                     vs["v" + str(i)] = ret
             return vs
         elif isinstance(obj, dict):
             for k, v in obj.items():
-                ret = self._find_variables(obj=v)
+                ret = self._find_variables(obj=v, _visited=_visited)
                 if ret:
                     vs[k[1:] if k[0] == "_" else k] = ret
             return vs
@@ -189,7 +195,7 @@ class Module(ModuleConverters, ModuleHelpers):
             return vs
         for k, v in obj.__dict__.items():
             if v is not None and k[0:2] != "__":
-                ret = self._find_variables(obj=v)
+                ret = self._find_variables(obj=v, _visited=_visited)
                 if ret:
                     vs[k[1:] if k[0] == "_" else k] = ret
         return vs
@@ -228,7 +234,9 @@ class Module(ModuleConverters, ModuleHelpers):
                 )
         return ret_cont
 
-    def _wrap_call_methods(self, keychain_mappings, /, *, key="", obj=None):
+    def _wrap_call_methods(
+        self, keychain_mappings, /, *, key="", obj=None, _visited=None
+    ):
         """
         Wraps the call methods of the Module object by looping over all the items
         within the module, wrapping the __call__ methods of all submodules using
@@ -242,12 +250,17 @@ class Module(ModuleConverters, ModuleHelpers):
             The keychain of the object obj, used for recursion.
         obj
             the object whose __call__ method is to be wrapped
-
+        _visited
+            Placeholder for tracking the visited nodes, do not set this parameter.
 
         Returns
         -------
         None
         """
+        _visited = ivy.default(_visited, {})
+        if id(obj) in _visited or not isinstance(key, str):
+            return
+        _visited[id(obj)] = True
         if isinstance(obj, Module) and obj is not self:
             orig_key_chain = key[1:] if key[0] == "_" else key
 
@@ -259,13 +272,18 @@ class Module(ModuleConverters, ModuleHelpers):
         elif isinstance(obj, (list, tuple)):
             for i, val in enumerate(obj):
                 self._wrap_call_methods(
-                    keychain_mappings, key=key + "/v" + str(i), obj=val
+                    keychain_mappings,
+                    key=key + "/v" + str(i),
+                    obj=val,
+                    _visited=_visited,
                 )
             return
         elif isinstance(obj, dict):
             for k, val in obj.items():
                 k = (key + "/" + k) if key != "" and isinstance(k, str) else k
-                self._wrap_call_methods(keychain_mappings, key=k, obj=val)
+                self._wrap_call_methods(
+                    keychain_mappings, key=k, obj=val, _visited=_visited
+                )
             return
         if not hasattr(obj, "__dict__"):
             return
@@ -274,7 +292,9 @@ class Module(ModuleConverters, ModuleHelpers):
                 continue
             k = (key + "/" + k) if key != "" else k
             if val is not None:
-                self._wrap_call_methods(keychain_mappings, key=k, obj=val)
+                self._wrap_call_methods(
+                    keychain_mappings, key=k, obj=val, _visited=_visited
+                )
         return
 
     @staticmethod

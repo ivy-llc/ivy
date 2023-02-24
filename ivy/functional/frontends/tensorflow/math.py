@@ -21,6 +21,11 @@ def add(x, y, name=None):
 
 
 @to_ivy_arrays_and_back
+def exp(x, name=None):
+    return ivy.exp(x)
+
+    
+@to_ivy_arrays_and_back
 def argmax(input, axis, output_type=None, name=None):
     output_type = to_ivy_dtype(output_type)
     if output_type in ["uint16", "int16", "int32", "int64"]:
@@ -307,6 +312,12 @@ def scalar_mul(scalar, x, name="scalar_mul"):
 def subtract(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return ivy.subtract(x, y)
+
+
+@to_ivy_arrays_and_back
+def squared_difference(x, y, name=None):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.square(ivy.subtract(x, y))
 
 
 @to_ivy_arrays_and_back

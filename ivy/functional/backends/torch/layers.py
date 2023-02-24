@@ -116,7 +116,7 @@ def conv1d_transpose(
     x: torch.Tensor,
     filters: torch.Tensor,
     strides: Union[int, Tuple[int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: str,
     /,
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
@@ -128,10 +128,9 @@ def conv1d_transpose(
         x = x.permute(0, 2, 1)
     strides = [strides] if isinstance(strides, int) else strides
     dilations = [dilations] if isinstance(dilations, int) else dilations
-    filter_shape = list(filters.shape[0:1])
     filters = filters.permute(1, 2, 0)
     not_valid_pad, padding_list, output_padding = _pad_before_conv_tranpose(
-        x, filters, strides, padding, 1, dilations, output_shape, filter_shape
+        x, filters, strides, padding, 1, dilations, output_shape, filters.shape[2:]
     )
     res = torch.nn.functional.conv_transpose1d(
         x,
@@ -190,7 +189,7 @@ def conv2d_transpose(
     x: torch.Tensor,
     filters: torch.Tensor,
     strides: Union[int, Tuple[int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: str,
     /,
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
@@ -202,10 +201,9 @@ def conv2d_transpose(
         x = x.permute(0, 3, 1, 2)
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
-    filter_shape = list(filters.shape[0:2])
     filters = filters.permute(2, 3, 0, 1)
     not_valid_pad, padding_list, output_padding = _pad_before_conv_tranpose(
-        x, filters, strides, padding, 2, dilations, output_shape, filter_shape
+        x, filters, strides, padding, 2, dilations, output_shape, filters.shape[2:]
     )
     res = torch.nn.functional.conv_transpose2d(
         x,
@@ -299,7 +297,7 @@ def conv3d_transpose(
     x: torch.Tensor,
     filters: torch.Tensor,
     strides: Union[int, Tuple[int, int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: str,
     /,
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
@@ -311,10 +309,9 @@ def conv3d_transpose(
         x = x.permute(0, 4, 1, 2, 3)
     strides = [strides] * 3 if isinstance(strides, int) else strides
     dilations = [dilations] * 3 if isinstance(dilations, int) else dilations
-    filter_shape = list(filters.shape[0:3])
     filters = filters.permute(3, 4, 0, 1, 2)
     not_valid_pad, padding_list, output_padding = _pad_before_conv_tranpose(
-        x, filters, strides, padding, 3, dilations, output_shape, filter_shape
+        x, filters, strides, padding, 3, dilations, output_shape, filters.shape[2:]
     )
     res = torch.nn.functional.conv_transpose3d(
         x,
@@ -401,7 +398,7 @@ def conv_general_transpose(
     x: torch.Tensor,
     filters: torch.Tensor,
     strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: str,
     /,
     *,
     dims: Optional[int] = 2,
@@ -418,10 +415,9 @@ def conv_general_transpose(
         x = x.permute(0, dims + 1, *range(1, dims + 1))
     strides = [strides] * dims if isinstance(strides, int) else strides
     dilations = [dilations] * dims if isinstance(dilations, int) else dilations
-    filter_shape = list(filters.shape[0:dims])
     filters = filters.permute(dims, dims + 1, *range(dims))
     not_valid_pad, padding_list, output_padding = _pad_before_conv_tranpose(
-        x, filters, strides, padding, dims, dilations, output_shape, filter_shape
+        x, filters, strides, padding, dims, dilations, output_shape, filters.shape[2:]
     )
     if dims == 1:
         res = torch.nn.functional.conv_transpose1d(
