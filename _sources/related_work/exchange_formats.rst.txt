@@ -15,13 +15,10 @@ Exchange Formats
 
 .. |onnx| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/exchange_formats/onnx.png
     :height: 20pt
-    :class: dark-light
 .. |nnef| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/exchange_formats/nnef.png
     :height: 15pt
-    :class: dark-light
 .. |coreml| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/exchange_formats/coreml.png
     :height: 20pt
-    :class: dark-light
 
 Neural network exchange formats define a standardized file representation specifically for neural networks.
 The idea is that these can be used as an intermediate representation for communicating or “exchanging” neural network architectures between different ML frameworks or between ML frameworks and the target hardware.
