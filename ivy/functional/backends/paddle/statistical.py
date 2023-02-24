@@ -44,7 +44,7 @@ def mean(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.mean(x, axis=axis, keepdim=keepdims, out=out)
 
 
 def _infer_dtype(dtype: paddle.dtype) -> paddle.dtype:
