@@ -39,12 +39,10 @@ def arctan2(x1, x2):
 
 
 @to_ivy_arrays_and_back
-def convolve(a, v, mode='full', *, precision=None):
+def convolve(a, v, mode="full", *, precision=None):
     a, v = promote_types_of_jax_inputs(a, v)
     if ivy.get_num_dims(a) != 1:
-        raise ValueError(
-            "convolve() only support 1-dimensional inputs."
-        )
+        raise ValueError("convolve() only support 1-dimensional inputs.")
     if len(a) == 0 or len(v) == 0:
         raise ValueError(
             f"convolve: inputs cannot be empty, got shapes {a.shape} and {v.shape}."
@@ -55,16 +53,20 @@ def convolve(a, v, mode='full', *, precision=None):
 
     out_order = slice(None)
 
-    if mode == 'valid':
+    if mode == "valid":
         padding = [(0, 0)]
-    elif mode == 'same':
+    elif mode == "same":
         padding = [(v.shape[0] // 2, v.shape[0] - v.shape[0] // 2 - 1)]
-    elif mode == 'full':
+    elif mode == "full":
         padding = [(v.shape[0] - 1, v.shape[0] - 1)]
 
     result = ivy.conv_general_dilated(
-        a[None, None, :], v[:, None, None], (1,),
-        padding, dims=1, data_format='channel_first',
+        a[None, None, :],
+        v[:, None, None],
+        (1,),
+        padding,
+        dims=1,
+        data_format="channel_first",
     )
     return result[0, 0, out_order]
 

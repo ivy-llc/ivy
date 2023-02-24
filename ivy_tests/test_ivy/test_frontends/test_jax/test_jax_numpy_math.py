@@ -173,7 +173,7 @@ def test_jax_numpy_arctan2(
 
 @st.composite
 def _get_pooling_mode(draw):
-    mode = draw(st.sampled_from(['full', 'valid', 'same']))
+    mode = draw(st.sampled_from(["full", "valid", "same"]))
     return mode
 
 
@@ -191,13 +191,13 @@ def _get_pooling_mode(draw):
     mode=_get_pooling_mode(),
 )
 def test_jax_numpy_convolve(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
-        mode,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    mode,
 ):
     input_dtype, x = dtype_and_x
     assume("float16" not in input_dtype)
