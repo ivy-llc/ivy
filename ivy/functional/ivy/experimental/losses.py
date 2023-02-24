@@ -2,7 +2,7 @@
 import ivy
 from typing import Optional, Union
 from ivy.func_wrapper import handle_nestable, handle_array_like_without_promotion
-from ivy.exceptions import handle_exceptions
+from ivy.utils.exceptions import handle_exceptions
 from ivy.functional.ivy.losses import _reduce_loss
 
 
@@ -96,7 +96,7 @@ def binary_cross_entropy_with_logits(
     }
 
     """
-    ivy.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
+    ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
     pred = ivy.sigmoid(pred)
     if pos_weight is not None:
         pred = ivy.clip(pred, epsilon, 1 - epsilon)

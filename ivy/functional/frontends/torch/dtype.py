@@ -28,7 +28,7 @@ _default_dtype = torch_frontend.float32
 
 
 def set_default_dtype(d):
-    ivy.assertions.check_elem_in_list(
+    ivy.utils.assertions.check_elem_in_list(
         d,
         [
             torch_frontend.float64,

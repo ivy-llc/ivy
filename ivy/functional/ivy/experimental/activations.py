@@ -4,7 +4,7 @@ from typing import Union, Optional
 # local
 import ivy
 from ivy.utils.backend import current_backend
-from ivy.exceptions import handle_exceptions
+from ivy.utils.exceptions import handle_exceptions
 from ivy.func_wrapper import (
     handle_nestable,
     to_native_arrays_and_back,
@@ -97,7 +97,7 @@ def prelu(
     """
     try:
         return ivy.where(x > 0, x, x * slope, out=out)
-    except ivy.exceptions.IvyError(
+    except ivy.utils.exceptions.IvyError(
         f"The shape {slope.shape} is not Unidirectional Broadcastable\n"
         f"as per ONNX standards"
     ) as IvyException:
