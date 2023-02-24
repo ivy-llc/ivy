@@ -2280,7 +2280,7 @@ def test_jax_numpy_gradient(
         fn_tree=fn_tree,
         on_device=on_device,
         f=inputs[0],
-        varargs=inputs[1],
-        axis=inputs[2],
-        edge_order=inputs[3],
+        args=inputs[1],
+        ax=inputs[2],
+        edge_ord=inputs[3],
     )
