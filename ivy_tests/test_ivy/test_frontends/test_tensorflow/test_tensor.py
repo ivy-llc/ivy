@@ -5,6 +5,7 @@ from hypothesis import strategies as st, given
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
+
 import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.tensorflow as ivy_tf
 from ivy_tests.test_ivy.helpers import handle_frontend_method
@@ -18,7 +19,9 @@ CLASS_TREE = "ivy.functional.frontends.tensorflow.EagerTensor"
 
 
 @given(
-    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False)
+    ),
 )
 def test_tensorflow_tensor_property_ivy_array(
     dtype_x,
@@ -35,7 +38,9 @@ def test_tensorflow_tensor_property_ivy_array(
 
 
 @given(
-    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False)
+    ),
 )
 def test_tensorflow_tensor_property_device(
     dtype_x,
@@ -43,12 +48,12 @@ def test_tensorflow_tensor_property_device(
     _, data = dtype_x
     data = ivy.native_array(data[0])
     x = EagerTensor(data)
-    ivy.assertions.check_equal(x.device, ivy.dev(data))
+    ivy.utils.assertions.check_equal(x.device, ivy.dev(data))
 
 
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
     ),
 )
 def test_tensorflow_tensor_property_dtype(
@@ -56,12 +61,12 @@ def test_tensorflow_tensor_property_dtype(
 ):
     dtype, data = dtype_x
     x = EagerTensor(data[0])
-    ivy.assertions.check_equal(x.dtype, ivy.Dtype(dtype[0]))
+    ivy.utils.assertions.check_equal(x.dtype, ivy.Dtype(dtype[0]))
 
 
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
         ret_shape=True,
     ),
 )
@@ -70,7 +75,7 @@ def test_tensorflow_tensor_property_shape(
 ):
     dtype, data, shape = dtype_x
     x = EagerTensor(data[0])
-    ivy.assertions.check_equal(x.ivy_array.shape, ivy.Shape(shape))
+    ivy.utils.assertions.check_equal(x.ivy_array.shape, ivy.Shape(shape))
 
 
 # __add__

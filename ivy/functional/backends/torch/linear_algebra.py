@@ -17,7 +17,10 @@ from . import backend_version
 # -------------------#
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes(
+    {"1.11.0 and below": ("bfloat16", "float16", "complex")},
+    backend_version,
+)
 def cholesky(
     x: torch.Tensor, /, *, upper: bool = False, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
@@ -149,20 +152,6 @@ def diagonal(
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
-def eig(
-    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
-) -> Tuple[torch.Tensor]:
-    result_tuple = NamedTuple(
-        "eig", [("eigenvalues", torch.Tensor), ("eigenvectors", torch.Tensor)]
-    )
-    eigenvalues, eigenvectors = torch.linalg.eig(x, out=out)
-    return result_tuple(eigenvalues, eigenvectors)
-
-
-eig.support_native_out = True
-
-
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def eigh(
     x: torch.Tensor, /, *, UPLO: Optional[str] = "L", out: Optional[torch.Tensor] = None
 ) -> Tuple[torch.Tensor]:
@@ -194,9 +183,6 @@ def inner(
     if ivy.is_int_dtype(x1):
         x1 = x1.long()
         x2 = x2.long()
-    if ivy.exists(out):
-        if out.dtype != x1.dtype:
-            return ivy.inplace_update(out, torch.inner(x1, x2).type(out.dtype))
     return torch.inner(x1, x2, out=out).type(ret_dtype)
 
 
@@ -230,6 +216,7 @@ def inv(
 inv.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def matmul(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -237,13 +224,19 @@ def matmul(
     *,
     transpose_a: bool = False,
     transpose_b: bool = False,
+    adjoint_a: bool = False,
+    adjoint_b: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
 
-    if transpose_a is True:
+    if transpose_a:
         x1 = torch.t(x1)
-    if transpose_b is True:
+    if transpose_b:
         x2 = torch.t(x2)
+    if adjoint_a:
+        x1 = torch.adjoint(x1)
+    if adjoint_b:
+        x2 = torch.adjoint(x2)
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return torch.matmul(x1, x2, out=out)
 
@@ -267,6 +260,21 @@ def matrix_norm(
 matrix_norm.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
+def eig(
+    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
+) -> Tuple[torch.Tensor]:
+    result_tuple = NamedTuple(
+        "eig", [("eigenvalues", torch.Tensor), ("eigenvectors", torch.Tensor)]
+    )
+    eigenvalues, eigenvectors = torch.linalg.eig(x, out=out)
+    return result_tuple(eigenvalues, eigenvectors)
+
+
+eig.support_native_out = True
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def matrix_power(
     x: torch.Tensor, n: int, /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
@@ -296,8 +304,10 @@ matrix_rank.support_native_out = True
 
 
 def matrix_transpose(
-    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
+    x: torch.Tensor, /, *, conjugate: bool = False, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
+    if conjugate:
+        torch.conj(x)
     return torch.swapaxes(x, -1, -2)
 
 
@@ -327,6 +337,17 @@ def pinv(
 pinv.support_native_out = True
 
 
+def tensorsolve(
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    /,
+    *,
+    axes: Union[int, Tuple[List[int], List[int]]] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.linalg.tensorsolve(x1, x2, dims=axes)
+
+
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def qr(
     x: torch.Tensor,
@@ -343,7 +364,7 @@ def qr(
         q, r = torch.qr(x, some=False, out=out)
         ret = res(q, r)
     else:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             "Only 'reduced' and 'complete' qr modes are allowed for the torch backend."
         )
     return ret
@@ -370,8 +391,11 @@ def solve(
     x2: torch.Tensor,
     /,
     *,
+    adjoint: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if adjoint:
+        x1 = torch.adjoint(x1)
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     expanded_last = False
     if len(x2.shape) <= 1:
@@ -448,17 +472,6 @@ def tensordot(
     return ret
 
 
-def tensorsolve(
-    x1: torch.Tensor,
-    x2: torch.Tensor,
-    /,
-    *,
-    axes: Union[int, Tuple[List[int], List[int]]] = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.linalg.tensorsolve(x1, x2, dims=axes)
-
-
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def trace(
     x: torch.Tensor,
@@ -472,7 +485,7 @@ def trace(
     if len(x) == 0:
         return ivy.array([])
     ret = torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
-    ret = torch.sum(ret)
+    ret = torch.sum(ret, dim=-1)
     return ret
 
 
@@ -557,6 +570,7 @@ def vander(
     )
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("complex")}, backend_version)
 def vector_to_skew_symmetric_matrix(
     vector: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:

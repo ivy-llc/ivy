@@ -106,9 +106,8 @@ def fn_array_spec(fn):
     """
     try:  # this is because it raises error if python version 3.8.0, in certain cases
         type_hints = get_type_hints(fn)
-    except Exception as e:
+    except Exception:
         type_hints = dict()
-        print(f"exception found:{e} resorting to type_hindts=dict()")
     array_idxs = list()
     for i, (k, v) in enumerate(type_hints.items()):
         a_idxs = _get_array_idxs(v)

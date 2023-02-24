@@ -137,18 +137,16 @@ def _arrays_idx_n_dtypes(draw):
         st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays")
     )
     common_shape = draw(
-        helpers.lists(
-            arg=helpers.ints(min_value=2, max_value=3),
-            min_size=num_dims - 1,
-            max_size=num_dims - 1,
+        helpers.list_of_size(
+            x=helpers.ints(min_value=2, max_value=3),
+            size=num_dims - 1,
         )
     )
     unique_idx = draw(helpers.ints(min_value=0, max_value=num_dims - 1))
     unique_dims = draw(
-        helpers.lists(
-            arg=helpers.ints(min_value=2, max_value=3),
-            min_size=num_arrays,
-            max_size=num_arrays,
+        helpers.list_of_size(
+            x=helpers.ints(min_value=2, max_value=3),
+            size=num_arrays,
         )
     )
     xs = list()
@@ -279,8 +277,9 @@ def test_tensorflow_Cosh(  # NOQA
 def _dtypes(draw):
     return draw(
         st.shared(
-            helpers.list_of_length(
-                x=st.sampled_from(draw(helpers.get_dtypes("numeric"))), length=1
+            helpers.list_of_size(
+                x=st.sampled_from(draw(helpers.get_dtypes("numeric"))),
+                size=1,
             ),
             key="dtype",
         )
@@ -1488,6 +1487,11 @@ def test_tensorflow_ShapeN(  # NOQA
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
+        min_value=-1e04,
+        max_value=1e04,
     ),
     test_with_out=st.just(False),
 )
@@ -1506,7 +1510,7 @@ def test_tensorflow_AddN(  # NOQA
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        inputs=x,
+        inputs=x[0],
     )
 
 
@@ -3052,4 +3056,59 @@ def test_tensorflow_Elu(
         on_device=on_device,
         features=x[0],
         name=name,
+    )
+
+
+@st.composite
+def _LinSpace_helper(draw):
+    shape = ()
+    dtype = draw(st.sampled_from(["float32", "float64"]))
+
+    # Param: start
+    start = draw(
+        helpers.array_values(
+            dtype=dtype,
+            shape=shape,
+            min_value=-5.0,
+            max_value=5.0,
+        ),
+    )
+
+    # Param: stop
+    stop = draw(
+        helpers.array_values(
+            dtype=dtype,
+            shape=shape,
+            min_value=-4.0,
+            max_value=10.0,
+        ),
+    )
+
+    return [dtype] * 2, start, stop
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.LinSpace",
+    dtype_and_params=_LinSpace_helper(),
+    num=helpers.ints(min_value=2, max_value=10),
+)
+def test_tensorflow_LinSpace(
+    *,
+    dtype_and_params,
+    num,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, start, stop = dtype_and_params
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        start=start,
+        stop=stop,
+        num=num,
+        on_device=on_device,
     )

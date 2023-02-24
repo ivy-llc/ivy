@@ -30,7 +30,7 @@ def native_sparse_array(
     dense_shape=None,
     format="coo",
 ):
-    ivy.assertions.check_exists(
+    ivy.utils.assertions.check_exists(
         data,
         inverse=True,
         message=(
@@ -48,7 +48,7 @@ def native_sparse_array(
         dense_shape,
         format,
     ):
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             "format should be one of the strings coo, csr, csc, bsr, and bsc."
         )
 

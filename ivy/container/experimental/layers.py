@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, List, Dict, Tuple, Literal
+from typing import Optional, Union, List, Dict, Tuple, Literal, Sequence
 
 # local
 import ivy
@@ -150,6 +150,8 @@ class ContainerWithLayersExperimental(ContainerBase):
         /,
         *,
         data_format: str = "NHWC",
+        dilation: Union[int, Tuple[int], Tuple[int, int]] = 1,
+        ceil_mode: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -200,6 +202,8 @@ class ContainerWithLayersExperimental(ContainerBase):
             strides,
             padding,
             data_format=data_format,
+            dilation=dilation,
+            ceil_mode=ceil_mode,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -215,6 +219,8 @@ class ContainerWithLayersExperimental(ContainerBase):
         /,
         *,
         data_format: str = "NHWC",
+        dilation: Union[int, Tuple[int], Tuple[int, int]] = 1,
+        ceil_mode: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -266,6 +272,8 @@ class ContainerWithLayersExperimental(ContainerBase):
             strides,
             padding,
             data_format=data_format,
+            dilation=dilation,
+            ceil_mode=ceil_mode,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1291,11 +1299,7 @@ class ContainerWithLayersExperimental(ContainerBase):
         map_sequences
         out
 
-        Returns
-        -------
-
         """
-
         return ContainerBase.cont_multi_map_in_function(
             "dft",
             x,
@@ -1341,9 +1345,6 @@ class ContainerWithLayersExperimental(ContainerBase):
         map_sequences
         out
 
-        Returns
-        -------
-
         """
         return self.static_dft(
             self,
@@ -1352,6 +1353,132 @@ class ContainerWithLayersExperimental(ContainerBase):
             onesided=onesided,
             dft_length=dft_length,
             norm=norm,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_interpolate(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        size: Union[Sequence[int], int],
+        /,
+        *,
+        mode: Union[Literal["linear", "bilinear", "trilinear", "nearest"]] = "linear",
+        align_corners: Optional[bool] = None,
+        antialias: Optional[bool] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        Down/up samples the input to the given size.
+        The algorithm used for interpolation is determined by mode.
+
+        Parameters
+        ----------
+        x
+            Input array, Must have the shape
+            [batch x channels x [optional depth] x [optional height] x width].
+        size
+            Output size.
+        mode
+            Interpolation mode. Can be one of the following:
+            - linear
+            - bilinear
+            - trilinear
+            - nearest
+        align_corners
+            If True, the corner pixels of the input and output tensors are aligned,
+            and thus preserving the values at the corner pixels. If False, the corner
+            pixels are not aligned, and the interpolation uses edge value padding for
+            out-of-boundary values.
+            only has an effect when mode is 'linear', 'bilinear',
+            'bicubic' or 'trilinear'. Default: False
+        antialias
+            If True, antialiasing is applied when downsampling an image.
+            Supported modes: 'bilinear', 'bicubic'.
+        out
+            Optional output array, for writing the result to. It must
+            have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+            resized array
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "interpolate",
+            x,
+            size,
+            mode=mode,
+            align_corners=align_corners,
+            antialias=antialias,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def interpolate(
+        self: ivy.Container,
+        size: Union[Sequence[int], int],
+        /,
+        *,
+        mode: Union[Literal["linear", "bilinear", "trilinear", "nearest"]] = "linear",
+        align_corners: Optional[bool] = None,
+        antialias: Optional[bool] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        Down/up samples the input to the given size.
+        The algorithm used for interpolation is determined by mode.
+
+        Parameters
+        ----------
+        x
+            Input array, Must have the shape
+            [batch x channels x [optional depth] x [optional height] x width].
+        size
+            Output size.
+        mode
+            Interpolation mode. Can be one of the following:
+            - linear
+            - bilinear
+            - trilinear
+            - nearest
+        align_corners
+            If True, the corner pixels of the input and output tensors are aligned,
+            and thus preserving the values at the corner pixels. If False, the corner
+            pixels are not aligned, and the interpolation uses edge value padding for
+            out-of-boundary values.
+            only has an effect when mode is 'linear', 'bilinear',
+            'bicubic' or 'trilinear'. Default: False
+        antialias
+            If True, antialiasing is applied when downsampling an image.
+            Supported modes: 'bilinear', 'bicubic'.
+        out
+            Optional output array, for writing the result to. It must
+            have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+            resized array
+        """
+        return self.static_interpolate(
+            self,
+            size,
+            mode=mode,
+            align_corners=align_corners,
+            antialias=antialias,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

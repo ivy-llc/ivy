@@ -14,7 +14,7 @@ import ivy_tests.test_ivy.helpers as helpers
 
 @st.composite
 def _array_mask(draw):
-    dtype = draw(helpers.get_dtypes("valid", full=False))
+    dtype = draw(helpers.get_dtypes("valid", prune_function=False, full=False))
     dtypes, x_mask = draw(
         helpers.dtype_and_values(
             num_arrays=2,

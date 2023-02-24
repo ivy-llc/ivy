@@ -168,7 +168,7 @@ def _get_dtype_and_matrix(draw, *, symmetric=False):
 
 
 @st.composite
-def _get_first_matrix_and_dtype(draw, *, transpose=False):
+def _get_first_matrix_and_dtype(draw, *, transpose=False, conjugate=False):
     # batch_shape, random_size, shared
     input_dtype = draw(
         st.shared(
@@ -190,11 +190,19 @@ def _get_first_matrix_and_dtype(draw, *, transpose=False):
             max_value=5,
         )
     )
-    if transpose is True:
+    if conjugate:
+        conjugate = draw(st.booleans())
+        return [input_dtype], matrix, conjugate
+    if transpose:
         transpose = draw(st.booleans())
-        if transpose:
+        adjoint = draw(st.booleans())
+        if adjoint and transpose:
+            adjoint = draw(st.just("False"))
+        if transpose and not adjoint:
             matrix = np.transpose(matrix)
-        return [input_dtype], matrix, transpose
+        if adjoint and not transpose:
+            matrix = np.transpose(np.conjugate(matrix))
+        return [input_dtype], matrix, transpose, adjoint
     return [input_dtype], matrix
 
 
@@ -221,11 +229,16 @@ def _get_second_matrix_and_dtype(draw, *, transpose=False):
             max_value=5,
         )
     )
-    if transpose is True:
+    if transpose:
         transpose = draw(st.booleans())
-        if transpose:
+        adjoint = draw(st.booleans())
+        if adjoint and transpose:
+            adjoint = draw(st.just("False"))
+        if transpose and not adjoint:
             matrix = np.transpose(matrix)
-        return [input_dtype], matrix, transpose
+        if adjoint and not transpose:
+            matrix = np.transpose(np.conjugate(matrix))
+        return [input_dtype], matrix, transpose, adjoint
     return [input_dtype], matrix
 
 
@@ -417,8 +430,8 @@ def test_matmul(
     on_device,
     ground_truth_backend,
 ):
-    input_dtype1, x_1, transpose_a = x
-    input_dtype2, y_1, transpose_b = y
+    input_dtype1, x_1, transpose_a, adjoint_a = x
+    input_dtype2, y_1, transpose_b, adjoint_b = y
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype1 + input_dtype2,
@@ -432,6 +445,8 @@ def test_matmul(
         x2=y_1,
         transpose_a=transpose_a,
         transpose_b=transpose_b,
+        adjoint_a=adjoint_a,
+        adjoint_b=adjoint_b,
     )
 
 
@@ -641,7 +656,7 @@ def test_inv(
 # matrix_transpose
 @handle_test(
     fn_tree="functional.ivy.matrix_transpose",
-    dtype_x=_get_first_matrix_and_dtype(),
+    dtype_x=_get_first_matrix_and_dtype(conjugate=True),
 )
 def test_matrix_transpose(
     *,
@@ -652,7 +667,7 @@ def test_matrix_transpose(
     on_device,
     ground_truth_backend,
 ):
-    input_dtype, x = dtype_x
+    input_dtype, x, conjugate = dtype_x
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
@@ -661,6 +676,7 @@ def test_matrix_transpose(
         fn_name=fn_name,
         on_device=on_device,
         x=x,
+        conjugate=conjugate,
     )
 
 
@@ -742,7 +758,7 @@ def test_slogdet(
 
 # solve
 @st.composite
-def _get_first_matrix(draw):
+def _get_first_matrix(draw, adjoint=True):
     # batch_shape, random_size, shared
 
     # float16 causes a crash when filtering out matrices
@@ -758,7 +774,7 @@ def _get_first_matrix(draw):
     shared_size = draw(
         st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
     )
-    return input_dtype, draw(
+    matrix = draw(
         helpers.array_values(
             dtype=input_dtype,
             shape=tuple([shared_size, shared_size]),
@@ -766,6 +782,11 @@ def _get_first_matrix(draw):
             max_value=5,
         ).filter(lambda x: np.linalg.cond(x) < 1 / sys.float_info.epsilon)
     )
+    if adjoint:
+        adjoint = draw(st.booleans())
+        if adjoint:
+            matrix = np.transpose(np.conjugate(matrix))
+    return input_dtype, matrix, adjoint
 
 
 @st.composite
@@ -793,7 +814,7 @@ def _get_second_matrix(draw):
 
 @handle_test(
     fn_tree="functional.ivy.solve",
-    x=_get_first_matrix(),
+    x=_get_first_matrix(adjoint=True),
     y=_get_second_matrix(),
 )
 def test_solve(
@@ -806,7 +827,7 @@ def test_solve(
     on_device,
     ground_truth_backend,
 ):
-    input_dtype1, x1 = x
+    input_dtype1, x1, adjoint = x
     input_dtype2, x2 = y
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
@@ -819,6 +840,7 @@ def test_solve(
         atol_=1e-1,
         x1=x1,
         x2=x2,
+        adjoint=adjoint,
     )
 
 
@@ -907,8 +929,8 @@ def test_tensordot(
         max_num_dims=2,
         min_dim_size=1,
         max_dim_size=10,
-        large_abs_safety_factor=2,
-        small_abs_safety_factor=2,
+        large_abs_safety_factor=16,
+        small_abs_safety_factor=16,
         safety_factor_scale="log",
     ),
     offset=st.integers(min_value=0, max_value=0),
@@ -1026,6 +1048,18 @@ def test_vector_norm(
         ord=ord,
         dtype=dtype[0],
     )
+
+    # Specific value test to handle cases when ord is one of {inf, -inf}
+
+    arr = ivy.array([[1.0, 2.0, 3.0], [-1.0, 2.0, 4.0]])
+    arr_normed_inf = ivy.vector_norm(arr, axis=0, ord=float("inf"))
+    arr_normed_min_inf = ivy.vector_norm(arr, axis=0, ord=float("-inf"))
+
+    gt_arr_normed_inf = ivy.array([1.0, 2.0, 4.0])
+    gt_arr_normed_min_inf = ivy.array([1.0, 2.0, 3.0])
+
+    helpers.assert_all_close(arr_normed_inf, gt_arr_normed_inf)
+    helpers.assert_all_close(arr_normed_min_inf, gt_arr_normed_min_inf)
 
 
 # pinv

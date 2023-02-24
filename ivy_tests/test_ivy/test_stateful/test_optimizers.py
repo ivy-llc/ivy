@@ -125,10 +125,9 @@ def test_lars_optimizer(
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
     ),
-    beta1_n_beta2_n_epsilon=helpers.lists(
-        arg=helpers.floats(min_value=1e-1, max_value=1),
-        min_size=3,
-        max_size=3,
+    beta1_n_beta2_n_epsilon=helpers.list_of_size(
+        x=helpers.floats(min_value=1e-1, max_value=1),
+        size=3,
     ),
     inplace=st.booleans(),
     stop_gradients=st.booleans(),
@@ -186,13 +185,12 @@ def test_adam_optimizer(
         num_arrays=2,
         float_lr=True,
     ),
-    beta1_n_beta2_n_epsilon_n_lambda=helpers.lists(
-        arg=helpers.floats(
+    beta1_n_beta2_n_epsilon_n_lambda=helpers.list_of_size(
+        x=helpers.floats(
             min_value=1e-2,
             max_value=1.0,
         ),
-        min_size=4,
-        max_size=4,
+        size=4,
     ),
     mtr=st.one_of(
         helpers.ints(min_value=1, max_value=10),

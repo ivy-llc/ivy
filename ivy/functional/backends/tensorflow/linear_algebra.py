@@ -3,8 +3,10 @@
 from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 from collections import namedtuple
 
+
 import tensorflow as tf
 from tensorflow.python.framework.dtypes import DType
+
 
 # local
 import ivy
@@ -144,7 +146,15 @@ def cov(
     return out
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes(
+    {
+        "2.9.1 and below": (
+            "complex",
+            "float16",
+        )
+    },
+    backend_version,
+)
 def cross(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -181,6 +191,7 @@ def det(
     return tf.linalg.det(x)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def diagonal(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -190,7 +201,7 @@ def diagonal(
     axis2: int = -1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
+    return tf.experimental.numpy.diagonal(x, offset, axis1=axis1, axis2=axis2)
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
@@ -268,6 +279,7 @@ def eigvalsh(
             "uint16",
             "uint32",
             "uint64",
+            "complex",
         )
     },
     backend_version,
@@ -304,6 +316,7 @@ def inv(
             return ret
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, backend_version)
 def matmul(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -311,16 +324,23 @@ def matmul(
     *,
     transpose_a: bool = False,
     transpose_b: bool = False,
+    adjoint_a: bool = False,
+    adjoint_b: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
 
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     dtype_from = tf.as_dtype(x1.dtype)
 
-    if transpose_a is True:
+    if transpose_a:
         x1 = tf.transpose(x1)
-    if transpose_b is True:
+    if transpose_b:
         x2 = tf.transpose(x2)
+
+    if adjoint_a:
+        x1 = tf.linalg.adjoint(x1)
+    if adjoint_b:
+        x2 = tf.linalg.adjoint(x2)
 
     if dtype_from.is_unsigned or dtype_from == tf.int8 or dtype_from == tf.int16:
         x1 = tf.cast(x1, tf.int64)
@@ -338,7 +358,7 @@ def matmul(
         or (len(x2.shape) == 1 and len(x1.shape) >= 2 and x2.shape[0] != x1.shape[-1])
         or (len(x1.shape) >= 2 and len(x2.shape) >= 2 and x1.shape[-1] != x2.shape[-2])
     ):
-        raise ivy.exceptions.IvyException("Error,shapes not compatible")
+        raise ivy.utils.exceptions.IvyException("Error,shapes not compatible")
 
     x1_padded = False
     x1_padded_2 = False
@@ -385,7 +405,6 @@ def matrix_norm(
     keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-
     _expand_dims = False
     if len(tuple(x.shape)) == 2:  # ndim doesn't work for tf.Variable
         x = tf.expand_dims(x, axis=0)
@@ -411,7 +430,6 @@ def matrix_norm(
             ret = tf.reduce_sum(tf.linalg.svd(x, compute_uv=False), axis=-1)
     else:
         ret = tf.linalg.norm(x, ord, axis, keepdims)
-
     if keepdims:
         ret = tf.reshape(ret, x.shape[:-2] + (1, 1))
     else:
@@ -453,7 +471,10 @@ def matrix_power(
     return result
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("bfloat16", "float16", "complex")},
+    backend_version,
+)
 # noinspection PyPep8Naming
 def matrix_rank(
     x: Union[tf.Tensor, tf.Variable],
@@ -560,12 +581,16 @@ def matrix_transpose(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    conjugate: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if conjugate:
+        tf.math.conj(x)
     return tf.linalg.matrix_transpose(x)
 
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def outer(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -577,7 +602,10 @@ def outer(
     return tf.experimental.numpy.outer(x1, x2)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("bfloat16", "float16", "complex")},
+    backend_version,
+)
 def pinv(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -611,7 +639,7 @@ def qr(
         q, r = tf.linalg.qr(x, full_matrices=True)
         ret = res(q, r)
     else:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             "Only 'reduced' and 'complete' qr modes are allowed "
             "for the tensorflow backend."
         )
@@ -628,14 +656,20 @@ def slogdet(
     return results(sign, logabsdet)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("bfloat16", "float16", "complex")},
+    backend_version,
+)
 def solve(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    adjoint: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if adjoint:
+        x1 = tf.linalg.adjoint(x1)
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     expanded_last = False
     if len(x2.shape) <= 1:
@@ -669,7 +703,10 @@ def solve(
     return ret
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("bfloat16", "float16", "complex")},
+    backend_version,
+)
 def svd(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -707,6 +744,7 @@ def svdvals(
     return ret
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def tensordot(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -725,7 +763,10 @@ def tensordot(
     return ret
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("bfloat16", "float16", "complex")},
+    backend_version,
+)
 def trace(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -741,7 +782,10 @@ def trace(
     return tf.experimental.numpy.trace(x, offset=offset, axis1=axis1, axis2=axis2)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "float16")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("bfloat16", "float16", "complex")},
+    backend_version,
+)
 def vecdot(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -797,6 +841,7 @@ def vector_norm(
 # ----- #
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def diag(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -807,7 +852,10 @@ def diag(
     return tf.experimental.numpy.diag(x, k=k)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("bfloat16", "float16", "complex")},
+    backend_version,
+)
 def vander(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -832,6 +880,7 @@ def vander(
             "uint64",
             "float16",
             "float64",
+            "complex",
         )
     },
     backend_version,
@@ -858,17 +907,3 @@ def vector_to_skew_symmetric_matrix(
     # BS x 3 x 3
     ret = tf.concat((row1, row2, row3), -2)
     return ret
-
-
-vector_to_skew_symmetric_matrix.unsupported_dtypes = (
-    "int8",
-    "int16",
-    "int32",
-    "int64",
-    "uint8",
-    "uint16",
-    "uint32",
-    "uint64",
-    "float16",
-    "float64",
-)
