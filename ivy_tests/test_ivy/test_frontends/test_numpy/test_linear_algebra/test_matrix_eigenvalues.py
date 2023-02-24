@@ -36,6 +36,7 @@ def test_numpy_eigvalsh(
         UPLO=UPLO,
     )
 
+
 # eigh
 @handle_frontend_test(
     fn_tree="numpy.linalg.eigh",

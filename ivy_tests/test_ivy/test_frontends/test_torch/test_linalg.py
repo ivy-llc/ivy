@@ -640,6 +640,7 @@ def test_torch_eig(
         ground_truth_backend=frontend,
     )
 
+
 # eigh
 @handle_frontend_test(
     fn_tree="torch.linalg.eigh",
@@ -683,6 +684,7 @@ def test_torch_eigh(
         atol=1e-2,
         ground_truth_backend=frontend,
     )
+
 
 # svdvals
 @handle_frontend_test(
