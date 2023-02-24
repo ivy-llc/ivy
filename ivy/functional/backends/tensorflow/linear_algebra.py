@@ -798,9 +798,7 @@ def vector_to_skew_symmetric_matrix(
     return ret
 
 
-@with_unsupported_dtypes(
-    {
-     "1.0.0.": ("complex","integer")},backend_version,)
+@with_unsupported_dtypes({"1.0.0.": ("complex", "integer")}, backend_version)
 def lu(
     x: Union[tf.Tensor, tf.Variable],
     /,

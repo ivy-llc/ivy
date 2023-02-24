@@ -493,7 +493,6 @@ def lu(
     U = x.copy()
     if pivot:
         P = np.eye(n)
-
     for k in range(n - 1):
         if pivot:
             # partial pivoting

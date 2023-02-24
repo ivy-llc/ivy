@@ -533,7 +533,8 @@ def vector_to_skew_symmetric_matrix(
 
 vector_to_skew_symmetric_matrix.support_native_out = True
 
-@with_unsupported_dtypes({"1.11.0 and below": ("complex","integer","boolean")}, backend_version)
+
+@with_unsupported_dtypes({"1.11.0 and below": ("complex", "integer")}, backend_version)
 def lu(
     x: torch.Tensor,
     /,
@@ -541,6 +542,7 @@ def lu(
     pivot: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-        return torch.linalg.lu(x, pivot=pivot, out=out)
+    return torch.linalg.lu(x, pivot=pivot, out=out)
+    
     
 lu.support_native_out = True
