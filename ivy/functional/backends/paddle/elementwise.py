@@ -388,9 +388,10 @@ def bitwise_left_shift(
 
 
 def erf(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.erf(x)
 
 
+# TODO: What does use_where do?
 def minimum(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],
@@ -399,9 +400,10 @@ def minimum(
     use_where: bool = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.minimum(x1, x2)
 
 
+# TODO: What does use_where do?
 def maximum(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],
@@ -410,7 +412,7 @@ def maximum(
     use_where: bool = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.maximum(x1, x2)
 
 
 def reciprocal(
@@ -420,11 +422,11 @@ def reciprocal(
 
 
 def deg2rad(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.reciprocal(x)
 
 
 def rad2deg(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.rad2deg(x)
 
 
 def trunc_divide(
@@ -434,8 +436,8 @@ def trunc_divide(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.trunc(paddle.divide(x1, x2))
 
 
 def isreal(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.equal(x, paddle.real(x))
