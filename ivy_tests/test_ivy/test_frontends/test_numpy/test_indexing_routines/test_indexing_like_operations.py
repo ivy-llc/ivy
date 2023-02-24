@@ -127,7 +127,6 @@ def max_value_as_shape_prod(draw):
     test_with_out=st.just(False),
 )
 def test_numpy_unravel_index(
-    *,
     dtype_x_shape,
     test_flags,
     frontend,
