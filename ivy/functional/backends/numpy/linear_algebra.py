@@ -482,3 +482,32 @@ def vector_to_skew_symmetric_matrix(
 
 
 vector_to_skew_symmetric_matrix.support_native_out = True
+
+
+@with_unsupported_dtypes({"1.0.0 and below": ("complex", "integer")}, backend_version)
+def lu(
+    x: np.ndarray, /, *, pivot: bool = False, out: Optional[np.ndarray] = None
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    n = x.shape[0]
+    L = np.eye(n)
+    U = x.copy()
+    if pivot:
+        P = np.eye(n)
+    for k in range(n - 1):
+        if pivot:
+            # partial pivoting
+            max_idx = np.abs(U[k:, k]).argmax() + k
+            U[[k, max_idx]] = U[[max_idx, k]]
+            if k > 0:
+                L[[k, max_idx], :k] = L[[max_idx, k], :k]
+            if max_idx != k:
+                P[[k, max_idx]] = P[[max_idx, k]]
+        # elimination
+        div = U[k, k]
+        L[k + 1 :, k] = U[k + 1 :, k] / div
+        U[k + 1 :, k:] -= L[k + 1 :, k, None] * U[k, k:]
+        U[k + 1 :, k] = 0.0
+    P = np.round(P, 4)
+    L = np.round(L, 4)
+    U = np.round(U, 4)
+    return P, L, U
