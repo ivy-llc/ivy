@@ -1,8 +1,24 @@
 from hypothesis import strategies as st  # NOQA
+from . import globals
+
+
+@st.composite
+def _as_varaible_strategy(draw):
+    if (
+        globals.CURRENT_BACKEND is not globals._Notsetval
+        and globals.CURRENT_BACKEND().backend == "numpy"
+    ):
+        return draw(st.just([False]))
+    if (
+        globals.CURRENT_FRONTEND is not globals._Notsetval
+        and globals.CURRENT_FRONTEND().backend == "numpy"
+    ):
+        return draw(st.just([False]))
+    return draw(st.lists(st.booleans(), min_size=1, max_size=1))
 
 
 BuiltNativeArrayStrategy = st.lists(st.booleans(), min_size=1, max_size=1)
-BuiltAsVariableStrategy = st.lists(st.booleans(), min_size=1, max_size=1)
+BuiltAsVariableStrategy = _as_varaible_strategy()
 BuiltContainerStrategy = st.lists(st.booleans(), min_size=1, max_size=1)
 BuiltInstanceStrategy = st.booleans()
 BuiltInplaceStrategy = st.just(False)
