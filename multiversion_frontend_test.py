@@ -3,7 +3,10 @@ from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
 import sys
 import jsonpickle
 import importlib
-from ivy_tests.test_ivy.helpers.testing_helpers import _import_fn, _get_supported_devices_dtypes
+from ivy_tests.test_ivy.helpers.testing_helpers import (
+    _import_fn,
+    _get_supported_devices_dtypes,
+)
 
 
 def available_frameworks():
@@ -60,14 +63,13 @@ class NativeClass:
         self._native_class = native_class
 
 
-def _get_fn_dtypes(framework,fn_tree, device=None,kind="valid"):
+def _get_fn_dtypes(framework, fn_tree, device=None, kind="valid"):
     callable_fn, fn_name, fn_mod = _import_fn(fn_tree)
     supported_device_dtypes = _get_supported_devices_dtypes(fn_name, fn_mod)
-    return supported_device_dtypes[framework][
-        device
-    ][kind]
+    return supported_device_dtypes[framework][device][kind]
 
-def _get_type_dict(framework,fn_tree, device=None,kind="valid"):
+
+def _get_type_dict(framework, fn_tree, device=None, kind="valid"):
     if kind == "valid":
         return framework.valid_dtypes
     elif kind == "numeric":
@@ -101,18 +103,18 @@ def _get_type_dict(framework,fn_tree, device=None,kind="valid"):
 
 
 def dtype_handler(framework):
-    z=input()
-    retrieval_fn=globals()[z]
-    z=input()
-    kind=z
-    z=input()
-    device=z
-    z=input()
-    fn_tree=z
+    z = input()
+    retrieval_fn = globals()[z]
+    z = input()
+    kind = z
+    z = input()
+    device = z
+    z = input()
+    fn_tree = z
 
-    if retrieval_fn.__name__== '_get_type_dict':
+    if retrieval_fn.__name__ == "_get_type_dict":
         framework = importlib.import_module("ivy.functional.backends." + framework)
-    dtypes = retrieval_fn(framework,fn_tree,device,kind)
+    dtypes = retrieval_fn(framework, fn_tree, device, kind)
     dtypes = jsonpickle.dumps(dtypes)
     print(dtypes)
 
@@ -272,8 +274,8 @@ if __name__ == "__main__":
             )
 
             frontend_ret = frontend_fw.__dict__[func](*args_frontend, **kwargs_frontend)
-            if isinstance(frontend_ret,tuple) or isinstance(frontend_ret,list):
-                frontend_ret=ivy.nested_map(frontend_ret,ivy.to_numpy)
+            if isinstance(frontend_ret, tuple) or isinstance(frontend_ret, list):
+                frontend_ret = ivy.nested_map(frontend_ret, ivy.to_numpy)
             else:
                 frontend_ret = ivy.to_numpy(frontend_ret)
             frontend_ret = jsonpickle.dumps(frontend_ret)

@@ -19,7 +19,9 @@ CLASS_TREE = "ivy.functional.frontends.tensorflow.EagerTensor"
 
 
 @given(
-    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False)
+    ),
 )
 def test_tensorflow_tensor_property_ivy_array(
     dtype_x,
@@ -36,7 +38,9 @@ def test_tensorflow_tensor_property_ivy_array(
 
 
 @given(
-    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False)
+    ),
 )
 def test_tensorflow_tensor_property_device(
     dtype_x,
@@ -49,7 +53,7 @@ def test_tensorflow_tensor_property_device(
 
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
     ),
 )
 def test_tensorflow_tensor_property_dtype(
@@ -62,7 +66,7 @@ def test_tensorflow_tensor_property_dtype(
 
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
         ret_shape=True,
     ),
 )

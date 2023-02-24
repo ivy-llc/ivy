@@ -140,8 +140,7 @@ def _conv_transpose(
     for i in range(dims):
         weight = ivy.flip(weight, axis=i)
     padding, output_padding = map(
-        lambda x: [x] * dims if isinstance(x, int) else x,
-        [padding, output_padding]
+        lambda x: [x] * dims if isinstance(x, int) else x, [padding, output_padding]
     )
     pad_widths = [(weight.shape[i] - 1,) * 2 for i in range(dims)]
     ret = ivy.conv_general_dilated(
