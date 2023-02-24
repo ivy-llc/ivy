@@ -431,13 +431,13 @@ def maximum(
 def reciprocal(
     x: Union[float, paddle.Tensor], /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.reciprocal(x)
 
 
 def deg2rad(
         x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    return paddle.reciprocal(x)
+    return paddle.deg2rad(x)
 
 
 def rad2deg(
