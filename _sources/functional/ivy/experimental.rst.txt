@@ -13,7 +13,6 @@ Experimental
    :maxdepth: -1
    :caption: Experimental
 
-   experimental/eigh_tridiagonal.rst
    experimental/diagflat.rst
    experimental/kron.rst
    experimental/matrix_exp.rst
@@ -53,12 +52,10 @@ Experimental
    experimental/dct.rst
    experimental/fft.rst
    experimental/dropout1d.rst
-   experimental/dropout3d.rst
    experimental/ifft.rst
    experimental/embedding.rst
    experimental/dft.rst
    experimental/interp.rst
-   experimental/compute_weight_mat.rst
    experimental/interpolate.rst
    experimental/padding_ceil_mode.rst
    experimental/l2_normalize.rst
