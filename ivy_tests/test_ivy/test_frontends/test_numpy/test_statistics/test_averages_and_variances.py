@@ -2,7 +2,6 @@
 from hypothesis import strategies as st, assume
 import numpy as np
 
-
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
@@ -312,4 +311,29 @@ def test_numpy_nanvar(
         ddof=ddof,
         keepdims=keep_dims,
         where=where,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.nanmedian",
+    dtype_a_axis=statistical_dtype_values(function="nanmedian"),
+    keep_dims=st.booleans(),
+    overwriteinput=st.booleans(),
+)
+def test_numpy_nanmedian(
+    dtype_a_axis, frontend, test_flags, fn_tree, on_device, keep_dims, overwriteinput
+):
+    input_dtype, a, axis = dtype_a_axis
+    if isinstance(axis, tuple):
+        axis = axis[0]
+    helpers.test_frontend_function(
+        a=a[0],
+        input_dtypes=input_dtype,
+        axis=axis,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        keepdims=keep_dims,
+        overwrite_input=overwriteinput,
+        on_device=on_device,
     )

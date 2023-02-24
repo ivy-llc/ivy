@@ -25,7 +25,6 @@ def var(
     keepdims: bool = False,
     out: Optional[np.ndarray] = None,
 ):
-
     if dtype is not None:
         a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
 
@@ -286,3 +285,10 @@ def nanvar(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=
     if ivy.all(all_nan):
         ret = ivy.astype(ret, ivy.array([float("inf")]))
     return ret
+
+
+@to_ivy_arrays_and_back
+def nanmedian(a, /, *, axis=None, out=None, overwrite_input=False, keepdims=False):
+    return ivy.nanmedian(
+        a, axis=axis, out=out, overwrite_input=overwrite_input, keepdims=keepdims
+    )
