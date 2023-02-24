@@ -793,7 +793,6 @@ def test_jax_numpy_vsplit(
         indices_or_sections=indices_or_sections,
     )
 
-
 # atleast_2d
 @handle_frontend_test(
     fn_tree="jax.numpy.atleast_2d",
