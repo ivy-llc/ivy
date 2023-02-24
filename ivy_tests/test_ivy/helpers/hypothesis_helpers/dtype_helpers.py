@@ -125,9 +125,37 @@ def get_dtypes(
     # FN_DTYPES & BACKEND_DTYPES & FRONTEND_DTYPES & GROUND_TRUTH_DTYPES
 
     # If being called from a frontend test
-    if test_globals.CURRENT_FRONTEND is not test_globals._Notsetval:  # NOQA
-        frontend_dtypes = retrieval_fn(test_globals.CURRENT_FRONTEND(), kind)
-        valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
+    if test_globals.CURRENT_FRONTEND is not test_globals._Notsetval or isinstance(
+        test_globals.CURRENT_FRONTEND_STR, list
+    ):  # NOQA
+        if isinstance(test_globals.CURRENT_FRONTEND_STR, list):
+            process = test_globals.CURRENT_FRONTEND_STR[1]
+            try:
+                process.stdin.write("1" + "\n")
+                process.stdin.write(f"{str(retrieval_fn.__name__)}" + "\n")
+                process.stdin.write(f"{str(kind)}" + "\n")
+                process.stdin.write(f"{test_globals.CURRENT_DEVICE}" + "\n")
+                process.stdin.write(
+                    f"{test_globals.CURRENT_RUNNING_TEST.fn_tree}" + "\n"
+                )
+                process.stdin.flush()
+            except Exception as e:
+                print(
+                    "Something bad happened to the subprocess, here are the logs:\n\n"
+                )
+                print(process.stdout.readlines())
+                raise e
+            frontend_ret = process.stdout.readline()
+            if frontend_ret:
+                frontend_ret = jsonpickle.loads(make_json_pickable(frontend_ret))
+            else:
+                print(process.stderr.readlines())
+                raise Exception
+            frontend_dtypes = frontend_ret
+            valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
+        else:
+            frontend_dtypes = retrieval_fn(test_globals.CURRENT_FRONTEND(), kind)
+            valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
 
     # Make sure we return dtypes that are compatiable with ground truth backend
     ground_truth_is_set = (
