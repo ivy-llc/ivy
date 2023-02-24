@@ -66,8 +66,6 @@ def pytest_configure(config):
         frontend_strs = frontend.split(",")
         for i in frontend_strs:
             process = subprocess.Popen(
-
-
                 [
                     "/opt/miniconda/envs/multienv/bin/python",
                     "multiversion_frontend_test.py",
@@ -80,7 +78,6 @@ def pytest_configure(config):
                 text=True,
             )
             mod_frontend[i.split("/")[0]] = [i, process]
-
 
     # compile_graph
     raw_value = config.getoption("--compile_graph")

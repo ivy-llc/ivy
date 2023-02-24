@@ -52,9 +52,11 @@ def assert_all_close(
             ret_from_gt_np = ret_from_gt_np.astype("float64")
         assert np.allclose(
             np.nan_to_num(ret_np), np.nan_to_num(ret_from_gt_np), rtol=rtol, atol=atol
-        ), f" the results from backend {ivy.current_backend_str()} " \
-           f"and ground truth framework {ground_truth_backend} " \
-           f"do not match\n {ret_np}!={ret_from_gt_np} \n\n"
+        ), (
+            f" the results from backend {ivy.current_backend_str()} "
+            f"and ground truth framework {ground_truth_backend} "
+            f"do not match\n {ret_np}!={ret_from_gt_np} \n\n"
+        )
 
 
 def assert_same_type_and_shape(values, this_key_chain=None):
@@ -106,7 +108,10 @@ def value_test(
         "The length of results from backend {} and ground truth framework {} does not match\n\n"
         "len(ret_np_flat) != len(ret_np_from_gt_flat):\n\n"
         "ret_np_flat:\n\n{}\n\nret_np_from_gt_flat:\n\n{}".format(
-            ivy.current_backend_str(), ground_truth_backend, ret_np_flat, ret_np_from_gt_flat
+            ivy.current_backend_str(),
+            ground_truth_backend,
+            ret_np_flat,
+            ret_np_from_gt_flat,
         )
     )
     # value tests, iterating through each array in the flattened returns
