@@ -11,7 +11,7 @@ import pickle
 import ivy
 from ivy.functional.ivy.gradients import _variable
 from ivy.container import Container
-from ivy.exceptions import IvyException
+from ivy.utils.exceptions import IvyException
 
 
 def test_container_list_join(on_device):

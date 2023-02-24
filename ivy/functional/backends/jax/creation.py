@@ -135,7 +135,7 @@ def full(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     dtype = ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True)
-    ivy.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
+    ivy.utils.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     return _to_device(
         jnp.full(shape, fill_value, dtype),
         device=device,
@@ -151,7 +151,7 @@ def full_like(
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    ivy.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
+    ivy.utils.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     return _to_device(
         jnp.full_like(x, fill_value, dtype=dtype),
         device=device,
@@ -176,7 +176,7 @@ def linspace(
         axis = -1
 
     if num < 0:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             f"Number of samples, {num}, must be non-negative."
         )
 

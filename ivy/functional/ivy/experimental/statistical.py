@@ -4,8 +4,9 @@ from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
+    infer_dtype,
 )
-from ivy.exceptions import handle_exceptions
+from ivy.utils.exceptions import handle_exceptions
 
 
 @to_native_arrays_and_back
@@ -52,6 +53,7 @@ def median(
 
 
 @to_native_arrays_and_back
+@infer_dtype
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -113,7 +115,7 @@ def unravel_index(
     /,
     *,
     out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> Tuple:
     """Converts a flat index or array of flat indices
     into a tuple of coordinate arrays.
 
@@ -129,7 +131,7 @@ def unravel_index(
     Returns
     -------
     ret
-        Tuple with arrays that have the same shape as the indices array.
+        Tuple with arrays of type int32 that have the same shape as the indices array.
 
     Functional Examples
     -------------------

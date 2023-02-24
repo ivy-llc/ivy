@@ -22,7 +22,9 @@ def _fn(x=None, dtype=None):
 
 
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False)
+    ),
 )
 def test_inputs_to_ivy_arrays(dtype_and_x):
     x_dtype, x = dtype_and_x
@@ -50,7 +52,9 @@ def test_inputs_to_ivy_arrays(dtype_and_x):
 
 
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False)
+    ),
 )
 def test_outputs_to_frontend_arrays(dtype_and_x):
     x_dtype, x = dtype_and_x
@@ -64,7 +68,9 @@ def test_outputs_to_frontend_arrays(dtype_and_x):
 
 
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False)
+    ),
 )
 def test_to_ivy_arrays_and_back(dtype_and_x):
     x_dtype, x = dtype_and_x
@@ -96,13 +102,21 @@ def _dtype_helper(draw):
     return draw(
         st.sampled_from(
             [
-                draw(helpers.get_dtypes("valid", full=False))[0],
-                ivy.as_native_dtype(draw(helpers.get_dtypes("valid", full=False))[0]),
+                draw(helpers.get_dtypes("valid", prune_function=False, full=False))[0],
+                ivy.as_native_dtype(
+                    draw(helpers.get_dtypes("valid", prune_function=False, full=False))[
+                        0
+                    ]
+                ),
                 draw(
                     st.sampled_from(list(tf_frontend.tensorflow_enum_to_type.values()))
                 ),
                 draw(st.sampled_from(list(tf_frontend.tensorflow_enum_to_type.keys()))),
-                np_frontend.dtype(draw(helpers.get_dtypes("valid", full=False))[0]),
+                np_frontend.dtype(
+                    draw(helpers.get_dtypes("valid", prune_function=False, full=False))[
+                        0
+                    ]
+                ),
                 draw(st.sampled_from(list(np_frontend.numpy_scalar_to_dtype.keys()))),
             ]
         )

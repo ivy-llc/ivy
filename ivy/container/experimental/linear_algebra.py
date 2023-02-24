@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional, List, Dict
+from typing import Union, Optional, List, Dict, Tuple
 
 # local
 from ivy.container.base import ContainerBase
@@ -7,6 +7,189 @@ import ivy
 
 
 class ContainerWithLinearAlgebraExperimental(ContainerBase):
+    @staticmethod
+    def static_eigh_tridiagonal(
+        alpha: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        beta: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        eigvals_only: bool = True,
+        select: str = "a",
+        select_range: Optional[
+            Union[Tuple[int, int], List[int], ivy.Array, ivy.NativeArray]
+        ] = None,
+        tol: Optional[float] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> Union[ivy.Container, Tuple[ivy.Container, ivy.Container]]:
+        """
+        ivy.Container static method variant of ivy.eigh_tridiagonal. This method simply
+        wraps the function, and so the docstring for ivy.eigh_tridiagonal also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        alpha
+            An array or a container of real or complex arrays each of
+            shape (n), the diagonal elements of the matrix.
+        beta
+            An array or a container of real or complex arrays each of shape (n-1),
+            containing the elements of the first super-diagonal of the matrix.
+        eigvals_only
+            If False, both eigenvalues and corresponding eigenvectors are computed.
+            If True, only eigenvalues are computed. Default is True.
+        select
+            Optional string with values in {'a', 'v', 'i'}
+            (default is 'a') that determines which eigenvalues
+            to calculate: 'a': all eigenvalues. 'v': eigenvalues
+            in the interval (min, max] given by select_range.
+            'i': eigenvalues with indices min <= i <= max.
+        select_range
+            Size 2 tuple or list or array specifying the range of
+            eigenvalues to compute together with select. If select
+            is 'a', select_range is ignored.
+        tol
+            Optional scalar. Ignored when backend is not Tensorflow. The
+            absolute tolerance to which each eigenvalue is required. An
+            eigenvalue (or cluster) is considered to have converged if
+            it lies in an interval of this width. If tol is None (default),
+            the value eps*|T|_2 is used where eps is the machine precision,
+            and |T|_2 is the 2-norm of the matrix T.
+
+        Returns
+        -------
+        eig_vals
+            The eigenvalues of the matrix in non-decreasing order.
+        eig_vectors
+            If eigvals_only is False the eigenvectors are returned in the second
+            output argument.
+
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> alpha = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([2., 2., 2.]))
+        >>> beta = ivy.array([0.,2.])
+        >>> y = ivy.Container.static_eigh_tridiagonal(alpha, beta)
+        >>> print(y)
+        {
+            a: ivy.array([-0.56155, 0., 3.56155]),
+            b: ivy.array([0., 2., 4.])
+        }
+
+        >>> alpha = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([2., 2., 2.]))
+        >>> beta = ivy.Container(a=ivy.array([0.,2.]), b=ivy.array([2.,2.]))
+        >>> y = ivy.Container.static_eigh_tridiagonal(alpha, beta)
+        >>> print(y)
+        {
+            a: ivy.array([-0.56155, 0., 3.56155]),
+            b: ivy.array([-0.82842, 2., 4.82842])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "eigh_tridiagonal",
+            alpha,
+            beta,
+            eigvals_only=eigvals_only,
+            select=select,
+            select_range=select_range,
+            tol=tol,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def eigh_tridiagonal(
+        self: ivy.Container,
+        beta: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        eigvals_only: bool = True,
+        select: str = "a",
+        select_range: Optional[
+            Union[Tuple[int, int], List[int], ivy.Array, ivy.NativeArray]
+        ] = None,
+        tol: Optional[float] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> Union[ivy.Container, Tuple[ivy.Container, ivy.Container]]:
+        """
+        ivy.Container instance method variant of ivy.eigh_tridiagonal.
+        This method simply wraps the function, and so the docstring for
+        ivy.eigh_tridiagonal also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            A container of real or complex arrays each of shape (n),
+            the diagonal elements of the matrix.
+        beta
+            An array or a container of real or complex arrays each of shape
+            (n-1), containing the elements of the first super-diagonal of the matrix.
+        eigvals_only
+            If False, both eigenvalues and corresponding eigenvectors are computed.
+            If True, only eigenvalues are computed. Default is True.
+        select
+            Optional string with values in {'a', 'v', 'i'} (default is 'a') that
+            determines which eigenvalues to calculate: 'a': all eigenvalues.
+            'v': eigenvalues in the interval (min, max] given by select_range.
+            'i': eigenvalues with indices min <= i <= max.
+        select_range
+            Size 2 tuple or list or array specifying the range of eigenvalues to
+            compute together with select. If select is 'a', select_range is ignored.
+        tol
+            Optional scalar. Ignored when backend is not Tensorflow. The absolute
+            tolerance to which each eigenvalue is required. An eigenvalue (or cluster)
+            is considered to have converged if it lies in an interval of this width.
+            If tol is None (default), the value eps*|T|_2 is used where eps is the
+            machine precision, and |T|_2 is the 2-norm of the matrix T.
+
+        Returns
+        -------
+        eig_vals
+            The eigenvalues of the matrix in non-decreasing order.
+        eig_vectors
+            If eigvals_only is False the eigenvectors are returned in
+            the second output argument.
+
+        Examples
+        --------
+        >>> alpha = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([2., 2., 2.]))
+        >>> beta = ivy.array([0.,2.])
+        >>> y = alpha.eigh_tridiagonal(beta)
+        >>> print(y)
+        {
+            a: ivy.array([-0.56155, 0., 3.56155]),
+            b: ivy.array([0., 2., 4.])
+        }
+
+        >>> alpha = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([2., 2., 2.]))
+        >>> beta = ivy.Container(a=ivy.array([0.,2.]), b=ivy.array([2.,2.]))
+        >>> y = alpha.eigh_tridiagonal(beta)
+        >>> print(y)
+        {
+            a: ivy.array([-0.56155, 0., 3.56155]),
+            b: ivy.array([-0.82842, 2., 4.82842])
+        }
+        """
+        return self.static_eigh_tridiagonal(
+            self,
+            beta,
+            eigvals_only=eigvals_only,
+            select=select,
+            select_range=select_range,
+            tol=tol,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
     @staticmethod
     def static_diagflat(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],

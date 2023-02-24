@@ -160,7 +160,7 @@ def as_ivy_dtype(dtype_in: Union[jnp.dtype, str, bool, int, float], /) -> ivy.Dt
         if dtype_in in native_dtype_dict:
             return ivy.Dtype(dtype_in)
         else:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "Cannot convert to ivy dtype."
                 f" {dtype_in} is not supported by Jax backend."
             )
@@ -181,7 +181,7 @@ def as_native_dtype(dtype_in: Union[jnp.dtype, str, bool, int, float], /) -> jnp
     if dtype_in in native_dtype_dict.values():
         return native_dtype_dict[ivy.Dtype(dtype_in)]
     else:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             f"Cannot convert to Jax dtype. {dtype_in} is not supported by Jax."
         )
 
