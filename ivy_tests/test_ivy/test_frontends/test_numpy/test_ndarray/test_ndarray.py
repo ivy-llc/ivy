@@ -29,7 +29,7 @@ CLASS_TREE = "ivy.functional.frontends.numpy.ndarray"
 
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
         ret_shape=True,
     ),
 )
@@ -50,7 +50,7 @@ def test_numpy_ndarray_property_ivy_array(
 
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
         ret_shape=True,
     ),
 )
@@ -65,7 +65,7 @@ def test_numpy_ndarray_property_dtype(
 
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
         ret_shape=True,
     ),
 )
@@ -80,7 +80,7 @@ def test_numpy_ndarray_property_shape(
 
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
         ret_shape=True,
     ),
 )
