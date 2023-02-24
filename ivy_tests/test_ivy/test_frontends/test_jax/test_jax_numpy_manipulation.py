@@ -660,7 +660,6 @@ def test_jax_numpy_atleast_3d(
     )
 
 
-
 # atleast_1d
 @handle_frontend_test(
     fn_tree="jax.numpy.atleast_1d",
