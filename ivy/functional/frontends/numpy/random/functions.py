@@ -20,6 +20,17 @@ def dirichlet(alpha, size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
+def exponential(scale=1.0, size=None):
+    # ToDo: This currently uses inverse sampling,
+    # but probably should have a dedicated ivy.exponential() function.
+    if scale < 0:
+        raise ValueError("scale must be nonnegative")
+    uniform = ivy.random_uniform(low=0.0, high=0.0, shape=size, dtype="float64")
+    return ivy.multiply(ivy.log(uniform), -scale)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def uniform(low=0.0, high=1.0, size=None):
     return ivy.random_uniform(low=low, high=high, shape=size, dtype="float64")
 
