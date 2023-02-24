@@ -48,11 +48,14 @@ def pinv(input, *, atol=None, rtol=None, hermitian=False, out=None):
 def det(input, *, out=None):
     return ivy.det(input, out=out)
 
+@to_ivy_arrays_and_back
+def eigvals(input, *, out=None):
+    # TODO: add handling for out
+    return ivy.eigvals(input)
 
 @to_ivy_arrays_and_back
 def eigvalsh(input, UPLO="L", *, out=None):
     return ivy.eigvalsh(input, UPLO=UPLO, out=out)
-
 
 @to_ivy_arrays_and_back
 def qr(input, mode="reduced", *, out=None):

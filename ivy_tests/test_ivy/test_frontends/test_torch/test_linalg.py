@@ -1,6 +1,8 @@
 # global
+import math
 import sys
 import numpy as np
+import torch.linalg
 from hypothesis import strategies as st
 
 
@@ -635,6 +637,87 @@ def test_torch_eig(
     assert_all_close(
         ret_np=v @ np.diag(l) @ np.linalg.inv(v),
         ret_from_gt_np=front_v @ np.diag(front_l) @ np.linalg.inv(front_v),
+        rtol=1e-2,
+        atol=1e-2,
+        ground_truth_backend=frontend,
+    )
+
+
+# eigvals
+@handle_frontend_test(
+    fn_tree="torch.linalg.eigvals",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=(
+                ivy.float32,
+                ivy.float64,
+                ivy.double,
+                ivy.complex64,
+                ivy.complex128,
+        ),
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=10,
+        max_dim_size=10,
+        min_value=1.0,
+        max_value=1.0e5,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_torch_eigvals(
+        *,
+        dtype_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
+):
+    input_dtype, x = dtype_x
+
+    ret, frontend_ret = helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        test_values=False,
+    )
+
+    """
+    In "ret" we have out eigenvalues calculated with our backend and 
+    in "frontend_ret" are our eigenvalues calculated with the specified frontend
+    """
+
+    """
+    Depending on the chosen framework there may be small differences between our extremely small or big eigenvalues 
+    (eg: -3.62831993e-33+0.j(numpy) vs -1.9478e-32+0.j(PyTorch)). 
+    Important is that both are very very close to zero, indicating a small value(very close to 0) either way.
+    
+    To asses the correctness of our calculated eigenvalues for our initial matrix 
+    we sort both numpy arrays and call assert_all_close on their modulus.
+    """
+
+    """
+    Supports input of float, double, cfloat and cdouble dtypes. 
+    Also supports batches of matrices, and if A is a batch of matrices then the output has the same batch dimension
+    """
+
+    frontend_ret = np.asarray(frontend_ret[0])
+    frontend_ret = np.sort(frontend_ret)
+    frontend_ret_modulus = np.zeros(len(frontend_ret), dtype=np.float64)
+    for i in range(len(frontend_ret)):
+        frontend_ret_modulus[i] = math.sqrt(math.pow(frontend_ret[i].real, 2) + math.pow(frontend_ret[i].imag, 2))
+
+    ret = ivy.to_numpy(ret).astype(str(frontend_ret.dtype))
+    ret = np.sort(ret)
+    ret_modulus = np.zeros(len(ret), dtype=np.float64)
+    for i in range(len(ret)):
+        ret_modulus[i] = math.sqrt(math.pow(ret[i].real, 2) + math.pow(ret[i].imag, 2))
+
+    assert_all_close(
+        ret_np=ret_modulus,
+        ret_from_gt_np=frontend_ret_modulus,
         rtol=1e-2,
         atol=1e-2,
         ground_truth_backend=frontend,
