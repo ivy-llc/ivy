@@ -18,18 +18,41 @@ def statistical_dtype_values(draw, *, function):
     if function in ["mean", "median", "std", "var"]:
         large_abs_safety_factor = 24
         small_abs_safety_factor = 24
+    n = 1
+    min_value = None
+    max_value = None
+    force_int_axis = False
+    shape = None
+    shared_dtype = False
+    if function == "histogram":
+        n = 2
+        min_value = -20
+        max_value = 20
+        force_int_axis = True
+        shape = draw(helpers.get_shape(min_num_dims=1))
+        shared_dtype = True
+    available_dtypes = draw(helpers.get_dtypes("float"))
+    if "bfloat16" in available_dtypes:
+        available_dtypes.remove("bfloat16")
     dtype, values, axis = draw(
         helpers.dtype_values_axis(
-            available_dtypes=helpers.get_dtypes("float"),
+            available_dtypes=available_dtypes,
             large_abs_safety_factor=large_abs_safety_factor,
             small_abs_safety_factor=small_abs_safety_factor,
             safety_factor_scale="log",
             min_num_dims=1,
             max_num_dims=5,
             min_dim_size=2,
+            max_dim_size=5,
+            min_value=min_value,
+            max_value=max_value,
             valid_axis=True,
             allow_neg_axes=False,
             min_axes_size=1,
+            num_arrays=n,
+            force_int_axis=force_int_axis,
+            shape=shape,
+            shared_dtype=shared_dtype,
         )
     )
     shape = values[0].shape
@@ -70,7 +93,72 @@ def statistical_dtype_values(draw, *, function):
             )
         )
         return dtype, values, axis, interpolation, q
+    if function == "histogram":
+        dtype, values, dtype_out = draw(
+            helpers.get_castable_dtype(
+                available_dtypes, dtype[0], values
+            )
+        )
+        bins = draw(
+            helpers.array_values(
+                min_value=1,
+                max_value=100,
+                dtype=dtype,
+                large_abs_safety_factor=large_abs_safety_factor,
+                small_abs_safety_factor=small_abs_safety_factor,
+                safety_factor_scale="log",
+                shape=draw(
+                    helpers.get_shape(min_num_dims=1, max_num_dims=1, min_dim_size=2,
+                                      max_dim_size=10)
+                ),
+            )
+        )
+        bins = sorted(set(bins))
+        if len(bins) == 1:
+            bins = int(bins[0])
+            range = (-10, 10)
+        else:
+            range = None
+        return dtype, values, axis, dtype_out, bins, range
     return dtype, values, axis
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.histogram",
+    statistical_dtype_values=statistical_dtype_values(function="histogram"),
+    extend_lower_interval=st.booleans(),
+    extend_upper_interval=st.booleans(),
+    density=st.booleans(),
+    test_gradients=st.just(False),
+)
+def test_histogram(
+    *,
+    statistical_dtype_values,
+    extend_lower_interval,
+    extend_upper_interval,
+    density,
+    test_flags,
+    backend_fw,
+    fn_name,
+    ground_truth_backend,
+):
+    input_dtype, values, axis, dtype_out, bins, range = statistical_dtype_values
+    helpers.test_function(
+        a=values[0],
+        bins=bins,
+        axis=axis,
+        extend_lower_interval=extend_lower_interval,
+        extend_upper_interval=extend_upper_interval,
+        dtype=dtype_out,
+        range=range,
+        weights=values[1],
+        density=density,
+        input_dtypes=[input_dtype],
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        ground_truth_backend=ground_truth_backend,
+    )
 
 
 @handle_test(

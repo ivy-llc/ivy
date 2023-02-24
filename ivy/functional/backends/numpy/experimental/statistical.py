@@ -43,57 +43,44 @@ def histogram(
         bins[0] = -np.inf
     if extend_upper_interval:
         bins[-1] = np.inf
-    if axis is None:
-        axis = 0
-    if a.ndim > 0:
-        if weights is not None:
-            a_is, a_ks = a.shape[:axis], a.shape[axis + 1:]
-            weights_is, weights_ks = weights.shape[:axis], weights.shape[axis + 1:]
-            histogram_values = []
-            for a_i, weights_i in zip(np.ndindex(a_is), np.ndindex(weights_is)):
-                for a_k, weights_k in zip(np.ndindex(a_ks), np.ndindex(weights_ks)):
-                    ret_1D = np.histogram(
-                        a[a_i + np.s_[:, ] + a_k],
-                        bins=bins,
-                        range=range,
-                        weights=weights[weights_i + np.s_[:, ] + weights_k],
-                    )[0]
-                    histogram_values.append(ret_1D)
-            histogram_values = np.array(histogram_values)
-            out_shape = list(a.shape)
-            del out_shape[axis]
-            out_shape.insert(0, len(bins) - 1)
-            histogram_values = histogram_values.transpose().reshape(out_shape)
+    if a.ndim > 0 and axis is not None:
+        inverted_shape = list(np.flip(np.arange(a.ndim)))
+        inverted_shape.remove(axis)
+        inverted_shape.append(axis)
+        a_along_axis_1d = a.transpose(inverted_shape).flatten().reshape((-1, a.shape[axis]))
+        if weights is None:
+            ret = []
+            for a_1d in a_along_axis_1d:
+                ret_1D = np.histogram(
+                    a_1d,
+                    bins=bins,
+                    range=range,
+                )[0]
+                ret.append(ret_1D)
         else:
-            a_is, a_ks = a.shape[:axis], a.shape[axis + 1:]
-            histogram_values = []
-            for a_i in np.ndindex(a_is):
-                for a_k in np.ndindex(a_ks):
-                    print(a_i, a_k)
-                    ret_1D = np.histogram(
-                        a[a_i + np.s_[:, ] + a_k],
-                        bins=bins,
-                        range=range,
-                    )[0]
-                    histogram_values.append(ret_1D)
-            histogram_values = np.array(histogram_values)
-            out_shape = list(a.shape)
-            del out_shape[axis]
-            out_shape.insert(0, len(bins)-1)
-            histogram_values = histogram_values.transpose().reshape(out_shape)
-        if dtype:
-            histogram_values = histogram_values.astype(dtype)
-            bins_out = np.array(bins_out).astype(dtype)
-        return histogram_values, bins_out
+            weights_along_axis_1d = weights.transpose(inverted_shape).flatten().reshape((-1, weights.shape[axis]))
+            ret = []
+            for a_1d, weights_1d in zip(a_along_axis_1d, weights_along_axis_1d):
+                ret_1D = np.histogram(
+                    a_1d,
+                    weights=weights_1d,
+                    bins=bins,
+                    range=range,
+                )[0]
+                ret.append(ret_1D)
+        out_shape = list(a.shape)
+        del out_shape[axis]
+        out_shape.insert(0, len(bins)-1)
+        ret = np.array(ret)
+        ret = ret.transpose().reshape(out_shape)
     else:
         ret = np.histogram(
             a=a, bins=bins, range=range, weights=weights, density=density
-        )
-        histogram_values = ret[0]
-        if dtype:
-            histogram_values = histogram_values.astype(dtype)
-            bins_out = np.array(bins_out).astype(dtype)
-        return histogram_values, bins_out
+        )[0]
+    if dtype:
+        ret = ret.astype(dtype)
+        bins_out = np.array(bins_out).astype(dtype)
+    return ret, bins_out
 
 
 def median(
