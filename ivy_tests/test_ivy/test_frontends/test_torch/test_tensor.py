@@ -3,7 +3,7 @@ import pytest
 
 import ivy
 import torch
-from hypothesis import strategies as st, given
+from hypothesis import strategies as st, given, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -16,6 +16,9 @@ from ivy_tests.test_ivy.helpers import handle_frontend_method
 from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_splits
 from ivy_tests.test_ivy.test_functional.test_core.test_searching import (
     _broadcastable_trio,
+)
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa
+    _get_split_locations,
 )
 
 CLASS_TREE = "ivy.functional.frontends.torch.Tensor"
@@ -4870,6 +4873,116 @@ def test_torch_instance_numpy(
         },
         method_input_dtypes=[],
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+    )
+
+
+# vsplit
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="vsplit",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="value_shape"),
+    ),
+    indices_or_sections=_get_split_locations(min_num_dims=2, axis=0),
+)
+def test_torch_instance_vsplit(
+    dtype_value,
+    indices_or_sections,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+):
+    input_dtype, x = dtype_value
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=[],
+        method_all_as_kwargs_np={"indices_or_sections": indices_or_sections},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+    )
+
+
+# hsplit
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="hsplit",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+    ),
+    indices_or_sections=_get_split_locations(min_num_dims=1, axis=1),
+)
+def test_torch_instance_hsplit(
+    dtype_value,
+    indices_or_sections,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+):
+    input_dtype, x = dtype_value
+    # TODO: remove the assumption when these bugfixes are merged and version-pinned
+    # https://github.com/tensorflow/tensorflow/pull/59523
+    # https://github.com/google/jax/pull/14275
+    assume(
+        not (
+            len(x[0].shape) == 1 and ivy.current_backend_str() in ("tensorflow", "jax")
+        )
+    )
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=[],
+        method_all_as_kwargs_np={"indices_or_sections": indices_or_sections},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+    )
+
+
+# dsplit
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="dsplit",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(min_num_dims=3), key="value_shape"),
+    ),
+    indices_or_sections=_get_split_locations(min_num_dims=3, axis=2),
+)
+def test_torch_instance_dsplit(
+    dtype_value,
+    indices_or_sections,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+):
+    input_dtype, x = dtype_value
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=[],
+        method_all_as_kwargs_np={"indices_or_sections": indices_or_sections},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,

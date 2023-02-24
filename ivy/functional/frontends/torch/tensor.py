@@ -4,6 +4,9 @@
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
 from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.frontends.torch.indexing_slicing_joining_mutating_ops import (
+    _get_indices_or_sections,
+)
 
 
 class Tensor:
@@ -651,6 +654,24 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def sigmoid(self):
         return torch_frontend.sigmoid(self.ivy_array)
+
+    def vsplit(self, indices_or_sections=None, /, *, indices=None, sections=None):
+        indices_or_sections = _get_indices_or_sections(
+            indices_or_sections, indices, sections
+        )
+        return torch_frontend.vsplit(self.ivy_array, indices_or_sections)
+
+    def hsplit(self, indices_or_sections=None, /, *, indices=None, sections=None):
+        indices_or_sections = _get_indices_or_sections(
+            indices_or_sections, indices, sections
+        )
+        return torch_frontend.hsplit(self.ivy_array, indices_or_sections)
+
+    def dsplit(self, indices_or_sections=None, /, *, indices=None, sections=None):
+        indices_or_sections = _get_indices_or_sections(
+            indices_or_sections, indices, sections
+        )
+        return torch_frontend.dsplit(self.ivy_array, indices_or_sections)
 
     # Special Methods #
     # -------------------#
