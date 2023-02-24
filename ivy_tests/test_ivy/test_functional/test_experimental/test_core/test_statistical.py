@@ -100,22 +100,18 @@ def statistical_dtype_values(draw, *, function):
             )
         )
         bins = draw(
-            helpers.array_values(
-                min_value=1,
-                max_value=100,
-                dtype=dtype,
-                large_abs_safety_factor=large_abs_safety_factor,
-                small_abs_safety_factor=small_abs_safety_factor,
-                safety_factor_scale="log",
-                shape=draw(
-                    helpers.get_shape(min_num_dims=1, max_num_dims=1, min_dim_size=2,
-                                      max_dim_size=10)
-                ),
+            st.lists(
+                min_size=1,
+                max_size=10,
+                elements=st.floats(min_value=-100, max_value=100),
+                unique=True,
             )
         )
-        bins = sorted(set(bins))
+        bins = np.asarray(sorted(bins), dtype=dtype)
         if len(bins) == 1:
-            bins = int(bins[0])
+            bins = int(abs(bins[0]))
+            if bins == 0:
+                bins = 1
             range = (-10, 10)
         else:
             range = None

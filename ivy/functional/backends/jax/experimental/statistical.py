@@ -22,7 +22,7 @@ def histogram(
     a: jnp.ndarray,
     /,
     *,
-    bins: Optional[Union[int, Sequence[int], str]] = None,
+    bins: Optional[Union[int, jnp.ndarray, str]] = None,
     axis: Optional[jnp.ndarray] = None,
     extend_lower_interval: Optional[bool] = False,
     extend_upper_interval: Optional[bool] = False,
@@ -37,14 +37,14 @@ def histogram(
         range = None
     bins_out = bins.copy()
     if extend_lower_interval:
-        bins[0] = -jnp.inf
+        bins = bins.at[0].set(-jnp.inf)
     if extend_upper_interval:
-        bins[-1] = jnp.inf
+        bins = bins.at[-1].set(jnp.inf)
     if a.ndim > 0 and axis is not None:
-        inverted_shape = list(jnp.flip(jnp.arange(a.ndim)))
-        inverted_shape.remove(axis)
-        inverted_shape.append(axis)
-        a_along_axis_1d = a.transpose(inverted_shape).flatten().reshape((-1, a.shape[axis]))
+        inverted_shape_dims = list(jnp.flip(jnp.arange(a.ndim)))
+        inverted_shape_dims.remove(axis)
+        inverted_shape_dims.append(axis)
+        a_along_axis_1d = a.transpose(inverted_shape_dims).flatten().reshape((-1, a.shape[axis]))
         if weights is None:
             ret = []
             for a_1d in a_along_axis_1d:
@@ -55,7 +55,7 @@ def histogram(
                 )[0]
                 ret.append(ret_1D)
         else:
-            weights_along_axis_1d = weights.transpose(inverted_shape).flatten().reshape((-1, weights.shape[axis]))
+            weights_along_axis_1d = weights.transpose(inverted_shape_dims).flatten().reshape((-1, weights.shape[axis]))
             ret = []
             for a_1d, weights_1d in zip(a_along_axis_1d, weights_along_axis_1d):
                 ret_1D = jnp.histogram(
@@ -69,7 +69,27 @@ def histogram(
         del out_shape[axis]
         out_shape.insert(0, len(bins) - 1)
         ret = jnp.array(ret)
-        ret = ret.transpose().reshape(out_shape)
+        ret = ret.flatten()
+        index = jnp.zeros(len(out_shape), dtype=int)
+        ret_shaped = jnp.zeros(out_shape)
+        dim = 0
+        i = 0
+        if list(index) == list(jnp.array(out_shape) - 1):
+            ret_shaped = ret_shaped.at[tuple(index)].set(ret[i])
+        while list(index) != list(jnp.array(out_shape) - 1):
+            ret_shaped = ret_shaped.at[tuple(index)].set(ret[i])
+            dim_full_flag = False
+            while index[dim] == out_shape[dim] - 1:
+                index = index.at[dim].set(0)
+                dim += 1
+                dim_full_flag = True
+            index = index.at[dim].add(1)
+            i += 1
+            if dim_full_flag:
+                dim = 0
+        if list(index) == list(jnp.array(out_shape) - 1):
+            ret_shaped = ret_shaped.at[tuple(index)].set(ret[i])
+        ret = ret_shaped
     else:
         ret = jnp.histogram(
             a=a, bins=bins, range=range, weights=weights, density=density

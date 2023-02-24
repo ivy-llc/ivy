@@ -25,7 +25,7 @@ def histogram(
     a: np.ndarray,
     /,
     *,
-    bins: Optional[Union[int, Sequence[int], str]] = None,
+    bins: Optional[Union[int, np.ndarray, str]] = None,
     axis: Optional[np.ndarray] = None,
     extend_lower_interval: Optional[bool] = False,
     extend_upper_interval: Optional[bool] = False,
@@ -44,10 +44,10 @@ def histogram(
     if extend_upper_interval:
         bins[-1] = np.inf
     if a.ndim > 0 and axis is not None:
-        inverted_shape = list(np.flip(np.arange(a.ndim)))
-        inverted_shape.remove(axis)
-        inverted_shape.append(axis)
-        a_along_axis_1d = a.transpose(inverted_shape).flatten().reshape((-1, a.shape[axis]))
+        inverted_shape_dims = list(np.flip(np.arange(a.ndim)))
+        inverted_shape_dims.remove(axis)
+        inverted_shape_dims.append(axis)
+        a_along_axis_1d = a.transpose(inverted_shape_dims).flatten().reshape((-1, a.shape[axis]))
         if weights is None:
             ret = []
             for a_1d in a_along_axis_1d:
@@ -58,7 +58,7 @@ def histogram(
                 )[0]
                 ret.append(ret_1D)
         else:
-            weights_along_axis_1d = weights.transpose(inverted_shape).flatten().reshape((-1, weights.shape[axis]))
+            weights_along_axis_1d = weights.transpose(inverted_shape_dims).flatten().reshape((-1, weights.shape[axis]))
             ret = []
             for a_1d, weights_1d in zip(a_along_axis_1d, weights_along_axis_1d):
                 ret_1D = np.histogram(
@@ -72,7 +72,27 @@ def histogram(
         del out_shape[axis]
         out_shape.insert(0, len(bins)-1)
         ret = np.array(ret)
-        ret = ret.transpose().reshape(out_shape)
+        ret = ret.flatten()
+        index = np.zeros(len(out_shape), dtype=int)
+        ret_shaped = np.zeros(out_shape)
+        dim = 0
+        i = 0
+        if list(index) == list(np.array(out_shape)-1):
+            ret_shaped[tuple(index)] = ret[i]
+        while list(index) != list(np.array(out_shape)-1):
+            ret_shaped[tuple(index)] = ret[i]
+            dim_full_flag = False
+            while index[dim] == out_shape[dim] - 1:
+                index[dim] = 0
+                dim += 1
+                dim_full_flag = True
+            index[dim] += 1
+            i += 1
+            if dim_full_flag:
+                dim = 0
+        if list(index) == list(np.array(out_shape)-1):
+            ret_shaped[tuple(index)] = ret[i]
+        ret = ret_shaped
     else:
         ret = np.histogram(
             a=a, bins=bins, range=range, weights=weights, density=density
