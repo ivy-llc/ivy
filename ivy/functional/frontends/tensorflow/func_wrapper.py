@@ -54,7 +54,8 @@ def _to_ivy_array(x):
     if isinstance(x, ivy.NativeArray):
         return ivy.array(x)
 
-    # else if x is a frontend tensorflow EagerTensor (or any frontend "Tensor" actually) return the wrapped ivy array # noqa: E501
+    # else if x is a frontend tensorflow EagerTensor
+    # (or any frontend "Tensor" actually) return the wrapped ivy array
     elif hasattr(x, "ivy_array"):
         return x.ivy_array
 
