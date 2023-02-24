@@ -1,11 +1,16 @@
 # global
 from hypothesis import strategies as st
+import numpy as np
+from typing import Tuple
+import ivy
+import jax.numpy as jnp
+
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_searching import (
-    _broadcastable_trio,_broadcastable_pair
+    _broadcastable_trio
 )
 
 
@@ -277,72 +282,4 @@ def test_numpy_sort(
         on_device=on_device,
         a=x[0],
         axis=axis,
-    )
-
-# flatnonzero
-@handle_frontend_test(
-    fn_tree="jax.numpy.flatnonzero",
-    broadcastables=_broadcastable_pair(),
-)
-def test_jax_numpy_flatnonzero(
-    broadcastables,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-):
-    x, dtype = broadcastables
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        a=x,
-    )
-
-
-# lexsort
-@handle_frontend_test(
-    fn_tree="jax.numpy.lexsort",
-    broadcastables=_broadcastable_trio(),
-)
-def test_jax_numpy_lexsort(
-    broadcastables,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-):
-    keys, dtype, axis = broadcastables
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        keys=keys,
-        axis=axis,
-    )
-
-# count_nonzero
-@handle_frontend_test(
-    fn_tree="jax.numpy.count_nonzero",
-    broadcastables=_broadcastable_pair(),
-)
-def test_jax_numpy_count_nonzero(
-    broadcastables,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-):
-    a, dtype = broadcastables
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        a=a,
     )

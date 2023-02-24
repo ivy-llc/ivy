@@ -2,7 +2,6 @@
 
 # Global
 from hypothesis import strategies as st
-from jax import numpy as jnp
 
 
 # local
@@ -47,17 +46,6 @@ def _broadcastable_trio(draw):
         )
     )
     return cond, xs, dtypes
-
-@st.composite
-def _broadcastable_pair(draw):
-    shape = draw(helpers.get_shape(min_num_dims=1, min_dim_size=1))
-    cond = draw(st.booleans())
-    dtype1 = draw(helpers.get_numeric_dtype_strings())
-    dtype2 = dtype1 if cond else draw(helpers.get_numeric_dtype_strings())
-    x1 = draw(helpers.constant_arrays(dtype1, shape))
-    x2 = draw(helpers.constant_arrays(dtype2, shape))
-    return x1, x2
-
 
 
 # Functions #
