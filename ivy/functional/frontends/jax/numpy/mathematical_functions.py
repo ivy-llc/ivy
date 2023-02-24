@@ -64,7 +64,6 @@ def gradient(f, *varargs, axis=None, edge_count=None):
     return ivy.gradient(f, varargs, axis=axis, edge_count=edge_count)
 
 
-
 @to_ivy_arrays_and_back
 def mod(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
