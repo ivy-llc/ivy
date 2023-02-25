@@ -6,6 +6,7 @@ import ivy
 from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
 from ivy.func_wrapper import (
+    handle_array_function,
     handle_nestable,
     to_native_arrays_and_back,
     handle_array_like_without_promotion,
@@ -173,3 +174,59 @@ def thresholded_relu(
     }
     """
     return current_backend(x).thresholded_relu(x, threshold=threshold, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
+def relu6(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+) -> ivy.Array:
+    """Applies the rectified linear unit 6 function element-wise.
+
+    Parameters
+    ----------
+    x
+        input array
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing the rectified linear unit 6 activation of each element in
+        ``x``.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([-1.,  0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.])
+    >>> y = ivy.relu6(x)
+    >>> print(y)
+    ivy.array([0., 0., 1., 2., 3., 4., 5., 6., 6.])
+
+    >>> x = ivy.array([-1.,  0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.])
+    >>> y = ivy.zeros(9)
+    >>> ivy.relu6(x, out = y)
+    >>> print(y)
+    ivy.array([0., 0., 1., 2., 3., 4., 5., 6., 6.])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = {
+                a: ivy.array([-3., -2., -1., 0., 1., 2., 3., 4., 5.]),
+                b: ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.])
+            }
+    >>> x = ivy.relu6(x, out=x)
+    >>> print(x)
+    {
+    a: ivy.array([0., 0., 0., 0., 1., 2., 3., 4., 5.]),
+    b: ivy.array([1., 2., 3., 4., 5., 6., 6., 6., 6.])
+    }
+    """
+    return current_backend(x).relu6(x, out=out)
