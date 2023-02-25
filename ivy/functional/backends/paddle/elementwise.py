@@ -22,6 +22,7 @@ def add(
         x2 = multiply(x2, alpha)
     return paddle.add(x1, x2)
 
+
 def bitwise_xor(
     x1: Union[int, bool, paddle.Tensor],
     x2: Union[int, bool, paddle.Tensor],
@@ -29,11 +30,11 @@ def bitwise_xor(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.bitwise_xor(x1, x2)
 
 
 def expm1(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.expm1(x)
 
 
 def bitwise_invert(
@@ -42,8 +43,10 @@ def bitwise_invert(
     return paddle.bitwise_not(x)
 
 
-def isfinite(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+def isfinite(
+        x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
+    return paddle.isfinite(x)
 
 
 def isinf(
@@ -54,6 +57,16 @@ def isinf(
     detect_negative: bool = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if detect_negative and detect_positive:
+        return paddle.isinf(x)
+
+    if detect_negative:
+        return paddle.equal(x, paddle.to_tensor([float('-inf')]))
+
+    if detect_positive:
+        return paddle.equal(x, paddle.to_tensor([float('inf')]))
+
+    # TODO: What should happen if both detect positive and detect negative are False?
     raise IvyNotImplementedException()
 
 
@@ -64,7 +77,7 @@ def equal(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.equal(x1, x2)
 
 
 def less_equal(
@@ -74,7 +87,7 @@ def less_equal(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.less_equal(x1, x2)
 
 
 def bitwise_and(
@@ -84,15 +97,15 @@ def bitwise_and(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.bitwise_and(x1, x2)
 
 
 def ceil(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.ceil(x)
 
 
 def floor(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.floor(x)
 
 
 def asin(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -104,11 +117,11 @@ def asinh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
 
 
 def sign(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.sign(x)
 
 
 def sqrt(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.sqrt(x)
 
 
 def cosh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -116,19 +129,19 @@ def cosh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
 
 
 def log10(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.log10(x)
 
 
 def log2(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.log2(x)
 
 
 def log1p(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.log1p(x)
 
 
 def isnan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.isnan(x)
 
 
 def less(
@@ -138,7 +151,7 @@ def less(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.less_than(x1, x2)
 
 
 def multiply(
@@ -148,7 +161,7 @@ def multiply(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.multiply(x1, x2)
 
 
 def cos(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -158,7 +171,7 @@ def cos(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
 def logical_not(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.logical_not(x)
 
 
 def divide(
@@ -168,7 +181,7 @@ def divide(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.divide(x1, x2)
 
 
 def greater(
@@ -178,7 +191,7 @@ def greater(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.greater_than(x1, x2)
 
 
 def greater_equal(
@@ -188,7 +201,7 @@ def greater_equal(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.greater_equal(x1, x2)
 
 
 def acos(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -198,19 +211,19 @@ def acos(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
 def logical_xor(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return logical_xor(x1, x2)
 
 
 def logical_and(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return logical_and(x1, x2)
 
 
 def logical_or(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return logical_or(x1, x2)
 
 
 def acosh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -224,7 +237,7 @@ def sin(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
 def negative(
     x: Union[float, paddle.Tensor], /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.neg(x)
 
 
 def not_equal(
@@ -234,7 +247,7 @@ def not_equal(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.not_equal(x1, x2)
 
 
 def tanh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -248,7 +261,7 @@ def floor_divide(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.floor_divide(x1, x2)
 
 
 def bitwise_or(
@@ -258,7 +271,7 @@ def bitwise_or(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.bitwise_or(x1, x2)
 
 
 def sinh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -268,11 +281,13 @@ def sinh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
 def positive(
     x: Union[float, paddle.Tensor], /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return logical_not(negative(x))
 
 
-def square(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+def square(
+        x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
+    return paddle.square(x)
 
 
 def pow(
@@ -282,23 +297,24 @@ def pow(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.pow(x1, x2)
 
 
 def round(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.round(x)
 
 
 def trunc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.trunc(x)
 
 
 def abs(
     x: Union[float, paddle.Tensor], /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.abs(x)
 
 
+# TODO: Is this cumsum or just sum?
 def logaddexp(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
@@ -312,13 +328,11 @@ def tan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
 def atan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     return paddle.atan(x)
 
-  # TODO Fixed in PyTorch 1.12.1 (this note excludes complex)
-
 
 def atan2(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.atan2(x1, x2)
 
 
 def log(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -326,7 +340,7 @@ def log(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
 
 
 def exp(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.exp(x)
 
 
 def subtract(
@@ -340,7 +354,8 @@ def subtract(
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if alpha not in (1, None):
         x2 = multiply(x2, alpha)
-    return paddle.subtract(x1,x2)
+    return paddle.subtract(x1, x2)
+
 
 
 def remainder(
@@ -351,7 +366,14 @@ def remainder(
     modulus: bool = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if not modulus:
+        res = x1 / x2
+        res_floored = paddle.where(res >= 0, paddle.floor(res), paddle.ceil(res))
+        diff = np.asarray(res - res_floored, dtype=res.dtype)
+        diff, x2 = ivy.promote_types_of_inputs(diff, x2)
+        return paddle.round(diff * x2).cast(x1.dtype)
+    return paddle.remainder(x1, x2)
 
 
 def atanh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -383,9 +405,10 @@ def bitwise_left_shift(
 
 
 def erf(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.erf(x)
 
 
+# TODO: What does use_where do?
 def minimum(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],
@@ -394,9 +417,10 @@ def minimum(
     use_where: bool = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.minimum(x1, x2)
 
 
+# TODO: What does use_where do?
 def maximum(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],
@@ -405,21 +429,28 @@ def maximum(
     use_where: bool = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if use_where:
+        return np.where(x1 >= x2, x1, x2)
+    return paddle.maximum(x1, x2)
 
 
 def reciprocal(
     x: Union[float, paddle.Tensor], /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.reciprocal(x)
 
 
-def deg2rad(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+
+def deg2rad(
+        x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
     return paddle.deg2rad(x)
 
 
-def rad2deg(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+def rad2deg(
+        x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
+    return paddle.rad2deg(x)
 
 
 def trunc_divide(
@@ -429,8 +460,10 @@ def trunc_divide(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.trunc(paddle.divide(x1, x2))
 
 
-def isreal(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+def isreal(
+        x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
+    return paddle.equal(x, paddle.real(x))
