@@ -549,7 +549,12 @@ def scatter_nd(
 scatter_nd.support_native_out = True
 
 
-def shape(x: torch.Tensor, /, *, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
+def shape(
+    x: torch.Tensor,
+    /,
+    *,
+    as_array: bool = False,
+) -> Union[ivy.Shape, ivy.Array]:
     if as_array:
         return ivy.array(x.shape, dtype=ivy.default_int_dtype())
     else:

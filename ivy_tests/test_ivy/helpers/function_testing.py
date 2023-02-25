@@ -214,32 +214,29 @@ def test_function(
     arg_np_vals, args_idxs, c_arg_vals = _get_nested_np_arrays(args_np)
     kwarg_np_vals, kwargs_idxs, c_kwarg_vals = _get_nested_np_arrays(kwargs_np)
 
-    # TODO temporary, access them directly
-    native_array_flags = test_flags.native_arrays
-    as_variable_flags = test_flags.as_variable
-    container_flags = test_flags.container
-
     # make all lists equal in length
     num_arrays = c_arg_vals + c_kwarg_vals
     if len(input_dtypes) < num_arrays:
         input_dtypes = [input_dtypes[0] for _ in range(num_arrays)]
-    if len(as_variable_flags) < num_arrays:
-        as_variable_flags = [as_variable_flags[0] for _ in range(num_arrays)]
-    if len(native_array_flags) < num_arrays:
-        native_array_flags = [native_array_flags[0] for _ in range(num_arrays)]
-    if len(container_flags) < num_arrays:
-        container_flags = [container_flags[0] for _ in range(num_arrays)]
+    if len(test_flags.as_variable) < num_arrays:
+        test_flags.as_variable = [test_flags.as_variable[0] for _ in range(num_arrays)]
+    if len(test_flags.native_arrays) < num_arrays:
+        test_flags.native_arrays = [
+            test_flags.native_arrays[0] for _ in range(num_arrays)
+        ]
+    if len(test_flags.container) < num_arrays:
+        test_flags.container = [test_flags.container[0] for _ in range(num_arrays)]
 
     # update variable flags to be compatible with float dtype and with_out args
-    as_variable_flags = [
+    test_flags.as_variable = [
         v if ivy.is_float_dtype(d) and not test_flags.with_out else False
-        for v, d in zip(as_variable_flags, input_dtypes)
+        for v, d in zip(test_flags.as_variable, input_dtypes)
     ]
 
     # update instance_method flag to only be considered if the
     # first term is either an ivy.Array or ivy.Container
     instance_method = test_flags.instance_method and (
-        not native_array_flags[0] or container_flags[0]
+        not test_flags.native_arrays[0] or test_flags.container[0]
     )
 
     fn = getattr(ivy, fn_name)
@@ -254,19 +251,21 @@ def test_function(
         kwarg_np_vals=kwarg_np_vals,
         kwargs_idxs=kwargs_idxs,
         input_dtypes=input_dtypes,
-        as_variable_flags=as_variable_flags,
-        native_array_flags=native_array_flags,
-        container_flags=container_flags,
+        test_flags=test_flags,
     )
 
-    if ('out' in kwargs or test_flags.with_out) and 'out' not in inspect.signature(fn).parameters:
+    if ("out" in kwargs or test_flags.with_out) and "out" not in inspect.signature(
+        fn
+    ).parameters:
         raise Exception(f"Function {fn_name} does not have an out parameter")
     # run either as an instance method or from the API directly
     instance = None
     if instance_method:
         is_instance = [
             (not native_flag) or container_flag
-            for native_flag, container_flag in zip(native_array_flags, container_flags)
+            for native_flag, container_flag in zip(
+                test_flags.native_arrays, test_flags.container
+            )
         ]
         arg_is_instance = is_instance[:num_arg_vals]
         kwarg_is_instance = is_instance[num_arg_vals:]
@@ -322,7 +321,7 @@ def test_function(
             ivy.nested_multi_map(lambda x, _: x[0] is x[1], [test_ret, out]),
             lambda x: not x,
         )
-        if not max(container_flags) and ivy.native_inplace_support:
+        if not max(test_flags.container) and ivy.native_inplace_support:
             # these backends do not always support native inplace updates
             assert not ivy.nested_any(
                 ivy.nested_multi_map(
@@ -342,9 +341,7 @@ def test_function(
             kwargs_idxs=kwargs_idxs,
             kwarg_np_vals=kwarg_np_vals,
             input_dtypes=input_dtypes,
-            as_variable_flags=as_variable_flags,
-            native_array_flags=native_array_flags,
-            container_flags=container_flags,
+            test_flags=test_flags,
         )
         ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
             ivy.__dict__[fn_name], *args, **kwargs
@@ -388,9 +385,7 @@ def test_function(
                     args_np=args_np,
                     kwargs_np=kwargs_np,
                     input_dtypes=input_dtypes,
-                    as_variable_flags=as_variable_flags,
-                    native_array_flags=native_array_flags,
-                    container_flags=container_flags,
+                    test_flags=test_flags,
                     rtol_=rtol_,
                     atol_=atol_,
                     xs_grad_idxs=xs_grad_idxs,
@@ -405,9 +400,7 @@ def test_function(
                 args_np=args_np,
                 kwargs_np=kwargs_np,
                 input_dtypes=input_dtypes,
-                as_variable_flags=as_variable_flags,
-                native_array_flags=native_array_flags,
-                container_flags=container_flags,
+                test_flags=test_flags,
                 rtol_=rtol_,
                 atol_=atol_,
                 xs_grad_idxs=xs_grad_idxs,
@@ -491,23 +484,21 @@ def test_frontend_function(
     arg_np_vals, args_idxs, c_arg_vals = _get_nested_np_arrays(args_np)
     kwarg_np_vals, kwargs_idxs, c_kwarg_vals = _get_nested_np_arrays(kwargs_np)
 
-    # TODO
-    as_variable_flags = test_flags.as_variable
-    native_array_flags = test_flags.native_arrays
-
     # make all lists equal in length
     num_arrays = c_arg_vals + c_kwarg_vals
     if len(input_dtypes) < num_arrays:
         input_dtypes = [input_dtypes[0] for _ in range(num_arrays)]
-    if len(as_variable_flags) < num_arrays:
-        as_variable_flags = [as_variable_flags[0] for _ in range(num_arrays)]
-    if len(native_array_flags) < num_arrays:
-        native_array_flags = [native_array_flags[0] for _ in range(num_arrays)]
+    if len(test_flags.as_variable) < num_arrays:
+        test_flags.as_variable = [test_flags.as_variable[0] for _ in range(num_arrays)]
+    if len(test_flags.native_arrays) < num_arrays:
+        test_flags.native_arrays = [
+            test_flags.native_arrays[0] for _ in range(num_arrays)
+        ]
 
     # update var flags to be compatible with float dtype and with_out args
-    as_variable_flags = [
+    test_flags.as_variable = [
         v if ivy.is_float_dtype(d) and not test_flags.with_out else False
-        for v, d in zip(as_variable_flags, input_dtypes)
+        for v, d in zip(test_flags.as_variable, input_dtypes)
     ]
 
     # frontend function
@@ -519,7 +510,7 @@ def test_frontend_function(
     function_module = importlib.import_module(frontend_submods)
     frontend_fn = getattr(function_module, fn_name)
 
-    args, kwargs, _, _, _ = create_args_kwargs(
+    args, kwargs, = create_frontend_args_kwargs(
         args_np=args_np,
         arg_np_vals=arg_np_vals,
         args_idxs=args_idxs,
@@ -527,8 +518,7 @@ def test_frontend_function(
         kwarg_np_vals=kwarg_np_vals,
         kwargs_idxs=kwargs_idxs,
         input_dtypes=input_dtypes,
-        as_variable_flags=as_variable_flags,
-        native_array_flags=native_array_flags,
+        test_flags=test_flags,
     )
     args_ivy, kwargs_ivy = ivy.args_to_ivy(*args, **kwargs)
 
@@ -774,9 +764,7 @@ def gradient_test(
     args_np,
     kwargs_np,
     input_dtypes,
-    as_variable_flags,
-    native_array_flags,
-    container_flags,
+    test_flags,
     rtol_: float = None,
     atol_: float = 1e-06,
     xs_grad_idxs=None,
@@ -804,9 +792,7 @@ def gradient_test(
         kwarg_np_vals=kwarg_np_vals,
         kwargs_idxs=kwargs_idxs,
         input_dtypes=input_dtypes,
-        as_variable_flags=as_variable_flags,
-        native_array_flags=native_array_flags,
-        container_flags=container_flags,
+        test_flags=test_flags,
     )
     _, grads = ivy.execute_with_gradients(
         grad_fn,
@@ -833,9 +819,7 @@ def gradient_test(
         kwarg_np_vals=kwarg_np_vals,
         kwargs_idxs=kwargs_idxs,
         input_dtypes=input_dtypes,
-        as_variable_flags=as_variable_flags,
-        native_array_flags=native_array_flags,
-        container_flags=container_flags,
+        test_flags=test_flags,
     )
     _, grads_from_gt = ivy.execute_with_gradients(
         grad_fn,
@@ -1009,8 +993,7 @@ def test_method(
         kwarg_np_vals=con_kwarg_np_vals,
         kwargs_idxs=con_kwargs_idxs,
         input_dtypes=init_input_dtypes,
-        as_variable_flags=init_flags.as_variable,
-        native_array_flags=init_flags.native_arrays,
+        test_flags=init_flags,
     )
     # end constructor #
 
@@ -1060,9 +1043,7 @@ def test_method(
         kwarg_np_vals=met_kwarg_np_vals,
         kwargs_idxs=met_kwargs_idxs,
         input_dtypes=method_input_dtypes,
-        as_variable_flags=method_flags.as_variable,
-        native_array_flags=method_flags.native_arrays,
-        container_flags=method_flags.container_flags,
+        test_flags=method_flags,
     )
     # End Method #
 
@@ -1099,8 +1080,7 @@ def test_method(
         kwarg_np_vals=con_kwarg_np_vals,
         kwargs_idxs=con_kwargs_idxs,
         input_dtypes=init_input_dtypes,
-        as_variable_flags=init_flags.as_variable,
-        native_array_flags=init_flags.native_arrays,
+        test_flags=init_flags,
     )
     args_gt_method, kwargs_gt_method, _, _, _ = create_args_kwargs(
         args_np=args_np_method,
@@ -1110,9 +1090,7 @@ def test_method(
         kwarg_np_vals=met_kwarg_np_vals,
         kwargs_idxs=met_kwargs_idxs,
         input_dtypes=method_input_dtypes,
-        as_variable_flags=method_flags.as_variable,
-        native_array_flags=method_flags.native_arrays,
-        container_flags=method_flags.container_flags,
+        test_flags=method_flags,
     )
     ins_gt = ivy.__dict__[class_name](*args_gt_constructor, **kwargs_gt_constructor)
     # ToDo : remove this when the handle_method can properly compute unsupported dtypes
@@ -1161,9 +1139,7 @@ def test_method(
                     args_np=args_np_method,
                     kwargs_np=kwargs_np_method,
                     input_dtypes=method_input_dtypes,
-                    as_variable_flags=method_flags.as_variable,
-                    native_array_flags=method_flags.native_arrays,
-                    container_flags=method_flags.container_flags,
+                    test_flags=method_flags,
                     rtol_=rtol_,
                     atol_=atol_,
                     xs_grad_idxs=xs_grad_idxs,
@@ -1181,9 +1157,7 @@ def test_method(
                 args_np=args_np_method,
                 kwargs_np=kwargs_np_method,
                 input_dtypes=method_input_dtypes,
-                as_variable_flags=method_flags.as_variable,
-                native_array_flags=method_flags.native_arrays,
-                container_flags=method_flags.container_flags,
+                test_flags=method_flags,
                 rtol_=rtol_,
                 atol_=atol_,
                 xs_grad_idxs=xs_grad_idxs,
@@ -1267,8 +1241,6 @@ def test_frontend_method(
     if isinstance(frontend, list):
         frontend, frontend_proc = frontend
 
-    # split the arguments into their positional and keyword components
-
     # Constructor arguments #
 
     args_np_constructor, kwargs_np_constructor = kwargs_to_args_n_kwargs(
@@ -1306,7 +1278,7 @@ def test_frontend_method(
     ]
 
     # Create Args
-    args_constructor, kwargs_constructor, _, _, _ = create_args_kwargs(
+    args_constructor, kwargs_constructor = create_frontend_args_kwargs(
         args_np=args_np_constructor,
         arg_np_vals=con_arg_np_vals,
         args_idxs=con_args_idxs,
@@ -1314,8 +1286,7 @@ def test_frontend_method(
         kwarg_np_vals=con_kwarg_np_vals,
         kwargs_idxs=con_kwargs_idxs,
         input_dtypes=init_input_dtypes,
-        as_variable_flags=init_flags.as_variable,
-        native_array_flags=init_flags.native_arrays,
+        test_flags=init_flags,
     )
     # End constructor #
 
@@ -1352,7 +1323,7 @@ def test_frontend_method(
     ]
 
     # Create Args
-    args_method, kwargs_method, _, _, _ = create_args_kwargs(
+    args_method, kwargs_method = create_frontend_args_kwargs(
         args_np=args_np_method,
         arg_np_vals=met_arg_np_vals,
         args_idxs=met_args_idxs,
@@ -1360,8 +1331,7 @@ def test_frontend_method(
         kwarg_np_vals=met_kwarg_np_vals,
         kwargs_idxs=met_kwargs_idxs,
         input_dtypes=method_input_dtypes,
-        as_variable_flags=method_flags.as_variable,
-        native_array_flags=method_flags.native_arrays,
+        test_flags=method_flags,
     )
     # End Method #
 
@@ -1558,7 +1528,7 @@ def _get_nested_np_arrays(nest):
     return ret, indices, len(ret)
 
 
-def create_args_kwargs(
+def create_frontend_args_kwargs(
     *,
     args_np,
     arg_np_vals,
@@ -1567,9 +1537,7 @@ def create_args_kwargs(
     kwarg_np_vals,
     kwargs_idxs,
     input_dtypes,
-    as_variable_flags,
-    native_array_flags=None,
-    container_flags=None,
+    test_flags: Union[pf.FrontendFunctionTestFlags, pf.FrontendMethodTestFlags],
 ):
     """Creates arguments and keyword-arguments for the function to test.
 
@@ -1581,63 +1549,81 @@ def create_args_kwargs(
         A dictionary of keyword-arguments in Numpy.
     input_dtypes
         data-types of the input arguments and keyword-arguments.
-    as_variable_flags
-        A list of booleans. if True for a corresponding input argument, it is called
-        as an variable.
-    native_array_flags
-        if not None, the corresponding argument is called as a Native Array.
-    container_flags
-        if not None, the corresponding argument is called as an Ivy Container.
+
+    Returns
+    -------
+    Arguments, Keyword-arguments
+    """
+    # create args
+    def _apply_flags(args_to_iterate):
+        ret = []
+        for i, entry in enumerate(args_to_iterate):
+            x = ivy.array(entry, dtype=input_dtypes[i])
+            if test_flags.as_variable[i]:
+                x = _variable(x)
+            if test_flags.native_arrays[i]:
+                x = ivy.to_native(x)
+            ret.append(x)
+        return ret
+
+    args = ivy.copy_nest(args_np, to_mutable=False)
+    ivy.set_nest_at_indices(args, args_idxs, _apply_flags(arg_np_vals))
+
+    # create kwargs
+    kwargs = ivy.copy_nest(kwargs_np, to_mutable=False)
+    ivy.set_nest_at_indices(kwargs, kwargs_idxs, _apply_flags(kwarg_np_vals))
+    return args, kwargs
+
+
+def create_args_kwargs(
+    *,
+    args_np,
+    arg_np_vals,
+    args_idxs,
+    kwargs_np,
+    kwarg_np_vals,
+    kwargs_idxs,
+    input_dtypes,
+    test_flags: Union[pf.FunctionTestFlags, pf.MethodTestFlags],
+):
+    """Creates arguments and keyword-arguments for the function to test.
+
+    Parameters
+    ----------
+    args_np
+        A dictionary of arguments in Numpy.
+    kwargs_np
+        A dictionary of keyword-arguments in Numpy.
+    input_dtypes
+        data-types of the input arguments and keyword-arguments.
 
     Returns
     -------
     Arguments, Keyword-arguments, number of arguments, and indexes on arguments and
     keyword-arguments.
     """
+
+    def _apply_flags(args_to_iterate):
+        ret = []
+        for i, entry in enumerate(args_to_iterate):
+            x = ivy.array(entry, dtype=input_dtypes[i])
+            if test_flags.as_variable[i]:
+                x = _variable(x)
+            if test_flags.native_arrays[i]:
+                x = ivy.to_native(x)
+            if test_flags.container[i]:
+                x = as_cont(x=x)
+            ret.append(x)
+        return ret
+
     # create args
-    num_arg_vals = len(arg_np_vals)
-    arg_array_vals = [
-        ivy.array(x, dtype=d) for x, d in zip(arg_np_vals, input_dtypes[:num_arg_vals])
-    ]
-    arg_array_vals = [
-        _variable(x) if v else x
-        for x, v in zip(arg_array_vals, as_variable_flags[:num_arg_vals])
-    ]
-    if native_array_flags:
-        arg_array_vals = [
-            ivy.to_native(x) if n else x
-            for x, n in zip(arg_array_vals, native_array_flags[:num_arg_vals])
-        ]
-    if container_flags:
-        arg_array_vals = [
-            as_cont(x=x) if c else x
-            for x, c in zip(arg_array_vals, container_flags[:num_arg_vals])
-        ]
     args = ivy.copy_nest(args_np, to_mutable=False)
-    ivy.set_nest_at_indices(args, args_idxs, arg_array_vals)
+    ivy.set_nest_at_indices(args, args_idxs, _apply_flags(arg_np_vals))
 
     # create kwargs
-    kwarg_array_vals = [
-        ivy.array(x, dtype=d)
-        for x, d in zip(kwarg_np_vals, input_dtypes[num_arg_vals:])
-    ]
-    kwarg_array_vals = [
-        _variable(x) if v else x
-        for x, v in zip(kwarg_array_vals, as_variable_flags[num_arg_vals:])
-    ]
-    if native_array_flags:
-        kwarg_array_vals = [
-            ivy.to_native(x) if n else x
-            for x, n in zip(kwarg_array_vals, native_array_flags[num_arg_vals:])
-        ]
-    if container_flags:
-        kwarg_array_vals = [
-            as_cont(x=x) if c else x
-            for x, c in zip(kwarg_array_vals, container_flags[num_arg_vals:])
-        ]
     kwargs = ivy.copy_nest(kwargs_np, to_mutable=False)
-    ivy.set_nest_at_indices(kwargs, kwargs_idxs, kwarg_array_vals)
-    return args, kwargs, num_arg_vals, args_idxs, kwargs_idxs
+    ivy.set_nest_at_indices(kwargs, kwargs_idxs, _apply_flags(kwarg_np_vals))
+    return args, kwargs, len(arg_np_vals), args_idxs, kwargs_idxs
 
 
 def convtrue(argument):

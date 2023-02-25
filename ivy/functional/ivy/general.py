@@ -3131,7 +3131,10 @@ def multiprocessing(context: str = None):
 @handle_array_like_without_promotion
 @handle_array_function
 def shape(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, as_array: bool = False
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    as_array: bool = False,
 ) -> Union[ivy.Shape, ivy.NativeShape]:
     """Returns the shape of the array ``x``.
 
@@ -3149,7 +3152,7 @@ def shape(
 
     Examples
     --------
-    >>> x = ivy.array([[-1, 0, 1],[1, 0, -1]])
+    >>> x = ivy.array([[-1, 0, 1], [1, 0, -1]])
     >>> y = ivy.shape(x)
     >>> z = ivy.shape(x, as_array = True)
     >>> print(y)

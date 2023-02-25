@@ -26,7 +26,7 @@ class Variable:
             + str(self._ivy_array.dtype)
             + ")"
         )
-    
+
     # Properties #
     # ---------- #
 
@@ -53,21 +53,21 @@ class Variable:
 
     def assign(self, value, use_locking=None, name=None, read_value=True):
         ivy.utils.assertions.check_equal(
-            value.shape if hasattr(value, "ivy_array") else ivy.shape(value), 
+            value.shape if hasattr(value, "ivy_array") else ivy.shape(value),
             self.shape,
         )
         self._ivy_array = value._ivy_array
 
     def assign_add(self, delta, use_locking=None, name=None, read_value=True):
         ivy.utils.assertions.check_equal(
-            delta.shape if hasattr(delta, "ivy_array") else ivy.shape(delta), 
+            delta.shape if hasattr(delta, "ivy_array") else ivy.shape(delta),
             self.shape,
         )
         self._ivy_array = tf_frontend.math.add(self._ivy_array, delta._ivy_array)
 
     def assign_sub(self, delta, use_locking=None, name=None, read_value=True):
         ivy.utils.assertions.check_equal(
-            delta.shape if hasattr(delta, "ivy_array") else ivy.shape(delta), 
+            delta.shape if hasattr(delta, "ivy_array") else ivy.shape(delta),
             self.shape,
         )
         self._ivy_array = tf_frontend.math.subtract(self._ivy_array, delta._ivy_array)
