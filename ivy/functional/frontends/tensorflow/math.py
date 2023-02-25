@@ -1,6 +1,6 @@
 # global
 import ivy
-from ivy import with_supported_dtypes
+from ivy import with_supported_dtypes, with_unsupported_dtypes
 from ivy.functional.frontends.tensorflow import check_tensorflow_casting
 from ivy.functional.frontends.tensorflow.func_wrapper import (
     to_ivy_arrays_and_back,
@@ -18,6 +18,11 @@ def accumulate_n(inputs, input_type=None, shape=None, dtype=None, name=None):
 def add(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return ivy.add(x, y)
+
+
+@to_ivy_arrays_and_back
+def exp(x, name=None):
+    return ivy.exp(x)
 
 
 @to_ivy_arrays_and_back
@@ -52,10 +57,10 @@ def confusion_matrix(
     )
 
     # Sanity check (potential optimization)
-    ivy.assertions.check_greater(
+    ivy.utils.assertions.check_greater(
         labels, 0, allow_equal=True, message="labels contains negative values"
     )
-    ivy.assertions.check_greater(
+    ivy.utils.assertions.check_greater(
         predictions, 0, allow_equal=True, message="predictions contains negative values"
     )
 
@@ -63,16 +68,16 @@ def confusion_matrix(
         num_classes = max(ivy.max(labels), ivy.max(predictions)) + 1
     else:
         num_classes_int64 = ivy.astype(ivy.array(num_classes), ivy.int64, copy=False)
-        ivy.assertions.check_less(
+        ivy.utils.assertions.check_less(
             labels, num_classes_int64, message="labels out of bound"
         )
-        ivy.assertions.check_less(
+        ivy.utils.assertions.check_less(
             predictions, num_classes_int64, message="predictions out of bound"
         )
 
     if weights is not None:
         weights = ivy.array(weights)
-        ivy.assertions.check_equal(
+        ivy.utils.assertions.check_equal(
             ivy.shape(predictions),
             ivy.shape(weights),
             message="weights shape do not match predictions",
@@ -197,7 +202,7 @@ def negative(x, name=None):
 
 @to_ivy_arrays_and_back
 def polyval(coeffs, x, name=None):
-    ivy.assertions.check_isinstance(coeffs, list)
+    ivy.utils.assertions.check_isinstance(coeffs, list)
     x = ivy.array(x)
     if len(coeffs) < 1:
         return ivy.zeros_like(x, dtype=x.dtype)
@@ -310,6 +315,12 @@ def subtract(x, y, name=None):
 
 
 @to_ivy_arrays_and_back
+def squared_difference(x, y, name=None):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.square(ivy.subtract(x, y))
+
+
+@to_ivy_arrays_and_back
 def tan(x, name=None):
     return ivy.tan(x)
 
@@ -318,7 +329,7 @@ def tan(x, name=None):
 def unsorted_segment_mean(
     data, segment_ids, num_segments, name="unsorted_segment_mean"
 ):
-    ivy.assertions.check_equal(list(segment_ids.shape), [list(data.shape)[0]])
+    ivy.utils.assertions.check_equal(list(segment_ids.shape), [list(data.shape)[0]])
     x = ivy.zeros(tuple([num_segments] + (list(data.shape))[1:]))
     count = ivy.zeros((num_segments,))
     for i in range((segment_ids).shape[0]):
@@ -333,7 +344,7 @@ def unsorted_segment_mean(
 def unsorted_segment_sqrt_n(
     data, segment_ids, num_segments, name="unsorted_segement_sqrt_n"
 ):
-    ivy.assertions.check_equal(list(segment_ids.shape), [list(data.shape)[0]])
+    ivy.utils.assertions.check_equal(list(segment_ids.shape), [list(data.shape)[0]])
     x = ivy.zeros(tuple([num_segments] + (list(data.shape))[1:]))
     count = ivy.zeros((num_segments,))
     for i in range((segment_ids).shape[0]):
@@ -423,3 +434,20 @@ def rsqrt(x, name=None):
 @to_ivy_arrays_and_back
 def nextafter(x1, x2, name=None):
     return ivy.nextafter(x1, x2)
+
+
+@with_unsupported_dtypes(
+    {
+        "1.2.0": ("float16", "complex64", "complex128"),
+        "1.8.0 and below": ("float16"),
+        "2.9.0 and below": ("int8", "int16", "uint8", "uint16", "uint32", "uint64"),
+    },
+    "tensorflow",
+)
+def abs(x, name=None):
+    return ivy.abs(x)
+
+
+@to_ivy_arrays_and_back
+def log_softmax(logits, axis=None):
+    return ivy.log_softmax(logits, axis=axis)

@@ -30,6 +30,8 @@ def nanmean(
     dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if isinstance(axis, list):
+        axis = tuple(axis)
     return jnp.nanmean(a, axis=axis, keepdims=keepdims, dtype=dtype, out=out)
 
 
@@ -39,7 +41,7 @@ def unravel_index(
     /,
     *,
     out: Optional[JaxArray] = None,
-) -> JaxArray:
+) -> Tuple:
     return jnp.unravel_index(indices, shape)
 
 
@@ -49,8 +51,8 @@ def quantile(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    interpolation: str = "linear",
-    keepdims: bool = False,
+    interpolation: Optional[str] = "linear",
+    keepdims: Optional[bool] = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
 

@@ -90,7 +90,7 @@ def conv1d_transpose(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
     strides: Union[int, Tuple[int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: str,
     /,
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
@@ -101,7 +101,7 @@ def conv1d_transpose(
     if ivy.dev(x) == "cpu" and (
         (dilations > 1) if isinstance(dilations, int) else any(d > 1 for d in dilations)
     ):
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             "Tensorflow does not support dilations greater than 1 when device is cpu"
         )
     if data_format == "NCW":
@@ -110,7 +110,6 @@ def conv1d_transpose(
     output_shape = _output_shape(
         x.shape, filters.shape, output_shape, strides, padding, 1, dilations
     )
-    padding = padding if isinstance(padding, str) else "VALID"
     res = tf.nn.conv1d_transpose(
         x, filters, output_shape, strides, padding, "NWC", dilations
     )
@@ -145,7 +144,7 @@ def conv2d_transpose(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
     strides: Union[int, Tuple[int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: str,
     /,
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
@@ -156,7 +155,7 @@ def conv2d_transpose(
     if ivy.dev(x) == "cpu" and (
         (dilations > 1) if isinstance(dilations, int) else any(d > 1 for d in dilations)
     ):
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             "Tensorflow does not support dilations greater than 1 when device is cpu"
         )
     if data_format == "NCHW":
@@ -165,7 +164,6 @@ def conv2d_transpose(
     output_shape = _output_shape(
         x.shape, filters.shape, output_shape, strides, padding, 2, dilations
     )
-    padding = padding if isinstance(padding, str) else "VALID"
     res = tf.nn.conv2d_transpose(
         x, filters, output_shape, strides, padding, "NHWC", dilations
     )
@@ -230,7 +228,7 @@ def conv3d_transpose(
     x: Tensor,
     filters: Tensor,
     strides: Union[int, Tuple[int, int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: str,
     /,
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
@@ -241,7 +239,7 @@ def conv3d_transpose(
     if ivy.dev(x) == "cpu" and (
         (dilations > 1) if isinstance(dilations, int) else any(d > 1 for d in dilations)
     ):
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             "Tensorflow does not support dilations greater than 1 when device is cpu"
         )
     strides = [1] + ([strides] * 3 if isinstance(strides, int) else strides) + [1]
@@ -254,7 +252,6 @@ def conv3d_transpose(
     output_shape = _output_shape(
         x.shape, filters.shape, output_shape, strides[1:], padding, 3, dilations
     )
-    padding = padding if isinstance(padding, str) else "VALID"
     res = tf.nn.conv3d_transpose(
         x, filters, output_shape, strides, padding, "NDHWC", dilations
     )
@@ -377,7 +374,7 @@ def conv_general_transpose(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
     strides: Union[int, Tuple[int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: str,
     /,
     *,
     dims: Optional[int] = 2,

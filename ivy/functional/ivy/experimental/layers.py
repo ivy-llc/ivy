@@ -12,7 +12,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     integer_arrays_to_float,
 )
-from ivy.exceptions import handle_exceptions
+from ivy.utils.exceptions import handle_exceptions
 
 
 @handle_nestable
@@ -666,6 +666,55 @@ def dropout1d(
     )
 
 
+@handle_nestable
+@handle_exceptions
+@to_native_arrays_and_back
+@handle_array_like_without_promotion
+def dropout3d(
+    x: Union[ivy.Array, ivy.NativeArray],
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NDHWC",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Randomly zero out entire channels with probability prob using samples from
+     a Bernoulli distribution and the remaining channels are scaled by (1/1-prob).
+     In this case, dropout3d performs a channel-wise dropout but assumes
+     a channel is a 1D feature map.
+
+    Parameters
+    ----------
+    x
+        a 4D or 5D input array. Should have a floating-point data type.
+    prob
+        probability of a channel to be zero-ed.
+    training
+        controls whether dropout3d is performed during training or ignored
+        during testing.
+    data_format
+        "NDHWC" or "NCDHW". Defaults to "NDHWC".
+    out
+        optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array with some channels zero-ed and the rest of channels are
+         scaled by (1/1-prob).
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    """
+    return ivy.current_backend(x).dropout3d(
+        x, prob, training=training, data_format=data_format, out=out
+    )
+
+
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_exceptions
@@ -771,7 +820,9 @@ def embedding(
     ivy.array([[1., 2., 3.],
                 [7., 8., 9.]])
     """
-    ivy.assertions.check_equal(len(weights.shape), 2, message="weights must be 2-d")
+    ivy.utils.assertions.check_equal(
+        len(weights.shape), 2, message="weights must be 2-d"
+    )
 
     ret = ivy.empty(
         indices.shape + (weights.shape[1],), dtype=ivy.as_ivy_dtype(weights.dtype)
@@ -880,11 +931,11 @@ def interp(x, xp, fp, left=None, right=None, period=None):
     x = ivy.astype(x_arr, "float64")
     xp = ivy.astype(ivy.array(xp), "float64")
     fp = ivy.astype(ivy.array(fp), "float64")
-    ivy.assertions.check_equal(xp.ndim, 1)
-    ivy.assertions.check_equal(fp.ndim, 1)
-    ivy.assertions.check_equal(xp.shape[0], fp.shape[0])
+    ivy.utils.assertions.check_equal(xp.ndim, 1)
+    ivy.utils.assertions.check_equal(fp.ndim, 1)
+    ivy.utils.assertions.check_equal(xp.shape[0], fp.shape[0])
     if period is not None:
-        ivy.assertions.check_equal(period, 0, inverse=True)
+        ivy.utils.assertions.check_equal(period, 0, inverse=True)
         period = ivy.abs(period)
         x = ivy.remainder(x, period)
         xp = ivy.remainder(xp, period)
@@ -933,8 +984,39 @@ def interp(x, xp, fp, left=None, right=None, period=None):
         return ivy.astype(ivy.array(ret), "float64")
 
 
+def _fill_triangle_kernel(x):
+    return ivy.maximum(0, 1 - ivy.abs(x))
+
+
+def compute_weight_mat(
+    input_size, output_size, scale, align_corners, kernel_fn, antialias: bool
+):
+    inv_scale = 1.0 / scale
+    kernel_scale = ivy.maximum(inv_scale, 1.0) if antialias else 1.0
+    if not align_corners or align_corners is None:
+        sample_f = (ivy.arange(output_size) + 0.5) * inv_scale - 0.5
+        x = ivy.abs(sample_f[None, :] - ivy.arange(input_size)[:, None]) / kernel_scale
+    else:
+        sample_f = ivy.linspace(0, input_size - 1, output_size)
+        x = ivy.abs(sample_f[None, :] - ivy.arange(input_size)[:, None]) / (
+            kernel_scale
+        )
+    weights = kernel_fn(x)
+    total_weight_sum = ivy.sum(weights, axis=0, keepdims=True)
+    weights = ivy.where(
+        ivy.abs(total_weight_sum) > 1000.0 * float(ivy.finfo("float32").eps),
+        ivy.divide(weights, ivy.where(total_weight_sum != 0, total_weight_sum, 1)),
+        0,
+    )
+    input_size_minus_0_5 = input_size if align_corners else input_size - 0.5
+    return ivy.where(
+        ivy.logical_and(sample_f >= -0.5, sample_f <= input_size_minus_0_5)[None, :],
+        weights,
+        0,
+    )
+
+
 @to_native_arrays_and_back
-@handle_exceptions
 @handle_out_argument
 @handle_nestable
 def interpolate(
@@ -988,90 +1070,26 @@ def interpolate(
     """
     dims = len(x.shape) - 2
     size = (size,) * dims if isinstance(size, int) else tuple(size)
-    if mode == "linear":
-        size = size[0]
-        if not align_corners or align_corners is None:
-            x_up = ivy.arange(0, ivy.shape(x)[-1])
-            missing = (ivy.arange(0, size) + 0.5) * (ivy.shape(x)[-1] / size) - 0.5
-        else:
-            x_up = ivy.linspace(0, 1, ivy.shape(x)[-1])
-            missing = ivy.linspace(0, 1, size)
-        ret = ivy.zeros(ivy.shape(x)[:-1] + (size,))
-        for i, ba in enumerate(x):
-            for j, ch in enumerate(ba):
-                ret[i][j] = ivy.interp(missing, x_up, ch)
-    elif mode == "bilinear":
-        if not align_corners or align_corners is None:
-            x_up_h = ivy.arange(0, ivy.shape(x)[-2])
-            x_up_w = ivy.arange(0, ivy.shape(x)[-1])
-            missing_h = (ivy.arange(0, size[0]) + 0.5) * (
-                ivy.shape(x)[-2] / size[0]
-            ) - 0.5
-            missing_w = (ivy.arange(0, size[1]) + 0.5) * (
-                ivy.shape(x)[-1] / size[1]
-            ) - 0.5
-        else:
-            x_up_h = ivy.linspace(0, 1, ivy.shape(x)[-2])
-            x_up_w = ivy.linspace(0, 1, ivy.shape(x)[-1])
-            missing_h = ivy.linspace(0, 1, size[0])
-            missing_w = ivy.linspace(0, 1, size[1])
-        ret = ivy.zeros(ivy.shape(x)[:-2] + (size[1], size[0]))
-        for i, ba in enumerate(x):
-            for j, ch in enumerate(ba):
-                row_ret = ivy.zeros((ivy.shape(x)[-2], size[1]))
-                for k, row in enumerate(ch):
-                    row_ret[k] = ivy.interp(missing_w, x_up_w, row)
-                row_ret = row_ret.T
-                for k, col in enumerate(row_ret):
-                    ret[i][j][k] = ivy.interp(missing_h, x_up_h, col)
-        ret = ivy.permute_dims(ret, (0, 1, 3, 2))
-    elif mode == "trilinear":
-        if not align_corners or align_corners is None:
-            x_up_d = ivy.arange(0, ivy.shape(x)[-3])
-            x_up_h = ivy.arange(0, ivy.shape(x)[-2])
-            x_up_w = ivy.arange(0, ivy.shape(x)[-1])
-            missing_d = (ivy.arange(0, size[0]) + 0.5) * (
-                ivy.shape(x)[-3] / size[0]
-            ) - 0.5
-            missing_h = (ivy.arange(0, size[1]) + 0.5) * (
-                ivy.shape(x)[-2] / size[1]
-            ) - 0.5
-            missing_w = (ivy.arange(0, size[2]) + 0.5) * (
-                ivy.shape(x)[-1] / size[2]
-            ) - 0.5
-        else:
-            x_up_d = ivy.linspace(0, 1, ivy.shape(x)[-3])
-            x_up_h = ivy.linspace(0, 1, ivy.shape(x)[-2])
-            x_up_w = ivy.linspace(0, 1, ivy.shape(x)[-1])
-            missing_d = ivy.linspace(0, 1, size[0])
-            missing_h = ivy.linspace(0, 1, size[1])
-            missing_w = ivy.linspace(0, 1, size[2])
-        ret = ivy.zeros(ivy.shape(x)[:-3] + (size[1], size[2], size[0]))
-        for i, ba in enumerate(x):
-            for j, ch in enumerate(ba):
-                depth_ret = ivy.zeros((x.shape[-3], size[2], size[1]))
-                row_ret = ivy.zeros((ivy.shape(x)[-3], ivy.shape(x)[-2], size[2]))
-                for k, depth in enumerate(ch):
-                    for (
-                        l,
-                        row,
-                    ) in enumerate(ch[k]):
-                        row_ret[k][l] = ivy.interp(missing_w, x_up_w, row)
-                row_ret = row_ret.transpose((0, 2, 1))
-                for k, row in enumerate(ch):
-                    for (
-                        l,
-                        col,
-                    ) in enumerate(row_ret[k]):
-                        depth_ret[k][l] = ivy.interp(missing_h, x_up_h, col)
-                depth_ret = depth_ret.transpose((2, 1, 0))
-                for k, col in enumerate(depth_ret):
-                    for (
-                        l,
-                        depth,
-                    ) in enumerate(depth_ret[k]):
-                        ret[i][j][k][l] = ivy.interp(missing_d, x_up_d, depth)
-        ret = ret.transpose((0, 1, 4, 2, 3))
+    spatial_dims = [2 + i for i in range(dims)]
+    input_shape = ivy.shape(x)
+    scale = [ivy.divide(size[i], input_shape[spatial_dims[i]]) for i in range(dims)]
+    if mode == "bilinear" or mode == "linear" or mode == "trilinear":
+        if mode == "linear":
+            equation = "ijk,km->ijm"
+        elif mode == "bilinear":
+            equation = "ijkl,km,ln->ijmn"
+        elif mode == "trilinear":
+            equation = "ijklm,kn,lo,mp->ijnop"
+        output_shape = tuple(input_shape[:2]) + size
+        operands = []
+        for i, d in enumerate(spatial_dims):
+            m = input_shape[d]
+            n = output_shape[d]
+            w = compute_weight_mat(
+                m, n, scale[i], align_corners, _fill_triangle_kernel, antialias
+            ).astype(x.dtype)
+            operands.append(w)
+        ret = ivy.einsum(equation, x, *operands)
     elif mode == "nearest" or mode == "nearest_exact":
         ret = ivy.zeros((x.shape[:2] + tuple(size)))
         for i, ba in enumerate(x):
@@ -1083,19 +1101,19 @@ def interpolate(
                     for d_dim in range(size[0]):
                         for h_dim in range(size[1]):
                             for w_dim in range(size[2]):
-                                ret[i][j][d_dim][h_dim][w_dim] = x[i][j][
+                                ret[i, j, d_dim, h_dim, w_dim] = x[i][j][
                                     round(d_dim // d_scale)
                                 ][round(h_dim // h_scale)][round(w_dim // w_scale)]
                 elif dims == 2:
                     h_scale = size[-2] / x.shape[-2]
                     for h_dim in range(size[0]):
                         for w_dim in range(size[1]):
-                            ret[i][j][h_dim][w_dim] = x[i][j][round(h_dim // h_scale)][
+                            ret[i, j, h_dim, w_dim] = x[i][j][round(h_dim // h_scale)][
                                 round(w_dim // w_scale)
                             ]
                 elif dims == 1:
                     for w_dim in range(size[0]):
-                        ret[i][j][w_dim] = x[i][j][round(w_dim // w_scale)]
+                        ret[i, j, w_dim] = x[i][j][round(w_dim // w_scale)]
     elif mode == "area":
         ret = ivy.zeros((x.shape[:2] + size))
         scale = ivy.divide(ivy.shape(x)[2:], size)
@@ -1121,7 +1139,7 @@ def interpolate(
                                 scale_y = h_index[1] - h_index[0]
                                 scale_x = w_index[1] - w_index[0]
                                 area = scale_z * scale_y * scale_x
-                                ret[i][j][d_dim][h_dim][w_dim] = ivy.sum(
+                                ret[i, j, d_dim, h_dim, w_dim] = ivy.sum(
                                     ch[
                                         d_index[0] : d_index[1],
                                         h_index[0] : h_index[1],
@@ -1142,7 +1160,7 @@ def interpolate(
                             scale_y = h_index[1] - h_index[0]
                             scale_x = w_index[1] - w_index[0]
                             area = scale_y * scale_x
-                            ret[i][j][h_dim][w_dim] = ivy.sum(
+                            ret[i, j, h_dim, w_dim] = ivy.sum(
                                 ch[h_index[0] : h_index[1], w_index[0] : w_index[1]]
                             ) * (1 / area)
                 else:
@@ -1152,10 +1170,10 @@ def interpolate(
                             math.ceil((w_dim + 1) * scale[0]),
                         )
                         scale_x = w_index[1] - w_index[0]
-                        ret[i][j][w_dim] = ivy.sum(ch[w_index[0] : w_index[1]]) * (
+                        ret[i, j, w_dim] = ivy.sum(ch[w_index[0] : w_index[1]]) * (
                             1 / scale_x
                         )
-    return ivy.astype(ret, ivy.dtype(x))
+    return ivy.astype(ret, ivy.dtype(x), out=out)
 
 
 interpolate.mixed_function = True

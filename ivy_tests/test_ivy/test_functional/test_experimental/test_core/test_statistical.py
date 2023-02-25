@@ -50,7 +50,6 @@ def statistical_dtype_values(draw, *, function):
                 | helpers.floats(min_value=0, max_value=max_correction - 1)
             )
         return dtype, values, axis, correction
-
     if function == "quantile":
         q = draw(
             helpers.array_values(
@@ -71,7 +70,6 @@ def statistical_dtype_values(draw, *, function):
             )
         )
         return dtype, values, axis, interpolation, q
-
     return dtype, values, axis
 
 
@@ -80,6 +78,7 @@ def statistical_dtype_values(draw, *, function):
     dtype_x_axis=statistical_dtype_values(function="median"),
     keep_dims=st.booleans(),
     test_gradients=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_median(
     *,
@@ -152,7 +151,7 @@ def max_value_as_shape_prod(draw):
     )
     dtype_and_x = draw(
         helpers.dtype_values_axis(
-            available_dtypes=helpers.get_dtypes("integer"),
+            available_dtypes=["int32", "int64"],
             min_value=0,
             max_value=np.prod(shape) - 1,
         )
@@ -166,10 +165,12 @@ def max_value_as_shape_prod(draw):
     test_gradients=st.just(False),
 )
 def test_unravel_index(
+    *,
     dtype_x_shape,
     test_flags,
     backend_fw,
     fn_name,
+    on_device,
     ground_truth_backend,
 ):
     dtype_and_x, shape = dtype_x_shape
@@ -180,6 +181,7 @@ def test_unravel_index(
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
+        on_device=on_device,
         indices=np.asarray(x[0], dtype=input_dtype[0]),
         shape=shape,
     )

@@ -6,7 +6,7 @@ from typing import Union, Tuple, Iterable
 
 # local
 import ivy
-from ivy.exceptions import handle_exceptions
+from ivy.utils.exceptions import handle_exceptions
 import ivy.functional.frontends.jax as jax_frontend
 
 
@@ -389,7 +389,7 @@ def promote_types_jax(
     try:
         ret = jax_promotion_table[(ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2))]
     except KeyError:
-        raise ivy.exceptions.IvyException("these dtypes are not type promotable")
+        raise ivy.utils.exceptions.IvyException("these dtypes are not type promotable")
     return ret
 
 

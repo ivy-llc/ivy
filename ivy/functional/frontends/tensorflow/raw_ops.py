@@ -127,7 +127,7 @@ def Equal(*, x, y, incompatible_shape_error=True, name="Equal"):
 
     try:
         return ivy.equal(x, y)
-    except (ivy.exceptions.IvyError, ivy.exceptions.IvyBackendException):
+    except (ivy.utils.exceptions.IvyError, ivy.utils.exceptions.IvyBackendException):
         return ivy.array(False)
 
 
@@ -310,7 +310,7 @@ def NotEqual(*, x, y, incompatible_shape_error=True, name="NotEqual"):
 
     try:
         return ivy.not_equal(x, y)
-    except (ivy.exceptions.IvyError, ivy.exceptions.IvyBackendException):
+    except (ivy.utils.exceptions.IvyError, ivy.utils.exceptions.IvyBackendException):
         return ivy.array(True)
 
 
@@ -485,9 +485,7 @@ def Pow(*, x, y, name="Pow"):
     return ivy.pow(x, y)
 
 
-@to_ivy_arrays_and_back
-def Relu6(features, name="Relu6"):
-    return ivy.clip(features, 0, 6)
+Relu6 = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.nn.relu6))
 
 
 Sigmoid = to_ivy_arrays_and_back(
@@ -607,3 +605,8 @@ Elu.supported_dtypes = {
         "float64",
     ),
 }
+
+
+@to_ivy_arrays_and_back
+def LinSpace(*, start, stop, num, name=None):
+    return ivy.linspace(start, stop, num)

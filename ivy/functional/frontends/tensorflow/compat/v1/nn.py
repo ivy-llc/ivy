@@ -1,7 +1,8 @@
 # local
 import ivy
 from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
-from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
+import ivy.functional.frontends.tensorflow.nn as tf_nn
 
 
 # should have float16 as well but sqrt doesn't support it
@@ -29,7 +30,7 @@ def fused_batch_norm(
         elif dims == 5:
             x = ivy.permute_dims(x, axes=(0, 2, 3, 4, 1))
         else:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "input tensor must be of 4 or 5 dimensions, got {}".format(dims)
             )
 
@@ -72,3 +73,26 @@ def fused_batch_norm(
         return y, mean, variance
     else:
         return y, old_mean, old_var
+
+
+@with_unsupported_dtypes({"2.9.0 and below": ("float16",)}, "tensorflow")
+def depthwise_conv2d(
+    input,
+    filter,
+    strides,
+    padding,
+    rate=None,
+    name=None,
+    data_format=None,
+    dilations=None,
+):
+    if rate:
+        dilations = rate
+    return tf_nn.depthwise_conv2d(
+        input,
+        filter,
+        strides,
+        padding=padding,
+        data_format=data_format,
+        dilations=dilations,
+    )
