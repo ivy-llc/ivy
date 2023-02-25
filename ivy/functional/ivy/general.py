@@ -41,6 +41,7 @@ trace_mode_dict = dict()
 trace_mode_dict["frontend"] = "ivy/functional/frontends"
 trace_mode_dict["ivy"] = "ivy/"
 trace_mode_dict["full"] = ""
+trace_mode_dict["none"] = ""
 show_func_wrapper_trace_mode_stack = list()
 
 
@@ -406,7 +407,7 @@ def set_exception_trace_mode(mode: str) -> None:
     global exception_trace_mode_stack
     trace_modes = list(trace_mode_dict.keys())
     ivy.utils.assertions.check_elem_in_list(
-        mode, trace_modes, "trace mode must be one of {}".format(trace_modes)
+        mode, trace_modes, False, "trace mode must be one of {}".format(trace_modes)
     )
     exception_trace_mode_stack.append(mode)
 
@@ -3130,7 +3131,10 @@ def multiprocessing(context: str = None):
 @handle_array_like_without_promotion
 @handle_array_function
 def shape(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, as_array: bool = False
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    as_array: bool = False,
 ) -> Union[ivy.Shape, ivy.NativeShape]:
     """Returns the shape of the array ``x``.
 
@@ -3148,7 +3152,7 @@ def shape(
 
     Examples
     --------
-    >>> x = ivy.array([[-1, 0, 1],[1, 0, -1]])
+    >>> x = ivy.array([[-1, 0, 1], [1, 0, -1]])
     >>> y = ivy.shape(x)
     >>> z = ivy.shape(x, as_array = True)
     >>> print(y)

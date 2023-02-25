@@ -1212,7 +1212,7 @@ class ArrayWithGeneral(abc.ABC):
         -------
         ret
             New array of given shape, with the values scattered at the indices.
-        
+
         Examples
         --------
         With :class:`ivy.Array` input:
