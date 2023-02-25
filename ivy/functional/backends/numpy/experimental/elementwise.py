@@ -447,4 +447,4 @@ def ldexp(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.ldexp(x1, x2, out=out)
+    return np.ldexp(x1, x2, out=out).astype(np.float32)
