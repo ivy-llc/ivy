@@ -347,6 +347,6 @@ def roll(input, shift, axis, name=None):
 
 @to_ivy_arrays_and_back
 def split(
-    value, num_or_size_splits=None, axis=0, num=None, name=None
+    value, num_or_size_splits, axis=0, num=None, name=None
 ):
-    return ivy.split(value, axis=axis)
+    return ivy.split(value, num_or_size_splits=num_or_size_splits, axis=axis, with_remainder=False)

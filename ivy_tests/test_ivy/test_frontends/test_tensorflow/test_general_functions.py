@@ -1495,31 +1495,39 @@ def test_tensorflow_roll(
 # split
 @handle_frontend_test(
     fn_tree="tensorflow.split",
-    dtype_input_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=st.integers(min_value=1, max_value=4),
-        min_num_dims=1,
-        valid_axis=True,
-        force_int_axis=True,
-        shared_dtype=True,
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
+    num_or_size_splits=st.just(1),
+    axis=st.shared(
+        helpers.get_axis(
+            shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+            force_int=True,
+        ),
+        key="target_axis",
+    ),
+    number_positional_args=st.just(2),
     test_with_out=st.just(False),
 )
 def test_tensorflow_split(
     *,
-    dtype_input_axis,
+    dtype_value,
+    num_or_size_splits,
+    axis,
+    on_device,
+    fn_tree,
     frontend,
     test_flags,
-    fn_tree,
-    on_device,
 ):
-    input_dtype, x, axis = dtype_input_axis
+    input_dtype, value = dtype_value
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        test_flags=test_flags,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        value=x,
+        value=value[0],
+        num_or_size_splits=num_or_size_splits,
         axis=axis,
     )
