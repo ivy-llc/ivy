@@ -85,11 +85,11 @@ def std(
     for a in axis:
         size *= x.shape[a]
     if size - correction <= 0:
-        ret = paddle.std(x, axis==axis, unbiased=False, keepdim=keepdims)
+        ret = paddle.std(x, axis=axis, unbiased=False, keepdim=keepdims)
         ret = ivy.full(ret.shape, float("nan"), dtype=ret.dtype)
         return ret
-    ret = torch.mul(
-        torch.std(x, axis=axis, unbiased=False, keepdim=keepdims),
+    ret = paddle.mul(
+        paddle.std(x, axis=axis, unbiased=False, keepdim=keepdims),
         (size / (size - correction)) ** 0.5,
     )
     return ret
@@ -121,21 +121,21 @@ def var(
         return x
     axis = (axis,) if isinstance(axis, int) else tuple(axis)
     if correction == 0:
-        return paddle.std(x, axis=axis, unbiased=False, keepdim=keepdims)
+        return paddle.var(x, axis=axis, unbiased=False, keepdim=keepdims)
     elif correction == 1:
-        return paddle.std(x, axis=axis, unbiased=True, keepdim=keepdims)
+        return paddle.var(x, axis=axis, unbiased=True, keepdim=keepdims)
     size = 1
     for a in axis:
         size *= x.shape[a]
     if size - correction <= 0:
-        ret = paddle.std(x, axis==axis, unbiased=False, keepdim=keepdims)
+        ret = paddle.var(x, axis==axis, unbiased=False, keepdim=keepdims)
         ret = ivy.full(ret.shape, float("nan"), dtype=ret.dtype)
         return ret
     ret = torch.mul(
-        torch.std(x, axis=axis, unbiased=False, keepdim=keepdims),
-        (size / (size - correction)) ** 0.5,
-    )
-    return ret
+        paddle.var(x, axis=axis, unbiased=False, keepdim=keepdims),
+        (size / (size - correction)),
+    ).to(x.dtype)
+    
 
 
 # Extra #
@@ -158,19 +158,19 @@ def cumprod(
     if not (exclusive or reverse):
         return paddle.cumprod(x, dim, dtype=dtype)
     elif exclusive and reverse:
-        x = paddle.cumprod(paddle.flip(x, dim), dim, dtype=dtype)
+        x = paddle.cumprod(paddle.flip(x, dims=(axis,)), dim, dtype=dtype)
         x = paddle.transpose(x, axis, -1)
         x = paddle.concat((paddle.ones_like(x[..., -1:]), x[..., :-1]), -1)
         x = paddle.transpose(x, axis, -1)
-        ret = paddle.flip(x, dim)
+        ret = paddle.flip(x, dims=(axis,))
     elif exclusive:
         x = paddle.transpose(x, axis, -1)
-        x = paddle.cat((torch.ones_like(x[..., -1:]), x[..., :-1]), -1)
+        x = paddle.cat((paddle.ones_like(x[..., -1:]), x[..., :-1]), -1)
         x = paddle.cumprod(x, -1, dtype=dtype)
         ret = paddle.transpose(x, axis, -1)
     else:
-        x = paddle.cumprod(torch.flip(x, dim), dim, dtype=dtype)
-        ret = paddle.flip(x, dim)
+        x = paddle.cumprod(paddle.flip(x, dims=(axis,)), dim, dtype=dtype)
+        ret = paddle.flip(x, dims=(axis,))
     
     return ret
 
