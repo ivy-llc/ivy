@@ -638,11 +638,9 @@ def ldexp(
         neg_exp = tf.cast(tf.math.less(x2, 0), x2.dtype) * x2
         pos_exp = tf.cast(pos_exp, tf.float32)
         neg_exp = tf.cast(neg_exp, tf.float32)
-        x1 = tf.cast(x1, tf.float32)
-        ret = x1 * tf.math.pow(2, pos_exp)
-        ret = ret / tf.math.pow(2, -neg_exp)
+        ret = tf.cast(x1, pos_exp.dtype) * tf.math.pow(2, pos_exp)
+        ret = tf.cast(ret, neg_exp.dtype) / tf.math.pow(2, -neg_exp)
     else:
-        x1 = tf.cast(x1, tf.float32)
         x2 = tf.cast(x2, tf.float32)
-        ret = x1 * tf.math.pow(2, x2)
+        ret = tf.cast(x1, x2.dtype) * tf.math.pow(2, x2)
     return ret
