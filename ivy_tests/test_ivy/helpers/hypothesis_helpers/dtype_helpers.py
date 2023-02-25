@@ -132,10 +132,12 @@ def get_dtypes(
             process = test_globals.CURRENT_FRONTEND_STR[1]
             try:
                 process.stdin.write("1" + "\n")
-                process.stdin.write(f"{str(retrieval_fn.__name__)}"+ "\n")
+                process.stdin.write(f"{str(retrieval_fn.__name__)}" + "\n")
                 process.stdin.write(f"{str(kind)}" + "\n")
-                process.stdin.write(f"{test_globals.CURRENT_DEVICE}"+ "\n")
-                process.stdin.write(f"{test_globals.CURRENT_RUNNING_TEST.fn_tree}"+ "\n")
+                process.stdin.write(f"{test_globals.CURRENT_DEVICE}" + "\n")
+                process.stdin.write(
+                    f"{test_globals.CURRENT_RUNNING_TEST.fn_tree}" + "\n"
+                )
                 process.stdin.flush()
             except Exception as e:
                 print(
