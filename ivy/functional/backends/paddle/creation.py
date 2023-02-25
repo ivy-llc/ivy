@@ -162,7 +162,16 @@ def eye(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if n_cols is None:
+        n_cols = n_rows
+    i = paddle.eye(n_rows, n_cols, dtype=dtype)
+    if batch_shape is None:
+        return to_device(i, device)
+    reshape_dims = [1] * len(batch_shape) + [n_rows, n_cols]
+    tile_dims = list(batch_shape) + [1, 1]
+    i = paddle.reshape(i, reshape_dims)
+    return_mat = paddle.tile(i, tile_dims)
+    return to_device(return_mat, device)
 
 
 def from_dlpack(x, /, *, out: Optional[paddle.Tensor] = None):
