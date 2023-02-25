@@ -86,7 +86,7 @@ def to_scalar(x: paddle.Tensor, /) -> Number:
 
 
 def to_list(x: paddle.Tensor, /) -> list:
-    raise IvyNotImplementedException()
+    return x.tolist()
 
 
 def gather(
