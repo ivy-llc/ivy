@@ -140,8 +140,7 @@ def cov(
 
     fact = tf.cast(fact, tf.as_dtype(dtype))
     c = tf.matmul(X, tf.math.conj(X_T))
-    out = tf.math.truediv(c, fact)
-    return out
+    return tf.math.truediv(c, fact)
 
 
 @with_unsupported_dtypes(

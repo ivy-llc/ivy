@@ -93,8 +93,7 @@ def cov(
             x2 = torch.t(x2)
         X = torch.vstack((X, x2))
 
-    out = torch.cov(X, correction=ddof, fweights=fweights, aweights=aweights)
-    return out
+    return torch.cov(X, correction=ddof, fweights=fweights, aweights=aweights)
 
 
 cov.support_native_out = True

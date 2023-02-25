@@ -65,7 +65,7 @@ def cov(
     if fweights is not None:
         fweights = jnp.asarray(fweights, dtype=jnp.int64)
 
-    out = jnp.cov(
+    return jnp.cov(
         m=x1,
         y=x2,
         rowvar=rowVar,
@@ -74,7 +74,6 @@ def cov(
         fweights=fweights,
         aweights=aweights,
     )
-    return out
 
 
 @with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)

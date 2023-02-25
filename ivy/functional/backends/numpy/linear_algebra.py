@@ -50,7 +50,7 @@ def cov(
     if aweights is not None:
         aweights = aweights.astype(np.float64)
 
-    out = np.cov(
+    return np.cov(
         m=x1,
         y=x2,
         rowvar=rowVar,
@@ -60,7 +60,6 @@ def cov(
         aweights=aweights,
         dtype=dtype,
     )
-    return out
 
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)

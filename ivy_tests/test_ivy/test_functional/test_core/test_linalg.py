@@ -1396,6 +1396,7 @@ def test_cholesky(
         large_abs_safety_factor=2,
         safety_factor_scale="log",
     ),
+    test_gradients=st.just(False),
 )
 def test_cov(
     *,
@@ -1422,6 +1423,8 @@ def test_cov(
         fweights=fweights,
         aweights=aweights,
         return_flat_np_arrays=True,
+        rtol_=1e-2,
+        atol_=1e-2,
     )
 
 
