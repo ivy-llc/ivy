@@ -524,3 +524,12 @@ def xlogy(x: JaxArray, y: JaxArray, /, *, out: Optional[JaxArray] = None) -> Jax
 
 def real(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.real(x)
+
+
+def conj(
+    x: Union[JaxArray],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.conj(x)

@@ -308,16 +308,16 @@ def diff(
     append: Optional[Union[torch.Tensor, int, float, list, tuple]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x = x if type(x) == torch.Tensor else torch.Tensor(x)
+    x = x if type(x) == torch.Tensor else torch.tensor(x)
     prepend = (
         prepend
         if type(prepend) == torch.Tensor or prepend is None
-        else torch.Tensor(prepend)
+        else torch.tensor(prepend)
     )
     append = (
         append
         if type(append) == torch.Tensor or append is None
-        else torch.Tensor(append)
+        else torch.tensor(append)
     )
     return torch.diff(x, n=n, dim=axis, prepend=prepend, append=append)
 
@@ -436,3 +436,13 @@ def xlogy(
 
 def real(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.real(x)
+
+
+def conj(
+    x: Union[torch.Tensor],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    conj_x = torch.conj(x)
+    return torch.resolve_conj(input=conj_x)
