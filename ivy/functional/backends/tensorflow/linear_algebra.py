@@ -796,17 +796,3 @@ def vector_to_skew_symmetric_matrix(
     # BS x 3 x 3
     ret = tf.concat((row1, row2, row3), -2)
     return ret
-
-
-vector_to_skew_symmetric_matrix.unsupported_dtypes = (
-    "int8",
-    "int16",
-    "int32",
-    "int64",
-    "uint8",
-    "uint16",
-    "uint32",
-    "uint64",
-    "float16",
-    "float64",
-)

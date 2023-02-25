@@ -3057,3 +3057,58 @@ def test_tensorflow_Elu(
         features=x[0],
         name=name,
     )
+
+
+@st.composite
+def _LinSpace_helper(draw):
+    shape = ()
+    dtype = draw(st.sampled_from(["float32", "float64"]))
+
+    # Param: start
+    start = draw(
+        helpers.array_values(
+            dtype=dtype,
+            shape=shape,
+            min_value=-5.0,
+            max_value=5.0,
+        ),
+    )
+
+    # Param: stop
+    stop = draw(
+        helpers.array_values(
+            dtype=dtype,
+            shape=shape,
+            min_value=-4.0,
+            max_value=10.0,
+        ),
+    )
+
+    return [dtype] * 2, start, stop
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.LinSpace",
+    dtype_and_params=_LinSpace_helper(),
+    num=helpers.ints(min_value=2, max_value=10),
+)
+def test_tensorflow_LinSpace(
+    *,
+    dtype_and_params,
+    num,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, start, stop = dtype_and_params
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        start=start,
+        stop=stop,
+        num=num,
+        on_device=on_device,
+    )

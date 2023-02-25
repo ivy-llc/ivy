@@ -261,35 +261,25 @@ def _interp_args(draw, scale_factor=False):
     mode = draw(st.sampled_from(["linear", "bilinear", "trilinear", "nearest", "area"]))
     align_corners = draw(st.one_of(st.booleans(), st.none()))
     if mode == "linear":
-        size = draw(helpers.ints(min_value=1, max_value=5))
         num_dims = 3
     elif mode == "bilinear":
-        size = draw(
-            helpers.list_of_size(
-                x=helpers.ints(min_value=1, max_value=5),
-                size=2,
-            )
-        )
         num_dims = 4
     elif mode == "trilinear":
-        size = draw(
-            helpers.list_of_size(
-                x=helpers.ints(min_value=1, max_value=5),
-                size=3,
-            )
-        )
         num_dims = 5
     elif mode == "nearest" or mode == "area":
         dim = draw(helpers.ints(min_value=1, max_value=3))
-        size = draw(
-            helpers.list_of_size(
-                x=helpers.ints(min_value=1, max_value=5),
-                size=dim,
-            )
-        )
-        size = size[0] if dim == 1 else size
         num_dims = dim + 2
         align_corners = None
+    size = draw(
+        st.one_of(
+            helpers.lists(
+                x=helpers.ints(min_value=1, max_value=5),
+                min_size=num_dims - 2,
+                max_size=num_dims - 2,
+            ),
+            st.integers(min_value=1, max_value=5),
+        )
+    )
     dtype, x = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float"),
@@ -326,19 +316,22 @@ def _interp_args(draw, scale_factor=False):
 @handle_test(
     fn_tree="functional.ivy.experimental.interpolate",
     dtype_x_mode=_interp_args(),
+    antialias=st.just(False),
     test_gradients=st.just(False),
     number_positional_args=st.just(2),
 )
 def test_interpolate(
     dtype_x_mode,
+    antialias,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x, mode, size, align_corners = dtype_x_mode
     helpers.test_function(
-        ground_truth_backend="torch",
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -350,6 +343,7 @@ def test_interpolate(
         size=size,
         mode=mode,
         align_corners=align_corners,
+        antialias=antialias,
     )
 
 

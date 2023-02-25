@@ -184,3 +184,7 @@ def isscalar(x, /):
 def left_shift(x1, x2):
     return ivy.isscalar(x1, x2)
 
+
+@to_ivy_arrays_and_back
+def isreal(x, out=None):
+    return ivy.isreal(x, out=out)

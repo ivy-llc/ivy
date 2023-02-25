@@ -27,7 +27,9 @@ def _dtypes(draw):
     return draw(
         st.shared(
             helpers.list_of_size(
-                x=st.sampled_from(draw(helpers.get_dtypes("numeric"))),
+                x=st.sampled_from(
+                    draw(helpers.get_dtypes("numeric", prune_function=False))
+                ),
                 size=1,
             ),
             key="dtype",
@@ -45,7 +47,7 @@ def _requires_grad(draw):
 
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid")
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
 def test_torch_tensor_property_ivy_array(
@@ -65,7 +67,7 @@ def test_torch_tensor_property_ivy_array(
 
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid")
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
 def test_torch_tensor_property_device(
@@ -79,7 +81,7 @@ def test_torch_tensor_property_device(
 
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid")
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
 def test_torch_tensor_property_dtype(
@@ -93,7 +95,7 @@ def test_torch_tensor_property_dtype(
 
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
         ret_shape=True,
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
@@ -2616,6 +2618,38 @@ def test_torch_instance_is_cuda(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        frontend=frontend,
+    )
+
+
+# bitwise_not
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="bitwise_not",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+    ),
+)
+def test_torch_instance_bitwise_not(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        method_all_as_kwargs_np={},
         frontend=frontend,
     )
 
