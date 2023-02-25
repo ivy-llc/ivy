@@ -179,7 +179,10 @@ def scatter_nd(
 def shape(
     x: paddle.Tensor, /, *, as_array: bool = False
 ) -> Union[ivy.Shape, ivy.Array]:
-    raise IvyNotImplementedException()
+    if as_array:
+        return ivy.array(paddle.shape(x), dtype=ivy.default_int_dtype())
+    else:
+        return ivy.Shape(x.shape)
 
 
 def vmap(
