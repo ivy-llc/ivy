@@ -23,7 +23,8 @@ def is_native_array(x, /, *, exclusive=False):
 
 
 def array_equal(x0: paddle.Tensor, x1: paddle.Tensor, /) -> bool:
-    raise IvyNotImplementedException()
+    x0, x1 = ivy.promote_types_of_inputs(x0, x1)
+    return bool(paddle.equal_all(x0, x1))
 
 
 def container_types():
