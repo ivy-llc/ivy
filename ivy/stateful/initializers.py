@@ -128,7 +128,7 @@ class Uniform(Initializer):
         gain
             Scales the output of the distribution.
         """
-        ivy.assertions.check_elem_in_list(
+        ivy.utils.assertions.check_elem_in_list(
             fan_mode, ["fan_in", "fan_out", "fan_sum", "fan_avg"]
         )
         self._numerator = numerator
@@ -159,20 +159,20 @@ class Uniform(Initializer):
             Desired data type.
         """
         if self._fan_mode == "fan_in":
-            ivy.assertions.check_exists(
+            ivy.utils.assertions.check_exists(
                 fan_in,
                 message="input_channels must be specified for fan_in denominator mode",
             )
             fan = fan_in
         elif self._fan_mode == "fan_out":
-            ivy.assertions.check_exists(
+            ivy.utils.assertions.check_exists(
                 fan_out,
                 message="output_channels must be specified for fan_out \
                 denominator mode",
             )
             fan = fan_out
         elif self._fan_mode == "fan_sum":
-            ivy.assertions.check_all_or_any_fn(
+            ivy.utils.assertions.check_all_or_any_fn(
                 fan_in,
                 fan_out,
                 fn=ivy.exists,
@@ -182,7 +182,7 @@ class Uniform(Initializer):
             )
             fan = fan_in + fan_out
         elif self._fan_mode == "fan_avg":
-            ivy.assertions.check_all_or_any_fn(
+            ivy.utils.assertions.check_all_or_any_fn(
                 fan_in,
                 fan_out,
                 fn=ivy.exists,
@@ -192,7 +192,7 @@ class Uniform(Initializer):
             )
             fan = (fan_in + fan_out) / 2
         else:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "Invalid denominator mode, must be one of [ fan_in | fan_out | "
                 "fan_sum | fan_avg ] "
             )
@@ -262,7 +262,7 @@ class KaimingNormal(Initializer):
             - `fan_sum` sets `fan` to the average of the number of input features and
               output features of this neuron.
         """
-        ivy.assertions.check_elem_in_list(
+        ivy.utils.assertions.check_elem_in_list(
             fan_mode, ["fan_in", "fan_out", "fan_sum", "fan_avg"]
         )
         self._mean = mean
@@ -300,20 +300,20 @@ class KaimingNormal(Initializer):
             Desired data type.
         """
         if self._fan_mode == "fan_in":
-            ivy.assertions.check_exists(
+            ivy.utils.assertions.check_exists(
                 fan_in,
                 message="input_channels must be specified for fan_in denominator mode",
             )
             fan = fan_in
         elif self._fan_mode == "fan_out":
-            ivy.assertions.check_exists(
+            ivy.utils.assertions.check_exists(
                 fan_out,
                 message="output_channels must be specified for fan_out \
                 denominator mode",
             )
             fan = fan_out
         elif self._fan_mode == "fan_sum":
-            ivy.assertions.check_all_or_any_fn(
+            ivy.utils.assertions.check_all_or_any_fn(
                 fan_in,
                 fan_out,
                 fn=ivy.exists,
@@ -323,7 +323,7 @@ class KaimingNormal(Initializer):
             )
             fan = fan_in + fan_out
         elif self._fan_mode == "fan_avg":
-            ivy.assertions.check_all_or_any_fn(
+            ivy.utils.assertions.check_all_or_any_fn(
                 fan_in,
                 fan_out,
                 fn=ivy.exists,
@@ -333,7 +333,7 @@ class KaimingNormal(Initializer):
             )
             fan = (fan_in + fan_out) / 2
         else:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "Invalid denominator mode, must be one of [ fan_in | fan_out | "
                 "fan_sum | fan_avg ] "
             )

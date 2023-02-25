@@ -95,6 +95,31 @@ def test_tensorflow_tan(
     )
 
 
+# exp
+@handle_frontend_test(
+    fn_tree="tensorflow.math.exp",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_exp(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 # multiply
 @handle_frontend_test(
     fn_tree="tensorflow.math.multiply",
@@ -166,6 +191,36 @@ def test_tensorflow_maximum(
     test_with_out=st.just(False),
 )
 def test_tensorflow_subtract(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
+
+
+# squared_difference
+@handle_frontend_test(
+    fn_tree="tensorflow.math.squared_difference",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_squared_difference(
     *,
     dtype_and_x,
     frontend,
@@ -700,10 +755,11 @@ def test_tensorflow_reduce_mean(
 # reduce_variance
 @handle_frontend_test(
     fn_tree="tensorflow.math.reduce_variance",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+    dtype_and_x=statistical_dtype_values(
+        function="var",
     ),
     test_with_out=st.just(False),
+    keepdims=st.booleans(),
 )
 def test_tensorflow_reduce_variance(
     *,
@@ -712,8 +768,9 @@ def test_tensorflow_reduce_variance(
     test_flags,
     fn_tree,
     on_device,
+    keepdims,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, axis, ddof = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -721,6 +778,10 @@ def test_tensorflow_reduce_variance(
         fn_tree=fn_tree,
         on_device=on_device,
         input_tensor=x[0],
+        axis=axis,
+        atol=1e-2,
+        rtol=1e-2,
+        keepdims=keepdims,
     )
 
 
@@ -1434,4 +1495,60 @@ def test_tensorflow_nextafter(
         on_device=on_device,
         x1=x[0],
         x2=x[1],
+    )
+
+
+# log_softmax
+@handle_frontend_test(
+    fn_tree="tensorflow.math.log_softmax",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_log_softmax(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        logits=x[0],
+    )
+
+
+# abs
+@handle_frontend_test(
+    fn_tree="tensorflow.math.abs",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_abs(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-02,
+        x=x[0],
     )

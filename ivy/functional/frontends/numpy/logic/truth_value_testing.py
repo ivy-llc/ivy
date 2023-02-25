@@ -1,5 +1,6 @@
 # global
 import ivy
+import numpy as np
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     from_zero_dim_arrays_to_scalar,
@@ -49,4 +50,10 @@ def isscalar(element):
         isinstance(element, int)
         or isinstance(element, bool)
         or isinstance(element, float)
+        or isinstance(element, complex)
     )
+
+
+@to_ivy_arrays_and_back
+def isfortran(a: np.ndarray):
+    return a.flags.fnc

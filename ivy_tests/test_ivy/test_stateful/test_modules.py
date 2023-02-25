@@ -195,7 +195,7 @@ def test_module_w_partial_v(batch_shape, input_channels, output_channels, on_dev
             "TrainableModule did not raise exception desipite being passed "
             "with wrongly shaped variables."
         )
-    except ivy.exceptions.IvyException:
+    except ivy.utils.exceptions.IvyException:
         pass
     v = ivy.Container(
         {
@@ -212,7 +212,7 @@ def test_module_w_partial_v(batch_shape, input_channels, output_channels, on_dev
             "TrainableModule did not raise exception desipite being passed "
             "with wrongly shaped variables."
         )
-    except ivy.exceptions.IvyException:
+    except ivy.utils.exceptions.IvyException:
         pass
     module = TrainableModule(
         input_channels, output_channels, device=on_device, v=v, with_partial_v=True
@@ -787,7 +787,7 @@ def test_module_check_submod_rets(
             "forward pass succeeded despite passing random expected_submod_rets, "
             "assertion error expected."
         )
-    except ivy.exceptions.IvyException:
+    except ivy.utils.exceptions.IvyException:
         pass
 
     # depth 2 (full)
@@ -801,7 +801,7 @@ def test_module_check_submod_rets(
             "forward pass succeeded despite passing random expected_submod_rets, "
             "assertion error expected."
         )
-    except ivy.exceptions.IvyException:
+    except ivy.utils.exceptions.IvyException:
         pass
 
     # partial submodules
@@ -817,7 +817,7 @@ def test_module_check_submod_rets(
             "forward pass succeeded despite passing random expected_submod_rets, "
             "assertion error expected."
         )
-    except ivy.exceptions.IvyException:
+    except ivy.utils.exceptions.IvyException:
         pass
 
     # with tolerances
@@ -843,7 +843,7 @@ def test_module_check_submod_rets(
             "forward pass succeeded despite passing random expected_submod_rets, "
             "assertion error expected."
         )
-    except ivy.exceptions.IvyException:
+    except ivy.utils.exceptions.IvyException:
         pass
 
 

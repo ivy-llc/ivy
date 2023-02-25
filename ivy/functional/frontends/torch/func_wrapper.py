@@ -7,32 +7,28 @@ import ivy
 import ivy.functional.frontends.torch as torch_frontend
 
 
-def _from_torch_frontend_tensor_to_ivy_array(x):
-    if hasattr(x, "ivy_array"):
-        return x.ivy_array
-    return x
-
-
 def _from_ivy_array_to_torch_frontend_tensor(x, nested=False, include_derived=None):
     if nested:
         return ivy.nested_map(
             x, _from_ivy_array_to_torch_frontend_tensor, include_derived, shallow=False
         )
     elif isinstance(x, ivy.Array) or ivy.is_native_array(x):
-        a = torch_frontend.Tensor(0)  # TODO: Find better initialisation workaround
-        a.ivy_array = x
+        a = torch_frontend.Tensor(x, _init_overload=True)
         return a
     return x
 
 
-def _from_native_to_ivy_array(x):
+def _to_ivy_array(x):
+    # if x is a native array return it as an ivy array
     if isinstance(x, ivy.NativeArray):
         return ivy.array(x)
+
+    # else if x is a frontend torch Tensor (or any frontend "Tensor" actually) return the wrapped ivy array # noqa: E501
+    elif hasattr(x, "ivy_array"):
+        return x.ivy_array
+
+    # else just return x
     return x
-
-
-def _to_ivy_array(x):
-    return _from_torch_frontend_tensor_to_ivy_array(_from_native_to_ivy_array(x))
 
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
@@ -44,12 +40,12 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
         updated arguments.
         """
         # Remove out argument if present in kwargs
-        has_out = False
-        out = None
-        if "out" in kwargs:
-            out = kwargs["out"]
-            del kwargs["out"]
-            has_out = True
+        if "out" in kwargs and not isinstance(
+            kwargs["out"], (torch_frontend.Tensor, type(None))
+        ):
+            raise ivy.utils.exceptions.IvyException(
+                "Out argument must be an ivy.frontends.torch.Tensor object"
+            )
         # convert all input arrays to ivy.Array instances
         new_args = ivy.nested_map(
             args, _to_ivy_array, include_derived={tuple: True}, shallow=False
@@ -57,12 +53,6 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
         new_kwargs = ivy.nested_map(
             kwargs, _to_ivy_array, include_derived={tuple: True}, shallow=False
         )
-        # add the original out argument back to the keyword arguments
-        if has_out:
-            if hasattr(out, "ivy_array"):
-                new_kwargs["out"] = out.ivy_array
-            else:
-                new_kwargs["out"] = out
         return fn(*new_args, **new_kwargs)
 
     return new_fn

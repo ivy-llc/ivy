@@ -9,8 +9,11 @@ import ivy.functional.frontends.numpy as np_frontend
 
 
 @st.composite
-def where(draw):
-    _, values = draw(helpers.dtype_and_values(dtype=["bool"]))
+def where(draw, *, shape=None):
+    if shape is None:
+        _, values = draw(helpers.dtype_and_values(dtype=["bool"]))
+    else:
+        _, values = draw(helpers.dtype_and_values(dtype=["bool"], shape=shape))
     return draw(st.just(values) | st.just(True))
 
 
