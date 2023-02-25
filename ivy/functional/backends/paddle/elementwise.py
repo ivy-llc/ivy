@@ -440,6 +440,7 @@ def reciprocal(
     return paddle.reciprocal(x)
 
 
+
 def deg2rad(
         x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:

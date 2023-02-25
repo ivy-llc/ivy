@@ -24,7 +24,7 @@ from ivy.functional.ivy.creation import (
 from . import backend_version
 from ivy.utils.exceptions import IvyNotImplementedException
 from paddle.fluid.libpaddle import Place
-
+from ivy.functional.backends.paddle.device import to_device
 
 # Array API Standard #
 # -------------------#
@@ -258,7 +258,7 @@ def zeros(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return to_device(paddle.zeros(shape=shape, dtype=dtype), device)
 
 
 def zeros_like(
