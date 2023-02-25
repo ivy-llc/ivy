@@ -137,7 +137,7 @@ def empty(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return to_device(paddle.empty(shape=shape, dtype=dtype), device)
 
 
 def empty_like(
@@ -148,7 +148,7 @@ def empty_like(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return to_device(paddle.empty_like(x=x, dtype=dtype), device)
 
 
 def eye(
@@ -186,7 +186,7 @@ def full(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return to_device(paddle.full(shape=shape, fill_value=fill_value, dtype=dtype), device)
 
 
 full.support_native_out = True
@@ -201,7 +201,7 @@ def full_like(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return to_device(paddle.full_like(x=x, fill_value=fill_value, dtype=dtype), device)
 
 
 def linspace(
