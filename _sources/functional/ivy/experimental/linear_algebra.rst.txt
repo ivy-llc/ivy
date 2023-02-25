@@ -13,7 +13,6 @@ Linear algebra
    :maxdepth: -1
    :caption: Linear algebra
 
-   linear_algebra/eigh_tridiagonal.rst
    linear_algebra/diagflat.rst
    linear_algebra/kron.rst
    linear_algebra/matrix_exp.rst

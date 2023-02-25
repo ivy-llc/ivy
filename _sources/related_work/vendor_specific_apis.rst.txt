@@ -15,10 +15,8 @@ Vendor-Specific APIs
 
 .. |tensorrt| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/vendor_specific_apis/tensorrt.png
     :height: 15pt
-    :class: dark-light
 .. |cuda| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/vendor_specific_apis/cuda.png
     :height: 20pt
-    :class: dark-light
 
 Vendor-specific APIs provide an interface to define customized operations for hardware from specific vendors.
 The libraries are written exclusively for hardware from this vendor, and so the code is clearly not generalized nor is it intended to be.

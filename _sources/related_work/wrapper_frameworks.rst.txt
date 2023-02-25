@@ -25,10 +25,8 @@ Wrapper Frameworks
 
 .. |eagerpy| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/wrapper_frameworks/eagerpy.png
     :height: 15pt
-    :class: dark-light
 .. |keras| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/wrapper_frameworks/keras.png
     :height: 20pt
-    :class: dark-light
 .. |thinc| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/wrapper_frameworks/thinc.png
     :height: 15pt
 .. |tensorly| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/wrapper_frameworks/tensorly.png
