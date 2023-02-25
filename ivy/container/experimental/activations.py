@@ -323,3 +323,131 @@ class ContainerWithActivationExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+    @staticmethod
+    def static_relu6(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.relu6.
+        This method simply wraps the function, and so the docstring
+        for ivy.relu6 also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the rectified linear 6 activation unit function
+            applied element-wise.
+
+        Examples
+        --------
+        >>> x = {
+                    a: ivy.array([-3., -2., -1., 0., 1., 2., 3., 4., 5.]),
+                    b: ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.])
+                }
+        >>> y = ivy.Container.static_relu6(x)
+        >>> print(y)
+        {
+            a: ivy.array([0., 0., 0., 0., 1., 2., 3., 4., 5.]),
+            b: ivy.array([1., 2., 3., 4., 5., 6., 6., 6., 6.])
+        }
+
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "relu6",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def relu6(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.relu6.
+        This method simply wraps the function, and so the docstring
+        for ivy.relu6 also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the rectified linear 6 activation unit function
+            applied element-wise.
+
+        Examples
+        --------
+        >>> x = {
+                    a: ivy.array([-3., -2., -1., 0., 1., 2., 3., 4., 5.]),
+                    b: ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.])
+                }
+        >>> y = x.relu()
+        >>> print(y)
+        {
+            a: ivy.array([0., 0., 0., 0., 1., 2., 3., 4., 5.]),
+            b: ivy.array([1., 2., 3., 4., 5., 6., 6., 6., 6.])
+        }
+
+        """
+        return self.static_relu6(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
