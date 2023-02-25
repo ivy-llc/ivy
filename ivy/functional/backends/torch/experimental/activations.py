@@ -23,3 +23,10 @@ def thresholded_relu(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.threshold(x, threshold=threshold, value=0)
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, backend_version)
+def relu6(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    return torch.nn.functional.relu6(x)
+
+relu6.unsupported_dtypes = ("float16", "bfloat16",)
