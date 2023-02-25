@@ -149,5 +149,5 @@ def atleast_2d(*arys):
 
 
 @to_ivy_arrays_and_back
-def bartlett(m):
-    return ivy.bartlett(m)
+def bartlett(M):
+    return ivy.bartlett(M)
