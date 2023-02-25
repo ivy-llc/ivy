@@ -228,6 +228,12 @@ def arange(
     ivy.array([0, 1, 2, 3, 4])
 
     >>> start = 1
+    >>> stop = 5
+    >>> x = ivy.arange(start,stop)
+    >>> print(x)
+    ivy.array([1, 2, 3, 4])
+
+    >>> start = 1
     >>> stop = 10
     >>> step = 2
     >>> x = ivy.arange(start,stop,step)
@@ -236,10 +242,17 @@ def arange(
 
     >>> start = 1
     >>> stop = 5
-    >>> x = ivy.arange(start,stop)
-    >>> print(x)
-    ivy.array([1, 2, 3, 4])
+    >>> step = 1
+    >>> x = ivy.arange(start,stop,step,dtype="int64")
+    >>> print(x, x.dtype)
+    ivy.array([1, 2, 3, 4]) int64
 
+    >>> start = 1
+    >>> stop = 5
+    >>> step = 1
+    >>> x = ivy.arange(start,stop,step,dtype="float64",device="cpu")
+    >>> print(x, x.dtype, x.device)
+    ivy.array([1., 2., 3., 4.]) float64 cpu
     """
     return current_backend().arange(
         start, stop, step, dtype=dtype, device=device, out=out
