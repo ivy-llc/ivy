@@ -48,8 +48,6 @@ def cov(
     dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-
     # default dtype of np is float64, cast if not given
     if not dtype:
         x1 = jnp.asarray(x1, dtype=jnp.float64)
@@ -66,8 +64,6 @@ def cov(
     # cast to correct dtypes, backends change inputs to float instead of int
     if fweights is not None:
         fweights = jnp.asarray(fweights, dtype=jnp.int64)
-    if aweights is not None:
-        aweights = jnp.asarray(aweights, dtype=jnp.float64)
 
     out = jnp.cov(
         m=x1,

@@ -1409,7 +1409,7 @@ def test_cov(
     dtype, x1, x2, rowVar, bias, ddof, fweights, aweights = dtype_x1_x2_cov
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
-        input_dtypes=dtype,
+        input_dtypes=[dtype[0], dtype[0], "int64", "float64"],
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,

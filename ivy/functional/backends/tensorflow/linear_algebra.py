@@ -49,8 +49,6 @@ def cov(
     dtype: Optional[DType] = None,
     out: Optional[tf.Tensor] = None,
 ) -> tf.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-
     if dtype and x1.dtype != dtype:
         x1 = tf.cast(x1, dtype)
         if x2 is not None and x2.dtype != dtype:

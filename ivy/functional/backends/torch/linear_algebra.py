@@ -56,8 +56,6 @@ def cov(
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-
     # dtype casts separately
     if fweights is not None:
         fweights = fweights.type(torch.int64)
