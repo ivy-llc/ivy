@@ -311,6 +311,9 @@ def scatter_flat(
     return res
 
 
+scatter_flat.support_native_out = True
+
+
 @with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
 def scatter_nd(
     indices: Union[tf.Tensor, tf.Variable],

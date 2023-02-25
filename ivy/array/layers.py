@@ -197,6 +197,48 @@ class ArrayWithLayers(abc.ABC):
             out=out,
         )
 
+    def dropout3d(
+        self: ivy.Array,
+        prob: float,
+        /,
+        *,
+        training: bool = True,
+        data_format: str = "NDHWC",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.dropout3d. This method simply
+        wraps the function, and so the docstring for ivy.droput3d also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input array x to perform dropout on.
+        prob
+            The probability of zeroing out each array element, float between 0 and 1.
+        training
+            Turn on dropout if training, turn off otherwise. Default is ``True``.
+        data_format
+            "NDHWC" or "NCDHW". Default is ``"NDHWC"``.
+        out
+            optional output array, for writing the result to. It must have
+            a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Result array of the output after dropout is performed.
+
+        """
+        return ivy.dropout3d(
+            self._data,
+            prob,
+            training=training,
+            data_format=data_format,
+            out=out,
+        )
+
     def scaled_dot_product_attention(
         self: ivy.Array,
         k: Union[ivy.Array, ivy.NativeArray],

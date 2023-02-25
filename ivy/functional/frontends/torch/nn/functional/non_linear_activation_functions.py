@@ -446,12 +446,12 @@ def batch_norm(
         current_var = running_var
 
     input = ivy.swapaxes(input, 1, -1)
-    input -= current_mean
-    input /= ivy.sqrt(current_var + eps)
+    input = input - current_mean
+    input = input / ivy.sqrt(current_var + eps)
     if weight is not None:
-        input *= weight
+        input = input * weight
     if bias is not None:
-        input += bias
+        input = input + bias
 
     # updating running mean & var is useless in functional API?
     running_mean = (1.0 - momentum) * running_mean + momentum * current_mean

@@ -307,7 +307,7 @@ def scatter_flat(
     size: Optional[int] = None,
     reduction: str = "sum",
     out: Optional[torch.Tensor] = None,
-):
+) -> torch.Tensor:
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
@@ -352,6 +352,9 @@ def scatter_flat(
             res,
         )
     return res
+
+
+scatter_flat.support_native_out = True
 
 
 @with_unsupported_dtypes(
@@ -546,7 +549,12 @@ def scatter_nd(
 scatter_nd.support_native_out = True
 
 
-def shape(x: torch.Tensor, /, *, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
+def shape(
+    x: torch.Tensor,
+    /,
+    *,
+    as_array: bool = False,
+) -> Union[ivy.Shape, ivy.Array]:
     if as_array:
         return ivy.array(x.shape, dtype=ivy.default_int_dtype())
     else:
