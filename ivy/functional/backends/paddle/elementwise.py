@@ -467,3 +467,21 @@ def isreal(
         x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     return paddle.equal(x, paddle.real(x))
+
+
+def bitwise_right_shift(x1: Union[int, bool, paddle.Tensor], 
+                        x2: Union[int, bool, paddle.Tensor], 
+                        /, 
+                        *, 
+                        out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    # Convert input to paddle.Tensor if it is not already
+    if not isinstance(x1, paddle.Tensor):
+        x1 = paddle.to_tensor(x1)
+    if not isinstance(x2, paddle.Tensor):
+        x2 = paddle.to_tensor(x2)
+    
+    # Perform bitwise right shift operation
+    result = paddle.fluid.layers.bitwise_right_shift(x1, x2, out)
+    
+    return result
+    
