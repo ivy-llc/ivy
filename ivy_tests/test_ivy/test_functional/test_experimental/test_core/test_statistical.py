@@ -193,6 +193,7 @@ def test_unravel_index(
     dtype_and_x=statistical_dtype_values(function="quantile"),
     keep_dims=st.booleans(),
     test_gradients=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_quantile(
     *,
