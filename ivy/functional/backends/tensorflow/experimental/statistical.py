@@ -123,3 +123,16 @@ def nanmedian(
         interpolation="midpoint",
         keepdims=keepdims,
     )
+
+def average(
+    a: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+
+) -> Union[tf.Tensor, tf.Variable]:
+    np_config.enable_numpy_behavior()
+    return tf.experimental.numpy.average(a, axis=axis)
+
+
+
