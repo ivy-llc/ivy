@@ -131,10 +131,11 @@ def var(
         ret = paddle.var(x, axis=axis, unbiased=False, keepdim=keepdims)
         ret = ivy.full(ret.shape, float("nan"), dtype=ret.dtype)
         return ret
-    ret = paddle.mul(
-        paddle.var(x, axis=axis, unbiased=False, keepdim=keepdims),
-        (size / (size - correction)),
-    ).to(x.dtype)
+    else:    
+        return paddle.mul(
+            paddle.var(x, axis=axis, unbiased=False, keepdim=keepdims),
+            (size / (size - correction)),
+        ).to(x.dtype)
     
 
 
