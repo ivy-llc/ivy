@@ -133,7 +133,7 @@ def var(
         return ret
     else:    
         ret = paddle.mul(
-        paddle.std(x, axis=axis, unbiased=False, keepdim=keepdims),
+        paddle.var(x, axis=axis, unbiased=False, keepdim=keepdims),
         (size / (size - correction)) ** 0.5,
         )
     return ret
