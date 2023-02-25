@@ -2,9 +2,10 @@ from typing import Union, Optional, Tuple, Sequence
 import tensorflow as tf
 import tensorflow_probability as tfp
 from tensorflow.python.ops.numpy_ops import np_math_ops
-
+from tensorflow.python.ops.numpy_ops import np_config
 from ivy.func_wrapper import with_supported_dtypes
 from . import backend_version
+
 
 
 def median(
