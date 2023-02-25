@@ -5,7 +5,7 @@ import paddle
 
 # local
 import ivy
-from . import backend_version  # noqa
+from . import backend_version
 from ivy.utils.exceptions import IvyNotImplementedException
 
 
@@ -329,9 +329,6 @@ def atan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     return paddle.atan(x)
 
 
-# TODO Fixed in PyTorch 1.12.1 (this note excludes complex)
-
-
 def atan2(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
@@ -360,7 +357,7 @@ def subtract(
     return paddle.subtract(x1, x2)
 
 
-# TODO: What does modulus parameter do?
+
 def remainder(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],
@@ -369,7 +366,14 @@ def remainder(
     modulus: bool = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle.subtract(x1, paddle.multiply(paddle.floor_divide(x1, x2), x2))
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if not modulus:
+        res = x1 / x2
+        res_floored = paddle.where(res >= 0, paddle.floor(res), paddle.ceil(res))
+        diff = np.asarray(res - res_floored, dtype=res.dtype)
+        diff, x2 = ivy.promote_types_of_inputs(diff, x2)
+        return paddle.round(diff * x2).cast(x1.dtype)
+    return paddle.remainder(x1, x2)
 
 
 def atanh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -425,6 +429,8 @@ def maximum(
     use_where: bool = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if use_where:
+        return np.where(x1 >= x2, x1, x2)
     return paddle.maximum(x1, x2)
 
 
