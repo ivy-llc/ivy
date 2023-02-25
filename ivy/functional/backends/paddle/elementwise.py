@@ -337,7 +337,10 @@ def subtract(
     alpha: Optional[Union[int, float]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if alpha not in (1, None):
+        x2 = multiply(x2, alpha)
+    return paddle.subtract(x1,x2)
 
 
 def remainder(
