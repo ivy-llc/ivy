@@ -8,4 +8,3 @@ git config --global --add safe.directory /workspaces/ivy
 
 ( cd /workspaces/ivy/ && pre-commit install)
 
-# python3 -m pip install --user -e .
