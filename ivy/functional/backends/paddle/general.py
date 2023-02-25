@@ -80,7 +80,7 @@ def to_numpy(
 
 
 def to_scalar(x: paddle.Tensor, /) -> Number:
-    if isinstance(x, (float, int)):
+    if isinstance(x, Number):
         return x
     return x.item()
 
