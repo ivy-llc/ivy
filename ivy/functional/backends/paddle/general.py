@@ -115,7 +115,7 @@ def gather_nd(
 def get_num_dims(
     x: paddle.Tensor, /, *, as_array: bool = False
 ) -> Union[paddle.Tensor, int]:
-    raise IvyNotImplementedException()
+    return paddle.to_tensor(x.ndims) if as_array else x.ndims
 
 
 def inplace_arrays_supported():
