@@ -412,7 +412,7 @@ def reciprocal(
 
 
 def deg2rad(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.deg2rad(x)
 
 
 def rad2deg(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
