@@ -248,14 +248,16 @@ def matrix_transpose(
     return np.swapaxes(x, -1, -2)
 
 
+@_scalar_output_to_0d_array
 def outer(
-    x1: np.ndarray, x2: np.ndarray, /, *, out: Optional[np.ndarray] = None
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return np.outer(x1, x2, out=out)
-
-
-outer.support_native_out = True
+    return np.outer(x1, x2)
 
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
