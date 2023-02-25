@@ -447,5 +447,4 @@ def ldexp(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.ldexp(x1, x2, out=out)

@@ -12,7 +12,6 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 import jax.numpy as jnp
 import jax.scipy as js
-import ivy
 
 jax_ArrayLike = Union[JaxArray, Number]
 
@@ -536,6 +535,7 @@ def conj(
     return jnp.conj(x)
 
 
-def ldexp(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+def ldexp(
+    x1: JaxArray, x2: Union[JaxArray, int], /, *, out: Optional[JaxArray] = None
+) -> JaxArray:
     return jnp.ldexp(x1, x2)

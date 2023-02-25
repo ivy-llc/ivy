@@ -455,5 +455,4 @@ def ldexp(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return torch.ldexp(x1, x2, out=out)

@@ -627,7 +627,7 @@ def conj(
 @with_unsupported_dtypes({"1.11.0 and below": ("unsigned")}, backend_version)
 def ldexp(
     x1: Union[tf.Tensor, tf.Variable],
-    x2: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable, int],
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
