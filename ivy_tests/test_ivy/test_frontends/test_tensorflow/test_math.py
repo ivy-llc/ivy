@@ -93,8 +93,8 @@ def test_tensorflow_tan(
         on_device=on_device,
         x=x[0],
     )
-    
-    
+
+
 # exp
 @handle_frontend_test(
     fn_tree="tensorflow.math.exp",
