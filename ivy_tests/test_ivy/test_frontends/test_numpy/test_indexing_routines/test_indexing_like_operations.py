@@ -132,4 +132,3 @@ def test_numpy_take_along_axis(
         indices=indices,
         axis=axis,
     )
-
