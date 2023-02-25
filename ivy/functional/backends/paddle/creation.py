@@ -137,7 +137,7 @@ def empty(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return to_device(paddle.empty(shape=shape, dtype=dtype), device)
 
 
 def empty_like(
@@ -148,7 +148,7 @@ def empty_like(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return to_device(paddle.empty_like(x=x, dtype=dtype), device)
 
 
 def eye(
@@ -162,7 +162,16 @@ def eye(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if n_cols is None:
+        n_cols = n_rows
+    i = paddle.eye(n_rows, n_cols, dtype=dtype)
+    if batch_shape is None:
+        return to_device(i, device)
+    reshape_dims = [1] * len(batch_shape) + [n_rows, n_cols]
+    tile_dims = list(batch_shape) + [1, 1]
+    i = paddle.reshape(i, reshape_dims)
+    return_mat = paddle.tile(i, tile_dims)
+    return to_device(return_mat, device)
 
 
 def from_dlpack(x, /, *, out: Optional[paddle.Tensor] = None):
@@ -177,7 +186,7 @@ def full(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return to_device(paddle.full(shape=shape, fill_value=fill_value, dtype=dtype), device)
 
 
 full.support_native_out = True
@@ -192,7 +201,7 @@ def full_like(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return to_device(paddle.full_like(x=x, fill_value=fill_value, dtype=dtype), device)
 
 
 def linspace(
@@ -225,7 +234,7 @@ def ones(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return to_device(paddle.ones(shape=shape, dtype=dtype), device)
 
 
 def ones_like(
@@ -236,19 +245,19 @@ def ones_like(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return to_device(paddle.ones_like(x=x, dtype=dtype), device)
 
 
 def tril(
     x: paddle.Tensor, /, *, k: int = 0, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return to_device(paddle.tril(x=x, k=k), device)
 
 
 def triu(
     x: paddle.Tensor, /, *, k: int = 0, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return to_device(paddle.triu(x=x, k=k), device)
 
 
 def zeros(
@@ -269,7 +278,7 @@ def zeros_like(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return to_device(paddle.zeros_like(x=x, dtype=dtype), device)
 
 
 # Extra #

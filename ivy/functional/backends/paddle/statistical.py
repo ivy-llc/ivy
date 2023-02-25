@@ -60,7 +60,7 @@ def prod(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.prod(x, axis=axis, keepdim=keepdims, dtype=dtype)
 
 
 def std(
@@ -72,8 +72,27 @@ def std(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
-
+    if axis is None:
+        axis = list(range(len(x.shape)))
+    if axis == ():
+        return x
+    axis = (axis,) if isinstance(axis, int) else tuple(axis)
+    if correction == 0:
+        return paddle.std(x, axis=axis, unbiased=False, keepdim=keepdims)
+    elif correction == 1:
+        return paddle.std(x, axis=axis, unbiased=True, keepdim=keepdims)
+    size = 1
+    for a in axis:
+        size *= x.shape[a]
+    if size - correction <= 0:
+        ret = paddle.std(x, axis=axis, unbiased=False, keepdim=keepdims)
+        ret = ivy.full(ret.shape, float("nan"), dtype=ret.dtype)
+        return ret
+    ret = paddle.mul(
+        paddle.std(x, axis=axis, unbiased=False, keepdim=keepdims),
+        (size / (size - correction)) ** 0.5,
+    )
+    return ret
 
 def sum(
     x: paddle.Tensor,
@@ -84,7 +103,7 @@ def sum(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.sum(x, axis=axis, dtype=dtype, keepdim=keepdims)
 
 
 def var(
@@ -96,7 +115,29 @@ def var(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if axis is None:
+        axis = list(range(len(x.shape)))
+    if axis == ():
+        return x
+    axis = (axis,) if isinstance(axis, int) else tuple(axis)
+    if correction == 0:
+        return paddle.var(x, axis=axis, unbiased=False, keepdim=keepdims)
+    elif correction == 1:
+        return paddle.var(x, axis=axis, unbiased=True, keepdim=keepdims)
+    size = 1
+    for a in axis:
+        size *= x.shape[a]
+    if size - correction <= 0:
+        ret = paddle.var(x, axis=axis, unbiased=False, keepdim=keepdims)
+        ret = ivy.full(ret.shape, float("nan"), dtype=ret.dtype)
+        return ret
+    else:    
+        ret = paddle.mul(
+        paddle.var(x, axis=axis, unbiased=False, keepdim=keepdims),
+        (size / (size - correction)) ** 0.5,
+        )
+    return ret
+    
 
 
 # Extra #
