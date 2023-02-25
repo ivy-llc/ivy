@@ -119,7 +119,9 @@ def get_num_dims(
 
 
 def inplace_arrays_supported():
-    raise IvyNotImplementedException()
+    # there are some operations that support inplace updates
+    # but it's not supported in all functions
+    return False
 
 
 def inplace_decrement(
