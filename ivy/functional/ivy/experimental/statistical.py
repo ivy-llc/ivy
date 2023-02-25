@@ -350,6 +350,23 @@ def average(
     >>> a = ivy.array([[10, 9], [3, 4]])
     >>> ivy.average(a)
     Array(6.5, dtype=float32)
+
+    >>> ivy.set_backend("numpy")
+    >>> a = ivy.array([[10, 9], [3, 4]])
+    >>> ivy.average(a)
+    ivy.array(6.5)
+
+
+    >>> ivy.set_backend("torch")
+    >>> a = ivy.array([[10.0, 9.0], [3.0, 4.0]])
+    >>> ivy.average(a)
+    ivy.array(6.5)
+
+    >>> ivy.set_backend("tensorflow")
+    >>> a = ivy.array([[10, 9], [3, 4]])
+    >>> ivy.average(a)
+    ivy.array(6.5)
+    
     """
     return ivy.current_backend(a).average(a, axis=axis, keepdims=keepdims)
 
