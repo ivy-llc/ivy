@@ -128,10 +128,10 @@ def var(
     for a in axis:
         size *= x.shape[a]
     if size - correction <= 0:
-        ret = paddle.var(x, axis==axis, unbiased=False, keepdim=keepdims)
+        ret = paddle.var(x, axis=axis, unbiased=False, keepdim=keepdims)
         ret = ivy.full(ret.shape, float("nan"), dtype=ret.dtype)
         return ret
-    ret = torch.mul(
+    ret = paddle.mul(
         paddle.var(x, axis=axis, unbiased=False, keepdim=keepdims),
         (size / (size - correction)),
     ).to(x.dtype)
