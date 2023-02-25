@@ -1170,6 +1170,7 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         ivy.Array instance method variant of ivy.conj. This method simply wraps
         the function, and so the docstring for ivy.conj also applies to this
         method with minimal changes.
+
         Parameters
         ----------
         self
@@ -1177,11 +1178,13 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         out
             optional output array, for writing the result to.
             It must have a shape that the inputs broadcast to.
+
         Returns
         -------
         ret
             an array containing the complex conjugates of values in the input array,
             with the same dtype as the input array.
+
         Examples
         --------
         >>> x = ivy.array([4+3j, 6+2j, 1-6j])

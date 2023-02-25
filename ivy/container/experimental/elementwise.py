@@ -3238,6 +3238,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         ivy.Container static method variant of ivy.conj.
         This method simply wraps the function, and so the docstring for
         ivy.conj also applies to this method with minimal changes.
+
         Parameters
         ----------
         x
@@ -3256,6 +3257,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+
         Returns
         -------
         ret
@@ -3264,6 +3266,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             the complex values present in the input array. If x is a
             container of scalar(s) then a container of scalar(s)
             will be returned.
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([-1+5j, 0-0j, 1.23j]),
@@ -3298,6 +3301,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         ivy.Container instance method variant of ivy.conj.
         This method simply wraps the function, and so the docstring
         for ivy.conj also applies to this method with minimal changes.
+
         Parameters
         ----------
         self
@@ -3316,6 +3320,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+
         Returns
         -------
         ret
@@ -3324,6 +3329,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             complex values present in the input array.
             If x is a container of scalar(s) then a container of
             scalar(s) will be returned.
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([-1j, 0.335+2.345j, 1.23+7j]),\
@@ -3359,6 +3365,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         ivy.Container static method variant of ivy.ldexp. This method simply
         wraps the function, and so the docstring for ivy.ldexp also applies to this
         method with minimal changes.
+
         Parameters
         ----------
         x1
@@ -3376,12 +3383,15 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+
         out
             optional output container, for writing the result to.
+
         Returns
         -------
         ret
             container including x1 * 2**x2.
+
         Examples
         --------
         With one :class:`ivy.Container` input:
