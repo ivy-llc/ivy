@@ -699,8 +699,8 @@ def test_torch_quantile(
         keepdim=keepdims,
         interpolation=interpolation[0],
     )
-    
-    
+
+
 @handle_frontend_test(
     fn_tree="torch.median",
     dtype_and_x=statistical_dtype_values(
@@ -729,4 +729,4 @@ def test_torch_median(
         input=x[0],
         dim=axis,
         keepdim=keepdims,
-    ) 
+    )
