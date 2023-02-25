@@ -225,7 +225,7 @@ def ones(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return to_device(paddle.ones(shape=shape, dtype=dtype), device)
 
 
 def ones_like(
@@ -236,19 +236,19 @@ def ones_like(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return to_device(paddle.ones_like(x=x, dtype=dtype), device)
 
 
 def tril(
     x: paddle.Tensor, /, *, k: int = 0, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return to_device(paddle.tril(x=x), device)
 
 
 def triu(
     x: paddle.Tensor, /, *, k: int = 0, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return to_device(paddle.triu(x=x), device)
 
 
 def zeros(
