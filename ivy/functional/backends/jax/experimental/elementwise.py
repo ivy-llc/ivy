@@ -527,6 +527,15 @@ def real(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.real(x)
 
 
+def conj(
+    x: Union[JaxArray],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.conj(x)
+
+
 def ldexp(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return jnp.ldexp(x1, x2)

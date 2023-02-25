@@ -1,6 +1,6 @@
 # global
 import math
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 
 # local
 import ivy
@@ -55,7 +55,7 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False):
     if not transpose:
         group_list = list(filter(lambda x: (input_channels % x == 0), group_list))
     else:
-        group_list = list(filter(lambda x: (output_channels % x == 0), group_list))
+        group_list = list(filter(lambda x: (output_channels % x**2 == 0), group_list))
     fc = draw(st.sampled_from(group_list))
     dilations = draw(
         st.one_of(
@@ -63,12 +63,11 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False):
             st.integers(min_value=1, max_value=3),
         )
     )
-    full_strides = [strides] * dim if isinstance(strides, int) else strides
     full_dilations = [dilations] * dim if isinstance(dilations, int) else dilations
     if transpose:
         x_dim = draw(
             helpers.get_shape(
-                min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5
+                min_num_dims=dim, max_num_dims=dim, min_dim_size=2, max_dim_size=5
             )
         )
     else:
@@ -109,13 +108,16 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False):
         )
     )
     if transpose:
+        full_strides = [strides] * dim if isinstance(strides, int) else strides
         output_padding = draw(
             st.lists(st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim)
         )
-        for i, p in enumerate(output_padding):
+        padding = [padding] * dim if isinstance(padding, int) else padding
+        for i in range(len(output_padding)):
+            # ToDo: remove this when support for output_padding > padding is added
+            output_padding[i] = min(padding[i], output_padding[i])
             m = min(full_strides[i], full_dilations[i])
-            if p >= m:
-                output_padding[i] = m - 1
+            output_padding[i] = min(output_padding[i], m - 1)
         if draw(st.booleans()):
             output_padding = min(output_padding)
         return (
@@ -146,8 +148,6 @@ def test_torch_conv1d(
     test_flags,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, fc = dtype_vals
-    # ToDo: Enable gradient tests for dilations > 1 when tensorflow supports it.
-    _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilations)
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -177,7 +177,6 @@ def test_torch_conv2d(
     test_flags,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, fc = dtype_vals
-    _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilations)
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -207,6 +206,7 @@ def test_torch_conv3d(
     test_flags,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, fc = dtype_vals
+    # ToDo: Enable gradient tests for dilations > 1 when tensorflow supports it.
     _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilations)
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -224,6 +224,23 @@ def test_torch_conv3d(
     )
 
 
+def _output_shape(
+    dims, dilation, stride, padding, output_padding, input_shape, weight_shape
+):
+    dilation, stride, padding, output_padding = map(
+        lambda x: [x] * dims if isinstance(x, int) else x,
+        [dilation, stride, padding, output_padding],
+    )
+    return [
+        (input_shape[2 + i] - 1) * stride[i]
+        - 2 * padding[i]
+        + dilation[i] * (weight_shape[2 + i] - 1)
+        + output_padding[i]
+        + 1
+        for i in range(dims)
+    ]
+
+
 @handle_frontend_test(
     fn_tree="torch.nn.functional.conv_transpose1d",
     dtype_vals=x_and_filters(dim=1, transpose=True),
@@ -237,8 +254,15 @@ def test_torch_conv_tranpose1d(
     test_flags,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, output_pad, fc = dtype_vals
-    # ToDo: Enable gradient tests for dilations > 1 when tensorflow supports it.
-    _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilations)
+    dilations = 1  # ToDo: remove this when support for dilation > 1 is added
+    assume(
+        all(
+            x > 0
+            for x in _output_shape(
+                1, dilations, strides, padding, output_pad, vals.shape, weight.shape
+            )
+        )
+    )
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -248,12 +272,9 @@ def test_torch_conv_tranpose1d(
         input=vals,
         weight=weight,
         bias=bias,
-        stride=1,
-        # stride=strides,
-        padding=0,
-        # padding=padding,
-        output_padding=0,
-        # output_padding=output_pad,
+        stride=strides,
+        padding=padding,
+        output_padding=output_pad,
         groups=fc,
         dilation=dilations,
     )
@@ -272,7 +293,15 @@ def test_torch_conv_tranpose2d(
     test_flags,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, output_pad, fc = dtype_vals
-    _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilations)
+    dilations = 1  # ToDo: remove this when support for dilation > 1 is added
+    assume(
+        all(
+            x > 0
+            for x in _output_shape(
+                2, dilations, strides, padding, output_pad, vals.shape, weight.shape
+            )
+        )
+    )
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -282,12 +311,9 @@ def test_torch_conv_tranpose2d(
         input=vals,
         weight=weight,
         bias=bias,
-        stride=1,
-        # stride=strides,
-        padding=0,
-        # padding=padding,
-        output_padding=0,
-        # output_padding=output_pad,
+        stride=strides,
+        padding=padding,
+        output_padding=output_pad,
         groups=fc,
         dilation=dilations,
     )
@@ -306,7 +332,15 @@ def test_torch_conv_tranpose3d(
     test_flags,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, output_pad, fc = dtype_vals
-    _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilations)
+    dilations = 1  # ToDo: remove this when support for dilation > 1 is added
+    assume(
+        all(
+            x > 0
+            for x in _output_shape(
+                3, dilations, strides, padding, output_pad, vals.shape, weight.shape
+            )
+        )
+    )
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -316,12 +350,9 @@ def test_torch_conv_tranpose3d(
         input=vals,
         weight=weight,
         bias=bias,
-        stride=1,
-        # stride=strides,
-        padding=0,
-        # padding=padding,
-        output_padding=0,
-        # output_padding=output_pad,
+        stride=strides,
+        padding=padding,
+        output_padding=output_pad,
         groups=fc,
         dilation=dilations,
     )

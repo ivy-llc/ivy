@@ -267,6 +267,9 @@ class Tensor:
         self._ivy_array = self.abs().ivy_array
         return self
 
+    def bitwise_not(self, *, out=None):
+        return torch_frontend.bitwise_not(self._ivy_array)
+
     def bitwise_and(self, other):
         return torch_frontend.bitwise_and(self._ivy_array, other)
 
@@ -367,7 +370,7 @@ class Tensor:
         device=None,
         requires_grad=False,
         layout=None,
-        pin_memory=False
+        pin_memory=False,
     ):
         dtype = ivy.dtype(self._ivy_array) if dtype is None else dtype
         device = ivy.dev(self._ivy_array) if device is None else device
@@ -427,7 +430,7 @@ class Tensor:
         device=None,
         requires_grad=False,
         layout=None,
-        pin_memory=False
+        pin_memory=False,
     ):
         dtype = ivy.dtype(self._ivy_array) if dtype is None else dtype
         device = ivy.dev(self._ivy_array) if device is None else device
@@ -442,7 +445,7 @@ class Tensor:
         device=None,
         requires_grad=False,
         layout=None,
-        pin_memory=False
+        pin_memory=False,
     ):
         dtype = ivy.dtype(self._ivy_array) if dtype is None else dtype
         device = ivy.dev(self._ivy_array) if device is None else device
@@ -533,7 +536,7 @@ class Tensor:
         self._ivy_array = self.transpose(dim0, dim1).ivy_array
         return self
 
-    def flatten(self, start_dim, end_dim):
+    def flatten(self, start_dim=0, end_dim=-1):
         return torch_frontend.flatten(self._ivy_array, start_dim, end_dim)
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
@@ -665,9 +668,9 @@ class Tensor:
         cast_tensor.ivy_array = ivy.astype(self._ivy_array, ivy.int64)
         return cast_tensor
 
-    def __getitem__(self, query):
+    def __getitem__(self, query, /):
         ret = ivy.get_item(self._ivy_array, query)
-        return torch_frontend.tensor(ivy.array(ret, dtype=ivy.dtype(ret), copy=False))
+        return torch_frontend.Tensor(ret, _init_overload=True)
 
     def __setitem__(self, key, value):
         if hasattr(value, "ivy_array"):

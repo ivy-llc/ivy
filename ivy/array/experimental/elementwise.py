@@ -1165,6 +1165,31 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         """
         return ivy.binarizer(self._data, threshold=threshold, out=out)
 
+    def conj(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.conj. This method simply wraps
+        the function, and so the docstring for ivy.conj also applies to this
+        method with minimal changes.
+        Parameters
+        ----------
+        self
+            input array.
+        out
+            optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+        Returns
+        -------
+        ret
+            an array containing the complex conjugates of values in the input array,
+            with the same dtype as the input array.
+        Examples
+        --------
+        >>> x = ivy.array([4+3j, 6+2j, 1-6j])
+        >>> x.conj()
+        ivy.array([4-3j, 6-2j, 1+6j])
+        """
+        return ivy.conj(self._data, out=out)
+
     def ldexp(
         self: ivy.Array,
         x2: ivy.Array,
@@ -1172,12 +1197,11 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         *,
         out: Optional[ivy.Container] = None,
         **kwargs,
-    ) -> bool:
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.ldexp. This method simply wraps
         the function, and so the docstring for ivy.ldexp also applies to this
         method with minimal changes.
-
         Parameters
         ----------
         self
@@ -1187,12 +1211,10 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         out
             Alternate output array in which to place the result.
             The default is None.
-
         Returns
         -------
         ret
             The next representable values of x1 in the direction of x2.
-
         Examples
         --------
         >>> x = ivy.array([1.0, 2.0, 3.0])

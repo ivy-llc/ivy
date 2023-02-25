@@ -25,6 +25,10 @@ from ivy_tests.test_ivy.helpers.available_frameworks import (
     available_frameworks,
     ground_truth,
 )
+from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import (
+    _dtype_kind_keys,
+    _get_type_dict,
+)
 
 ground_truth = ground_truth()
 
@@ -180,7 +184,13 @@ def _get_method_supported_devices_dtypes(
     for b in backends:  # ToDo can optimize this ?
         ivy.set_backend(b)
         _fn = getattr(class_module.__dict__[class_name], method_name)
-        supported_device_dtypes[b] = ivy.function_supported_devices_and_dtypes(_fn)
+        devices_and_dtypes = ivy.function_supported_devices_and_dtypes(_fn)
+        organized_dtypes = {}
+        for device in devices_and_dtypes.keys():
+            organized_dtypes[device] = _partition_dtypes_into_kinds(
+                ivy, devices_and_dtypes[device]
+            )
+        supported_device_dtypes[b] = organized_dtypes
         ivy.unset_backend()
     return supported_device_dtypes
 
@@ -212,13 +222,27 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
 
     backends = available_frameworks()
     for b in backends:  # ToDo can optimize this ?
-
         ivy.set_backend(b)
         _tmp_mod = importlib.import_module(fn_module)
         _fn = _tmp_mod.__dict__[fn_name]
-        supported_device_dtypes[b] = ivy.function_supported_devices_and_dtypes(_fn)
+        devices_and_dtypes = ivy.function_supported_devices_and_dtypes(_fn)
+        organized_dtypes = {}
+        for device in devices_and_dtypes.keys():
+            organized_dtypes[device] = _partition_dtypes_into_kinds(
+                ivy, devices_and_dtypes[device]
+            )
+        supported_device_dtypes[b] = organized_dtypes
         ivy.unset_backend()
     return supported_device_dtypes
+
+
+def _partition_dtypes_into_kinds(framework, dtypes):
+    partitioned_dtypes = {}
+    for kind in _dtype_kind_keys:
+        partitioned_dtypes[kind] = set(_get_type_dict(framework, kind)).intersection(
+            dtypes
+        )
+    return partitioned_dtypes
 
 
 # Decorators
@@ -226,7 +250,7 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
 
 def handle_test(
     *,
-    fn_tree: str,
+    fn_tree: str = None,
     ground_truth_backend: str = ground_truth,
     number_positional_args=None,
     test_instance_method=BuiltInstanceStrategy,
@@ -276,15 +300,18 @@ def handle_test(
         A search strategy that generates a list of boolean flags for array inputs to be
         passed as a Container
     """
-    fn_tree = "ivy." + fn_tree
+    is_fn_tree_provided = fn_tree is not None
+    if is_fn_tree_provided:
+        fn_tree = "ivy." + fn_tree
     is_hypothesis_test = len(_given_kwargs) != 0
 
-    if is_hypothesis_test:
+    possible_arguments = {"ground_truth_backend": st.just(ground_truth_backend)}
+    if is_hypothesis_test and is_fn_tree_provided:
         # Use the default strategy
         if number_positional_args is None:
             number_positional_args = num_positional_args(fn_name=fn_tree)
         # Generate the test flags strategy
-        test_flags = pf.function_flags(
+        possible_arguments["test_flags"] = pf.function_flags(
             num_positional_args=number_positional_args,
             instance_method=test_instance_method,
             with_out=test_with_out,
@@ -295,18 +322,15 @@ def handle_test(
         )
 
     def test_wrapper(test_fn):
-        callable_fn, fn_name, fn_mod = _import_fn(fn_tree)
-        supported_device_dtypes = _get_supported_devices_dtypes(fn_name, fn_mod)
+        if is_fn_tree_provided:
+            callable_fn, fn_name, fn_mod = _import_fn(fn_tree)
+            supported_device_dtypes = _get_supported_devices_dtypes(fn_name, fn_mod)
+            possible_arguments["fn_name"] = st.just(fn_name)
 
         # If a test is not a Hypothesis test, we only set the test global data
         if is_hypothesis_test:
             param_names = inspect.signature(test_fn).parameters.keys()
             # Check if these arguments are being asked for
-            possible_arguments = {
-                "test_flags": test_flags,
-                "fn_name": st.just(fn_name),
-                "ground_truth_backend": st.just(ground_truth_backend),
-            }
             filtered_args = set(param_names).intersection(possible_arguments.keys())
             for key in filtered_args:
                 _given_kwargs[key] = possible_arguments[key]
@@ -316,13 +340,15 @@ def handle_test(
             wrapped_test = test_fn
 
         # Set the test data to be used by test helpers
-        wrapped_test.test_data = TestData(
-            test_fn=wrapped_test,
-            fn_tree=fn_tree,
-            fn_name=fn_name,
-            supported_device_dtypes=supported_device_dtypes,
-        )
+        if is_fn_tree_provided:
+            wrapped_test.test_data = TestData(
+                test_fn=wrapped_test,
+                fn_tree=fn_tree,
+                fn_name=fn_name,
+                supported_device_dtypes=supported_device_dtypes,
+            )
         wrapped_test.ground_truth_backend = ground_truth_backend
+        wrapped_test._ivy_test = True
 
         return wrapped_test
 
@@ -436,7 +462,7 @@ def _import_method(method_tree: str):
 
 def handle_method(
     *,
-    method_tree,
+    method_tree: str = None,
     ground_truth_backend: str = ground_truth,
     test_gradients=BuiltGradientStrategy,
     init_num_positional_args=None,
@@ -461,10 +487,16 @@ def handle_method(
     ground_truth_backend
         The framework to assert test results are equal to
     """
-    method_tree = "ivy." + method_tree
+    is_method_tree_provided = method_tree is not None
+    if is_method_tree_provided:
+        method_tree = "ivy." + method_tree
     is_hypothesis_test = len(_given_kwargs) != 0
+    possible_arguments = {
+        "ground_truth_backend": st.just(ground_truth_backend),
+        "test_gradients": test_gradients,
+    }
 
-    if is_hypothesis_test:
+    if is_hypothesis_test and is_method_tree_provided:
         callable_method, method_name, _, class_name, method_mod = _import_method(
             method_tree
         )
@@ -474,42 +506,35 @@ def handle_method(
                 fn_name=class_name + ".__init__"
             )
 
+        possible_arguments["init_flags"] = pf.method_flags(
+            num_positional_args=init_num_positional_args,
+            as_variable=init_as_variable_flags,
+            native_arrays=init_native_arrays,
+            container_flags=init_container_flags,
+        )
+
         if method_num_positional_args is None:
             method_num_positional_args = num_positional_args_method(
                 method=callable_method
             )
 
-    def test_wrapper(test_fn):
-        supported_device_dtypes = _get_method_supported_devices_dtypes(
-            method_name, method_mod, class_name
+        possible_arguments["method_flags"] = pf.method_flags(
+            num_positional_args=method_num_positional_args,
+            as_variable=method_as_variable_flags,
+            native_arrays=method_native_arrays,
+            container_flags=method_container_flags,
         )
+
+    def test_wrapper(test_fn):
+        if is_method_tree_provided:
+            supported_device_dtypes = _get_method_supported_devices_dtypes(
+                method_name, method_mod, class_name
+            )
+            possible_arguments["class_name"] = st.just(class_name)
+            possible_arguments["method_name"] = st.just(method_name)
 
         if is_hypothesis_test:
             param_names = inspect.signature(test_fn).parameters.keys()
-
-            init_flags = pf.method_flags(
-                num_positional_args=init_num_positional_args,
-                as_variable=init_as_variable_flags,
-                native_arrays=init_native_arrays,
-                container_flags=init_container_flags,
-            )
-
-            method_flags = pf.method_flags(
-                num_positional_args=method_num_positional_args,
-                as_variable=method_as_variable_flags,
-                native_arrays=method_native_arrays,
-                container_flags=method_container_flags,
-            )
-
-            possible_arguments = {
-                "class_name": st.just(class_name),
-                "init_flags": init_flags,
-                "method_flags": method_flags,
-                "test_gradients": test_gradients,
-                "method_name": st.just(method_name),
-                "ground_truth_backend": st.just(ground_truth_backend),
-            }
-
             filtered_args = set(param_names).intersection(possible_arguments.keys())
 
             for key in filtered_args:
@@ -520,13 +545,15 @@ def handle_method(
         else:
             wrapped_test = test_fn
 
-        wrapped_test.test_data = TestData(
-            test_fn=wrapped_test,
-            fn_tree=method_tree,
-            fn_name=method_name,
-            supported_device_dtypes=supported_device_dtypes,
-        )
+        if is_method_tree_provided:
+            wrapped_test.test_data = TestData(
+                test_fn=wrapped_test,
+                fn_tree=method_tree,
+                fn_name=method_name,
+                supported_device_dtypes=supported_device_dtypes,
+            )
         wrapped_test.ground_truth_backend = ground_truth_backend
+        wrapped_test._ivy_test = True
 
         return wrapped_test
 

@@ -196,8 +196,8 @@ def split(
     /,
     *,
     num_or_size_splits: Optional[Union[int, List[int]]] = None,
-    axis: Optional[int] = 0,
-    with_remainder: Optional[bool] = False,
+    axis: int = 0,
+    with_remainder: bool = False,
 ) -> List[torch.Tensor]:
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
