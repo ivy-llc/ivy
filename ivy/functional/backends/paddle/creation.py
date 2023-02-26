@@ -175,8 +175,8 @@ def eye(
 
 
 def from_dlpack(x, /, *, out: Optional[paddle.Tensor] = None):
-    dlpack = paddle.utils.dlpack.to_dlpack(x)
-    return paddle.utils.dlpack.from_dlpack(dlpack)
+
+    return paddle.utils.dlpack.from_dlpack(x)
 
 
 def full(
