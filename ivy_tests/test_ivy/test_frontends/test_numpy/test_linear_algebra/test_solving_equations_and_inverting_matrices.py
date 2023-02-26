@@ -1,4 +1,5 @@
 # global
+import sys
 import numpy as np
 from hypothesis import strategies as st
 
@@ -44,11 +45,10 @@ def test_numpy_solve(
     fn_tree="numpy.linalg.inv",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_dim_size=6,
-        max_dim_size=6,
-        min_num_dims=2,
-        max_num_dims=2,
-    ).filter(lambda x: np.linalg.det(x[1][0]) != 0),
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
+        shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
+    ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
     test_with_out=st.just(False),
 )
 def test_numpy_inv(
@@ -166,4 +166,57 @@ def test_numpy_tensorinv(
         on_device=on_device,
         a=x,
         ind=ind,
+    )
+
+
+@st.composite
+def _get_lstsq_matrices(draw):
+    shape1 = draw(helpers.ints(min_value=2, max_value=10))
+    shape2 = draw(helpers.ints(min_value=2, max_value=10))
+    input_dtype = "float64"
+    a = draw(
+        helpers.array_values(
+            dtype=input_dtype,
+            shape=(shape1, shape2),
+            min_value=10,
+            max_value=20,
+            exclude_min=False,
+            exclude_max=False,
+        )
+    )
+    b = draw(
+        helpers.array_values(
+            dtype=input_dtype,
+            shape=(shape1, 1),
+            min_value=10,
+            max_value=20,
+            exclude_min=False,
+            exclude_max=False,
+        )
+    )
+    return input_dtype, a, b
+
+
+# lstsq
+@handle_frontend_test(
+    fn_tree="numpy.linalg.lstsq",
+    params=_get_lstsq_matrices(),
+    test_with_out=st.just(False),
+)
+def test_numpy_lstsq(
+    params,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, fir, sec = params
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype, input_dtype],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=fir,
+        b=sec,
     )

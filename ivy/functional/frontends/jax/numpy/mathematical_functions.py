@@ -22,6 +22,11 @@ def add(x1, x2):
 
 
 @to_ivy_arrays_and_back
+def diff(a, n=1, axis=-1, prepend=None, append=None):
+    return ivy.diff(a, n=n, axis=axis, prepend=prepend, append=append, out=None)
+
+
+@to_ivy_arrays_and_back
 def arctan(x):
     ret = ivy.atan(x)
     return ret
@@ -31,6 +36,39 @@ def arctan(x):
 def arctan2(x1, x2):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.atan2(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def convolve(a, v, mode="full", *, precision=None):
+    a, v = promote_types_of_jax_inputs(a, v)
+    if ivy.get_num_dims(a) != 1:
+        raise ValueError("convolve() only support 1-dimensional inputs.")
+    if len(a) == 0 or len(v) == 0:
+        raise ValueError(
+            f"convolve: inputs cannot be empty, got shapes {a.shape} and {v.shape}."
+        )
+    if len(a) < len(v):
+        a, v = v, a
+    v = ivy.flip(v)
+
+    out_order = slice(None)
+
+    if mode == "valid":
+        padding = [(0, 0)]
+    elif mode == "same":
+        padding = [(v.shape[0] // 2, v.shape[0] - v.shape[0] // 2 - 1)]
+    elif mode == "full":
+        padding = [(v.shape[0] - 1, v.shape[0] - 1)]
+
+    result = ivy.conv_general_dilated(
+        a[None, None, :],
+        v[:, None, None],
+        (1,),
+        padding,
+        dims=1,
+        data_format="channel_first",
+    )
+    return result[0, 0, out_order]
 
 
 @to_ivy_arrays_and_back
@@ -58,6 +96,12 @@ def floor(x):
 def mod(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.remainder(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def divmod(x1, x2, /):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
+    return tuple([ivy.floor_divide(x1, x2), ivy.remainder(x1, x2)])
 
 
 @to_ivy_arrays_and_back
@@ -220,6 +264,14 @@ def negative(
     /,
 ):
     return ivy.negative(x)
+
+
+@to_ivy_arrays_and_back
+def positive(
+    x,
+    /,
+):
+    return ivy.positive(x)
 
 
 @to_ivy_arrays_and_back
@@ -409,3 +461,9 @@ def hypot(x1, x2, /):
 @to_ivy_arrays_and_back
 def floor_divide(x1, x2, /, out=None):
     return ivy.floor_divide(x1, x2, out=out)
+
+
+@to_ivy_arrays_and_back
+def inner(a, b):
+    a, b = promote_types_of_jax_inputs(a, b)
+    return ivy.inner(a, b)

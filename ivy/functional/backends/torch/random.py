@@ -110,7 +110,7 @@ def randint(
     rand_range = high - low
     if seed:
         torch.manual_seed(seed)
-    return torch.rand(shape, device=device).to(dtype) * rand_range + low
+    return (torch.rand(shape, device=device) * rand_range + low).to(dtype)
 
 
 def seed(*, seed_value: int = 0) -> None:

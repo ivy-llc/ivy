@@ -1,9 +1,41 @@
-from typing import Union, Optional, Tuple
+from typing import Union, Optional, Tuple, List
 import tensorflow as tf
 
 import ivy
 
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
+
+from ivy.func_wrapper import with_unsupported_dtypes
+from .. import backend_version
+
+
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("int", "float16", "bfloat16")}, backend_version
+)
+def eigh_tridiagonal(
+    alpha: Union[tf.Tensor, tf.Variable],
+    beta: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    eigvals_only: bool = True,
+    select: str = "a",
+    select_range: Optional[
+        Union[Tuple[int, int], List[int], tf.Tensor, tf.Variable]
+    ] = None,
+    tol: Optional[float] = None,
+) -> Union[
+    tf.Tensor,
+    tf.Variable,
+    Tuple[Union[tf.Tensor, tf.Variable], Union[tf.Tensor, tf.Variable]],
+]:
+    return tf.linalg.eigh_tridiagonal(
+        alpha,
+        beta,
+        eigvals_only=eigvals_only,
+        select=select,
+        select_range=select_range,
+        tol=tol,
+    )
 
 
 def diagflat(
@@ -61,7 +93,7 @@ def matrix_exp(
 
 
 def eig(
-    x: Union[tf.Tensor],
+    x: Union[tf.Tensor, tf.Variable],
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
@@ -72,7 +104,7 @@ def eig(
 
 
 def eigvals(
-    x: Union[tf.Tensor],
+    x: Union[tf.Tensor, tf.Variable],
     /,
 ) -> Union[tf.Tensor, tf.Variable]:
     if not ivy.dtype(x) in (ivy.float32, ivy.float64, ivy.complex64, ivy.complex128):

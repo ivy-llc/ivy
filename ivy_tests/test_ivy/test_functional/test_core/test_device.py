@@ -67,31 +67,22 @@ def _empty_dir(path, recreate=False):
 
 # Device Queries #
 
+
 # dev
 @handle_test(
     fn_tree="functional.ivy.dev",
-    array_shape=helpers.lists(
-        arg=helpers.ints(min_value=2, max_value=3),
-        min_size="num_dims",
-        max_size="num_dims",
-        size_bounds=[1, 3],
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
-    dtype=helpers.get_dtypes("numeric", full=False),
-    as_variable_flags=st.booleans(),
 )
-def test_dev(
-    *,
-    array_shape,
-    dtype,
-    test_flags,
-    backend_fw,
-):
-    assume(not (backend_fw == "torch" and "int" in dtype))
-    x = np.random.uniform(size=tuple(array_shape)).astype(dtype[0])
+def test_dev(*, dtype_and_x, test_flags):
+    dtype, x = dtype_and_x
+    dtype = dtype[0]
+    x = x[0]
 
     for device in _get_possible_devices():
         x = ivy.array(x, device=device)
-        if test_flags.as_variable and ivy.is_float_dtype(dtype[0]):
+        if test_flags.as_variable and ivy.is_float_dtype(dtype):
             x = _variable(x)
 
         ret = ivy.dev(x)
@@ -111,28 +102,18 @@ def test_dev(
 # as_ivy_dev
 @handle_test(
     fn_tree="functional.ivy.as_ivy_dev",
-    array_shape=helpers.lists(
-        arg=helpers.ints(min_value=2, max_value=3),
-        min_size="num_dims",
-        max_size="num_dims",
-        size_bounds=[1, 3],
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
-    dtype=helpers.get_dtypes("numeric", full=False),
 )
-def test_as_ivy_dev(
-    *,
-    array_shape,
-    dtype,
-    test_flags,
-    backend_fw,
-):
-    assume(not (backend_fw == "torch" and "int" in dtype))
-
-    x = np.random.uniform(size=tuple(array_shape)).astype(dtype[0])
+def test_as_ivy_dev(*, dtype_and_x, test_flags):
+    dtype, x = dtype_and_x
+    dtype = dtype[0]
+    x = x[0]
 
     for device in _get_possible_devices():
         x = ivy.array(x, device=device)
-        if test_flags.as_variable and ivy.is_float_dtype(dtype[0]):
+        if test_flags.as_variable and ivy.is_float_dtype(dtype):
             x = _variable(x)
 
         native_device = ivy.dev(x, as_native=True)
@@ -145,26 +126,16 @@ def test_as_ivy_dev(
 
 
 # as_native_dev
-# TODO: possible refactor to use the helpers.test_function method
 @handle_test(
     fn_tree="functional.ivy.as_native_dev",
-    array_shape=helpers.lists(
-        arg=helpers.ints(min_value=1, max_value=3),
-        min_size="num_dims",
-        max_size="num_dims",
-        size_bounds=[1, 3],
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
-    dtype=helpers.get_dtypes("float", index=1, full=False),
 )
-def test_as_native_dev(
-    *,
-    array_shape,
-    dtype,
-    test_flags,
-    on_device,
-):
-    # TODO: should be replaced with the helpers.dtype_values function
-    x = np.random.uniform(size=tuple(array_shape)).astype(dtype[0])
+def test_as_native_dev(*, dtype_and_x, test_flags, on_device):
+    dtype, x = dtype_and_x
+    dtype = dtype[0]
+    x = x[0]
 
     for device in _get_possible_devices():
         x = ivy.asarray(x, device=on_device)
@@ -212,34 +183,30 @@ def test_default_device():
 # to_dev
 @handle_test(
     fn_tree="functional.ivy.to_device",
-    array_shape=helpers.lists(
-        arg=helpers.ints(min_value=1, max_value=3),
-        min_size="num_dims",
-        max_size="num_dims",
-        size_bounds=[1, 3],
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
-    dtype=helpers.get_dtypes("numeric", full=False),
     stream=helpers.ints(min_value=0, max_value=50),
 )
 def test_to_device(
     *,
-    array_shape,
-    dtype,
+    dtype_and_x,
     stream,
     test_flags,
     backend_fw,
     on_device,
 ):
-    assume(not (backend_fw == "torch" and "int" in dtype))
+    dtype, x = dtype_and_x
+    dtype = dtype[0]
+    x = x[0]
 
-    x = np.random.uniform(size=tuple(array_shape)).astype(dtype[0])
     x = ivy.asarray(x)
-    if test_flags.as_variable and ivy.is_float_dtype(dtype[0]):
+    if test_flags.as_variable and ivy.is_float_dtype(dtype):
         x = _variable(x)
 
     # create a dummy array for out that is broadcastable to x
     out = (
-        ivy.zeros(ivy.shape(x), device=on_device, dtype=dtype[0])
+        ivy.zeros(ivy.shape(x), device=on_device, dtype=dtype)
         if test_flags.with_out
         else None
     )
@@ -292,7 +259,7 @@ def _axis(draw):
 @handle_test(
     fn_tree="functional.ivy.split_func_call",
     array_shape=helpers.lists(
-        arg=helpers.ints(min_value=1, max_value=3),
+        x=helpers.ints(min_value=1, max_value=3),
         min_size="num_dims",
         max_size="num_dims",
         size_bounds=[1, 3],
@@ -340,7 +307,7 @@ def test_split_func_call(
 @handle_test(
     fn_tree="functional.ivy.split_func_call",
     array_shape=helpers.lists(
-        arg=helpers.ints(min_value=2, max_value=3),
+        x=helpers.ints(min_value=2, max_value=3),
         min_size="num_dims",
         max_size="num_dims",
         size_bounds=[2, 3],
@@ -394,10 +361,7 @@ def test_split_func_call_with_cont_input(
 @handle_test(
     fn_tree="functional.ivy.Profiler",
 )
-def test_profiler(
-    *,
-    backend_fw,
-):
+def test_profiler(*, backend_fw):
     # ToDo: find way to prevent this test from hanging when run
     #  alongside other tests in parallel
 

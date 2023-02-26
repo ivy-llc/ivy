@@ -80,3 +80,79 @@ class ArrayWithActivationsExperimental(abc.ABC):
         ivy.array([0., 0., 1.])
         """
         return ivy.thresholded_relu(self._data, threshold=threshold, out=out)
+
+    def prelu(
+        self,
+        slope: Union[float, ivy.NativeArray, ivy.Array],
+        /,
+        *,
+        out: Optional["ivy.Array"] = None,
+    ) -> ivy.Array:
+        """
+        Prelu takes input data (Array) and slope array as input,
+        and produces one output data (array) where the function
+        f(x) = slope * x for x < 0, f(x) = x for x >= 0., is applied
+        to the data array elementwise. This operator supports unidirectional
+        broadcasting (array slope should be unidirectional broadcastable to
+        input tensor X);
+
+        Parameters
+        ----------
+        self
+            input array.
+        slope
+            Slope Array. The shape of slope can be smaller then first input X;
+            if so, its shape must be unidirectional broadcastable to X.
+        out
+            Optional output array.
+        Returns
+        -------
+        """
+        return ivy.prelu(self._data, slope, out=out)
+
+    def relu6(self, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """Applies the rectified linear unit 6 function element-wise.
+
+        Parameters
+        ----------
+        x
+            input array
+        out
+            optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the rectified linear unit 6 activation
+            of each element in ``x``.
+
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+
+        >>> x = ivy.array([-1.,  0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.])
+        >>> y = ivy.relu6(x)
+        >>> print(y)
+        ivy.array([0., 0., 1., 2., 3., 4., 5., 6., 6.])
+
+        >>> x = ivy.array([-1.,  0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.])
+        >>> y = ivy.zeros(9)
+        >>> ivy.relu6(x, out = y)
+        >>> print(y)
+        ivy.array([0., 0., 1., 2., 3., 4., 5., 6., 6.])
+
+        With :class:`ivy.Container` input:
+
+        >>> x = {
+                    a: ivy.array([-3., -2., -1., 0., 1., 2., 3., 4., 5.]),
+                    b: ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.])
+                }
+        >>> x = ivy.relu6(x, out=x)
+        >>> print(x)
+        {
+        a: ivy.array([0., 0., 0., 0., 1., 2., 3., 4., 5.]),
+        b: ivy.array([1., 2., 3., 4., 5., 6., 6., 6., 6.])
+        }
+        """
+        return ivy.relu6(self._data, out=out)

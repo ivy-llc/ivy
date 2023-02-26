@@ -772,6 +772,51 @@ class ContainerWithDataTypes(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
+        """
+        `ivy.Container` static method variant of `ivy.iinfo`. This method simply wraps
+        the function, and so the docstring for `ivy.iinfo` also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        type
+            input container with leaves to inquire information about.
+
+        key_chains
+            The key-chains to apply or not apply the method to.
+            Default is ``None``.
+
+        to_apply
+            Boolean indicating whether to apply the
+            method to the key-chains. Default is ``True``.
+
+        prune_unapplied
+            Boolean indicating whether to prune the
+            key-chains that were not applied. Default is ``False``.
+
+        map_sequences
+            Boolean indicating whether to map method
+            to sequences (list, tuple). Default is ``False``.
+
+        Returns
+        -------
+        ret
+            container of the same structure as `type`, with each element
+            as an iinfo object for the corresponding dtype of
+            leave in`type`.
+
+        Examples
+        --------
+        >>> c = ivy.Container(x=ivy.array([12,-1800,1084], dtype=ivy.int16),
+        ...                   y=ivy.array([-40000,99,1], dtype=ivy.int32))
+        >>> y = ivy.Container.static_iinfo(c)
+        >>> print(y)
+         {
+            x: iinfo(min=-32768, max=32767, dtype=int16),
+            y: iinfo(min=-2147483648, max=2147483647, dtype=int32)
+         }
+
+        """
         return ContainerBase.cont_multi_map_in_function(
             "iinfo",
             type,
@@ -789,6 +834,38 @@ class ContainerWithDataTypes(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
+        `ivy.Container` instance method variant of `ivy.iinfo`. This method
+         simply wraps the function, and so the docstring for `ivy.iinfo`
+         also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container with leaves to inquire information about.
+
+        key_chains
+            The key-chains to apply or not apply the method to.
+            Default is ``None``.
+
+        to_apply
+            Boolean indicating whether to apply the
+            method to the key-chains. Default is ``True``.
+
+        prune_unapplied
+            Boolean indicating whether to prune the
+            key-chains that were not applied. Default is ``False``.
+
+        map_sequences
+            Boolean indicating whether to map method
+            to sequences (list, tuple). Default is ``False``.
+
+        Returns
+        -------
+        ret
+            container of the same structure as `self`, with each element
+            as an iinfo object for the corresponding dtype of
+            leave in`self`.
+
         Examples
         --------
         >>> c = ivy.Container(x=ivy.array([-9,1800,89], dtype=ivy.int16),
@@ -798,6 +875,15 @@ class ContainerWithDataTypes(ContainerBase):
             x: iinfo(min=-32768, max=32767, dtype=int16),
             y: iinfo(min=-2147483648, max=2147483647, dtype=int32)
         }
+
+        >>> c = ivy.Container(x=ivy.array([-12,123,4], dtype=ivy.int8),
+        ...                   y=ivy.array([76,-81,16], dtype=ivy.int16))
+        >>> c.iinfo()
+        {
+            x: iinfo(min=-128, max=127, dtype=int8),
+            y: iinfo(min=-32768, max=32767, dtype=int16)
+        }
+
         """
         return self.static_iinfo(
             self,

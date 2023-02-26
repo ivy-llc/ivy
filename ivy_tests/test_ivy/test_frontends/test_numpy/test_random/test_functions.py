@@ -235,3 +235,66 @@ def test_numpy_multinomial(
         pvals=np.array([1 / n] * n, dtype=dtype[0]),
         size=size,
     )
+
+
+# permutation
+@handle_frontend_test(
+    fn_tree="numpy.random.permutation",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"), min_num_dims=1
+    ),
+)
+def test_numpy_permutation(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        x=x[0],
+    )
+
+
+# beta
+@handle_frontend_test(
+    fn_tree="numpy.random.beta",
+    input_dtypes=helpers.get_dtypes("float", index=2),
+    a=st.floats(
+        allow_nan=False, allow_infinity=False, width=32, min_value=0, exclude_min=True
+    ),
+    b=st.floats(
+        allow_nan=False, allow_infinity=False, width=32, min_value=0, exclude_min=True
+    ),
+    size=st.tuples(
+        st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)
+    ),
+)
+def test_numpy_beta(
+    input_dtypes,
+    size,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    a,
+    b,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        a=a,
+        b=b,
+        size=size,
+    )

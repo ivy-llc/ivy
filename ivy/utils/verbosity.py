@@ -1,3 +1,4 @@
+# TODO should this still be here?
 import termcolor
 
 level = 0

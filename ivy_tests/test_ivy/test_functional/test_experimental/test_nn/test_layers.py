@@ -1,6 +1,5 @@
 # global
-from hypothesis import strategies as st
-
+from hypothesis import strategies as st, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -10,19 +9,40 @@ from ivy_tests.test_ivy.helpers import handle_test
 @handle_test(
     fn_tree="functional.ivy.experimental.max_pool2d",
     x_k_s_p=helpers.arrays_for_pooling(
-        min_dims=4, max_dims=4, min_side=1, max_side=4, allow_explicit_padding=True
+        min_dims=4,
+        max_dims=4,
+        min_side=2,
+        max_side=4,
+        allow_explicit_padding=True,
+        return_dilation=True,
     ),
+    ceil_mode=st.just(True),
     test_gradients=st.just(False),
+    # problem with containers converting tuple padding to
+    # lists which jax does not support
     container_flags=st.just([False]),
 )
 def test_max_pool2d(
     *,
     x_k_s_p,
+    ceil_mode,
     test_flags,
     backend_fw,
     fn_name,
 ):
-    dtype, x, kernel, stride, pad = x_k_s_p
+    dtype, x, kernel, stride, pad, dilation = x_k_s_p
+    assume(
+        not (
+            backend_fw.current_backend_str() == "tensorflow"
+            and (
+                (stride[0] > kernel[0] or stride[0] > kernel[1])
+                or (
+                    (stride[0] > 1 and dilation[0] > 1)
+                    or (stride[0] > 1 and dilation[1] > 1)
+                )
+            )
+        )
+    )
     helpers.test_function(
         ground_truth_backend="jax",
         input_dtypes=dtype,
@@ -35,6 +55,8 @@ def test_max_pool2d(
         kernel=kernel,
         strides=stride,
         padding=pad,
+        dilation=dilation,
+        ceil_mode=ceil_mode,
     )
 
 
@@ -235,6 +257,97 @@ def test_dct(
 
 
 @st.composite
+def _interp_args(draw, scale_factor=False):
+    mode = draw(st.sampled_from(["linear", "bilinear", "trilinear", "nearest", "area"]))
+    align_corners = draw(st.one_of(st.booleans(), st.none()))
+    if mode == "linear":
+        num_dims = 3
+    elif mode == "bilinear":
+        num_dims = 4
+    elif mode == "trilinear":
+        num_dims = 5
+    elif mode == "nearest" or mode == "area":
+        dim = draw(helpers.ints(min_value=1, max_value=3))
+        num_dims = dim + 2
+        align_corners = None
+    size = draw(
+        st.one_of(
+            helpers.lists(
+                x=helpers.ints(min_value=1, max_value=5),
+                min_size=num_dims - 2,
+                max_size=num_dims - 2,
+            ),
+            st.integers(min_value=1, max_value=5),
+        )
+    )
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=num_dims,
+            max_num_dims=num_dims,
+            min_dim_size=1,
+            max_dim_size=3,
+            large_abs_safety_factor=50,
+            small_abs_safety_factor=50,
+            safety_factor_scale="log",
+        )
+    )
+    if scale_factor:
+        scale_factor = draw(st.booleans())
+        if scale_factor:
+            recompute_scale_factor = draw(st.booleans())
+            scale_factors = size
+            size = None
+        else:
+            scale_factors = None
+            recompute_scale_factor = False
+        return (
+            dtype,
+            x,
+            mode,
+            size,
+            align_corners,
+            scale_factors,
+            recompute_scale_factor,
+        )
+    return dtype, x, mode, size, align_corners
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.interpolate",
+    dtype_x_mode=_interp_args(),
+    antialias=st.just(False),
+    test_gradients=st.just(False),
+    number_positional_args=st.just(2),
+)
+def test_interpolate(
+    dtype_x_mode,
+    antialias,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x, mode, size, align_corners = dtype_x_mode
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-01,
+        atol_=1e-01,
+        x=x[0],
+        size=size,
+        mode=mode,
+        align_corners=align_corners,
+        antialias=antialias,
+    )
+
+
+@st.composite
 def x_and_fft(draw, dtypes):
     min_fft_points = 2
     dtype = draw(dtypes)
@@ -307,6 +420,57 @@ def test_fft(
     test_gradients=st.just(False),
 )
 def test_dropout1d(
+    *,
+    dtype_and_x,
+    prob,
+    training,
+    data_format,
+    test_flags,
+    backend_fw,
+    on_device,
+    fn_name,
+    ground_truth_backend,
+):
+    dtype, x = dtype_and_x
+    ret, gt_ret = helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        test_values=False,
+        x=x[0],
+        prob=prob,
+        training=training,
+        data_format=data_format,
+        return_flat_np_arrays=True,
+    )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    gt_ret = helpers.flatten_and_to_np(ret=gt_ret)
+    for u, v, w in zip(ret, gt_ret, x):
+        # cardinality test
+        assert u.shape == v.shape == w.shape
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.dropout3d",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=50,
+        allow_inf=False,
+        min_num_dims=4,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+    ),
+    prob=helpers.floats(min_value=0, max_value=0.9),
+    training=st.booleans(),
+    data_format=st.sampled_from(["NCDHW", "NDHWC"]),
+    test_gradients=st.just(False),
+    test_with_out=st.just(False),
+)
+def test_dropout3d(
     *,
     dtype_and_x,
     prob,

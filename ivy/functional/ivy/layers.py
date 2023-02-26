@@ -5,15 +5,16 @@ from typing import Optional, Tuple, Union, Callable, Sequence
 
 # local
 import ivy
-from ivy.backend_handler import current_backend
+from ivy.utils.backend import current_backend
 from ivy.func_wrapper import (
+    handle_array_function,
     inputs_to_ivy_arrays,
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
 )
-from ivy.exceptions import handle_exceptions
+from ivy.utils.exceptions import handle_exceptions
 
 
 # Extra #
@@ -26,6 +27,7 @@ from ivy.exceptions import handle_exceptions
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def linear(
     x: Union[ivy.Array, ivy.NativeArray],
     weight: Union[ivy.Array, ivy.NativeArray],
@@ -171,6 +173,7 @@ def linear(
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def dropout(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -341,6 +344,7 @@ def dropout(
 
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def scaled_dot_product_attention(
     q: Union[ivy.Array, ivy.NativeArray],
     k: Union[ivy.Array, ivy.NativeArray],
@@ -545,6 +549,7 @@ def scaled_dot_product_attention(
 
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def multi_head_attention(
     x: Union[ivy.Array, ivy.NativeArray],
     scale: float,
@@ -780,6 +785,7 @@ def multi_head_attention(
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def conv1d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -873,16 +879,17 @@ def conv1d(
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def conv1d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
-    strides: int,
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    strides: Union[int, Tuple[int]],
+    padding: str,
     /,
     *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
-    data_format: Optional[str] = "NWC",
-    dilations: Optional[int] = 1,
+    data_format: str = "NWC",
+    dilations: Union[int, Tuple[int]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 1-D transpose convolution given 3-D input x and filters arrays.
@@ -896,9 +903,8 @@ def conv1d_transpose(
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
-        padding), or a sequence of n (low, high) integer pairs that give the padding to
-        apply before and after each spatial dimension.
+        Either ‘SAME’ (padding so that the output's shape is the same as the
+        input's), or ‘VALID’ (padding so that the output's shape is `output_shape`).
     output_shape
         Shape of the output (Default value = None)
     data_format
@@ -916,6 +922,78 @@ def conv1d_transpose(
     ret
         The result of the transpose convolution operation.
 
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 28, 3])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 6])
+    >>> y = ivy.conv1d_transpose(x, filters, 2, 'SAME')
+    >>> print(y.shape)
+    (1, 56, 6)
+
+    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 128, 64])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[1, 64, 64])
+    >>> ivy.conv1d_transpose(x, filters, 1, 'VALID', out=x)
+    >>> print(x.shape)
+    (1, 128, 64)
+
+    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 256, 64])
+    >>> y = ivy.zeros_like(x)
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 64, 32])
+    >>> ivy.conv1d_transpose(x, filters, [1, 1, 1], 'VALID', out=y)
+    >>> print(y.shape)
+    (1, 258, 32)
+
+    With :class:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array(
+    ...         ivy.random_normal(mean=0, std=1, shape=[1,256,128])
+    ... )
+    >>> filters = ivy.native_array(
+    ...         ivy.random_normal(mean=0, std=1, shape=[3, 128, 32])
+    ... )
+    >>> y = ivy.conv1d_transpose(x, filters, 2, 'SAME')
+    >>> print(y.shape)
+    (1, 512, 32)
+
+    With one :class:`ivy.Container` input:
+
+    >>> x = ivy.full((1, 6, 1), 2.7)
+    >>> a = ivy.random_normal(mean=0, std=1, shape=[3, 1, 1])
+    >>> b = ivy.random_normal(mean=0, std=1, shape=[3, 1, 1])
+    >>> filters = ivy.Container(a=a, b=b)
+    >>> y = ivy.conv1d_transpose(x, filters, 1, 'VALID', dilations=2)
+    >>> print(y.shape)
+    {
+        a: [1,10,1],
+        b: [1,10,1]
+    }
+
+    With multiple :class:`ivy.Container` inputs:
+
+    >>> a = ivy.random_normal(mean=0, std=1, shape=[1, 14, 3])
+    >>> b = ivy.random_normal(mean=0, std=1, shape=[1, 28, 3])
+    >>> c = ivy.random_normal(mean=0, std=1, shape=[3, 3, 6])
+    >>> d = ivy.random_normal(mean=0, std=1, shape=[3, 3, 6])
+    >>> x = ivy.Container(a=a, b=b)
+    >>> filters = ivy.Container(c=c, d=d)
+    >>> y = ivy.conv1d_transpose(x, filters, 2, 'SAME')
+    >>> print(y.shape)
+    {
+        a: {
+            c: [1,28,6],
+            d: [1,28,6]
+        },
+        b: {
+            c: [1,56,6],
+            d: [1,56,6]
+        }
+    }
     """
     return current_backend(x).conv1d_transpose(
         x,
@@ -933,6 +1011,7 @@ def conv1d_transpose(
 @handle_out_argument
 @handle_nestable
 @handle_array_like_without_promotion
+@handle_array_function
 def conv2d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -940,8 +1019,8 @@ def conv2d(
     padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
-    data_format: Optional[str] = "NHWC",
-    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
+    data_format: str = "NHWC",
+    dilations: Union[int, Tuple[int, int]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 2-D convolution given 4-D input x and filters arrays.
@@ -976,7 +1055,6 @@ def conv2d(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
-
 
     Examples
     --------
@@ -1061,11 +1139,12 @@ def conv2d(
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def conv2d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
     strides: Union[int, Tuple[int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: str,
     /,
     *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
@@ -1084,9 +1163,8 @@ def conv2d_transpose(
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
-        padding), or a sequence of n (low, high) integer pairs that give the padding to
-        apply before and after each spatial dimension.
+        Either ‘SAME’ (padding so that the output's shape is the same as the
+        input's), or ‘VALID’ (padding so that the output's shape is `output_shape`).
     output_shape
         Shape of the output (Default value = None)
     data_format
@@ -1179,6 +1257,7 @@ def conv2d_transpose(
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def depthwise_conv2d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1316,6 +1395,7 @@ def depthwise_conv2d(
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def conv3d(
     x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -1431,11 +1511,12 @@ def conv3d(
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def conv3d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
     strides: Union[int, Tuple[int, int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: str,
     /,
     *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
@@ -1454,9 +1535,8 @@ def conv3d_transpose(
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
-        padding), or a sequence of n (low, high) integer pairs that give the padding to
-        apply before and after each spatial dimension.
+        Either ‘SAME’ (padding so that the output's shape is the same as the
+        input's), or ‘VALID’ (padding so that the output's shape is `output_shape`).
     output_shape
         Shape of the output (Default value = None)
     data_format
@@ -1539,6 +1619,7 @@ def conv3d_transpose(
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def conv_general_dilated(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1617,11 +1698,12 @@ def conv_general_dilated(
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def conv_general_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
     strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: str,
     /,
     *,
     dims: Optional[int] = 2,
@@ -1646,9 +1728,8 @@ def conv_general_transpose(
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
-        padding), or a sequence of n (low, high) integer pairs that give the padding to
-        apply before and after each spatial dimension.
+        Either ‘SAME’ (padding so that the output's shape is the same as the
+        input's), or ‘VALID’ (padding so that the output's shape is `output_shape`).
     dims
         Either 1, 2, or 3 corresponding to 1-D, 2-D, and 3-D convolution.
     output_shape
@@ -1690,6 +1771,7 @@ def conv_general_transpose(
 @handle_out_argument
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def conv(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1793,6 +1875,7 @@ def conv(
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_array_function
 def lstm_update(
     x: Union[ivy.Array, ivy.NativeArray],
     init_h: Union[ivy.Array, ivy.NativeArray],
