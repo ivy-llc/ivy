@@ -357,7 +357,6 @@ def subtract(
     return paddle.subtract(x1, x2)
 
 
-
 def remainder(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],
@@ -370,7 +369,7 @@ def remainder(
     if not modulus:
         res = x1 / x2
         res_floored = paddle.where(res >= 0, paddle.floor(res), paddle.ceil(res))
-        diff = np.asarray(res - res_floored, dtype=res.dtype)
+        diff = paddle.to_tensor(res - res_floored, dtype=res.dtype)
         diff, x2 = ivy.promote_types_of_inputs(diff, x2)
         return paddle.round(diff * x2).cast(x1.dtype)
     return paddle.remainder(x1, x2)
@@ -406,7 +405,16 @@ def bitwise_left_shift(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    x1 = paddle.to_tensor(x1) if not isinstance(x1, paddle.Tensor) else x1
+    x2 = paddle.to_tensor(x2) if not isinstance(x2, paddle.Tensor) else x2
+
+    data_type = x1.numpy().dtype
+    num_bytes = data_type.itemsize
+    mask = paddle.bitwise_not(paddle.bitwise_and(
+        x1, paddle.to_tensor(-1 << num_bytes, dtype=x1.dtype)))
+    c = [int(a) << int(b) for a, b in zip(x1, x2)]
+    result = paddle.bitwise_and(paddle.to_tensor(c, dtype=mask.dtype), mask)
+    return result
 
 
 # Extra #
@@ -439,7 +447,7 @@ def maximum(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if use_where:
-        return np.where(x1 >= x2, x1, x2)
+        return paddle.where(x1 >= x2, x1, x2)
     return paddle.maximum(x1, x2)
 
 
@@ -447,7 +455,6 @@ def reciprocal(
     x: Union[float, paddle.Tensor], /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     return paddle.reciprocal(x)
-
 
 
 def deg2rad(
