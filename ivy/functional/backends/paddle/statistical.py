@@ -153,7 +153,20 @@ def cumprod(
     dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if dtype is None:
+        dtype = x.dtype
+    if out is None:
+        out = paddle.ones_like(x, dtype=dtype)
+    if reverse:
+        x = paddle.flip(x, axis=[axis])
+        out = paddle.flip(out, axis=[axis])
+    for i in range(1, x.shape[axis]):
+        out = paddle.concat([out.slice(0, i), paddle.multiply(x.slice(0, i), out.slice(0, i))], axis=axis)
+    if exclusive:
+        out = paddle.concat([paddle.ones_like(x.slice(0, 1), dtype=dtype), out.slice(0, out.shape[axis] - 1)], axis=axis)
+    if reverse:
+        out = paddle.flip(out, axis=[axis])
+    return out
 
 
 def cumsum(
