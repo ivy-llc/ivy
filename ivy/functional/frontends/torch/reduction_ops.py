@@ -126,7 +126,7 @@ def max(input, dim=None, keepdim=False, *, out=None):
 
 @to_ivy_arrays_and_back
 def count_nonzero(input, dim=None):
-    return ivy.count_nonzero(input, axis=dim)
+    return ivy.count_nonzero(input, axis=dim).astype(ivy.int64)
 
 
 @to_ivy_arrays_and_back
