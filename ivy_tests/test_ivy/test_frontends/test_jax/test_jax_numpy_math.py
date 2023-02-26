@@ -2300,3 +2300,30 @@ def test_jax_numpy_inner(
         a=xs[0],
         b=xs[1],
     )
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.gradient",
+    dtype_and_x=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+    )
+)
+def test_jax_numpy_gradient(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, inputs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        f=inputs[0],
+        varargs=inputs[1],
+        axis=inputs[2],
+        edge_order=inputs[3],
+    )
