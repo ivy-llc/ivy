@@ -126,4 +126,10 @@ def bincount(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.bincount(x, weights=weights, minlength=minlength)
+    if weights is not None:
+        ret = tf.math.bincount(x, weights=weights, minlength=minlength)
+        ret = tf.cast(ret, weights.dtype)
+    else:
+        ret = tf.math.bincount(x, minlength=minlength)
+        ret = tf.cast(ret, x.dtype)
+    return ret

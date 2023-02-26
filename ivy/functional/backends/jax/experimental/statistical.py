@@ -97,4 +97,9 @@ def bincount(
     minlength: Optional[int] = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.bincount(x, weights=weights, minlength=minlength)
+    if weights is not None:
+        ret = jnp.bincount(x, weights=weights, minlength=minlength)
+        ret = ret.astype(weights.dtype)
+    else:
+        ret = jnp.bincount(x, minlength=minlength).astype(x.dtype)
+    return ret

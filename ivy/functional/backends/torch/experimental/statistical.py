@@ -171,7 +171,13 @@ def bincount(
     minlength: Optional[int] = 0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.bincount(x, weights=weights, minlength=minlength)
+    if weights is None:
+        ret = torch.bincount(x, minlength=minlength)
+        ret = ret.to(x.dtype)
+    else:
+        ret = torch.bincount(x, weights=weights, minlength=minlength)
+        ret = ret.to(x.dtype)
+    return ret
 
 
 bincount.support_native_out = False

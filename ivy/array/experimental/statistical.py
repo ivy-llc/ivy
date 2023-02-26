@@ -319,12 +319,12 @@ class ArrayWithStatisticalExperimental(abc.ABC):
         )
 
     def bincount(
-            self,
-            /,
-            *,
-            weights: Optional[ivy.Array] = None,
-            minlength: Optional[int] = 0,
-            out: Optional[ivy.Array] = None,
+        self,
+        /,
+        *,
+        weights: Optional[ivy.Array] = None,
+        minlength: Optional[int] = 0,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.bincount. This method simply
         wraps the function, and so the docstring for ivy.bincount also applies to

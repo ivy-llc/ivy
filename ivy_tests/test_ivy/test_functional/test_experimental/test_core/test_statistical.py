@@ -263,20 +263,33 @@ def test_corrcoef(
 
 
 # bincount
+@st.composite
+def bincount_dtype_and_values(draw):
+    dtype_and_x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=["int32"],
+            num_arrays=2,
+            shared_dtype=True,
+            min_num_dims=1,
+            max_num_dims=1,
+            min_dim_size=1,
+            max_dim_size=10,
+            min_value=0,
+            max_value=10,
+            allow_nan=False,
+        )
+    )
+    dtype_and_x[1][1] = dtype_and_x[1][0]
+    if draw(st.booleans()):
+        dtype_and_x[1][1] = None
+
+    min_length = draw(st.integers(min_value=0, max_value=10))
+    return dtype_and_x, min_length
+
+
 @handle_test(
     fn_tree="functional.ivy.experimental.bincount",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=["int32"],
-        num_arrays=2,
-        shared_dtype=True,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_dim_size=1,
-        max_dim_size=10,
-        min_value=0,
-        max_value=10,
-        allow_nan=False,
-    ),
+    dtype_and_x=bincount_dtype_and_values(),
     test_gradients=st.just(False),
 )
 def test_bincount(
@@ -288,6 +301,7 @@ def test_bincount(
     on_device,
     ground_truth_backend,
 ):
+    dtype_and_x, min_length = dtype_and_x
     input_dtype, x = dtype_and_x
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
@@ -297,5 +311,6 @@ def test_bincount(
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
-        weights=st.one_of(st.none(), st.just(x[1])),
+        weights=x[1],
+        minlength=min_length,
     )

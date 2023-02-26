@@ -114,7 +114,13 @@ def bincount(
     minlength: Optional[int] = 0,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.bincount(x, weights=weights, minlength=minlength)
+    if weights is not None:
+        ret = np.bincount(x, weights=weights, minlength=minlength)
+        ret = ret.astype(weights.dtype)
+    else:
+        ret = np.bincount(x, minlength=minlength)
+        ret = ret.astype(x.dtype)
+    return ret
 
 
 bincount.support_native_out = False

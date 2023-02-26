@@ -820,11 +820,11 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         With one :class:`ivy.Container` input:
         >>> x = ivy.Container(a=ivy.array([1, 1, 2, 2, 2, 3]),
                             b=ivy.array([1, 1, 2, 2, 2, 3]))
-        >>> ivy.Container.static_bincount(x).shape
-        {
-            a: (4,)
-            b: (4,)
-        }
+        >>> ivy.Container.static_bincount(x)
+            {
+                a: array([0, 2, 3, 1])
+                b: array([0, 2, 3, 1])
+            }
         """
         return ContainerBase.cont_multi_map_in_function(
             "bincount",
@@ -865,6 +865,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
             The bincount of the array elements.
 
         Examples
+        --------
         >>> a = ivy.Container([[10.0, ivy.nan, 4], [3, 2, 1]])
         >>> a.bincount(a)
             3.0
