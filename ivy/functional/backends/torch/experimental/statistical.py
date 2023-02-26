@@ -60,15 +60,17 @@ def quantile(
         temp = a.detach()
         dimension = len(a.size())
         for x in axis:
-            axis1 = x 
-            for axis2 in range(x+1,dimension):
+            axis1 = x
+            for axis2 in range(x + 1, dimension):
                 temp = torch.transpose(temp, axis1, axis2)
                 axis1 = axis2
-        temp = torch.flatten(temp, start_dim=dimension-len(axis))
+        temp = torch.flatten(temp, start_dim=dimension - len(axis))
         return torch.quantile(
             temp, q, dim=-1, keepdim=keepdims, interpolation=interpolation, out=out
         )
-    return torch.quantile(a, q, dim=axis, keepdim=keepdims, interpolation=interpolation, out=out)
+    return torch.quantile(
+        a, q, dim=axis, keepdim=keepdims, interpolation=interpolation, out=out
+    )
 
 
 quantile.support_native_out = True
