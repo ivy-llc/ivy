@@ -357,7 +357,6 @@ def subtract(
     return paddle.subtract(x1, x2)
 
 
-
 def remainder(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],
@@ -370,7 +369,7 @@ def remainder(
     if not modulus:
         res = x1 / x2
         res_floored = paddle.where(res >= 0, paddle.floor(res), paddle.ceil(res))
-        diff = np.asarray(res - res_floored, dtype=res.dtype)
+        diff = ivy.asarray(res - res_floored, dtype=res.dtype)
         diff, x2 = ivy.promote_types_of_inputs(diff, x2)
         return paddle.round(diff * x2).cast(x1.dtype)
     return paddle.remainder(x1, x2)
@@ -426,6 +425,8 @@ def minimum(
     use_where: bool = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if use_where:
+        return paddle.where(x1 < x2, x1, x2)
     return paddle.minimum(x1, x2)
 
 
@@ -439,7 +440,7 @@ def maximum(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if use_where:
-        return np.where(x1 >= x2, x1, x2)
+        return ivy.where(x1 >= x2, x1, x2)
     return paddle.maximum(x1, x2)
 
 
@@ -447,7 +448,6 @@ def reciprocal(
     x: Union[float, paddle.Tensor], /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     return paddle.reciprocal(x)
-
 
 
 def deg2rad(
