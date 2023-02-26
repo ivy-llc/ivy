@@ -13,11 +13,30 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 
 @to_ivy_arrays_and_back
 def convolve(a, v, mode="full"):
-    if len(a) == 0:
-        raise ValueError("'a' cannot be empty.")
-    if len(v) == 0:
-        raise ValueError("'v' cannot be empty.")
-    return ivy.frontends.numpy.correlate(a, v[::-1], mode)
+    if a.ndim != 1 or v.ndim != 1:
+        raise ValueError("convolve() only support 1-dimensional inputs.")
+    if a.shape[0] < v.shape[0]:
+        a, v = v, a
+    v = ivy.flip(v)
+
+    out_order = slice(None)
+
+    if mode == "valid":
+        padding = [(0, 0)]
+    elif mode == "same":
+        padding = [(v.shape[0] // 2, v.shape[0] - v.shape[0] // 2 - 1)]
+    elif mode == "full":
+        padding = [(v.shape[0] - 1, v.shape[0] - 1)]
+
+    result = ivy.conv_general_dilated(
+        a[None, None, :],
+        v[:, None, None],
+        (1,),
+        padding,
+        dims=1,
+        data_format="channel_first",
+    )
+    return result[0, 0, out_order]
 
 
 @handle_numpy_out

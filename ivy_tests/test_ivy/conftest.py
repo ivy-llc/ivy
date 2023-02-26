@@ -23,6 +23,7 @@ ground_backend=None # multiversion
 # local
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
 from ivy import DefaultDevice
+from ivy import set_exception_trace_mode
 from ivy_tests.test_ivy.helpers import globals as test_globals
 from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
 
@@ -39,6 +40,13 @@ if "ARRAY_API_TESTS_MODULE" not in os.environ:
 
 def pytest_configure(config):
     global available_frameworks
+
+    # Ivy Exception traceback
+    set_exception_trace_mode(config.getoption("--ivy-tb"))
+
+    # Pytest traceback
+    config.option.tbstyle = config.getoption("--tb")
+
     # device
     raw_value = config.getoption("--device")
     if raw_value == "all":
@@ -54,9 +62,7 @@ def pytest_configure(config):
         backend_strs = raw_value.split(",")
 
     # frontend
-
     frontend = config.getoption("--frontend")
-
     if frontend:
         frontend_strs = frontend.split(",")
         for i in frontend_strs:
@@ -142,8 +148,10 @@ def pytest_configure(config):
 
 @pytest.fixture(autouse=True)
 def run_around_tests(request, on_device, backend_fw, compile_graph, implicit):
-    if hasattr(request.function, "test_data"):
+    ivy_test = hasattr(request.function, "_ivy_test")
+    if ivy_test:
         try:
+
             if ground_backend:
                 test_globals.setup_api_test(
                     request.function.test_data,
@@ -153,23 +161,23 @@ def run_around_tests(request, on_device, backend_fw, compile_graph, implicit):
                 )
             else:
 
-                test_globals.setup_api_test(
-                    request.function.test_data,
-                    backend_fw.backend,
-                    request.function.ground_truth_backend,
-                    on_device,
-                )
+                 test_globals.setup_api_test(
+                backend_fw.backend,
+                request.function.ground_truth_backend,
+                on_device,
+                request.function.test_data
+                if hasattr(request.function, "test_data")
+                else None,
+            )
+
         except Exception as e:
             test_globals.teardown_api_test()
             raise RuntimeError(f"Setting up test for {request.function} failed.") from e
-        with backend_fw.use:
-            with DefaultDevice(on_device):
-                yield
+    with backend_fw.use:
+        with DefaultDevice(on_device):
+            yield
+    if ivy_test:
         test_globals.teardown_api_test()
-    else:
-        with backend_fw.use:
-            with DefaultDevice(on_device):
-                yield
 
 
 def pytest_generate_tests(metafunc):

@@ -132,6 +132,7 @@ def get_dtypes(
         if isinstance(test_globals.CURRENT_FRONTEND_STR, list):
             process = test_globals.CURRENT_FRONTEND_STR[1]
             try:
+
                 if test_globals.CURRENT_RUNNING_TEST.is_method:
                     process.stdin.write("1a" + "\n")
                     process.stdin.write(jsonpickle.dumps(test_globals.CURRENT_RUNNING_TEST.is_method) + "\n")
@@ -141,6 +142,7 @@ def get_dtypes(
                 process.stdin.write(f"{str(kind)}" + "\n")
                 process.stdin.write(f"{test_globals.CURRENT_DEVICE}"+ "\n")
                 process.stdin.write(f"{test_globals.CURRENT_RUNNING_TEST.fn_tree}"+ "\n")
+
                 process.stdin.flush()
             except Exception as e:
                 print(

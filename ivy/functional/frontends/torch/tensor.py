@@ -536,7 +536,7 @@ class Tensor:
         self._ivy_array = self.transpose(dim0, dim1).ivy_array
         return self
 
-    def flatten(self, start_dim, end_dim):
+    def flatten(self, start_dim=0, end_dim=-1):
         return torch_frontend.flatten(self._ivy_array, start_dim, end_dim)
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
