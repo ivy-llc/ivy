@@ -250,6 +250,11 @@ class Tensor:
     def log(self):
         return torch_frontend.log(self._ivy_array)
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def log_(self):
+        self._ivy_array = self.log().ivy_array
+        return self
+
     def amax(self, dim=None, keepdim=False):
         return torch_frontend.amax(self._ivy_array, dim=dim, keepdim=keepdim)
 

@@ -24,7 +24,7 @@ def add(x, y, name=None):
 def exp(x, name=None):
     return ivy.exp(x)
 
-    
+
 @to_ivy_arrays_and_back
 def argmax(input, axis, output_type=None, name=None):
     output_type = to_ivy_dtype(output_type)
@@ -451,3 +451,8 @@ def abs(x, name=None):
 @to_ivy_arrays_and_back
 def log_softmax(logits, axis=None):
     return ivy.log_softmax(logits, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def asin(x, name=None):
+    return ivy.asin(x)
