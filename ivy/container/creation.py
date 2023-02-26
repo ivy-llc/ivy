@@ -59,6 +59,45 @@ class ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.asarray. This method simply wraps the
+        function, and so the docstring for ivy.asarray also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input data, in any form that can be converted to an array. This includes
+            lists, lists of tuples, tuples, tuples of tuples, tuples of lists and
+            ndarrays.
+        copy
+            boolean, indicating whether or not to copy the input. Default: ``None``.
+        dtype
+            datatype, optional. Datatype is inferred from the input data.
+        device
+            device on which to place the created array. Default: ``None``.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An array interpretation of ``self``.
+
+        Examples
+        --------
+        With :class:`ivy.Container` as input:
+        >>> x = ivy.Container(a = [(1,2),(3,4),(5,6)], b = ((1,2,3),(4,5,6)))
+        >>> ivy.asarray(x)
+        {
+            a: ivy.array([[1, 2],
+                          [3, 4],
+                          [5, 6]]),
+            b: ivy.array([[1, 2, 3],
+                          [4, 5, 6]])
+        }
+        """
         return ContainerBase.cont_multi_map_in_function(
             "asarray",
             x,
