@@ -387,7 +387,16 @@ def bitwise_right_shift(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    x1 = paddle.to_tensor(x1) if not isinstance(x1, paddle.Tensor) else x1
+    x2 = paddle.to_tensor(x2) if not isinstance(x2, paddle.Tensor) else x2
+
+    data_type = x1.numpy().dtype
+    num_bytes = data_type.itemsize
+    mask = paddle.bitwise_not(paddle.bitwise_and(
+        x1, paddle.to_tensor(-1 << num_bytes, dtype=x1.dtype)))
+    c = [int(a) >> int(b) for a, b in zip(x1, x2)]
+    result = paddle.bitwise_and(paddle.to_tensor(c, dtype=mask.dtype), mask)
+    return result
 
 
 def bitwise_left_shift(
