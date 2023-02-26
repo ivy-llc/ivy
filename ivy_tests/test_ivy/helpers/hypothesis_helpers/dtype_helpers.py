@@ -12,7 +12,7 @@ import ivy
 from . import number_helpers as nh
 from . import array_helpers as ah
 from .. import globals as test_globals
-
+from ivy_tests import conftest
 
 _dtype_kind_keys = {
     "valid",
@@ -104,6 +104,7 @@ def get_dtypes(
         dtype string
     """
 
+
     if prune_function:
         retrieval_fn = _get_fn_dtypes
         if test_globals.CURRENT_RUNNING_TEST is not test_globals._Notsetval:
@@ -131,7 +132,11 @@ def get_dtypes(
         if isinstance(test_globals.CURRENT_FRONTEND_STR, list):
             process = test_globals.CURRENT_FRONTEND_STR[1]
             try:
-                process.stdin.write("1" + "\n")
+                if test_globals.CURRENT_RUNNING_TEST.is_method:
+                    process.stdin.write("1a" + "\n")
+                    process.stdin.write(jsonpickle.dumps(test_globals.CURRENT_RUNNING_TEST.is_method) + "\n")
+                else:
+                    process.stdin.write("1" + "\n")
                 process.stdin.write(f"{str(retrieval_fn.__name__)}"+ "\n")
                 process.stdin.write(f"{str(kind)}" + "\n")
                 process.stdin.write(f"{test_globals.CURRENT_DEVICE}"+ "\n")
@@ -151,6 +156,7 @@ def get_dtypes(
                 raise Exception
             frontend_dtypes = frontend_ret
             valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
+
         else:
             frontend_dtypes = retrieval_fn(test_globals.CURRENT_FRONTEND(), kind)
             valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
@@ -160,9 +166,36 @@ def get_dtypes(
         test_globals.CURRENT_GROUND_TRUTH_BACKEND is not test_globals._Notsetval  # NOQA
     )
     if ground_truth_is_set:
-        valid_dtypes = valid_dtypes.intersection(
-            retrieval_fn(test_globals.CURRENT_GROUND_TRUTH_BACKEND(), kind)
-        )
+        if isinstance(test_globals.CURRENT_GROUND_TRUTH_BACKEND,list):
+            process = test_globals.CURRENT_GROUND_TRUTH_BACKEND[1]
+            try:
+                if test_globals.CURRENT_RUNNING_TEST.is_method:
+                    process.stdin.write("1a" + "\n")
+                else:
+                    process.stdin.write("1" + "\n")
+                process.stdin.write(f"{str(retrieval_fn.__name__)}"+ "\n")
+                process.stdin.write(f"{str(kind)}" + "\n")
+                process.stdin.write(f"{test_globals.CURRENT_DEVICE}"+ "\n")
+                process.stdin.write(f"{test_globals.CURRENT_RUNNING_TEST.fn_tree}"+ "\n")
+                process.stdin.flush()
+            except Exception as e:
+                print(
+                    "Something bad happened to the subprocess, here are the logs:\n\n"
+                )
+                print(process.stdout.readlines())
+                raise e
+            backend_ret = process.stdout.readline()
+            if backend_ret:
+                backend_ret = jsonpickle.loads(make_json_pickable(backend_ret))
+            else:
+                print(process.stderr.readlines())
+                raise Exception
+            valid_dtypes=valid_dtypes.intersection(backend_ret)
+        else:
+
+            valid_dtypes = valid_dtypes.intersection(
+                retrieval_fn(test_globals.CURRENT_GROUND_TRUTH_BACKEND(), kind)
+            )
 
     valid_dtypes = list(valid_dtypes)
     if none:

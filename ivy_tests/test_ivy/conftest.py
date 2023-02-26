@@ -18,6 +18,7 @@ mod_backend = {
     "torch": None,
 }  # multiversion
 
+ground_backend=None # multiversion
 
 # local
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
@@ -75,6 +76,23 @@ def pytest_configure(config):
             )
             mod_frontend[i.split("/")[0]] = [i, process]
 
+    #ground truth
+    ground_truth=config.getoption("--ground_truth")
+    global ground_backend
+    if ground_truth:
+        ground_backend = [ground_truth,subprocess.Popen([
+                    "/opt/miniconda/envs/multienv/bin/python",
+                    "multiversion_backend_test.py",
+                    "numpy" + "/" + importlib.import_module("numpy").__version__,
+                    ground_truth,
+                ],
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,)]
+
+
+
 
     # compile_graph
     raw_value = config.getoption("--compile_graph")
@@ -126,12 +144,21 @@ def pytest_configure(config):
 def run_around_tests(request, on_device, backend_fw, compile_graph, implicit):
     if hasattr(request.function, "test_data"):
         try:
-            test_globals.setup_api_test(
-                request.function.test_data,
-                backend_fw.backend,
-                request.function.ground_truth_backend,
-                on_device,
-            )
+            if ground_backend:
+                test_globals.setup_api_test(
+                    request.function.test_data,
+                    backend_fw.backend,
+                    ground_backend,
+                    on_device,
+                )
+            else:
+
+                test_globals.setup_api_test(
+                    request.function.test_data,
+                    backend_fw.backend,
+                    request.function.ground_truth_backend,
+                    on_device,
+                )
         except Exception as e:
             test_globals.teardown_api_test()
             raise RuntimeError(f"Setting up test for {request.function} failed.") from e
@@ -209,6 +236,7 @@ def pytest_addoption(parser):
     parser.addoption("--compile_graph", action="store_true")
     parser.addoption("--with_implicit", action="store_true")
     parser.addoption("--frontend", action="store", default=None)
+    parser.addoption("--ground_truth",action="store",default=None)
     parser.addoption("--skip-variable-testing", action="store_true")
     parser.addoption("--skip-native-array-testing", action="store_true")
     parser.addoption("--skip-out-testing", action="store_true")
