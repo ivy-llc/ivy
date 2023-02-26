@@ -1,53 +1,43 @@
 # global
-from hypothesis import strategies as st, assume
-
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
-    statistical_dtype_values,
-)
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 # percentile
 @handle_frontend_test(
     fn_tree="numpy.percentile",
-    dtype_and_x=np_frontend_helpers.dtypes_values_casting_dtype(
-        arr_func=[
-            lambda: helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("numeric"),
-                num_arrays=2,
-                large_abs_safety_factor=4,
-                shared_dtype=True,
-                safety_factor_scale="linear",
-            )
-        ],
-        get_dtypes_kind="numeric",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float", full=False, none=True),
+        num_arrays=1,
+        # large_abs_safety_factor=40,
+        shared_dtype=True,
+        min_axis=0,
+        max_axis=1,
+        max_num_dims=1,
     ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
-    where=np_frontend_helpers.where(),
-    keep_dims=st.booleans(),
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", full=False, none=True),
+        min_value=0,
+        max_value=100,
+        num_arrays=1,
+        max_num_dims=1,
+    ),
 )
 def test_numpy_percentile(
-    dtype_and_x,
-    dtype,
-    where,
+    dtype_x_axis,
+    dtype_x,
     frontend,
     test_flags,
     fn_tree,
     on_device,
-    keep_dims,
 ):
-    input_dtypes, x, axis = dtype_and_x
+    input_dtypes, x, axis = dtype_x_axis
+    input_dtypes1, x1 = dtype_x
+    print("the out put variables are: ", input_dtypes, x[0], x1[0], axis)
     if isinstance(axis, tuple):
         axis = axis[0]
-
-    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtypes,
-        test_flags=test_flags,
-    )
 
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
@@ -55,11 +45,9 @@ def test_numpy_percentile(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0],
-        q=x[1],
+        a=x[0],
+        q=x1[0],
         axis=axis,
         out=None,
-        keepdims=keep_dims,
-        where=where,
         test_values=False,
     )
