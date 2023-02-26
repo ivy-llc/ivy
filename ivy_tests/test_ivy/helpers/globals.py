@@ -143,9 +143,13 @@ def _get_ivy_torch(version=None):
 
 
 def setup_api_test(
-    test_data: TestData, backend: str, ground_truth_backend: str, device: str
+    backend: str,
+    ground_truth_backend: str,
+    device: str,
+    test_data: TestData = None,
 ):
-    _set_test_data(test_data)
+    if test_data is not None:
+        _set_test_data(test_data)
     _set_backend(backend)
     _set_device(device)
     _set_ground_truth_backend(ground_truth_backend)

@@ -3,20 +3,22 @@
 # local
 import ivy
 import ivy.functional.frontends.tensorflow as tf_frontend
-from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_dtype
-from ivy.functional.frontends.numpy.creation_routines.from_existing_data import array
 
 
-class EagerTensor:
-    def __init__(self, array):
+class Variable:
+    def __init__(self, array, trainable=True, name=None, dtype=None):
         self._ivy_array = (
             ivy.array(array) if not isinstance(array, ivy.Array) else array
         )
+        self._ivy_array = (
+            ivy.astype(self._ivy_array, dtype) if dtype is not None else self._ivy_array
+        )
+        self.trainable = trainable
 
     def __repr__(self):
         return (
             repr(self._ivy_array).replace(
-                "ivy.array", "ivy.frontends.tensorflow.EagerTensor"
+                "ivy.array", "ivy.frontends.tensorflow.Variable"
             )[:-1]
             + ", shape="
             + str(self._ivy_array.shape)
@@ -49,8 +51,69 @@ class EagerTensor:
     # Instance Methods #
     # ---------------- #
 
-    def get_shape(self):
-        return tf_frontend.raw_ops.Shape(input=self._ivy_array)
+    def assign(self, value, use_locking=None, name=None, read_value=True):
+        ivy.utils.assertions.check_equal(
+            value.shape if hasattr(value, "ivy_array") else ivy.shape(value),
+            self.shape,
+        )
+        self._ivy_array = value._ivy_array
+
+    def assign_add(self, delta, use_locking=None, name=None, read_value=True):
+        ivy.utils.assertions.check_equal(
+            delta.shape if hasattr(delta, "ivy_array") else ivy.shape(delta),
+            self.shape,
+        )
+        self._ivy_array = tf_frontend.math.add(self._ivy_array, delta._ivy_array)
+
+    def assign_sub(self, delta, use_locking=None, name=None, read_value=True):
+        ivy.utils.assertions.check_equal(
+            delta.shape if hasattr(delta, "ivy_array") else ivy.shape(delta),
+            self.shape,
+        )
+        self._ivy_array = tf_frontend.math.subtract(self._ivy_array, delta._ivy_array)
+
+    def batch_scatter_update(
+        self, sparse_delta, use_locking=None, name=None, read_value=True
+    ):
+        pass
+
+    def gather_nd(self, indices, name=None):
+        return tf_frontend.gather_nd(params=self._ivy_array, indices=indices)
+
+    def read_value(self):
+        return tf_frontend.Tensor(self._ivy_array)
+
+    def scatter_add(self, sparse_delta, use_locking=None, name=None, read_value=True):
+        pass
+
+    def scatter_div(self, sparse_delta, use_locking=None, name=None, read_value=True):
+        pass
+
+    def scatter_max(self, sparse_delta, use_locking=None, name=None, read_value=True):
+        pass
+
+    def scatter_min(self, sparse_delta, use_locking=None, name=None, read_value=True):
+        pass
+
+    def scatter_mul(self, sparse_delta, use_locking=None, name=None, read_value=True):
+        pass
+
+    def scatter_nd_add(self, indices, updates, use_locking=None, name=None):
+        pass
+
+    def scatter_nd_sub(self, indices, updates, use_locking=None, name=None):
+        pass
+
+    def scatter_nd_update(self, indices, updates, use_locking=None, name=None):
+        pass
+
+    def scatter_sub(self, sparse_delta, use_locking=None, name=None, read_value=True):
+        pass
+
+    def scatter_update(
+        self, sparse_delta, use_locking=None, name=None, read_value=True
+    ):
+        pass
 
     def set_shape(self, shape):
         if shape is None:
@@ -69,8 +132,11 @@ class EagerTensor:
                     f"{shape}."
                 )
 
-    def numpy(self):
-        return array(self._ivy_array)
+    def get_shape(self):
+        return self._ivy_array.shape
+
+    def sparse_read(self, indices, name=None):
+        pass
 
     def __add__(self, y, name="add"):
         return self.__radd__(y)
@@ -80,24 +146,6 @@ class EagerTensor:
 
     def __and__(self, y, name="and"):
         return y.__rand__(self._ivy_array)
-
-    def __array__(self, dtype=None, name="array"):
-        dtype = to_ivy_dtype(dtype)
-        return self.ivy_array.__array__(dtype)
-
-    def __bool__(self, name="bool"):
-        if isinstance(self._ivy_array, int):
-            return self._ivy_array != 0
-
-        temp = ivy.squeeze(ivy.asarray(self._ivy_array), axis=None)
-        shape = ivy.shape(temp)
-        if shape:
-            raise ValueError(
-                "The truth value of an array with more than one element is ambiguous. "
-                "Use a.any() or a.all()"
-            )
-
-        return temp != 0
 
     def __eq__(self, other):
         return tf_frontend.raw_ops.Equal(
@@ -114,7 +162,7 @@ class EagerTensor:
 
     def __getitem__(self, slice_spec, var=None, name="getitem"):
         ret = ivy.get_item(self._ivy_array, slice_spec)
-        return EagerTensor(ivy.array(ret, dtype=ivy.dtype(ret), copy=False))
+        return Variable(ivy.array(ret, dtype=ivy.dtype(ret), copy=False))
 
     def __gt__(self, y, name="gt"):
         return tf_frontend.raw_ops.Greater(x=self._ivy_array, y=y._ivy_array, name=name)
@@ -146,8 +194,6 @@ class EagerTensor:
 
     def __neg__(self, name="neg"):
         return tf_frontend.raw_ops.Neg(x=self._ivy_array, name=name)
-
-    __nonzero__ = __bool__
 
     def __or__(self, y, name="or"):
         return y.__ror__(self._ivy_array)
@@ -200,19 +246,55 @@ class EagerTensor:
             )
         return y.__rtruediv__(self._ivy_array)
 
-    def __len__(self):
-        return len(self._ivy_array)
-
     def __xor__(self, y, name="xor"):
         return y.__rxor__(self._ivy_array)
 
     def __setitem__(self, key, value):
         raise ivy.utils.exceptions.IvyException(
-            "ivy.functional.frontends.tensorflow.EagerTensor object "
+            "ivy.functional.frontends.tensorflow.Variable object "
             "doesn't support assignment"
         )
 
 
-# Dummy Tensor class to help with compilation, don't add methods here
-class Tensor(EagerTensor):
-    pass
+class IndexedSlices:
+    def __init__(self, values, indices, dense_shape=None):
+        self._values = values
+        self._indices = indices
+        self._dense_shape = dense_shape
+
+    @property
+    def values(self):
+        """A `Tensor` containing the values of the slices."""
+        return self._values
+
+    @property
+    def indices(self):
+        """A 1-D `Tensor` containing the indices of the slices."""
+        return self._indices
+
+    @property
+    def dense_shape(self):
+        """A 1-D `Tensor` containing the shape of the corresponding dense tensor."""
+        return self._dense_shape
+
+    @property
+    def device(self):
+        """The name of the device on which `values` will be produced, or `None`."""
+        return self.values.device
+
+    @property
+    def dtype(self):
+        """The `DType` of elements in this tensor."""
+        return self.values.dtype
+
+    def __repr__(self):
+        return "IndexedSlices(\nindices=%s,\nvalues=%s%s\n)" % (
+            self._indices,
+            self._values,
+            (", dense_shape=%s" % (self._dense_shape,))
+            if self._dense_shape is not None
+            else "",
+        )
+
+    def __neg__(self):
+        return IndexedSlices(-self._values, self._indices, self._dense_shape)

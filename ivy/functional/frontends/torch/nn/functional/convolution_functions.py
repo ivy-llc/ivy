@@ -123,7 +123,8 @@ def conv3d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     )
 
 
-# ToDo: add support / debug non-default stride, padding, and output_padding
+# ToDo: add support for dilation > 1
+# ToDo: add support for output_padding > padding
 def _conv_transpose(
     input,
     weight,
@@ -135,34 +136,30 @@ def _conv_transpose(
     dilation=1,
 ):
     dims = len(input.shape) - 2
-    _valid_shapes(input, weight, bias, stride, padding, groups, transpose=True)
-
-    padding = [padding] * dims if isinstance(padding, int) else list(padding)
-    paired_padding = [(padding[i], padding[i]) for i in reversed(range(len(padding)))]
-
     weight = ivy.permute_dims(weight, axes=(*range(2, dims + 2), 0, 1))
-
-    ret = ivy.conv_general_transpose(
+    for i in range(dims):
+        weight = ivy.flip(weight, axis=i)
+    padding, output_padding = map(
+        lambda x: [x] * dims if isinstance(x, int) else x, [padding, output_padding]
+    )
+    pad_widths = [(weight.shape[i] - 1,) * 2 for i in range(dims)]
+    ret = ivy.conv_general_dilated(
         input,
         weight,
-        stride,
-        paired_padding,
+        1,
+        pad_widths,
         dims=dims,
         data_format="channel_first",
-        dilations=dilation,
         feature_group_count=groups,
+        x_dilations=stride,
+        bias=bias,
     )
-    if bias is not None:
-        ret = ivy.add(ret, ivy.expand_dims(bias, axis=(0, *range(2, dims + 2))))
-
-    out_pad = (
-        [output_padding] * dims
-        if isinstance(output_padding, int)
-        else list(output_padding)
-    )
-    paired_out_pad = [(out_pad[i], out_pad[i]) for i in reversed(range(len(out_pad)))]
-
-    ret = ivy.zero_pad(ret, [(0, 0), (0, 0), *paired_out_pad])
+    unpad_slice = (slice(None),) * 2
+    for i in range(dims):
+        unpad_slice += (
+            slice(padding[i], ret.shape[2 + i] - padding[i] + output_padding[i], 1),
+        )
+    ret = ret[unpad_slice]
     return ret
 
 
