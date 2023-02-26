@@ -17,6 +17,7 @@ Function testing
 	function_testing/as_lists.rst
 	function_testing/convtrue.rst
 	function_testing/create_args_kwargs.rst
+	function_testing/create_frontend_args_kwargs.rst
 	function_testing/empty_func.rst
 	function_testing/flatten.rst
 	function_testing/flatten_and_to_np.rst
