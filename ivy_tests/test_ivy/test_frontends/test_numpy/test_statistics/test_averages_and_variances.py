@@ -318,10 +318,9 @@ def test_numpy_nanvar(
     fn_tree="numpy.nanmedian",
     dtype_a_axis=statistical_dtype_values(function="nanmedian"),
     keep_dims=st.booleans(),
-    overwriteinput=st.booleans(),
 )
 def test_numpy_nanmedian(
-    dtype_a_axis, frontend, test_flags, fn_tree, on_device, keep_dims, overwriteinput
+    dtype_a_axis, frontend, test_flags, fn_tree, on_device, keep_dims
 ):
     input_dtype, a, axis = dtype_a_axis
     if isinstance(axis, tuple):
@@ -334,6 +333,5 @@ def test_numpy_nanmedian(
         test_flags=test_flags,
         fn_tree=fn_tree,
         keepdims=keep_dims,
-        overwrite_input=overwriteinput,
         on_device=on_device,
     )

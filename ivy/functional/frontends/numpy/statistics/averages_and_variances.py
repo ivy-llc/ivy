@@ -288,7 +288,5 @@ def nanvar(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=
 
 
 @to_ivy_arrays_and_back
-def nanmedian(a, /, *, axis=None, out=None, overwrite_input=False, keepdims=False):
-    return ivy.nanmedian(
-        a, axis=axis, out=out, overwrite_input=overwrite_input, keepdims=keepdims
-    )
+def nanmedian(a, /, *, axis=None, out=None, keepdims=False):
+    return ivy.nanmedian(a, axis=axis, out=out, keepdims=keepdims)
