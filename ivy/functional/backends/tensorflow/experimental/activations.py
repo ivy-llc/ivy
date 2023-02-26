@@ -30,3 +30,8 @@ def thresholded_relu(
     out: Optional[Tensor] = None,
 ) -> Tensor:
     return tf.where(x > threshold, x, 0)
+
+
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+def relu6(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
+    return tf.nn.relu6(x)
