@@ -99,7 +99,6 @@ def test_tensorflow_normal(
         min_dim_size=1,
         max_dim_size=10,
     ),
-    dtype=helpers.get_dtypes("float", full=False),
     lam=helpers.dtype_and_values(
         dtype="float16",
     ),
@@ -116,7 +115,7 @@ def test_tensorflow_poisson(
     fn_tree,
     test_flags,
 ):
-    dtypex, x = lam
+    dtype, x = lam
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -125,7 +124,7 @@ def test_tensorflow_poisson(
         on_device=on_device,
         test_values=False,
         shape=shape,
-        dtype=dtype[0],
+        dtype=dtype,
         seed=seed,
-        lam=x,
+        lam=x[0],
     )
