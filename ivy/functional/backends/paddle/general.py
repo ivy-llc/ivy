@@ -23,7 +23,8 @@ def is_native_array(x, /, *, exclusive=False):
 
 
 def array_equal(x0: paddle.Tensor, x1: paddle.Tensor, /) -> bool:
-    raise IvyNotImplementedException()
+    x0, x1 = ivy.promote_types_of_inputs(x0, x1)
+    return bool(paddle.equal_all(x0, x1))
 
 
 def container_types():
@@ -79,13 +80,13 @@ def to_numpy(
 
 
 def to_scalar(x: paddle.Tensor, /) -> Number:
-    if isinstance(x, (float, int)):
+    if isinstance(x, Number):
         return x
     return x.item()
 
 
 def to_list(x: paddle.Tensor, /) -> list:
-    raise IvyNotImplementedException()
+    return x.tolist()
 
 
 def gather(
@@ -114,11 +115,13 @@ def gather_nd(
 def get_num_dims(
     x: paddle.Tensor, /, *, as_array: bool = False
 ) -> Union[paddle.Tensor, int]:
-    raise IvyNotImplementedException()
+    return paddle.to_tensor(x.ndims) if as_array else x.ndims
 
 
 def inplace_arrays_supported():
-    raise IvyNotImplementedException()
+    # there are some operations that support inplace updates
+    # but it's not supported in all functions
+    return False
 
 
 def inplace_decrement(
@@ -178,7 +181,10 @@ def scatter_nd(
 def shape(
     x: paddle.Tensor, /, *, as_array: bool = False
 ) -> Union[ivy.Shape, ivy.Array]:
-    raise IvyNotImplementedException()
+    if as_array:
+        return ivy.array(paddle.shape(x), dtype=ivy.default_int_dtype())
+    else:
+        return ivy.Shape(x.shape)
 
 
 def vmap(
