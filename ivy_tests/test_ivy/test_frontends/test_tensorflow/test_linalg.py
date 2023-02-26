@@ -695,7 +695,10 @@ def test_tensorflow_linalg_cholesky(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
-        shape=(1, 3),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=3,
+        max_dim_size=3,
         shared_dtype=True,
     ),
 )
