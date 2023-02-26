@@ -89,7 +89,13 @@ def _grad_func(y, xs, retain_grads):
 
 
 def execute_with_gradients(
-    func, xs, /, *, retain_grads=False, xs_grad_idxs=None, ret_grad_idxs=None
+    func,
+    xs: torch.Tensor,
+    /,
+    *,
+    retain_grads: bool = False,
+    xs_grad_idxs: Optional[torch.Tensor] = None,
+    ret_grad_idxs: Optional[torch.Tensor] = None,
 ):
     # Conversion of required arrays to float variables and duplicate index chains
     xs, xs1, required_duplicate_index_chains, _ = _get_required_float_variables(
