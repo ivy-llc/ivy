@@ -19,3 +19,8 @@ def diag_indices(n, ndim=2):
 @to_ivy_arrays_and_back
 def diag(v, k=0):
     return ivy.diag(v, k=k)
+
+
+@to_ivy_arrays_and_back
+def tril_indices(n, k=0, m=None):
+    return ivy.tril_indices(n, k=k, m=m)
