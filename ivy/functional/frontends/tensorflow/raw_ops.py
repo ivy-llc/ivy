@@ -118,6 +118,7 @@ def Diag(*, diagonal, name="Diag"):
 
 Cumprod = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.cumprod))
 
+Einsum = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.general_functions.einsum))
 
 @to_ivy_arrays_and_back
 def Equal(*, x, y, incompatible_shape_error=True, name="Equal"):
