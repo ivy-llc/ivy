@@ -540,6 +540,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functio
 
 from ivy.functional.frontends.numpy.mathematical_functions.handling_complex_numbers import (
     _imag,
+    _real,
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.hyperbolic_functions import (
@@ -663,3 +664,4 @@ logical_xor = ufunc("_logical_xor")
 matmul = ufunc("_matmul")
 maximum = ufunc("_maximum")
 minimum = ufunc("_minimum")
+real = ufunc("_real")

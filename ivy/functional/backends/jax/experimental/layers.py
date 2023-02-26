@@ -410,6 +410,34 @@ def dropout1d(
         return x
 
 
+def dropout3d(
+    x: JaxArray,
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NDHWC",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if training:
+        is_batched = len(x.shape) == 5
+        if data_format == "NCDHW":
+            perm = (0, 2, 3, 4, 1) if is_batched else (1, 2, 3, 0)
+            x = jnp.transpose(x, perm)
+        noise_shape = list(x.shape)
+        sl = slice(1, -1) if is_batched else slice(-1)
+        noise_shape[sl] = [1] * 3
+        _, rng_input = jax.random.split(RNG.key)
+        mask = jax.random.bernoulli(rng_input, 1 - prob, noise_shape)
+        res = jnp.where(mask, x / (1 - prob), 0)
+        if data_format == "NCDHW":
+            perm = (0, 4, 1, 2, 3) if is_batched else (3, 0, 1, 2)
+            res = jnp.transpose(res, perm)
+        return res
+    else:
+        return x
+
+
 def ifft(
     x: JaxArray,
     dim: int,
@@ -450,16 +478,16 @@ def interpolate(
     mode: Union[Literal["linear", "bilinear"]] = "linear",
     align_corners: Optional[bool] = None,
     antialias: Optional[bool] = False,
+    out: Optional[JaxArray] = None,
 ):
-    # keeping the batch and channel dimension same
-    dims = len(x.shape) - 2
-    size = (size,) * dims if isinstance(size, int) else size
-    size = [x.shape[0], *size, x.shape[1]]
-
-    if align_corners or mode == "area":
+    if align_corners or mode in ["area", "nearest"]:
         return ivy.functional.experimental.interpolate(
             x, size, mode=mode, align_corners=align_corners, antialias=antialias
         )
+
+    dims = len(x.shape) - 2
+    size = (size,) * dims if isinstance(size, int) else size
+    size = [x.shape[0], *size, x.shape[1]]
     x = jnp.transpose(x, (0, *range(2, dims + 2), 1))
     return jnp.transpose(
         jax.image.resize(x, shape=size, method=mode, antialias=antialias),

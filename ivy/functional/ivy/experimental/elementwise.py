@@ -1358,3 +1358,59 @@ def binarizer(
     xc = ivy.copy_array(x, out=out)
     bin = ivy.where(xc > threshold, 1, 0)
     return bin
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+def conj(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Computes the complex conjugate of complex values in x
+
+    Parameters
+    ----------
+    x
+        input array.
+    out
+        optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an arrray of the same dtype as the input array with
+        the complex conjugates of the complex values present
+        in the input array. If x is a scalar then a scalar
+        will be returned.
+
+    The descriptions above assume an array input for simplicity, but
+    the method also accepts :class:`ivy.Container` instances
+    in place of: class:`ivy.Array` or :class:`ivy.NativeArray`
+    instances, as shown in the type hints and also the examples below.
+
+
+    Examples
+    --------
+    With :class:`ivy.Array` inputs:
+    >>> x = ivy.array([4.2-0j, 3j, 7+5j])
+    >>> z = ivy.conj(x)
+    >>> print(z)
+    ivy.array([4.2+0j, -3j, 7+5j])
+
+    With :class:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([-6.7-7j, 0.314+0.355j, 1.23]),\
+                          b=ivy.array([5j, 5.32-6.55j, 3.001]))
+    >>> z = ivy.conj(x)
+    >>> print(z)
+    {
+        a: ivy.array([-6.7+7j, 0.314-0.355j, 1.23]),
+        b: ivy.array([-5j, 5.32+6.55j, 3.001])
+    }
+    """
+    return ivy.current_backend(x).conj(x, out=out)

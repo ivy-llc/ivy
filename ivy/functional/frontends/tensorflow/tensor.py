@@ -44,7 +44,7 @@ class EagerTensor:
 
     @property
     def shape(self):
-        return "TensorShape(" + str(list(self._ivy_array.shape)) + ")"
+        return self._ivy_array.shape
 
     # Instance Methods #
     # ---------------- #

@@ -220,40 +220,6 @@ def test_tensorflow_log_cosh(
     )
 
 
-# mean_absolute_error
-@handle_frontend_test(
-    fn_tree="tensorflow.keras.metrics.mean_absolute_error",
-    aliases=["tensorflow.keras.metrics.mae"],
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        shared_dtype=True,
-        num_arrays=2,
-        min_num_dims=1,
-        large_abs_safety_factor=2,
-        small_abs_safety_factor=2,
-    ),
-    test_with_out=st.just(False),
-)
-def test_tensorflow_mean_absolute_error(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        y_true=x[0],
-        y_pred=x[1],
-    )
-
-
 # binary_crossentropy
 @handle_frontend_test(
     fn_tree="tensorflow.keras.metrics.binary_crossentropy",
@@ -539,6 +505,40 @@ def test_categorical_accuracy(
     ),
 )
 def test_tensorflow_kl_divergence(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        y_true=x[0],
+        y_pred=x[1],
+    )
+
+
+# mean_absolute_error
+@handle_frontend_test(
+    fn_tree="tensorflow.keras.metrics.mean_absolute_error",
+    aliases=["tensorflow.keras.metrics.mae"],
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+        min_num_dims=1,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
+    ),
+)
+def test_tensorflow_mean_absolute_error(
     *,
     dtype_and_x,
     frontend,

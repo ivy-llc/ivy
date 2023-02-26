@@ -849,6 +849,78 @@ def test_torch_tensorsolve(
     )
 
 
+# lu_factor
+@st.composite
+def _lu_factor_helper(draw):
+    # generate input matrix of shape (*, m, n) and where '*' is one or more
+    # batch dimensions
+    input_dtype = draw(
+        helpers.get_dtypes("float")
+    )
+
+    dim1 = draw(helpers.ints(min_value=2, max_value=3))
+    dim2 = draw(helpers.ints(min_value=2, max_value=3))
+    # batch_dim = draw(helpers.ints(min_value=0, max_value=2))
+    batch_dim = 0
+
+    if batch_dim == 0:
+        input_matrix = draw(
+            helpers.array_values(
+                dtype=input_dtype[0],
+                shape=(dim1, dim2),
+                min_value=-1,
+                max_value=1,
+            )
+        )
+    else:
+        input_matrix = draw(
+            helpers.array_values(
+                dtype=input_dtype[0],
+                shape=(batch_dim, dim1, dim2),
+                min_value=-1,
+                max_value=1,
+            )
+        )
+
+    return input_dtype, input_matrix
+
+
+@handle_frontend_test(
+    fn_tree="torch.linalg.lu_factor",
+    input_dtype_and_input=_lu_factor_helper(),
+)
+def test_torch_lu_factor(
+    *,
+    input_dtype_and_input,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, input = input_dtype_and_input
+    ret, frontend_ret = helpers.test_frontend_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        # rtol=1e-03,
+        # atol=1e-02,
+        A=input,
+    )
+    ret = [ivy.to_numpy(x) for x in ret]
+    frontend_ret = [np.asarray(x) for x in frontend_ret]
+
+    LU, pivot = ret
+    frontend_LU, frontend_pivot = frontend_ret
+
+    assert_all_close(
+        ret_np=[LU, pivot],
+        ret_from_gt_np=[frontend_LU, frontend_pivot],
+        ground_truth_backend=frontend
+
+
 @handle_frontend_test(
     fn_tree="torch.linalg.matmul",
     dtype_x=helpers.dtype_and_values(

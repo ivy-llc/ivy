@@ -338,17 +338,11 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
         -------
             The return of the function, with ivy arrays passed in the arguments.
         """
-        has_out = False
-        if "out" in kwargs:
-            out = kwargs["out"]
-            has_out = True
         # convert all arrays in the inputs to ivy.Array instances
         ivy_args = ivy.nested_map(args, _to_ivy_array, include_derived={tuple: True})
         ivy_kwargs = ivy.nested_map(
             kwargs, _to_ivy_array, include_derived={tuple: True}
         )
-        if has_out:
-            ivy_kwargs["out"] = out
         return fn(*ivy_args, **ivy_kwargs)
 
     new_fn.inputs_to_ivy_arrays = True
@@ -488,9 +482,13 @@ def handle_numpy_out(fn: Callable) -> Callable:
         elif len(args) == (out_pos + 1):
             out = args[out_pos]
             args = args[:-1]
-        if hasattr(out, "ivy_array"):
+        if ivy.exists(out):
+            if not isinstance(out, ndarray):
+                raise ivy.utils.exceptions.IvyException(
+                    "Out argument must be an ivy.frontends.numpy.ndarray object"
+                )
             return fn(*args, out=out.ivy_array, **kwargs)
-        return fn(*args, out=out, **kwargs)
+        return fn(*args, **kwargs)
 
     out_pos = list(inspect.signature(fn).parameters).index("out")
     new_fn.handle_numpy_out = True

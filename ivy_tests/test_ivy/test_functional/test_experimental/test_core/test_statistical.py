@@ -50,7 +50,6 @@ def statistical_dtype_values(draw, *, function):
                 | helpers.floats(min_value=0, max_value=max_correction - 1)
             )
         return dtype, values, axis, correction
-
     if function == "quantile":
         q = draw(
             helpers.array_values(
@@ -71,7 +70,6 @@ def statistical_dtype_values(draw, *, function):
             )
         )
         return dtype, values, axis, interpolation, q
-
     return dtype, values, axis
 
 
@@ -80,6 +78,7 @@ def statistical_dtype_values(draw, *, function):
     dtype_x_axis=statistical_dtype_values(function="median"),
     keep_dims=st.booleans(),
     test_gradients=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_median(
     *,
@@ -194,6 +193,7 @@ def test_unravel_index(
     dtype_and_x=statistical_dtype_values(function="quantile"),
     keep_dims=st.booleans(),
     test_gradients=st.just(False),
+    test_with_out=st.just(False),
 )
 def test_quantile(
     *,

@@ -17,6 +17,7 @@ import multiprocessing as _multiprocessing
 # sort of circular import, so haiku is needed
 import haiku  # NOQA
 
+
 from haiku._src.data_structures import FlatMapping
 
 # local
@@ -311,6 +312,9 @@ def scatter_flat(
     return _to_device(target)
 
 
+scatter_flat.support_native_out = True
+
+
 def scatter_nd(
     indices: JaxArray,
     updates: JaxArray,
@@ -406,7 +410,12 @@ def scatter_nd(
 scatter_nd.support_native_out = True
 
 
-def shape(x: JaxArray, /, *, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:
+def shape(
+    x: JaxArray,
+    /,
+    *,
+    as_array: bool = False,
+) -> Union[ivy.Shape, ivy.Array]:
     if as_array:
         return ivy.array(jnp.shape(x), dtype=ivy.default_int_dtype())
     else:
