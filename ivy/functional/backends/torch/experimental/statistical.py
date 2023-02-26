@@ -16,25 +16,13 @@ def median(
     keepdims: Optional[bool] = False,
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
-    temp = input
-    if hasattr(axis, "__iter__"):
-        for dim in axis:
-            temp = torch.quantile(
-                temp,
-                0.5,
-                dim=dim,
-                keepdim=keepdims,
-                interpolation="midpoint",
-            )[0]
-        return temp
-    else:
-        return torch.quantile(
-            input,
-            0.5,
-            dim=axis,
-            keepdim=keepdims,
-            interpolation="midpoint",
-        )[0]
+    return quantile(
+        input,
+        0.5,
+        dim=axis,
+        keepdim=keepdims,
+        interpolation="midpoint",
+    )[0]
 
 
 median.support_native_out = False
@@ -68,38 +56,22 @@ def quantile(
     interpolation: Optional[str] = "linear",
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
-
-    if axis is None:
-        return torch.quantile(a, q, keepdim=keepdims, interpolation=interpolation)
-
     if isinstance(axis, list) or isinstance(axis, tuple):
-        """
-        In Tensorflow, Jax, and Numpy backends when multiple axes are provided, first
-        the tensor/array gets flatten along those axes such that it preserves the size
-        of the remaining axes. Afterwards, it compute the quantile(s) along axis = 0.
-
-        In Torch backend, it is not possible to provide multiple axes. Therefore it is
-        needed to mimic same procedure to reach desired shape of tensor/array and
-        compute quantile(s) along axis=0.
-        """
-
-        desired_shape = []
-        current_shape = a.size()
-
-        for i in range(len(current_shape)):
-            if i not in axis:
-                desired_shape += [current_shape[i]]
-
-        temp = a.reshape((-1,) + tuple(desired_shape))
-
+        temp = a.detach()
+        dimension = len(a.size())
+        for x in axis:
+            axis1 = x 
+            for axis2 in range(x+1,dimension):
+                temp = torch.transpose(temp, axis1, axis2)
+                axis1 = axis2
+        temp = torch.flatten(temp, start_dim=dimension-len(axis))
         return torch.quantile(
-            temp, q, dim=0, keepdim=keepdims, interpolation=interpolation
+            temp, q, dim=-1, keepdim=keepdims, interpolation=interpolation, out=out
         )
+    return torch.quantile(a, q, dim=axis, keepdim=keepdims, interpolation=interpolation, out=out)
 
-    return torch.quantile(a, q, dim=axis, keepdim=keepdims, interpolation=interpolation)
 
-
-quantile.support_native_out = False
+quantile.support_native_out = True
 
 
 def corrcoef(
