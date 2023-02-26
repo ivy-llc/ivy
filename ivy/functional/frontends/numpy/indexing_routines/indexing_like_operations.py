@@ -22,5 +22,5 @@ def diag(v, k=0):
 
 
 @to_ivy_arrays_and_back
-def tril_indices(n, k=0, m=None):
-    return ivy.tril_indices(n, k=k, m=m)
+def tril_indices(n_rows, n_cols, k):
+    return ivy.tril_indices(n_rows, n_cols, k)
