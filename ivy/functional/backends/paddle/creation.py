@@ -175,7 +175,8 @@ def eye(
 
 
 def from_dlpack(x, /, *, out: Optional[paddle.Tensor] = None):
-    raise IvyNotImplementedException()
+    dlpack = paddle.utils.dlpack.to_dlpack(x)
+    return paddle.utils.dlpack.from_dlpack(dlpack)
 
 
 def full(
