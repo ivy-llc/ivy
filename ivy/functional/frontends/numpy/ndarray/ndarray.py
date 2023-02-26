@@ -115,6 +115,9 @@ class ndarray:
         else:
             return np_frontend.reshape(self._ivy_array, newshape, order="C")
 
+    def resize(self, newshape, /, *, refcheck=True):
+        return np_frontend.resize(self._ivy_array, newshape, refcheck)
+
     def transpose(self, axes, /):
         if axes and isinstance(axes[0], tuple):
             axes = axes[0]

@@ -152,7 +152,6 @@ def eye(num_rows, num_columns=None, batch_shape=None, dtype=ivy.float32, name=No
 
 @to_ivy_arrays_and_back
 def norm(tensor, ord="euclidean", axis=None, keepdims=None, name=None):
-
     keepdims = keepdims or False
 
     # Check if it's a matrix norm
@@ -222,3 +221,8 @@ def cholesky(input, name=None):
     input = symmetrize(input)
 
     return ivy.cholesky(input)
+
+
+@to_ivy_arrays_and_back
+def cross(a, b, name=None):
+    return ivy.cross(a, b)
