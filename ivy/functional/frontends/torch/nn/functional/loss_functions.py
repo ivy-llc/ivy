@@ -13,7 +13,7 @@ def _get_reduction_func(reduction):
     elif reduction == "sum":
         ret = ivy.sum
     else:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             "{} is not a valid value for reduction".format(reduction)
         )
     return ret
@@ -48,7 +48,7 @@ def _get_reduction_method(reduction, to_reduce):
     elif reduction == "sum":
         ret = ivy.sum(to_reduce)
     else:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             f"{reduction} is not a valid value for reduction"
         )
     return ret
@@ -160,7 +160,7 @@ def cosine_embedding_loss(
 
         return loss
 
-    ivy.assertions.check_true(
+    ivy.utils.assertions.check_true(
         target.ndim + 1 == input1.ndim and target.ndim + 1 == input2.ndim,
         "{}D target tensor expects {}D input tensors, but "
         "found inputs with sizes {} and {}.".format(
@@ -168,14 +168,14 @@ def cosine_embedding_loss(
         ),
     )
 
-    ivy.assertions.check_true(
+    ivy.utils.assertions.check_true(
         target.ndim < 2, "0D or 1D target tensor expected, multi-target not supported"
     )
 
-    ivy.assertions.check_shape(input1, input2)
+    ivy.utils.assertions.check_shape(input1, input2)
 
     if target.ndim == 1:
-        ivy.assertions.check_true(
+        ivy.utils.assertions.check_true(
             target.shape[0] == input1.shape[0],
             "The size of target tensor ({}) must match the size of input tensor ({}) "
             "at non-singleton dimension 0 ".format(target.shape[0], input1.shape[0]),
@@ -365,5 +365,31 @@ def margin_ranking_loss(
 ):
     loss = -1 * target * (input1 - input2) + margin
     loss = ivy.where(loss < 0, 0, loss)
+    reduction = _get_reduction(reduction, size_average, reduce)
+    return reduction(loss)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+def poisson_nll_loss(
+    input,
+    target,
+    log_input=True,
+    full=False,
+    size_average=None,
+    eps=1e-8,
+    reduce=None,
+    reduction="mean",
+):
+    if log_input:
+        loss = ivy.exp(input) - target * input
+    else:
+        loss = input - target * ivy.log(input + eps)
+    if full:
+        approximation = (
+            target * ivy.log(target) - target + 0.5 * ivy.log(2 * ivy.pi * target)
+        )
+        loss += ivy.where(target > 1, approximation, 0)
+
     reduction = _get_reduction(reduction, size_average, reduce)
     return reduction(loss)

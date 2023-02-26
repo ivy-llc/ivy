@@ -13,7 +13,7 @@ from ivy.functional.frontends.jax.func_wrapper import (
 def array(object, dtype=None, copy=True, order="K", ndmin=0):
     # TODO must ensure the array is created on default device.
     if order is not None and order != "K":
-        raise ivy.exceptions.IvyNotImplementedException(
+        raise ivy.utils.exceptions.IvyNotImplementedException(
             "Only implemented for order='K'"
         )
     ret = ivy.array(object, dtype=dtype)

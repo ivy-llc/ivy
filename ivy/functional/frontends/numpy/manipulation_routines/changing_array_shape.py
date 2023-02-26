@@ -11,6 +11,11 @@ def reshape(x, /, newshape, order="C"):
 
 
 @to_ivy_arrays_and_back
+def resize(x, /, newshape, refcheck=True):
+    return ivy.resize(x, newshape=newshape, refcheck=refcheck)
+
+
+@to_ivy_arrays_and_back
 def broadcast_to(array, shape, subok=False):
     return ivy.broadcast_to(array, shape)
 

@@ -1,7 +1,7 @@
 ---
 name: 🍰 Sub-Task
 about: Reserve a sub-task from a ToDo list issue
-title: "<TASK_NAME>"
+title: "<Function_Name>"
 labels: Sub Task
 assignees: ''
 

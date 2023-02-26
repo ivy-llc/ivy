@@ -3,6 +3,8 @@
 # global
 import os
 import abc
+import copy
+from typing import Optional, List, Tuple, Dict
 
 # local
 import ivy
@@ -76,7 +78,7 @@ class Module(ModuleConverters, ModuleHelpers):
             'cuda:0', 'cuda:1', 'cpu' etc. (Default value = None)
         """
         valid_build_modes = ["on_init", "explicit", "on_call"]
-        ivy.assertions.check_elem_in_list(build_mode, valid_build_modes)
+        ivy.utils.assertions.check_elem_in_list(build_mode, valid_build_modes)
         self._dev = ivy.default(
             device,
             ivy.default(
@@ -121,6 +123,10 @@ class Module(ModuleConverters, ModuleHelpers):
             return
         self.build(*args, dynamic_backend=dynamic_backend, **kwargs)
 
+        self._module_graph = None
+        self._target = None
+        self._lazy_compiled = False
+
     # Private #
     # --------#
 
@@ -142,7 +148,7 @@ class Module(ModuleConverters, ModuleHelpers):
         new_fn.wrapped = True
         return new_fn
 
-    def _find_variables(self, /, *, obj=None):
+    def _find_variables(self, /, *, obj=None, _visited=None):
         """
         Find all interval variables in obj. Return empty Container if obj is None.
 
@@ -151,13 +157,19 @@ class Module(ModuleConverters, ModuleHelpers):
         obj
             The submodule whose internal variables are to be returned. Default
             is None.
+        _visited
+            Placeholder for tracking the visited nodes, do not set this parameter.
 
         Returns
         -------
         ret
             The internal variables of the submodule passed in the argument.
         """
+        _visited = ivy.default(_visited, {})
         vs = Container()
+        if id(obj) in _visited:
+            return vs
+        _visited[id(obj)] = True
         # ToDo: add support for finding local variables, if/when JAX supports
         #  uniquely flagging variables
         if isinstance(obj, Module) and obj is not self:
@@ -169,13 +181,13 @@ class Module(ModuleConverters, ModuleHelpers):
             return obj.v
         elif isinstance(obj, (list, tuple)):
             for i, v in enumerate(obj):
-                ret = self._find_variables(obj=v)
+                ret = self._find_variables(obj=v, _visited=_visited)
                 if ret:
                     vs["v" + str(i)] = ret
             return vs
         elif isinstance(obj, dict):
             for k, v in obj.items():
-                ret = self._find_variables(obj=v)
+                ret = self._find_variables(obj=v, _visited=_visited)
                 if ret:
                     vs[k[1:] if k[0] == "_" else k] = ret
             return vs
@@ -183,7 +195,7 @@ class Module(ModuleConverters, ModuleHelpers):
             return vs
         for k, v in obj.__dict__.items():
             if v is not None and k[0:2] != "__":
-                ret = self._find_variables(obj=v)
+                ret = self._find_variables(obj=v, _visited=_visited)
                 if ret:
                     vs[k[1:] if k[0] == "_" else k] = ret
         return vs
@@ -222,7 +234,9 @@ class Module(ModuleConverters, ModuleHelpers):
                 )
         return ret_cont
 
-    def _wrap_call_methods(self, keychain_mappings, /, *, key="", obj=None):
+    def _wrap_call_methods(
+        self, keychain_mappings, /, *, key="", obj=None, _visited=None
+    ):
         """
         Wraps the call methods of the Module object by looping over all the items
         within the module, wrapping the __call__ methods of all submodules using
@@ -236,12 +250,17 @@ class Module(ModuleConverters, ModuleHelpers):
             The keychain of the object obj, used for recursion.
         obj
             the object whose __call__ method is to be wrapped
-
+        _visited
+            Placeholder for tracking the visited nodes, do not set this parameter.
 
         Returns
         -------
         None
         """
+        _visited = ivy.default(_visited, {})
+        if id(obj) in _visited or not isinstance(key, str):
+            return
+        _visited[id(obj)] = True
         if isinstance(obj, Module) and obj is not self:
             orig_key_chain = key[1:] if key[0] == "_" else key
 
@@ -253,13 +272,18 @@ class Module(ModuleConverters, ModuleHelpers):
         elif isinstance(obj, (list, tuple)):
             for i, val in enumerate(obj):
                 self._wrap_call_methods(
-                    keychain_mappings, key=key + "/v" + str(i), obj=val
+                    keychain_mappings,
+                    key=key + "/v" + str(i),
+                    obj=val,
+                    _visited=_visited,
                 )
             return
         elif isinstance(obj, dict):
             for k, val in obj.items():
                 k = (key + "/" + k) if key != "" and isinstance(k, str) else k
-                self._wrap_call_methods(keychain_mappings, key=k, obj=val)
+                self._wrap_call_methods(
+                    keychain_mappings, key=k, obj=val, _visited=_visited
+                )
             return
         if not hasattr(obj, "__dict__"):
             return
@@ -268,7 +292,9 @@ class Module(ModuleConverters, ModuleHelpers):
                 continue
             k = (key + "/" + k) if key != "" else k
             if val is not None:
-                self._wrap_call_methods(keychain_mappings, key=k, obj=val)
+                self._wrap_call_methods(
+                    keychain_mappings, key=k, obj=val, _visited=_visited
+                )
         return
 
     @staticmethod
@@ -360,7 +386,7 @@ class Module(ModuleConverters, ModuleHelpers):
         ------
         NotImplementedError
         """
-        raise ivy.exceptions.IvyNotImplementedException
+        raise ivy.utils.exceptions.IvyNotImplementedException
 
     def _forward_with_tracking(self, *args, **kwargs):
         """
@@ -474,6 +500,20 @@ class Module(ModuleConverters, ModuleHelpers):
         -------
         ret
         """
+        if self._lazy_compiled:
+            # we are compiling since we want to transpile module,
+            # so set the appropriate backend
+            if self._target:
+                ivy.set_backend(self._target)
+            self.compile(args=args, kwargs=kwargs)
+            if self._target:
+                ivy.unset_backend()
+
+        if self._module_graph:
+            # we need `v` in kwargs, since this is a compiled call
+            v = v if v else self.v
+            return self._module_graph(*args, v=v, **kwargs)
+
         with_grads = ivy.with_grads(with_grads=with_grads)
         self.submod_rets = ivy.Container(
             alphabetical_keys=False, ivyh=ivy.get_backend(backend="numpy")
@@ -549,7 +589,11 @@ class Module(ModuleConverters, ModuleHelpers):
         else:
             dtype = ivy.default_dtype(dtype=self._dtype, as_native=True)
 
-        kwargs["dtype"] = dtype
+        # why are we adding this kwarg in user-defined build ?
+        # it results in the error while doing `from_haiku_module` if haiku's forward
+        # therefore leaving it commented out
+        # kwargs["dtype"] = dtype
+
         # build local Module, and any child modules flagged with "explicit" build mode
         built = ivy.default(self._build(*args, **kwargs), True)
 
@@ -635,3 +679,91 @@ class Module(ModuleConverters, ModuleHelpers):
     @property
     def built_(self):
         return self._built
+
+    def show_graph(
+        self,
+        *args,
+        v=None,
+        with_grads=True,
+        stateful: Optional[List] = None,
+        arg_stateful_idxs: Optional[List] = None,
+        kwarg_stateful_idxs: Optional[List] = None,
+        randomness_factor: float = 0.1,
+        save_to_disk: bool = False,
+        with_edge_labels: bool = True,
+        with_arg_labels: bool = True,
+        with_output_labels: bool = True,
+        output_connected_only: bool = True,
+        include_generators: bool = True,
+        array_caching: bool = True,
+        highlight_subgraph: Optional[int] = None,
+        fname: Optional[str] = None,
+        return_graph: bool = False,
+        **kwargs,
+    ):
+        self(*args, v=v, with_grads=with_grads, **kwargs)  # for on call build modes
+        if not self._built:
+            self.build(*args, from_call=False, **kwargs)  # for explicit build modes
+        kwargs["v"] = ivy.default(v, self.v)
+        kwargs["with_grads"] = with_grads
+        graph = ivy.show_graph(
+            self._call,
+            *args,
+            **kwargs,
+            stateful=stateful,
+            arg_stateful_idxs=arg_stateful_idxs,
+            kwarg_stateful_idxs=kwarg_stateful_idxs,
+            randomness_factor=randomness_factor,
+            save_to_disk=save_to_disk,
+            with_edge_labels=with_edge_labels,
+            with_arg_labels=with_arg_labels,
+            with_output_labels=with_output_labels,
+            output_connected_only=output_connected_only,
+            include_generators=include_generators,
+            array_caching=array_caching,
+            highlight_subgraph=highlight_subgraph,
+            fname=fname,
+            return_graph=return_graph,
+        )
+
+        if return_graph:
+            return graph
+
+    def compile(
+        self,
+        args: Optional[Tuple] = None,
+        kwargs: Optional[Dict] = None,
+        **compile_kwargs,
+    ):
+        """
+        Compile the `ivy.Module`'s `_unified_ivy_graph` or `_call` method to the
+        target backend.
+
+        Args:
+            compile_kwargs:
+                keyword arguments passed to the compile function.
+            args:
+                arguments used to compile. Defaults to None.
+            kwargs:
+                keyword arguments used to compile. Defaults to None.
+        """
+        # no arguments given to compile, so delay the compilation
+        if not (args or kwargs):
+            self._lazy_compiled = True
+            return
+
+        # we do not need convert the args to source
+        args = ivy.default(args, tuple())
+        kwargs = ivy.default(kwargs, dict())
+
+        # shallow copy the kwargs dict
+        kwargs = copy.copy(kwargs)
+        kwargs["v"] = self.v
+
+        fn_to_compile = ivy.default(self._module_graph, self._call)
+
+        self._module_graph = ivy.compile(
+            fn_to_compile, **compile_kwargs, args=args, kwargs=kwargs
+        )
+
+        self._lazy_compiled = False

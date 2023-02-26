@@ -3,7 +3,7 @@ from typing import Union, Optional, Tuple, Literal, List, Sequence
 
 # local
 import ivy
-from ivy.backend_handler import current_backend
+from ivy.utils.backend import current_backend
 from ivy.func_wrapper import (
     handle_array_function,
     to_native_arrays_and_back,
@@ -11,7 +11,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
 )
-from ivy.exceptions import handle_exceptions
+from ivy.utils.exceptions import handle_exceptions
 
 
 inf = float("inf")
@@ -2165,7 +2165,7 @@ def tensorsolve(
         prod *= k
 
     if ivy.shape(ivy.flatten(x1))[0] != prod**2:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             "Input arrays must satisfy the requirement \
             prod(x1.shape[x2.ndim:]) == prod(x1.shape[:x2.ndim])"
         )
@@ -2448,6 +2448,53 @@ def vector_norm(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
+    Examples
+    --------
+    >>> x = ivy.array([1., 2., 3.])
+    >>> y = ivy.vector_norm(x)
+    >>> print(y)
+    ivy.array([3.7416575])
+
+    >>> x = ivy.array([[1, 2, 3], [1.3, 2.4, -1.2]])
+    >>> y = ivy.vector_norm(x, axis = 1, ord = 1, dtype = ivy.float32)
+    >>> print(y)
+    ivy.array([6., 4.9000001])
+
+    >>> x = ivy.array([[1, 2, 3], [1.3, 2.4, -1.2]])
+    >>> y = ivy.vector_norm(x, axis = 0, keepdims = True,  ord = float("inf"))
+    >>> print(y)
+
+    ivy.array([[1.3, 2.4, 3.]])
+
+    >>> x = ivy.native_array([1, 2, 3, 4], dtype = ivy.float32)
+    >>> y = ivy.vector_norm(x, ord = 3.)
+    >>> print(y)
+
+    ivy.array([4.64158917])
+
+    >>> x = ivy.array([1,2,3,4], dtype = ivy.float16)
+    >>> z = ivy.empty(shape = 1)
+    >>> print(z)
+    ivy.array([0.  , 2.  , 0.  , 2.25])
+    >>> y = ivy.vector_norm(x, ord = 0, out = z)
+    >>> print(z)
+    ivy.array([4.])
+    >>> print(y)
+    ivy.array([4.])
+
+    >>> x = ivy.arange(8).reshape((2,2,2))
+    >>> y = ivy.vector_norm(x, axis = (0,1), ord = float("-inf"))
+    >>> print(y)
+    ivy.array([2, 4])
+
+    >>> x = ivy.Container(a = [-1., 1., -2., 2.], b = [0., 1.2, 2.3, -3.1])
+    >>> y = ivy.vector_norm(x, ord = -1)
+    >>> print(y)
+    {
+        a: ivy.array([0.33333334]),
+        b: ivy.array([0.])
+    }
+
     """
     return current_backend(x).vector_norm(
         x, axis=axis, keepdims=keepdims, ord=ord, dtype=dtype, out=out
@@ -2645,3 +2692,36 @@ def vector_to_skew_symmetric_matrix(
 
     """
     return current_backend(vector).vector_to_skew_symmetric_matrix(vector, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+def lu_factor(
+    A: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    pivot: Optional[bool] = True,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
+    """
+    Parameters
+    ----------
+    A
+        tensor of shape (*, m, n) where * is zero or more batch dimensions.
+
+    pivot
+        Whether to compute the LU decomposition with partial pivoting, or the regular LU
+        decomposition. pivot = False not supported on CPU. Default: True.
+
+    out
+        tuple of two tensors to write the output to. Ignored if None. Default: None.
+
+    Returns
+    -------
+    ret
+        A named tuple (LU, pivots).
+    """
+    return current_backend(A).lu_factor(A, pivot=pivot, out=out)

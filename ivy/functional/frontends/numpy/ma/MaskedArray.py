@@ -55,7 +55,7 @@ class MaskedArray(np_frontend.ndarray):
             self._init_mask(mask)
             if keep_mask:
                 if not isinstance(data.mask, bool):
-                    ivy.assertions.check_equal(
+                    ivy.utils.assertions.check_equal(
                         ivy.shape(self._mask),
                         ivy.shape(data.mask),
                         message="shapes of input mask does not match current mask",
@@ -70,7 +70,7 @@ class MaskedArray(np_frontend.ndarray):
 
     def _init_mask(self, mask):
         if isinstance(mask, list) or ivy.is_array(mask):
-            ivy.assertions.check_equal(
+            ivy.utils.assertions.check_equal(
                 ivy.shape(self._data),
                 ivy.shape(ivy.array(mask)),
                 message="shapes of data and mask must match",
@@ -93,13 +93,13 @@ class MaskedArray(np_frontend.ndarray):
             self._fill_value = ivy.array(1e20, dtype="float64")
 
     def _init_ndmin(self, ndmin):
-        ivy.assertions.check_isinstance(ndmin, int)
+        ivy.utils.assertions.check_isinstance(ndmin, int)
         if ndmin > len(ivy.shape(self._data)):
             self._data = ivy.expand_dims(self._data, axis=0)
             self._mask = ivy.expand_dims(self._mask, axis=0)
 
     def _init_hard_mask(self, hard_mask):
-        ivy.assertions.check_isinstance(hard_mask, bool)
+        ivy.utils.assertions.check_isinstance(hard_mask, bool)
         self._hard_mask = hard_mask
 
     # Properties #

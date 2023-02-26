@@ -287,9 +287,12 @@ class ArrayWithStatisticalExperimental(abc.ABC):
         overwrite_input
             If True, then allow use of memory of input array a for calculations.
             The input array will be modified by the call to median. This will
-            save memory when you do not need to preserve the contents of the input array.
-            Treat the input as undefined, but it will probably be fully or partially sorted.
-            Default is False. If overwrite_input is True and a is not already an ndarray,
+            save memory when you do not need to
+            preserve the contents of the input array.
+            Treat the input as undefined, but it will
+            probably be fully or partially sorted.
+            Default is False. If overwrite_input
+            is True and a is not already an ndarray,
             an error will be raised.
         out
             optional output array, for writing the result to.

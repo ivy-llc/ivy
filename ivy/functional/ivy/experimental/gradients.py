@@ -1,5 +1,5 @@
 # local
-from ivy.backend_handler import current_backend
+from ivy.utils.backend import current_backend
 
 
 def bind_custom_gradient_function(func, custom_grad_func):

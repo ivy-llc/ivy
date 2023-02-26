@@ -121,7 +121,7 @@ def full(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     dtype = ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True)
-    ivy.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
+    ivy.utils.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     return _to_device(
         np.full(shape, fill_value, dtype),
         device=device,
@@ -137,7 +137,7 @@ def full_like(
     device: str,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    ivy.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
+    ivy.utils.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     return _to_device(np.full_like(x, fill_value, dtype=dtype), device=device)
 
 

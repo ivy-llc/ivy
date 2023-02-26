@@ -44,7 +44,7 @@ class EagerTensor:
 
     @property
     def shape(self):
-        return "TensorShape(" + str(list(self._ivy_array.shape)) + ")"
+        return self._ivy_array.shape
 
     # Instance Methods #
     # ---------------- #
@@ -207,7 +207,7 @@ class EagerTensor:
         return y.__rxor__(self._ivy_array)
 
     def __setitem__(self, key, value):
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             "ivy.functional.frontends.tensorflow.EagerTensor object "
             "doesn't support assignment"
         )

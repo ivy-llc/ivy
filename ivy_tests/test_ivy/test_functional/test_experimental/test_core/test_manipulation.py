@@ -603,7 +603,7 @@ def test_pad(
 
 
 @st.composite
-def _get_split_locations(draw, min_num_dims, axis):
+def _get_split_locations(draw, min_num_dims, axis=None):
     """
     Generate valid splits, either by generating an integer that evenly divides the axis
     or a list of split locations.
@@ -613,8 +613,12 @@ def _get_split_locations(draw, min_num_dims, axis):
     )
     if len(shape) == 1:
         axis = draw(st.just(0))
-    else:
+    elif axis:
         axis = draw(st.just(axis))
+    else:
+        axis = draw(
+            st.shared(helpers.get_axis(shape=shape, force_int=True), key="target_axis")
+        )
 
     @st.composite
     def get_int_split(draw):
