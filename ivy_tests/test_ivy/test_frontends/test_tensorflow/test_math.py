@@ -1552,8 +1552,8 @@ def test_tensorflow_abs(
         rtol=1e-02,
         x=x[0],
     )
-    
-    
+
+
 # asin
 @handle_frontend_test(
     fn_tree="tensorflow.math.asin",
