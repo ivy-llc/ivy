@@ -608,6 +608,31 @@ def test_torch_std_mean(
 
 
 @handle_frontend_test(
+    fn_tree="torch.count_nonzero",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_count_nonzero(
+    *,
+    dtype_and_input,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+    )
+
+
+@handle_frontend_test(
     fn_tree="torch.var_mean",
     dtype_and_x=statistical_dtype_values(
         function="var_mean",

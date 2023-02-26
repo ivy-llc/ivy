@@ -125,6 +125,11 @@ def max(input, dim=None, keepdim=False, *, out=None):
 
 
 @to_ivy_arrays_and_back
+def count_nonzero(input, *, out=None):
+    return ivy.count_nonzero(input, out=out)
+
+
+@to_ivy_arrays_and_back
 def moveaxis(input, source, destination):
     return ivy.moveaxis(input, source, destination)
 
