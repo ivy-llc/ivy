@@ -21,9 +21,11 @@ def relu6(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 
     # sets gradient at 0 and 6 to 0 instead of 0.5
     # can refactor to jax.nn.relu6 when this PR is merged
-    # https://github.com/google/jax/pull/14682 
-    def custom_grad_func(x_and_grad, one): return lax.select(
-        (6 > x_and_grad[0]) & (x_and_grad[0] > 0), one, lax.full_like(one, 0))
+    # https://github.com/google/jax/pull/14682
+    def custom_grad_func(x_and_grad, one):
+        return lax.select(
+            (6 > x_and_grad[0]) & (x_and_grad[0] > 0), one, lax.full_like(one, 0)
+        )
 
     new_func = ivy.bind_custom_gradient_function(relu6_func, custom_grad_func)
 
