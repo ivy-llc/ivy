@@ -121,9 +121,10 @@ def nanmedian(
 
 def bincount(
     x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
     weights: Optional[Union[tf.Tensor, tf.Variable]] = None,
     minlength: int = 0,
-    *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if weights is not None:
