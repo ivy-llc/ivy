@@ -456,3 +456,8 @@ def sigmoid(input, *, out=None):
 @to_ivy_arrays_and_back
 def lerp(input, end, weight, *, out=None):
     return ivy.add(input, ivy.multiply(weight, ivy.subtract(end, input)), out=out)
+
+
+@to_ivy_arrays_and_back
+def signbit(input, *, out=None):
+    return ivy.signbit(input, out=out)
