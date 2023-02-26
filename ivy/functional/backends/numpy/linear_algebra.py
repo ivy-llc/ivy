@@ -32,6 +32,37 @@ def cholesky(
 
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
+def cov(
+    x1: np.ndarray,
+    x2: np.ndarray = None,
+    /,
+    *,
+    rowVar: bool = True,
+    bias: bool = False,
+    ddof: int = None,
+    fweights: np.ndarray = None,
+    aweights: np.ndarray = None,
+    dtype: Optional[np.dtype] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if fweights is not None:
+        fweights = fweights.astype(np.int64)
+    if aweights is not None:
+        aweights = aweights.astype(np.float64)
+
+    return np.cov(
+        m=x1,
+        y=x2,
+        rowvar=rowVar,
+        bias=bias,
+        ddof=ddof,
+        fweights=fweights,
+        aweights=aweights,
+        dtype=dtype,
+    )
+
+
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def cross(
     x1: np.ndarray,
     x2: np.ndarray,

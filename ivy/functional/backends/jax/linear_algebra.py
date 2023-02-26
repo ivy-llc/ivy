@@ -34,6 +34,48 @@ def cholesky(
     return ret
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
+def cov(
+    x1: JaxArray,
+    x2: JaxArray = None,
+    /,
+    *,
+    rowVar: bool = True,
+    bias: bool = False,
+    ddof: int = None,
+    fweights: JaxArray = None,
+    aweights: JaxArray = None,
+    dtype: Optional[jnp.dtype] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    # default dtype of np is float64, cast if not given
+    if not dtype:
+        x1 = jnp.asarray(x1, dtype=jnp.float64)
+        if x2 is not None and x2.dtype != dtype:
+            x2 = jnp.asarray(x2, dtype=jnp.float64)
+
+    if jnp.ndim(x1) > 2:
+        raise ValueError("x1 has more than 2 dimensions")
+
+    if x2 is not None:
+        if jnp.ndim(x2) > 2:
+            raise ValueError("x2 has more than 2 dimensions")
+
+    # cast to correct dtypes, backends change inputs to float instead of int
+    if fweights is not None:
+        fweights = jnp.asarray(fweights, dtype=jnp.int64)
+
+    return jnp.cov(
+        m=x1,
+        y=x2,
+        rowvar=rowVar,
+        bias=bias,
+        ddof=ddof,
+        fweights=fweights,
+        aweights=aweights,
+    )
+
+
 @with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def cross(
     x1: JaxArray,
