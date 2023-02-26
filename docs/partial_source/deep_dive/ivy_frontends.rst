@@ -702,5 +702,5 @@ If you have any questions, please feel free to reach out on `discord`_ in the `i
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/_9KeK-idaFs" class="video">
+    src="https://www.youtube.com/embed/SdiyetRNey8" class="video">
     </iframe>
