@@ -50,7 +50,8 @@ def array_bools(
     [True]
 
     """
-    size = size if isinstance(size, int) else draw(size)
+    if not isinstance(size, int):
+        size = draw(size)
     return draw(st.lists(st.booleans(), min_size=size, max_size=size))
 
 
@@ -171,15 +172,17 @@ def lists(
     [1.0, 2.00001, 1.0, 2.999999999999999, 1.9394938006792373]
 
     """
-    integers = (
-        number_helpers.ints(min_value=size_bounds[0], max_value=size_bounds[1])
-        if size_bounds
-        else number_helpers.ints()
-    )
-    if isinstance(min_size, str):
-        min_size = draw(st.shared(integers, key=min_size))
-    if isinstance(max_size, str):
-        max_size = draw(st.shared(integers, key=max_size))
+    if not isinstance(min_size, int) or not isinstance(max_size, int):
+        integers = (
+            number_helpers.ints(min_value=size_bounds[0], max_value=size_bounds[1])
+            if size_bounds
+            else number_helpers.ints()
+        )
+        if not isinstance(min_size, int):
+            min_size = draw(st.shared(integers, key=min_size))
+        else:
+            max_size = draw(st.shared(integers, key=max_size))
+
     return draw(st.lists(x, min_size=min_size, max_size=max_size))
 
 
@@ -1036,8 +1039,17 @@ def array_values(
                 values = [complex(*v) for v in values]
     else:
         values = draw(list_of_size(x=st.booleans(), size=size))
+    if dtype == "bfloat16":
+        # check bfloat16 behavior enabled or not
+        try:
+            np.dtype("bfloat16")
+        except Exception:
+            # enables bfloat16 behavior with possibly no side-effects
+
+            import paddle_bfloat  # noqa
 
     array = np.asarray(values, dtype=dtype)
+
     if isinstance(shape, (tuple, list)):
         return array.reshape(shape)
     return np.asarray(array)

@@ -172,7 +172,7 @@ def threshold_(input, threshold, value):
 
 
 def relu6(input, inplace=False):
-    ret = ivy.minimum(ivy.maximum(input, 0), 6)
+    ret = ivy.relu6(input)
     if inplace:
         ivy.inplace_update(input, ret)
         return input
@@ -307,7 +307,7 @@ def leaky_relu_(input, negative_slope=0.01):
 
 
 def hardswish(input, inplace=False):
-    relu6_val = ivy.minimum(ivy.maximum(ivy.add(input, 3), 0), 6)
+    relu6_val = ivy.relu6(ivy.add(input, 3))
     ret = ivy.multiply(input, ivy.divide(relu6_val, 6))
     if inplace:
         ivy.inplace_update(input, ret)
@@ -446,12 +446,12 @@ def batch_norm(
         current_var = running_var
 
     input = ivy.swapaxes(input, 1, -1)
-    input -= current_mean
-    input /= ivy.sqrt(current_var + eps)
+    input = input - current_mean
+    input = input / ivy.sqrt(current_var + eps)
     if weight is not None:
-        input *= weight
+        input = input * weight
     if bias is not None:
-        input += bias
+        input = input + bias
 
     # updating running mean & var is useless in functional API?
     running_mean = (1.0 - momentum) * running_mean + momentum * current_mean
@@ -477,7 +477,7 @@ def adaptive_avg_pool1d(input, output_size):
         input = ivy.expand_dims(input, axis=0)
         squeeze = True
     elif len(input.shape) != 3:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             f"Got {len(input.shape)}D input, but only 2D and 3D inputs are supported.",
         )
     input_size = input.shape[-1]
@@ -520,12 +520,12 @@ def adaptive_avg_pool2d(input, output_size):
         input = ivy.expand_dims(input, axis=0)
         squeeze = True
     elif len(input.shape) != 4:
-        raise ivy.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyException(
             f"Got {len(shape)}D input, but only 3D and 4D inputs are supported.",
         )
     for d in input.shape[-2:]:
         if d == 0:
-            raise ivy.exceptions.IvyException(
+            raise ivy.utils.exceptions.IvyException(
                 "Expected input to have non-zero size for non-batch dimensions, but"
                 f" input has shape {tuple(shape)}."
             )

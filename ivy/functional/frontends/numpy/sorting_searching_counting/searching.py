@@ -21,7 +21,7 @@ def where(cond, x1=None, x2=None, /):
         x1, x2 = promote_types_of_numpy_inputs(x1, x2)
         return ivy.where(cond, x1, x2)
     else:
-        raise ivy.exceptions.IvyException("where takes either 1 or 3 arguments")
+        raise ivy.utils.exceptions.IvyException("where takes either 1 or 3 arguments")
 
 
 @to_ivy_arrays_and_back
@@ -74,7 +74,7 @@ def _nanargminmax(a, axis=None):
     if nans is not None:
         nans = ivy.all(nans, axis=axis)
         if ivy.any(nans):
-            raise ivy.exceptions.IvyError("All-NaN slice encountered")
+            raise ivy.utils.exceptions.IvyError("All-NaN slice encountered")
     return a
 
 

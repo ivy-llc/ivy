@@ -14,7 +14,7 @@ def embedding(
     sparse=False,
 ):
     # TODO: add support for the remaining arguments
-    ivy.assertions.check_equal(len(weight.shape), 2, message="weight must be 2-d")
+    ivy.utils.assertions.check_equal(len(weight.shape), 2, message="weight must be 2-d")
     ret = ivy.empty(
         input.shape + (weight.shape[1],), dtype=weight.dtype, device=weight.device
     )
