@@ -2174,4 +2174,3 @@ def test_torch_fmod(
         x1=x[0],
         x2=x[1],
     )
-    
