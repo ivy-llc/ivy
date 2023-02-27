@@ -456,3 +456,8 @@ def log_softmax(logits, axis=None):
 @to_ivy_arrays_and_back
 def asin(x, name=None):
     return ivy.asin(x)
+
+
+@to_ivy_arrays_and_back
+def acos(x, name="acos"):
+    return ivy.acos(x)
