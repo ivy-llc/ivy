@@ -33,8 +33,8 @@ def fmod(
 
 
 def fmax(
-    x1: Union[float, paddle.Tensor],
-    x2: Union[float, paddle.Tensor],
+    x1: paddle.Tensor,
+    x2: paddle.Tensor,
     /,
     *,
     out: Optional[paddle.Tensor] = None,
@@ -126,8 +126,8 @@ def nansum(
 
 
 def gcd(
-    x1: Union[int, paddle.Tensor],
-    x2: Union[int, paddle.Tensor],
+    x1: Union[paddle.Tensor, int, list, tuple]=paddle.to_tensor(),
+    x2: Union[paddle.Tensor,int, float, list, tuple]=paddle.to_tensor(),
     /,
     *,
     out: Optional[paddle.Tensor] = None,
@@ -192,13 +192,13 @@ def logaddexp2(
 
 
 def diff(
-    x: paddle.Tensor,
+     x: Union[paddle.Tensor, list, tuple]=paddle.to_tensor(),
     /,
     *,
     n: int = 1,
     axis: int = -1,
-    prepend: Union[float, paddle.Tensor] = paddle.to_tensor([]),
-    append: Union[float, paddle.Tensor] = paddle.to_tensor([]),
+    prepend: Optional[Union[paddle.Tensor, int, float, list, tuple]] = paddle.to_tensor(),
+    append: Optional[Union[paddle.Tensor, int, float, list, tuple]] = paddle.to_tensor(),
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.diff(x, n=n, axis=axis, prepend=prepend, append=append)
