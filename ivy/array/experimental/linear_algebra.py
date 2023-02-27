@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union, Tuple, List
+from typing import Optional, Union, Tuple, List, Sequence
 
 # local
 import ivy
@@ -214,3 +214,26 @@ class ArrayWithLinearAlgebraExperimental(abc.ABC):
             self._data,
             out=out,
         )
+
+    def multi_dot(
+        self: ivy.Array, 
+        x: Sequence[Union[ivy.Array, ivy.NativeArray]], 
+        /, 
+        *, 
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.multi_dot.
+        This method simply wraps the function, and so the docstring for
+        ivy.multi_dot also applies to this method with minimal changes.
+
+        Examples
+        --------
+        >>> A = ivy.arange(2 * 3).reshape((2, 3))
+        >>> B = ivy.arange(3 * 2).reshape((3, 2))
+        >>> C = ivy.arange(2 * 2).reshape((2, 2))
+        >>> A.multi_dot((B, C))
+        ivy.array([[ 26,  49],
+                   [ 80, 148]])
+        """
+        return ivy.multi_dot((self._data, *x), out=out)
