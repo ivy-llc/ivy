@@ -139,4 +139,3 @@ def average(
 ) -> torch.Tensor:
     return torch.mean(a, dim=axis, keepdims=keepdims)
 
-

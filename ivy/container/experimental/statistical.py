@@ -782,15 +782,16 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         return self.static_nanmedian(
             self, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out
         )
+
     @staticmethod
-def static_average(
+    def static_average(
         input: ivy.Container,
         /,
         *,
         axis: Optional[Union[Tuple[int], int]] = None,
         keepdims: Optional[bool] = False,
 
-) -> ivy.Container:
+    ) -> ivy.Container:
     """
     ivy.Container static method variant of ivy.average.
 
@@ -820,13 +821,13 @@ def static_average(
 
     )
 
-def average(
+    def average(
         self: ivy.Container,
         /,
         *,
         axis: Optional[Union[Tuple[int], int]] = None,
         keepdims: Optional[bool] = False,
-) -> ivy.Container:
+    ) -> ivy.Container:
 
     """ivy.Container instance method variant of ivy.average. T
 

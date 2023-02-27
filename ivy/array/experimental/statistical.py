@@ -387,5 +387,3 @@ class ArrayWithStatisticalExperimental(abc.ABC):
     """
 
     return ivy.average(self._data, axis=axis, keepdims=keepdims)
-
-    
