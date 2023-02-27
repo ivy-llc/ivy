@@ -836,18 +836,18 @@ def test_jax_numpy_vsplit(
     )
     def test_jax_numpy_bartlett(
         *,
-        dtype_and_m,
+        dtype_and_M,
         on_device,
         fn_tree,
         frontend,
         test_flags,
     ):
-        input_dtype, m = dtype_and_m
+        input_dtype, M = dtype_and_M
         helpers.test_frontend_function(
             input_dtypes=input_dtype,
             frontend=frontend,
             test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
-            m=m[0],
+            M=M[0],
         )
