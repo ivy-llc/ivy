@@ -33,8 +33,8 @@ def fmod(
 
 
 def fmax(
-    x1: paddle.Tensor,
-    x2: paddle.Tensor,
+    x1: Union[float, paddle.Tensor],
+    x2: Union[float, paddle.Tensor],
     /,
     *,
     out: Optional[paddle.Tensor] = None,
@@ -122,17 +122,17 @@ def nansum(
     keepdims: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.nansum(x)
 
 
 def gcd(
-    x1: Union[paddle.Tensor, int, list, tuple],
-    x2: Union[paddle.Tensor, float, list, tuple],
+    x1: Union[int, paddle.Tensor],
+    x2: Union[int, paddle.Tensor],
     /,
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.gcd(x1, x2)
 
 
 def isclose(
@@ -145,7 +145,7 @@ def isclose(
     equal_nan: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
 
 
 def angle(
@@ -155,7 +155,7 @@ def angle(
     deg: Optional[bool] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.angle(input)
 
 
 def imag(
@@ -177,7 +177,8 @@ def nan_to_num(
     neginf: Optional[Union[float, int]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.nan_to_num(x, nan=nan, posinf=posinf, neginf=neginf)
+
 
 
 def logaddexp2(
@@ -191,17 +192,16 @@ def logaddexp2(
 
 
 def diff(
-    x: Union[paddle.Tensor, list, tuple],
+    x: paddle.Tensor,
     /,
     *,
     n: int = 1,
     axis: int = -1,
-    prepend: Optional[Union[paddle.Tensor, int, float, list, tuple]] = None,
-    append: Optional[Union[paddle.Tensor, int, float, list, tuple]] = None,
+    prepend: Union[float, paddle.Tensor] = paddle.to_tensor([]),
+    append: Union[float, paddle.Tensor] = paddle.to_tensor([]),
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
-
+    return paddle.diff(x, n=n, axis=axis, prepend=prepend, append=append)
 
 def signbit(
     x: Union[paddle.Tensor, float, int, list, tuple],
