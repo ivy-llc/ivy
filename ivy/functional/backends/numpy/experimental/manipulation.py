@@ -283,3 +283,20 @@ take_along_axis.support_native_out = False
 
 def broadcast_shapes(shapes: Union[List[int], List[Tuple]]) -> List[int]:
     return np.broadcast_shapes(*shapes)
+
+
+def expand(
+    x: np.ndarray,
+    shape: Union[List[int], List[Tuple]],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    shape = list(shape)
+    for i, dim in enumerate(shape):
+        if dim < 0:
+            shape[i] = x.shape[i]
+    return np.broadcast_to(x, tuple(shape))
+
+
+expand.support_native_out = False

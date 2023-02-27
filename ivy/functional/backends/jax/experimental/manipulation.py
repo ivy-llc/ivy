@@ -286,3 +286,17 @@ def hsplit(
 
 def broadcast_shapes(shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     return jnp.broadcast_shapes(*shapes)
+
+
+def expand(
+    x: JaxArray,
+    shape: Union[List[int], List[Tuple]],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    shape = list(shape)
+    for i, dim in enumerate(shape):
+        if dim < 0:
+            shape[i] = x.shape[i]
+    return jnp.broadcast_to(x, tuple(shape))

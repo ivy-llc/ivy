@@ -805,7 +805,6 @@ class ArrayWithManipulationExperimental(abc.ABC):
         shape: Union[ivy.Shape, ivy.NativeShape],
         /,
         *,
-        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -817,4 +816,4 @@ class ArrayWithManipulationExperimental(abc.ABC):
         out
 
         """
-        return ivy.expand(self._data, shape, device=device, out=out)
+        return ivy.expand(self._data, shape, out=out)
