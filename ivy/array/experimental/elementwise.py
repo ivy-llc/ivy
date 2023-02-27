@@ -1226,4 +1226,3 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         ivy.array([8.0, 8.0, 6.0])
         """
         return ivy.ldexp(self._data, x2, out=out, **kwargs)
-
