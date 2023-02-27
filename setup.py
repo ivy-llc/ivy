@@ -35,6 +35,7 @@ def _replace_logos_html(txt):
     img_str = (
         ".. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logos/supported/frameworks.png?raw=true\n"  # noqa
         "   :width: 100%"
+        "   :class: dark-light"
     )
     backends_chunk = "\n\n".join(bc[0:1] + [img_str] + bc[2:])
 
