@@ -486,6 +486,7 @@ from .linalg.matrix_and_vector_products import (
     outer,
     matrix_power,
     tensordot,
+    _cross,
     # einsum,
     # einsum_path,
     # kron,
@@ -665,3 +666,4 @@ matmul = ufunc("_matmul")
 maximum = ufunc("_maximum")
 minimum = ufunc("_minimum")
 real = ufunc("_real")
+cross = ufunc("_cross")

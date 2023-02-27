@@ -50,3 +50,9 @@ def tensordot(a, b, axes=2):
 @to_ivy_arrays_and_back
 def tensorsolve(a, b, axes=2):
     return ivy.tensorsolve(a, b, axes=axes)
+
+
+@to_ivy_arrays_and_back
+def _cross(a, b, axisa=-1, axisb=-1, axisc=-1, axis=None):
+    a, b = promote_types_of_numpy_inputs(a, b)
+    return ivy.cross(a, b, axisa=axisa, axisb=axisb, axisc=axisc, axis=axis)
