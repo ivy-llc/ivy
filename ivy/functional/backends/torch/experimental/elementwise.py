@@ -446,3 +446,13 @@ def conj(
 ) -> torch.Tensor:
     conj_x = torch.conj(x)
     return torch.resolve_conj(input=conj_x)
+
+
+def ldexp(
+    x1: torch.Tensor,
+    x2: Union[int, torch.Tensor],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.ldexp(x1, x2, out=out)
