@@ -16,4 +16,5 @@ Activations
    activations/logit.rst
    activations/prelu.rst
    activations/thresholded_relu.rst
+   activations/relu6.rst
 
