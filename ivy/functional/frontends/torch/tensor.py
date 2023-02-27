@@ -650,6 +650,10 @@ class Tensor:
     def sigmoid(self):
         return torch_frontend.sigmoid(self.ivy_array)
 
+    def bitwise_and_(self, other):
+        self.ivy_array = self.bitwise_and(other).ivy_array
+        return self
+
     # Special Methods #
     # -------------------#
 
