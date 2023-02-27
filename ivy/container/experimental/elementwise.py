@@ -3348,7 +3348,6 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
-        
 
     @staticmethod
     def static_ldexp(
@@ -3449,4 +3448,3 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         }
         """
         return self.static_ldexp(self, x2, out=out)
-
