@@ -12,6 +12,7 @@ import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
+import multiprocessing as _multiprocessing
 
 
 def is_native_array(x, /, *, exclusive=False):
@@ -151,7 +152,9 @@ def inplace_variables_supported():
 
 
 def multiprocessing(context=None):
-    raise IvyNotImplementedException()
+    return (
+        _multiprocessing if context is None else _multiprocessing.get_context(context)
+    )
 
 
 def scatter_flat(
