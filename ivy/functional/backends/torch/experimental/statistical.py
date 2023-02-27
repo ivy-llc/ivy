@@ -142,7 +142,7 @@ def bincount(
         ret = ret.to(x.dtype)
     else:
         ret = torch.bincount(x, weights=weights, minlength=minlength)
-        ret = ret.to(x.dtype)
+        ret = ret.to(weights.dtype)
     return ret
 
 
