@@ -1024,7 +1024,54 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">prelu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">slope</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">prelu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">slope</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ArrayWithActivationsExperimental.relu6"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithActivationsExperimental.relu6">[docs]</a>    <span class="k">def</span> <span class="nf">relu6</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Applies the rectified linear unit 6 function element-wise.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x</span>
+<span class="sd">            input array</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to.</span>
+<span class="sd">            It must have a shape that the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            an array containing the rectified linear unit 6 activation</span>
+<span class="sd">            of each element in ``x``.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :class:`ivy.Array` input:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([-1.,  0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.])</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.relu6(x)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([0., 0., 1., 2., 3., 4., 5., 6., 6.])</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([-1.,  0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.])</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.zeros(9)</span>
+<span class="sd">        &gt;&gt;&gt; ivy.relu6(x, out = y)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([0., 0., 1., 2., 3., 4., 5., 6., 6.])</span>
+
+<span class="sd">        With :class:`ivy.Container` input:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = {</span>
+<span class="sd">                    a: ivy.array([-3., -2., -1., 0., 1., 2., 3., 4., 5.]),</span>
+<span class="sd">                    b: ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.])</span>
+<span class="sd">                }</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.relu6(x, out=x)</span>
+<span class="sd">        &gt;&gt;&gt; print(x)</span>
+<span class="sd">        {</span>
+<span class="sd">        a: ivy.array([0., 0., 0., 0., 1., 2., 3., 4., 5.]),</span>
+<span class="sd">        b: ivy.array([1., 2., 3., 4., 5., 6., 6., 6., 6.])</span>
+<span class="sd">        }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">relu6</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div></div>
 </pre></div>
 
             </article>
