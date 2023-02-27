@@ -12,7 +12,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 def statistical_dtype_values(draw, *, function, min_value=None, max_value=None):
     large_abs_safety_factor = 2
     small_abs_safety_factor = 2
-    if any(ele in function for ele in ["mean", "std", "var", "nanstd"]):
+    if any(ele in function for ele in ["mean", "median", "std", "var", "nanstd"]):
         large_abs_safety_factor = 24
         small_abs_safety_factor = 24
     dtype, values, axis = draw(
@@ -140,6 +140,38 @@ def test_max(
     keep_dims=st.booleans(),
 )
 def test_mean(
+    *,
+    dtype_and_x,
+    keep_dims,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        x=x[0],
+        axis=axis,
+        keepdims=keep_dims,
+    )
+
+
+# median
+@handle_test(
+    fn_tree="functional.ivy.median",
+    dtype_and_x=statistical_dtype_values(function="median"),
+    keep_dims=st.booleans(),
+)
+def test_median(
     *,
     dtype_and_x,
     keep_dims,
