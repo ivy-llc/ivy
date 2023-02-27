@@ -303,7 +303,8 @@ def bias_add(value, bias, data_format=None, name=None):
     if data_format is None:
         data_format = "N...C"
 
-    if data_format == "N...C":
+    chanel_index = data_format.find("C")
+    if chanel_index != 1:
         return ivy.add(value, bias)
     else:
         value = ivy.swapaxes(value, 1, -1)

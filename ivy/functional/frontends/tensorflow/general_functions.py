@@ -233,6 +233,7 @@ def boolean_mask(tensor, mask, axis=None, name=None):
         return ivy.get_item(tensor, mask)
 
 
+@to_ivy_arrays_and_back
 def pad(tensor, paddings, mode="CONSTANT", constant_values=0, name=None):
     paddings = paddings.to_list() if ivy.is_array(paddings) else paddings
     return ivy.pad(tensor, paddings, mode=mode.lower(), constant_values=constant_values)
