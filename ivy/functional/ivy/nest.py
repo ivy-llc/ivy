@@ -1099,7 +1099,9 @@ def nested_map(
         if shallow:
             x[:] = ret_list[:]
         return class_instance(ret_list)
-    elif dict_check_fn(x, dict) and not isinstance(x, to_ignore):
+    elif (dict_check_fn(x, dict) or isinstance(x, UserDict)) and not isinstance(
+        x, to_ignore
+    ):
         class_instance = type(x)
         ret = {
             k: nested_map(
