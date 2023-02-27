@@ -824,3 +824,30 @@ def test_jax_numpy_vsplit(
         ary=value[0],
         indices_or_sections=indices_or_sections,
     )
+
+    # bartlett
+    @handle_frontend_test(
+        fn_tree="jax.numpy.bartlett",
+        dtype_and_m=helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            min_num_dims=2,
+        ),
+        test_with_out=st.just(False),
+    )
+    def test_jax_numpy_bartlett(
+        *,
+        dtype_and_m,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
+    ):
+        input_dtype, m = dtype_and_m
+        helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            m=m[0],
+        )
