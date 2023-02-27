@@ -146,3 +146,8 @@ def dsplit(ary, indices_or_section):
 @to_ivy_arrays_and_back
 def vsplit(ary, indices_or_section):
     return ivy.vsplit(ary, indices_or_section)
+
+
+@to_ivy_arrays_and_back
+def bartlett(M):
+    return ivy.bartlett(M)
