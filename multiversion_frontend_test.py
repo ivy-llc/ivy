@@ -3,10 +3,7 @@ from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
 import sys
 import jsonpickle
 import importlib
-from ivy_tests.test_ivy.helpers.testing_helpers import (
-    _import_fn,
-    _get_supported_devices_dtypes,
-)
+from ivy_tests.test_ivy.helpers.testing_helpers import _import_fn, _get_supported_devices_dtypes, _import_method, _get_method_supported_devices_dtypes
 
 
 def available_frameworks():
@@ -63,13 +60,31 @@ class NativeClass:
         self._native_class = native_class
 
 
-def _get_fn_dtypes(framework, fn_tree, device=None, kind="valid"):
-    callable_fn, fn_name, fn_mod = _import_fn(fn_tree)
-    supported_device_dtypes = _get_supported_devices_dtypes(fn_name, fn_mod)
-    return supported_device_dtypes[framework][device][kind]
+def _get_fn_dtypes(framework,fn_tree,type, device=None,kind="valid"):
+    if type=='1':
+        callable_fn, fn_name, fn_mod = _import_fn(fn_tree)
+        supported_device_dtypes = _get_supported_devices_dtypes(fn_name, fn_mod)
+        return supported_device_dtypes[framework][
+            device
+        ][kind]
+    else:
+        method_name, class_tree, split_index = type
 
 
-def _get_type_dict(framework, fn_tree, device=None, kind="valid"):
+        class_module_path, class_name = (
+            class_tree[:split_index],
+            class_tree[split_index + 1:],
+        )
+        class_module = importlib.import_module(class_module_path)
+        supported_device_dtypes = _get_method_supported_devices_dtypes(
+            method_name, class_module, class_name
+        )
+        return supported_device_dtypes[framework][
+            device
+        ][kind]
+
+
+def _get_type_dict(framework,fn_tree,type, device=None,kind="valid"):
     if kind == "valid":
         return framework.valid_dtypes
     elif kind == "numeric":
@@ -102,20 +117,23 @@ def _get_type_dict(framework, fn_tree, device=None, kind="valid"):
         raise RuntimeError("{} is an unknown kind!".format(kind))
 
 
-def dtype_handler(framework):
-    z = input()
-    retrieval_fn = globals()[z]
-    z = input()
-    kind = z
-    z = input()
-    device = z
-    z = input()
-    fn_tree = z
+def dtype_handler(framework,type):
+    if type=='1a':
+        type=jsonpickle.loads(input())
 
-    if retrieval_fn.__name__ == "_get_type_dict":
+    z=input()
+    retrieval_fn=globals()[z]
+    z=input()
+    kind=z
+    z=input()
+    device=z
+    z=input()
+    fn_tree=z
+
+    if retrieval_fn.__name__== '_get_type_dict':
         framework = importlib.import_module("ivy.functional.backends." + framework)
-    dtypes = retrieval_fn(framework, fn_tree, device, kind)
-    dtypes = jsonpickle.dumps(dtypes)
+    dtypes = retrieval_fn(framework,fn_tree,type,device,kind)
+    dtypes = jsonpickle.dumps(dtypes,kind)
     print(dtypes)
 
 
@@ -220,15 +238,22 @@ if __name__ == "__main__":
     j = 1
     import ivy
 
-    # ivy.bfloat16
-    ivy.set_backend(arg_lis[2].split("/")[0])
+    try:
+        ivy.set_backend(arg_lis[2].split("/")[0])
+    except:
+        raise Exception(f"lalalalal {fw_lis}")
     import numpy
+    try:
+        #check numpy bfloat16 enabled or not
+        numpy.dtype("bfloat16")
+    except:
+        import paddle_bfloat
 
     while j:
         try:
             z = input()
-            if z == "1":
-                dtype_handler(arg_lis[2].split("/")[0])
+            if z == '1' or z == '1a':
+                dtype_handler(arg_lis[2].split("/")[0], z)
                 continue
             if z == "2":
                 test_frontend_method()
@@ -274,8 +299,8 @@ if __name__ == "__main__":
             )
 
             frontend_ret = frontend_fw.__dict__[func](*args_frontend, **kwargs_frontend)
-            if isinstance(frontend_ret, tuple) or isinstance(frontend_ret, list):
-                frontend_ret = ivy.nested_map(frontend_ret, ivy.to_numpy)
+            if isinstance(frontend_ret,tuple) or isinstance(frontend_ret,list):
+                frontend_ret=ivy.nested_map(frontend_ret,ivy.to_numpy)
             else:
                 frontend_ret = ivy.to_numpy(frontend_ret)
             frontend_ret = jsonpickle.dumps(frontend_ret)
@@ -283,5 +308,4 @@ if __name__ == "__main__":
         except EOFError:
             continue
         except Exception as e:
-            print(frontend_ret.shape)
             raise e
