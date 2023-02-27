@@ -756,3 +756,48 @@ def test_torch_poisson_nll_loss(
         reduce=reduce,
         reduction=reduction,
     )
+
+
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.hinge_embedding_loss",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_value=-100,
+        max_value=100,
+        allow_inf=False,
+    ),
+    margin=st.floats(min_value=-10, max_value=10),
+    size_average=st.booleans(),
+    reduce=st.booleans(),
+    reduction=st.sampled_from(["none", "mean", "sum"]),
+    test_with_out=st.just(False),
+)
+def test_torch_hinge_embedding_loss(
+    *,
+    dtype_and_x,
+    margin,
+    size_average,
+    reduce,
+    reduction,
+    test_flags,
+    fn_tree,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    input, target = x
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input,
+        target=target,
+        margin=margin,
+        size_average=size_average,
+        reduce=reduce,
+        reduction=reduction,
+    )
