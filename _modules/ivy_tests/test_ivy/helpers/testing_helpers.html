@@ -1461,13 +1461,15 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">wrapped_test</span> <span class="o">=</span> <span class="n">test_fn</span>
 
-        <span class="k">if</span> <span class="n">is_method_tree_provided</span><span class="p">:</span>
-            <span class="n">wrapped_test</span><span class="o">.</span><span class="n">test_data</span> <span class="o">=</span> <span class="n">TestData</span><span class="p">(</span>
-                <span class="n">test_fn</span><span class="o">=</span><span class="n">wrapped_test</span><span class="p">,</span>
-                <span class="n">fn_tree</span><span class="o">=</span><span class="n">method_tree</span><span class="p">,</span>
-                <span class="n">fn_name</span><span class="o">=</span><span class="n">method_name</span><span class="p">,</span>
-                <span class="n">supported_device_dtypes</span><span class="o">=</span><span class="n">supported_device_dtypes</span><span class="p">,</span>
-            <span class="p">)</span>
+
+        <span class="n">wrapped_test</span><span class="o">.</span><span class="n">test_data</span> <span class="o">=</span> <span class="n">TestData</span><span class="p">(</span>
+            <span class="n">test_fn</span><span class="o">=</span><span class="n">wrapped_test</span><span class="p">,</span>
+            <span class="n">fn_tree</span><span class="o">=</span><span class="n">method_tree</span><span class="p">,</span>
+            <span class="n">fn_name</span><span class="o">=</span><span class="n">method_name</span><span class="p">,</span>
+            <span class="n">supported_device_dtypes</span><span class="o">=</span><span class="n">supported_device_dtypes</span><span class="p">,</span>
+            <span class="n">is_method</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+
         <span class="n">wrapped_test</span><span class="o">.</span><span class="n">ground_truth_backend</span> <span class="o">=</span> <span class="n">ground_truth_backend</span>
         <span class="n">wrapped_test</span><span class="o">.</span><span class="n">_ivy_test</span> <span class="o">=</span> <span class="kc">True</span>
 
@@ -1581,6 +1583,7 @@
             <span class="n">fn_tree</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">init_tree</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">method_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">fn_name</span><span class="o">=</span><span class="n">method_name</span><span class="p">,</span>
             <span class="n">supported_device_dtypes</span><span class="o">=</span><span class="n">supported_device_dtypes</span><span class="p">,</span>
+            <span class="n">is_method</span><span class="o">=</span><span class="p">[</span><span class="n">method_name</span><span class="p">,</span> <span class="n">class_tree</span><span class="p">,</span><span class="n">split_index</span><span class="p">]</span>
         <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">wrapped_test</span>

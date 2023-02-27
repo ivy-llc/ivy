@@ -118,6 +118,7 @@ Experimental
    experimental/real.rst
    experimental/binarizer.rst
    experimental/conj.rst
+   experimental/ldexp.rst
    experimental/bind_custom_gradient_function.rst
    experimental/isin.rst
    experimental/dirichlet.rst

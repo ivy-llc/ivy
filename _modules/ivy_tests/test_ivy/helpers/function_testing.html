@@ -976,6 +976,7 @@
     <span class="n">value_test</span><span class="p">,</span>
     <span class="n">check_unsupported_dtype</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="nb">globals</span>
 
 <span class="n">available_frameworks</span> <span class="o">=</span> <span class="n">available_frameworkss</span><span class="p">()</span>
 
@@ -1121,6 +1122,10 @@
 <span class="sd">    &gt;&gt;&gt; x2 = np.array([-3, 15, 24])</span>
 <span class="sd">    &gt;&gt;&gt; test_function(input_dtypes, test_flags, fw, fn_name, x1=x1, x2=x2)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">globals</span><span class="o">.</span><span class="n">CURRENT_GROUND_TRUTH_BACKEND</span><span class="p">,</span><span class="nb">list</span><span class="p">):</span>
+        <span class="c1"># override the ground truth in favor of multiversion</span>
+        <span class="n">ground_truth_backend</span><span class="o">=</span><span class="nb">globals</span><span class="o">.</span><span class="n">CURRENT_GROUND_TRUTH_BACKEND</span>
+
     <span class="c1"># split the arguments into their positional and keyword components</span>
     <span class="n">args_np</span><span class="p">,</span> <span class="n">kwargs_np</span> <span class="o">=</span> <span class="n">kwargs_to_args_n_kwargs</span><span class="p">(</span>
         <span class="n">num_positional_args</span><span class="o">=</span><span class="n">test_flags</span><span class="o">.</span><span class="n">num_positional_args</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="n">all_as_kwargs_np</span>
@@ -1210,6 +1215,7 @@
         <span class="n">ret</span><span class="p">,</span> <span class="n">ret_np_flat</span> <span class="o">=</span> <span class="n">get_ret_and_flattened_np_array</span><span class="p">(</span>
             <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">fn_name</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
         <span class="p">)</span>
+
     <span class="c1"># assert idx of return if the idx of the out array provided</span>
     <span class="k">if</span> <span class="n">test_flags</span><span class="o">.</span><span class="n">with_out</span><span class="p">:</span>
         <span class="n">test_ret</span> <span class="o">=</span> <span class="p">(</span>
@@ -1245,40 +1251,71 @@
                 <span class="p">),</span>
                 <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="ow">not</span> <span class="n">x</span><span class="p">,</span>
             <span class="p">)</span>
+
     <span class="c1"># compute the return with a Ground Truth backend</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="n">ground_truth_backend</span><span class="p">)</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">fn</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ivy</span><span class="p">,</span> <span class="n">fn_name</span><span class="p">)</span>
-        <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">create_args_kwargs</span><span class="p">(</span>
-            <span class="n">args_np</span><span class="o">=</span><span class="n">args_np</span><span class="p">,</span>
-            <span class="n">arg_np_vals</span><span class="o">=</span><span class="n">arg_np_vals</span><span class="p">,</span>
-            <span class="n">args_idxs</span><span class="o">=</span><span class="n">args_idxs</span><span class="p">,</span>
-            <span class="n">kwargs_np</span><span class="o">=</span><span class="n">kwargs_np</span><span class="p">,</span>
-            <span class="n">kwargs_idxs</span><span class="o">=</span><span class="n">kwargs_idxs</span><span class="p">,</span>
-            <span class="n">kwarg_np_vals</span><span class="o">=</span><span class="n">kwarg_np_vals</span><span class="p">,</span>
-            <span class="n">input_dtypes</span><span class="o">=</span><span class="n">input_dtypes</span><span class="p">,</span>
-            <span class="n">test_flags</span><span class="o">=</span><span class="n">test_flags</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="n">ret_from_gt</span><span class="p">,</span> <span class="n">ret_np_from_gt_flat</span> <span class="o">=</span> <span class="n">get_ret_and_flattened_np_array</span><span class="p">(</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">fn_name</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-        <span class="p">)</span>
-        <span class="k">if</span> <span class="n">test_flags</span><span class="o">.</span><span class="n">with_out</span><span class="p">:</span>
-            <span class="n">test_ret_from_gt</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">ret_from_gt</span><span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">fn_name</span><span class="p">],</span> <span class="s2">&quot;out_index&quot;</span><span class="p">)]</span>
-                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">fn_name</span><span class="p">],</span> <span class="s2">&quot;out_index&quot;</span><span class="p">)</span>
-                <span class="k">else</span> <span class="n">ret_from_gt</span>
-            <span class="p">)</span>
-            <span class="n">out_from_gt</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span>
-                <span class="n">test_ret_from_gt</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">,</span> <span class="n">to_mutable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">include_derived</span><span class="o">=</span><span class="kc">True</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ground_truth_backend</span><span class="p">,</span><span class="nb">list</span><span class="p">):</span>
+        <span class="n">process</span><span class="o">=</span><span class="n">ground_truth_backend</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">args_np</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">arg_np_vals</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">args_idxs</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">kwargs_np</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">kwargs_idxs</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">kwarg_np_vals</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">input_dtypes</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">test_flags</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">fn_name</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="s2">&quot;Something bad happened to the subprocess, here are the logs:</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="n">process</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">readlines</span><span class="p">())</span>
+            <span class="k">raise</span> <span class="n">e</span>
+        <span class="n">ground_ret</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">ground_ret</span><span class="p">:</span>
+            <span class="n">ground_ret</span> <span class="o">=</span> <span class="n">jsonpickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">make_json_pickable</span><span class="p">(</span><span class="n">ground_ret</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">process</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">readlines</span><span class="p">())</span>
+            <span class="k">raise</span> <span class="ne">Exception</span>
+        <span class="n">ret_from_gt</span><span class="p">,</span><span class="n">ret_np_from_gt_flat</span><span class="p">,</span><span class="n">fw_list</span><span class="o">=</span><span class="n">ground_ret</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="n">ground_truth_backend</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">fn</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ivy</span><span class="p">,</span> <span class="n">fn_name</span><span class="p">)</span>
+            <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">create_args_kwargs</span><span class="p">(</span>
+                <span class="n">args_np</span><span class="o">=</span><span class="n">args_np</span><span class="p">,</span>
+                <span class="n">arg_np_vals</span><span class="o">=</span><span class="n">arg_np_vals</span><span class="p">,</span>
+                <span class="n">args_idxs</span><span class="o">=</span><span class="n">args_idxs</span><span class="p">,</span>
+                <span class="n">kwargs_np</span><span class="o">=</span><span class="n">kwargs_np</span><span class="p">,</span>
+                <span class="n">kwargs_idxs</span><span class="o">=</span><span class="n">kwargs_idxs</span><span class="p">,</span>
+                <span class="n">kwarg_np_vals</span><span class="o">=</span><span class="n">kwarg_np_vals</span><span class="p">,</span>
+                <span class="n">input_dtypes</span><span class="o">=</span><span class="n">input_dtypes</span><span class="p">,</span>
+                <span class="n">test_flags</span><span class="o">=</span><span class="n">test_flags</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">ret_from_gt</span><span class="p">,</span> <span class="n">ret_np_from_gt_flat</span> <span class="o">=</span> <span class="n">get_ret_and_flattened_np_array</span><span class="p">(</span>
-                <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">fn_name</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out_from_gt</span>
+                <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">fn_name</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
             <span class="p">)</span>
-    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">test_flags</span><span class="o">.</span><span class="n">with_out</span><span class="p">:</span>
+                <span class="n">test_ret_from_gt</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">ret_from_gt</span><span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">fn_name</span><span class="p">],</span> <span class="s2">&quot;out_index&quot;</span><span class="p">)]</span>
+                    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">fn_name</span><span class="p">],</span> <span class="s2">&quot;out_index&quot;</span><span class="p">)</span>
+                    <span class="k">else</span> <span class="n">ret_from_gt</span>
+                    <span class="p">)</span>
+                <span class="n">out_from_gt</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span>
+                    <span class="n">test_ret_from_gt</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">,</span> <span class="n">to_mutable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">include_derived</span><span class="o">=</span><span class="kc">True</span>
+                <span class="p">)</span>
+                <span class="n">ret_from_gt</span><span class="p">,</span> <span class="n">ret_np_from_gt_flat</span> <span class="o">=</span> <span class="n">get_ret_and_flattened_np_array</span><span class="p">(</span>
+                    <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">fn_name</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out_from_gt</span>
+                <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">unset_backend</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="n">e</span>
+        <span class="n">fw_list</span> <span class="o">=</span> <span class="n">gradient_unsupported_dtypes</span><span class="p">(</span><span class="n">fn</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">fn_name</span><span class="p">])</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">unset_backend</span><span class="p">()</span>
-        <span class="k">raise</span> <span class="n">e</span>
-    <span class="n">fw_list</span> <span class="o">=</span> <span class="n">gradient_unsupported_dtypes</span><span class="p">(</span><span class="n">fn</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">fn_name</span><span class="p">])</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">unset_backend</span><span class="p">()</span>
     <span class="c1"># gradient test</span>
     <span class="n">fw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span>
     <span class="k">if</span> <span class="p">(</span>
@@ -1719,32 +1756,67 @@
     <span class="n">grads_np_flat</span> <span class="o">=</span> <span class="n">flatten_and_to_np</span><span class="p">(</span><span class="n">ret</span><span class="o">=</span><span class="n">grads</span><span class="p">)</span>
 
     <span class="c1"># compute the return with a Ground Truth backend</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="n">ground_truth_backend</span><span class="p">)</span>
-    <span class="n">test_unsupported</span> <span class="o">=</span> <span class="n">check_unsupported_dtype</span><span class="p">(</span>
-        <span class="n">fn</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">fn</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">fn</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-        <span class="n">input_dtypes</span><span class="o">=</span><span class="n">input_dtypes</span><span class="p">,</span>
-        <span class="n">all_as_kwargs_np</span><span class="o">=</span><span class="n">all_as_kwargs_np</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="k">if</span> <span class="n">test_unsupported</span><span class="p">:</span>
-        <span class="k">return</span>
-    <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">args_idxs</span><span class="p">,</span> <span class="n">kwargs_idxs</span> <span class="o">=</span> <span class="n">create_args_kwargs</span><span class="p">(</span>
-        <span class="n">args_np</span><span class="o">=</span><span class="n">args_np</span><span class="p">,</span>
-        <span class="n">arg_np_vals</span><span class="o">=</span><span class="n">arg_np_vals</span><span class="p">,</span>
-        <span class="n">args_idxs</span><span class="o">=</span><span class="n">args_idxs</span><span class="p">,</span>
-        <span class="n">kwargs_np</span><span class="o">=</span><span class="n">kwargs_np</span><span class="p">,</span>
-        <span class="n">kwarg_np_vals</span><span class="o">=</span><span class="n">kwarg_np_vals</span><span class="p">,</span>
-        <span class="n">kwargs_idxs</span><span class="o">=</span><span class="n">kwargs_idxs</span><span class="p">,</span>
-        <span class="n">input_dtypes</span><span class="o">=</span><span class="n">input_dtypes</span><span class="p">,</span>
-        <span class="n">test_flags</span><span class="o">=</span><span class="n">test_flags</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">_</span><span class="p">,</span> <span class="n">grads_from_gt</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span>
-        <span class="n">grad_fn</span><span class="p">,</span>
-        <span class="p">[</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-        <span class="n">xs_grad_idxs</span><span class="o">=</span><span class="n">xs_grad_idxs</span><span class="p">,</span>
-        <span class="n">ret_grad_idxs</span><span class="o">=</span><span class="n">ret_grad_idxs</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">grads_np_from_gt_flat</span> <span class="o">=</span> <span class="n">flatten_and_to_np</span><span class="p">(</span><span class="n">ret</span><span class="o">=</span><span class="n">grads_from_gt</span><span class="p">)</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">unset_backend</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ground_truth_backend</span><span class="p">,</span><span class="nb">list</span><span class="p">):</span>
+
+        <span class="n">process</span> <span class="o">=</span> <span class="n">ground_truth_backend</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">args_np</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">arg_np_vals</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">args_idxs</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">kwargs_np</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">kwargs_idxs</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">kwarg_np_vals</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">input_dtypes</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">test_flags</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">all_as_kwargs_np</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">grad_fn</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">xs_grad_idxs</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">ret_grad_idxs</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="s2">&quot;Something bad happened to the subprocess, here are the logs:</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">process</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">readlines</span><span class="p">())</span>
+            <span class="k">raise</span> <span class="n">e</span>
+        <span class="n">ground_ret</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">ground_ret</span><span class="p">:</span>
+            <span class="n">ground_ret</span> <span class="o">=</span> <span class="n">jsonpickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">make_json_pickable</span><span class="p">(</span><span class="n">ground_ret</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">process</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">readlines</span><span class="p">())</span>
+            <span class="k">raise</span> <span class="ne">Exception</span>
+        <span class="n">grads_np_from_gt_flat</span> <span class="o">=</span> <span class="n">ground_ret</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="n">ground_truth_backend</span><span class="p">)</span>
+        <span class="n">test_unsupported</span> <span class="o">=</span> <span class="n">check_unsupported_dtype</span><span class="p">(</span>
+            <span class="n">fn</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">fn</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">fn</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">input_dtypes</span><span class="o">=</span><span class="n">input_dtypes</span><span class="p">,</span>
+            <span class="n">all_as_kwargs_np</span><span class="o">=</span><span class="n">all_as_kwargs_np</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">test_unsupported</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">args_idxs</span><span class="p">,</span> <span class="n">kwargs_idxs</span> <span class="o">=</span> <span class="n">create_args_kwargs</span><span class="p">(</span>
+            <span class="n">args_np</span><span class="o">=</span><span class="n">args_np</span><span class="p">,</span>
+            <span class="n">arg_np_vals</span><span class="o">=</span><span class="n">arg_np_vals</span><span class="p">,</span>
+            <span class="n">args_idxs</span><span class="o">=</span><span class="n">args_idxs</span><span class="p">,</span>
+            <span class="n">kwargs_np</span><span class="o">=</span><span class="n">kwargs_np</span><span class="p">,</span>
+            <span class="n">kwarg_np_vals</span><span class="o">=</span><span class="n">kwarg_np_vals</span><span class="p">,</span>
+            <span class="n">kwargs_idxs</span><span class="o">=</span><span class="n">kwargs_idxs</span><span class="p">,</span>
+            <span class="n">input_dtypes</span><span class="o">=</span><span class="n">input_dtypes</span><span class="p">,</span>
+            <span class="n">test_flags</span><span class="o">=</span><span class="n">test_flags</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">grads_from_gt</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span>
+            <span class="n">grad_fn</span><span class="p">,</span>
+            <span class="p">[</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+            <span class="n">xs_grad_idxs</span><span class="o">=</span><span class="n">xs_grad_idxs</span><span class="p">,</span>
+            <span class="n">ret_grad_idxs</span><span class="o">=</span><span class="n">ret_grad_idxs</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">grads_np_from_gt_flat</span> <span class="o">=</span> <span class="n">flatten_and_to_np</span><span class="p">(</span><span class="n">ret</span><span class="o">=</span><span class="n">grads_from_gt</span><span class="p">)</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">unset_backend</span><span class="p">()</span>
+
 
     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">grads_np_flat</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span>
         <span class="n">grads_np_from_gt_flat</span>
@@ -1861,6 +1933,9 @@
 <span class="sd">    ret_gt</span>
 <span class="sd">        optional, return value from the Ground Truth function</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">globals</span><span class="o">.</span><span class="n">CURRENT_GROUND_TRUTH_BACKEND</span><span class="p">,</span><span class="nb">list</span><span class="p">):</span>
+        <span class="c1"># override the ground truth in favor of multiversion</span>
+        <span class="n">ground_truth_backend</span><span class="o">=</span><span class="nb">globals</span><span class="o">.</span><span class="n">CURRENT_GROUND_TRUTH_BACKEND</span>
     <span class="n">init_input_dtypes</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">init_input_dtypes</span><span class="p">,</span> <span class="p">[])</span>
 
     <span class="c1"># Constructor arguments #</span>
@@ -1987,51 +2062,103 @@
     <span class="p">)</span>
 
     <span class="c1"># Compute the return with a Ground Truth backend</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="n">ground_truth_backend</span><span class="p">)</span>
-    <span class="n">args_gt_constructor</span><span class="p">,</span> <span class="n">kwargs_gt_constructor</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">create_args_kwargs</span><span class="p">(</span>
-        <span class="n">args_np</span><span class="o">=</span><span class="n">args_np_constructor</span><span class="p">,</span>
-        <span class="n">arg_np_vals</span><span class="o">=</span><span class="n">con_arg_np_vals</span><span class="p">,</span>
-        <span class="n">args_idxs</span><span class="o">=</span><span class="n">con_args_idxs</span><span class="p">,</span>
-        <span class="n">kwargs_np</span><span class="o">=</span><span class="n">kwargs_np_constructor</span><span class="p">,</span>
-        <span class="n">kwarg_np_vals</span><span class="o">=</span><span class="n">con_kwarg_np_vals</span><span class="p">,</span>
-        <span class="n">kwargs_idxs</span><span class="o">=</span><span class="n">con_kwargs_idxs</span><span class="p">,</span>
-        <span class="n">input_dtypes</span><span class="o">=</span><span class="n">init_input_dtypes</span><span class="p">,</span>
-        <span class="n">test_flags</span><span class="o">=</span><span class="n">init_flags</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">args_gt_method</span><span class="p">,</span> <span class="n">kwargs_gt_method</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">create_args_kwargs</span><span class="p">(</span>
-        <span class="n">args_np</span><span class="o">=</span><span class="n">args_np_method</span><span class="p">,</span>
-        <span class="n">arg_np_vals</span><span class="o">=</span><span class="n">met_arg_np_vals</span><span class="p">,</span>
-        <span class="n">args_idxs</span><span class="o">=</span><span class="n">met_args_idxs</span><span class="p">,</span>
-        <span class="n">kwargs_np</span><span class="o">=</span><span class="n">kwargs_np_method</span><span class="p">,</span>
-        <span class="n">kwarg_np_vals</span><span class="o">=</span><span class="n">met_kwarg_np_vals</span><span class="p">,</span>
-        <span class="n">kwargs_idxs</span><span class="o">=</span><span class="n">met_kwargs_idxs</span><span class="p">,</span>
-        <span class="n">input_dtypes</span><span class="o">=</span><span class="n">method_input_dtypes</span><span class="p">,</span>
-        <span class="n">test_flags</span><span class="o">=</span><span class="n">method_flags</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">ins_gt</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">class_name</span><span class="p">](</span><span class="o">*</span><span class="n">args_gt_constructor</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_gt_constructor</span><span class="p">)</span>
-    <span class="c1"># ToDo : remove this when the handle_method can properly compute unsupported dtypes</span>
-    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span>
-        <span class="n">dtype</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="n">function_unsupported_dtypes</span><span class="p">(</span><span class="n">ins_gt</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">method_name</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="n">method_input_dtypes</span>
-    <span class="p">):</span>
-        <span class="k">return</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ins_gt</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-        <span class="n">v_gt</span> <span class="o">=</span> <span class="n">v_np</span><span class="o">.</span><span class="n">cont_map</span><span class="p">(</span>
-            <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span>
-        <span class="p">)</span>
-        <span class="n">kwargs_gt_method</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_gt_method</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">v_gt</span><span class="p">)</span>
-    <span class="n">ret_from_gt</span><span class="p">,</span> <span class="n">ret_np_from_gt_flat</span> <span class="o">=</span> <span class="n">get_ret_and_flattened_np_array</span><span class="p">(</span>
-        <span class="n">ins_gt</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">method_name</span><span class="p">),</span> <span class="o">*</span><span class="n">args_gt_method</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_gt_method</span>
-    <span class="p">)</span>
-    <span class="n">fw_list</span> <span class="o">=</span> <span class="n">gradient_unsupported_dtypes</span><span class="p">(</span><span class="n">fn</span><span class="o">=</span><span class="n">ins</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">method_name</span><span class="p">))</span>
-    <span class="n">fw_list2</span> <span class="o">=</span> <span class="n">gradient_unsupported_dtypes</span><span class="p">(</span><span class="n">fn</span><span class="o">=</span><span class="n">ins_gt</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">method_name</span><span class="p">))</span>
-    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">fw_list2</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fw_list</span><span class="p">:</span>
-            <span class="n">fw_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">fw_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
 
-    <span class="n">ivy</span><span class="o">.</span><span class="n">unset_backend</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ground_truth_backend</span><span class="p">,</span><span class="nb">list</span><span class="p">):</span>
+        <span class="n">process</span> <span class="o">=</span> <span class="n">ground_truth_backend</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;3&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">args_np_constructor</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">con_arg_np_vals</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">con_args_idxs</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">kwargs_np_constructor</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">con_kwarg_np_vals</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">con_kwargs_idxs</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">init_input_dtypes</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">init_flags</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">args_np_method</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">met_arg_np_vals</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">met_args_idxs</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">kwargs_np_method</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">met_kwargs_idxs</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">met_kwarg_np_vals</span> <span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">method_input_dtypes</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">method_flags</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">class_name</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">method_name</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">method_input_dtypes</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">v_np</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="s2">&quot;Something bad happened to the subprocess, here are the logs:</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">process</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">readlines</span><span class="p">())</span>
+            <span class="k">raise</span> <span class="n">e</span>
+        <span class="n">ground_ret</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">ground_ret</span><span class="p">:</span>
+            <span class="n">ground_ret</span> <span class="o">=</span> <span class="n">jsonpickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">make_json_pickable</span><span class="p">(</span><span class="n">ground_ret</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">process</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">readlines</span><span class="p">())</span>
+            <span class="k">raise</span> <span class="ne">Exception</span>
+        <span class="n">ret_np_from_gt_flat</span><span class="p">,</span><span class="n">fw_list2</span> <span class="o">=</span> <span class="n">ground_ret</span>
+        <span class="n">fw_list</span> <span class="o">=</span> <span class="n">gradient_unsupported_dtypes</span><span class="p">(</span><span class="n">fn</span><span class="o">=</span><span class="n">ins</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">method_name</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">fw_list2</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fw_list</span><span class="p">:</span>
+                <span class="n">fw_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">fw_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="n">ground_truth_backend</span><span class="p">)</span>
+        <span class="n">args_gt_constructor</span><span class="p">,</span> <span class="n">kwargs_gt_constructor</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">create_args_kwargs</span><span class="p">(</span>
+            <span class="n">args_np</span><span class="o">=</span><span class="n">args_np_constructor</span><span class="p">,</span>
+            <span class="n">arg_np_vals</span><span class="o">=</span><span class="n">con_arg_np_vals</span><span class="p">,</span>
+            <span class="n">args_idxs</span><span class="o">=</span><span class="n">con_args_idxs</span><span class="p">,</span>
+            <span class="n">kwargs_np</span><span class="o">=</span><span class="n">kwargs_np_constructor</span><span class="p">,</span>
+            <span class="n">kwarg_np_vals</span><span class="o">=</span><span class="n">con_kwarg_np_vals</span><span class="p">,</span>
+            <span class="n">kwargs_idxs</span><span class="o">=</span><span class="n">con_kwargs_idxs</span><span class="p">,</span>
+            <span class="n">input_dtypes</span><span class="o">=</span><span class="n">init_input_dtypes</span><span class="p">,</span>
+            <span class="n">test_flags</span><span class="o">=</span><span class="n">init_flags</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">args_gt_method</span><span class="p">,</span> <span class="n">kwargs_gt_method</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">create_args_kwargs</span><span class="p">(</span>
+            <span class="n">args_np</span><span class="o">=</span><span class="n">args_np_method</span><span class="p">,</span>
+            <span class="n">arg_np_vals</span><span class="o">=</span><span class="n">met_arg_np_vals</span><span class="p">,</span>
+            <span class="n">args_idxs</span><span class="o">=</span><span class="n">met_args_idxs</span><span class="p">,</span>
+            <span class="n">kwargs_np</span><span class="o">=</span><span class="n">kwargs_np_method</span><span class="p">,</span>
+            <span class="n">kwarg_np_vals</span><span class="o">=</span><span class="n">met_kwarg_np_vals</span><span class="p">,</span>
+            <span class="n">kwargs_idxs</span><span class="o">=</span><span class="n">met_kwargs_idxs</span><span class="p">,</span>
+            <span class="n">input_dtypes</span><span class="o">=</span><span class="n">method_input_dtypes</span><span class="p">,</span>
+            <span class="n">test_flags</span><span class="o">=</span><span class="n">method_flags</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">ins_gt</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">class_name</span><span class="p">](</span><span class="o">*</span><span class="n">args_gt_constructor</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_gt_constructor</span><span class="p">)</span>
+        <span class="c1"># ToDo : remove this when the handle_method can properly compute unsupported dtypes</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span>
+            <span class="n">dtype</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="n">function_unsupported_dtypes</span><span class="p">(</span><span class="n">ins_gt</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">method_name</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="n">method_input_dtypes</span>
+        <span class="p">):</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ins_gt</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+            <span class="n">v_gt</span> <span class="o">=</span> <span class="n">v_np</span><span class="o">.</span><span class="n">cont_map</span><span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span>
+            <span class="p">)</span>
+            <span class="n">kwargs_gt_method</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_gt_method</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">v_gt</span><span class="p">)</span>
+        <span class="n">ret_from_gt</span><span class="p">,</span> <span class="n">ret_np_from_gt_flat</span> <span class="o">=</span> <span class="n">get_ret_and_flattened_np_array</span><span class="p">(</span>
+            <span class="n">ins_gt</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">method_name</span><span class="p">),</span> <span class="o">*</span><span class="n">args_gt_method</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_gt_method</span>
+        <span class="p">)</span>
+        <span class="n">fw_list</span> <span class="o">=</span> <span class="n">gradient_unsupported_dtypes</span><span class="p">(</span><span class="n">fn</span><span class="o">=</span><span class="n">ins</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">method_name</span><span class="p">))</span>
+        <span class="n">fw_list2</span> <span class="o">=</span> <span class="n">gradient_unsupported_dtypes</span><span class="p">(</span><span class="n">fn</span><span class="o">=</span><span class="n">ins_gt</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">method_name</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">fw_list2</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fw_list</span><span class="p">:</span>
+                <span class="n">fw_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">fw_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+        <span class="n">ivy</span><span class="o">.</span><span class="n">unset_backend</span><span class="p">()</span>
     <span class="c1"># gradient test</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ground_truth_backend</span><span class="p">,</span><span class="nb">list</span><span class="p">):</span>
+        <span class="c1">#multiversion</span>
+        <span class="n">ins_gt</span><span class="o">=</span><span class="n">ins</span>
+
     <span class="n">fw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span>
     <span class="k">if</span> <span class="p">(</span>
         <span class="n">test_gradients</span>

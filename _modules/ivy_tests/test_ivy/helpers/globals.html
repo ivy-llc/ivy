@@ -953,7 +953,7 @@
 <span class="n">CURRENT_FRONTEND</span><span class="p">:</span> <span class="n">callable</span> <span class="o">=</span> <span class="n">_Notsetval</span>
 <span class="n">CURRENT_RUNNING_TEST</span> <span class="o">=</span> <span class="n">_Notsetval</span>
 <span class="n">CURRENT_DEVICE</span> <span class="o">=</span> <span class="n">_Notsetval</span>
-<span class="n">CURRENT_FRONTEND_STR</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<span class="n">CURRENT_FRONTEND_STR</span> <span class="o">=</span> <span class="kc">None</span>
 
 
 <div class="viewcode-block" id="TestData"><a class="viewcode-back" href="../../../../testing/globals/TestData.html#ivy_tests.test_ivy.helpers.globals.TestData">[docs]</a><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># ToDo use kw_only=True when version is updated</span>
@@ -961,7 +961,8 @@
     <span class="n">test_fn</span><span class="p">:</span> <span class="n">callable</span>
     <span class="n">fn_tree</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">fn_name</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">supported_device_dtypes</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span></div>
+    <span class="n">supported_device_dtypes</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">is_method</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 
 <div class="viewcode-block" id="remove_all_current_framework"><a class="viewcode-back" href="../../../../testing/globals/remove_all_current_framework.html#ivy_tests.test_ivy.helpers.globals.remove_all_current_framework">[docs]</a><span class="k">def</span> <span class="nf">remove_all_current_framework</span><span class="p">(</span><span class="n">framework</span><span class="p">):</span>
@@ -1125,7 +1126,10 @@
     <span class="k">global</span> <span class="n">CURRENT_GROUND_TRUTH_BACKEND</span>
     <span class="k">if</span> <span class="n">CURRENT_GROUND_TRUTH_BACKEND</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">_Notsetval</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">InterruptedTest</span><span class="p">(</span><span class="n">CURRENT_RUNNING_TEST</span><span class="p">)</span>
-    <span class="n">CURRENT_GROUND_TRUTH_BACKEND</span> <span class="o">=</span> <span class="n">FWS_DICT</span><span class="p">[</span><span class="n">framework</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">framework</span><span class="p">,</span><span class="nb">list</span><span class="p">):</span>
+        <span class="n">CURRENT_GROUND_TRUTH_BACKEND</span><span class="o">=</span><span class="n">framework</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">CURRENT_GROUND_TRUTH_BACKEND</span> <span class="o">=</span> <span class="n">FWS_DICT</span><span class="p">[</span><span class="n">framework</span><span class="p">]</span>
 
 
 <span class="k">def</span> <span class="nf">_set_device</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>

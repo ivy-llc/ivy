@@ -1945,6 +1945,38 @@ of ‘self’ and x2</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="ivy.array.experimental.ArrayWithElementWiseExperimental.ldexp">
+<span class="sig-name descname"><span class="pre">ldexp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x2</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/experimental/elementwise.html#ArrayWithElementWiseExperimental.ldexp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.experimental.ArrayWithElementWiseExperimental.ldexp" title="Permalink to this definition">#</a></dt>
+<dd><p>ivy.Array instance method variant of ivy.ldexp. This method simply wraps
+the function, and so the docstring for ivy.ldexp also applies to this
+method with minimal changes.
+:type self: <code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>
+:param self: Input array.
+:type x2: <code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>
+:param x2: The array of exponents.
+:type out: <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]
+:param out: Alternate output array in which to place the result. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p>
+<blockquote>
+<div><p>The default is None.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>ret</em> – The next representable values of x1 in the direction of x2.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">ldexp</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">ivy.array([8.0, 8.0, 6.0])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.experimental.ArrayWithElementWiseExperimental.logaddexp2">
 <span class="sig-name descname"><span class="pre">logaddexp2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x2</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/experimental/elementwise.html#ArrayWithElementWiseExperimental.logaddexp2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.experimental.ArrayWithElementWiseExperimental.logaddexp2" title="Permalink to this definition">#</a></dt>
 <dd><p>ivy.Array instance method variant of ivy.logaddexp2. This method

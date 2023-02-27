@@ -1,0 +1,38 @@
+ldexp
+=====
+
+.. autofunction:: ivy.functional.ivy.experimental.ldexp
+
+.. autofunction:: ivy.array.array_methods.ldexp
+
+.. autofunction:: ivy.container.container_methods.static_ldexp
+
+.. autofunction:: ivy.container.container_methods.ldexp
+|
+| **Supported Frameworks:**
+
+|jax_logo| |tf_logo| |pytorch_logo| |numpy_logo|
+
+.. |jax_logo| image:: ../../../logos/supported/jax_logo.png
+   :target: https://jax.readthedocs.io
+
+.. |tf_logo| image:: ../../../logos/supported/tensorflow_logo.png
+   :target: https://www.tensorflow.org
+
+.. |pytorch_logo| image:: ../../../logos/supported/pytorch_logo.png
+   :target: https://pytorch.org
+
+.. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
+   :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: ldexp
+
+   ldexp/ldexp_functional.rst
+   ldexp/ldexp_array.rst
+   ldexp/ldexp_container.rst
+   ldexp/static_ldexp_container.rst
+
