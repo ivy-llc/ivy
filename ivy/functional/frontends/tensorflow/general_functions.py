@@ -196,6 +196,11 @@ def stack(values, axis=0, name="stack"):
 
 
 @to_ivy_arrays_and_back
+def truncatediv(x, y, name=None):
+    return ivy.astype(ivy.trunc_divide(x, y), x.dtype)
+
+
+@to_ivy_arrays_and_back
 def is_tensor(x, name=None):
     return ivy.is_array(x)
 
