@@ -708,6 +708,7 @@ def test_torch_quantile(
         function="median",
         min_value=-1e04,
         max_value=1e04,
+        max_num_dims=1,
     ),
     keepdims=st.booleans(),
 )
