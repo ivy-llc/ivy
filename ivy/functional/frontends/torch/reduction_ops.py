@@ -178,6 +178,7 @@ quantile.unsupported_dtypes = {
     "tensorflow": ("float16", "bfloat16"),
 }
 
+
 @to_ivy_arrays_and_back
 def count_nonzero(input, dim=None):
     return ivy.count_nonzero(input, axis=dim).astype(ivy.int64)
