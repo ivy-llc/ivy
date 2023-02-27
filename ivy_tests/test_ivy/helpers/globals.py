@@ -37,6 +37,7 @@ CURRENT_BACKEND: callable = _Notsetval
 CURRENT_FRONTEND: callable = _Notsetval
 CURRENT_RUNNING_TEST = _Notsetval
 CURRENT_DEVICE = _Notsetval
+CURRENT_DEVICE_STRIPPED = _Notsetval
 CURRENT_FRONTEND_STR = None
 
 
@@ -210,17 +211,18 @@ def _set_ground_truth_backend(framework: str):
     global CURRENT_GROUND_TRUTH_BACKEND
     if CURRENT_GROUND_TRUTH_BACKEND is not _Notsetval:
         raise InterruptedTest(CURRENT_RUNNING_TEST)
-    if isinstance(framework,list):
-        CURRENT_GROUND_TRUTH_BACKEND=framework
+    if isinstance(framework, list):
+        CURRENT_GROUND_TRUTH_BACKEND = framework
     else:
         CURRENT_GROUND_TRUTH_BACKEND = FWS_DICT[framework]
 
 
 def _set_device(device: str):
-    global CURRENT_DEVICE
-    if CURRENT_DEVICE is not _Notsetval:
+    global CURRENT_DEVICE, CURRENT_DEVICE_STRIPPED
+    if CURRENT_DEVICE is not _Notsetval or CURRENT_DEVICE_STRIPPED is not _Notsetval:
         raise InterruptedTest(CURRENT_RUNNING_TEST)
     CURRENT_DEVICE = device
+    CURRENT_DEVICE_STRIPPED = device.rpartition(":")[0]
 
 
 # Teardown
@@ -247,5 +249,6 @@ def _unset_ground_truth_backend():
 
 
 def _unset_device():
-    global CURRENT_DEVICE
+    global CURRENT_DEVICE, CURRENT_DEVICE_STRIPPED
     CURRENT_DEVICE = _Notsetval
+    CURRENT_DEVICE_STRIPPED = _Notsetval
