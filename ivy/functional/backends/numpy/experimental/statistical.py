@@ -105,3 +105,14 @@ def nanmedian(
 
 
 nanmedian.support_native_out = True
+
+
+def average(
+    a: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: Optional[bool] = False,
+) -> np.ndarray:
+    return np.average(a, axis=axis, keepdims=keepdims)
+
