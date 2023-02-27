@@ -37,7 +37,7 @@ CURRENT_BACKEND: callable = _Notsetval
 CURRENT_FRONTEND: callable = _Notsetval
 CURRENT_RUNNING_TEST = _Notsetval
 CURRENT_DEVICE = _Notsetval
-CURRENT_FRONTEND_STR = ""
+CURRENT_FRONTEND_STR = None
 
 
 @dataclass(frozen=True)  # ToDo use kw_only=True when version is updated
@@ -46,6 +46,7 @@ class TestData:
     fn_tree: str
     fn_name: str
     supported_device_dtypes: dict = None
+    is_method: bool = False
 
 
 def remove_all_current_framework(framework):
@@ -209,7 +210,10 @@ def _set_ground_truth_backend(framework: str):
     global CURRENT_GROUND_TRUTH_BACKEND
     if CURRENT_GROUND_TRUTH_BACKEND is not _Notsetval:
         raise InterruptedTest(CURRENT_RUNNING_TEST)
-    CURRENT_GROUND_TRUTH_BACKEND = FWS_DICT[framework]
+    if isinstance(framework,list):
+        CURRENT_GROUND_TRUTH_BACKEND=framework
+    else:
+        CURRENT_GROUND_TRUTH_BACKEND = FWS_DICT[framework]
 
 
 def _set_device(device: str):
