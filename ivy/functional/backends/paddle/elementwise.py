@@ -483,3 +483,82 @@ def isreal(
         x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     return paddle.equal(x, paddle.real(x))
+
+# Experimental#
+#------------#
+
+
+def fmax(
+    x1: Union[float, paddle.Tensor],
+    x2: Union[float, paddle.Tensor],
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return paddle.fmin(x1, x2)
+
+
+def gcd(
+    x1: Union[int, paddle.Tensor],
+    x2: Union[int, paddle.Tensor],
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return paddle.gcd(x1, x2)
+
+
+def angle(
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
+    return paddle.angle(x)
+
+
+def nansum(
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
+    return paddle.nansum(x)
+
+
+def isclose(
+    x1: Union[float, paddle.Tensor],
+    x2: Union[float, paddle.Tensor],
+    /,
+    *,
+    rtol: float = 1e-05,
+    atol: float = 1e-08,
+    equal_nan: bool = False,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return paddle.isclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
+
+
+def diff(
+    x: paddle.Tensor,
+    /,
+    *,
+    n: int = 1,
+    axis: int = -1,
+    prepend: Union[float, paddle.Tensor] = paddle.to_tensor([]),
+    append: Union[float, paddle.Tensor] = paddle.to_tensor([]),
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return paddle.diff(x, n=n, axis=axis, prepend=prepend, append=append)
+
+
+def nan_to_num(
+    x: paddle.Tensor,
+    /,
+    *,
+    nan: float = 0.0,
+    posinf: Optional[float] = None,
+    neginf: Optional[float] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return paddle.nan_to_num(x, nan=nan, posinf=posinf, neginf=neginf)
+
+
+
+
+
+
