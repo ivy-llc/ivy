@@ -481,3 +481,8 @@ def conj_physical(input, *, out=None):
 @to_ivy_arrays_and_back
 def floor_divide(input, *, out=None):
     return ivy.floor_divide(input, out=out)
+
+
+@to_ivy_arrays_and_back
+def nextafter(input, *, out=None):
+    return ivy.nextafter(input, out=out)    
