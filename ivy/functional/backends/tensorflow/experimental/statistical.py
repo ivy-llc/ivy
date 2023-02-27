@@ -2,6 +2,7 @@ from typing import Union, Optional, Tuple, Sequence
 import tensorflow as tf
 import tensorflow_probability as tfp
 from tensorflow.python.ops.numpy_ops import np_math_ops
+from tensorflow.python.ops.numpy_ops import np_config
 
 from ivy.func_wrapper import with_supported_dtypes
 from . import backend_version
@@ -121,3 +122,15 @@ def nanmedian(
         interpolation="midpoint",
         keepdims=keepdims,
     )
+
+
+def average(
+    a: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+
+) -> Union[tf.Tensor, tf.Variable]:
+    np_config.enable_numpy_behavior()
+    return tf.experimental.numpy.average(a, axis=axis)
+
