@@ -1155,3 +1155,58 @@ def test_conj(
         on_device=on_device,
         x=x[0],
     )
+
+
+# ldexp
+@st.composite
+def ldexp_args(draw):
+    dtype1, x1 = draw(
+        helpers.dtype_and_values(
+            available_dtypes=["float32", "float64"],
+            num_arrays=1,
+            shared_dtype=True,
+            min_value=-100,
+            max_value=100,
+            min_num_dims=1,
+            max_num_dims=3,
+        )
+    )
+    dtype2, x2 = draw(
+        helpers.dtype_and_values(
+            available_dtypes=["int32", "int64"],
+            num_arrays=1,
+            shared_dtype=True,
+            min_value=-100,
+            max_value=100,
+            min_num_dims=1,
+            max_num_dims=3,
+        )
+    )
+    return (dtype1[0], dtype2[0]), (x1[0], x2[0])
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.ldexp",
+    dtype_and_x=ldexp_args(),
+    test_gradients=st.just(False),
+)
+def test_ldexp(
+    *,
+    dtype_and_x,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x1=x[0],
+        x2=x[1],
+    )

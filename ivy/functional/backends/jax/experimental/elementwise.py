@@ -533,3 +533,9 @@ def conj(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.conj(x)
+
+
+def ldexp(
+    x1: JaxArray, x2: Union[JaxArray, int], /, *, out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jnp.ldexp(x1, x2)
