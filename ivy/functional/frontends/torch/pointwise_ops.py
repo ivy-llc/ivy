@@ -476,8 +476,3 @@ def arctan(input, *, out=None):
 @to_ivy_arrays_and_back
 def conj_physical(input, *, out=None):
     return ivy.conj_physical(input, out=out) 
-
-
-@to_ivy_arrays_and_back
-def  deg2rad(input, *, out=None):
-    return ivy.deg2rad(input, out=out)   
