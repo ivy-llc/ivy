@@ -1006,7 +1006,6 @@ def test_expand(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        x=x,
+        x=x[0],
         shape=shape,
-        device=on_device,
     )

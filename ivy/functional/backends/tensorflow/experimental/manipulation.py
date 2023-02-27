@@ -197,3 +197,17 @@ def broadcast_shapes(
     else:
         return [shapes[0]]
     return tuple(desired_shape.numpy().tolist())
+
+
+def expand(
+    x: Union[tf.Tensor, tf.Variable],
+    shape: Union[List[int], List[Tuple]],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    shape = list(shape)
+    for i, dim in enumerate(shape):
+        if dim < 0:
+            shape[i] = x.shape[i]
+    return tf.broadcast_to(x, shape)
