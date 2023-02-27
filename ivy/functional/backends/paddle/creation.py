@@ -42,6 +42,7 @@ def arange(
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()
 
+
 def _stack_tensors(x, dtype):
     if isinstance(x, (list, tuple)) and len(x) != 0 and isinstance(x[0], (list, tuple)):
         for i, item in enumerate(x):
@@ -54,7 +55,6 @@ def _stack_tensors(x, dtype):
             else:
                 x = paddle.to_tensor(x, dtype=dtype)
     return x
-
 
 
 @asarray_to_native_arrays_and_back
@@ -103,7 +103,7 @@ def asarray(
                     paddle.stack([paddle.to_tensor(i, dtype=dtype) for i in obj])
                     .clone()
                     .detach()
-                    
+
                 )
             else:
                 return _stack_tensors(obj, dtype)
@@ -252,13 +252,13 @@ def ones_like(
 def tril(
     x: paddle.Tensor, /, *, k: int = 0, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    return to_device(paddle.tril(x=x, k=k), device)
+    return paddle.tril(x=x, diagonal=k)
 
 
 def triu(
     x: paddle.Tensor, /, *, k: int = 0, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    return to_device(paddle.triu(x=x, k=k), device)
+    return paddle.triu(x=x, diagonal=k)
 
 
 def zeros(
