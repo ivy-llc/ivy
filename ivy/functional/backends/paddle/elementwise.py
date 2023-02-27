@@ -556,9 +556,3 @@ def nan_to_num(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.nan_to_num(x, nan=nan, posinf=posinf, neginf=neginf)
-
-
-
-
-
-
