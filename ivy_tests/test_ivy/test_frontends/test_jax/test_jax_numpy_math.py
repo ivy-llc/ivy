@@ -2302,18 +2302,14 @@ def test_jax_numpy_inner(
     )
 
 
-# reciprocal
+# conj
 @handle_frontend_test(
-    fn_tree="jax.numpy.reciprocal",
+    fn_tree="jax.numpy.conj",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        small_abs_safety_factor=4,
-        large_abs_safety_factor=4,
-        safety_factor_scale="log",
-        num_arrays=1,
-    ),
+    )
 )
-def test_jax_numpy_reciprocal(
+def test_jax_numpy_conj(
     *,
     dtype_and_x,
     test_flags,

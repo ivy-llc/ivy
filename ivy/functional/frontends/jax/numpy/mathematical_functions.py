@@ -470,5 +470,5 @@ def inner(a, b):
 
 
 @to_ivy_arrays_and_back
-def reciprocal(x, /):
-    return ivy.reciprocal(x)
+def conj(x, /):
+    return ivy.conj(x)
