@@ -416,6 +416,21 @@ class Tensor:
     def split(self, split_size, dim=0):
         return torch_frontend.split(self, split_size, dim)
 
+    def vsplit(self, indices_or_sections=None, /, *, indices=None, sections=None):
+        return torch_frontend.vsplit(
+            self.ivy_array, indices_or_sections, indices=indices, sections=sections
+        )
+
+    def hsplit(self, indices_or_sections=None, /, *, indices=None, sections=None):
+        return torch_frontend.hsplit(
+            self.ivy_array, indices_or_sections, indices=indices, sections=sections
+        )
+
+    def dsplit(self, indices_or_sections=None, /, *, indices=None, sections=None):
+        return torch_frontend.dsplit(
+            self.ivy_array, indices_or_sections, indices=indices, sections=sections
+        )
+
     def dim(self):
         return self._ivy_array.ndim
 
