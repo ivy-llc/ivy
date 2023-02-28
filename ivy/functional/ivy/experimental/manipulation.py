@@ -936,8 +936,6 @@ def _check_arguments(
             raise ivy.utils.exceptions.IvyException(
                 "constant_values is required for mode: " + mode
             )
-        else:
-            _check_tuple_arg(constant_values, "constant_values")
     elif mode == "linear_ramp":
         if end_values is None:
             raise ivy.utils.exceptions.IvyException(
