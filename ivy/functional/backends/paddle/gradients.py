@@ -47,4 +47,12 @@ def jac(func: Callable):
 
 
 def grad(func: Callable):
-    raise IvyNotImplementedException()
+    grad_fn = lambda x_in: ivy.to_native(func(x_in))
+
+    def callback_fn(x_in):
+        x = ivy.to_native(ivy.array(x_in)).detach()
+        x.stop_gradient = False
+        grad_fn(x).backward()
+        return ivy.to_ivy(x.gradient())
+
+    return callback_fn
