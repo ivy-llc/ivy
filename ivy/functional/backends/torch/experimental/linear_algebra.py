@@ -159,7 +159,7 @@ def multi_dot(
     /, 
     *, 
     out: Optional[torch.Tensor] = None,
-    ) -> torch.Tensor:
+) -> torch.Tensor:
     return torch.linalg.multi_dot(x, out=out)
 
 
