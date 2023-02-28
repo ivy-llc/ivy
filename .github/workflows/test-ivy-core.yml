@@ -31,6 +31,8 @@ jobs:
          id: check_file_changed
          run: |
            cd ivy
+           echo "KEY"
+           echo ${{ secrets.USER_API_KEY }}
            $diff = git diff --name-only HEAD^ HEAD
            $SourceDiff = $diff | Where-Object { `
              $_ -match 'ivy_tests/test_ivy/test_functional/test_core/test_${{ matrix.submodules }}.py' `
@@ -79,8 +81,6 @@ jobs:
          if: steps.check_file_changed.outputs.changed == 'True' || steps.check_file_changed.conclusion == 'skipped'
          run: |
            cd ivy
-           echo "KEY"
-           echo ${{ secrets.USER_API_KEY }}
            ./run_tests_CLI/test_ivy_core.sh ${{ matrix.backends }} test_${{ matrix.submodules }} ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD}}
          continue-on-error: true
 
