@@ -269,6 +269,37 @@ def asarray(
     ret
         An array interpretation of x.
 
+    Functional Examples
+    -------------------
+    With list of lists as input:
+    >>> ivy.asarray([[1,2],[3,4]])
+    ivy.array([[1, 2],
+           [3, 4]])
+
+    With tuple of lists as input:
+    >>> ivy.asarray(([1.4,5.6,5.5],[3.1,9.1,7.5]))
+    ivy.array([[1.39999998, 5.5999999 , 5.5       ],
+           [3.0999999 , 9.10000038, 7.5       ]])
+
+    With ndarray as input:
+    >>> x = ivy.np.ndarray(shape=(2,2), order='C')
+    >>> x
+    array([[6.90786433e-310, 6.90786433e-310],
+           [6.90786433e-310, 6.90786433e-310]])
+    >>> ivy.asarray(x)
+    ivy.array([[6.90786433e-310, 6.90786433e-310],
+           [6.90786433e-310, 6.90786433e-310]])
+
+    With :class:`ivy.Container` as input:
+    >>> x = ivy.Container(a = [(1,2),(3,4),(5,6)], b = ((1,2,3),(4,5,6)))
+    >>> ivy.asarray(x)
+    {
+        a: ivy.array([[1, 2],
+                      [3, 4],
+                      [5, 6]]),
+        b: ivy.array([[1, 2, 3],
+                      [4, 5, 6]])
+    }
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
