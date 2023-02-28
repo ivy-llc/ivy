@@ -40,7 +40,32 @@ def arange(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if stop is None:
+        stop = start
+        start = 0
+    if (step > 0 and start > stop) or (step < 0 and start < stop):
+        if isinstance(stop, float):
+            stop = float(start)
+        else:
+            stop = start
+    if dtype is None:
+        if isinstance(start, int) and isinstance(stop, int) and isinstance(step, int):
+            return to_device(
+                paddle.arange(start, stop, step, dtype=paddle.int32), device)
+        
+        elif isinstance(start, float) or isinstance(stop, float) or isinstance(step, float):
+            return to_device(
+                paddle.arange(start, stop, step, dtype=paddle.float32), device)
+        
+        else:
+            return to_device(
+                paddle.arange(start, stop, step), device)
+    else:
+        dtype = ivy.as_native_dtype(ivy.default_dtype(dtype=dtype))
+        return to_device(
+            paddle.arange(start, stop, step, dtype=dtype), device)
+
+
 
 def _stack_tensors(x, dtype):
     if isinstance(x, (list, tuple)) and len(x) != 0 and isinstance(x[0], (list, tuple)):
@@ -54,7 +79,6 @@ def _stack_tensors(x, dtype):
             else:
                 x = paddle.to_tensor(x, dtype=dtype)
     return x
-
 
 
 @asarray_to_native_arrays_and_back
@@ -103,7 +127,7 @@ def asarray(
                     paddle.stack([paddle.to_tensor(i, dtype=dtype) for i in obj])
                     .clone()
                     .detach()
-                    
+
                 )
             else:
                 return _stack_tensors(obj, dtype)
@@ -252,13 +276,13 @@ def ones_like(
 def tril(
     x: paddle.Tensor, /, *, k: int = 0, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    return to_device(paddle.tril(x=x, k=k), device)
+    return paddle.tril(x=x, diagonal=k)
 
 
 def triu(
     x: paddle.Tensor, /, *, k: int = 0, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    return to_device(paddle.triu(x=x, k=k), device)
+    return paddle.triu(x=x, diagonal=k)
 
 
 def zeros(
