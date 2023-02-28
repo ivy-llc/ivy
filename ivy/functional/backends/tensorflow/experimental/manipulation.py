@@ -169,13 +169,16 @@ def take_along_axis(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if arr.shape != indices.shape:
+    if arr.ndim != indices.ndim and axis is not None:
         raise ivy.utils.exceptions.IvyException(
-            "arr and indices must have the same shape;"
-            + f" got {arr.shape} vs {indices.shape}"
+            "arr and indices must have the same number of dimensions;"
+            + f" got {arr.ndim} vs {indices.ndim}"
         )
     indices = tf.dtypes.cast(indices, tf.int32)
-    return tf.experimental.numpy.take_along_axis(arr, indices, axis)
+    if axis is not None:
+        return tf.experimental.numpy.take_along_axis(arr, indices, axis)
+    else:
+        return tf.experimental.numpy.take_along_axis(tf.reshape(arr, -1), indices, 0)
 
 
 def hsplit(
