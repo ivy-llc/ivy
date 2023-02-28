@@ -255,3 +255,8 @@ def vsplit(input, indices_or_sections=None, /, *, indices=None, sections=None):
 @to_ivy_arrays_and_back
 def row_stack(tensors, *, out=None):
     return ivy.vstack(tensors, out=out)
+
+@to_ivy_arrays_and_back
+def column_stack(tensors, *, out=None):
+    return ivy.column_stack(tensors,out=out)
+    
