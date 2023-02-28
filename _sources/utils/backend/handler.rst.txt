@@ -24,7 +24,6 @@ Handler
    handler/set_jax_backend.rst
    handler/set_tensorflow_backend.rst
    handler/set_torch_backend.rst
-   handler/set_mindspore_backend.rst
    handler/get_backend.rst
    handler/unset_backend.rst
    handler/clear_backend_stack.rst

@@ -1578,8 +1578,7 @@
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))</span>
 <span class="sd">        &gt;&gt;&gt; print(x.assert_supports_inplace())</span>
 <span class="sd">        IvyBackendException: jax: assert_supports_inplace: Inplace operations \</span>
-<span class="sd">        are not supported &lt;class &#39;jaxlib.xla_extension.DeviceArray&#39;&gt; types</span>
-<span class="sd">        with jax backend</span>
+<span class="sd">        are not supported &lt;class &#39;jaxlib.xla_extension.DeviceArray&#39;&gt; types with jax backend</span>
 <span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_assert_supports_inplace</span><span class="p">(</span>
@@ -2430,8 +2429,7 @@
 <span class="sd">        updates</span>
 <span class="sd">            values to update input tensor with</span>
 <span class="sd">        size</span>
-<span class="sd">            The size of the result. Default is `None`, in which case tensor</span>
-<span class="sd">            argument out must be provided.</span>
+<span class="sd">            The size of the result.</span>
 <span class="sd">        reduction</span>
 <span class="sd">            The reduction method for the scatter, one of &#39;sum&#39;, &#39;min&#39;, &#39;max&#39;</span>
 <span class="sd">            or &#39;replace&#39;</span>
@@ -2494,8 +2492,7 @@
 <span class="sd">        updates</span>
 <span class="sd">            values to update input tensor with</span>
 <span class="sd">        size</span>
-<span class="sd">            The size of the result. Default is `None`, in which case tensor</span>
-<span class="sd">            argument out must be provided.</span>
+<span class="sd">            The size of the result.</span>
 <span class="sd">        reduction</span>
 <span class="sd">            The reduction method for the scatter, one of &#39;sum&#39;, &#39;min&#39;, &#39;max&#39;</span>
 <span class="sd">            or &#39;replace&#39;</span>
@@ -2518,20 +2515,6 @@
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
 <span class="sd">            New container of given shape, with the values updated at the indices.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        With :class:`ivy.Container` input:</span>
-<span class="sd">        &gt;&gt;&gt; indices = ivy.Container(a=ivy.array([1, 0, 1, 0, 2, 2, 3, 3]), \</span>
-<span class="sd">                            b=ivy.array([0, 0, 1, 0, 2, 2, 3, 3]))</span>
-<span class="sd">        &gt;&gt;&gt; updates = ivy.Container(a=ivy.array([9, 2, 0, 2, 3, 2, 1, 8]), \</span>
-<span class="sd">                            b=ivy.array([5, 1, 7, 2, 3, 2, 1, 3]))</span>
-<span class="sd">        &gt;&gt;&gt; size = 8</span>
-<span class="sd">        &gt;&gt;&gt; print(ivy.scatter_flat(indices, updates, size=size))</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([4, 9, 5, 9, 0, 0, 0, 0]),</span>
-<span class="sd">            b: ivy.array([8, 7, 5, 4, 0, 0, 0, 0])</span>
-<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_scatter_flat</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
@@ -4122,7 +4105,7 @@
 
 <div class="viewcode-block" id="ContainerWithGeneral.static_supports_inplace_updates"><a class="viewcode-back" href="../../../data_classes/container/general/ContainerWithGeneral.html#ivy.container.general.ContainerWithGeneral.static_supports_inplace_updates">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_supports_inplace_updates</span><span class="p">(</span>
-        <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
+        <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -4131,8 +4114,8 @@
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ivy.Container static method variant of ivy.supports_inplace_updates. This method</span>
-<span class="sd">        simply wraps the function, and so the docstring for ivy.supports_inplace_updates</span>
+<span class="sd">        ivy.Container static method variant of ivy.supports_inplace. This method</span>
+<span class="sd">        simply wraps the function, and so the docstring for ivy.supports_inplace</span>
 <span class="sd">        also applies to this method with minimal changes.</span>
 
 <span class="sd">        Parameters</span>
@@ -4159,6 +4142,34 @@
 <span class="sd">            An ivy.Container instance of bool values.</span>
 <span class="sd">            True if nodes of x support in-place operations. False otherwise.</span>
 
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If a node(s) of the container isn&#39;t a class instance of ivy.Array or</span>
+<span class="sd">            ivy.NativeArray, an exception will be raised.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With `ivy.Container` input and backend set as &#39;numpy&#39;:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a = ivy.array(1.0), b=ivy.array(2))</span>
+<span class="sd">        &gt;&gt;&gt; ret = ivy.Container.static_supports_inplace_updates(x)</span>
+<span class="sd">        &gt;&gt;&gt; print(ret)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: true,</span>
+<span class="sd">            b: true</span>
+<span class="sd">        }</span>
+
+<span class="sd">        With `ivy.Container` input and backend set as &#39;tensorflow&#39;:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array(ivy.array([2.0, 0.0])),</span>
+<span class="sd">        ...                   b=ivy.array([0., 5.5, -8]))</span>
+<span class="sd">        &gt;&gt;&gt; ret = ivy.Container.static_supports_inplace_updates(x)</span>
+<span class="sd">        &gt;&gt;&gt; print(ret)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: true,</span>
+<span class="sd">            b: false</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">cont_multi_map_in_function</span><span class="p">(</span>
             <span class="s2">&quot;supports_inplace_updates&quot;</span><span class="p">,</span>
@@ -4209,26 +4220,24 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        With :class:`ivy.Container` input and backend set as `torch`:</span>
-
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([5., 6.]), b=ivy.array([7., 8.]))</span>
+<span class="sd">        With an `ivy.Container` instance and backend set as &#39;numpy&#39;:</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a = ivy.array(1.0), b=ivy.array(2))</span>
 <span class="sd">        &gt;&gt;&gt; ret = x.supports_inplace_updates()</span>
 <span class="sd">        &gt;&gt;&gt; print(ret)</span>
 <span class="sd">        {</span>
-<span class="sd">            a: True,</span>
-<span class="sd">            b: True</span>
+<span class="sd">            a: false,</span>
+<span class="sd">            b: false</span>
 <span class="sd">        }</span>
 
-<span class="sd">        With :class:`ivy.Container` input and backend set as `jax`:</span>
-
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([5.]), b=ivy.array([7.]))</span>
+<span class="sd">        With an `ivy.Container` instance and backend set as &#39;tensorflow&#39;:</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.variable(ivy.array([2.0, 0.0])),</span>
+<span class="sd">        ...                   b=ivy.array([0., 5.5, -8]))</span>
 <span class="sd">        &gt;&gt;&gt; ret = x.supports_inplace_updates()</span>
 <span class="sd">        &gt;&gt;&gt; print(ret)</span>
 <span class="sd">        {</span>
-<span class="sd">            a: False,</span>
-<span class="sd">            b: False</span>
+<span class="sd">            a: false,</span>
+<span class="sd">            b: false</span>
 <span class="sd">        }</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerWithGeneral</span><span class="o">.</span><span class="n">static_supports_inplace_updates</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
