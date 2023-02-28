@@ -98,7 +98,18 @@ def gather(
     batch_dims: Optional[int] = 0,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if not is_native_array(params):
+        raise ivy.exceptions.IvyTypeError("params must be a Paddle Tensor")
+    if not is_native_array(indices):
+        raise ivy.exceptions.IvyTypeError("indices must be a Paddle Tensor")
+    val: paddle.Tensor = paddle.gather(params, indices, axis=axis)
+    if ivy.exists(out):
+        if is_native_array(out):
+            ivy.inplace_update(out, val)
+        else:
+            raise ivy.exceptions.IvyTypeError("out must be a Paddle Tensor")
+    return val
+
 
 
 def gather_nd(
