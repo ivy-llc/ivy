@@ -238,12 +238,14 @@ def test_hamming_window(
     test_with_out=st.just(False),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
+    dtypes=helpers.get_dtypes("integer"),
 )
 def test_tril_indices(
     *,
     n_rows,
     n_cols,
     k,
+    dtypes,
     test_flags,
     backend_fw,
     fn_name,
@@ -251,7 +253,7 @@ def test_tril_indices(
     ground_truth_backend,
 ):
     helpers.test_function(
-        input_dtypes=["int64"],  # TODO remove
+        input_dtypes=dtypes
         ground_truth_backend=ground_truth_backend,
         test_flags=test_flags,
         fw=backend_fw,
