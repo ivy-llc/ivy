@@ -253,6 +253,7 @@ def tensorsolve(
     axes: Union[int, Tuple[List[int], List[int]]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    # Implemented as a composite function in ivy.functional.ivy.linear_algebra
     raise IvyNotImplementedException()
 
 
@@ -263,7 +264,9 @@ def qr(
     mode: str = "reduced",
     out: Optional[Tuple[paddle.Tensor, paddle.Tensor]] = None,
 ) -> Tuple[paddle.Tensor, paddle.Tensor]:
-    raise IvyNotImplementedException()
+    res = namedtuple("qr", ["Q", "R"])
+    q, r = paddle.linalg.qr(x, mode=mode)
+    return res(q, r)
 
 
 def slogdet(
