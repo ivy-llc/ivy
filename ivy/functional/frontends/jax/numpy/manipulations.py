@@ -150,4 +150,13 @@ def vsplit(ary, indices_or_section):
 
 @to_ivy_arrays_and_back
 def bartlett(M):
-    return ivy.bartlett(M)
+    if M == 1:
+        return ivy.ones(1)
+    elif M % 2 == 0:
+        return ivy.concatenate(
+            (ivy.linspace(0, 1, M // 2 + 1), ivy.linspace(1, 0, M // 2 + 1)[1:])
+        )
+    else:
+        return ivy.concatenate(
+            (ivy.linspace(0, 1, (M + 1) // 2), ivy.linspace(1, 0, (M + 1) // 2 - 1)[1:])
+        )
