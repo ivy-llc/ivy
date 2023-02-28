@@ -125,3 +125,13 @@ def bincount(
 
 
 bincount.support_native_out = False
+
+
+def average(
+    a: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: Optional[bool] = False,
+) -> np.ndarray:
+    return np.average(a, axis=axis, keepdims=keepdims)
