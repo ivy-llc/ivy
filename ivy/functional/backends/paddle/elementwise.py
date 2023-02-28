@@ -482,4 +482,7 @@ def trunc_divide(
 def isreal(
         x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    return paddle.equal(x, paddle.real(x))
+    if paddle.is_complex(x):
+        return paddle.equal(paddle.imag(x), paddle.zeros_like(paddle.imag(x)))
+    else:
+        return paddle.ones_like(x, dtype='bool')
