@@ -229,7 +229,8 @@ def matrix_transpose(
 def outer(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    return paddle.outer(x1, x2)
 
 
 def pinv(
@@ -239,7 +240,9 @@ def pinv(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if rtol is None:
+        return paddle.linalg.pinv(x)
+    return paddle.linalg.pinv(x, rcond=rtol)
 
 
 def tensorsolve(
