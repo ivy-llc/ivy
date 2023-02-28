@@ -67,7 +67,7 @@ def eigh(
 def eigvalsh(
     x: paddle.Tensor, /, *, UPLO: Optional[str] = "L", out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.linalg.eigvalsh(x, UPLO=UPLO)
 
 
 def inner(
