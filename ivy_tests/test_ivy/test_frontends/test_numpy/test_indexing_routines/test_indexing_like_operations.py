@@ -72,34 +72,7 @@ def test_numpy_diag(
         v=x[0],
         k=k,
     )
-
-
-@handle_frontend_test(
-    fn_tree="numpy.diag_indices",
-    n=helpers.ints(min_value=1, max_value=10),
-    ndim=helpers.ints(min_value=2, max_value=10),
-    dtype=helpers.get_dtypes("valid", full=False),
-    test_with_out=st.just(False),
-)
-def test_numpy_diag_indices(
-    n,
-    ndim,
-    dtype,
-    test_flags,
-    frontend,
-    fn_tree,
-    on_device,
-):
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        test_flags=test_flags,
-        frontend=frontend,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        n=n,
-        ndim=ndim,
-    )
-
+    
 
 @st.composite
 def max_value_as_shape_prod(draw):
@@ -144,4 +117,38 @@ def test_numpy_unravel_index(
         on_device=on_device,
         indices=np.asarray(x[0], dtype=input_dtype[0]),
         shape=shape,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.take_along_axis",
+    dtype_x_indices_axis=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("numeric"),
+        indices_dtypes=["int32", "int64"],
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+        indices_same_dims=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_numpy_take_along_axis(
+    *,
+    dtype_x_indices_axis,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtypes, x, indices, axis, _ = dtype_x_indices_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        arr=x,
+        indices=indices,
+        axis=axis,
     )

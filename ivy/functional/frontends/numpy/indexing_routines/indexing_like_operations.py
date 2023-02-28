@@ -27,3 +27,7 @@ def diag(v, k=0):
 def unravel_index(indices, shape):
     ret = ivy.unravel_index(indices, shape)
     return tuple(np.asarray(x, dtype=np.int64) for x in ret)
+
+
+def take_along_axis(arr, indices, axis):
+    return ivy.take_along_axis(arr, indices, axis)
