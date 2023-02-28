@@ -51,7 +51,7 @@ def diagonal(
     axis2: int = -1,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
 
 
 def eigh(
@@ -264,7 +264,7 @@ def diag(
     k: int = 0,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.diag(x, k=k)
 
 
 def vander(
