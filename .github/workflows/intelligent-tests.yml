@@ -88,11 +88,11 @@ jobs:
            git commit -m "Update Mapping"
            git push origin master2
          continue-on-error: true
-
+         
        - name: Run Tests
          id: tests
          run: |
-           cd ivy
+          cd ivy
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
