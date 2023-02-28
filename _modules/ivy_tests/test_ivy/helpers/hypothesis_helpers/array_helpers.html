@@ -628,7 +628,8 @@
 <span class="sd">    [True]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">size</span> <span class="o">=</span> <span class="n">size</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">else</span> <span class="n">draw</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">lists</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span> <span class="n">min_size</span><span class="o">=</span><span class="n">size</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="n">size</span><span class="p">))</span></div>
 
 
@@ -749,15 +750,17 @@
 <span class="sd">    [1.0, 2.00001, 1.0, 2.999999999999999, 1.9394938006792373]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">integers</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">number_helpers</span><span class="o">.</span><span class="n">ints</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="n">size_bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">max_value</span><span class="o">=</span><span class="n">size_bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-        <span class="k">if</span> <span class="n">size_bounds</span>
-        <span class="k">else</span> <span class="n">number_helpers</span><span class="o">.</span><span class="n">ints</span><span class="p">()</span>
-    <span class="p">)</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">min_size</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="n">min_size</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">shared</span><span class="p">(</span><span class="n">integers</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">min_size</span><span class="p">))</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">max_size</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="n">max_size</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">shared</span><span class="p">(</span><span class="n">integers</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">max_size</span><span class="p">))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">min_size</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">max_size</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="n">integers</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">number_helpers</span><span class="o">.</span><span class="n">ints</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="n">size_bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">max_value</span><span class="o">=</span><span class="n">size_bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">size_bounds</span>
+            <span class="k">else</span> <span class="n">number_helpers</span><span class="o">.</span><span class="n">ints</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">min_size</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">min_size</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">shared</span><span class="p">(</span><span class="n">integers</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">min_size</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">max_size</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">shared</span><span class="p">(</span><span class="n">integers</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">max_size</span><span class="p">))</span>
+
     <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">lists</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">min_size</span><span class="o">=</span><span class="n">min_size</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="n">max_size</span><span class="p">))</span></div>
 
 
@@ -1620,6 +1623,7 @@
             <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s2">&quot;bfloat16&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="c1"># enables bfloat16 behavior with possibly no side-effects</span>
+
             <span class="kn">import</span> <span class="nn">paddle_bfloat</span>  <span class="c1"></span>
 
     <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
