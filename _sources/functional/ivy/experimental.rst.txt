@@ -13,6 +13,7 @@ Experimental
    :maxdepth: -1
    :caption: Experimental
 
+   experimental/eigh_tridiagonal.rst
    experimental/diagflat.rst
    experimental/kron.rst
    experimental/matrix_exp.rst
@@ -52,10 +53,12 @@ Experimental
    experimental/dct.rst
    experimental/fft.rst
    experimental/dropout1d.rst
+   experimental/dropout3d.rst
    experimental/ifft.rst
    experimental/embedding.rst
    experimental/dft.rst
    experimental/interp.rst
+   experimental/compute_weight_mat.rst
    experimental/interpolate.rst
    experimental/padding_ceil_mode.rst
    experimental/l2_normalize.rst
@@ -68,6 +71,7 @@ Experimental
    experimental/quantile.rst
    experimental/corrcoef.rst
    experimental/nanmedian.rst
+   experimental/bincount.rst
    experimental/msort.rst
    experimental/lexsort.rst
    experimental/triu_indices.rst
@@ -81,6 +85,8 @@ Experimental
    experimental/logit.rst
    experimental/prelu.rst
    experimental/thresholded_relu.rst
+   experimental/relu6.rst
+   experimental/batch_norm.rst
    experimental/is_ivy_sparse_array.rst
    experimental/is_native_sparse_array.rst
    experimental/native_sparse_array.rst
@@ -113,6 +119,8 @@ Experimental
    experimental/xlogy.rst
    experimental/real.rst
    experimental/binarizer.rst
+   experimental/conj.rst
+   experimental/ldexp.rst
    experimental/bind_custom_gradient_function.rst
    experimental/isin.rst
    experimental/dirichlet.rst
