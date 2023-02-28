@@ -241,6 +241,52 @@ class ndarray:
     ):
         return np_frontend.nonzero(self._ivy_array)[0]
 
+    def prod(
+        self,
+        *,
+        axis=None,
+        dtype=None,
+        keepdims=False,
+        initial=None,
+        where=True,
+        out=None,
+    ):
+        if where is None or (type(where) == bool and not where):
+            if dtype is not None:
+                return ivy.array(initial, dtype=dtype)
+            else:
+                return initial  # should broadcast to shape of self with reduced axis
+        if (
+            ivy.is_array(where)
+            or ivy.is_native_array(where)
+            or type(where) == ivy.functional.frontends.numpy.ndarray
+        ):
+            if hasattr(self, "ivy_array"):
+                arg = ivy.where(where, self.ivy_array, 1)
+            else:
+                arg = ivy.where(where, self, 1)
+        else:
+            arg = self
+        if initial is not None:
+            return np_frontend.multiply(
+                ivy.array(initial, dtype=dtype),
+                np_frontend.prod(
+                    arg,
+                    axis=axis,
+                    dtype=dtype,
+                    keepdims=keepdims,
+                    out=out,
+                ),
+            )
+        else:
+            return np_frontend.prod(
+                arg,
+                axis=axis,
+                dtype=dtype,
+                keepdims=keepdims,
+                out=out,
+            )
+
     def ravel(self, order="C"):
         ivy.utils.assertions.check_elem_in_list(
             order,
