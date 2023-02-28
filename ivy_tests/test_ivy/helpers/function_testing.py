@@ -869,7 +869,6 @@ def gradient_test(
     # compute the return with a Ground Truth backend
 
     if isinstance(ground_truth_backend, list):
-
         process = ground_truth_backend[1]
         try:
             process.stdin.write("2" + "\n")
@@ -1044,6 +1043,10 @@ def test_method(
     ret_gt
         optional, return value from the Ground Truth function
     """
+    if isinstance(globals.CURRENT_GROUND_TRUTH_BACKEND, list):
+        # override the ground truth in favor of multiversion
+        ground_truth_backend = globals.CURRENT_GROUND_TRUTH_BACKEND
+
     init_input_dtypes = ivy.default(init_input_dtypes, [])
 
     # Constructor arguments #
@@ -1173,53 +1176,98 @@ def test_method(
     )
 
     # Compute the return with a Ground Truth backend
-    ivy.set_backend(ground_truth_backend)
-    args_gt_constructor, kwargs_gt_constructor, _, _, _ = create_args_kwargs(
-        args_np=args_np_constructor,
-        arg_np_vals=con_arg_np_vals,
-        args_idxs=con_args_idxs,
-        kwargs_np=kwargs_np_constructor,
-        kwarg_np_vals=con_kwarg_np_vals,
-        kwargs_idxs=con_kwargs_idxs,
-        input_dtypes=init_input_dtypes,
-        test_flags=init_flags,
-    )
-    args_gt_method, kwargs_gt_method, _, _, _ = create_args_kwargs(
-        args_np=args_np_method,
-        arg_np_vals=met_arg_np_vals,
-        args_idxs=met_args_idxs,
-        kwargs_np=kwargs_np_method,
-        kwarg_np_vals=met_kwarg_np_vals,
-        kwargs_idxs=met_kwargs_idxs,
-        input_dtypes=method_input_dtypes,
-        test_flags=method_flags,
-    )
-    ins_gt = ivy.__dict__[class_name](*args_gt_constructor, **kwargs_gt_constructor)
-    # ToDo : remove this when the handle_method can properly compute unsupported dtypes
-    if any(
-        dtype in ivy.function_unsupported_dtypes(ins_gt.__getattribute__(method_name))
-        for dtype in method_input_dtypes
-    ):
-        return
-    if isinstance(ins_gt, ivy.Module):
-        v_gt = v_np.cont_map(
-            lambda x, kc: ivy.asarray(x) if isinstance(x, np.ndarray) else x
-        )
-        kwargs_gt_method = dict(**kwargs_gt_method, v=v_gt)
-    ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
-        ins_gt.__getattribute__(method_name),
-        *args_gt_method,
-        test_compile=test_compile,
-        **kwargs_gt_method,
-    )
-    fw_list = gradient_unsupported_dtypes(fn=ins.__getattribute__(method_name))
-    fw_list2 = gradient_unsupported_dtypes(fn=ins_gt.__getattribute__(method_name))
-    for k, v in fw_list2.items():
-        if k not in fw_list:
-            fw_list[k] = []
-        fw_list[k].extend(v)
 
-    ivy.unset_backend()
+    if isinstance(ground_truth_backend, list):
+        process = ground_truth_backend[1]
+        try:
+            process.stdin.write("3" + "\n")
+            process.stdin.write(jsonpickle.dumps(args_np_constructor) + "\n")
+            process.stdin.write(jsonpickle.dumps(con_arg_np_vals) + "\n")
+            process.stdin.write(jsonpickle.dumps(con_args_idxs) + "\n")
+            process.stdin.write(jsonpickle.dumps(kwargs_np_constructor) + "\n")
+            process.stdin.write(jsonpickle.dumps(con_kwarg_np_vals) + "\n")
+            process.stdin.write(jsonpickle.dumps(con_kwargs_idxs) + "\n")
+            process.stdin.write(jsonpickle.dumps(init_input_dtypes) + "\n")
+            process.stdin.write(jsonpickle.dumps(init_flags) + "\n")
+            process.stdin.write(jsonpickle.dumps(args_np_method) + "\n")
+            process.stdin.write(jsonpickle.dumps(met_arg_np_vals) + "\n")
+            process.stdin.write(jsonpickle.dumps(met_args_idxs) + "\n")
+            process.stdin.write(jsonpickle.dumps(kwargs_np_method) + "\n")
+            process.stdin.write(jsonpickle.dumps(met_kwargs_idxs) + "\n")
+            process.stdin.write(jsonpickle.dumps(met_kwarg_np_vals) + "\n")
+            process.stdin.write(jsonpickle.dumps(method_input_dtypes) + "\n")
+            process.stdin.write(jsonpickle.dumps(method_flags) + "\n")
+            process.stdin.write(jsonpickle.dumps(class_name) + "\n")
+            process.stdin.write(jsonpickle.dumps(method_name) + "\n")
+            process.stdin.write(jsonpickle.dumps(method_input_dtypes) + "\n")
+            process.stdin.write(jsonpickle.dumps(v_np) + "\n")
+
+            process.stdin.flush()
+        except Exception as e:
+            print("Something bad happened to the subprocess, here are the logs:\n\n")
+            print(process.stdout.readlines())
+            raise e
+        ground_ret = process.stdout.readline()
+        if ground_ret:
+            ground_ret = jsonpickle.loads(make_json_pickable(ground_ret))
+        else:
+            print(process.stderr.readlines())
+            raise Exception
+        ret_np_from_gt_flat, fw_list2 = ground_ret
+        fw_list = gradient_unsupported_dtypes(fn=ins.__getattribute__(method_name))
+
+        for k, v in fw_list2.items():
+            if k not in fw_list:
+                fw_list[k] = []
+            fw_list[k].extend(v)
+    else:
+        ivy.set_backend(ground_truth_backend)
+        args_gt_constructor, kwargs_gt_constructor, _, _, _ = create_args_kwargs(
+            args_np=args_np_constructor,
+            arg_np_vals=con_arg_np_vals,
+            args_idxs=con_args_idxs,
+            kwargs_np=kwargs_np_constructor,
+            kwarg_np_vals=con_kwarg_np_vals,
+            kwargs_idxs=con_kwargs_idxs,
+            input_dtypes=init_input_dtypes,
+            test_flags=init_flags,
+        )
+        args_gt_method, kwargs_gt_method, _, _, _ = create_args_kwargs(
+            args_np=args_np_method,
+            arg_np_vals=met_arg_np_vals,
+            args_idxs=met_args_idxs,
+            kwargs_np=kwargs_np_method,
+            kwarg_np_vals=met_kwarg_np_vals,
+            kwargs_idxs=met_kwargs_idxs,
+            input_dtypes=method_input_dtypes,
+            test_flags=method_flags,
+        )
+        ins_gt = ivy.__dict__[class_name](*args_gt_constructor, **kwargs_gt_constructor)
+        # ToDo : remove this when the handle_method can properly compute unsupported dtypes
+        if any(
+            dtype
+            in ivy.function_unsupported_dtypes(ins_gt.__getattribute__(method_name))
+            for dtype in method_input_dtypes
+        ):
+            return
+        if isinstance(ins_gt, ivy.Module):
+            v_gt = v_np.cont_map(
+                lambda x, kc: ivy.asarray(x) if isinstance(x, np.ndarray) else x
+            )
+            kwargs_gt_method = dict(**kwargs_gt_method, v=v_gt)
+        ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
+            ins_gt.__getattribute__(method_name),
+            *args_gt_method,
+            test_compile=test_compile,
+            **kwargs_gt_method,
+        )
+        fw_list = gradient_unsupported_dtypes(fn=ins.__getattribute__(method_name))
+        fw_list2 = gradient_unsupported_dtypes(fn=ins_gt.__getattribute__(method_name))
+        for k, v in fw_list2.items():
+            if k not in fw_list:
+                fw_list[k] = []
+            fw_list[k].extend(v)
+        ivy.unset_backend()
     # gradient test
     fw = ivy.current_backend_str()
     if (
