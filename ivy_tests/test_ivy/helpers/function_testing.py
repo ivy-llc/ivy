@@ -218,6 +218,10 @@ def test_function(
     >>> x2 = np.array([-3, 15, 24])
     >>> test_function(input_dtypes, test_flags, fw, fn_name, x1=x1, x2=x2)
     """
+    if isinstance(globals.CURRENT_GROUND_TRUTH_BACKEND, list):
+        # override the ground truth in favor of multiversion
+        ground_truth_backend = globals.CURRENT_GROUND_TRUTH_BACKEND
+
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
         num_positional_args=test_flags.num_positional_args, kwargs=all_as_kwargs_np
