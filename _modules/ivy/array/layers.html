@@ -775,6 +775,48 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
+<div class="viewcode-block" id="ArrayWithLayers.dropout3d"><a class="viewcode-back" href="../../../data_classes/array/layers/ArrayWithLayers.html#ivy.array.layers.ArrayWithLayers.dropout3d">[docs]</a>    <span class="k">def</span> <span class="nf">dropout3d</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+        <span class="n">prob</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">training</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;NDHWC&quot;</span><span class="p">,</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array instance method variant of ivy.dropout3d. This method simply</span>
+<span class="sd">        wraps the function, and so the docstring for ivy.droput3d also applies</span>
+<span class="sd">        to this method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            The input array x to perform dropout on.</span>
+<span class="sd">        prob</span>
+<span class="sd">            The probability of zeroing out each array element, float between 0 and 1.</span>
+<span class="sd">        training</span>
+<span class="sd">            Turn on dropout if training, turn off otherwise. Default is ``True``.</span>
+<span class="sd">        data_format</span>
+<span class="sd">            &quot;NDHWC&quot; or &quot;NCDHW&quot;. Default is ``&quot;NDHWC&quot;``.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to. It must have</span>
+<span class="sd">            a shape that the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            Result array of the output after dropout is performed.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dropout3d</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span>
+            <span class="n">prob</span><span class="p">,</span>
+            <span class="n">training</span><span class="o">=</span><span class="n">training</span><span class="p">,</span>
+            <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">,</span>
+            <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
 <div class="viewcode-block" id="ArrayWithLayers.scaled_dot_product_attention"><a class="viewcode-back" href="../../../data_classes/array/layers/ArrayWithLayers.html#ivy.array.layers.ArrayWithLayers.scaled_dot_product_attention">[docs]</a>    <span class="k">def</span> <span class="nf">scaled_dot_product_attention</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">k</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
