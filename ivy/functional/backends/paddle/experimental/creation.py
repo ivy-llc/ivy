@@ -4,6 +4,7 @@ import math
 import paddle
 from ivy.utils.exceptions import IvyNotImplementedException
 from paddle.fluid.libpaddle import Place
+from ivy.functional.backends.paddle.device import to_device
 
 # local
 import ivy
@@ -23,7 +24,9 @@ def triu_indices(
     *,
     device: Place,
 ) -> Tuple[paddle.Tensor]:
-    raise IvyNotImplementedException()
+    return to_device(
+        paddle.triu_indices(n_rows, col=n_cols, offset=k, dtype="int64"), device
+    )
 
 
 def kaiser_window(
@@ -79,4 +82,6 @@ def tril_indices(
     device: Place,
 ) -> Tuple[paddle.Tensor, ...]:
 
-    raise IvyNotImplementedException()
+    return to_device(
+        paddle.tril_indices(n_rows, col=n_cols, offset=k, dtype="int64"), device
+    )
