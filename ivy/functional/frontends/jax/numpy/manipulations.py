@@ -168,12 +168,12 @@ def blackman(M):
     a0 = 0.42659
     a1 = 0.49656
     a2 = 0.076849
-    w = (
+    ret = (
         a0
         - a1 * jnp.cos(2 * jnp.pi * n / (M - 1))
         + a2 * jnp.cos(4 * jnp.pi * n / (M - 1))
     )
-    return w
+    return ret
 
 
 def block(arrays):
