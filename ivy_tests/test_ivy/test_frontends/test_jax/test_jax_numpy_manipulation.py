@@ -827,7 +827,7 @@ def test_jax_numpy_vsplit(
 
     # bartlett
     @handle_frontend_test(
-        fn_tree="jax.numpy.bartlet",
+        fn_tree="jax.numpy.bartlett",
         dtype_and_m=helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("numeric"),
             min_num_dims=2,
