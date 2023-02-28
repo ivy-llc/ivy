@@ -676,6 +676,7 @@ def handle_frontend_method(
             fn_tree=f"{init_tree}.{method_name}",
             fn_name=method_name,
             supported_device_dtypes=supported_device_dtypes,
+            is_method=[method_name, class_tree, split_index],
         )
 
         return wrapped_test
