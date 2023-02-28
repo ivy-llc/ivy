@@ -143,6 +143,7 @@ def var(
 # Extra #
 # ----- #
 
+
 def cumprod(
     x: paddle.Tensor,
     /,
@@ -211,6 +212,7 @@ def cumsum(
             res = paddle.flip(x, axis=axis)
         return res
     return paddle.cumsum(x, axis, dtype=dtype)
+
 
 def einsum(
     equation: str,
