@@ -456,3 +456,14 @@ def log_softmax(logits, axis=None):
 @to_ivy_arrays_and_back
 def asin(x, name=None):
     return ivy.asin(x)
+
+
+
+@with_supported_dtypes(
+    {
+        "2.11.0 and below": ("bfloat16", "half", "float32", "float64"),
+    },
+    "tensorflow",
+)
+def is_finite(x, name=None):
+    return ivy.isfinite(x)
