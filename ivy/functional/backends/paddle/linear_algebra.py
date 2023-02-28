@@ -39,7 +39,7 @@ def cross(
 
 
 def det(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.linalg.det(x)
 
 
 def diagonal(
