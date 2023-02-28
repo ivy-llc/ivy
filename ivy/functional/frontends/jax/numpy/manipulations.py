@@ -174,3 +174,11 @@ def blackman(M):
         + a2 * jnp.cos(4 * jnp.pi * n / (M - 1))
     )
     return w
+
+
+def block(arrays):
+    concatenated = ivy.concatenate(arrays, axis=1)
+    num_rows = arrays[0].shape[0]
+    num_cols = sum(arr.shape[1] for arr in arrays)
+    ret = ivy.reshape(concatenated, (num_rows, num_cols))
+    return ret
