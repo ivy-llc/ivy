@@ -136,7 +136,11 @@ def matrix_norm(
 def eig(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> Tuple[paddle.Tensor]:
-    raise IvyNotImplementedException()
+    result_tuple = NamedTuple(
+        "eig", [("eigenvalues", paddle.Tensor), ("eigenvectors", paddle.Tensor)]
+    )
+    eigenvalues, eigenvectors = paddle.linalg.eig(x)
+    return result_tuple(eigenvalues, eigenvectors)
 
 
 def matrix_power(
