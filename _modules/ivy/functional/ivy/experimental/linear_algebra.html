@@ -577,7 +577,7 @@
               
   <h1>Source code for ivy.functional.ivy.experimental.linear_algebra</h1><div class="highlight"><pre>
 <span></span><span class="c1"># global</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span>
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
@@ -587,6 +587,7 @@
     <span class="n">handle_out_argument</span><span class="p">,</span>
     <span class="n">handle_nestable</span><span class="p">,</span>
     <span class="n">handle_array_like_without_promotion</span><span class="p">,</span>
+    <span class="n">handle_array_function</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ivy.utils.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
 
@@ -596,6 +597,158 @@
 
 <span class="k">def</span> <span class="nf">_check_valid_dimension_size</span><span class="p">(</span><span class="n">std</span><span class="p">):</span>
     <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_dimensions</span><span class="p">(</span><span class="n">std</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="eigh_tridiagonal"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/linear_algebra/eigh_tridiagonal.html#ivy.functional.ivy.experimental.eigh_tridiagonal">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="nd">@handle_array_like_without_promotion</span>
+<span class="nd">@handle_array_function</span>
+<span class="k">def</span> <span class="nf">eigh_tridiagonal</span><span class="p">(</span>
+    <span class="n">alpha</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">beta</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">eigvals_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">select</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span>
+    <span class="n">select_range</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
+        <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">tol</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the eigenvalues and eigenvectors of a Hermitian</span>
+<span class="sd">    tridiagonal matrix.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    alpha</span>
+<span class="sd">        A real or complex array of shape (n), the diagonal elements of the</span>
+<span class="sd">        matrix. If alpha is complex, the imaginary part is ignored</span>
+<span class="sd">        (assumed zero) to satisfy the requirement that the matrix be Hermitian.</span>
+<span class="sd">    beta</span>
+<span class="sd">        A real or complex array of shape (n-1), containing the elements of</span>
+<span class="sd">        the first super-diagonal of the matrix. If beta is complex, the first</span>
+<span class="sd">        sub-diagonal of the matrix is assumed to be the conjugate of beta to</span>
+<span class="sd">        satisfy the requirement that the matrix be Hermitian.</span>
+<span class="sd">    eigvals_only</span>
+<span class="sd">        If False, both eigenvalues and corresponding eigenvectors are</span>
+<span class="sd">        computed. If True, only eigenvalues are computed. Default is True.</span>
+<span class="sd">    select</span>
+<span class="sd">        Optional string with values in {&#39;a&#39;, &#39;v&#39;, &#39;i&#39;} (default is &#39;a&#39;) that</span>
+<span class="sd">        determines which eigenvalues to calculate: &#39;a&#39;: all eigenvalues.</span>
+<span class="sd">        &#39;v&#39;: eigenvalues in the interval (min, max] given by select_range.</span>
+<span class="sd">        &#39;i&#39;: eigenvalues with indices min &lt;= i &lt;= max.</span>
+<span class="sd">    select_range</span>
+<span class="sd">        Size 2 tuple or list or array specifying the range of eigenvalues to</span>
+<span class="sd">        compute together with select. If select is &#39;a&#39;, select_range is ignored.</span>
+<span class="sd">    tol</span>
+<span class="sd">        Optional scalar. Ignored when backend is not Tensorflow. The absolute</span>
+<span class="sd">        tolerance to which each eigenvalue is required. An eigenvalue</span>
+<span class="sd">        (or cluster) is considered to have converged if it lies in an interval</span>
+<span class="sd">        of this width. If tol is None (default), the value eps*|T|_2 is used</span>
+<span class="sd">        where eps is the machine precision, and |T|_2 is the 2-norm of the matrix T.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    eig_vals</span>
+<span class="sd">        The eigenvalues of the matrix in non-decreasing order.</span>
+<span class="sd">    eig_vectors</span>
+<span class="sd">        If eigvals_only is False the eigenvectors are returned in the second output</span>
+<span class="sd">        argument.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for</span>
+<span class="sd">    simplicity, but this function is *nestable*, and therefore also accepts</span>
+<span class="sd">    :class:`ivy.Container` instances in place of any of the arguments.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; alpha = ivy.array([0., 1., 2.])</span>
+<span class="sd">    &gt;&gt;&gt; beta = ivy.array([0., 1.])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.eigh_tridiagonal(alpha, beta)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([0., 0.38196, 2.61803])</span>
+
+<span class="sd">    &gt;&gt;&gt; alpha = ivy.array([0., 1., 2.])</span>
+<span class="sd">    &gt;&gt;&gt; beta = ivy.array([0., 1.])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.eigh_tridiagonal(alpha,</span>
+<span class="sd">    ...     beta, select=&#39;v&#39;,</span>
+<span class="sd">    ...     select_range=[0.2,3.0])</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([0.38196, 2.61803])</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.set_backend(&quot;tensorflow&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; alpha = ivy.array([0., 1., 2., 3.])</span>
+<span class="sd">    &gt;&gt;&gt; beta = ivy.array([2., 1., 2.])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.eigh_tridiagonal(alpha,</span>
+<span class="sd">    ...     beta,</span>
+<span class="sd">    ...     eigvals_only=False,</span>
+<span class="sd">    ...     select=&#39;i&#39;,</span>
+<span class="sd">    ...     select_range=[1,2]</span>
+<span class="sd">    ...     tol=1.)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    (ivy.array([0.18749806, 2.81250191]), ivy.array([[ 0.350609  , -0.56713122],</span>
+<span class="sd">        [ 0.06563006, -0.74146169],</span>
+<span class="sd">        [-0.74215561, -0.0636413 ],</span>
+<span class="sd">        [ 0.56742489,  0.35291126]]))</span>
+
+<span class="sd">    With :class:`ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; alpha = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([2., 2., 2.]))</span>
+<span class="sd">    &gt;&gt;&gt; beta = ivy.array([0.,2.])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.eigh_tridiagonal(alpha, beta)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([-0.56155, 0., 3.56155]),</span>
+<span class="sd">        b: ivy.array([0., 2., 4.])</span>
+<span class="sd">    }</span>
+
+<span class="sd">    &gt;&gt;&gt; alpha = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([2., 2., 2.]))</span>
+<span class="sd">    &gt;&gt;&gt; beta = ivy.Container(a=ivy.array([0.,2.]), b=ivy.array([2.,2.]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.eigh_tridiagonal(alpha, beta)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([-0.56155, 0., 3.56155]),</span>
+<span class="sd">        b: ivy.array([-0.82842, 2., 4.82842])</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;tensorflow&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span><span class="o">.</span><span class="n">eigh_tridiagonal</span><span class="p">(</span>
+            <span class="n">alpha</span><span class="p">,</span>
+            <span class="n">beta</span><span class="p">,</span>
+            <span class="n">eigvals_only</span><span class="o">=</span><span class="n">eigvals_only</span><span class="p">,</span>
+            <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
+            <span class="n">select_range</span><span class="o">=</span><span class="n">select_range</span><span class="p">,</span>
+            <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">beta</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">beta</span><span class="p">,</span> <span class="n">k</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">+</span> <span class="n">z</span>
+
+    <span class="n">eigh_out</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+    <span class="n">eigenvalues</span> <span class="o">=</span> <span class="n">eigh_out</span><span class="o">.</span><span class="n">eigenvalues</span>
+    <span class="n">eigenvectors</span> <span class="o">=</span> <span class="n">eigh_out</span><span class="o">.</span><span class="n">eigenvectors</span>
+
+    <span class="k">if</span> <span class="n">select</span> <span class="o">==</span> <span class="s2">&quot;i&quot;</span><span class="p">:</span>
+        <span class="n">eigenvalues</span> <span class="o">=</span> <span class="n">eigenvalues</span><span class="p">[</span><span class="n">select_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">:</span> <span class="n">select_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">eigenvectors</span> <span class="o">=</span> <span class="n">eigenvectors</span><span class="p">[:,</span> <span class="n">select_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">:</span> <span class="n">select_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">select</span> <span class="o">==</span> <span class="s2">&quot;v&quot;</span><span class="p">:</span>
+        <span class="n">condition</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
+            <span class="n">eigenvalues</span><span class="o">.</span><span class="n">greater</span><span class="p">(</span><span class="n">select_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+            <span class="n">eigenvalues</span><span class="o">.</span><span class="n">less_equal</span><span class="p">(</span><span class="n">select_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+        <span class="p">)</span>
+        <span class="n">eigenvalues</span> <span class="o">=</span> <span class="n">eigenvalues</span><span class="p">[</span><span class="n">condition</span><span class="p">]</span>
+        <span class="n">eigenvectors</span> <span class="o">=</span> <span class="n">eigenvectors</span><span class="p">[:,</span> <span class="n">condition</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">eigvals_only</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">eigenvalues</span>
+    <span class="k">return</span> <span class="n">eigenvalues</span><span class="p">,</span> <span class="n">eigenvectors</span></div>
+
+
+<span class="n">eigh_tridiagonal</span><span class="o">.</span><span class="n">mixed_function</span> <span class="o">=</span> <span class="kc">True</span>
 
 
 <div class="viewcode-block" id="diagflat"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/linear_algebra/diagflat.html#ivy.functional.ivy.experimental.diagflat">[docs]</a><span class="nd">@to_native_arrays_and_back</span>

@@ -603,6 +603,10 @@
     <span class="n">available_frameworks</span><span class="p">,</span>
     <span class="n">ground_truth</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">_dtype_kind_keys</span><span class="p">,</span>
+    <span class="n">_get_type_dict</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="n">ground_truth</span> <span class="o">=</span> <span class="n">ground_truth</span><span class="p">()</span>
 
@@ -758,7 +762,13 @@
     <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">backends</span><span class="p">:</span>  <span class="c1"># ToDo can optimize this ?</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
         <span class="n">_fn</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">class_module</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">class_name</span><span class="p">],</span> <span class="n">method_name</span><span class="p">)</span>
-        <span class="n">supported_device_dtypes</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">function_supported_devices_and_dtypes</span><span class="p">(</span><span class="n">_fn</span><span class="p">)</span>
+        <span class="n">devices_and_dtypes</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">function_supported_devices_and_dtypes</span><span class="p">(</span><span class="n">_fn</span><span class="p">)</span>
+        <span class="n">organized_dtypes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">device</span> <span class="ow">in</span> <span class="n">devices_and_dtypes</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">organized_dtypes</span><span class="p">[</span><span class="n">device</span><span class="p">]</span> <span class="o">=</span> <span class="n">_partition_dtypes_into_kinds</span><span class="p">(</span>
+                <span class="n">ivy</span><span class="p">,</span> <span class="n">devices_and_dtypes</span><span class="p">[</span><span class="n">device</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="n">supported_device_dtypes</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="n">organized_dtypes</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">unset_backend</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">supported_device_dtypes</span>
 
@@ -790,13 +800,27 @@
 
     <span class="n">backends</span> <span class="o">=</span> <span class="n">available_frameworks</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">backends</span><span class="p">:</span>  <span class="c1"># ToDo can optimize this ?</span>
-
         <span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
         <span class="n">_tmp_mod</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">fn_module</span><span class="p">)</span>
         <span class="n">_fn</span> <span class="o">=</span> <span class="n">_tmp_mod</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">fn_name</span><span class="p">]</span>
-        <span class="n">supported_device_dtypes</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">function_supported_devices_and_dtypes</span><span class="p">(</span><span class="n">_fn</span><span class="p">)</span>
+        <span class="n">devices_and_dtypes</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">function_supported_devices_and_dtypes</span><span class="p">(</span><span class="n">_fn</span><span class="p">)</span>
+        <span class="n">organized_dtypes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">device</span> <span class="ow">in</span> <span class="n">devices_and_dtypes</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">organized_dtypes</span><span class="p">[</span><span class="n">device</span><span class="p">]</span> <span class="o">=</span> <span class="n">_partition_dtypes_into_kinds</span><span class="p">(</span>
+                <span class="n">ivy</span><span class="p">,</span> <span class="n">devices_and_dtypes</span><span class="p">[</span><span class="n">device</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="n">supported_device_dtypes</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="n">organized_dtypes</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">unset_backend</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">supported_device_dtypes</span>
+
+
+<span class="k">def</span> <span class="nf">_partition_dtypes_into_kinds</span><span class="p">(</span><span class="n">framework</span><span class="p">,</span> <span class="n">dtypes</span><span class="p">):</span>
+    <span class="n">partitioned_dtypes</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">kind</span> <span class="ow">in</span> <span class="n">_dtype_kind_keys</span><span class="p">:</span>
+        <span class="n">partitioned_dtypes</span><span class="p">[</span><span class="n">kind</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">_get_type_dict</span><span class="p">(</span><span class="n">framework</span><span class="p">,</span> <span class="n">kind</span><span class="p">))</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span>
+            <span class="n">dtypes</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">partitioned_dtypes</span>
 
 
 <span class="c1"># Decorators</span>
@@ -804,7 +828,7 @@
 
 <div class="viewcode-block" id="handle_test"><a class="viewcode-back" href="../../../../testing/testing_helpers/handle_test.html#ivy_tests.test_ivy.helpers.testing_helpers.handle_test">[docs]</a><span class="k">def</span> <span class="nf">handle_test</span><span class="p">(</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">fn_tree</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">fn_tree</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">ground_truth_backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">ground_truth</span><span class="p">,</span>
     <span class="n">number_positional_args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">test_instance_method</span><span class="o">=</span><span class="n">BuiltInstanceStrategy</span><span class="p">,</span>
@@ -854,15 +878,18 @@
 <span class="sd">        A search strategy that generates a list of boolean flags for array inputs to be</span>
 <span class="sd">        passed as a Container</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">fn_tree</span> <span class="o">=</span> <span class="s2">&quot;ivy.&quot;</span> <span class="o">+</span> <span class="n">fn_tree</span>
+    <span class="n">is_fn_tree_provided</span> <span class="o">=</span> <span class="n">fn_tree</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">is_fn_tree_provided</span><span class="p">:</span>
+        <span class="n">fn_tree</span> <span class="o">=</span> <span class="s2">&quot;ivy.&quot;</span> <span class="o">+</span> <span class="n">fn_tree</span>
     <span class="n">is_hypothesis_test</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">_given_kwargs</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span>
 
-    <span class="k">if</span> <span class="n">is_hypothesis_test</span><span class="p">:</span>
+    <span class="n">possible_arguments</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;ground_truth_backend&quot;</span><span class="p">:</span> <span class="n">st</span><span class="o">.</span><span class="n">just</span><span class="p">(</span><span class="n">ground_truth_backend</span><span class="p">)}</span>
+    <span class="k">if</span> <span class="n">is_hypothesis_test</span> <span class="ow">and</span> <span class="n">is_fn_tree_provided</span><span class="p">:</span>
         <span class="c1"># Use the default strategy</span>
         <span class="k">if</span> <span class="n">number_positional_args</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">number_positional_args</span> <span class="o">=</span> <span class="n">num_positional_args</span><span class="p">(</span><span class="n">fn_name</span><span class="o">=</span><span class="n">fn_tree</span><span class="p">)</span>
         <span class="c1"># Generate the test flags strategy</span>
-        <span class="n">test_flags</span> <span class="o">=</span> <span class="n">pf</span><span class="o">.</span><span class="n">function_flags</span><span class="p">(</span>
+        <span class="n">possible_arguments</span><span class="p">[</span><span class="s2">&quot;test_flags&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pf</span><span class="o">.</span><span class="n">function_flags</span><span class="p">(</span>
             <span class="n">num_positional_args</span><span class="o">=</span><span class="n">number_positional_args</span><span class="p">,</span>
             <span class="n">instance_method</span><span class="o">=</span><span class="n">test_instance_method</span><span class="p">,</span>
             <span class="n">with_out</span><span class="o">=</span><span class="n">test_with_out</span><span class="p">,</span>
@@ -873,18 +900,15 @@
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">test_wrapper</span><span class="p">(</span><span class="n">test_fn</span><span class="p">):</span>
-        <span class="n">callable_fn</span><span class="p">,</span> <span class="n">fn_name</span><span class="p">,</span> <span class="n">fn_mod</span> <span class="o">=</span> <span class="n">_import_fn</span><span class="p">(</span><span class="n">fn_tree</span><span class="p">)</span>
-        <span class="n">supported_device_dtypes</span> <span class="o">=</span> <span class="n">_get_supported_devices_dtypes</span><span class="p">(</span><span class="n">fn_name</span><span class="p">,</span> <span class="n">fn_mod</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">is_fn_tree_provided</span><span class="p">:</span>
+            <span class="n">callable_fn</span><span class="p">,</span> <span class="n">fn_name</span><span class="p">,</span> <span class="n">fn_mod</span> <span class="o">=</span> <span class="n">_import_fn</span><span class="p">(</span><span class="n">fn_tree</span><span class="p">)</span>
+            <span class="n">supported_device_dtypes</span> <span class="o">=</span> <span class="n">_get_supported_devices_dtypes</span><span class="p">(</span><span class="n">fn_name</span><span class="p">,</span> <span class="n">fn_mod</span><span class="p">)</span>
+            <span class="n">possible_arguments</span><span class="p">[</span><span class="s2">&quot;fn_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">just</span><span class="p">(</span><span class="n">fn_name</span><span class="p">)</span>
 
         <span class="c1"># If a test is not a Hypothesis test, we only set the test global data</span>
         <span class="k">if</span> <span class="n">is_hypothesis_test</span><span class="p">:</span>
             <span class="n">param_names</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">test_fn</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
             <span class="c1"># Check if these arguments are being asked for</span>
-            <span class="n">possible_arguments</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;test_flags&quot;</span><span class="p">:</span> <span class="n">test_flags</span><span class="p">,</span>
-                <span class="s2">&quot;fn_name&quot;</span><span class="p">:</span> <span class="n">st</span><span class="o">.</span><span class="n">just</span><span class="p">(</span><span class="n">fn_name</span><span class="p">),</span>
-                <span class="s2">&quot;ground_truth_backend&quot;</span><span class="p">:</span> <span class="n">st</span><span class="o">.</span><span class="n">just</span><span class="p">(</span><span class="n">ground_truth_backend</span><span class="p">),</span>
-            <span class="p">}</span>
             <span class="n">filtered_args</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">param_names</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">possible_arguments</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
             <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">filtered_args</span><span class="p">:</span>
                 <span class="n">_given_kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">possible_arguments</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
@@ -894,13 +918,15 @@
             <span class="n">wrapped_test</span> <span class="o">=</span> <span class="n">test_fn</span>
 
         <span class="c1"># Set the test data to be used by test helpers</span>
-        <span class="n">wrapped_test</span><span class="o">.</span><span class="n">test_data</span> <span class="o">=</span> <span class="n">TestData</span><span class="p">(</span>
-            <span class="n">test_fn</span><span class="o">=</span><span class="n">wrapped_test</span><span class="p">,</span>
-            <span class="n">fn_tree</span><span class="o">=</span><span class="n">fn_tree</span><span class="p">,</span>
-            <span class="n">fn_name</span><span class="o">=</span><span class="n">fn_name</span><span class="p">,</span>
-            <span class="n">supported_device_dtypes</span><span class="o">=</span><span class="n">supported_device_dtypes</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">is_fn_tree_provided</span><span class="p">:</span>
+            <span class="n">wrapped_test</span><span class="o">.</span><span class="n">test_data</span> <span class="o">=</span> <span class="n">TestData</span><span class="p">(</span>
+                <span class="n">test_fn</span><span class="o">=</span><span class="n">wrapped_test</span><span class="p">,</span>
+                <span class="n">fn_tree</span><span class="o">=</span><span class="n">fn_tree</span><span class="p">,</span>
+                <span class="n">fn_name</span><span class="o">=</span><span class="n">fn_name</span><span class="p">,</span>
+                <span class="n">supported_device_dtypes</span><span class="o">=</span><span class="n">supported_device_dtypes</span><span class="p">,</span>
+            <span class="p">)</span>
         <span class="n">wrapped_test</span><span class="o">.</span><span class="n">ground_truth_backend</span> <span class="o">=</span> <span class="n">ground_truth_backend</span>
+        <span class="n">wrapped_test</span><span class="o">.</span><span class="n">_ivy_test</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="k">return</span> <span class="n">wrapped_test</span>
 
@@ -1014,7 +1040,7 @@
 
 <div class="viewcode-block" id="handle_method"><a class="viewcode-back" href="../../../../testing/testing_helpers/handle_method.html#ivy_tests.test_ivy.helpers.testing_helpers.handle_method">[docs]</a><span class="k">def</span> <span class="nf">handle_method</span><span class="p">(</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">method_tree</span><span class="p">,</span>
+    <span class="n">method_tree</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">ground_truth_backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">ground_truth</span><span class="p">,</span>
     <span class="n">test_gradients</span><span class="o">=</span><span class="n">BuiltGradientStrategy</span><span class="p">,</span>
     <span class="n">init_num_positional_args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1039,10 +1065,16 @@
 <span class="sd">    ground_truth_backend</span>
 <span class="sd">        The framework to assert test results are equal to</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">method_tree</span> <span class="o">=</span> <span class="s2">&quot;ivy.&quot;</span> <span class="o">+</span> <span class="n">method_tree</span>
+    <span class="n">is_method_tree_provided</span> <span class="o">=</span> <span class="n">method_tree</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">is_method_tree_provided</span><span class="p">:</span>
+        <span class="n">method_tree</span> <span class="o">=</span> <span class="s2">&quot;ivy.&quot;</span> <span class="o">+</span> <span class="n">method_tree</span>
     <span class="n">is_hypothesis_test</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">_given_kwargs</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span>
+    <span class="n">possible_arguments</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;ground_truth_backend&quot;</span><span class="p">:</span> <span class="n">st</span><span class="o">.</span><span class="n">just</span><span class="p">(</span><span class="n">ground_truth_backend</span><span class="p">),</span>
+        <span class="s2">&quot;test_gradients&quot;</span><span class="p">:</span> <span class="n">test_gradients</span><span class="p">,</span>
+    <span class="p">}</span>
 
-    <span class="k">if</span> <span class="n">is_hypothesis_test</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">is_hypothesis_test</span> <span class="ow">and</span> <span class="n">is_method_tree_provided</span><span class="p">:</span>
         <span class="n">callable_method</span><span class="p">,</span> <span class="n">method_name</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">class_name</span><span class="p">,</span> <span class="n">method_mod</span> <span class="o">=</span> <span class="n">_import_method</span><span class="p">(</span>
             <span class="n">method_tree</span>
         <span class="p">)</span>
@@ -1052,42 +1084,35 @@
                 <span class="n">fn_name</span><span class="o">=</span><span class="n">class_name</span> <span class="o">+</span> <span class="s2">&quot;.__init__&quot;</span>
             <span class="p">)</span>
 
+        <span class="n">possible_arguments</span><span class="p">[</span><span class="s2">&quot;init_flags&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pf</span><span class="o">.</span><span class="n">method_flags</span><span class="p">(</span>
+            <span class="n">num_positional_args</span><span class="o">=</span><span class="n">init_num_positional_args</span><span class="p">,</span>
+            <span class="n">as_variable</span><span class="o">=</span><span class="n">init_as_variable_flags</span><span class="p">,</span>
+            <span class="n">native_arrays</span><span class="o">=</span><span class="n">init_native_arrays</span><span class="p">,</span>
+            <span class="n">container_flags</span><span class="o">=</span><span class="n">init_container_flags</span><span class="p">,</span>
+        <span class="p">)</span>
+
         <span class="k">if</span> <span class="n">method_num_positional_args</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">method_num_positional_args</span> <span class="o">=</span> <span class="n">num_positional_args_method</span><span class="p">(</span>
                 <span class="n">method</span><span class="o">=</span><span class="n">callable_method</span>
             <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">test_wrapper</span><span class="p">(</span><span class="n">test_fn</span><span class="p">):</span>
-        <span class="n">supported_device_dtypes</span> <span class="o">=</span> <span class="n">_get_method_supported_devices_dtypes</span><span class="p">(</span>
-            <span class="n">method_name</span><span class="p">,</span> <span class="n">method_mod</span><span class="p">,</span> <span class="n">class_name</span>
+        <span class="n">possible_arguments</span><span class="p">[</span><span class="s2">&quot;method_flags&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pf</span><span class="o">.</span><span class="n">method_flags</span><span class="p">(</span>
+            <span class="n">num_positional_args</span><span class="o">=</span><span class="n">method_num_positional_args</span><span class="p">,</span>
+            <span class="n">as_variable</span><span class="o">=</span><span class="n">method_as_variable_flags</span><span class="p">,</span>
+            <span class="n">native_arrays</span><span class="o">=</span><span class="n">method_native_arrays</span><span class="p">,</span>
+            <span class="n">container_flags</span><span class="o">=</span><span class="n">method_container_flags</span><span class="p">,</span>
         <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_wrapper</span><span class="p">(</span><span class="n">test_fn</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">is_method_tree_provided</span><span class="p">:</span>
+            <span class="n">supported_device_dtypes</span> <span class="o">=</span> <span class="n">_get_method_supported_devices_dtypes</span><span class="p">(</span>
+                <span class="n">method_name</span><span class="p">,</span> <span class="n">method_mod</span><span class="p">,</span> <span class="n">class_name</span>
+            <span class="p">)</span>
+            <span class="n">possible_arguments</span><span class="p">[</span><span class="s2">&quot;class_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">just</span><span class="p">(</span><span class="n">class_name</span><span class="p">)</span>
+            <span class="n">possible_arguments</span><span class="p">[</span><span class="s2">&quot;method_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">just</span><span class="p">(</span><span class="n">method_name</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">is_hypothesis_test</span><span class="p">:</span>
             <span class="n">param_names</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">test_fn</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-
-            <span class="n">init_flags</span> <span class="o">=</span> <span class="n">pf</span><span class="o">.</span><span class="n">method_flags</span><span class="p">(</span>
-                <span class="n">num_positional_args</span><span class="o">=</span><span class="n">init_num_positional_args</span><span class="p">,</span>
-                <span class="n">as_variable</span><span class="o">=</span><span class="n">init_as_variable_flags</span><span class="p">,</span>
-                <span class="n">native_arrays</span><span class="o">=</span><span class="n">init_native_arrays</span><span class="p">,</span>
-                <span class="n">container_flags</span><span class="o">=</span><span class="n">init_container_flags</span><span class="p">,</span>
-            <span class="p">)</span>
-
-            <span class="n">method_flags</span> <span class="o">=</span> <span class="n">pf</span><span class="o">.</span><span class="n">method_flags</span><span class="p">(</span>
-                <span class="n">num_positional_args</span><span class="o">=</span><span class="n">method_num_positional_args</span><span class="p">,</span>
-                <span class="n">as_variable</span><span class="o">=</span><span class="n">method_as_variable_flags</span><span class="p">,</span>
-                <span class="n">native_arrays</span><span class="o">=</span><span class="n">method_native_arrays</span><span class="p">,</span>
-                <span class="n">container_flags</span><span class="o">=</span><span class="n">method_container_flags</span><span class="p">,</span>
-            <span class="p">)</span>
-
-            <span class="n">possible_arguments</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;class_name&quot;</span><span class="p">:</span> <span class="n">st</span><span class="o">.</span><span class="n">just</span><span class="p">(</span><span class="n">class_name</span><span class="p">),</span>
-                <span class="s2">&quot;init_flags&quot;</span><span class="p">:</span> <span class="n">init_flags</span><span class="p">,</span>
-                <span class="s2">&quot;method_flags&quot;</span><span class="p">:</span> <span class="n">method_flags</span><span class="p">,</span>
-                <span class="s2">&quot;test_gradients&quot;</span><span class="p">:</span> <span class="n">test_gradients</span><span class="p">,</span>
-                <span class="s2">&quot;method_name&quot;</span><span class="p">:</span> <span class="n">st</span><span class="o">.</span><span class="n">just</span><span class="p">(</span><span class="n">method_name</span><span class="p">),</span>
-                <span class="s2">&quot;ground_truth_backend&quot;</span><span class="p">:</span> <span class="n">st</span><span class="o">.</span><span class="n">just</span><span class="p">(</span><span class="n">ground_truth_backend</span><span class="p">),</span>
-            <span class="p">}</span>
-
             <span class="n">filtered_args</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">param_names</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">possible_arguments</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
             <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">filtered_args</span><span class="p">:</span>
@@ -1098,13 +1123,17 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">wrapped_test</span> <span class="o">=</span> <span class="n">test_fn</span>
 
+
         <span class="n">wrapped_test</span><span class="o">.</span><span class="n">test_data</span> <span class="o">=</span> <span class="n">TestData</span><span class="p">(</span>
             <span class="n">test_fn</span><span class="o">=</span><span class="n">wrapped_test</span><span class="p">,</span>
             <span class="n">fn_tree</span><span class="o">=</span><span class="n">method_tree</span><span class="p">,</span>
             <span class="n">fn_name</span><span class="o">=</span><span class="n">method_name</span><span class="p">,</span>
             <span class="n">supported_device_dtypes</span><span class="o">=</span><span class="n">supported_device_dtypes</span><span class="p">,</span>
+            <span class="n">is_method</span><span class="o">=</span><span class="kc">True</span>
         <span class="p">)</span>
+
         <span class="n">wrapped_test</span><span class="o">.</span><span class="n">ground_truth_backend</span> <span class="o">=</span> <span class="n">ground_truth_backend</span>
+        <span class="n">wrapped_test</span><span class="o">.</span><span class="n">_ivy_test</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="k">return</span> <span class="n">wrapped_test</span>
 
@@ -1182,10 +1211,17 @@
                 <span class="n">as_variable</span><span class="o">=</span><span class="n">method_as_variable_flags</span><span class="p">,</span>
                 <span class="n">native_arrays</span><span class="o">=</span><span class="n">method_native_arrays</span><span class="p">,</span>
             <span class="p">)</span>
-
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">ivy_init_modules</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">ivy_init_module</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">ivy_init_modules</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ivy_init_module</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">framework_init_modules</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">framework_init_module</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">framework_init_modules</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">framework_init_module</span><span class="p">)</span>
             <span class="n">frontend_helper_data</span> <span class="o">=</span> <span class="n">FrontendMethodData</span><span class="p">(</span>
-                <span class="n">ivy_init_module</span><span class="o">=</span><span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">ivy_init_module</span><span class="p">),</span>
-                <span class="n">framework_init_module</span><span class="o">=</span><span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">framework_init_module</span><span class="p">),</span>
+                <span class="n">ivy_init_module</span><span class="o">=</span><span class="n">ivy_init_modules</span><span class="p">,</span>
+                <span class="n">framework_init_module</span><span class="o">=</span><span class="n">framework_init_modules</span><span class="p">,</span>
                 <span class="n">init_name</span><span class="o">=</span><span class="n">init_name</span><span class="p">,</span>
                 <span class="n">method_name</span><span class="o">=</span><span class="n">method_name</span><span class="p">,</span>
             <span class="p">)</span>
@@ -1209,6 +1245,7 @@
             <span class="n">fn_tree</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">init_tree</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">method_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">fn_name</span><span class="o">=</span><span class="n">method_name</span><span class="p">,</span>
             <span class="n">supported_device_dtypes</span><span class="o">=</span><span class="n">supported_device_dtypes</span><span class="p">,</span>
+            <span class="n">is_method</span><span class="o">=</span><span class="p">[</span><span class="n">method_name</span><span class="p">,</span> <span class="n">class_tree</span><span class="p">,</span><span class="n">split_index</span><span class="p">]</span>
         <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">wrapped_test</span>
