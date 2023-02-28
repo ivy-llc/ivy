@@ -24,7 +24,7 @@ def diag(v, k=0):
 
 
 @to_ivy_arrays_and_back
-def unravel_index(indices, shape):
+def unravel_index(indices, shape, order='C'):
     ret = ivy.unravel_index(indices, shape)
     return tuple(np.asarray(x, dtype=np.int64) for x in ret)
 
