@@ -378,7 +378,25 @@ def meshgrid(
     sparse: bool = False,
     indexing: str = "xy",
 ) -> List[paddle.Tensor]:
-    raise IvyNotImplementedException()
+    if not sparse:
+        if indexing == "ij":
+            return paddle.meshgrid(*arrays)
+        elif indexing == "xy":
+            return paddle.meshgrid(*arrays[::-1])[::-1]
+        else:
+            raise ValueError(f"indexing must be either 'ij' or 'xy', got {indexing}")
+
+    sd = (1,) * len(arrays)
+    res = [
+        paddle.reshape(paddle.to_tensor(a), (sd[:i] + (-1,) + sd[i + 1 :]))
+        for i, a in enumerate(arrays)
+    ]
+
+    if indexing == "xy" and len(arrays) > 1:
+        res[0] = paddle.reshape(res[0], (1, -1) + sd[2:])
+        res[1] = paddle.reshape(res[1], (-1, 1) + sd[2:])
+
+    return res
 
 
 def ones(
