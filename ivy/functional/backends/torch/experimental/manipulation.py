@@ -209,10 +209,10 @@ def take_along_axis(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if arr.shape != indices.shape:
+    if arr.ndim != indices.ndim and axis is not None:
         raise ivy.utils.exceptions.IvyException(
-            "arr and indices must have the same shape;"
-            + f" got {arr.shape} vs {indices.shape}"
+            "arr and indices must have the same number of dimensions;"
+            + f" got {arr.ndim} vs {indices.ndim}"
         )
     indices = indices.long()
     return torch.take_along_dim(arr, indices, axis, out=out)
