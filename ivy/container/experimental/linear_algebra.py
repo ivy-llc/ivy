@@ -683,7 +683,7 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
 
     @staticmethod
     def static_multi_dot(
-        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x: Sequence[Union[ivy.Container, ivy.Array, ivy.NativeArray]],
         /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -715,9 +715,12 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
         --------
         With :class:`ivy.Container` input:
         
-        >>> a = ivy.Container(x=ivy.arange(2 * 3).reshape((2, 3)), y=ivy.arange(2 * 3).reshape((2, 3)))
-        >>> b = ivy.Container(x=ivy.arange(3 * 2).reshape((3, 2)), y=ivy.arange(3 * 2).reshape((3, 2)))
-        >>> c = ivy.Container(x=ivy.arange(2 * 2).reshape((2, 2)), y=ivy.arange(2 * 2).reshape((2, 2)))
+        >>> a = ivy.Container(x=ivy.arange(2 * 3).reshape((2, 3)), 
+        ...                   y=ivy.arange(2 * 3).reshape((2, 3)))
+        >>> b = ivy.Container(x=ivy.arange(3 * 2).reshape((3, 2)), 
+        ...                   y=ivy.arange(3 * 2).reshape((3, 2)))
+        >>> c = ivy.Container(x=ivy.arange(2 * 2).reshape((2, 2)), 
+        ...                   y=ivy.arange(2 * 2).reshape((2, 2)))
         >>> ivy.Container.static_multi_dot((a, b, c))
         {
             x: ivy.array([[26, 49], 
@@ -738,7 +741,7 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
 
     def multi_dot(
         self: ivy.Container,
-        arrays,
+        arrays: Sequence[Union[ivy.Container, ivy.Array, ivy.NativeArray]],
         /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -754,9 +757,12 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
 
         Examples
         --------
-        >>> a = ivy.Container(x=ivy.arange(2 * 3).reshape((2, 3)), y=ivy.arange(2 * 3).reshape((2, 3)))
-        >>> b = ivy.Container(x=ivy.arange(3 * 2).reshape((3, 2)), y=ivy.arange(3 * 2).reshape((3, 2)))
-        >>> c = ivy.Container(x=ivy.arange(2 * 2).reshape((2, 2)), y=ivy.arange(2 * 2).reshape((2, 2)))
+        >>> a = ivy.Container(x=ivy.arange(2 * 3).reshape((2, 3)), 
+        ...                   y=ivy.arange(2 * 3).reshape((2, 3)))
+        >>> b = ivy.Container(x=ivy.arange(3 * 2).reshape((3, 2)), 
+        ...                   y=ivy.arange(3 * 2).reshape((3, 2)))
+        >>> c = ivy.Container(x=ivy.arange(2 * 2).reshape((2, 2)), 
+        ...                   y=ivy.arange(2 * 2).reshape((2, 2)))
         >>> a.multi_dot((b, c))
         {
             x: ivy.array([[26, 49], 
