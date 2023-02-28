@@ -442,3 +442,6 @@ class ndarray:
                 else ivy.to_list(value)
             )
         self._ivy_array[key] = value
+    
+    def __mod__(self, value, /):
+            return np_frontend.mod(self._ivy_array, value, out=self)
