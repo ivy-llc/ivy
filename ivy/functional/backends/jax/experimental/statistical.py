@@ -103,3 +103,15 @@ def bincount(
     else:
         ret = jnp.bincount(x, minlength=minlength).astype(x.dtype)
     return ret
+
+
+def average(
+    a: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: Optional[bool] = False,
+) -> JaxArray:
+
+    return jnp.average(a, axis=axis, keepdims=keepdims)
+
