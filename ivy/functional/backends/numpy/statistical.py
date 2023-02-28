@@ -253,3 +253,19 @@ def einsum(
 
 
 einsum.support_native_out = True
+
+#Experimental
+def median(
+    x: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    overwrite_input: bool = False,
+    keepdims: bool = False,
+    out: Optional[np.ndarray] = None,
+    ) -> np.ndarray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return np.asarray(
+    np.median(x, axis = axis, overwrite_input = overwrite_input, keepdims = keepdims, out = out))
+
+median.support_native_out = True
