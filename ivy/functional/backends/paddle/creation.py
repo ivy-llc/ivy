@@ -25,7 +25,6 @@ from . import backend_version
 from ivy.utils.exceptions import IvyNotImplementedException
 from paddle.fluid.libpaddle import Place
 from ivy.functional.backends.paddle.device import to_device
-from ivy.functional.backends.paddle.data_type import as_native_dtype
 
 # Array API Standard #
 # -------------------#
@@ -41,15 +40,23 @@ def arange(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if dtype:
-        dtype = as_native_dtype(dtype)
-    res = to_device(paddle.arange(start, stop, step, dtype=dtype), device=device))
-    if not dtype:
-        if res.dtype == paddle.float64:
-            return res.astype(paddle.float32)
-        elif res.dtype == paddle.int64:
-            return res.astype(paddle.int32)
-    return res
+    if stop is None:
+        stop = start
+        start = 0
+    if (step > 0 and start > stop) or (step < 0 and start < stop):
+        if isinstance(stop, float):
+            stop = float(start)
+        else:
+            stop = start
+    if dtype is None:
+        if isinstance(start, int) and isinstance(stop, int) and isinstance(step, int):
+            return to_device(paddle.arange(start, stop, step, dtype=paddle.int64), device).astype(
+                paddle.int32)
+        else:
+            return to_device(paddle.arange(start, stop, step), device)
+    else:
+        dtype = ivy.as_native_dtype(ivy.default_dtype(dtype=dtype))
+        return to_device(paddle.arange(start, stop, step, dtype=dtype), device)
 
 def _stack_tensors(x, dtype):
     if isinstance(x, (list, tuple)) and len(x) != 0 and isinstance(x[0], (list, tuple)):
