@@ -448,3 +448,14 @@ def ldexp(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.ldexp(x1, x2, out=out)
+
+
+def frexp(
+    x: np.ndarray,
+    /,
+    *,
+    out: Optional[Tuple[np.ndarray, np.ndarray]] = None,
+) -> Tuple[np.ndarray, np.ndarray]:
+    if out is None:
+        return np.frexp(x)
+    return np.frexp(x, out=out)
