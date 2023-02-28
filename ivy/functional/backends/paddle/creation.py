@@ -205,6 +205,99 @@ def full_like(
     return to_device(paddle.full_like(x=x, fill_value=fill_value, dtype=dtype), device)
 
 
+def _linspace_helper(start, stop, num, axis=None, *, dtype=None):
+    num = num.detach().numpy().item() if isinstance(num, paddle.Tensor) else num
+    start_is_array = isinstance(start, paddle.Tensor)
+    stop_is_array = isinstance(stop, paddle.Tensor)
+    linspace_method = paddle.linspace
+    sos_shape = []
+    if start_is_array:
+        start_shape = start.shape
+        sos_shape = start_shape
+        if num == 1:
+            if axis is not None:
+                return start.unsqueeze(axis)
+            else:
+                return start.unsqueeze(-1)
+        start = start.reshape((-1,))
+        linspace_method = (
+            _differentiable_linspace if not start.stop_gradient else paddle.linspace
+        )
+    if stop_is_array:
+        stop_shape = list(stop.shape)
+        sos_shape = stop_shape
+        if num == 1:
+            return (paddle.ones(stop_shape[:axis] + [1] + stop_shape[axis:]) * start)
+        stop = stop.reshape((-1,))
+        linspace_method = (
+            _differentiable_linspace if not stop.stop_gradient else paddle.linspace
+        )
+    if start_is_array and stop_is_array:
+        if num < start.shape[0]:
+            start = start.unsqueeze(-1)
+            stop = stop.unsqueeze(-1)
+            diff = stop - start
+            inc = diff / (num - 1)
+            res = [start]
+            res += [start + inc * i for i in range(1, num - 1)]
+            res.append(stop)
+        else:
+            res = [
+                linspace_method(strt, stp, num)
+                for strt, stp in zip(start, stop)
+            ]
+        paddle.concat(res, -1).reshape(start_shape + [num])
+    elif start_is_array and not stop_is_array:
+        if num < start.shape[0]:
+            start = start.unsqueeze(-1)
+            diff = stop - start
+            inc = diff / (num - 1)
+            res = [start]
+            res += [start + inc * i for i in range(1, num - 1)]
+            res.append(paddle.ones_like(start) * stop)
+        else:
+            res = [linspace_method(strt, stop, num) for strt in start]
+    elif not start_is_array and stop_is_array:
+        if num < stop.shape[0]:
+            stop = stop.unsqueeze(-1)
+            diff = stop - start
+            inc = diff / (num - 1)
+            res = [paddle.ones_like(stop) * start]
+            res += [start + inc * i for i in range(1, num - 1)]
+            res.append(stop)
+        else:
+            res = [linspace_method(start, stp, num) for stp in stop]
+    else:
+        return linspace_method(start, stop, num, dtype=dtype)
+    res = paddle.concat(res, -1).reshape(sos_shape + [num])
+    if axis is not None:
+        ndim = res.ndim
+        perm = paddle.arange(0, ndim - 1).numpy().tolist()
+        perm.insert(axis % (ndim + 1), ndim - 1)
+        res = paddle.transpose(res, perm)
+    return res
+
+
+def _differentiable_linspace(start, stop, num, *, dtype=None):
+    num = paddle.to_tensor(num, stop_gradient=False)
+    if num == 1:
+        return paddle.unsqueeze(start, 0)
+    n_m_1 = num - 1
+    increment = (stop - start) / n_m_1
+    increment_tiled = paddle.repeat_interleave(increment, n_m_1)
+    increments = increment_tiled * paddle.linspace(
+        1, n_m_1, n_m_1.cast(paddle.int32), dtype=dtype
+    )
+    res = paddle.concat(
+        (start, start + increments), 0
+    )
+    return res.cast(dtype)
+
+
+def _slice_at_axis(sl, axis):
+    return (slice(None),) * axis + (sl,) + (...,)
+
+
 def linspace(
     start: Union[paddle.Tensor, float],
     stop: Union[paddle.Tensor, float],
@@ -217,7 +310,48 @@ def linspace(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if not isinstance(start, paddle.Tensor):
+        start = paddle.to_tensor(start)
+
+    if not isinstance(start, paddle.Tensor):
+        start = paddle.to_tensor(stop)
+
+    if not isinstance(start, paddle.Tensor):
+        start = paddle.to_tensor(num)
+
+    if axis is None:
+        axis = -1
+    if not endpoint:
+        if dtype is not None:
+            ans = _linspace_helper(
+                start, stop, num + 1, axis, dtype=dtype)
+        else:
+            ans = _linspace_helper(start, stop, num + 1, axis)
+        if axis < 0:
+            axis += len(ans.shape)
+        ans = ans[_slice_at_axis(slice(None, -1), axis)]
+    else:
+        if dtype is not None:
+            ans = _linspace_helper(start, stop, num, axis, dtype=dtype)
+        else:
+            ans = _linspace_helper(start, stop, num, axis)
+    if (
+        endpoint
+        and ans.shape[0] > 1
+        and (not isinstance(start, paddle.Tensor))
+        and (not isinstance(stop, paddle.Tensor))
+    ):
+        ans[-1] = stop
+    if (
+        ans.shape[0] >= 1
+        and (not isinstance(start, paddle.Tensor))
+        and (not isinstance(stop, paddle.Tensor))
+        and ans[0] != start
+    ):
+        ans[0] = start
+    if "int" in str(dtype) and paddle.is_floating_point(ans):
+        ans = paddle.floor(ans)
+    return to_device(ans.cast(dtype), device)
 
 
 def meshgrid(
