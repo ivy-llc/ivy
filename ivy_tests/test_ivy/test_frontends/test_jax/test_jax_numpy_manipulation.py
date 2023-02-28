@@ -849,4 +849,5 @@ def test_jax_numpy_vsplit(
             test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
+            M=M[0],
         )
