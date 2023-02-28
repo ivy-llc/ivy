@@ -40,7 +40,31 @@ def arange(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if stop is None:
+        stop = start
+        start = 0
+    if (step > 0 and start > stop) or (step < 0 and start < stop):
+        if isinstance(stop, float):
+            stop = float(start)
+        else:
+            stop = start
+    if dtype is None:
+        if isinstance(start, int) and isinstance(stop, int) and isinstance(step, int):
+            return to_device(
+                paddle.arange(start, stop, step, dtype=paddle.int32), device)
+        
+        elif isinstance(start, float) or isinstance(stop, float) or isinstance(step, float):
+            return to_device(
+                paddle.arange(start, stop, step, dtype=paddle.float32), device)
+        
+        else:
+            return to_device(
+                paddle.arange(start, stop, step), device)
+    else:
+        dtype = ivy.as_native_dtype(ivy.default_dtype(dtype=dtype))
+        return to_device(
+            paddle.arange(start, stop, step, dtype=dtype), device)
+
 
 
 def _stack_tensors(x, dtype):
