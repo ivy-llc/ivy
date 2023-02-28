@@ -12,7 +12,6 @@ from ivy.func_wrapper import (
     with_unsupported_dtypes,
     with_unsupported_device_and_dtypes,
     _get_first_array,
-
 )
 from ivy.functional.ivy.creation import (
     asarray_to_native_arrays_and_back,
@@ -51,20 +50,23 @@ def arange(
     if dtype is None:
         if isinstance(start, int) and isinstance(stop, int) and isinstance(step, int):
             return to_device(
-                paddle.arange(start, stop, step, dtype=paddle.int32), device)
-        
-        elif isinstance(start, float) or isinstance(stop, float) or isinstance(step, float):
+                paddle.arange(start, stop, step, dtype=paddle.int32), device
+            )
+
+        elif (
+            isinstance(start, float)
+            or isinstance(stop, float)
+            or isinstance(step, float)
+        ):
             return to_device(
-                paddle.arange(start, stop, step, dtype=paddle.float32), device)
-        
+                paddle.arange(start, stop, step, dtype=paddle.float32), device
+            )
+
         else:
-            return to_device(
-                paddle.arange(start, stop, step), device)
+            return to_device(paddle.arange(start, stop, step), device)
     else:
         dtype = ivy.as_native_dtype(ivy.default_dtype(dtype=dtype))
-        return to_device(
-            paddle.arange(start, stop, step, dtype=dtype), device)
-
+        return to_device(paddle.arange(start, stop, step, dtype=dtype), device)
 
 
 def _stack_tensors(x, dtype):
@@ -105,7 +107,7 @@ def asarray(
 
     if isinstance(obj, paddle.Tensor) and dtype is None:
         if copy is True:
-            return obj.clone().detach() 
+            return obj.clone().detach()
         else:
             return obj.detach()
 
@@ -127,7 +129,6 @@ def asarray(
                     paddle.stack([paddle.to_tensor(i, dtype=dtype) for i in obj])
                     .clone()
                     .detach()
-
                 )
             else:
                 return _stack_tensors(obj, dtype)
@@ -140,9 +141,7 @@ def asarray(
 
     if dtype == paddle.bfloat16 and isinstance(obj, np.ndarray):
         if copy is True:
-            return (
-                paddle.to_tensor(obj.tolist(), dtype=dtype).clone().detach()
-            )
+            return paddle.to_tensor(obj.tolist(), dtype=dtype).clone().detach()
         else:
             return paddle.to_tensor(obj.tolist(), dtype=dtype)
 
@@ -211,7 +210,9 @@ def full(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return to_device(paddle.full(shape=shape, fill_value=fill_value, dtype=dtype), device)
+    return to_device(
+        paddle.full(shape=shape, fill_value=fill_value, dtype=dtype), device
+    )
 
 
 full.support_native_out = True
@@ -251,7 +252,7 @@ def _linspace_helper(start, stop, num, axis=None, *, dtype=None):
         stop_shape = list(stop.shape)
         sos_shape = stop_shape
         if num == 1:
-            return (paddle.ones(stop_shape[:axis] + [1] + stop_shape[axis:]) * start)
+            return paddle.ones(stop_shape[:axis] + [1] + stop_shape[axis:]) * start
         stop = stop.reshape((-1,))
         linspace_method = (
             _differentiable_linspace if not stop.stop_gradient else paddle.linspace
@@ -266,10 +267,7 @@ def _linspace_helper(start, stop, num, axis=None, *, dtype=None):
             res += [start + inc * i for i in range(1, num - 1)]
             res.append(stop)
         else:
-            res = [
-                linspace_method(strt, stp, num)
-                for strt, stp in zip(start, stop)
-            ]
+            res = [linspace_method(strt, stp, num) for strt, stp in zip(start, stop)]
         paddle.concat(res, -1).reshape(start_shape + [num])
     elif start_is_array and not stop_is_array:
         if num < start.shape[0]:
@@ -312,9 +310,7 @@ def _differentiable_linspace(start, stop, num, *, dtype=None):
     increments = increment_tiled * paddle.linspace(
         1, n_m_1, n_m_1.cast(paddle.int32), dtype=dtype
     )
-    res = paddle.concat(
-        (start, start + increments), 0
-    )
+    res = paddle.concat((start, start + increments), 0)
     return res.cast(dtype)
 
 
@@ -347,8 +343,7 @@ def linspace(
         axis = -1
     if not endpoint:
         if dtype is not None:
-            ans = _linspace_helper(
-                start, stop, num + 1, axis, dtype=dtype)
+            ans = _linspace_helper(start, stop, num + 1, axis, dtype=dtype)
         else:
             ans = _linspace_helper(start, stop, num + 1, axis)
         if axis < 0:
@@ -468,4 +463,33 @@ def one_hot(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    on_none = on_value is None
+    off_none = off_value is None
+
+    if dtype is None:
+        if on_none and off_none:
+            dtype = paddle.float32
+        else:
+            if not on_none:
+                dtype = paddle.to_tensor(on_value).dtype
+            elif not off_none:
+                dtype = paddle.to_tensor(off_value).dtype
+    else:
+        dtype = ivy.as_native_dtype(dtype)
+
+    on_value = (
+        paddle.to_tensor(1.0) if on_none else paddle.to_tensor(on_value, dtype=dtype)
+    )
+    off_value = (
+        paddle.to_tensor(0.0) if off_none else paddle.to_tensor(off_value, dtype=dtype)
+    )
+
+    res = paddle.nn.functional.one_hot(indices.cast(paddle.int64), depth)
+
+    if not on_none or not off_none:
+        res = paddle.where(res == 1, on_value, off_value)
+
+    if axis is not None:
+        res = paddle.moveaxis(res, -1, axis)
+
+    return to_device(res.cast(dtype), device)
