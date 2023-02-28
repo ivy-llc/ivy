@@ -1267,8 +1267,14 @@ def test_method(
             if k not in fw_list:
                 fw_list[k] = []
             fw_list[k].extend(v)
+
         ivy.unset_backend()
     # gradient test
+
+    if isinstance(ground_truth_backend, list):
+        # multiversion
+        ins_gt = ins
+
     fw = ivy.current_backend_str()
     if (
         test_gradients
