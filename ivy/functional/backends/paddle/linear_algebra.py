@@ -57,7 +57,11 @@ def diagonal(
 def eigh(
     x: paddle.Tensor, /, *, UPLO: Optional[str] = "L", out: Optional[paddle.Tensor] = None
 ) -> Tuple[paddle.Tensor]:
-    raise IvyNotImplementedException()
+    result_tuple = NamedTuple(
+        "eigh", [("eigenvalues", paddle.Tensor), ("eigenvectors", paddle.Tensor)]
+    )
+    eigenvalues, eigenvectors = paddle.linalg.eigh(x, UPLO=UPLO)
+    return result_tuple(eigenvalues, eigenvectors)
 
 
 def eigvalsh(
