@@ -50,13 +50,21 @@ def arange(
             stop = start
     if dtype is None:
         if isinstance(start, int) and isinstance(stop, int) and isinstance(step, int):
-            return to_device(paddle.arange(start, stop, step, dtype=paddle.int64), device).astype(
-                paddle.int32)
+            return to_device(
+                paddle.arange(start, stop, step, dtype=paddle.int32), device)
+        
+        elif isinstance(start, float) or isinstance(stop, float) or isinstance(step, float):
+            return to_device(
+                paddle.arange(start, stop, step, dtype=paddle.float32), device)
+        
         else:
-            return to_device(paddle.arange(start, stop, step), device)
+            return to_device(
+                paddle.arange(start, stop, step), device)
     else:
         dtype = ivy.as_native_dtype(ivy.default_dtype(dtype=dtype))
-        return to_device(paddle.arange(start, stop, step, dtype=dtype), device)
+        return to_device(
+            paddle.arange(start, stop, step, dtype=dtype), device)
+
 
 def _stack_tensors(x, dtype):
     if isinstance(x, (list, tuple)) and len(x) != 0 and isinstance(x[0], (list, tuple)):
