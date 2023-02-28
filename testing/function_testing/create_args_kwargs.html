@@ -43,7 +43,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'testing/function_testing/create_args_kwargs';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="empty_func" href="empty_func.html" />
+    <link rel="next" title="create_frontend_args_kwargs" href="create_frontend_args_kwargs.html" />
     <link rel="prev" title="convtrue" href="convtrue.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="docsearch:language" content="en">
@@ -582,7 +582,7 @@
 <h1>create_args_kwargs<a class="headerlink" href="#create-args-kwargs" title="Permalink to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.function_testing.create_args_kwargs">
-<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.function_testing.</span></span><span class="sig-name descname"><span class="pre">create_args_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args_np</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_np_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args_idxs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_np</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwarg_np_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_idxs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_dtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_variable_flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">native_array_flags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">container_flags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy_tests/test_ivy/helpers/function_testing.html#create_args_kwargs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.function_testing.create_args_kwargs" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.function_testing.</span></span><span class="sig-name descname"><span class="pre">create_args_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args_np</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_np_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args_idxs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_np</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwarg_np_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_idxs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_dtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_flags</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy_tests/test_ivy/helpers/function_testing.html#create_args_kwargs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.function_testing.create_args_kwargs" title="Permalink to this definition">#</a></dt>
 <dd><p>Creates arguments and keyword-arguments for the function to test.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -590,10 +590,6 @@
 <li><p><strong>args_np</strong> – A dictionary of arguments in Numpy.</p></li>
 <li><p><strong>kwargs_np</strong> – A dictionary of keyword-arguments in Numpy.</p></li>
 <li><p><strong>input_dtypes</strong> – data-types of the input arguments and keyword-arguments.</p></li>
-<li><p><strong>as_variable_flags</strong> – A list of booleans. if True for a corresponding input argument, it is called
-as an variable.</p></li>
-<li><p><strong>native_array_flags</strong> – if not None, the corresponding argument is called as a Native Array.</p></li>
-<li><p><strong>container_flags</strong> – if not None, the corresponding argument is called as an Ivy Container.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -623,10 +619,10 @@ as an variable.</p></li>
           <p class="prev-next-title">convtrue</p>
       </div>
   </a>
-  <a class='right-next' id="next-link" href="empty_func.html" title="next page">
+  <a class='right-next' id="next-link" href="create_frontend_args_kwargs.html" title="next page">
   <div class="prev-next-info">
       <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">empty_func</p>
+      <p class="prev-next-title">create_frontend_args_kwargs</p>
   </div>
   <i class="fa-solid fa-angle-right"></i>
   </a>
@@ -652,6 +648,7 @@ as an variable.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="as_lists.html">as_lists</a></li>
 <li class="toctree-l1"><a class="reference internal" href="convtrue.html">convtrue</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">create_args_kwargs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="create_frontend_args_kwargs.html">create_frontend_args_kwargs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="empty_func.html">empty_func</a></li>
 <li class="toctree-l1"><a class="reference internal" href="flatten.html">flatten</a></li>
 <li class="toctree-l1"><a class="reference internal" href="flatten_and_to_np.html">flatten_and_to_np</a></li>

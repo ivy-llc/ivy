@@ -1448,23 +1448,29 @@
     <span class="k">return</span> <span class="n">x</span>
 
 
-<span class="k">def</span> <span class="nf">_check_tuple_arg</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_check_tuple_arg</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">b_float</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">scalar_types</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="k">if</span> <span class="n">b_float</span> <span class="k">else</span> <span class="nb">int</span>
     <span class="n">flag_assert</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
         <span class="k">for</span> <span class="n">nested</span> <span class="ow">in</span> <span class="n">arg</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nested</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
                 <span class="k">for</span> <span class="n">sub_nested</span> <span class="ow">in</span> <span class="n">nested</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sub_nested</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sub_nested</span><span class="p">,</span> <span class="n">scalar_types</span><span class="p">):</span>
                         <span class="n">flag_assert</span> <span class="o">=</span> <span class="kc">True</span>
                         <span class="k">break</span>
-            <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nested</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nested</span><span class="p">,</span> <span class="n">scalar_types</span><span class="p">):</span>
                 <span class="n">flag_assert</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">scalar_types</span><span class="p">):</span>
         <span class="n">flag_assert</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">if</span> <span class="n">flag_assert</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
-            <span class="n">name</span> <span class="o">+</span> <span class="s2">&quot; should be int, tuple of ints or tuple of int tuples&quot;</span>
-        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">b_float</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+                <span class="n">name</span> <span class="o">+</span> <span class="s2">&quot; should be scalar, tuple of scalars or tuple of scalar tuples&quot;</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+                <span class="n">name</span> <span class="o">+</span> <span class="s2">&quot; should be int, tuple of ints or tuple of int tuples&quot;</span>
+            <span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_check_arguments</span><span class="p">(</span>
@@ -1515,14 +1521,14 @@
                 <span class="s2">&quot;constant_values is required for mode: &quot;</span> <span class="o">+</span> <span class="n">mode</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">_check_tuple_arg</span><span class="p">(</span><span class="n">constant_values</span><span class="p">,</span> <span class="s2">&quot;constant_values&quot;</span><span class="p">)</span>
+            <span class="n">_check_tuple_arg</span><span class="p">(</span><span class="n">constant_values</span><span class="p">,</span> <span class="s2">&quot;constant_values&quot;</span><span class="p">,</span> <span class="n">b_float</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;linear_ramp&quot;</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">end_values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
                 <span class="s2">&quot;end_values is required for mode: &quot;</span> <span class="o">+</span> <span class="n">mode</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">_check_tuple_arg</span><span class="p">(</span><span class="n">end_values</span><span class="p">,</span> <span class="s2">&quot;end_values&quot;</span><span class="p">)</span>
+            <span class="n">_check_tuple_arg</span><span class="p">(</span><span class="n">end_values</span><span class="p">,</span> <span class="s2">&quot;end_values&quot;</span><span class="p">,</span> <span class="n">b_float</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
         <span class="n">reflect_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;even&quot;</span><span class="p">,</span> <span class="s2">&quot;odd&quot;</span><span class="p">],</span>
         <span class="n">message</span><span class="o">=</span><span class="s2">&quot;the provided reflect_type is not supported&quot;</span><span class="p">,</span>
@@ -2141,7 +2147,8 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">broadcast_shapes</span><span class="p">(</span><span class="n">shapes</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="expand"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/manipulation/expand.html#ivy.functional.ivy.experimental.expand">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="expand"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/manipulation/expand.html#ivy.functional.ivy.experimental.expand">[docs]</a><span class="nd">@handle_view</span>
+<span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
@@ -2152,7 +2159,6 @@
     <span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeShape</span><span class="p">],</span>
     <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2174,8 +2180,7 @@
 <span class="sd">    ret</span>
 <span class="sd">        Output Array</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ones</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="n">ones</span></div>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 </pre></div>
 
             </article>
