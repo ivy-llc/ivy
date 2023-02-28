@@ -155,6 +155,7 @@ def hamming_window(
     dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    ##Implemented as a composite function in ivy.functional.experimental.creation
     raise IvyNotImplementedException()
 
 
@@ -179,7 +180,17 @@ def hann_window(
     dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    
+    size = size + 1 if periodic else size
+    pi = paddle.to_tensor(math.pi)
+    result_dtype = ivy.promote_types_of_inputs(size, 0.0)[0].dtype
+    if size < 1:
+        return paddle.to_tensor([], dtype=result_dtype)
+    if size == 1:
+        return paddle.ones(1, dtype=result_dtype)
+    n = paddle.arange(1 - size, size, 2)
+    res = (0.5 + 0.5 * paddle.cos(pi * n / (size - 1))).cast(dtype)
+    return res[:-1] if periodic else res
 
 
 def tril_indices(
