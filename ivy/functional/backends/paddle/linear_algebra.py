@@ -273,7 +273,9 @@ def slogdet(
     x: paddle.Tensor,
     /,
 ) -> Tuple[paddle.Tensor, paddle.Tensor]:
-    raise IvyNotImplementedException()
+    results = NamedTuple("slogdet", [("sign", paddle.Tensor), ("logabsdet", paddle.Tensor)])
+    sign, logabsdet = paddle.linalg.slogdet(x)
+    return results(sign, logabsdet)
 
 
 def solve(
