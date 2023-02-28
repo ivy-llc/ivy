@@ -132,7 +132,67 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    def dim_reduction(array):
+        if array.ndim == 1:
+            ret = array[0]
+        elif array.ndim == 2:
+            ret = array[0][0]
+        elif array.ndim == 3:
+            ret = array[0][0][0]
+        elif array.ndim == 4:
+            ret = array[0][0][0][0]
+        return ret
+
+    if len(x.shape) == 3:
+        if x.shape[-3] == 0:
+            return paddle.to_tensor(0).astype(x.dtype)
+    elif len(x.shape) > 3:
+        if x.shape[-3] == 0 or x.shape[-4] == 0:
+            return paddle.to_tensor(0).astype(x.dtype)
+    axis = None
+    ret_shape = x.shape[:-2]
+    if len(x.shape) == 2:
+        singular_values = paddle.linalg.svd(x, full_matrices=False)
+    elif len(x.shape) > 2:
+        y = x.reshape((-1, *x.shape[-2:]))
+        singular_values = paddle.to_tensor(
+            [
+                paddle.linalg.svd(split[0], full_matrices=False)[1]
+                for split in paddle.split(y, y.shape[0], axis=0)
+            ]
+        )
+        axis = 1
+    if len(x.shape) < 2 or len(singular_values.shape) == 0:
+        return paddle.to_tensor(0).astype(x.dtype)
+    max_values = paddle.max(singular_values, axis=axis)
+    if atol is None:
+        if rtol is None:
+            ret = paddle.sum(singular_values != 0, axis=axis)
+        else:
+            try:
+                max_rtol = max_values * rtol
+            except ValueError:
+                if ivy.all(
+                    element == rtol[0] for element in rtol
+                ):  # all elements are same in rtol
+                    rtol = dim_reduction(rtol)
+                    max_rtol = max_values * rtol
+            if not isinstance(rtol, float) and rtol.size > 1:
+                if ivy.all(element == max_rtol[0] for element in max_rtol):
+                    max_rtol = dim_reduction(max_rtol)
+            elif not isinstance(max_values, float) and max_values.size > 1:
+                if ivy.all(element == max_values[0] for element in max_values):
+                    max_rtol = dim_reduction(max_rtol)
+            ret = ivy.sum(singular_values > max_rtol, axis=axis)
+    else:  # atol is not None
+        if rtol is None:  # atol is not None, rtol is None
+            ret = paddle.sum(singular_values > atol, axis=axis)
+        else:
+            tol = paddle.max(atol, max_values * rtol)
+            ret = paddle.sum(singular_values > tol, axis=axis)
+    if len(ret_shape):
+        ret = ret.reshape(ret_shape)
+    return ret.astype(x.dtype)
 
 
 def matrix_transpose(
