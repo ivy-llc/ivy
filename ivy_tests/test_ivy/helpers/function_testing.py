@@ -61,6 +61,7 @@ from .assertions import (
     value_test,
     check_unsupported_dtype,
 )
+from . import globals
 
 os.environ["IVY_ROOT"] = ".ivy"
 import ivy.compiler.compiler as ic
