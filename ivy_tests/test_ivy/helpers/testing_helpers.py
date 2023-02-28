@@ -555,13 +555,14 @@ def handle_method(
         else:
             wrapped_test = test_fn
 
-        if is_method_tree_provided:
-            wrapped_test.test_data = TestData(
-                test_fn=wrapped_test,
-                fn_tree=method_tree,
-                fn_name=method_name,
-                supported_device_dtypes=supported_device_dtypes,
-            )
+        wrapped_test.test_data = TestData(
+            test_fn=wrapped_test,
+            fn_tree=method_tree,
+            fn_name=method_name,
+            supported_device_dtypes=supported_device_dtypes,
+            is_method=True,
+        )
+
         wrapped_test.ground_truth_backend = ground_truth_backend
         wrapped_test._ivy_test = True
 
