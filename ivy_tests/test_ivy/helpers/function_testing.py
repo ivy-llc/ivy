@@ -69,8 +69,6 @@ import ivy.compiler.compiler as ic
 # Temporary (.so) configuration
 def compiled_if_required(fn, test_compile=False, args=None, kwargs=None):
     if test_compile:
-        print("args", args)
-        print("kwargs", kwargs)
         fn = ic.compile(fn, args=args, kwargs=kwargs)
     return fn
 
@@ -354,43 +352,78 @@ def test_function(
                 lambda x: not x,
             )
     # compute the return with a Ground Truth backend
-    ivy.set_backend(ground_truth_backend)
-    try:
-        fn = getattr(ivy, fn_name)
-        args, kwargs, _, _, _ = create_args_kwargs(
-            args_np=args_np,
-            arg_np_vals=arg_np_vals,
-            args_idxs=args_idxs,
-            kwargs_np=kwargs_np,
-            kwargs_idxs=kwargs_idxs,
-            kwarg_np_vals=kwarg_np_vals,
-            input_dtypes=input_dtypes,
-            test_flags=test_flags,
-        )
-        ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
-            ivy.__dict__[fn_name], *args, test_compile=test_flags.test_compile, **kwargs
-        )
-        if test_flags.with_out and not test_flags.test_compile:
-            test_ret_from_gt = (
-                ret_from_gt[getattr(ivy.__dict__[fn_name], "out_index")]
-                if hasattr(ivy.__dict__[fn_name], "out_index")
-                else ret_from_gt
-            )
-            out_from_gt = ivy.nested_map(
-                test_ret_from_gt, ivy.zeros_like, to_mutable=True, include_derived=True
+
+    if isinstance(ground_truth_backend, list):
+        process = ground_truth_backend[1]
+
+        try:
+            process.stdin.write(jsonpickle.dumps(args_np) + "\n")
+            process.stdin.write(jsonpickle.dumps(arg_np_vals) + "\n")
+            process.stdin.write(jsonpickle.dumps(args_idxs) + "\n")
+            process.stdin.write(jsonpickle.dumps(kwargs_np) + "\n")
+            process.stdin.write(jsonpickle.dumps(kwargs_idxs) + "\n")
+            process.stdin.write(jsonpickle.dumps(kwarg_np_vals) + "\n")
+            process.stdin.write(jsonpickle.dumps(input_dtypes) + "\n")
+            process.stdin.write(jsonpickle.dumps(test_flags) + "\n")
+            process.stdin.write(jsonpickle.dumps(fn_name) + "\n")
+            process.stdin.flush()
+        except Exception as e:
+            print("Something bad happened to the subprocess, here are the logs:\n\n")
+
+            print(process.stdout.readlines())
+            raise e
+        ground_ret = process.stdout.readline()
+        if ground_ret:
+            ground_ret = jsonpickle.loads(make_json_pickable(ground_ret))
+        else:
+            print(process.stderr.readlines())
+            raise Exception
+        ret_from_gt, ret_np_from_gt_flat, fw_list = ground_ret
+
+    else:
+        ivy.set_backend(ground_truth_backend)
+        try:
+            fn = getattr(ivy, fn_name)
+            args, kwargs, _, _, _ = create_args_kwargs(
+                args_np=args_np,
+                arg_np_vals=arg_np_vals,
+                args_idxs=args_idxs,
+                kwargs_np=kwargs_np,
+                kwargs_idxs=kwargs_idxs,
+                kwarg_np_vals=kwarg_np_vals,
+                input_dtypes=input_dtypes,
+                test_flags=test_flags,
             )
             ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
                 ivy.__dict__[fn_name],
                 *args,
                 test_compile=test_flags.test_compile,
                 **kwargs,
-                out=out_from_gt,
             )
-    except Exception as e:
+            if test_flags.with_out and not test_flags.test_compile:
+                test_ret_from_gt = (
+                    ret_from_gt[getattr(ivy.__dict__[fn_name], "out_index")]
+                    if hasattr(ivy.__dict__[fn_name], "out_index")
+                    else ret_from_gt
+                )
+                out_from_gt = ivy.nested_map(
+                    test_ret_from_gt,
+                    ivy.zeros_like,
+                    to_mutable=True,
+                    include_derived=True,
+                )
+                ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
+                    ivy.__dict__[fn_name],
+                    *args,
+                    test_compile=test_flags.test_compile,
+                    **kwargs,
+                    out=out_from_gt,
+                )
+        except Exception as e:
+            ivy.unset_backend()
+            raise e
+        fw_list = gradient_unsupported_dtypes(fn=ivy.__dict__[fn_name])
         ivy.unset_backend()
-        raise e
-    fw_list = gradient_unsupported_dtypes(fn=ivy.__dict__[fn_name])
-    ivy.unset_backend()
     # gradient test
     fw = ivy.current_backend_str()
     if (
@@ -538,7 +571,7 @@ def test_frontend_function(
     function_module = importlib.import_module(frontend_submods)
     frontend_fn = getattr(function_module, fn_name)
 
-    args, kwargs, = create_frontend_args_kwargs(
+    (args, kwargs,) = create_frontend_args_kwargs(
         args_np=args_np,
         arg_np_vals=arg_np_vals,
         args_idxs=args_idxs,
@@ -651,7 +684,6 @@ def test_frontend_function(
         # be applied here too
 
         try:
-
             # compute the return via the frontend framework
             module_name = fn_tree[25 : fn_tree.rfind(".")]
 
@@ -696,7 +728,6 @@ def test_frontend_function(
             raise e
 
     else:
-
         # non-multiversion zone, changes made here should be
         # applied to multiversion zone too
 
@@ -831,32 +862,64 @@ def gradient_test(
     grads_np_flat = flatten_and_to_np(ret=grads)
 
     # compute the return with a Ground Truth backend
-    ivy.set_backend(ground_truth_backend)
-    test_unsupported = check_unsupported_dtype(
-        fn=ivy.__dict__[fn] if isinstance(fn, str) else fn[1],
-        input_dtypes=input_dtypes,
-        all_as_kwargs_np=all_as_kwargs_np,
-    )
-    if test_unsupported:
-        return
-    args, kwargs, _, args_idxs, kwargs_idxs = create_args_kwargs(
-        args_np=args_np,
-        arg_np_vals=arg_np_vals,
-        args_idxs=args_idxs,
-        kwargs_np=kwargs_np,
-        kwarg_np_vals=kwarg_np_vals,
-        kwargs_idxs=kwargs_idxs,
-        input_dtypes=input_dtypes,
-        test_flags=test_flags,
-    )
-    _, grads_from_gt = ivy.execute_with_gradients(
-        grad_fn,
-        [args, kwargs, 1],
-        xs_grad_idxs=xs_grad_idxs,
-        ret_grad_idxs=ret_grad_idxs,
-    )
-    grads_np_from_gt_flat = flatten_and_to_np(ret=grads_from_gt)
-    ivy.unset_backend()
+
+    if isinstance(ground_truth_backend, list):
+
+        process = ground_truth_backend[1]
+        try:
+            process.stdin.write("2" + "\n")
+            process.stdin.write(jsonpickle.dumps(args_np) + "\n")
+            process.stdin.write(jsonpickle.dumps(arg_np_vals) + "\n")
+            process.stdin.write(jsonpickle.dumps(args_idxs) + "\n")
+            process.stdin.write(jsonpickle.dumps(kwargs_np) + "\n")
+            process.stdin.write(jsonpickle.dumps(kwargs_idxs) + "\n")
+            process.stdin.write(jsonpickle.dumps(kwarg_np_vals) + "\n")
+            process.stdin.write(jsonpickle.dumps(input_dtypes) + "\n")
+            process.stdin.write(jsonpickle.dumps(test_flags) + "\n")
+            process.stdin.write(jsonpickle.dumps(fn) + "\n")
+            process.stdin.write(jsonpickle.dumps(all_as_kwargs_np) + "\n")
+            process.stdin.write(jsonpickle.dumps(grad_fn) + "\n")
+            process.stdin.write(jsonpickle.dumps(xs_grad_idxs) + "\n")
+            process.stdin.write(jsonpickle.dumps(ret_grad_idxs) + "\n")
+            process.stdin.flush()
+        except Exception as e:
+            print("Something bad happened to the subprocess, here are the logs:\n\n")
+            print(process.stdout.readlines())
+            raise e
+        ground_ret = process.stdout.readline()
+        if ground_ret:
+            ground_ret = jsonpickle.loads(make_json_pickable(ground_ret))
+        else:
+            print(process.stderr.readlines())
+            raise Exception
+        grads_np_from_gt_flat = ground_ret
+    else:
+        ivy.set_backend(ground_truth_backend)
+        test_unsupported = check_unsupported_dtype(
+            fn=ivy.__dict__[fn] if isinstance(fn, str) else fn[1],
+            input_dtypes=input_dtypes,
+            all_as_kwargs_np=all_as_kwargs_np,
+        )
+        if test_unsupported:
+            return
+        args, kwargs, _, args_idxs, kwargs_idxs = create_args_kwargs(
+            args_np=args_np,
+            arg_np_vals=arg_np_vals,
+            args_idxs=args_idxs,
+            kwargs_np=kwargs_np,
+            kwarg_np_vals=kwarg_np_vals,
+            kwargs_idxs=kwargs_idxs,
+            input_dtypes=input_dtypes,
+            test_flags=test_flags,
+        )
+        _, grads_from_gt = ivy.execute_with_gradients(
+            grad_fn,
+            [args, kwargs, 1],
+            xs_grad_idxs=xs_grad_idxs,
+            ret_grad_idxs=ret_grad_idxs,
+        )
+        grads_np_from_gt_flat = flatten_and_to_np(ret=grads_from_gt)
+        ivy.unset_backend()
 
     assert len(grads_np_flat) == len(
         grads_np_from_gt_flat
@@ -1593,6 +1656,7 @@ def create_frontend_args_kwargs(
     -------
     Arguments, Keyword-arguments
     """
+
     # create args
     def _apply_flags(args_to_iterate):
         ret = []
