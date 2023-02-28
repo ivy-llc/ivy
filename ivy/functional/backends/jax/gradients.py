@@ -73,7 +73,13 @@ def _forward_fn(
 
 
 def execute_with_gradients(
-    func, xs, /, *, retain_grads=False, xs_grad_idxs=None, ret_grad_idxs=None
+    func,
+    xs: JaxArray,
+    /,
+    *,
+    retain_grads: bool = False,
+    xs_grad_idxs: Optional[JaxArray] = None,
+    ret_grad_idxs: Optional[JaxArray] = None,
 ):
     # Conversion of required arrays to float variables and duplicate index chains
     (
