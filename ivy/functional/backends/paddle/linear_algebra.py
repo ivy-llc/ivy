@@ -88,7 +88,8 @@ def eigvalsh(
 def inner(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    return paddle.inner(x1, x2)
 
 
 def inv(
