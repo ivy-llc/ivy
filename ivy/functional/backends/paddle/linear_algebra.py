@@ -55,7 +55,11 @@ def diagonal(
 
 
 def eigh(
-    x: paddle.Tensor, /, *, UPLO: Optional[str] = "L", out: Optional[paddle.Tensor] = None
+    x: paddle.Tensor,
+    /,
+    *,
+    UPLO: Optional[str] = "L",
+    out: Optional[paddle.Tensor] = None,
 ) -> Tuple[paddle.Tensor]:
     result_tuple = NamedTuple(
         "eigh", [("eigenvalues", paddle.Tensor), ("eigenvectors", paddle.Tensor)]
@@ -65,7 +69,11 @@ def eigh(
 
 
 def eigvalsh(
-    x: paddle.Tensor, /, *, UPLO: Optional[str] = "L", out: Optional[paddle.Tensor] = None
+    x: paddle.Tensor,
+    /,
+    *,
+    UPLO: Optional[str] = "L",
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.linalg.eigvalsh(x, UPLO=UPLO)
 
@@ -97,7 +105,12 @@ def matmul(
     adjoint_b: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+
+    if adjoint_a:
+        x1 = paddle.moveaxis(x1, -2, -1).conj()
+    if adjoint_b:
+        x2 = paddle.moveaxis(x2, -2, -1).conj()
+    return paddle.matmul(x1, x2, transpose_x=transpose_a, transpose_y=transpose_b)
 
 
 def matrix_norm(
@@ -262,7 +275,9 @@ def svd(
     raise IvyNotImplementedException()
 
 
-def svdvals(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+def svdvals(
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
     raise IvyNotImplementedException()
 
 
