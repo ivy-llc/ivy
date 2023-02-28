@@ -456,6 +456,4 @@ def frexp(
     *,
     out: Optional[Tuple[np.ndarray, np.ndarray]] = None,
 ) -> Tuple[np.ndarray, np.ndarray]:
-    if out is None:
-        return np.frexp(x)
     return np.frexp(x, out=out)
