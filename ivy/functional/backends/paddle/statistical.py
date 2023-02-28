@@ -189,27 +189,26 @@ def cumsum(
 ) -> paddle.Tensor:
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
-        if dtype is paddle.bool_:
-            dtype = ivy.default_int_dtype(as_native=True)
-        elif ivy.is_int_dtype(x.dtype):
+        if ivy.is_int_dtype(x.dtype):
             dtype = ivy.promote_types(x.dtype, ivy.default_int_dtype(as_native=True))
-        else:
-            dtype = _infer_dtype(x.dtype)
+        dtype = _infer_dtype(x.dtype)
     if exclusive or reverse:
         if exclusive and reverse:
             x = paddle.cumsum(paddle.flip(x, axis=axis), axis=axis, dtype=dtype)
             x = paddle.transpose(x, axis, -1)
-            x = paddle.concatenate((paddle.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+            x = paddle.concat((paddle.zeros_like(x[..., -1:]), x[..., :-1]), -1)
             x = paddle.transpose(x, axis, -1)
             res = paddle.flip(x, axis=axis)
         elif exclusive:
             x = paddle.transpose(x, axis, -1)
-            x = paddle.concatenate((paddle.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+            x = paddle.cat((paddle.zeros_like(x[..., -1:]), x[..., :-1]), -1)
             x = paddle.cumsum(x, -1, dtype=dtype)
             res = paddle.transpose(x, axis, -1)
-        elif reverse:
+        else:
             x = paddle.cumsum(paddle.flip(x, axis=axis), axis=axis, dtype=dtype)
             res = paddle.flip(x, axis=axis)
+        if ivy.exists(out):
+            return ivy.inplace_update(out, res)    
         return res
     return paddle.cumsum(x, axis, dtype=dtype)
 
