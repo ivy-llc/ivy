@@ -800,12 +800,12 @@ class ArrayWithManipulationExperimental(abc.ABC):
         """
         return ivy.hsplit(self._data, indices_or_sections)
 
+    @handle_view
     def expand(
         self: ivy.Array,
         shape: Union[ivy.Shape, ivy.NativeShape],
         /,
         *,
-        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -817,4 +817,4 @@ class ArrayWithManipulationExperimental(abc.ABC):
         out
 
         """
-        return ivy.expand(self._data, shape, device=device, out=out)
+        return ivy.expand(self._data, shape, out=out)

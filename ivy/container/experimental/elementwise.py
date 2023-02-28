@@ -3176,7 +3176,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         )
 
     def binarizer(
-        self: [ivy.Array, ivy.NativeArray, ivy.Container],
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         *,
         threshold: float = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -3348,3 +3348,103 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+    @staticmethod
+    def static_ldexp(
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.ldexp. This method simply
+        wraps the function, and so the docstring for ivy.ldexp also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x1
+            The container whose arrays should be multiplied by 2**i.
+        x2
+            The container whose arrays should be used to multiply x by 2**i.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container including x1 * 2**x2.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 5, 10]))
+        >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 5, 10]))
+        >>> ivy.Container.static_ldexp(x1, x2)
+        {
+            a: ivy.array([2, 8, 24]),
+            b: ivy.array([2, 160, 10240])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "ldexp",
+            x1,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def ldexp(
+        self: ivy.Container,
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.ldexp. This method simply
+        wraps the function, and so the docstring for ivy.ldexp also applies to this
+        method with minimal changes.
+        Parameters
+        ----------
+        self
+            The container whose arrays should be multiplied by 2**x2.
+        x2
+            The container whose arrays should be used to multiply x1 by 2**x2.
+        out
+            optional output container, for writing the result to.
+        Returns
+        -------
+        ret
+            container including x1 * 2**x2.
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 5, 10]))
+        >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 5, 10]))
+        >>> x1.ldexp(x2)
+        {
+            a: ivy.array([2, 8, 24]),
+            b: ivy.array([2, 160, 10240])
+        }
+        """
+        return self.static_ldexp(self, x2, out=out)

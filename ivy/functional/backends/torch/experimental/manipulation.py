@@ -183,7 +183,7 @@ def dstack(
 ) -> torch.Tensor:
     if not isinstance(arrays, tuple):
         arrays = tuple(arrays)
-    return torch.dstack(arrays, out=None)
+    return torch.dstack(arrays, out=out)
 
 
 def atleast_2d(*arys: torch.Tensor) -> List[torch.Tensor]:
@@ -231,3 +231,16 @@ take_along_axis.support_native_out = True
 
 def broadcast_shapes(shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     return tuple(torch.broadcast_shapes(*shapes))
+
+
+def expand(
+    x: torch.Tensor,
+    shape: Union[List[int], List[Tuple]],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return x.expand(shape)
+
+
+expand.support_native_out = False

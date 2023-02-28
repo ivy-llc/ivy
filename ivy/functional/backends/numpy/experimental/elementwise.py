@@ -438,3 +438,13 @@ def conj(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.conj(x, out=out)
+
+
+def ldexp(
+    x1: np.ndarray,
+    x2: Union[np.ndarray, int, list, tuple],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.ldexp(x1, x2, out=out)

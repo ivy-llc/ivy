@@ -394,14 +394,7 @@ class Tensor:
             else:
                 size = args
 
-        size = list(size)
-        for i, dim in enumerate(size):
-            if dim < 0:
-                size[i] = self.shape[i]
-
-        return torch_frontend.tensor(
-            ivy.broadcast_to(self._ivy_array, shape=tuple(size))
-        )
+        return torch_frontend.tensor(ivy.expand(self._ivy_array, tuple(size)))
 
     def expand_as(self, other):
         return self.expand(

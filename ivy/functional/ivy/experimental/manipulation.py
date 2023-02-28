@@ -1563,6 +1563,7 @@ def broadcast_shapes(shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     return ivy.current_backend().broadcast_shapes(shapes)
 
 
+@handle_view
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -1574,7 +1575,6 @@ def expand(
     shape: Union[ivy.Shape, ivy.NativeShape],
     /,
     *,
-    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -1596,5 +1596,4 @@ def expand(
     ret
         Output Array
     """
-    ones = ivy.ones(shape, dtype=x.dtype, device=device, out=out)
-    return x * ones
+    return ivy.current_backend(x).expand(x, shape, out=out)

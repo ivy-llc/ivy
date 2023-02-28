@@ -1414,3 +1414,40 @@ def conj(
     }
     """
     return ivy.current_backend(x).conj(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+def ldexp(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Returns x1 * (2**x2), element-wise.
+    Parameters
+    ----------
+    x1
+        Input array.
+    x2
+        Input array.
+    out
+        optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
+    Returns
+    -------
+    ret
+        The next representable values of x1 in the direction of x2.
+    Examples
+    --------
+    >>> x1 = ivy.array([1, 2, 3])
+    >>> x2 = ivy.array([0, 1, 2])
+    >>> ivy.ldexp(x1, x2)
+    ivy.array([1, 4, 12])
+    """
+    return ivy.current_backend(x1, x2).ldexp(x1, x2, out=out)
