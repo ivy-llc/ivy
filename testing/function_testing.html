@@ -605,7 +605,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.function_testing.create_args_kwargs">
-<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.function_testing.</span></span><span class="sig-name descname"><span class="pre">create_args_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args_np</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_np_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args_idxs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_np</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwarg_np_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_idxs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_dtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_flags</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_tests/test_ivy/helpers/function_testing.html#create_args_kwargs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.function_testing.create_args_kwargs" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.function_testing.</span></span><span class="sig-name descname"><span class="pre">create_args_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args_np</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_np_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args_idxs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_np</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwarg_np_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_idxs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_dtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_variable_flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">native_array_flags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">container_flags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_tests/test_ivy/helpers/function_testing.html#create_args_kwargs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.function_testing.create_args_kwargs" title="Permalink to this definition">#</a></dt>
 <dd><p>Creates arguments and keyword-arguments for the function to test.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -613,6 +613,10 @@
 <li><p><strong>args_np</strong> – A dictionary of arguments in Numpy.</p></li>
 <li><p><strong>kwargs_np</strong> – A dictionary of keyword-arguments in Numpy.</p></li>
 <li><p><strong>input_dtypes</strong> – data-types of the input arguments and keyword-arguments.</p></li>
+<li><p><strong>as_variable_flags</strong> – A list of booleans. if True for a corresponding input argument, it is called
+as an variable.</p></li>
+<li><p><strong>native_array_flags</strong> – if not None, the corresponding argument is called as a Native Array.</p></li>
+<li><p><strong>container_flags</strong> – if not None, the corresponding argument is called as an Ivy Container.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -621,24 +625,6 @@
 <li><p><em>keyword-arguments.</em></p></li>
 </ul>
 </p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.function_testing.create_frontend_args_kwargs">
-<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.function_testing.</span></span><span class="sig-name descname"><span class="pre">create_frontend_args_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args_np</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_np_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args_idxs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_np</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwarg_np_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_idxs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_dtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_flags</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_tests/test_ivy/helpers/function_testing.html#create_frontend_args_kwargs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.function_testing.create_frontend_args_kwargs" title="Permalink to this definition">#</a></dt>
-<dd><p>Creates arguments and keyword-arguments for the function to test.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>args_np</strong> – A dictionary of arguments in Numpy.</p></li>
-<li><p><strong>kwargs_np</strong> – A dictionary of keyword-arguments in Numpy.</p></li>
-<li><p><strong>input_dtypes</strong> – data-types of the input arguments and keyword-arguments.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Arguments, Keyword-arguments</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -689,7 +675,7 @@ version.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.function_testing.gradient_test">
-<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.function_testing.</span></span><span class="sig-name descname"><span class="pre">gradient_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_as_kwargs_np</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args_np</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_np</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_dtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol_</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol_</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xs_grad_idxs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ret_grad_idxs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_truth_backend</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_tests/test_ivy/helpers/function_testing.html#gradient_test"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.function_testing.gradient_test" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.function_testing.</span></span><span class="sig-name descname"><span class="pre">gradient_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_as_kwargs_np</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args_np</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_np</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_dtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_variable_flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">native_array_flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">container_flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol_</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol_</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xs_grad_idxs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ret_grad_idxs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_truth_backend</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_tests/test_ivy/helpers/function_testing.html#gradient_test"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.function_testing.gradient_test" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
@@ -962,7 +948,6 @@ returned, or whether the flattened numpy arrays are returned.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="function_testing/as_lists.html">as_lists</a></li>
 <li class="toctree-l1"><a class="reference internal" href="function_testing/convtrue.html">convtrue</a></li>
 <li class="toctree-l1"><a class="reference internal" href="function_testing/create_args_kwargs.html">create_args_kwargs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="function_testing/create_frontend_args_kwargs.html">create_frontend_args_kwargs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="function_testing/empty_func.html">empty_func</a></li>
 <li class="toctree-l1"><a class="reference internal" href="function_testing/flatten.html">flatten</a></li>
 <li class="toctree-l1"><a class="reference internal" href="function_testing/flatten_and_to_np.html">flatten_and_to_np</a></li>
