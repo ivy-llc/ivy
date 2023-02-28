@@ -9,10 +9,15 @@ def _as_varaible_strategy(draw):
         and globals.CURRENT_BACKEND().backend == "numpy"
     ):
         return draw(st.just([False]))
-    if (
-        globals.CURRENT_FRONTEND is not globals._Notsetval
-        and globals.CURRENT_FRONTEND().backend == "numpy"
-    ):
+    if not globals.CURRENT_FRONTEND_STR:
+        # non multiversion changes go here
+        if (
+            globals.CURRENT_FRONTEND is not globals._Notsetval
+            and globals.CURRENT_FRONTEND().backend == "numpy"
+        ):
+            return draw(st.just([False]))
+    elif globals.CURRENT_FRONTEND_STR[0].split("/")[0] == "numpy":
+        # multiversion changes go here
         return draw(st.just([False]))
     return draw(st.lists(st.booleans(), min_size=1, max_size=1))
 
