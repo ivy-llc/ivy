@@ -6,19 +6,12 @@ import ivy.functional.frontends.numpy as np_frontend
 
 
 class ndarray:
-    def __init__(self, shape, dtype="float32", order=None, _init_overload=False):
+    def __init__(self, shape, dtype="float32", order=None):
         if isinstance(dtype, np_frontend.dtype):
             dtype = dtype.ivy_dtype
+        self._ivy_array = ivy.empty(shape, dtype=dtype)
 
-        # in thise case shape is actually the desired array
-        if _init_overload:
-            self._ivy_array = (
-                ivy.array(shape) if not isinstance(shape, ivy.Array) else shape
-            )
-        else:
-            self._ivy_array = ivy.empty(shape, dtype=dtype)
-
-        ivy.utils.assertions.check_elem_in_list(
+        ivy.assertions.check_elem_in_list(
             order,
             ["C", "F", None],
             message="order must be one of 'C', 'F'",
@@ -65,7 +58,7 @@ class ndarray:
     # ---------------- #
 
     def astype(self, dtype, order="K", casting="unsafe", subok=True, copy=True):
-        ivy.utils.assertions.check_elem_in_list(
+        ivy.assertions.check_elem_in_list(
             order,
             ["C", "F", "A", "K"],
             message="order must be one of 'C', 'F', or 'A'",
@@ -79,7 +72,7 @@ class ndarray:
         if np_frontend.can_cast(ret._ivy_array, dtype, casting=casting):
             ret._ivy_array = ret._ivy_array.astype(dtype)
         else:
-            raise ivy.utils.exceptions.IvyException(
+            raise ivy.exceptions.IvyException(
                 f"Cannot cast array data from dtype('{ret._ivy_array.dtype}')"
                 f" to dtype('{dtype}') according to the rule '{casting}'"
             )
@@ -105,7 +98,7 @@ class ndarray:
         )
 
     def reshape(self, newshape, /, *, order="C"):
-        ivy.utils.assertions.check_elem_in_list(
+        ivy.assertions.check_elem_in_list(
             order,
             ["C", "F", "A"],
             message="order must be one of 'C', 'F', or 'A'",
@@ -114,9 +107,6 @@ class ndarray:
             return np_frontend.reshape(self._ivy_array, newshape, order="F")
         else:
             return np_frontend.reshape(self._ivy_array, newshape, order="C")
-
-    def resize(self, newshape, /, *, refcheck=True):
-        return np_frontend.resize(self._ivy_array, newshape, refcheck)
 
     def transpose(self, axes, /):
         if axes and isinstance(axes[0], tuple):
@@ -230,6 +220,52 @@ class ndarray:
             axis2=axis2,
         )
 
+    def prod(
+        self,
+        *,
+        axis=None,
+        dtype=None,
+        keepdims=False,
+        initial=None,
+        where=True,
+        out=None,
+    ):
+        if where is None or (type(where) == bool and not where):
+            if dtype is not None:
+                return ivy.array(initial, dtype=dtype)
+            else:
+                return initial  # should broadcast to shape of self with reduced axis
+        if (
+            ivy.is_array(where)
+            or ivy.is_native_array(where)
+            or type(where) == ivy.functional.frontends.numpy.ndarray
+        ):
+            if hasattr(self, "ivy_array"):
+                arg = ivy.where(where, self.ivy_array, 1)
+            else:
+                arg = ivy.where(where, self, 1)
+        else:
+            arg = self
+        if initial is not None:
+            return np_frontend.multiply(
+                ivy.array(initial, dtype=dtype),
+                np_frontend.prod(
+                    arg,
+                    axis=axis,
+                    dtype=dtype,
+                    keepdims=keepdims,
+                    out=out,
+                ),
+            )
+        else:
+            return np_frontend.prod(
+                arg,
+                axis=axis,
+                dtype=dtype,
+                keepdims=keepdims,
+                out=out,
+            )
+
     def sort(self, *, axis=-1, kind=None, order=None):
         return np_frontend.sort(self._ivy_array, axis=axis, kind=kind, order=order)
 
@@ -242,7 +278,7 @@ class ndarray:
         return np_frontend.nonzero(self._ivy_array)[0]
 
     def ravel(self, order="C"):
-        ivy.utils.assertions.check_elem_in_list(
+        ivy.assertions.check_elem_in_list(
             order,
             ["C", "F", "A", "K"],
             message="order must be one of 'C', 'F', 'A', or 'K'",
@@ -253,7 +289,7 @@ class ndarray:
             return np_frontend.ravel(self._ivy_array, order="C")
 
     def flatten(self, order="C"):
-        ivy.utils.assertions.check_elem_in_list(
+        ivy.assertions.check_elem_in_list(
             order,
             ["C", "F", "A", "K"],
             message="order must be one of 'C', 'F', 'A', or 'K'",
@@ -287,9 +323,6 @@ class ndarray:
 
     def tobytes(self, order="C") -> bytes:
         return np_frontend.tobytes(self.data, order=order)
-
-    def view(self):
-        return np_frontend.reshape(self._ivy_array, tuple(self.shape))
 
     def __add__(self, value, /):
         return np_frontend.add(self._ivy_array, value)
@@ -393,34 +426,34 @@ class ndarray:
         return key in ivy.reshape(self._ivy_array, -1)
 
     def __iadd__(self, value, /):
-        return np_frontend.add(self._ivy_array, value, out=self)
+        return np_frontend.add(self._ivy_array, value)
 
     def __isub__(self, value, /):
-        return np_frontend.subtract(self._ivy_array, value, out=self)
+        return np_frontend.subtract(self._ivy_array, value)
 
     def __imul__(self, value, /):
-        return np_frontend.multiply(self._ivy_array, value, out=self)
+        return np_frontend.multiply(self._ivy_array, value)
 
     def __itruediv__(self, value, /):
-        return np_frontend.true_divide(self._ivy_array, value, out=self)
+        return np_frontend.true_divide(self._ivy_array, value)
 
     def __ifloordiv__(self, value, /):
         return np_frontend.floor_divide(self._ivy_array, value, out=self)
 
     def __ipow__(self, value, /):
-        return np_frontend.power(self._ivy_array, value, out=self)
+        return np_frontend.power(self._ivy_array, value)
 
     def __iand__(self, value, /):
-        return np_frontend.logical_and(self._ivy_array, value, out=self)
+        return np_frontend.logical_and(self._ivy_array, value)
 
     def __ior__(self, value, /):
-        return np_frontend.logical_or(self._ivy_array, value, out=self)
+        return np_frontend.logical_or(self._ivy_array, value)
 
     def __ixor__(self, value, /):
-        return np_frontend.logical_xor(self._ivy_array, value, out=self)
+        return np_frontend.logical_xor(self._ivy_array, value)
 
     def __imod__(self, value, /):
-        return np_frontend.mod(self._ivy_array, value, out=self)
+        return np_frontend.mod(self._ivy_array, value)
 
     def __abs__(self):
         return np_frontend.absolute(self._ivy_array)
@@ -430,9 +463,11 @@ class ndarray:
             return self
         return np_frontend.array(self, dtype=dtype)
 
-    def __getitem__(self, key, /):
-        ret = ivy.get_item(self._ivy_array, key)
-        return np_frontend.ndarray(ret, _init_overload=True)
+    def __getitem__(self, query):
+        ret = ivy.get_item(self._ivy_array, query)
+        return np_frontend.numpy_dtype_to_scalar[ivy.dtype(self._ivy_array)](
+            ivy.array(ret, dtype=ivy.dtype(ret), copy=False)
+        )
 
     def __setitem__(self, key, value):
         if hasattr(value, "ivy_array"):

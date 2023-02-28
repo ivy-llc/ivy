@@ -10,7 +10,6 @@ from ivy_tests.test_ivy.helpers import (
     assert_all_close,
 )
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
-from ivy_tests.test_ivy.test_frontends.test_torch.test_tensor import _array_and_index
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_first_matrix_and_dtype,
     _get_second_matrix_and_dtype,
@@ -29,7 +28,7 @@ CLASS_TREE = "ivy.functional.frontends.numpy.ndarray"
 
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
+        available_dtypes=helpers.get_dtypes("valid"),
         ret_shape=True,
     ),
 )
@@ -50,7 +49,7 @@ def test_numpy_ndarray_property_ivy_array(
 
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
+        available_dtypes=helpers.get_dtypes("valid"),
         ret_shape=True,
     ),
 )
@@ -60,12 +59,12 @@ def test_numpy_ndarray_property_dtype(
     dtype, data, shape = dtype_x
     x = ndarray(shape, dtype[0])
     x.ivy_array = data[0]
-    ivy.utils.assertions.check_equal(x.dtype, ivy.Dtype(dtype[0]))
+    ivy.assertions.check_equal(x.dtype, ivy.Dtype(dtype[0]))
 
 
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
+        available_dtypes=helpers.get_dtypes("valid"),
         ret_shape=True,
     ),
 )
@@ -75,12 +74,12 @@ def test_numpy_ndarray_property_shape(
     dtype, data, shape = dtype_x
     x = ndarray(shape, dtype[0])
     x.ivy_array = data[0]
-    ivy.utils.assertions.check_equal(x.shape, ivy.Shape(shape))
+    ivy.assertions.check_equal(x.shape, ivy.Shape(shape))
 
 
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
+        available_dtypes=helpers.get_dtypes("valid"),
         ret_shape=True,
     ),
 )
@@ -766,6 +765,82 @@ def test_numpy_instance_diagonal(
             "axis1": axis1,
             "axis2": axis2,
             "offset": offset,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+    )
+
+
+# prod
+@st.composite
+def dtype_values_axis_where_initial(draw):
+    dtype_x_axis = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            num_arrays=1,
+            min_value=-10000,
+            max_value=10000,
+            min_num_dims=1,
+            max_num_dims=3,
+            max_dim_size=5,
+            min_axis=0,
+            max_axis=2,
+            valid_axis=True,
+            force_int_axis=True,
+        )
+    )
+    where = draw(np_frontend_helpers.where())
+    dtype, x, axis = dtype_x_axis
+    initial = draw(
+        st.one_of(st.none(), helpers.array_values(dtype=dtype[0], shape=(1,)))
+    )
+    initial = None if initial is None else initial[0]
+    return dtype, x, axis, where, initial
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="prod",
+    dtype_x_axis_where_initial=dtype_values_axis_where_initial(),
+    keepdims=st.booleans(),
+)
+def test_numpy_instance_prod(
+    dtype_x_axis_where_initial,
+    keepdims,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+):
+    dtypes, x, axis, where, initial = dtype_x_axis_where_initial
+    (
+        where,
+        input_dtypes,
+        method_flags,
+    ) = np_frontend_helpers.handle_where_and_array_bools(
+        where=[where[0][0]] if isinstance(where, list) else where,
+        input_dtype=dtypes,
+        test_flags=method_flags,
+    )
+    # Numpy can't handle a 'where' argument when there is
+    # no 'initial' argument, so in this case we'll skip testing
+    assume((initial is not None and where is not None) or where is None)
+
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtypes,
+        method_all_as_kwargs_np={
+            "axis": axis,
+            "out": None,
+            "keepdims": keepdims,
+            "where": where,
+            "initial": None if initial is None else initial,
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
@@ -2381,66 +2456,6 @@ def test_numpy_instance_array__(
     ),
 )
 def test_numpy_instance_tobytes__(
-    dtype_and_x,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    frontend,
-):
-    input_dtypes, x = dtype_and_x
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtypes,
-        init_all_as_kwargs_np={
-            "object": x[0],
-        },
-        method_input_dtypes=input_dtypes,
-        method_all_as_kwargs_np={},
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        frontend_method_data=frontend_method_data,
-    )
-
-
-# __getitem__
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="numpy.array",
-    method_name="__getitem__",
-    dtype_and_x=_array_and_index(available_dtypes=helpers.get_dtypes("numeric")),
-)
-def test_torch_instance_getitem(
-    dtype_and_x,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    frontend,
-):
-    input_dtype, x = dtype_and_x
-    data = x[0]
-    index = x[1]
-    helpers.test_frontend_method(
-        init_input_dtypes=[input_dtype[0]],
-        init_all_as_kwargs_np={"object": data},
-        method_input_dtypes=[input_dtype[1]],
-        method_all_as_kwargs_np={"key": index},
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-    )
-
-
-# view
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="numpy.array",
-    method_name="view",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-    ),
-)
-def test_numpy_instance_view(
     dtype_and_x,
     frontend_method_data,
     init_flags,
