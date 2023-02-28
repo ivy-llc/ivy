@@ -20,7 +20,7 @@ from . import backend_version
 def cholesky(
     x: paddle.Tensor, /, *, upper: bool = False, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    paddle.linalg.cholesky(x, upper=upper)
 
 
 def cross(
