@@ -35,7 +35,14 @@ def cross(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
 
-    raise IvyNotImplementedException()
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+
+    if axis is not None:
+        return paddle.cross(x1, x2, axis=axis)
+    x1 = paddle.moveaxis(x1, axisa, 1)
+    x2 = paddle.moveaxis(x2, axisb, 1)
+    ret = paddle.cross(x1, x2)
+    return paddle.moveaxis(ret, 1, axisc)
 
 
 def det(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
