@@ -43,18 +43,22 @@ _array_types[
 ] = "ivy.functional.backends.tensorflow"
 _array_types["torch"] = "ivy.functional.backends.torch"
 _array_types["torch.nn.parameter"] = "ivy.functional.backends.torch"
+_array_types["mindspore"] = "ivy.functional.backends.mindspore"
+_array_types["mindspore.common.tensor"] = "ivy.functional.backends.mindspore"
 
 _backend_dict = dict()
 _backend_dict["numpy"] = "ivy.functional.backends.numpy"
 _backend_dict["jax"] = "ivy.functional.backends.jax"
 _backend_dict["tensorflow"] = "ivy.functional.backends.tensorflow"
 _backend_dict["torch"] = "ivy.functional.backends.torch"
+_backend_dict["mindspore"] = "ivy.functional.backends.mindspore"
 
 _backend_reverse_dict = dict()
 _backend_reverse_dict["ivy.functional.backends.numpy"] = "numpy"
 _backend_reverse_dict["ivy.functional.backends.jax"] = "jax"
 _backend_reverse_dict["ivy.functional.backends.tensorflow"] = "tensorflow"
 _backend_reverse_dict["ivy.functional.backends.torch"] = "torch"
+_backend_reverse_dict["ivy.functional.backends.mindspore"] = "mindspore"
 
 # Backend Getting/Setting #
 # ----------------------- #
@@ -477,6 +481,14 @@ def set_tensorflow_backend():
 def set_torch_backend():
     """Sets torch to be the global backend. equivalent to `ivy.set_backend("torch")`."""  # noqa
     set_backend("torch")
+
+
+def set_mindspore_backend():
+    """
+    Sets Mindspore to be the global backend. equivalent to
+    `ivy.set_backend("mindspore")`.
+    """
+    set_backend("mindspore")
 
 
 def get_backend(backend: Optional[str] = None):
