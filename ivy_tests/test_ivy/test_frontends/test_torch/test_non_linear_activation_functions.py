@@ -1250,7 +1250,9 @@ def _generate_batch_norm_data(draw):
     weight = draw(helpers.array_values(dtype=input_dtype[0], shape=shape[1]))
     bias = draw(helpers.array_values(dtype=input_dtype[0], shape=shape[1]))
     running_mean = draw(helpers.array_values(dtype=input_dtype[0], shape=shape[1]))
-    running_var = draw(helpers.array_values(dtype=input_dtype[0], shape=shape[1]))
+    running_var = draw(
+        helpers.array_values(dtype=input_dtype[0], shape=shape[1], min_value=0)
+    )
     return input_dtype, input, weight, bias, running_mean, running_var
 
 
