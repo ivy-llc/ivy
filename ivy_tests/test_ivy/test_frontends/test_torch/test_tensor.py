@@ -3925,6 +3925,103 @@ def test_torch_instance_sigmoid(
     )
 
 
+# softmax
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="softmax",
+    dtype_x_and_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_axes_size=1,
+        force_int_axis=True,
+        valid_axis=True,
+    ),
+    dtype=helpers.get_dtypes("float", full=False),
+)
+def test_torch_instance_softmax(
+    dtype_x_and_axis,
+    dtype,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+):
+    input_dtype, x, axis = dtype_x_and_axis
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "dim": axis,
+            "dtype": dtype[0],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+    )
+
+
+@st.composite
+def _repeat_helper(draw):
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=1, max_num_dims=5, min_dim_size=2, max_dim_size=10
+        )
+    )
+
+    input_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            shape=shape,
+        )
+    )
+
+    repeats = draw(st.lists(st.integers(min_value=1, max_value=5), min_size=len(shape)))
+    return input_dtype, x, repeats
+
+
+# repeat
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="repeat",
+    dtype_x_repeats=_repeat_helper(),
+    unpack_repeat=st.booleans(),
+)
+def test_torch_instance_repeat(
+    dtype_x_repeats,
+    unpack_repeat,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+):
+    input_dtype, x, repeats = dtype_x_repeats
+    repeat = {
+        "repeats": repeats,
+    }
+    if unpack_repeat:
+        method_flags.num_positional_args = len(repeat["repeats"]) + 1
+        for i, x_ in enumerate(repeat["repeats"]):
+            repeat["x{}".format(i)] = x_
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np=repeat,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+    )
+
+
 # __eq__
 @handle_frontend_method(
     class_tree=CLASS_TREE,

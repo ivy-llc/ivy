@@ -167,13 +167,17 @@ def depthwise_conv2d(
 
 @to_ivy_arrays_and_back
 def batch_normalization(x, mean, variance, offset, scale, variance_epsilon, name=None):
-    inv = 1.0 / ivy.sqrt(variance + variance_epsilon)
-    if scale is not None:
-        inv *= scale
-
-    return x * ivy.astype(inv, x.dtype, copy=False) + ivy.astype(
-        offset - mean * inv if offset is not None else -mean * inv, x.dtype
+    ndims = len(x.shape)
+    x = ivy.permute_dims(x, axes=(0, *range(2, ndims), 1))
+    ret = ivy.batch_norm(
+        x,
+        mean,
+        variance,
+        offset=offset,
+        scale=scale,
+        eps=variance_epsilon,
     )
+    return ivy.permute_dims(ret, axes=(0, ndims-1, *range(1, ndims-1)))
 
 
 @to_ivy_arrays_and_back
@@ -303,7 +307,8 @@ def bias_add(value, bias, data_format=None, name=None):
     if data_format is None:
         data_format = "N...C"
 
-    if data_format == "N...C":
+    chanel_index = data_format.find("C")
+    if chanel_index != 1:
         return ivy.add(value, bias)
     else:
         value = ivy.swapaxes(value, 1, -1)
