@@ -450,22 +450,26 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
+        With :class:`ivy.Array` inputs:
+
         >>> x = ivy.array([[[5, 4],
         ...                 [11, 2]],
         ...                [[3, 5],
         ...                 [9, 7]]])
 
-        >>> y = x.einops_reduce('a b c -> b c', 'max')
-        >>> print(y)
+        >>> reduced = x.einops_reduce('a b c -> b c', 'max')
+        >>> print(reduced)
         ivy.array([[ 5,  5],
                    [11,  7]])
+
+        With :class:`ivy.Array` inputs:
 
         >>> x = ivy.array([[[5, 4, 3],
         ...                 [11, 2, 9]],
         ...                [[3, 5, 7],
         ...                 [9, 7, 1]]])
-        >>> y = x.einops_reduce('a b c -> a () c', 'min')
-        >>> print(y)
+        >>> reduced = x.einops_reduce('a b c -> a () c', 'min')
+        >>> print(reduced)
         ivy.array([[[5, 2, 3]],
                    [[3, 5, 1]]])
         """
