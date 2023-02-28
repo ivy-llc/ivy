@@ -949,6 +949,25 @@ def _check_arguments(
     )
 
 
+def _check_constant_values(values, input_dtype):
+    flag_assert = False
+    if isinstance(values, (tuple, list)):
+        for nested in values:
+            if isinstance(nested, (tuple, list)):
+                for sub_nested in nested:
+                    if not type(sub_nested).__name__ in input_dtype:
+                        flag_assert = True
+                        break
+            elif not type(nested).__name__ in input_dtype:
+                flag_assert = True
+    elif not type(values).__name__ in input_dtype:
+        flag_assert = True
+    if flag_assert:
+        raise ivy.utils.exceptions.IvyException(
+            "constant_values should be the same type as input"
+        )
+
+
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -1132,6 +1151,8 @@ def pad(
         reflect_type,
     )
     input = ivy.asarray(input, dtype=input.dtype)
+    if mode == "constant":
+        _check_constant_values(constant_values, input.dtype)
     pad_width = _to_pairs(pad_width, input.ndim)
     if callable(mode):
         func = mode
