@@ -71,7 +71,6 @@ Experimental
    experimental/quantile.rst
    experimental/corrcoef.rst
    experimental/nanmedian.rst
-   experimental/bincount.rst
    experimental/msort.rst
    experimental/lexsort.rst
    experimental/triu_indices.rst
@@ -119,7 +118,6 @@ Experimental
    experimental/real.rst
    experimental/binarizer.rst
    experimental/conj.rst
-   experimental/ldexp.rst
    experimental/bind_custom_gradient_function.rst
    experimental/isin.rst
    experimental/dirichlet.rst

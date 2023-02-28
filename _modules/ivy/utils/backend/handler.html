@@ -621,18 +621,22 @@
 <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.tensorflow&quot;</span>
 <span class="n">_array_types</span><span class="p">[</span><span class="s2">&quot;torch&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.torch&quot;</span>
 <span class="n">_array_types</span><span class="p">[</span><span class="s2">&quot;torch.nn.parameter&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.torch&quot;</span>
+<span class="n">_array_types</span><span class="p">[</span><span class="s2">&quot;mindspore&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.mindspore&quot;</span>
+<span class="n">_array_types</span><span class="p">[</span><span class="s2">&quot;mindspore.common.tensor&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.mindspore&quot;</span>
 
 <span class="n">_backend_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 <span class="n">_backend_dict</span><span class="p">[</span><span class="s2">&quot;numpy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.numpy&quot;</span>
 <span class="n">_backend_dict</span><span class="p">[</span><span class="s2">&quot;jax&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.jax&quot;</span>
 <span class="n">_backend_dict</span><span class="p">[</span><span class="s2">&quot;tensorflow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.tensorflow&quot;</span>
 <span class="n">_backend_dict</span><span class="p">[</span><span class="s2">&quot;torch&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.torch&quot;</span>
+<span class="n">_backend_dict</span><span class="p">[</span><span class="s2">&quot;mindspore&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.mindspore&quot;</span>
 
 <span class="n">_backend_reverse_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 <span class="n">_backend_reverse_dict</span><span class="p">[</span><span class="s2">&quot;ivy.functional.backends.numpy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;numpy&quot;</span>
 <span class="n">_backend_reverse_dict</span><span class="p">[</span><span class="s2">&quot;ivy.functional.backends.jax&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;jax&quot;</span>
 <span class="n">_backend_reverse_dict</span><span class="p">[</span><span class="s2">&quot;ivy.functional.backends.tensorflow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;tensorflow&quot;</span>
 <span class="n">_backend_reverse_dict</span><span class="p">[</span><span class="s2">&quot;ivy.functional.backends.torch&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;torch&quot;</span>
+<span class="n">_backend_reverse_dict</span><span class="p">[</span><span class="s2">&quot;ivy.functional.backends.mindspore&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;mindspore&quot;</span>
 
 <span class="c1"># Backend Getting/Setting #</span>
 <span class="c1"># ----------------------- #</span>
@@ -1055,6 +1059,14 @@
 <div class="viewcode-block" id="set_torch_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/set_torch_backend.html#ivy.utils.backend.handler.set_torch_backend">[docs]</a><span class="k">def</span> <span class="nf">set_torch_backend</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Sets torch to be the global backend. equivalent to `ivy.set_backend(&quot;torch&quot;)`.&quot;&quot;&quot;</span>  <span class="c1"></span>
     <span class="n">set_backend</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="set_mindspore_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/set_mindspore_backend.html#ivy.utils.backend.handler.set_mindspore_backend">[docs]</a><span class="k">def</span> <span class="nf">set_mindspore_backend</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sets Mindspore to be the global backend. equivalent to</span>
+<span class="sd">    `ivy.set_backend(&quot;mindspore&quot;)`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">set_backend</span><span class="p">(</span><span class="s2">&quot;mindspore&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="get_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/get_backend.html#ivy.utils.backend.handler.get_backend">[docs]</a><span class="k">def</span> <span class="nf">get_backend</span><span class="p">(</span><span class="n">backend</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
