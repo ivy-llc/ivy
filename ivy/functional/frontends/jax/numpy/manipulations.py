@@ -1,5 +1,6 @@
 # local
 import ivy
+import jax.numpy as jnp
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_jax_dtype,
@@ -148,7 +149,6 @@ def vsplit(ary, indices_or_section):
     return ivy.vsplit(ary, indices_or_section)
 
 
-@to_ivy_arrays_and_back
 def bartlett(M):
     if M == 1:
         return ivy.ones(1)
@@ -160,3 +160,17 @@ def bartlett(M):
         return ivy.concatenate(
             (ivy.linspace(0, 1, (M + 1) // 2), ivy.linspace(1, 0, (M + 1) // 2 - 1)[1:])
         )
+
+
+@to_ivy_arrays_and_back
+def blackman(M):
+    n = jnp.arange(0, M)
+    a0 = 0.42659
+    a1 = 0.49656
+    a2 = 0.076849
+    w = (
+        a0
+        - a1 * jnp.cos(2 * jnp.pi * n / (M - 1))
+        + a2 * jnp.cos(4 * jnp.pi * n / (M - 1))
+    )
+    return w
