@@ -481,3 +481,25 @@ def softmax(logits, axis=None, name=None):
 @to_ivy_arrays_and_back
 def relu6(features, name=None):
     return ivy.clip(features, 0, 6)
+
+
+@to_ivy_arrays_and_back
+def conv_transpose(
+    input,
+    filters,
+    output_shape,
+    strides,
+    padding="SAME",
+    data_format="NWC",
+    dilations=None,
+    name=None,
+):
+    return ivy.conv_general_transpose(
+        input,
+        filters,
+        strides,
+        padding,
+        output_shape=output_shape,
+        data_format=data_format,
+        dilations=dilations,
+    )
