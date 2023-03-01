@@ -578,11 +578,40 @@
   <h1>Source code for ivy.stateful.converters</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Converters from Native Modules to Ivy Modules&quot;&quot;&quot;</span>
 <span class="c1"># global</span>
+<span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">SimpleNamespace</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
-<span class="kn">import</span> <span class="nn">re</span>  <span class="c1"></span>
+<span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
-<span class="kn">import</span> <span class="nn">importlib</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">haiku</span> <span class="k">as</span> <span class="nn">hk</span>
+    <span class="kn">from</span> <span class="nn">haiku._src.data_structures</span> <span class="kn">import</span> <span class="n">FlatMapping</span>
+    <span class="kn">import</span> <span class="nn">jax</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">hk</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">()</span>
+    <span class="n">hk</span><span class="o">.</span><span class="n">Module</span> <span class="o">=</span> <span class="n">SimpleNamespace</span>
+    <span class="n">hk</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">SimpleNamespace</span>
+    <span class="n">hk</span><span class="o">.</span><span class="n">get_parameter</span> <span class="o">=</span> <span class="n">SimpleNamespace</span>
+    <span class="n">FlatMapping</span> <span class="o">=</span> <span class="n">SimpleNamespace</span>
+    <span class="n">jax</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">()</span>
+    <span class="n">jax</span><span class="o">.</span><span class="n">random</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">()</span>
+    <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">PRNGKey</span> <span class="o">=</span> <span class="n">SimpleNamespace</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">torch</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">torch</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">()</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">nn</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">()</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span> <span class="o">=</span> <span class="n">SimpleNamespace</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span> <span class="o">=</span> <span class="n">SimpleNamespace</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">tf</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">()</span>
+    <span class="n">tf</span><span class="o">.</span><span class="n">keras</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">()</span>
+    <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span> <span class="o">=</span> <span class="n">SimpleNamespace</span>
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
@@ -691,18 +720,6 @@
 <span class="sd">            The new trainable torch module instance.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">hk_spec</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s2">&quot;hk&quot;</span><span class="p">)</span>
-        <span class="n">flat_mapping_spec</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span>
-            <span class="s2">&quot;FlatMapping&quot;</span><span class="p">,</span> <span class="s2">&quot;haiku._src.data_structures&quot;</span>
-        <span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">hk_spec</span><span class="p">:</span>
-            <span class="kn">import</span> <span class="nn">haiku</span> <span class="k">as</span> <span class="nn">hk</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">hk</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">module_from_spec</span><span class="p">(</span><span class="n">hk_spec</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">flat_mapping_spec</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">haiku._src.data_structures</span> <span class="kn">import</span> <span class="n">FlatMapping</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">FlatMapping</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">module_from_spec</span><span class="p">(</span><span class="n">flat_mapping_spec</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">_hk_flat_map_to_dict</span><span class="p">(</span><span class="n">hk_flat_map</span><span class="p">):</span>
             <span class="n">ret_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
@@ -930,11 +947,6 @@
 <span class="sd">        ret</span>
 <span class="sd">            The new trainable ivy.Module instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">torch_spec</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">torch_spec</span><span class="p">:</span>
-            <span class="kn">import</span> <span class="nn">torch</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">torch</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">module_from_spec</span><span class="p">(</span><span class="n">torch_spec</span><span class="p">)</span>
 
         <span class="k">class</span> <span class="nc">TorchIvyModule</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
             <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>

@@ -13,5 +13,5 @@ Creation
    :maxdepth: -1
    :caption: Creation
 
-   creation/_ArrayWithCreation.rst
+   creation/ArrayWithCreation.rst
 

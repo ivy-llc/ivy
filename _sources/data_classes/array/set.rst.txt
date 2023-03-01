@@ -13,5 +13,5 @@ Set
    :maxdepth: -1
    :caption: Set
 
-   set/_ArrayWithSet.rst
+   set/ArrayWithSet.rst
 

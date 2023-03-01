@@ -590,59 +590,6 @@
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">number_helpers</span> <span class="k">as</span> <span class="n">nh</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">array_helpers</span> <span class="k">as</span> <span class="n">ah</span>
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="nb">globals</span> <span class="k">as</span> <span class="n">test_globals</span>
-<span class="kn">from</span> <span class="nn">ivy_tests</span> <span class="kn">import</span> <span class="n">conftest</span>
-
-<span class="n">_dtype_kind_keys</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;valid&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;numeric&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;float&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;unsigned&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;integer&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;signed_integer&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;complex&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;real_and_complex&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;float_and_complex&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;bool&quot;</span><span class="p">,</span>
-<span class="p">}</span>
-
-
-<span class="k">def</span> <span class="nf">_get_fn_dtypes</span><span class="p">(</span><span class="n">framework</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;valid&quot;</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_RUNNING_TEST</span><span class="o">.</span><span class="n">supported_device_dtypes</span><span class="p">[</span><span class="n">framework</span><span class="o">.</span><span class="n">backend</span><span class="p">][</span>
-        <span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_DEVICE</span>
-    <span class="p">][</span><span class="n">kind</span><span class="p">]</span>
-
-
-<span class="k">def</span> <span class="nf">_get_type_dict</span><span class="p">(</span><span class="n">framework</span><span class="p">,</span> <span class="n">kind</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;valid&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">framework</span><span class="o">.</span><span class="n">valid_dtypes</span>
-    <span class="k">elif</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;numeric&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">framework</span><span class="o">.</span><span class="n">valid_numeric_dtypes</span>
-    <span class="k">elif</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;integer&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">framework</span><span class="o">.</span><span class="n">valid_int_dtypes</span>
-    <span class="k">elif</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;float&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">framework</span><span class="o">.</span><span class="n">valid_float_dtypes</span>
-    <span class="k">elif</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;unsigned&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">framework</span><span class="o">.</span><span class="n">valid_int_dtypes</span>
-    <span class="k">elif</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;signed_integer&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
-            <span class="nb">set</span><span class="p">(</span><span class="n">framework</span><span class="o">.</span><span class="n">valid_int_dtypes</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">framework</span><span class="o">.</span><span class="n">valid_uint_dtypes</span><span class="p">)</span>
-        <span class="p">)</span>
-    <span class="k">elif</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;complex&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">framework</span><span class="o">.</span><span class="n">valid_complex_dtypes</span>
-    <span class="k">elif</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;real_and_complex&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
-            <span class="nb">set</span><span class="p">(</span><span class="n">framework</span><span class="o">.</span><span class="n">valid_numeric_dtypes</span><span class="p">)</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">framework</span><span class="o">.</span><span class="n">valid_complex_dtypes</span><span class="p">)</span>
-        <span class="p">)</span>
-    <span class="k">elif</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;float_and_complex&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
-            <span class="nb">set</span><span class="p">(</span><span class="n">framework</span><span class="o">.</span><span class="n">valid_float_dtypes</span><span class="p">)</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">framework</span><span class="o">.</span><span class="n">valid_complex_dtypes</span><span class="p">)</span>
-        <span class="p">)</span>
-    <span class="k">elif</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;bool&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
-            <span class="nb">set</span><span class="p">(</span><span class="n">framework</span><span class="o">.</span><span class="n">valid_dtypes</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">framework</span><span class="o">.</span><span class="n">valid_numeric_dtypes</span><span class="p">)</span>
-        <span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> is an unknown kind!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">kind</span><span class="p">))</span>
 
 
 <div class="viewcode-block" id="make_json_pickable"><a class="viewcode-back" href="../../../../../testing/hypothesis_helpers/dtype_helpers/make_json_pickable.html#ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers.make_json_pickable">[docs]</a><span class="k">def</span> <span class="nf">make_json_pickable</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
@@ -653,7 +600,7 @@
 
 <div class="viewcode-block" id="get_dtypes"><a class="viewcode-back" href="../../../../../testing/hypothesis_helpers/dtype_helpers/get_dtypes.html#ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers.get_dtypes">[docs]</a><span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
 <span class="k">def</span> <span class="nf">get_dtypes</span><span class="p">(</span>
-    <span class="n">draw</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;valid&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">none</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prune_function</span><span class="o">=</span><span class="kc">True</span>
+    <span class="n">draw</span><span class="p">,</span> <span class="n">kind</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">none</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prune_function</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Draws a valid dtypes for the test function. For frontend tests,</span>
@@ -682,46 +629,40 @@
 <span class="sd">        dtype string</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="k">def</span> <span class="nf">_get_type_dict</span><span class="p">(</span><span class="n">framework</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;valid&quot;</span><span class="p">:</span> <span class="n">framework</span><span class="o">.</span><span class="n">valid_dtypes</span><span class="p">,</span>
+            <span class="s2">&quot;numeric&quot;</span><span class="p">:</span> <span class="n">framework</span><span class="o">.</span><span class="n">valid_numeric_dtypes</span><span class="p">,</span>
+            <span class="s2">&quot;float&quot;</span><span class="p">:</span> <span class="n">framework</span><span class="o">.</span><span class="n">valid_float_dtypes</span><span class="p">,</span>
+            <span class="s2">&quot;integer&quot;</span><span class="p">:</span> <span class="n">framework</span><span class="o">.</span><span class="n">valid_int_dtypes</span><span class="p">,</span>
+            <span class="s2">&quot;unsigned&quot;</span><span class="p">:</span> <span class="n">framework</span><span class="o">.</span><span class="n">valid_uint_dtypes</span><span class="p">,</span>
+            <span class="s2">&quot;signed_integer&quot;</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span>
+                <span class="nb">set</span><span class="p">(</span><span class="n">framework</span><span class="o">.</span><span class="n">valid_int_dtypes</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">framework</span><span class="o">.</span><span class="n">valid_uint_dtypes</span><span class="p">)</span>
+            <span class="p">),</span>
+            <span class="s2">&quot;complex&quot;</span><span class="p">:</span> <span class="n">framework</span><span class="o">.</span><span class="n">valid_complex_dtypes</span><span class="p">,</span>
+            <span class="s2">&quot;real_and_complex&quot;</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span>
+                <span class="nb">set</span><span class="p">(</span><span class="n">framework</span><span class="o">.</span><span class="n">valid_numeric_dtypes</span><span class="p">)</span><span class="o">.</span><span class="n">union</span><span class="p">(</span>
+                    <span class="n">framework</span><span class="o">.</span><span class="n">valid_complex_dtypes</span>
+                <span class="p">)</span>
+            <span class="p">),</span>
+            <span class="s2">&quot;float_and_complex&quot;</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span>
+                <span class="nb">set</span><span class="p">(</span><span class="n">framework</span><span class="o">.</span><span class="n">valid_float_dtypes</span><span class="p">)</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">framework</span><span class="o">.</span><span class="n">valid_complex_dtypes</span><span class="p">)</span>
+            <span class="p">),</span>
+            <span class="s2">&quot;bool&quot;</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span>
+                <span class="nb">set</span><span class="p">(</span><span class="n">framework</span><span class="o">.</span><span class="n">valid_dtypes</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">framework</span><span class="o">.</span><span class="n">valid_numeric_dtypes</span><span class="p">)</span>
+            <span class="p">),</span>
+        <span class="p">}</span>
 
-    <span class="k">if</span> <span class="n">prune_function</span><span class="p">:</span>
-        <span class="n">retrieval_fn</span> <span class="o">=</span> <span class="n">_get_fn_dtypes</span>
-        <span class="k">if</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_RUNNING_TEST</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">_Notsetval</span><span class="p">:</span>
-            <span class="n">valid_dtypes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">retrieval_fn</span><span class="p">(</span><span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_BACKEND</span><span class="p">(),</span><span class="n">kind</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="s2">&quot;No function is set to prune, calling &quot;</span>
-                <span class="s2">&quot;prune_function=True without a function is redundant.&quot;</span>
-            <span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">retrieval_fn</span> <span class="o">=</span> <span class="n">_get_type_dict</span>
-        <span class="n">valid_dtypes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">retrieval_fn</span><span class="p">(</span><span class="n">ivy</span><span class="p">,</span> <span class="n">kind</span><span class="p">))</span>
+    <span class="c1"># TODO refactor this so we run the intersection in a chained clean way</span>
+    <span class="n">backend_dtypes</span> <span class="o">=</span> <span class="n">_get_type_dict</span><span class="p">(</span><span class="n">ivy</span><span class="p">)[</span><span class="n">kind</span><span class="p">]</span>
 
-    <span class="c1"># The function may be called from a frontend test or an IVY api test</span>
-    <span class="c1"># In the case of a IVY api test, the function should make sure it returns a valid</span>
-    <span class="c1"># dtypes for the backend and also for the ground truth backend, if it is called from</span>
-    <span class="c1"># a frontend test, we should also count for the frontend support data types</span>
-    <span class="c1"># In conclusion, the following operations will get the intersection of</span>
-    <span class="c1"># FN_DTYPES &amp; BACKEND_DTYPES &amp; FRONTEND_DTYPES &amp; GROUND_TRUTH_DTYPES</span>
-
-    <span class="c1"># If being called from a frontend test</span>
-    <span class="kn">import</span> <span class="nn">time</span>
     <span class="k">if</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_FRONTEND</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">_Notsetval</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span>
         <span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_FRONTEND_STR</span><span class="p">,</span> <span class="nb">list</span>
     <span class="p">):</span>  <span class="c1"># NOQA</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_FRONTEND_STR</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="n">process</span> <span class="o">=</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_FRONTEND_STR</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
             <span class="k">try</span><span class="p">:</span>
-
-                <span class="k">if</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_RUNNING_TEST</span><span class="o">.</span><span class="n">is_method</span><span class="p">:</span>
-                    <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;1a&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-                    <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">jsonpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_RUNNING_TEST</span><span class="o">.</span><span class="n">is_method</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;1&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">retrieval_fn</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">kind</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_DEVICE</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_RUNNING_TEST</span><span class="o">.</span><span class="n">fn_tree</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-
+                <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;1&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span>
@@ -729,65 +670,50 @@
                 <span class="p">)</span>
                 <span class="nb">print</span><span class="p">(</span><span class="n">process</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">readlines</span><span class="p">())</span>
                 <span class="k">raise</span> <span class="n">e</span>
-
             <span class="n">frontend_ret</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">frontend_ret</span><span class="p">:</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">frontend_ret</span> <span class="o">=</span> <span class="n">jsonpickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">make_json_pickable</span><span class="p">(</span><span class="n">frontend_ret</span><span class="p">))</span>
-                <span class="k">except</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;source of all bugsss   </span><span class="si">{</span><span class="n">frontend_ret</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">frontend_ret</span> <span class="o">=</span> <span class="n">jsonpickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">make_json_pickable</span><span class="p">(</span><span class="n">frontend_ret</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="n">process</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">readlines</span><span class="p">())</span>
                 <span class="k">raise</span> <span class="ne">Exception</span>
-            <span class="n">frontend_dtypes</span><span class="o">=</span> <span class="n">frontend_ret</span>
-            <span class="n">valid_dtypes</span> <span class="o">=</span> <span class="n">valid_dtypes</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">frontend_dtypes</span><span class="p">)</span>
-
+            <span class="n">fw_dtypes</span> <span class="o">=</span> <span class="n">frontend_ret</span><span class="p">[</span><span class="n">kind</span><span class="p">]</span>
+            <span class="n">valid_dtypes</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">fw_dtypes</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">backend_dtypes</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">frontend_dtypes</span> <span class="o">=</span> <span class="n">retrieval_fn</span><span class="p">(</span><span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_FRONTEND</span><span class="p">(),</span> <span class="n">kind</span><span class="p">)</span>
-            <span class="n">valid_dtypes</span> <span class="o">=</span> <span class="n">valid_dtypes</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">frontend_dtypes</span><span class="p">)</span>
+            <span class="n">fw_dtypes</span> <span class="o">=</span> <span class="n">_get_type_dict</span><span class="p">(</span><span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_FRONTEND</span><span class="p">())[</span><span class="n">kind</span><span class="p">]</span>
+            <span class="n">valid_dtypes</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">fw_dtypes</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">backend_dtypes</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">valid_dtypes</span> <span class="o">=</span> <span class="n">backend_dtypes</span>
 
-    <span class="c1"># Make sure we return dtypes that are compatiable with ground truth backend</span>
     <span class="n">ground_truth_is_set</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_GROUND_TRUTH_BACKEND</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">_Notsetval</span>  <span class="c1"># NOQA</span>
     <span class="p">)</span>
     <span class="k">if</span> <span class="n">ground_truth_is_set</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_GROUND_TRUTH_BACKEND</span><span class="p">,</span><span class="nb">list</span><span class="p">):</span>
-            <span class="n">process</span> <span class="o">=</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_GROUND_TRUTH_BACKEND</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_RUNNING_TEST</span><span class="o">.</span><span class="n">is_method</span><span class="p">:</span>
-                    <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;1a&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;1&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">retrieval_fn</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">kind</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_DEVICE</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_RUNNING_TEST</span><span class="o">.</span><span class="n">fn_tree</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span>
-                    <span class="s2">&quot;Something bad happened to the subprocess, here are the logs:</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+        <span class="n">gtb_dtypes</span> <span class="o">=</span> <span class="n">_get_type_dict</span><span class="p">(</span><span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_GROUND_TRUTH_BACKEND</span><span class="p">())[</span><span class="n">kind</span><span class="p">]</span>
+        <span class="n">valid_dtypes</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">gtb_dtypes</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">valid_dtypes</span><span class="p">))</span>
+
+    <span class="c1"># TODO, do this in a better way...</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="n">prune_function</span>
+        <span class="ow">and</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_RUNNING_TEST</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">_Notsetval</span>
+    <span class="p">):</span>  <span class="c1"># NOQA</span>
+        <span class="n">fn_dtypes</span> <span class="o">=</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_RUNNING_TEST</span><span class="o">.</span><span class="n">supported_device_dtypes</span>
+        <span class="n">valid_dtypes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">valid_dtypes</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span>
+            <span class="n">fn_dtypes</span><span class="p">[</span><span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_BACKEND</span><span class="p">()</span><span class="o">.</span><span class="n">backend</span><span class="p">][</span><span class="s2">&quot;cpu&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">ground_truth_is_set</span><span class="p">:</span>
+            <span class="n">valid_dtypes</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+                <span class="n">valid_dtypes</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span>
+                    <span class="n">fn_dtypes</span><span class="p">[</span><span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_GROUND_TRUTH_BACKEND</span><span class="p">()</span><span class="o">.</span><span class="n">backend</span><span class="p">][</span>
+                        <span class="s2">&quot;cpu&quot;</span>
+                    <span class="p">]</span>
                 <span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">process</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">readlines</span><span class="p">())</span>
-                <span class="k">raise</span> <span class="n">e</span>
-            <span class="n">backend_ret</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">backend_ret</span><span class="p">:</span>
-                <span class="n">backend_ret</span> <span class="o">=</span> <span class="n">jsonpickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">make_json_pickable</span><span class="p">(</span><span class="n">backend_ret</span><span class="p">))</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">process</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">readlines</span><span class="p">())</span>
-                <span class="k">raise</span> <span class="ne">Exception</span>
-
-            <span class="n">valid_dtypes</span><span class="o">=</span><span class="n">valid_dtypes</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">backend_ret</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-
-            <span class="n">valid_dtypes</span> <span class="o">=</span> <span class="n">valid_dtypes</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span>
-                <span class="n">retrieval_fn</span><span class="p">(</span><span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_GROUND_TRUTH_BACKEND</span><span class="p">(),</span> <span class="n">kind</span><span class="p">)</span>
             <span class="p">)</span>
-
-    <span class="n">valid_dtypes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">valid_dtypes</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">valid_dtypes</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">valid_dtypes</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">none</span><span class="p">:</span>
-        <span class="n">valid_dtypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">valid_dtypes</span> <span class="o">+=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,)</span>
     <span class="k">if</span> <span class="n">full</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">valid_dtypes</span><span class="p">[</span><span class="n">index</span><span class="p">:]</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">valid_dtypes</span><span class="p">[</span><span class="n">index</span><span class="p">:])</span>
     <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">sampled_from</span><span class="p">(</span><span class="n">valid_dtypes</span><span class="p">[</span><span class="n">index</span><span class="p">:]))]</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">shared</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">sampled_from</span><span class="p">(</span><span class="n">valid_dtypes</span><span class="p">[</span><span class="n">index</span><span class="p">:]),</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">))]</span></div>
