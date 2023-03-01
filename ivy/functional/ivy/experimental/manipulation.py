@@ -1470,7 +1470,8 @@ def take_along_axis(
     indices
         The indices of the values to extract.
     axis
-        The axis over which to select values. If axis is None, arr is treated as a flattened 1D array.
+        The axis over which to select values.
+        If axis is None, arr is treated as a flattened 1D array.
     out
         The output array.
 
