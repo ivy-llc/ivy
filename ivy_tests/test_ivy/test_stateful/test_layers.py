@@ -10,7 +10,6 @@ from ivy.functional.ivy.layers import _deconv_length
 from ivy.functional.ivy.gradients import _variable
 from ivy.container import Container
 import ivy_tests.test_ivy.helpers as helpers
-import ivy.functional.backends.numpy as ivy_np
 from ivy_tests.test_ivy.helpers.assertions import assert_same_type_and_shape
 from ivy_tests.test_ivy.helpers import handle_method
 
@@ -965,7 +964,7 @@ def test_lstm_layer(
     ),
     with_v=st.booleans(),
     seq_v=st.booleans(),
-    dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
+    dtype=helpers.get_dtypes("float", full=False) | st.none(),
 )
 def test_sequential_layer(
     bs_c_target,

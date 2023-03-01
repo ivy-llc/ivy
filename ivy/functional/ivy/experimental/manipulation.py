@@ -870,23 +870,29 @@ def _to_pairs(x, n):
     return x
 
 
-def _check_tuple_arg(arg, name):
+def _check_tuple_arg(arg, name, b_float=False):
+    scalar_types = (int, float) if b_float else int
     flag_assert = False
     if isinstance(arg, (tuple, list)):
         for nested in arg:
             if isinstance(nested, (tuple, list)):
                 for sub_nested in nested:
-                    if not isinstance(sub_nested, int):
+                    if not isinstance(sub_nested, scalar_types):
                         flag_assert = True
                         break
-            elif not isinstance(nested, int):
+            elif not isinstance(nested, scalar_types):
                 flag_assert = True
-    elif not isinstance(arg, int):
+    elif not isinstance(arg, scalar_types):
         flag_assert = True
     if flag_assert:
-        raise ivy.utils.exceptions.IvyException(
-            name + " should be int, tuple of ints or tuple of int tuples"
-        )
+        if b_float:
+            raise ivy.utils.exceptions.IvyException(
+                name + " should be scalar, tuple of scalars or tuple of scalar tuples"
+            )
+        else:
+            raise ivy.utils.exceptions.IvyException(
+                name + " should be int, tuple of ints or tuple of int tuples"
+            )
 
 
 def _check_arguments(
@@ -937,14 +943,14 @@ def _check_arguments(
                 "constant_values is required for mode: " + mode
             )
         else:
-            _check_tuple_arg(constant_values, "constant_values")
+            _check_tuple_arg(constant_values, "constant_values", b_float=True)
     elif mode == "linear_ramp":
         if end_values is None:
             raise ivy.utils.exceptions.IvyException(
                 "end_values is required for mode: " + mode
             )
         else:
-            _check_tuple_arg(end_values, "end_values")
+            _check_tuple_arg(end_values, "end_values", b_float=True)
     ivy.utils.assertions.check_true(
         reflect_type in ["even", "odd"],
         message="the provided reflect_type is not supported",
@@ -1471,6 +1477,7 @@ def take_along_axis(
         The indices of the values to extract.
     axis
         The axis over which to select values.
+        If axis is None, arr is treated as a flattened 1D array.
     out
         The output array.
 

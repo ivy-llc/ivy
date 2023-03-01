@@ -1,4 +1,4 @@
-numpy==1.23.0
+numpy # unpinned we test with latest version now
 einops==0.4.1
 psutil==5.9.1
 termcolor==1.1.0
