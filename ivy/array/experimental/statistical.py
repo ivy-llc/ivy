@@ -303,6 +303,7 @@ class ArrayWithStatisticalExperimental(abc.ABC):
             A new array holding the result. If the input contains integers
 
         Examples
+        --------
         >>> a = ivy.Array([[10.0, ivy.nan, 4], [3, 2, 1]])
         >>> a.nanmedian(a)
             3.0
