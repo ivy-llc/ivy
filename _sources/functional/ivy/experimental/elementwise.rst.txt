@@ -41,6 +41,4 @@ Elementwise
    elementwise/xlogy.rst
    elementwise/real.rst
    elementwise/binarizer.rst
-   elementwise/conj.rst
-   elementwise/ldexp.rst
 
