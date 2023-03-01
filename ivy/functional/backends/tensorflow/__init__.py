@@ -2,6 +2,10 @@
 import sys
 
 import tensorflow as tf
+
+for device in tf.config.experimental.list_physical_devices("GPU"):
+    tf.config.experimental.set_memory_growth(device, True)
+
 from tensorflow.python.framework.dtypes import DType
 from tensorflow.python.framework.tensor_shape import TensorShape
 from tensorflow.python.types.core import Tensor
