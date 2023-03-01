@@ -2,5 +2,5 @@
 import abc
 
 
-class ArrayWithDeviceExperimental(abc.ABC):
+class _ArrayWithDeviceExperimental(abc.ABC):
     pass
