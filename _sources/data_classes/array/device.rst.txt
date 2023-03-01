@@ -13,5 +13,5 @@ Device
    :maxdepth: -1
    :caption: Device
 
-   device/ArrayWithDevice.rst
+   device/_ArrayWithDevice.rst
 

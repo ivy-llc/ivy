@@ -19,4 +19,5 @@ Statistical
    statistical/quantile.rst
    statistical/corrcoef.rst
    statistical/nanmedian.rst
+   statistical/bincount.rst
 
