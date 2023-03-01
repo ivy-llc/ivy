@@ -7,7 +7,13 @@ import paddle
 # local
 import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
-
+from ivy.functional.ivy.gradients import (
+    _get_required_float_variables,
+    _get_y_and_ret_idxs,
+    _get_native_y,
+    _set_duplicates,
+    _process_func_ret_and_grads,
+)
 
 def variable(x, /):
     if ivy.is_int_dtype(x.dtype):
@@ -22,17 +28,110 @@ def variable(x, /):
 
 
 def is_variable(x, /, *, exclusive: bool = False):
-    raise IvyNotImplementedException()
+    return isinstance(x, paddle.Tensor) and not x.stop_gradient
 
 
 def variable_data(x: paddle.Tensor, /) -> paddle.Tensor:
     raise IvyNotImplementedException()
 
 
+def _grad_func(y, xs, retain_grads):
+    """Gradient calculation function."""
+    # Creating a zero gradient nest for the case where no gradients are computed
+    grads_ = paddle.static.nested_map(
+        xs,
+        lambda x: paddle.zeros_like(x),
+        include_subgraph=True,
+        stop_gradient=False
+    )
+
+    # Gradient calculation
+    if isinstance(xs, paddle.Tensor):
+        grads = paddle.grad(
+            outputs=y,
+            inputs=xs,
+            retain_graph=True,
+            create_graph=retain_grads,
+            allow_unused=True,
+        )[0]
+        grads = grads_ if grads is None else grads
+    elif isinstance(xs, paddle.static.NestedMutableSequence):
+        grads = paddle.static.nested_map(
+            xs,
+            lambda x: x._grad_ivar() if x._grad_ivar() is not None else paddle.zeros_like(x),
+            include_subgraph=True,
+            stop_gradient=False
+        )
+        # Returning zeros if no gradients are computed for consistent results
+        if isinstance(grads, paddle.static.NestedMutableSequence):
+            grads = paddle.static.nested_map(
+                grads, lambda x: paddle.zeros_like(x) if x._grad_ivar() is None else x,
+                include_subgraph=True,
+                stop_gradient=False
+            )
+            grads = paddle.static.nested_map(
+                lambda x, y: x + y, grads, grads_
+            )
+        else:
+            grads = grads_ if grads is None else grads
+    else:
+
+        def grad_(x):
+            grad = paddle.grad(
+                outputs=y,
+                inputs=x,
+                retain_graph=True,
+                create_graph=retain_grads,
+                allow_unused=True,
+            )[0]
+            return grad if grad is not None else paddle.zeros_like(x)
+
+        grads = paddle.static.nested_map(xs, grad_, include_subgraph=True, stop_gradient=False)
+        grads = paddle.static.nested_map(
+            lambda x, y: x + y, grads, grads_
+        )
+    return grads
+
+
 def execute_with_gradients(
     func, xs, /, *, retain_grads=False, xs_grad_idxs=None, ret_grad_idxs=None
 ):
-    raise IvyNotImplementedException()
+    # Conversion of required arrays to float variables and duplicate index chains
+    xs, xs1, required_duplicate_index_chains, _ = _get_required_float_variables(
+        xs, xs_grad_idxs
+    )
+
+    func_ret = func(xs)
+    xs = xs1
+
+    # Getting the relevant outputs from the function return for gradient calculation
+    y, ret_idxs = _get_y_and_ret_idxs(func_ret, ret_grad_idxs, create_var=True)
+
+    if isinstance(y, ivy.NativeArray):
+        # Gradient calculation for a single output
+        grads = _set_duplicates(
+            _grad_func(paddle.clone(y), xs, retain_grads),
+            required_duplicate_index_chains,
+        )
+    else:
+        # Gradient calculation for multiple outputs
+        #
+        y = _get_native_y(y)
+        grad_arr_idxs = ivy.nested_argwhere(y, lambda x: ivy.is_native_array(x))
+        grad_arr_values = ivy.multi_index_nest(y, grad_arr_idxs)
+        grads_ = [
+            _grad_func(paddle.clone(arr_value), xs, retain_grads)
+            for arr_value in grad_arr_values
+        ]
+        grads = grads_
+        if isinstance(ret_idxs, list) and len(ret_idxs):
+            grads = {
+                ret_idxs[i]: _set_duplicates(grad, required_duplicate_index_chains)
+                for i, grad in enumerate(grads_)
+            }
+
+    # Stop further gradient propagation if not retaining gradients
+    return _process_func_ret_and_grads(func_ret, grads, retain_grads)
 
 
 def value_and_grad(func):
