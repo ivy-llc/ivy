@@ -96,3 +96,16 @@ def corrcoef(
     cov2_t = tf.linalg.diag(1 / tf.sqrt(tf.linalg.diag_part(cov_t)))
     cor = cov2_t @ cov_t @ cov2_t
     return cor
+
+tensorfolow_histogram(
+    x: Union[tf.Tensor, tf.Variable,
+    edges: Union[ dtypex1-Dedges.shape[1:]xaxisrank(edges) > 1edges[k]edges.shape[1:]Tensorx],
+    axis: [DTensor]=None,
+    weights:Union[bin[],Tensordtypeshapexx[]]=None,
+    extend_lower_interval:bool=False,
+    extend_upper_interval:[bool]=False,
+    dtype: Union[[int32],[int64] [value:x.dtype]=None],
+    name:str[histogram]=None
+)
+
+    return tf.math.cumsum(x, edges, axes, reverse)
