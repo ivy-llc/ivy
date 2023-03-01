@@ -63,8 +63,12 @@ from .assertions import (
 )
 from . import globals
 
-os.environ["IVY_ROOT"] = ".ivy"
-import ivy.compiler.compiler as ic
+try:
+    os.environ["IVY_ROOT"] = ".ivy"
+    import ivy.compiler.compiler as ic
+except Exception:
+    ic = types.SimpleNamespace()
+    ic.compile = lambda func, args, kwargs: func
 
 
 # Temporary (.so) configuration

@@ -7,7 +7,7 @@ from numbers import Number
 import ivy
 
 
-class ArrayWithElementWiseExperimental(abc.ABC):
+class _ArrayWithElementWiseExperimental(abc.ABC):
     def sinc(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.sinc. This method simply wraps the

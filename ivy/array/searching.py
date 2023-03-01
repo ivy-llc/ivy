@@ -7,7 +7,7 @@ from typing import Optional, Union, Tuple
 import ivy
 
 
-class ArrayWithSearching(abc.ABC):
+class _ArrayWithSearching(abc.ABC):
     def argmax(
         self: ivy.Array,
         /,
