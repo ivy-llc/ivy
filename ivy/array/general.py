@@ -10,7 +10,7 @@ from typing import Any, Iterable, Union, Optional, Dict, Callable, List, Tuple
 import ivy
 
 
-class ArrayWithGeneral(abc.ABC):
+class _ArrayWithGeneral(abc.ABC):
     def is_native_array(
         self: ivy.Array,
         /,

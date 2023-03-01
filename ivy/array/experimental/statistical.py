@@ -6,7 +6,7 @@ from typing import Optional, Union, Tuple, Sequence
 import ivy
 
 
-class ArrayWithStatisticalExperimental(abc.ABC):
+class _ArrayWithStatisticalExperimental(abc.ABC):
     def median(
         self: ivy.Array,
         /,

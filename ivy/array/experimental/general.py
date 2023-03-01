@@ -5,7 +5,7 @@ import abc
 import ivy
 
 
-class ArrayWithGeneralExperimental(abc.ABC):
+class _ArrayWithGeneralExperimental(abc.ABC):
     def isin(
         self: ivy.Array,
         test_elements: ivy.Array,

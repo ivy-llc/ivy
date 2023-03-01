@@ -8,7 +8,7 @@ import ivy
 # ToDo: implement all methods here as public instance methods
 
 
-class ArrayWithNorms(abc.ABC):
+class _ArrayWithNorms(abc.ABC):
     def layer_norm(
         self: ivy.Array,
         normalized_idxs: List[int],

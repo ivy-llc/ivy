@@ -11,7 +11,7 @@ import ivy
 # ToDo: update docstrings and typehints according to ivy\layers
 
 
-class ArrayWithLayers(abc.ABC):
+class _ArrayWithLayers(abc.ABC):
     def linear(
         self: ivy.Array,
         weight: Union[ivy.Array, ivy.NativeArray],

@@ -6,7 +6,7 @@ from typing import Optional, Union
 import ivy
 
 
-class ArrayWithNormsExperimental(abc.ABC):
+class _ArrayWithNormsExperimental(abc.ABC):
     def l2_normalize(
         self: ivy.Array,
         axis: Optional[int] = None,

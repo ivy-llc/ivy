@@ -6,7 +6,7 @@ from typing import Optional, Union, Tuple, List
 import ivy
 
 
-class ArrayWithLinearAlgebraExperimental(abc.ABC):
+class _ArrayWithLinearAlgebraExperimental(abc.ABC):
     def eigh_tridiagonal(
         self: Union[ivy.Array, ivy.NativeArray],
         beta: Union[ivy.Array, ivy.NativeArray],

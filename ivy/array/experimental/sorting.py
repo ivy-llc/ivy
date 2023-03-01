@@ -7,7 +7,7 @@ from typing import Optional
 import ivy
 
 
-class ArrayWithSortingExperimental(abc.ABC):
+class _ArrayWithSortingExperimental(abc.ABC):
     def msort(
         self: ivy.Array,
         /,

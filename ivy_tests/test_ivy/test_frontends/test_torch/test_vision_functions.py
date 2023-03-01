@@ -158,67 +158,6 @@ def test_torch_pad(
     )
 
 
-@st.composite
-def _upsample_bilinear_helper(draw):
-    dtype, input, shape = draw(
-        helpers.dtype_and_values(
-            available_dtypes=["float32", "float64"],
-            ret_shape=True,
-            min_num_dims=4,
-            max_num_dims=4,
-            min_dim_size=1,
-            max_dim_size=1000,
-            min_value=-1e05,
-            max_value=1e05,
-        )
-    )
-    size = None
-    scale_factor = None
-    is_size_used = draw(st.booleans())
-    is_int = draw(st.booleans())
-    if is_size_used and is_int:
-        size = draw(helpers.ints(min_value=shape[2]))
-    elif is_size_used and not is_int:
-        size = (
-            draw(helpers.ints(min_value=shape[2])),
-            draw(helpers.ints(min_value=shape[3])),
-        )
-    elif not is_size_used and is_int:
-        scale_factor = draw(helpers.ints(min_value=1))
-    elif not is_size_used and not is_int:
-        scale_factor = (
-            draw(helpers.ints(min_value=shape[2])),
-            draw(helpers.ints(min_value=shape[3])),
-        )
-
-    return dtype, input[0], size, scale_factor
-
-
-@handle_frontend_test(
-    fn_tree="torch.nn.functional.upsample_bilinear",
-    dtype_and_input_and_other=_upsample_bilinear_helper(),
-)
-def test_torch_upsample_bilinear(
-    *,
-    dtype_and_input_and_other,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    dtype, input, size, scale_factor = dtype_and_input_and_other
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        input=input,
-        size=size,
-        scale_factor=scale_factor,
-    )
-
-
 @handle_frontend_test(
     fn_tree="torch.nn.functional.interpolate",
     dtype_and_input_and_other=_interp_args(scale_factor=True),
@@ -287,10 +226,35 @@ def test_torch_upsample(
 
 @handle_frontend_test(
     fn_tree="torch.nn.functional.upsample_nearest",
-    dtype_and_input_and_other=_interp_args(),
+    dtype_and_input_and_other=_interp_args(mode="nearest"),
     number_positional_args=st.just(2),
 )
 def test_torch_upsample_nearest(
+    *,
+    dtype_and_input_and_other,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x, _, size, _ = dtype_and_input_and_other
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        size=size,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.upsample_bilinear",
+    dtype_and_input_and_other=_interp_args(mode="bilinear"),
+    number_positional_args=st.just(2),
+)
+def test_torch_upsample_bilinear(
     *,
     dtype_and_input_and_other,
     on_device,

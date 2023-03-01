@@ -6,7 +6,7 @@ from typing import Optional, Union
 import ivy
 
 
-class ArrayWithActivationsExperimental(abc.ABC):
+class _ArrayWithActivationsExperimental(abc.ABC):
     def logit(
         self, /, *, eps: Optional[float] = None, out: Optional[ivy.Array] = None
     ) -> ivy.Array:

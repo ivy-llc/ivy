@@ -6,7 +6,7 @@ from typing import Optional, Union
 import ivy
 
 
-class ArrayWithLosses(abc.ABC):
+class _ArrayWithLosses(abc.ABC):
     def cross_entropy(
         self: ivy.Array,
         pred: Union[ivy.Array, ivy.NativeArray],

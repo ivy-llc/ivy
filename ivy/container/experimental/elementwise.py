@@ -3449,3 +3449,93 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         }
         """
         return self.static_ldexp(self, x2, out=out)
+
+    @staticmethod
+    def static_frexp(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.frexp. This method simply
+        wraps the function, and so the docstring for ivy.frexp also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            The container whose arrays should be split into mantissa and exponent.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container including the mantissa and exponent of x.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 5, 10]))
+        >>> ivy.Container.static_frexp(x)
+        {
+            a: (ivy.array([0.5, 0.5, 0.75]), ivy.array([1, 1, 2])),
+            b: (ivy.array([0.5, 0.625, 0.625]), ivy.array([1, 3, 4]))
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "frexp",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def frexp(
+        self: ivy.Container,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.frexp. This method simply
+        wraps the function, and so the docstring for ivy.frexp also applies to this
+        method with minimal changes.
+        Parameters
+        ----------
+        self
+            The container whose arrays should be split into mantissa and exponent.
+        out
+            optional output container, for writing the result to.
+        Returns
+        -------
+        ret
+            container including the mantissa and exponent of x.
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 5, 10]))
+        >>> x.frexp()
+        {
+            a: (ivy.array([0.5, 0.5, 0.75]), ivy.array([1, 1, 2])),
+            b: (ivy.array([0.5, 0.625, 0.625]), ivy.array([1, 3, 4]))
+        }
+        """
+        return self.static_frexp(self, out=out)

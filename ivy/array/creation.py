@@ -11,7 +11,7 @@ import ivy
 # -------------------#
 
 
-class ArrayWithCreation(abc.ABC):
+class _ArrayWithCreation(abc.ABC):
     def asarray(
         self: ivy.Array,
         /,

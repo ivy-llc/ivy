@@ -6,7 +6,7 @@ from typing import Optional, Union
 import ivy
 
 
-class ArrayWithRandomExperimental(abc.ABC):
+class _ArrayWithRandomExperimental(abc.ABC):
     def dirichlet(
         self: ivy.Array,
         /,
