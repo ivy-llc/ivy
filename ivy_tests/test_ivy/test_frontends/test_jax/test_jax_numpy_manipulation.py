@@ -878,7 +878,7 @@ def test_jax_numpy_blackman(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        M=[0],
+        M=M[0],
     )
 
 
