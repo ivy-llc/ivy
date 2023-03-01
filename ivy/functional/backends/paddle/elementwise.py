@@ -483,3 +483,7 @@ def isreal(
         x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     return paddle.equal(x, paddle.real(x))
+
+
+def exp2 (x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    return paddle.exp2 (x)
