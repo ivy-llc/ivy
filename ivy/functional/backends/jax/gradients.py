@@ -6,7 +6,7 @@ import jax.lax as jlax
 import jaxlib
 from jaxlib.xla_extension import Buffer
 from ivy.functional.backends.jax import JaxArray
-from typing import Optional, Callable
+from typing import Optional, Callable, Sequence, Union
 
 
 # local
@@ -78,8 +78,8 @@ def execute_with_gradients(
     /,
     *,
     retain_grads: bool = False,
-    xs_grad_idxs: Optional[JaxArray] = None,
-    ret_grad_idxs: Optional[JaxArray] = None,
+    xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
+    ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
 ):
     # Conversion of required arrays to float variables and duplicate index chains
     (
