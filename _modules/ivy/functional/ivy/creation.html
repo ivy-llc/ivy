@@ -798,6 +798,35 @@
 <span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; start = 5</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.arange(start)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    ivy.array([0, 1, 2, 3, 4])</span>
+
+<span class="sd">    &gt;&gt;&gt; start = 1</span>
+<span class="sd">    &gt;&gt;&gt; stop = 5</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.arange(start, stop)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    ivy.array([1, 2, 3, 4])</span>
+
+<span class="sd">    &gt;&gt;&gt; start = 1</span>
+<span class="sd">    &gt;&gt;&gt; stop = 10</span>
+<span class="sd">    &gt;&gt;&gt; step = 2</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.arange(start, stop, step)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    ivy.array([1, 3, 5, 7, 9])</span>
+
+<span class="sd">    &gt;&gt;&gt; start = 1</span>
+<span class="sd">    &gt;&gt;&gt; stop = 10</span>
+<span class="sd">    &gt;&gt;&gt; step = 2</span>
+<span class="sd">    &gt;&gt;&gt; dtype = &quot;float64&quot;</span>
+<span class="sd">    &gt;&gt;&gt; device = &quot;cpu&quot;</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.arange(start, stop, step, dtype=dtype, device=device)</span>
+<span class="sd">    &gt;&gt;&gt; print(x, x.dtype, x.device)</span>
+<span class="sd">    ivy.array([1., 3., 5., 7., 9.]) float64 cpu</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span>
         <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
