@@ -1746,9 +1746,9 @@ _composition_1.test_unsupported_devices_and_dtypes = {
     },
     "gpu": {
         "numpy": ivy.all_dtypes,
-        "jax": ivy.all_dtypes,
-        "tensorflow": ivy.all_dtypes,
-        "torch": ivy.all_dtypes,
+        "jax": ("complex64", "complex128"),
+        "tensorflow": ("complex64", "complex128"),
+        "torch": ("complex64", "float16", "uint16", "complex128", "uint64", "uint32"),
     },
     "tpu": {
         "numpy": ivy.all_dtypes,
@@ -1772,9 +1772,9 @@ _composition_2.test_unsupported_devices_and_dtypes = {
     },
     "gpu": {
         "numpy": ivy.all_dtypes,
-        "jax": ivy.all_dtypes,
-        "tensorflow": ivy.all_dtypes,
-        "torch": ivy.all_dtypes,
+        "jax": ("complex64", "complex128"),
+        "tensorflow": ("complex64", "complex128"),
+        "torch": ("uint16", "uint64", "uint32", "complex128", "float16", "complex64"),
     },
     "tpu": {
         "numpy": ivy.all_dtypes,
@@ -2066,7 +2066,8 @@ def _fn3(x, y):
 
 
 # vmap
-@given(
+@handle_test(
+    fn_tree="functional.ivy.vmap",
     func=st.sampled_from([_fn1, _fn2, _fn3]),
     dtype_and_arrays_and_axes=helpers.arrays_and_axes(
         allow_none=False,
