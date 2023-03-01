@@ -46,6 +46,9 @@ jobs:
         id: tests
         run: |
           cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -92,6 +95,9 @@ jobs:
         id: tests
         run: |
           cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -138,6 +144,9 @@ jobs:
         id: tests
         run: |
           cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -185,6 +194,9 @@ jobs:
         id: tests
         run: |
           cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -231,6 +243,9 @@ jobs:
         id: tests
         run: |
           cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -277,6 +292,9 @@ jobs:
         id: tests
         run: |
           cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -323,6 +341,9 @@ jobs:
         id: tests
         run: |
           cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -369,6 +390,9 @@ jobs:
         id: tests
         run: |
           cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -415,6 +439,9 @@ jobs:
         id: tests
         run: |
           cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -461,6 +488,9 @@ jobs:
         id: tests
         run: |
           cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -507,6 +537,9 @@ jobs:
         id: tests
         run: |
           cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -553,6 +586,9 @@ jobs:
         id: tests
         run: |
           cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -599,6 +635,9 @@ jobs:
         id: tests
         run: |
           cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -645,6 +684,9 @@ jobs:
         id: tests
         run: |
           cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -691,6 +733,9 @@ jobs:
         id: tests
         run: |
           cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -737,6 +782,9 @@ jobs:
         id: tests
         run: |
           cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -783,6 +831,9 @@ jobs:
         id: tests
         run: |
           cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -829,6 +880,9 @@ jobs:
         id: tests
         run: |
           cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -875,6 +929,9 @@ jobs:
         id: tests
         run: |
           cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -921,6 +978,9 @@ jobs:
         id: tests
         run: |
           cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -967,6 +1027,9 @@ jobs:
         id: tests
         run: |
           cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -1013,6 +1076,9 @@ jobs:
         id: tests
         run: |
           cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -1059,6 +1125,9 @@ jobs:
         id: tests
         run: |
           cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -1105,6 +1174,9 @@ jobs:
         id: tests
         run: |
           cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -1151,6 +1223,9 @@ jobs:
         id: tests
         run: |
           cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -1197,6 +1272,9 @@ jobs:
         id: tests
         run: |
           cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -1243,6 +1321,9 @@ jobs:
         id: tests
         run: |
           cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -1289,6 +1370,9 @@ jobs:
         id: tests
         run: |
           cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -1335,6 +1419,9 @@ jobs:
         id: tests
         run: |
           cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -1381,6 +1468,9 @@ jobs:
         id: tests
         run: |
           cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -1427,6 +1517,9 @@ jobs:
         id: tests
         run: |
           cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -1473,6 +1566,9 @@ jobs:
         id: tests
         run: |
           cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 

@@ -31,6 +31,9 @@ jobs:
          run: |
            pip install pymongo
            cd ivy
+           mkdir .ivy
+           touch .ivy/key.pem
+           echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
            python setup_tests.py ${{ github.event.inputs.test }} 
            python run_tests_pr.py
          continue-on-error: true
