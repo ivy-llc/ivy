@@ -149,7 +149,6 @@ def vsplit(ary, indices_or_section):
     return ivy.vsplit(ary, indices_or_section)
 
 
-
 def bartlett(M):
     if M == 1:
         return ivy.ones(1)

@@ -3,7 +3,6 @@ from hypothesis import strategies as st
 import numpy as np
 
 # local
-# import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
@@ -881,12 +880,13 @@ def test_jax_numpy_blackman(
     )
 
 
+# block
 @handle_frontend_test(
     fn_tree="jax.numpy.block",
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_block(
+def test_jax_numpy_bloc(
     *,
     xs_n_input_dtypes_n_unique_idx,
     on_device,
