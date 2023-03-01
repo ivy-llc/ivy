@@ -9,7 +9,7 @@ Finfo = None
 Iinfo = None
 
 
-class ArrayWithDataTypes(abc.ABC):
+class _ArrayWithDataTypes(abc.ABC):
     def astype(
         self: ivy.Array,
         dtype: ivy.Dtype,
