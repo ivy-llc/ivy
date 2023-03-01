@@ -6,7 +6,7 @@ from typing import Optional, Union, Tuple, Literal, Sequence
 import ivy
 
 
-class ArrayWithLayersExperimental(abc.ABC):
+class _ArrayWithLayersExperimental(abc.ABC):
     def max_pool1d(
         self: ivy.Array,
         kernel: Union[int, Tuple[int]],
