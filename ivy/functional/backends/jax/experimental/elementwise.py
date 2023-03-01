@@ -539,3 +539,9 @@ def ldexp(
     x1: JaxArray, x2: Union[JaxArray, int], /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.ldexp(x1, x2)
+
+
+def frexp(
+    x: JaxArray, /, *, out: Optional[Tuple[JaxArray, JaxArray]] = None
+) -> Tuple[JaxArray, JaxArray]:
+    return jnp.frexp(x)
