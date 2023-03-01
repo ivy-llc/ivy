@@ -6,7 +6,7 @@ from typing import Optional, Union
 import ivy
 
 
-class ArrayWithCreationExperimental(abc.ABC):
+class _ArrayWithCreationExperimental(abc.ABC):
     def eye_like(
         self: ivy.Array,
         /,
