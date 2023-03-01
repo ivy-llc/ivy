@@ -13,5 +13,5 @@ Sorting
    :maxdepth: -1
    :caption: Sorting
 
-   sorting/_ArrayWithSorting.rst
+   sorting/ArrayWithSorting.rst
 
