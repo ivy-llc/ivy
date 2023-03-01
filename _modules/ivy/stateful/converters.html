@@ -691,10 +691,18 @@
 <span class="sd">            The new trainable torch module instance.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s2">&quot;haiku&quot;</span><span class="p">):</span>
+        <span class="n">hk_spec</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s2">&quot;hk&quot;</span><span class="p">)</span>
+        <span class="n">flat_mapping_spec</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span>
+            <span class="s2">&quot;FlatMapping&quot;</span><span class="p">,</span> <span class="s2">&quot;haiku._src.data_structures&quot;</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">hk_spec</span><span class="p">:</span>
             <span class="kn">import</span> <span class="nn">haiku</span> <span class="k">as</span> <span class="nn">hk</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s2">&quot;FlatMapping&quot;</span><span class="p">,</span> <span class="s2">&quot;haiku._src.data_structures&quot;</span><span class="p">):</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">hk</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">module_from_spec</span><span class="p">(</span><span class="n">hk_spec</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">flat_mapping_spec</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">haiku._src.data_structures</span> <span class="kn">import</span> <span class="n">FlatMapping</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">FlatMapping</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">module_from_spec</span><span class="p">(</span><span class="n">flat_mapping_spec</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">_hk_flat_map_to_dict</span><span class="p">(</span><span class="n">hk_flat_map</span><span class="p">):</span>
             <span class="n">ret_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
@@ -922,8 +930,11 @@
 <span class="sd">        ret</span>
 <span class="sd">            The new trainable ivy.Module instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">):</span>
+        <span class="n">torch_spec</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">torch_spec</span><span class="p">:</span>
             <span class="kn">import</span> <span class="nn">torch</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">torch</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">module_from_spec</span><span class="p">(</span><span class="n">torch_spec</span><span class="p">)</span>
 
         <span class="k">class</span> <span class="nc">TorchIvyModule</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
             <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
