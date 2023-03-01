@@ -686,7 +686,104 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">prelu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">slope</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">prelu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">slope</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ArrayWithActivationsExperimental.relu6"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithActivationsExperimental.relu6">[docs]</a>    <span class="k">def</span> <span class="nf">relu6</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Applies the rectified linear unit 6 function element-wise.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x</span>
+<span class="sd">            input array</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to.</span>
+<span class="sd">            It must have a shape that the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            an array containing the rectified linear unit 6 activation</span>
+<span class="sd">            of each element in ``x``.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :class:`ivy.Array` input:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([-1.,  0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.])</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.relu6(x)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([0., 0., 1., 2., 3., 4., 5., 6., 6.])</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([-1.,  0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.])</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.zeros(9)</span>
+<span class="sd">        &gt;&gt;&gt; ivy.relu6(x, out = y)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([0., 0., 1., 2., 3., 4., 5., 6., 6.])</span>
+
+<span class="sd">        With :class:`ivy.Container` input:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = {</span>
+<span class="sd">                    a: ivy.array([-3., -2., -1., 0., 1., 2., 3., 4., 5.]),</span>
+<span class="sd">                    b: ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.])</span>
+<span class="sd">                }</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.relu6(x, out=x)</span>
+<span class="sd">        &gt;&gt;&gt; print(x)</span>
+<span class="sd">        {</span>
+<span class="sd">        a: ivy.array([0., 0., 0., 0., 1., 2., 3., 4., 5.]),</span>
+<span class="sd">        b: ivy.array([1., 2., 3., 4., 5., 6., 6., 6., 6.])</span>
+<span class="sd">        }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">relu6</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ArrayWithActivationsExperimental.batch_norm"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithActivationsExperimental.batch_norm">[docs]</a>    <span class="k">def</span> <span class="nf">batch_norm</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">mean</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">],</span>
+        <span class="n">variance</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">],</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">offset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">scale</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">training</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">eps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array instance method variant of ivy.batch_norm. This method</span>
+<span class="sd">        simply wraps the function, and so the docstring for ivy.batch_norm</span>
+<span class="sd">        also applies to this method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            Input array of shape (N,C,S), where N is the batch dimension, C is the</span>
+<span class="sd">            feature dimension and S corresponds to the following spatial dimensions.</span>
+<span class="sd">        mean</span>
+<span class="sd">            A mean array for the input&#39;s normalization.</span>
+<span class="sd">        variance</span>
+<span class="sd">            A variance array for the input&#39;s normalization.</span>
+<span class="sd">        offset</span>
+<span class="sd">            An offset array. If present, will be added to the normalized input.</span>
+<span class="sd">        scale</span>
+<span class="sd">            A scale array. If present, the scale is applied to the normalized input.</span>
+<span class="sd">        training</span>
+<span class="sd">            If true, calculate and use the mean and variance of `x`. Otherwise, use the</span>
+<span class="sd">            provided `mean` and `variance`.</span>
+<span class="sd">        eps</span>
+<span class="sd">            A small float number to avoid dividing by 0.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">             Array containing the normalized, scaled, offset values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">batch_norm</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span>
+            <span class="n">mean</span><span class="p">,</span>
+            <span class="n">variance</span><span class="p">,</span>
+            <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">,</span>
+            <span class="n">training</span><span class="o">=</span><span class="n">training</span><span class="p">,</span>
+            <span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">,</span>
+        <span class="p">)</span></div></div>
 </pre></div>
 
             </article>
