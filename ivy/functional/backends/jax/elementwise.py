@@ -34,7 +34,9 @@ def add(
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if alpha not in (1, None):
+        ivy.set_array_mode(False)
         x2 = multiply(x2, alpha)
+        ivy.unset_array_mode()
     return jnp.add(x1, x2)
 
 
@@ -412,7 +414,9 @@ def subtract(
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if alpha not in (1, None):
+        ivy.set_array_mode(False)
         x2 = multiply(x2, alpha)
+        ivy.unset_array_mode()
     return jnp.subtract(x1, x2)
 
 
