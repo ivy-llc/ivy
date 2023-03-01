@@ -296,7 +296,7 @@ class Tensor:
 
     def to(self, *args, **kwargs):
         if len(args) > 0:
-            if isinstance(args[0], ivy.Dtype):
+            if isinstance(args[0], (ivy.Dtype, ivy.NativeDtype)):
                 if self.dtype == args[0]:
                     return self
                 else:
@@ -672,6 +672,9 @@ class Tensor:
             )
 
         return torch_frontend.tile(self._ivy_array, repeats)
+
+    def unbind(self, dim=0):
+        return torch_frontend.unbind(self._ivy_array, dim=dim)
 
     # Special Methods #
     # -------------------#
