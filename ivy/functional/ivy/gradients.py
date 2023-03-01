@@ -1,7 +1,7 @@
 """Collection of gradient Ivy functions."""
 
 # global
-from typing import Union, Optional, Tuple
+from typing import Sequence, Union, Optional, Tuple
 import numpy as np
 import itertools
 
@@ -531,16 +531,14 @@ def stop_gradient(
 
 
 @handle_exceptions
-@handle_array_like_without_promotion
-@handle_array_function
 def execute_with_gradients(
     func,
     xs: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     retain_grads: bool = False,
-    xs_grad_idxs: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    ret_grad_idxs: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
+    ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
 ) -> Tuple[ivy.Array, ivy.Array]:
     """Call function func with input of xs variables, and return the function result
     func_ret and the gradients of each output variable w.r.t each input variable,
@@ -614,9 +612,7 @@ def execute_with_gradients(
 execute_with_gradients.computes_gradients = True
 
 
-@to_native_arrays_and_back
 @handle_exceptions
-@handle_array_function
 def value_and_grad(func):
     """
     Create a function that evaluates both func and the gradient of func.
@@ -650,9 +646,7 @@ def value_and_grad(func):
 value_and_grad.computes_gradients = True
 
 
-@to_native_arrays_and_back
 @handle_exceptions
-@handle_array_function
 def jac(func):
     """Call function func, and return func's Jacobian partial derivatives.
 
@@ -686,9 +680,7 @@ def jac(func):
 jac.computes_gradients = True
 
 
-@to_native_arrays_and_back
 @handle_exceptions
-@handle_array_function
 def grad(func):
     """Call function func, and return func's gradients.
 
