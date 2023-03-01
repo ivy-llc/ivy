@@ -15,6 +15,7 @@ Function testing
 	function_testing/args_to_container.rst
 	function_testing/as_cont.rst
 	function_testing/as_lists.rst
+	function_testing/compiled_if_required.rst
 	function_testing/convtrue.rst
 	function_testing/create_args_kwargs.rst
 	function_testing/create_frontend_args_kwargs.rst

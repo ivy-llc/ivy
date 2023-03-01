@@ -580,84 +580,6 @@
               
   <section id="test-function">
 <h1>test_function<a class="headerlink" href="#test-function" title="Permalink to this heading">#</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.function_testing.test_function">
-<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.function_testing.</span></span><span class="sig-name descname"><span class="pre">test_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_dtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol_</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol_</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xs_grad_idxs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ret_grad_idxs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_truth_backend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_flat_np_arrays</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">all_as_kwargs_np</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy_tests/test_ivy/helpers/function_testing.html#test_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.function_testing.test_function" title="Permalink to this definition">#</a></dt>
-<dd><p>Tests a function that consumes (or returns) arrays for the current backend
-by comparing the result with numpy.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>input_dtypes</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>]]) – data types of the input arguments in order.</p></li>
-<li><p><strong>test_flags</strong> (<a class="reference internal" href="../test_parameter_flags/FunctionTestFlags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.FunctionTestFlags" title="ivy_tests.test_ivy.helpers.test_parameter_flags.FunctionTestFlags"><code class="xref py py-class docutils literal notranslate"><span class="pre">FunctionTestFlags</span></code></a>) – FunctionTestFlags object that stores all testing flags, including:
-num_positional_args, with_out, instance_method, as_variable,
-native_arrays, container, gradient</p></li>
-<li><p><strong>fw</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – current backend (framework).</p></li>
-<li><p><strong>fn_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – name of the function to test.</p></li>
-<li><p><strong>rtol</strong> – relative tolerance value.</p></li>
-<li><p><strong>atol</strong> – absolute tolerance value.</p></li>
-<li><p><strong>test_values</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if True, test for the correctness of the resulting values. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)</p></li>
-<li><p><strong>xs_grad_idxs</strong> – Indices of the input arrays to compute gradients with respect to. If None,
-gradients are returned with respect to all input arrays. (Default value = None)</p></li>
-<li><p><strong>ret_grad_idxs</strong> – Indices of the returned arrays for which to return computed gradients. If None,
-gradients are returned for all returned arrays. (Default value = None)</p></li>
-<li><p><strong>ground_truth_backend</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Ground Truth Backend to compare the result-values.</p></li>
-<li><p><strong>on_device</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The device on which to create arrays (default: <code class="docutils literal notranslate"><span class="pre">'cpu'</span></code>)</p></li>
-<li><p><strong>return_flat_np_arrays</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If test_values is False, this flag dictates whether the original returns are (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
-returned, or whether the flattened numpy arrays are returned.</p></li>
-<li><p><strong>all_as_kwargs_np</strong> – input arguments to the function as keyword arguments.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><em>ret</em> – optional, return value from the function</p></li>
-<li><p><em>ret_gt</em> – optional, return value from the Ground Truth function</p></li>
-</ul>
-</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">input_dtypes</span> <span class="o">=</span> <span class="s1">&#39;float64&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">as_variable_flags</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">with_out</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">num_positional_args</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">native_array_flags</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">container_flags</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">instance_method</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">test_flags</span> <span class="o">=</span> <span class="n">FunctionTestFlags</span><span class="p">(</span><span class="n">num_positional_args</span><span class="p">,</span> <span class="n">with_out</span><span class="p">,</span>
-<span class="go">    instance_method,</span>
-<span class="go">    as_variable,</span>
-<span class="go">    native_arrays,</span>
-<span class="go">    container_flags,</span>
-<span class="go">    none)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">fw</span> <span class="o">=</span> <span class="s2">&quot;torch&quot;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">fn_name</span> <span class="o">=</span> <span class="s2">&quot;abs&quot;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">test_function</span><span class="p">(</span><span class="n">input_dtypes</span><span class="p">,</span> <span class="n">test_flags</span><span class="p">,</span> <span class="n">fw</span><span class="p">,</span> <span class="n">fn_name</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">input_dtypes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;float64&#39;</span><span class="p">,</span> <span class="s1">&#39;float32&#39;</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">as_variable_flags</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">with_out</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">num_positional_args</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">native_array_flags</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">container_flags</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">instance_method</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">test_flags</span> <span class="o">=</span> <span class="n">FunctionTestFlags</span><span class="p">(</span><span class="n">num_positional_args</span><span class="p">,</span> <span class="n">with_out</span><span class="p">,</span>
-<span class="go">    instance_method,</span>
-<span class="go">    as_variable,</span>
-<span class="go">    native_arrays,</span>
-<span class="go">    container_flags,</span>
-<span class="go">    none)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">fw</span> <span class="o">=</span> <span class="s2">&quot;numpy&quot;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">fn_name</span> <span class="o">=</span> <span class="s2">&quot;add&quot;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">24</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">test_function</span><span class="p">(</span><span class="n">input_dtypes</span><span class="p">,</span> <span class="n">test_flags</span><span class="p">,</span> <span class="n">fw</span><span class="p">,</span> <span class="n">fn_name</span><span class="p">,</span> <span class="n">x1</span><span class="o">=</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="o">=</span><span class="n">x2</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd></dl>
-
 </section>
 
 
@@ -702,6 +624,7 @@ returned, or whether the flattened numpy arrays are returned.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="args_to_container.html">args_to_container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="as_cont.html">as_cont</a></li>
 <li class="toctree-l1"><a class="reference internal" href="as_lists.html">as_lists</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compiled_if_required.html">compiled_if_required</a></li>
 <li class="toctree-l1"><a class="reference internal" href="convtrue.html">convtrue</a></li>
 <li class="toctree-l1"><a class="reference internal" href="create_args_kwargs.html">create_args_kwargs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="create_frontend_args_kwargs.html">create_frontend_args_kwargs</a></li>

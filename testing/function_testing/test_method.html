@@ -580,63 +580,6 @@
               
   <section id="test-method">
 <h1>test_method<a class="headerlink" href="#test-method" title="Permalink to this heading">#</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.function_testing.test_method">
-<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.function_testing.</span></span><span class="sig-name descname"><span class="pre">test_method</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_input_dtypes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method_input_dtypes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_all_as_kwargs_np</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method_all_as_kwargs_np</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method_flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">class_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'__call__'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_with_v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method_with_v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol_</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol_</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_gradients</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xs_grad_idxs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ret_grad_idxs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_truth_backend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_flat_np_arrays</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy_tests/test_ivy/helpers/function_testing.html#test_method"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.function_testing.test_method" title="Permalink to this definition">#</a></dt>
-<dd><p>Tests a class-method that consumes (or returns) arrays for the current backend
-by comparing the result with numpy.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>init_input_dtypes</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>]]) – data types of the input arguments to the constructor in order. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
-<li><p><strong>init_as_variable_flags</strong> – dictates whether the corresponding input argument passed to the constructor
-should be treated as an ivy.Array.</p></li>
-<li><p><strong>init_num_positional_args</strong> – number of input arguments that must be passed as positional arguments to the
-constructor.</p></li>
-<li><p><strong>init_native_array_flags</strong> – dictates whether the corresponding input argument passed to the constructor
-should be treated as a native array.</p></li>
-<li><p><strong>init_all_as_kwargs_np</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]) – input arguments to the constructor as keyword arguments. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
-<li><p><strong>method_input_dtypes</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>]]) – data types of the input arguments to the method in order. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
-<li><p><strong>method_as_variable_flags</strong> – dictates whether the corresponding input argument passed to the method should
-be treated as an ivy.Array.</p></li>
-<li><p><strong>method_num_positional_args</strong> – number of input arguments that must be passed as positional arguments to the
-method.</p></li>
-<li><p><strong>method_native_array_flags</strong> – dictates whether the corresponding input argument passed to the method should
-be treated as a native array.</p></li>
-<li><p><strong>method_container_flags</strong> – dictates whether the corresponding input argument passed to the method should
-be treated as an ivy Container.</p></li>
-<li><p><strong>method_all_as_kwargs_np</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]) – input arguments to the method as keyword arguments. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
-<li><p><strong>class_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – name of the class to test.</p></li>
-<li><p><strong>method_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – name of tthe method to test. (default: <code class="docutils literal notranslate"><span class="pre">'__call__'</span></code>)</p></li>
-<li><p><strong>init_with_v</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if the class being tested is an ivy.Module, then setting this flag as True will (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
-call the constructor with the variables v passed explicitly.</p></li>
-<li><p><strong>method_with_v</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if the class being tested is an ivy.Module, then setting this flag as True will (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
-call the method with the variables v passed explicitly.</p></li>
-<li><p><strong>rtol</strong> – relative tolerance value.</p></li>
-<li><p><strong>atol</strong> – absolute tolerance value.</p></li>
-<li><p><strong>test_values</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – can be a bool or a string to indicate whether correctness of values should be (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
-tested. If the value is <cite>with_v</cite>, shapes are tested but not values.</p></li>
-<li><p><strong>test_gradients</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if True, test for the correctness of gradients. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
-<li><p><strong>xs_grad_idxs</strong> – Indices of the input arrays to compute gradients with respect to. If None,
-gradients are returned with respect to all input arrays. (Default value = None)</p></li>
-<li><p><strong>ret_grad_idxs</strong> – Indices of the returned arrays for which to return computed gradients. If None,
-gradients are returned for all returned arrays. (Default value = None)</p></li>
-<li><p><strong>ground_truth_backend</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Ground Truth Backend to compare the result-values.</p></li>
-<li><p><strong>device</strong> – The device on which to create arrays.</p></li>
-<li><p><strong>return_flat_np_arrays</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If test_values is False, this flag dictates whether the original returns are (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
-returned, or whether the flattened numpy arrays are returned.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><em>ret</em> – optional, return value from the function</p></li>
-<li><p><em>ret_gt</em> – optional, return value from the Ground Truth function</p></li>
-</ul>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
 </section>
 
 
@@ -681,6 +624,7 @@ returned, or whether the flattened numpy arrays are returned.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="args_to_container.html">args_to_container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="as_cont.html">as_cont</a></li>
 <li class="toctree-l1"><a class="reference internal" href="as_lists.html">as_lists</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compiled_if_required.html">compiled_if_required</a></li>
 <li class="toctree-l1"><a class="reference internal" href="convtrue.html">convtrue</a></li>
 <li class="toctree-l1"><a class="reference internal" href="create_args_kwargs.html">create_args_kwargs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="create_frontend_args_kwargs.html">create_frontend_args_kwargs</a></li>
