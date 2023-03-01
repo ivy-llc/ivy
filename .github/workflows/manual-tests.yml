@@ -37,6 +37,9 @@ jobs:
          run: |
            pip install pymongo
            cd ivy
+           mkdir .ivy
+           touch .ivy/key.pem
+           echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
            python setup_tests.py ${{ github.event.inputs.test }} 
            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
