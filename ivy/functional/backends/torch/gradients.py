@@ -2,7 +2,7 @@
 
 # global
 import torch
-from typing import Optional, Callable
+from typing import Optional, Callable, Sequence, Union
 
 # local
 import ivy
@@ -94,8 +94,8 @@ def execute_with_gradients(
     /,
     *,
     retain_grads: bool = False,
-    xs_grad_idxs: Optional[torch.Tensor] = None,
-    ret_grad_idxs: Optional[torch.Tensor] = None,
+    xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
+    ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
 ):
     # Conversion of required arrays to float variables and duplicate index chains
     xs, xs1, required_duplicate_index_chains, _ = _get_required_float_variables(
