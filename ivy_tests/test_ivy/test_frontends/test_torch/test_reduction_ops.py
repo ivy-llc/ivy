@@ -702,6 +702,66 @@ def test_torch_quantile(
     )
 
 
+# median
+@handle_test(
+    fn_tree="functional.ivy.median",
+    dtype_and_x=statistical_dtype_values(function="median"),
+    keep_dims=st.booleans(),
+)
+def test_median(
+    *,
+    dtype_and_x,
+    keep_dims,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        x=x[0],
+        axis=axis,
+        keepdims=keep_dims,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="functional.ivy.median",
+    dtype_and_x=statistical_dtype_values(function="median"),
+    keep_dims=st.booleans(),
+)
+def test_torch_median(
+    *,
+    dtype_and_x,
+    keep_dims,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        dim=axis,
+        keepdim=keepdims,
+    )
+
+
 @handle_frontend_test(
     fn_tree="torch.count_nonzero",
     dtype_input_axis=helpers.dtype_values_axis(
