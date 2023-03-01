@@ -122,7 +122,7 @@ def nansum(
     keepdims: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.nansum(x, axis=axis, dtype=dtype, keepdim=keepdims)
 
 
 def gcd(
@@ -132,7 +132,8 @@ def gcd(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    return paddle.gcd(x1, x2)
 
 
 def isclose(
@@ -145,7 +146,7 @@ def isclose(
     equal_nan: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
 
 
 def angle(
@@ -155,7 +156,10 @@ def angle(
     deg: Optional[bool] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    result = paddle.angle(input)
+    if deg:
+        result = paddle.rad2deg(result)
+    return result
 
 
 def imag(
@@ -167,8 +171,7 @@ def imag(
     raise IvyNotImplementedException()
 
 
-def nan_to_num(
-    x: paddle.Tensor,
+def nan_to_num(x: paddle.Tensor,
     /,
     *,
     copy: Optional[bool] = True,
@@ -178,7 +181,7 @@ def nan_to_num(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()
-
+   
 
 def logaddexp2(
     x1: Union[paddle.Tensor, float, list, tuple],
@@ -200,7 +203,8 @@ def diff(
     append: Optional[Union[paddle.Tensor, int, float, list, tuple]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    x=paddle.to_tensor(x)
+    return paddle.diff(x, n=n, axis=axis, prepend=prepend, append=append)
 
 
 def signbit(
@@ -282,4 +286,17 @@ def xlogy(
 
 
 def real(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+
+    return paddle.real(x)
+
+
+def count_nonzero(
+    x: paddle.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, list, tuple]] = None,
+    keepdims: Optional[bool] = False,
+    name: Optional[str] = None,
+) -> paddle.Tensor:
+    non_zero_count = paddle.sum(x != 0, axis=axis, keepdim=keepdims, name=name)
+    return non_zero_count
