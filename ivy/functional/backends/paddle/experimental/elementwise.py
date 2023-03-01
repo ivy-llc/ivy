@@ -172,8 +172,7 @@ def imag(
     raise IvyNotImplementedException()
 
 
-def nan_to_num(
-    x: paddle.Tensor,
+def nan_to_num(x: paddle.Tensor,
     /,
     *,
     copy: Optional[bool] = True,
@@ -183,20 +182,22 @@ def nan_to_num(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if copy:
-        x = x.clone()
-    nan_mask = paddle.isnan(x)
+        t = x.clone()
+    if out is not None:
+        out[:] = t
+        t = out
+    nan_mask = paddle.isnan(t)
     if nan_mask.any():
-        x[nan_mask] = nan
+        t = paddle.where(nan_mask, paddle.full_like(t, nan), t)
     if posinf is not None:
-        posinf_mask = paddle.isinf(x) & (x > 0)
+        posinf_mask = paddle.isinf(t) & (t > 0)
         if posinf_mask.any():
-            x[posinf_mask] = posinf
+            t = paddle.where(posinf_mask, paddle.full_like(t, posinf), t)
     if neginf is not None:
-        neginf_mask = paddle.isinf(x) & (x < 0)
+        neginf_mask = paddle.isinf(t) & (t < 0)
         if neginf_mask.any():
-            x[neginf_mask] = neginf
-    return x
-
+            t = paddle.where(neginf_mask, paddle.full_like(t, neginf), t)
+    return t
 
 
 def logaddexp2(
