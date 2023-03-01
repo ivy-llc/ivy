@@ -584,8 +584,8 @@
 <span class="kn">import</span> <span class="nn">ivy</span>
 
 
-<div class="viewcode-block" id="ArrayWithStatisticalExperimental"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithStatisticalExperimental">[docs]</a><span class="k">class</span> <span class="nc">ArrayWithStatisticalExperimental</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
-<div class="viewcode-block" id="ArrayWithStatisticalExperimental.median"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithStatisticalExperimental.median">[docs]</a>    <span class="k">def</span> <span class="nf">median</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithStatisticalExperimental"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithStatisticalExperimental">[docs]</a><span class="k">class</span> <span class="nc">_ArrayWithStatisticalExperimental</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+<div class="viewcode-block" id="_ArrayWithStatisticalExperimental.median"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithStatisticalExperimental.median">[docs]</a>    <span class="k">def</span> <span class="nf">median</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -625,7 +625,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithStatisticalExperimental.nanmean"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithStatisticalExperimental.nanmean">[docs]</a>    <span class="k">def</span> <span class="nf">nanmean</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithStatisticalExperimental.nanmean"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithStatisticalExperimental.nanmean">[docs]</a>    <span class="k">def</span> <span class="nf">nanmean</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -674,7 +674,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithStatisticalExperimental.unravel_index"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithStatisticalExperimental.unravel_index">[docs]</a>    <span class="k">def</span> <span class="nf">unravel_index</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithStatisticalExperimental.unravel_index"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithStatisticalExperimental.unravel_index">[docs]</a>    <span class="k">def</span> <span class="nf">unravel_index</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
@@ -707,7 +707,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithStatisticalExperimental.quantile"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithStatisticalExperimental.quantile">[docs]</a>    <span class="k">def</span> <span class="nf">quantile</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithStatisticalExperimental.quantile"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithStatisticalExperimental.quantile">[docs]</a>    <span class="k">def</span> <span class="nf">quantile</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">q</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
@@ -793,7 +793,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithStatisticalExperimental.corrcoef"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithStatisticalExperimental.corrcoef">[docs]</a>    <span class="k">def</span> <span class="nf">corrcoef</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithStatisticalExperimental.corrcoef"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithStatisticalExperimental.corrcoef">[docs]</a>    <span class="k">def</span> <span class="nf">corrcoef</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -835,7 +835,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">corrcoef</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">rowvar</span><span class="o">=</span><span class="n">rowvar</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithStatisticalExperimental.nanmedian"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithStatisticalExperimental.nanmedian">[docs]</a>    <span class="k">def</span> <span class="nf">nanmedian</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithStatisticalExperimental.nanmedian"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithStatisticalExperimental.nanmedian">[docs]</a>    <span class="k">def</span> <span class="nf">nanmedian</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -897,7 +897,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithStatisticalExperimental.bincount"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithStatisticalExperimental.bincount">[docs]</a>    <span class="k">def</span> <span class="nf">bincount</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithStatisticalExperimental.bincount"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithStatisticalExperimental.bincount">[docs]</a>    <span class="k">def</span> <span class="nf">bincount</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>

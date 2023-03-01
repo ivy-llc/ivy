@@ -584,9 +584,9 @@
 <span class="kn">import</span> <span class="nn">ivy</span>
 
 
-<div class="viewcode-block" id="ArrayWithRandomExperimental"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithRandomExperimental">[docs]</a><span class="k">class</span> <span class="nc">ArrayWithRandomExperimental</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+<div class="viewcode-block" id="_ArrayWithRandomExperimental"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithRandomExperimental">[docs]</a><span class="k">class</span> <span class="nc">_ArrayWithRandomExperimental</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
     <span class="c1"># dirichlet</span>
-<div class="viewcode-block" id="ArrayWithRandomExperimental.dirichlet"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithRandomExperimental.dirichlet">[docs]</a>    <span class="k">def</span> <span class="nf">dirichlet</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithRandomExperimental.dirichlet"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithRandomExperimental.dirichlet">[docs]</a>    <span class="k">def</span> <span class="nf">dirichlet</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -638,7 +638,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dirichlet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithRandomExperimental.beta"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithRandomExperimental.beta">[docs]</a>    <span class="k">def</span> <span class="nf">beta</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithRandomExperimental.beta"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithRandomExperimental.beta">[docs]</a>    <span class="k">def</span> <span class="nf">beta</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">alpha</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">beta</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -688,7 +688,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithRandomExperimental.gamma"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithRandomExperimental.gamma">[docs]</a>    <span class="k">def</span> <span class="nf">gamma</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithRandomExperimental.gamma"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithRandomExperimental.gamma">[docs]</a>    <span class="k">def</span> <span class="nf">gamma</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">alpha</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">beta</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -738,7 +738,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithRandomExperimental.poisson"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithRandomExperimental.poisson">[docs]</a>    <span class="k">def</span> <span class="nf">poisson</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithRandomExperimental.poisson"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithRandomExperimental.poisson">[docs]</a>    <span class="k">def</span> <span class="nf">poisson</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Shape</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeShape</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -793,7 +793,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithRandomExperimental.bernoulli"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithRandomExperimental.bernoulli">[docs]</a>    <span class="k">def</span> <span class="nf">bernoulli</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithRandomExperimental.bernoulli"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithRandomExperimental.bernoulli">[docs]</a>    <span class="k">def</span> <span class="nf">bernoulli</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">logits</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>

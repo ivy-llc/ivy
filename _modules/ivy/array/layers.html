@@ -589,8 +589,8 @@
 <span class="c1"># ToDo: update docstrings and typehints according to ivy\layers</span>
 
 
-<div class="viewcode-block" id="ArrayWithLayers"><a class="viewcode-back" href="../../../data_classes/array/layers/ArrayWithLayers.html#ivy.array.layers.ArrayWithLayers">[docs]</a><span class="k">class</span> <span class="nc">ArrayWithLayers</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
-<div class="viewcode-block" id="ArrayWithLayers.linear"><a class="viewcode-back" href="../../../data_classes/array/layers/ArrayWithLayers.html#ivy.array.layers.ArrayWithLayers.linear">[docs]</a>    <span class="k">def</span> <span class="nf">linear</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithLayers"><a class="viewcode-back" href="../../../data_classes/array/layers/_ArrayWithLayers.html#ivy.array.layers._ArrayWithLayers">[docs]</a><span class="k">class</span> <span class="nc">_ArrayWithLayers</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+<div class="viewcode-block" id="_ArrayWithLayers.linear"><a class="viewcode-back" href="../../../data_classes/array/layers/_ArrayWithLayers.html#ivy.array.layers._ArrayWithLayers.linear">[docs]</a>    <span class="k">def</span> <span class="nf">linear</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">weight</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
@@ -645,7 +645,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithLayers.dropout"><a class="viewcode-back" href="../../../data_classes/array/layers/ArrayWithLayers.html#ivy.array.layers.ArrayWithLayers.dropout">[docs]</a>    <span class="k">def</span> <span class="nf">dropout</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithLayers.dropout"><a class="viewcode-back" href="../../../data_classes/array/layers/_ArrayWithLayers.html#ivy.array.layers._ArrayWithLayers.dropout">[docs]</a>    <span class="k">def</span> <span class="nf">dropout</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">prob</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
@@ -727,7 +727,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithLayers.dropout1d"><a class="viewcode-back" href="../../../data_classes/array/layers/ArrayWithLayers.html#ivy.array.layers.ArrayWithLayers.dropout1d">[docs]</a>    <span class="k">def</span> <span class="nf">dropout1d</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithLayers.dropout1d"><a class="viewcode-back" href="../../../data_classes/array/layers/_ArrayWithLayers.html#ivy.array.layers._ArrayWithLayers.dropout1d">[docs]</a>    <span class="k">def</span> <span class="nf">dropout1d</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">prob</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
@@ -775,7 +775,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithLayers.dropout3d"><a class="viewcode-back" href="../../../data_classes/array/layers/ArrayWithLayers.html#ivy.array.layers.ArrayWithLayers.dropout3d">[docs]</a>    <span class="k">def</span> <span class="nf">dropout3d</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithLayers.dropout3d"><a class="viewcode-back" href="../../../data_classes/array/layers/_ArrayWithLayers.html#ivy.array.layers._ArrayWithLayers.dropout3d">[docs]</a>    <span class="k">def</span> <span class="nf">dropout3d</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">prob</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
@@ -817,7 +817,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithLayers.scaled_dot_product_attention"><a class="viewcode-back" href="../../../data_classes/array/layers/ArrayWithLayers.html#ivy.array.layers.ArrayWithLayers.scaled_dot_product_attention">[docs]</a>    <span class="k">def</span> <span class="nf">scaled_dot_product_attention</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithLayers.scaled_dot_product_attention"><a class="viewcode-back" href="../../../data_classes/array/layers/_ArrayWithLayers.html#ivy.array.layers._ArrayWithLayers.scaled_dot_product_attention">[docs]</a>    <span class="k">def</span> <span class="nf">scaled_dot_product_attention</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">k</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">v</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -897,7 +897,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithLayers.multi_head_attention"><a class="viewcode-back" href="../../../data_classes/array/layers/ArrayWithLayers.html#ivy.array.layers.ArrayWithLayers.multi_head_attention">[docs]</a>    <span class="k">def</span> <span class="nf">multi_head_attention</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithLayers.multi_head_attention"><a class="viewcode-back" href="../../../data_classes/array/layers/_ArrayWithLayers.html#ivy.array.layers._ArrayWithLayers.multi_head_attention">[docs]</a>    <span class="k">def</span> <span class="nf">multi_head_attention</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">scale</span><span class="p">,</span>
         <span class="n">num_heads</span><span class="p">,</span>
@@ -928,7 +928,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithLayers.conv1d"><a class="viewcode-back" href="../../../data_classes/array/layers/ArrayWithLayers.html#ivy.array.layers.ArrayWithLayers.conv1d">[docs]</a>    <span class="k">def</span> <span class="nf">conv1d</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithLayers.conv1d"><a class="viewcode-back" href="../../../data_classes/array/layers/_ArrayWithLayers.html#ivy.array.layers._ArrayWithLayers.conv1d">[docs]</a>    <span class="k">def</span> <span class="nf">conv1d</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">strides</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
@@ -989,7 +989,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithLayers.conv1d_transpose"><a class="viewcode-back" href="../../../data_classes/array/layers/ArrayWithLayers.html#ivy.array.layers.ArrayWithLayers.conv1d_transpose">[docs]</a>    <span class="k">def</span> <span class="nf">conv1d_transpose</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithLayers.conv1d_transpose"><a class="viewcode-back" href="../../../data_classes/array/layers/_ArrayWithLayers.html#ivy.array.layers._ArrayWithLayers.conv1d_transpose">[docs]</a>    <span class="k">def</span> <span class="nf">conv1d_transpose</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">strides</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
@@ -1057,7 +1057,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithLayers.depthwise_conv2d"><a class="viewcode-back" href="../../../data_classes/array/layers/ArrayWithLayers.html#ivy.array.layers.ArrayWithLayers.depthwise_conv2d">[docs]</a>    <span class="k">def</span> <span class="nf">depthwise_conv2d</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithLayers.depthwise_conv2d"><a class="viewcode-back" href="../../../data_classes/array/layers/_ArrayWithLayers.html#ivy.array.layers._ArrayWithLayers.depthwise_conv2d">[docs]</a>    <span class="k">def</span> <span class="nf">depthwise_conv2d</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">strides</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
@@ -1115,7 +1115,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithLayers.conv2d"><a class="viewcode-back" href="../../../data_classes/array/layers/ArrayWithLayers.html#ivy.array.layers.ArrayWithLayers.conv2d">[docs]</a>    <span class="k">def</span> <span class="nf">conv2d</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithLayers.conv2d"><a class="viewcode-back" href="../../../data_classes/array/layers/_ArrayWithLayers.html#ivy.array.layers._ArrayWithLayers.conv2d">[docs]</a>    <span class="k">def</span> <span class="nf">conv2d</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">strides</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
@@ -1183,7 +1183,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithLayers.conv2d_transpose"><a class="viewcode-back" href="../../../data_classes/array/layers/ArrayWithLayers.html#ivy.array.layers.ArrayWithLayers.conv2d_transpose">[docs]</a>    <span class="k">def</span> <span class="nf">conv2d_transpose</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithLayers.conv2d_transpose"><a class="viewcode-back" href="../../../data_classes/array/layers/_ArrayWithLayers.html#ivy.array.layers._ArrayWithLayers.conv2d_transpose">[docs]</a>    <span class="k">def</span> <span class="nf">conv2d_transpose</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">strides</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
@@ -1248,7 +1248,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithLayers.conv3d"><a class="viewcode-back" href="../../../data_classes/array/layers/ArrayWithLayers.html#ivy.array.layers.ArrayWithLayers.conv3d">[docs]</a>    <span class="k">def</span> <span class="nf">conv3d</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithLayers.conv3d"><a class="viewcode-back" href="../../../data_classes/array/layers/_ArrayWithLayers.html#ivy.array.layers._ArrayWithLayers.conv3d">[docs]</a>    <span class="k">def</span> <span class="nf">conv3d</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">strides</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
@@ -1309,7 +1309,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithLayers.conv3d_transpose"><a class="viewcode-back" href="../../../data_classes/array/layers/ArrayWithLayers.html#ivy.array.layers.ArrayWithLayers.conv3d_transpose">[docs]</a>    <span class="k">def</span> <span class="nf">conv3d_transpose</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithLayers.conv3d_transpose"><a class="viewcode-back" href="../../../data_classes/array/layers/_ArrayWithLayers.html#ivy.array.layers._ArrayWithLayers.conv3d_transpose">[docs]</a>    <span class="k">def</span> <span class="nf">conv3d_transpose</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">strides</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
@@ -1375,7 +1375,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithLayers.lstm_update"><a class="viewcode-back" href="../../../data_classes/array/layers/ArrayWithLayers.html#ivy.array.layers.ArrayWithLayers.lstm_update">[docs]</a>    <span class="k">def</span> <span class="nf">lstm_update</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithLayers.lstm_update"><a class="viewcode-back" href="../../../data_classes/array/layers/_ArrayWithLayers.html#ivy.array.layers._ArrayWithLayers.lstm_update">[docs]</a>    <span class="k">def</span> <span class="nf">lstm_update</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">init_h</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">init_c</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>

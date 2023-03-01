@@ -585,8 +585,8 @@
 <span class="kn">import</span> <span class="nn">ivy</span>
 
 
-<div class="viewcode-block" id="ArrayWithElementWiseExperimental"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithElementWiseExperimental">[docs]</a><span class="k">class</span> <span class="nc">ArrayWithElementWiseExperimental</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
-<div class="viewcode-block" id="ArrayWithElementWiseExperimental.sinc"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithElementWiseExperimental.sinc">[docs]</a>    <span class="k">def</span> <span class="nf">sinc</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="_ArrayWithElementWiseExperimental"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithElementWiseExperimental">[docs]</a><span class="k">class</span> <span class="nc">_ArrayWithElementWiseExperimental</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+<div class="viewcode-block" id="_ArrayWithElementWiseExperimental.sinc"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithElementWiseExperimental.sinc">[docs]</a>    <span class="k">def</span> <span class="nf">sinc</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Array instance method variant of ivy.sinc. This method simply wraps the</span>
 <span class="sd">        function, and so the docstring for ivy.sinc also applies to this method</span>
@@ -617,7 +617,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">sinc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithElementWiseExperimental.lcm"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithElementWiseExperimental.lcm">[docs]</a>    <span class="k">def</span> <span class="nf">lcm</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithElementWiseExperimental.lcm"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithElementWiseExperimental.lcm">[docs]</a>    <span class="k">def</span> <span class="nf">lcm</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">x2</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -649,7 +649,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">lcm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithElementWiseExperimental.fmod"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithElementWiseExperimental.fmod">[docs]</a>    <span class="k">def</span> <span class="nf">fmod</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithElementWiseExperimental.fmod"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithElementWiseExperimental.fmod">[docs]</a>    <span class="k">def</span> <span class="nf">fmod</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">x2</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
@@ -689,7 +689,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">fmod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithElementWiseExperimental.fmax"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithElementWiseExperimental.fmax">[docs]</a>    <span class="k">def</span> <span class="nf">fmax</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithElementWiseExperimental.fmax"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithElementWiseExperimental.fmax">[docs]</a>    <span class="k">def</span> <span class="nf">fmax</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">x2</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
@@ -729,7 +729,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">fmax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithElementWiseExperimental.fmin"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithElementWiseExperimental.fmin">[docs]</a>    <span class="k">def</span> <span class="nf">fmin</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithElementWiseExperimental.fmin"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithElementWiseExperimental.fmin">[docs]</a>    <span class="k">def</span> <span class="nf">fmin</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">x2</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
@@ -769,7 +769,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">fmin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithElementWiseExperimental.trapz"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithElementWiseExperimental.trapz">[docs]</a>    <span class="k">def</span> <span class="nf">trapz</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithElementWiseExperimental.trapz"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithElementWiseExperimental.trapz">[docs]</a>    <span class="k">def</span> <span class="nf">trapz</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -820,7 +820,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="n">dx</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithElementWiseExperimental.float_power"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithElementWiseExperimental.float_power">[docs]</a>    <span class="k">def</span> <span class="nf">float_power</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithElementWiseExperimental.float_power"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithElementWiseExperimental.float_power">[docs]</a>    <span class="k">def</span> <span class="nf">float_power</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">],</span>
         <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
@@ -860,7 +860,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">float_power</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithElementWiseExperimental.exp2"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithElementWiseExperimental.exp2">[docs]</a>    <span class="k">def</span> <span class="nf">exp2</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithElementWiseExperimental.exp2"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithElementWiseExperimental.exp2">[docs]</a>    <span class="k">def</span> <span class="nf">exp2</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -893,7 +893,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exp2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithElementWiseExperimental.copysign"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithElementWiseExperimental.copysign">[docs]</a>    <span class="k">def</span> <span class="nf">copysign</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithElementWiseExperimental.copysign"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithElementWiseExperimental.copysign">[docs]</a>    <span class="k">def</span> <span class="nf">copysign</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">Number</span><span class="p">],</span>
         <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">Number</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
@@ -931,7 +931,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">copysign</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithElementWiseExperimental.count_nonzero"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithElementWiseExperimental.count_nonzero">[docs]</a>    <span class="k">def</span> <span class="nf">count_nonzero</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithElementWiseExperimental.count_nonzero"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithElementWiseExperimental.count_nonzero">[docs]</a>    <span class="k">def</span> <span class="nf">count_nonzero</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -984,7 +984,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithElementWiseExperimental.nansum"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithElementWiseExperimental.nansum">[docs]</a>    <span class="k">def</span> <span class="nf">nansum</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithElementWiseExperimental.nansum"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithElementWiseExperimental.nansum">[docs]</a>    <span class="k">def</span> <span class="nf">nansum</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -1035,7 +1035,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithElementWiseExperimental.gcd"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithElementWiseExperimental.gcd">[docs]</a>    <span class="k">def</span> <span class="nf">gcd</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithElementWiseExperimental.gcd"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithElementWiseExperimental.gcd">[docs]</a>    <span class="k">def</span> <span class="nf">gcd</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">],</span>
         <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
@@ -1072,7 +1072,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">gcd</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithElementWiseExperimental.isclose"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithElementWiseExperimental.isclose">[docs]</a>    <span class="k">def</span> <span class="nf">isclose</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithElementWiseExperimental.isclose"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithElementWiseExperimental.isclose">[docs]</a>    <span class="k">def</span> <span class="nf">isclose</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
@@ -1131,7 +1131,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="n">rtol</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">atol</span><span class="p">,</span> <span class="n">equal_nan</span><span class="o">=</span><span class="n">equal_nan</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithElementWiseExperimental.angle"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithElementWiseExperimental.angle">[docs]</a>    <span class="k">def</span> <span class="nf">angle</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithElementWiseExperimental.angle"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithElementWiseExperimental.angle">[docs]</a>    <span class="k">def</span> <span class="nf">angle</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -1173,7 +1173,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">deg</span><span class="o">=</span><span class="n">deg</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithElementWiseExperimental.imag"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithElementWiseExperimental.imag">[docs]</a>    <span class="k">def</span> <span class="nf">imag</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithElementWiseExperimental.imag"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithElementWiseExperimental.imag">[docs]</a>    <span class="k">def</span> <span class="nf">imag</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -1208,7 +1208,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithElementWiseExperimental.nan_to_num"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithElementWiseExperimental.nan_to_num">[docs]</a>    <span class="k">def</span> <span class="nf">nan_to_num</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithElementWiseExperimental.nan_to_num"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithElementWiseExperimental.nan_to_num">[docs]</a>    <span class="k">def</span> <span class="nf">nan_to_num</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -1262,7 +1262,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">,</span> <span class="n">nan</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span> <span class="n">posinf</span><span class="o">=</span><span class="n">posinf</span><span class="p">,</span> <span class="n">neginf</span><span class="o">=</span><span class="n">neginf</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithElementWiseExperimental.logaddexp2"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithElementWiseExperimental.logaddexp2">[docs]</a>    <span class="k">def</span> <span class="nf">logaddexp2</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithElementWiseExperimental.logaddexp2"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithElementWiseExperimental.logaddexp2">[docs]</a>    <span class="k">def</span> <span class="nf">logaddexp2</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">],</span>
         <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
@@ -1296,7 +1296,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">logaddexp2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithElementWiseExperimental.signbit"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithElementWiseExperimental.signbit">[docs]</a>    <span class="k">def</span> <span class="nf">signbit</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithElementWiseExperimental.signbit"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithElementWiseExperimental.signbit">[docs]</a>    <span class="k">def</span> <span class="nf">signbit</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">],</span>
         <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
@@ -1327,7 +1327,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">signbit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithElementWiseExperimental.hypot"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithElementWiseExperimental.hypot">[docs]</a>    <span class="k">def</span> <span class="nf">hypot</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithElementWiseExperimental.hypot"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithElementWiseExperimental.hypot">[docs]</a>    <span class="k">def</span> <span class="nf">hypot</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">x2</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
@@ -1364,7 +1364,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithElementWiseExperimental.allclose"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithElementWiseExperimental.allclose">[docs]</a>    <span class="k">def</span> <span class="nf">allclose</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithElementWiseExperimental.allclose"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithElementWiseExperimental.allclose">[docs]</a>    <span class="k">def</span> <span class="nf">allclose</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">x2</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
@@ -1426,7 +1426,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="n">rtol</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">atol</span><span class="p">,</span> <span class="n">equal_nan</span><span class="o">=</span><span class="n">equal_nan</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithElementWiseExperimental.diff"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithElementWiseExperimental.diff">[docs]</a>    <span class="k">def</span> <span class="nf">diff</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithElementWiseExperimental.diff"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithElementWiseExperimental.diff">[docs]</a>    <span class="k">def</span> <span class="nf">diff</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -1472,7 +1472,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">prepend</span><span class="o">=</span><span class="n">prepend</span><span class="p">,</span> <span class="n">append</span><span class="o">=</span><span class="n">append</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithElementWiseExperimental.fix"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithElementWiseExperimental.fix">[docs]</a>    <span class="k">def</span> <span class="nf">fix</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithElementWiseExperimental.fix"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithElementWiseExperimental.fix">[docs]</a>    <span class="k">def</span> <span class="nf">fix</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -1503,7 +1503,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">fix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithElementWiseExperimental.nextafter"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithElementWiseExperimental.nextafter">[docs]</a>    <span class="k">def</span> <span class="nf">nextafter</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithElementWiseExperimental.nextafter"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithElementWiseExperimental.nextafter">[docs]</a>    <span class="k">def</span> <span class="nf">nextafter</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">x2</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
@@ -1539,7 +1539,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nextafter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithElementWiseExperimental.zeta"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithElementWiseExperimental.zeta">[docs]</a>    <span class="k">def</span> <span class="nf">zeta</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithElementWiseExperimental.zeta"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithElementWiseExperimental.zeta">[docs]</a>    <span class="k">def</span> <span class="nf">zeta</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">q</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
@@ -1576,7 +1576,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithElementWiseExperimental.gradient"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithElementWiseExperimental.gradient">[docs]</a>    <span class="k">def</span> <span class="nf">gradient</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithElementWiseExperimental.gradient"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithElementWiseExperimental.gradient">[docs]</a>    <span class="k">def</span> <span class="nf">gradient</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -1649,7 +1649,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">spacing</span><span class="o">=</span><span class="n">spacing</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">edge_order</span><span class="o">=</span><span class="n">edge_order</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithElementWiseExperimental.xlogy"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithElementWiseExperimental.xlogy">[docs]</a>    <span class="k">def</span> <span class="nf">xlogy</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithElementWiseExperimental.xlogy"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithElementWiseExperimental.xlogy">[docs]</a>    <span class="k">def</span> <span class="nf">xlogy</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">y</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
@@ -1690,7 +1690,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">xlogy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithElementWiseExperimental.real"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithElementWiseExperimental.real">[docs]</a>    <span class="k">def</span> <span class="nf">real</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="_ArrayWithElementWiseExperimental.real"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithElementWiseExperimental.real">[docs]</a>    <span class="k">def</span> <span class="nf">real</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Array instance method variant of ivy.real. This method simply wraps</span>
 <span class="sd">        the function, and so the docstring for ivy.real also applies to this</span>
@@ -1719,7 +1719,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithElementWiseExperimental.binarizer"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithElementWiseExperimental.binarizer">[docs]</a>    <span class="k">def</span> <span class="nf">binarizer</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithElementWiseExperimental.binarizer"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithElementWiseExperimental.binarizer">[docs]</a>    <span class="k">def</span> <span class="nf">binarizer</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1743,7 +1743,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">binarizer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithElementWiseExperimental.conj"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithElementWiseExperimental.conj">[docs]</a>    <span class="k">def</span> <span class="nf">conj</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<div class="viewcode-block" id="_ArrayWithElementWiseExperimental.conj"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithElementWiseExperimental.conj">[docs]</a>    <span class="k">def</span> <span class="nf">conj</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Array instance method variant of ivy.conj. This method simply wraps</span>
 <span class="sd">        the function, and so the docstring for ivy.conj also applies to this</span>
@@ -1771,7 +1771,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithElementWiseExperimental.ldexp"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithElementWiseExperimental.ldexp">[docs]</a>    <span class="k">def</span> <span class="nf">ldexp</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithElementWiseExperimental.ldexp"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental._ArrayWithElementWiseExperimental.ldexp">[docs]</a>    <span class="k">def</span> <span class="nf">ldexp</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">x2</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
