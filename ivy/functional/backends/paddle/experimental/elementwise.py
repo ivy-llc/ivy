@@ -181,24 +181,8 @@ def nan_to_num(x: paddle.Tensor,
     neginf: Optional[Union[float, int]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if copy:
-        t = x.clone()
-    if out is not None:
-        out[:] = t
-        t = out
-    nan_mask = paddle.isnan(t)
-    if nan_mask.any():
-        t = paddle.where(nan_mask, paddle.full_like(t, nan), t)
-    if posinf is not None:
-        posinf_mask = paddle.isinf(t) & (t > 0)
-        if posinf_mask.any():
-            t = paddle.where(posinf_mask, paddle.full_like(t, posinf), t)
-    if neginf is not None:
-        neginf_mask = paddle.isinf(t) & (t < 0)
-        if neginf_mask.any():
-            t = paddle.where(neginf_mask, paddle.full_like(t, neginf), t)
-    return t
-
+    raise IvyNotImplementedException()
+   
 
 def logaddexp2(
     x1: Union[paddle.Tensor, float, list, tuple],
