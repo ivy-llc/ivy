@@ -5,33 +5,9 @@ import numpy as np
 import importlib
 from hypothesis import strategies as st
 import typing
-from types import SimpleNamespace
 
 # local
 import ivy
-
-try:
-    import ivy.functional.backends.tensorflow as ivy_tf
-except ImportError:
-    ivy_tf = SimpleNamespace()
-    ivy_tf.valid_dtypes = ()
-    ivy_tf.invalid_dtypes = ()
-
-try:
-    import ivy.functional.backends.jax as ivy_jax
-except ImportError:
-    ivy_jax = SimpleNamespace()
-    ivy_jax.valid_dtypes = ()
-    ivy_jax.invalid_dtypes = ()
-
-try:
-    import ivy.functional.backends.torch as ivy_torch
-except ImportError:
-    ivy_torch = SimpleNamespace()
-    ivy_torch.valid_dtypes = ()
-    ivy_torch.invalid_dtypes = ()
-
-import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
@@ -1049,13 +1025,8 @@ def test_invalid_dtype(
     dtype_in = dtype_in[0]
     res = ivy.invalid_dtype(dtype_in)
     fw = backend_fw.current_backend_str()
-    fw_invalid_dtypes = {
-        "torch": ivy_torch.invalid_dtypes,
-        "tensorflow": ivy_tf.invalid_dtypes,
-        "jax": ivy_jax.invalid_dtypes,
-        "numpy": ivy_np.invalid_dtypes,
-    }
-    if dtype_in in fw_invalid_dtypes[fw]:
+    invalid_dtypes = backend_fw.invalid_dtypes
+    if dtype_in in invalid_dtypes:
         assert res is True, (
             f"fDtype = {dtype_in!r} is a valid dtype for {fw}, but" f"result = {res}"
         )
@@ -1155,13 +1126,8 @@ def test_valid_dtype(
     dtype_in = dtype_in[0]
     res = ivy.valid_dtype(dtype_in)
     fw = backend_fw.current_backend_str()
-    fw_valid_dtypes = {
-        "torch": ivy_torch.valid_dtypes,
-        "tensorflow": ivy_tf.valid_dtypes,
-        "jax": ivy_jax.valid_dtypes,
-        "numpy": ivy_np.valid_dtypes,
-    }
-    if dtype_in in fw_valid_dtypes[fw]:
+    valid_dtypes = backend_fw.valid_dtypes
+    if dtype_in in valid_dtypes:
         assert res is True, (
             f"fDtype = {dtype_in!r} is not a valid dtype for {fw}, but"
             f"result = {res}"
