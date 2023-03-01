@@ -392,4 +392,18 @@ def vander(
 def vector_to_skew_symmetric_matrix(
     vector: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    batch_shape = vector.shape[:-1]
+    # BS x 3 x 1
+    vector_expanded = paddle.unsqueeze(vector, -1)
+    # BS x 1 x 1
+    a1s = vector_expanded[..., 0:1, :]
+    a2s = vector_expanded[..., 1:2, :]
+    a3s = vector_expanded[..., 2:3, :]
+    # BS x 1 x 1
+    zs = paddle.zeros(batch_shape + [1, 1], dtype=vector.dtype)
+    # BS x 1 x 3
+    row1 = paddle.concat((zs, -a3s, a2s), -1)
+    row2 = paddle.concat((a3s, zs, -a1s), -1)
+    row3 = paddle.concat((-a2s, a1s, zs), -1)
+    # BS x 3 x 3
+    return paddle.concat((row1, row2, row3), -2)
