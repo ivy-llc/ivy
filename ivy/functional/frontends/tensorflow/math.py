@@ -26,6 +26,16 @@ def exp(x, name=None):
 
 
 @to_ivy_arrays_and_back
+def sqrt(x, name=None):
+    return ivy.sqrt(x)
+
+
+@to_ivy_arrays_and_back
+def negative(x, name=None):
+    return ivy.negative(x)
+
+
+@to_ivy_arrays_and_back
 def argmax(input, axis, output_type=None, name=None):
     output_type = to_ivy_dtype(output_type)
     if output_type in ["uint16", "int16", "int32", "int64"]:

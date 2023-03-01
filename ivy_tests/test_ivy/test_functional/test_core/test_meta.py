@@ -8,7 +8,6 @@ from hypothesis import strategies as st
 # local
 import ivy
 from ivy.functional.ivy.gradients import _variable, _is_variable
-import ivy.functional.backends.numpy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 

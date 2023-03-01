@@ -190,15 +190,19 @@ class EagerTensor:
 
     def __truediv__(self, y, name="truediv"):
         dtype = ivy.dtype(self._ivy_array)
-        if dtype in [ivy.uint8, ivy.int8, ivy.uint16, ivy.int16]:
-            return ivy.astype(y, ivy.float32).__rtruediv__(
-                ivy.astype(self._ivy_array, ivy.float32)
+        if str(dtype) in ["uint8", "int8", "uint16", "int16"]:
+            return tf_frontend.math.truediv(
+                tf_frontend.cast(self, ivy.float32),
+                tf_frontend.cast(y, ivy.float32),
+                name=name
             )
-        if dtype in [ivy.uint32, ivy.int32, ivy.uint64, ivy.int64]:
-            return ivy.astype(y, ivy.float64).__rtruediv__(
-                ivy.astype(self._ivy_array, ivy.float64)
+        if str(dtype) in ["uint32", "int32", "uint64", "int64"]:
+            return tf_frontend.math.truediv(
+                tf_frontend.cast(self, ivy.float64),
+                tf_frontend.cast(y, ivy.float64),
+                name=name
             )
-        return y.__rtruediv__(self._ivy_array)
+        return tf_frontend.math.truediv(self._ivy_array, y, name=name)
 
     def __len__(self):
         return len(self._ivy_array)

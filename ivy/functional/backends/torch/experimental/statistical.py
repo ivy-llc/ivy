@@ -19,8 +19,8 @@ def median(
     return quantile(
         input,
         0.5,
-        dim=axis,
-        keepdim=keepdims,
+        axis=axis,
+        keepdims=keepdims,
         interpolation="midpoint",
     )[0]
 
