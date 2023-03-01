@@ -577,15 +577,37 @@
               
   <h1>Source code for ivy_tests.test_ivy.helpers.test_parameter_flags</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">hypothesis</span> <span class="kn">import</span> <span class="n">strategies</span> <span class="k">as</span> <span class="n">st</span>  <span class="c1"># NOQA</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="nb">globals</span>
+
+
+<span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
+<span class="k">def</span> <span class="nf">_as_varaible_strategy</span><span class="p">(</span><span class="n">draw</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="nb">globals</span><span class="o">.</span><span class="n">CURRENT_BACKEND</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">globals</span><span class="o">.</span><span class="n">_Notsetval</span>
+        <span class="ow">and</span> <span class="nb">globals</span><span class="o">.</span><span class="n">CURRENT_BACKEND</span><span class="p">()</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;numpy&quot;</span>
+    <span class="p">):</span>
+        <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">just</span><span class="p">([</span><span class="kc">False</span><span class="p">]))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">globals</span><span class="o">.</span><span class="n">CURRENT_FRONTEND_STR</span><span class="p">:</span>
+        <span class="c1"># non multiversion changes go here</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="nb">globals</span><span class="o">.</span><span class="n">CURRENT_FRONTEND</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">globals</span><span class="o">.</span><span class="n">_Notsetval</span>
+            <span class="ow">and</span> <span class="nb">globals</span><span class="o">.</span><span class="n">CURRENT_FRONTEND</span><span class="p">()</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;numpy&quot;</span>
+        <span class="p">):</span>
+            <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">just</span><span class="p">([</span><span class="kc">False</span><span class="p">]))</span>
+    <span class="k">elif</span> <span class="nb">globals</span><span class="o">.</span><span class="n">CURRENT_FRONTEND_STR</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;numpy&quot;</span><span class="p">:</span>
+        <span class="c1"># multiversion changes go here</span>
+        <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">just</span><span class="p">([</span><span class="kc">False</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">lists</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span> <span class="n">min_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
 
 
 <span class="n">BuiltNativeArrayStrategy</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">lists</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span> <span class="n">min_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">BuiltAsVariableStrategy</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">lists</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span> <span class="n">min_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">BuiltAsVariableStrategy</span> <span class="o">=</span> <span class="n">_as_varaible_strategy</span><span class="p">()</span>
 <span class="n">BuiltContainerStrategy</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">lists</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span> <span class="n">min_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">BuiltInstanceStrategy</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">()</span>
 <span class="n">BuiltInplaceStrategy</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">just</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">BuiltGradientStrategy</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">()</span>
 <span class="n">BuiltWithOutStrategy</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">()</span>
+<span class="n">BuiltCompileStrategy</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">()</span>
 
 
 <span class="n">flags_mapping</span> <span class="o">=</span> <span class="p">{</span>
@@ -596,6 +618,7 @@
     <span class="s2">&quot;test_gradients&quot;</span><span class="p">:</span> <span class="s2">&quot;BuiltGradientStrategy&quot;</span><span class="p">,</span>
     <span class="s2">&quot;with_out&quot;</span><span class="p">:</span> <span class="s2">&quot;BuiltWithOutStrategy&quot;</span><span class="p">,</span>
     <span class="s2">&quot;inplace&quot;</span><span class="p">:</span> <span class="s2">&quot;BuiltInplace&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;test_compile&quot;</span><span class="p">:</span> <span class="s2">&quot;BuiltCompileStrategy&quot;</span><span class="p">,</span>
 <span class="p">}</span>
 
 
@@ -622,6 +645,7 @@
         <span class="n">native_arrays</span><span class="p">,</span>
         <span class="n">container</span><span class="p">,</span>
         <span class="n">test_gradients</span><span class="p">,</span>
+        <span class="n">test_compile</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_positional_args</span> <span class="o">=</span> <span class="n">num_positional_args</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">with_out</span> <span class="o">=</span> <span class="n">with_out</span>
@@ -629,7 +653,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">native_arrays</span> <span class="o">=</span> <span class="n">native_arrays</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">container</span> <span class="o">=</span> <span class="n">container</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">as_variable</span> <span class="o">=</span> <span class="n">as_variable</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">test_gradients</span> <span class="o">=</span> <span class="n">test_gradients</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_gradients</span> <span class="o">=</span> <span class="n">test_gradients</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_compile</span> <span class="o">=</span> <span class="n">test_compile</span></div>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span>
@@ -639,7 +664,8 @@
             <span class="sa">f</span><span class="s2">&quot;native_arrays=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">native_arrays</span><span class="si">}</span><span class="s2">. &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;container=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="si">}</span><span class="s2">. &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;as_variable=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">as_variable</span><span class="si">}</span><span class="s2">. &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;test_gradients=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">test_gradients</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;test_gradients=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">test_gradients</span><span class="si">}</span><span class="s2">. &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;test_compile=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">test_compile</span><span class="si">}</span><span class="s2">. &quot;</span>
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -654,6 +680,7 @@
     <span class="n">instance_method</span><span class="p">,</span>
     <span class="n">with_out</span><span class="p">,</span>
     <span class="n">test_gradients</span><span class="p">,</span>
+    <span class="n">test_compile</span><span class="p">,</span>
     <span class="n">as_variable</span><span class="p">,</span>
     <span class="n">native_arrays</span><span class="p">,</span>
     <span class="n">container_flags</span><span class="p">,</span>
@@ -665,6 +692,7 @@
             <span class="n">with_out</span><span class="o">=</span><span class="n">with_out</span><span class="p">,</span>
             <span class="n">instance_method</span><span class="o">=</span><span class="n">instance_method</span><span class="p">,</span>
             <span class="n">test_gradients</span><span class="o">=</span><span class="n">test_gradients</span><span class="p">,</span>
+            <span class="n">test_compile</span><span class="o">=</span><span class="n">test_compile</span><span class="p">,</span>
             <span class="n">as_variable</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
             <span class="n">native_arrays</span><span class="o">=</span><span class="n">native_arrays</span><span class="p">,</span>
             <span class="n">container</span><span class="o">=</span><span class="n">container_flags</span><span class="p">,</span>
