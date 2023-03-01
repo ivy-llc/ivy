@@ -257,8 +257,11 @@ def test_dct(
 
 
 @st.composite
-def _interp_args(draw, scale_factor=False):
-    mode = draw(st.sampled_from(["linear", "bilinear", "trilinear", "nearest", "area"]))
+def _interp_args(draw, mode=None, scale_factor=False):
+    if not mode:
+        mode = draw(
+            st.sampled_from(["linear", "bilinear", "trilinear", "nearest", "area"])
+        )
     align_corners = draw(st.one_of(st.booleans(), st.none()))
     if mode == "linear":
         num_dims = 3
