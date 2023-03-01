@@ -286,4 +286,17 @@ def xlogy(
 
 
 def real(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+
     return paddle.real(x)
+
+
+def count_nonzero(
+    x: paddle.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, list, tuple]] = None,
+    keepdims: Optional[bool] = False,
+    name: Optional[str] = None,
+) -> paddle.Tensor:
+    raise IvyNotImplementedException()
+

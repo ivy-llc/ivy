@@ -35,7 +35,7 @@ def expand_dims(
     axis: Union[int, Sequence[int]] = 0,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.expand (x, axis)
 
 
 def flip(
@@ -55,7 +55,7 @@ def permute_dims(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.transpose(x, axes)
 
 
 def reshape(

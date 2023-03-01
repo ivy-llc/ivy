@@ -89,7 +89,7 @@ invalid_float_dtypes = ()
 invalid_uint_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
 invalid_complex_dtypes = ()
 
-native_inplace_support = True
+native_inplace_support = False
 supports_gradients = True
 
 
