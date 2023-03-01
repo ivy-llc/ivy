@@ -139,10 +139,15 @@ def squeeze(a, axis=None):
 
 
 @to_ivy_arrays_and_back
-def dsplit(ary, indices_or_section):
-    return ivy.dsplit(ary, indices_or_section)
+def dsplit(ary, indices_or_sections):
+    return ivy.dsplit(ary, indices_or_sections)
 
 
 @to_ivy_arrays_and_back
-def vsplit(ary, indices_or_section):
-    return ivy.vsplit(ary, indices_or_section)
+def vsplit(ary, indices_or_sections):
+    return ivy.vsplit(ary, indices_or_sections)
+
+
+@to_ivy_arrays_and_back
+def hsplit(ary, indices_or_sections):
+    return ivy.hsplit(ary, indices_or_sections)

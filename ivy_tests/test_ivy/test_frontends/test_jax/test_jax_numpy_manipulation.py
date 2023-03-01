@@ -1,8 +1,9 @@
 # global
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 import numpy as np
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
@@ -770,7 +771,6 @@ def test_jax_numpy_squeeze(
         shape=st.shared(helpers.get_shape(min_num_dims=3), key="value_shape"),
     ),
     indices_or_sections=_get_split_locations(min_num_dims=3, axis=2),
-    number_positional_args=st.just(2),
     test_with_out=st.just(False),
 )
 def test_jax_numpy_dsplit(
@@ -802,7 +802,6 @@ def test_jax_numpy_dsplit(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="value_shape"),
     ),
     indices_or_sections=_get_split_locations(min_num_dims=2, axis=0),
-    number_positional_args=st.just(2),
     test_with_out=st.just(False),
 )
 def test_jax_numpy_vsplit(
@@ -815,6 +814,46 @@ def test_jax_numpy_vsplit(
     test_flags,
 ):
     input_dtype, value = dtype_value
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        ary=value[0],
+        indices_or_sections=indices_or_sections,
+    )
+
+
+# hsplit
+@handle_frontend_test(
+    fn_tree="jax.numpy.hsplit",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+    ),
+    indices_or_sections=_get_split_locations(min_num_dims=1, axis=1),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_hsplit(
+    *,
+    dtype_value,
+    indices_or_sections,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, value = dtype_value
+
+    # TODO: remove this assumption when this bugfix is merged and version-pinned
+    # https://github.com/google/jax/pull/14275
+    assume(not (len(value[0].shape) == 1))
+
+    # TODO: remove this assumption when this bugfix is merged and version-pinned
+    # https://github.com/tensorflow/tensorflow/pull/59523
+    assume(not (len(value[0].shape) == 1 and ivy.current_backend_str() == "tensorflow"))
+
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
