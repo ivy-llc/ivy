@@ -220,6 +220,35 @@ def arange(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
+    Examples
+    --------
+    >>> start = 5
+    >>> x = ivy.arange(start)
+    >>> print(x)
+    ivy.array([0, 1, 2, 3, 4])
+
+    >>> start = 1
+    >>> stop = 5
+    >>> x = ivy.arange(start, stop)
+    >>> print(x)
+    ivy.array([1, 2, 3, 4])
+
+    >>> start = 1
+    >>> stop = 10
+    >>> step = 2
+    >>> x = ivy.arange(start, stop, step)
+    >>> print(x)
+    ivy.array([1, 3, 5, 7, 9])
+
+    >>> start = 1
+    >>> stop = 10
+    >>> step = 2
+    >>> dtype = "float64"
+    >>> device = "cpu"
+    >>> x = ivy.arange(start, stop, step, dtype=dtype, device=device)
+    >>> print(x, x.dtype, x.device)
+    ivy.array([1., 3., 5., 7., 9.]) float64 cpu
+
     """
     return current_backend().arange(
         start, stop, step, dtype=dtype, device=device, out=out

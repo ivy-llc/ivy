@@ -2,7 +2,7 @@ name: intelligent-tests-pr
 on:
   workflow_dispatch:
   pull_request:
-    types: [labeled, opened, synchronize, reopened, review_requested]
+    types: [ labeled, opened, synchronize, reopened, review_requested ]
 
 permissions:
   actions: read
@@ -25,6 +25,9 @@ jobs:
            pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
+           mkdir .ivy
+           touch .ivy/key.pem
+           echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
            python determine_tests.py extra
            python run_tests_pr.py
          continue-on-error: true
@@ -51,6 +54,9 @@ jobs:
            pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
+           mkdir .ivy
+           touch .ivy/key.pem
+           echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
            python determine_tests.py
            python run_tests_pr.py
          continue-on-error: true
@@ -77,6 +83,9 @@ jobs:
            pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
+           mkdir .ivy
+           touch .ivy/key.pem
+           echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
            python determine_tests.py
            python run_tests_pr.py
          continue-on-error: true
@@ -103,6 +112,9 @@ jobs:
            pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
+           mkdir .ivy
+           touch .ivy/key.pem
+           echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
            python determine_tests.py
            python run_tests_pr.py
          continue-on-error: true
@@ -129,6 +141,9 @@ jobs:
            pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
+           mkdir .ivy
+           touch .ivy/key.pem
+           echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
            python determine_tests.py
            python run_tests_pr.py
          continue-on-error: true
@@ -155,6 +170,9 @@ jobs:
            pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
+           mkdir .ivy
+           touch .ivy/key.pem
+           echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
            python determine_tests.py
            python run_tests_pr.py
          continue-on-error: true
@@ -181,6 +199,9 @@ jobs:
            pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
+           mkdir .ivy
+           touch .ivy/key.pem
+           echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
            python determine_tests.py
            python run_tests_pr.py
          continue-on-error: true
@@ -207,6 +228,9 @@ jobs:
            pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
+           mkdir .ivy
+           touch .ivy/key.pem
+           echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
            python determine_tests.py
            python run_tests_pr.py
          continue-on-error: true
@@ -233,6 +257,9 @@ jobs:
            pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
+           mkdir .ivy
+           touch .ivy/key.pem
+           echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
            python determine_tests.py
            python run_tests_pr.py
          continue-on-error: true
@@ -259,6 +286,9 @@ jobs:
            pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
+           mkdir .ivy
+           touch .ivy/key.pem
+           echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
            python determine_tests.py
            python run_tests_pr.py
          continue-on-error: true
@@ -285,6 +315,9 @@ jobs:
            pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
+           mkdir .ivy
+           touch .ivy/key.pem
+           echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
            python determine_tests.py
            python run_tests_pr.py
          continue-on-error: true
@@ -311,6 +344,9 @@ jobs:
            pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
+           mkdir .ivy
+           touch .ivy/key.pem
+           echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
            python determine_tests.py
            python run_tests_pr.py
          continue-on-error: true
@@ -337,6 +373,9 @@ jobs:
            pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
+           mkdir .ivy
+           touch .ivy/key.pem
+           echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
            python determine_tests.py
            python run_tests_pr.py
          continue-on-error: true
@@ -363,6 +402,9 @@ jobs:
            pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
+           mkdir .ivy
+           touch .ivy/key.pem
+           echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
            python determine_tests.py
            python run_tests_pr.py
          continue-on-error: true
@@ -389,6 +431,9 @@ jobs:
            pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
+           mkdir .ivy
+           touch .ivy/key.pem
+           echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
            python determine_tests.py
            python run_tests_pr.py
          continue-on-error: true
@@ -415,6 +460,9 @@ jobs:
            pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
+           mkdir .ivy
+           touch .ivy/key.pem
+           echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
            python determine_tests.py
            python run_tests_pr.py
          continue-on-error: true
@@ -441,6 +489,9 @@ jobs:
            pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
+           mkdir .ivy
+           touch .ivy/key.pem
+           echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
            python determine_tests.py
            python run_tests_pr.py
          continue-on-error: true
@@ -467,6 +518,9 @@ jobs:
            pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
+           mkdir .ivy
+           touch .ivy/key.pem
+           echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
            python determine_tests.py
            python run_tests_pr.py
          continue-on-error: true
@@ -493,6 +547,9 @@ jobs:
            pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
+           mkdir .ivy
+           touch .ivy/key.pem
+           echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
            python determine_tests.py
            python run_tests_pr.py
          continue-on-error: true
@@ -519,6 +576,9 @@ jobs:
            pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
+           mkdir .ivy
+           touch .ivy/key.pem
+           echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
            python determine_tests.py
            python run_tests_pr.py
          continue-on-error: true
@@ -545,6 +605,9 @@ jobs:
            pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
+           mkdir .ivy
+           touch .ivy/key.pem
+           echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
            python determine_tests.py
            python run_tests_pr.py
          continue-on-error: true
@@ -571,6 +634,9 @@ jobs:
            pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
+           mkdir .ivy
+           touch .ivy/key.pem
+           echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
            python determine_tests.py
            python run_tests_pr.py
          continue-on-error: true
@@ -597,6 +663,9 @@ jobs:
            pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
+           mkdir .ivy
+           touch .ivy/key.pem
+           echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
            python determine_tests.py
            python run_tests_pr.py
          continue-on-error: true
@@ -623,6 +692,9 @@ jobs:
            pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
+           mkdir .ivy
+           touch .ivy/key.pem
+           echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
            python determine_tests.py
            python run_tests_pr.py
          continue-on-error: true
@@ -649,6 +721,9 @@ jobs:
            pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
+           mkdir .ivy
+           touch .ivy/key.pem
+           echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
            python determine_tests.py
            python run_tests_pr.py
          continue-on-error: true
@@ -675,6 +750,9 @@ jobs:
            pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
+           mkdir .ivy
+           touch .ivy/key.pem
+           echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
            python determine_tests.py
            python run_tests_pr.py
          continue-on-error: true
@@ -701,6 +779,9 @@ jobs:
            pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
+           mkdir .ivy
+           touch .ivy/key.pem
+           echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
            python determine_tests.py
            python run_tests_pr.py
          continue-on-error: true
@@ -727,6 +808,9 @@ jobs:
            pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
+           mkdir .ivy
+           touch .ivy/key.pem
+           echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
            python determine_tests.py
            python run_tests_pr.py
          continue-on-error: true
@@ -753,6 +837,9 @@ jobs:
            pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
+           mkdir .ivy
+           touch .ivy/key.pem
+           echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
            python determine_tests.py
            python run_tests_pr.py
          continue-on-error: true
@@ -779,6 +866,9 @@ jobs:
            pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
+           mkdir .ivy
+           touch .ivy/key.pem
+           echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
            python determine_tests.py
            python run_tests_pr.py
          continue-on-error: true
@@ -805,6 +895,9 @@ jobs:
            pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
+           mkdir .ivy
+           touch .ivy/key.pem
+           echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
            python determine_tests.py
            python run_tests_pr.py
          continue-on-error: true
@@ -831,6 +924,9 @@ jobs:
            pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
+           mkdir .ivy
+           touch .ivy/key.pem
+           echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
            python determine_tests.py
            python run_tests_pr.py
          continue-on-error: true

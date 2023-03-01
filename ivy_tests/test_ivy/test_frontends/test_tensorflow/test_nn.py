@@ -39,7 +39,7 @@ def _x_and_filters(
             dim = 2
         elif "3" in type:
             dim = 3
-        elif type == "depthwise":
+        elif type in ["depthwise", "separable"]:
             dim = 2
     else:
         dim = len(data_format) - 2
@@ -57,7 +57,7 @@ def _x_and_filters(
     fdilations = [dilations] * dim if isinstance(dilations, int) else dilations
     if atrous:
         stride = 1
-    elif type == "depthwise":
+    elif type in ["depthwise", "separable"]:
         # if any value in dilations is greater than 1, tensorflow implements
         # depthwise_covn2d as an atrous depthwise convolution, in which case all values
         # in strides must be equal to 1.
@@ -245,7 +245,18 @@ def _x_and_filters(
             dtype=dtype[0], shape=filter_shape, min_value=0, max_value=1
         )
     )
-    if type == "depthwise":
+    if type == "separable":
+        p_filter_shape = (
+            1, 1, filter_shape[-1] * filter_shape[-2],
+            draw(helpers.ints(min_value=1, max_value=3))
+        )
+        p_filters = draw(
+            helpers.array_values(
+                dtype=dtype[0], shape=p_filter_shape, min_value=0, max_value=1
+            )
+        )
+        filters = [filters, p_filters]
+    if type in ["depthwise", "separable"]:
         stride = [1, stride, stride, 1]
         if isinstance(dilations, int):
             dilations = [dilations] * dim
@@ -670,6 +681,41 @@ def test_tensorflow_depthwise_conv2d(
         on_device=on_device,
         input=x,
         filter=filters,
+        strides=stride,
+        padding=padding,
+        data_format=data_format,
+        dilations=dilation,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.separable_conv2d",
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NHWC"]),
+        padding=st.sampled_from(["VALID", "SAME"]),
+        type="separable",
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_separable_conv2d(
+    *,
+    x_f_d_df,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+        depthwise_filter=filters[0],
+        pointwise_filter=filters[1],
         strides=stride,
         padding=padding,
         data_format=data_format,
