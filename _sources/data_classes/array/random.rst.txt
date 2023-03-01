@@ -13,5 +13,5 @@ Random
    :maxdepth: -1
    :caption: Random
 
-   random/ArrayWithRandom.rst
+   random/_ArrayWithRandom.rst
 
