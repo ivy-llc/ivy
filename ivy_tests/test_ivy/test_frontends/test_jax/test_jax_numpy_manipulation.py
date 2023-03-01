@@ -1,9 +1,9 @@
 # global
-from hypothesis import strategies as st, assume
+from hypothesis import strategies as st
 import numpy as np
 
 # local
-import ivy
+# import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
@@ -823,7 +823,6 @@ def test_jax_numpy_vsplit(
         ary=value[0],
         indices_or_sections=indices_or_sections,
     )
-
 
 
 # bartlett
