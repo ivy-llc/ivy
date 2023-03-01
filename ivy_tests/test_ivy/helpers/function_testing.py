@@ -119,7 +119,7 @@ def test_function(
     xs_grad_idxs=None,
     ret_grad_idxs=None,
     ground_truth_backend: str,
-    on_device: str = "cpu",
+    on_device: str,
     return_flat_np_arrays: bool = False,
     **all_as_kwargs_np,
 ):
@@ -257,6 +257,7 @@ def test_function(
         kwargs_idxs=kwargs_idxs,
         input_dtypes=input_dtypes,
         test_flags=test_flags,
+        on_device=on_device,
     )
 
     if ("out" in kwargs or test_flags.with_out) and "out" not in inspect.signature(
@@ -379,6 +380,7 @@ def test_function(
                 kwarg_np_vals=kwarg_np_vals,
                 input_dtypes=input_dtypes,
                 test_flags=test_flags,
+                on_device=on_device,
             )
             ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
                 ivy.__dict__[fn_name], *args, **kwargs
@@ -428,6 +430,7 @@ def test_function(
                     xs_grad_idxs=xs_grad_idxs,
                     ret_grad_idxs=ret_grad_idxs,
                     ground_truth_backend=ground_truth_backend,
+                    on_device=on_device,
                 )
 
         else:
@@ -443,7 +446,12 @@ def test_function(
                 xs_grad_idxs=xs_grad_idxs,
                 ret_grad_idxs=ret_grad_idxs,
                 ground_truth_backend=ground_truth_backend,
+                on_device=on_device,
             )
+
+    assert ivy.dev(ret) == ivy.dev(
+        ret_from_gt
+    ), f"ground truth backend ({ground_truth_backend}) returned array on device {ivy.dev(ret_from_gt)} but target backend ({ivy.backend}) returned array on device {ivy.dev(ret)}"
 
     # assuming value test will be handled manually in the test function
     if not test_values:
@@ -451,7 +459,6 @@ def test_function(
             return ret_np_flat, ret_np_from_gt_flat
         return ret, ret_from_gt
 
-    assert ivy.dev(ret) == ivy.dev(ret_from_gt), "PANIC! Device not correct!"
     if isinstance(rtol_, dict):
         rtol_ = _get_framework_rtol(rtol_, fw)
     if isinstance(atol_, dict):
@@ -808,6 +815,7 @@ def gradient_test(
     xs_grad_idxs=None,
     ret_grad_idxs=None,
     ground_truth_backend: str,
+    on_device: str,
 ):
     def grad_fn(all_args):
         args, kwargs, i = all_args
@@ -831,6 +839,7 @@ def gradient_test(
         kwargs_idxs=kwargs_idxs,
         input_dtypes=input_dtypes,
         test_flags=test_flags,
+        on_device=on_device,
     )
     _, grads = ivy.execute_with_gradients(
         grad_fn,
@@ -892,6 +901,7 @@ def gradient_test(
             kwargs_idxs=kwargs_idxs,
             input_dtypes=input_dtypes,
             test_flags=test_flags,
+            on_device=on_device,
         )
         _, grads_from_gt = ivy.execute_with_gradients(
             grad_fn,
@@ -1713,6 +1723,7 @@ def create_args_kwargs(
     kwargs_idxs,
     input_dtypes,
     test_flags: Union[pf.FunctionTestFlags, pf.MethodTestFlags],
+    on_device,
 ):
     """Creates arguments and keyword-arguments for the function to test.
 
@@ -1734,7 +1745,7 @@ def create_args_kwargs(
     def _apply_flags(args_to_iterate):
         ret = []
         for i, entry in enumerate(args_to_iterate):
-            x = ivy.array(entry, dtype=input_dtypes[i])
+            x = ivy.array(entry, dtype=input_dtypes[i], device=on_device)
             if test_flags.as_variable[i]:
                 x = _variable(x)
             if test_flags.native_arrays[i]:
