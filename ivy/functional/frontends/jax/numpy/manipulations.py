@@ -1,5 +1,6 @@
 # local
 import ivy
+import ivy.numpy as np
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_jax_dtype,
@@ -88,14 +89,14 @@ def stack(arrays, axis=0, out=None, dtype=None):
 
 @to_ivy_arrays_and_back
 def take(
-    a,
-    indices,
-    axis=None,
-    out=None,
-    mode=None,
-    unique_indices=False,
-    indices_are_sorted=False,
-    fill_value=None,
+        a,
+        indices,
+        axis=None,
+        out=None,
+        mode=None,
+        unique_indices=False,
+        indices_are_sorted=False,
+        fill_value=None,
 ):
     return ivy.take_along_axis(a, indices, axis, out=out)
 
@@ -151,3 +152,47 @@ def vsplit(ary, indices_or_sections):
 @to_ivy_arrays_and_back
 def hsplit(ary, indices_or_sections):
     return ivy.hsplit(ary, indices_or_sections)
+
+
+@to_ivy_arrays_and_back
+def bartlett(M):
+    if M == 1:
+        return ivy.ones(1)
+    elif M % 2 == 0:
+        return ivy.concatenate(
+            (ivy.linspace(0, 1, M // 2 + 1), ivy.linspace(1, 0, M // 2 + 1)[1:])
+        )
+    else:
+        return ivy.concatenate(
+            (ivy.linspace(0, 1, (M + 1) // 2), ivy.linspace(1, 0, (M + 1) // 2 - 1)[1:])
+        )
+
+
+@to_ivy_arrays_and_back
+def blackman(M):
+    if M < 1:
+        return np.array([])
+
+    if M == 1:
+        return np.ones(1)
+
+    alpha = 0.16
+    a0 = (1 - alpha) / 2
+    a1 = 1 / 2
+    a2 = alpha / 2
+
+    n = np.arange(0, M)
+    ret = (
+            a0 - a1 * np.cos(2 * np.pi * n / (M - 1)) + a2 * np.cos(4 * np.pi * n / (M - 1))
+    )
+
+    return ret
+
+
+@to_ivy_arrays_and_back
+def block(arrays):
+    concatenated = ivy.concatenate(arrays, axis=1)
+    num_rows = arrays[0].shape[0]
+    num_cols = sum(arr.shape[1] for arr in arrays)
+    ret = ivy.reshape(concatenated, (num_rows, num_cols))
+    return ret
