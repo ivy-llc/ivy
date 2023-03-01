@@ -19,8 +19,8 @@ def median(
     return quantile(
         input,
         0.5,
-        dim=axis,
-        keepdim=keepdims,
+        axis=axis,
+        keepdims=keepdims,
         interpolation="midpoint",
     )[0]
 
@@ -127,3 +127,23 @@ def unravel_index(
 
 
 unravel_index.support_native_out = False
+
+
+def bincount(
+    x: torch.Tensor,
+    /,
+    *,
+    weights: Optional[torch.Tensor] = None,
+    minlength: Optional[int] = 0,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if weights is None:
+        ret = torch.bincount(x, minlength=minlength)
+        ret = ret.to(x.dtype)
+    else:
+        ret = torch.bincount(x, weights=weights, minlength=minlength)
+        ret = ret.to(weights.dtype)
+    return ret
+
+
+bincount.support_native_out = False

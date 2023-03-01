@@ -437,27 +437,16 @@ def batch_norm(
     momentum=0.1,
     eps=1e-5,
 ):
-    if training:
-        dim = 0 if len(input.shape) == 2 else (0, 2, 3)
-        current_mean = ivy.mean(input, axis=dim)
-        current_var = ivy.var(input, axis=dim)
-    else:
-        current_mean = running_mean
-        current_var = running_var
-
-    input = ivy.swapaxes(input, 1, -1)
-    input = input - current_mean
-    input = input / ivy.sqrt(current_var + eps)
-    if weight is not None:
-        input = input * weight
-    if bias is not None:
-        input = input + bias
-
-    # updating running mean & var is useless in functional API?
-    running_mean = (1.0 - momentum) * running_mean + momentum * current_mean
-    running_var = (1.0 - momentum) * running_var + momentum * current_var
-
-    return ivy.swapaxes(input, 1, -1)
+    # momentum is not practically used in the functional api
+    return ivy.batch_norm(
+        input,
+        running_mean,
+        running_var,
+        offset=bias,
+        scale=weight,
+        training=training,
+        eps=eps,
+    )
 
 
 # Reference: https://stackoverflow.com/a/63603993

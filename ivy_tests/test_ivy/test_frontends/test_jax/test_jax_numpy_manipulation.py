@@ -1,8 +1,9 @@
 # global
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 import numpy as np
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
@@ -770,7 +771,6 @@ def test_jax_numpy_squeeze(
         shape=st.shared(helpers.get_shape(min_num_dims=3), key="value_shape"),
     ),
     indices_or_sections=_get_split_locations(min_num_dims=3, axis=2),
-    number_positional_args=st.just(2),
     test_with_out=st.just(False),
 )
 def test_jax_numpy_dsplit(
@@ -802,7 +802,6 @@ def test_jax_numpy_dsplit(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="value_shape"),
     ),
     indices_or_sections=_get_split_locations(min_num_dims=2, axis=0),
-    number_positional_args=st.just(2),
     test_with_out=st.just(False),
 )
 def test_jax_numpy_vsplit(
@@ -824,6 +823,7 @@ def test_jax_numpy_vsplit(
         ary=value[0],
         indices_or_sections=indices_or_sections,
     )
+
 
 
 # bartlett
