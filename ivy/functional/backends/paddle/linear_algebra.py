@@ -274,7 +274,8 @@ def slogdet(
     /,
 ) -> Tuple[paddle.Tensor, paddle.Tensor]:
     results = NamedTuple(
-        "slogdet", [("sign", paddle.Tensor), ("logabsdet", paddle.Tensor)])
+        "slogdet", [("sign", paddle.Tensor), ("logabsdet", paddle.Tensor)]
+    )
     sign, logabsdet = paddle.linalg.slogdet(x)
     return results(sign, logabsdet)
 
@@ -305,7 +306,7 @@ def svd(
 def svdvals(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.linalg.svd(x)[1]
 
 
 def tensordot(
@@ -352,7 +353,7 @@ def vector_norm(
     dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.norm(x, p=ord, axis=axis, keepdim=keepdims).astype(dtype)
 
 
 # Extra #
@@ -377,7 +378,15 @@ def vander(
     increasing: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+
+    N = ivy.default(N, x.shape[-1])
+    start, stop, step = N - 1, -1, -1
+    if increasing:
+        start, stop, step = 0, N, 1
+    return paddle.pow(
+        paddle.moveaxis(paddle.unsqueeze(x, 0), 0, 1),
+        paddle.arange(start, stop, step, dtype=x.dtype),
+    )
 
 
 def vector_to_skew_symmetric_matrix(
