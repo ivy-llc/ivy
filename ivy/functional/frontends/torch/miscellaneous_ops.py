@@ -312,3 +312,11 @@ def gcd(input, other, *, out=None):
 def tensordot(a, b, dims=2, out=None):
     a, b = ivy.promote_types_of_inputs(a, b)
     return ivy.tensordot(a, b, axes=dims, out=out)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {"1.11.0 and below": ("int8", "float16", "bfloat16", "bool")}, "torch"
+)
+def diff(input, n=1, dim=-1, prepend=None, append=None):
+    return ivy.diff(input, n=n, axis=dim, prepend=prepend, append=append, out=None)

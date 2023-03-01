@@ -997,3 +997,50 @@ def test_torch_tensordot(
         atol=1e-2,
         dims=dims,
     )
+
+
+# diff
+@handle_frontend_test(
+    fn_tree="torch.diff",
+    dtype_n_x_n_axis=helpers.dtype_values_axis(
+        available_dtypes=st.shared(helpers.get_dtypes("valid"), key="dtype"),
+        min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    n=st.integers(min_value=0, max_value=5),
+    dtype_prepend=helpers.dtype_and_values(
+        available_dtypes=st.shared(helpers.get_dtypes("valid"), key="dtype"),
+        min_num_dims=1,
+        max_num_dims=1,
+    ),
+    dtype_append=helpers.dtype_and_values(
+        available_dtypes=st.shared(helpers.get_dtypes("valid"), key="dtype"),
+        min_num_dims=1,
+        max_num_dims=1,
+    ),
+)
+def test_diff(
+    *,
+    dtype_n_x_n_axis,
+    n,
+    dtype_prepend,
+    dtype_append,
+    test_flags,
+    frontend,
+    fn_tree,
+):
+    input_dtype, x, axis = dtype_n_x_n_axis
+    _, prepend = dtype_prepend
+    _, append = dtype_append
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        input=x[0],
+        n=n,
+        dim=axis,
+        prepend=prepend[0],
+        append=append[0],
+    )
