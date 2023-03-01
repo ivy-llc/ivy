@@ -122,7 +122,7 @@ def nansum(
     keepdims: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle.nansum(x, axis=axis, dtype=dtype)
+    return paddle.nansum(x, axis=axis, dtype=dtype, keepdim=keepdims)
 
 
 def gcd(
