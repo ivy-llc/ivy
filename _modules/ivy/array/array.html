@@ -587,110 +587,131 @@
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">.conversions</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">.activations</span> <span class="kn">import</span> <span class="n">ArrayWithActivations</span>
-<span class="kn">from</span> <span class="nn">.creation</span> <span class="kn">import</span> <span class="n">ArrayWithCreation</span>
-<span class="kn">from</span> <span class="nn">.data_type</span> <span class="kn">import</span> <span class="n">ArrayWithDataTypes</span>
-<span class="kn">from</span> <span class="nn">.device</span> <span class="kn">import</span> <span class="n">ArrayWithDevice</span>
-<span class="kn">from</span> <span class="nn">.elementwise</span> <span class="kn">import</span> <span class="n">ArrayWithElementwise</span>
-<span class="kn">from</span> <span class="nn">.general</span> <span class="kn">import</span> <span class="n">ArrayWithGeneral</span>
-<span class="kn">from</span> <span class="nn">.gradients</span> <span class="kn">import</span> <span class="n">ArrayWithGradients</span>
-<span class="kn">from</span> <span class="nn">.image</span> <span class="kn">import</span> <span class="n">ArrayWithImage</span>
-<span class="kn">from</span> <span class="nn">.layers</span> <span class="kn">import</span> <span class="n">ArrayWithLayers</span>
-<span class="kn">from</span> <span class="nn">.linear_algebra</span> <span class="kn">import</span> <span class="n">ArrayWithLinearAlgebra</span>
-<span class="kn">from</span> <span class="nn">.losses</span> <span class="kn">import</span> <span class="n">ArrayWithLosses</span>
-<span class="kn">from</span> <span class="nn">.manipulation</span> <span class="kn">import</span> <span class="n">ArrayWithManipulation</span>
-<span class="kn">from</span> <span class="nn">.norms</span> <span class="kn">import</span> <span class="n">ArrayWithNorms</span>
-<span class="kn">from</span> <span class="nn">.random</span> <span class="kn">import</span> <span class="n">ArrayWithRandom</span>
-<span class="kn">from</span> <span class="nn">.searching</span> <span class="kn">import</span> <span class="n">ArrayWithSearching</span>
-<span class="kn">from</span> <span class="nn">.set</span> <span class="kn">import</span> <span class="n">ArrayWithSet</span>
-<span class="kn">from</span> <span class="nn">.sorting</span> <span class="kn">import</span> <span class="n">ArrayWithSorting</span>
-<span class="kn">from</span> <span class="nn">.statistical</span> <span class="kn">import</span> <span class="n">ArrayWithStatistical</span>
-<span class="kn">from</span> <span class="nn">.utility</span> <span class="kn">import</span> <span class="n">ArrayWithUtility</span>
-<span class="kn">from</span> <span class="nn">.experimental</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.activations</span> <span class="kn">import</span> <span class="n">_ArrayWithActivations</span>
+<span class="kn">from</span> <span class="nn">.creation</span> <span class="kn">import</span> <span class="n">_ArrayWithCreation</span>
+<span class="kn">from</span> <span class="nn">.data_type</span> <span class="kn">import</span> <span class="n">_ArrayWithDataTypes</span>
+<span class="kn">from</span> <span class="nn">.device</span> <span class="kn">import</span> <span class="n">_ArrayWithDevice</span>
+<span class="kn">from</span> <span class="nn">.elementwise</span> <span class="kn">import</span> <span class="n">_ArrayWithElementwise</span>
+<span class="kn">from</span> <span class="nn">.general</span> <span class="kn">import</span> <span class="n">_ArrayWithGeneral</span>
+<span class="kn">from</span> <span class="nn">.gradients</span> <span class="kn">import</span> <span class="n">_ArrayWithGradients</span>
+<span class="kn">from</span> <span class="nn">.image</span> <span class="kn">import</span> <span class="n">_ArrayWithImage</span>
+<span class="kn">from</span> <span class="nn">.layers</span> <span class="kn">import</span> <span class="n">_ArrayWithLayers</span>
+<span class="kn">from</span> <span class="nn">.linear_algebra</span> <span class="kn">import</span> <span class="n">_ArrayWithLinearAlgebra</span>
+<span class="kn">from</span> <span class="nn">.losses</span> <span class="kn">import</span> <span class="n">_ArrayWithLosses</span>
+<span class="kn">from</span> <span class="nn">.manipulation</span> <span class="kn">import</span> <span class="n">_ArrayWithManipulation</span>
+<span class="kn">from</span> <span class="nn">.norms</span> <span class="kn">import</span> <span class="n">_ArrayWithNorms</span>
+<span class="kn">from</span> <span class="nn">.random</span> <span class="kn">import</span> <span class="n">_ArrayWithRandom</span>
+<span class="kn">from</span> <span class="nn">.searching</span> <span class="kn">import</span> <span class="n">_ArrayWithSearching</span>
+<span class="kn">from</span> <span class="nn">.set</span> <span class="kn">import</span> <span class="n">_ArrayWithSet</span>
+<span class="kn">from</span> <span class="nn">.sorting</span> <span class="kn">import</span> <span class="n">_ArrayWithSorting</span>
+<span class="kn">from</span> <span class="nn">.statistical</span> <span class="kn">import</span> <span class="n">_ArrayWithStatistical</span>
+<span class="kn">from</span> <span class="nn">.utility</span> <span class="kn">import</span> <span class="n">_ArrayWithUtility</span>
 <span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="n">handle_view_indexing</span>
+<span class="kn">from</span> <span class="nn">.experimental</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">_ArrayWithSearchingExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithActivationsExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithConversionsExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithCreationExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithData_typeExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithDeviceExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithElementWiseExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithGeneralExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithGradientsExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithImageExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithLayersExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithLinearAlgebraExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithLossesExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithManipulationExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithNormsExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithRandomExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithSetExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithSortingExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithStatisticalExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithUtilityExperimental</span><span class="p">,</span>
+<span class="p">)</span>
 
 
 <div class="viewcode-block" id="Array"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array">[docs]</a><span class="k">class</span> <span class="nc">Array</span><span class="p">(</span>
-    <span class="n">ArrayWithActivations</span><span class="p">,</span>
-    <span class="n">ArrayWithCreation</span><span class="p">,</span>
-    <span class="n">ArrayWithDataTypes</span><span class="p">,</span>
-    <span class="n">ArrayWithDevice</span><span class="p">,</span>
-    <span class="n">ArrayWithElementwise</span><span class="p">,</span>
-    <span class="n">ArrayWithGeneral</span><span class="p">,</span>
-    <span class="n">ArrayWithGradients</span><span class="p">,</span>
-    <span class="n">ArrayWithImage</span><span class="p">,</span>
-    <span class="n">ArrayWithLayers</span><span class="p">,</span>
-    <span class="n">ArrayWithLinearAlgebra</span><span class="p">,</span>
-    <span class="n">ArrayWithLosses</span><span class="p">,</span>
-    <span class="n">ArrayWithManipulation</span><span class="p">,</span>
-    <span class="n">ArrayWithNorms</span><span class="p">,</span>
-    <span class="n">ArrayWithRandom</span><span class="p">,</span>
-    <span class="n">ArrayWithSearching</span><span class="p">,</span>
-    <span class="n">ArrayWithSet</span><span class="p">,</span>
-    <span class="n">ArrayWithSorting</span><span class="p">,</span>
-    <span class="n">ArrayWithStatistical</span><span class="p">,</span>
-    <span class="n">ArrayWithUtility</span><span class="p">,</span>
-    <span class="n">ArrayWithActivationsExperimental</span><span class="p">,</span>
-    <span class="n">ArrayWithConversionsExperimental</span><span class="p">,</span>
-    <span class="n">ArrayWithCreationExperimental</span><span class="p">,</span>
-    <span class="n">ArrayWithData_typeExperimental</span><span class="p">,</span>
-    <span class="n">ArrayWithDeviceExperimental</span><span class="p">,</span>
-    <span class="n">ArrayWithElementWiseExperimental</span><span class="p">,</span>
-    <span class="n">ArrayWithGeneralExperimental</span><span class="p">,</span>
-    <span class="n">ArrayWithGradientsExperimental</span><span class="p">,</span>
-    <span class="n">ArrayWithImageExperimental</span><span class="p">,</span>
-    <span class="n">ArrayWithLayersExperimental</span><span class="p">,</span>
-    <span class="n">ArrayWithLinearAlgebraExperimental</span><span class="p">,</span>
-    <span class="n">ArrayWithLossesExperimental</span><span class="p">,</span>
-    <span class="n">ArrayWithManipulationExperimental</span><span class="p">,</span>
-    <span class="n">ArrayWithNormsExperimental</span><span class="p">,</span>
-    <span class="n">ArrayWithRandomExperimental</span><span class="p">,</span>
-    <span class="n">ArrayWithSearchingExperimental</span><span class="p">,</span>
-    <span class="n">ArrayWithSetExperimental</span><span class="p">,</span>
-    <span class="n">ArrayWithSortingExperimental</span><span class="p">,</span>
-    <span class="n">ArrayWithStatisticalExperimental</span><span class="p">,</span>
-    <span class="n">ArrayWithUtilityExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithActivations</span><span class="p">,</span>
+    <span class="n">_ArrayWithCreation</span><span class="p">,</span>
+    <span class="n">_ArrayWithDataTypes</span><span class="p">,</span>
+    <span class="n">_ArrayWithDevice</span><span class="p">,</span>
+    <span class="n">_ArrayWithElementwise</span><span class="p">,</span>
+    <span class="n">_ArrayWithGeneral</span><span class="p">,</span>
+    <span class="n">_ArrayWithGradients</span><span class="p">,</span>
+    <span class="n">_ArrayWithImage</span><span class="p">,</span>
+    <span class="n">_ArrayWithLayers</span><span class="p">,</span>
+    <span class="n">_ArrayWithLinearAlgebra</span><span class="p">,</span>
+    <span class="n">_ArrayWithLosses</span><span class="p">,</span>
+    <span class="n">_ArrayWithManipulation</span><span class="p">,</span>
+    <span class="n">_ArrayWithNorms</span><span class="p">,</span>
+    <span class="n">_ArrayWithRandom</span><span class="p">,</span>
+    <span class="n">_ArrayWithSearching</span><span class="p">,</span>
+    <span class="n">_ArrayWithSet</span><span class="p">,</span>
+    <span class="n">_ArrayWithSorting</span><span class="p">,</span>
+    <span class="n">_ArrayWithStatistical</span><span class="p">,</span>
+    <span class="n">_ArrayWithUtility</span><span class="p">,</span>
+    <span class="n">_ArrayWithActivationsExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithConversionsExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithCreationExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithData_typeExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithDeviceExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithElementWiseExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithGeneralExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithGradientsExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithImageExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithLayersExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithLinearAlgebraExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithLossesExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithManipulationExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithNormsExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithRandomExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithSearchingExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithSetExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithSortingExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithStatisticalExperimental</span><span class="p">,</span>
+    <span class="n">_ArrayWithUtilityExperimental</span><span class="p">,</span>
 <span class="p">):</span>
 <div class="viewcode-block" id="Array.__init__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">dynamic_backend</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="n">ArrayWithActivations</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ArrayWithCreation</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ArrayWithDataTypes</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ArrayWithDevice</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ArrayWithElementwise</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ArrayWithGeneral</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ArrayWithGradients</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ArrayWithImage</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ArrayWithLayers</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ArrayWithLinearAlgebra</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ArrayWithLosses</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ArrayWithManipulation</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ArrayWithNorms</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ArrayWithRandom</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ArrayWithSearching</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ArrayWithSet</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ArrayWithSorting</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ArrayWithStatistical</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ArrayWithUtility</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ArrayWithActivationsExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
-        <span class="n">ArrayWithConversionsExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
-        <span class="n">ArrayWithCreationExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
-        <span class="n">ArrayWithData_typeExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
-        <span class="n">ArrayWithDeviceExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
-        <span class="n">ArrayWithElementWiseExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
-        <span class="n">ArrayWithGeneralExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
-        <span class="n">ArrayWithGradientsExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
-        <span class="n">ArrayWithImageExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
-        <span class="n">ArrayWithLayersExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
-        <span class="n">ArrayWithLinearAlgebraExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
-        <span class="n">ArrayWithLossesExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
-        <span class="n">ArrayWithManipulationExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
-        <span class="n">ArrayWithNormsExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
-        <span class="n">ArrayWithRandomExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
-        <span class="n">ArrayWithSearchingExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
-        <span class="n">ArrayWithSetExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
-        <span class="n">ArrayWithSortingExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
-        <span class="n">ArrayWithStatisticalExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
-        <span class="n">ArrayWithUtilityExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
+        <span class="n">_ArrayWithActivations</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">_ArrayWithCreation</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">_ArrayWithDataTypes</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">_ArrayWithDevice</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">_ArrayWithElementwise</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">_ArrayWithGeneral</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">_ArrayWithGradients</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">_ArrayWithImage</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">_ArrayWithLayers</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">_ArrayWithLinearAlgebra</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">_ArrayWithLosses</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">_ArrayWithManipulation</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">_ArrayWithNorms</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">_ArrayWithRandom</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">_ArrayWithSearching</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">_ArrayWithSet</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">_ArrayWithSorting</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">_ArrayWithStatistical</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">_ArrayWithUtility</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">_ArrayWithActivationsExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
+        <span class="n">_ArrayWithConversionsExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
+        <span class="n">_ArrayWithCreationExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
+        <span class="n">_ArrayWithData_typeExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
+        <span class="n">_ArrayWithDeviceExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
+        <span class="n">_ArrayWithElementWiseExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
+        <span class="n">_ArrayWithGeneralExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
+        <span class="n">_ArrayWithGradientsExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
+        <span class="n">_ArrayWithImageExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
+        <span class="n">_ArrayWithLayersExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
+        <span class="n">_ArrayWithLinearAlgebraExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
+        <span class="n">_ArrayWithLossesExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
+        <span class="n">_ArrayWithManipulationExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
+        <span class="n">_ArrayWithNormsExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
+        <span class="n">_ArrayWithRandomExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
+        <span class="n">_ArrayWithSearchingExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
+        <span class="n">_ArrayWithSetExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
+        <span class="n">_ArrayWithSortingExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
+        <span class="n">_ArrayWithStatisticalExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
+        <span class="n">_ArrayWithUtilityExperimental</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_init</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dynamic_backend</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_view_attributes</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
 

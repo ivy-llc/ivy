@@ -1,140 +1,140 @@
 Experimental
 ============
 
-.. autoclass:: ivy.array.experimental.ArrayWithActivationsExperimental
+.. autoclass:: ivy.array.experimental._ArrayWithActivationsExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.array.experimental.ArrayWithConversionsExperimental
+.. autoclass:: ivy.array.experimental._ArrayWithConversionsExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.array.experimental.ArrayWithCreationExperimental
+.. autoclass:: ivy.array.experimental._ArrayWithCreationExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.array.experimental.ArrayWithData_typeExperimental
+.. autoclass:: ivy.array.experimental._ArrayWithData_typeExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.array.experimental.ArrayWithDeviceExperimental
+.. autoclass:: ivy.array.experimental._ArrayWithDeviceExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.array.experimental.ArrayWithElementWiseExperimental
+.. autoclass:: ivy.array.experimental._ArrayWithElementWiseExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.array.experimental.ArrayWithGeneralExperimental
+.. autoclass:: ivy.array.experimental._ArrayWithGeneralExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.array.experimental.ArrayWithGradientsExperimental
+.. autoclass:: ivy.array.experimental._ArrayWithGradientsExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.array.experimental.ArrayWithImageExperimental
+.. autoclass:: ivy.array.experimental._ArrayWithImageExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.array.experimental.ArrayWithLayersExperimental
+.. autoclass:: ivy.array.experimental._ArrayWithLayersExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.array.experimental.ArrayWithLinearAlgebraExperimental
+.. autoclass:: ivy.array.experimental._ArrayWithLinearAlgebraExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.array.experimental.ArrayWithLossesExperimental
+.. autoclass:: ivy.array.experimental._ArrayWithLossesExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.array.experimental.ArrayWithManipulationExperimental
+.. autoclass:: ivy.array.experimental._ArrayWithManipulationExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.array.experimental.ArrayWithNormsExperimental
+.. autoclass:: ivy.array.experimental._ArrayWithNormsExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.array.experimental.ArrayWithRandomExperimental
+.. autoclass:: ivy.array.experimental._ArrayWithRandomExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.array.experimental.ArrayWithSearchingExperimental
+.. autoclass:: ivy.array.experimental._ArrayWithSearchingExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.array.experimental.ArrayWithSetExperimental
+.. autoclass:: ivy.array.experimental._ArrayWithSetExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.array.experimental.ArrayWithSortingExperimental
+.. autoclass:: ivy.array.experimental._ArrayWithSortingExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.array.experimental.ArrayWithStatisticalExperimental
+.. autoclass:: ivy.array.experimental._ArrayWithStatisticalExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.array.experimental.ArrayWithUtilityExperimental
+.. autoclass:: ivy.array.experimental._ArrayWithUtilityExperimental
    :members:
    :special-members: __init__
    :undoc-members:
