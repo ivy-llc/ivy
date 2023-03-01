@@ -13,5 +13,5 @@ Activations
    :maxdepth: -1
    :caption: Activations
 
-   activations/_ArrayWithActivations.rst
+   activations/ArrayWithActivations.rst
 
