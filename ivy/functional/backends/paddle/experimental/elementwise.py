@@ -157,7 +157,10 @@ def angle(
     deg: Optional[bool] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-        return paddle.angle(input)
+    result = paddle.angle(input)
+    if deg:
+        result = paddle.rad2deg(result)
+    return result
 
 
 def imag(
