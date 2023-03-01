@@ -7,1479 +7,1571 @@ on:
 permissions:
   actions: read
 jobs:
-   run_tests_1:
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout Ivy 🛎
-         uses: actions/checkout@v2
-         with:
-           path: ivy
-           persist-credentials: false
-           submodules: "recursive"
-           fetch-depth: 100
+  run_tests_1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-           github_token: ${{ secrets.GITHUB_TOKEN }}
-           job_name: ${{ github.job }}
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }}
 
-       - name: Update Mapping and Determine Tests
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         run: |
-           source ./ivy/clone_mapping.sh master1
-           pip install pydriller pymongo
-           cp Mapping/tests.pbz2 ivy/
-           cd ivy
-           python determine_tests.py extra
-           cd ..
-           cp ivy/tests.pbz2 Mapping/
-           cd Mapping
-           git add .
-           git commit -m "Update Mapping"
-           git push origin master1
-         continue-on-error: true
-
-       - name: Run Tests
-         id: tests
-         run: |
-           cd ivy
-           mkdir .ivy
-           touch .ivy/key.pem
-           echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
-         continue-on-error: true
-
-       - name: Check on failures
-         if: steps.tests.outcome != 'success'
-         run: exit 1
-
-   run_tests_2:
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout Ivy 🛎
-         uses: actions/checkout@v2
-         with:
-           path: ivy
-           persist-credentials: false
-           submodules: "recursive"
-           fetch-depth: 100
-      
-
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
-
-       - name: Update Mapping and Determine Tests
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         run: |
-           source ./ivy/clone_mapping.sh master2
-           pip install pydriller pymongo
-           cp Mapping/tests.pbz2 ivy/
-           cd ivy
-           python determine_tests.py 
-           cd ..
-           cp ivy/tests.pbz2 Mapping/
-           cd Mapping
-           git add .
-           git commit -m "Update Mapping"
-           git push origin master2
-         continue-on-error: true
-         
-       - name: Run Tests
-         id: tests
-         run: |
+      - name: Update Mapping and Determine Tests
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        run: |
+          source ./ivy/clone_mapping.sh master1
+          pip install pydriller pymongo
+          cp Mapping/tests.pbz2 ivy/
           cd ivy
+          python determine_tests.py extra
+          cd ..
+          cp ivy/tests.pbz2 Mapping/
+          cd Mapping
+          git add .
+          git commit -m "Update Mapping"
+          git push origin master1
+        continue-on-error: true
+
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
-         continue-on-error: true
+        continue-on-error: true
 
-       - name: Check on failures
-         if: steps.tests.outcome != 'success'
-         run: exit 1
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
 
-   run_tests_3:
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout Ivy 🛎
-         uses: actions/checkout@v2
-         with:
-           path: ivy
-           persist-credentials: false
-           submodules: "recursive"
-           fetch-depth: 100
+  run_tests_2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }}
 
-       - name: Update Mapping and Determine Tests
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         run: |
-           source ./ivy/clone_mapping.sh master3
-           pip install pydriller pymongo
-           cp Mapping/tests.pbz2 ivy/
-           cd ivy
-           python determine_tests.py 
-           cd ..
-           cp ivy/tests.pbz2 Mapping/
-           cd Mapping
-           git add .
-           git commit -m "Update Mapping"
-           git push origin master3
-         continue-on-error: true
+      - name: Update Mapping and Determine Tests
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        run: |
+          source ./ivy/clone_mapping.sh master2
+          pip install pydriller pymongo
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          python determine_tests.py 
+          cd ..
+          cp ivy/tests.pbz2 Mapping/
+          cd Mapping
+          git add .
+          git commit -m "Update Mapping"
+          git push origin master2
+        continue-on-error: true
 
-       - name: Run Tests
-         id: tests
-         run: |
-           cd ivy
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
-         continue-on-error: true
+        continue-on-error: true
 
-       - name: Check on failures
-         if: steps.tests.outcome != 'success'
-         run: exit 1
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
 
-   run_tests_4:
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout Ivy 🛎
-         uses: actions/checkout@v2
-         with:
-           path: ivy
-           persist-credentials: false
-           submodules: "recursive"
-           fetch-depth: 100
+  run_tests_3:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }}
 
+      - name: Update Mapping and Determine Tests
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        run: |
+          source ./ivy/clone_mapping.sh master3
+          pip install pydriller pymongo
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          python determine_tests.py 
+          cd ..
+          cp ivy/tests.pbz2 Mapping/
+          cd Mapping
+          git add .
+          git commit -m "Update Mapping"
+          git push origin master3
+        continue-on-error: true
 
-       - name: Update Mapping and Determine Tests
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         run: |
-           source ./ivy/clone_mapping.sh master4
-           pip install pydriller pymongo
-           cp Mapping/tests.pbz2 ivy/
-           cd ivy
-           python determine_tests.py 
-           cd ..
-           cp ivy/tests.pbz2 Mapping/
-           cd Mapping
-           git add .
-           git commit -m "Update Mapping"
-           git push origin master4
-         continue-on-error: true
-
-       - name: Run Tests
-         id: tests
-         run: |
-           cd ivy
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
-         continue-on-error: true
+        continue-on-error: true
 
-       - name: Check on failures
-         if: steps.tests.outcome != 'success'
-         run: exit 1
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
 
-   run_tests_5:
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout Ivy 🛎
-         uses: actions/checkout@v2
-         with:
-           path: ivy
-           persist-credentials: false
-           submodules: "recursive"
-           fetch-depth: 100
+  run_tests_4:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }}
 
-       - name: Update Mapping and Determine Tests
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         run: |
-           source ./ivy/clone_mapping.sh master5
-           pip install pydriller pymongo
-           cp Mapping/tests.pbz2 ivy/
-           cd ivy
-           python determine_tests.py 
-           cd ..
-           cp ivy/tests.pbz2 Mapping/
-           cd Mapping
-           git add .
-           git commit -m "Update Mapping"
-           git push origin master5
-         continue-on-error: true
 
-       - name: Run Tests
-         id: tests
-         run: |
-           cd ivy
+      - name: Update Mapping and Determine Tests
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        run: |
+          source ./ivy/clone_mapping.sh master4
+          pip install pydriller pymongo
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          python determine_tests.py 
+          cd ..
+          cp ivy/tests.pbz2 Mapping/
+          cd Mapping
+          git add .
+          git commit -m "Update Mapping"
+          git push origin master4
+        continue-on-error: true
+
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
-         continue-on-error: true
+        continue-on-error: true
 
-       - name: Check on failures
-         if: steps.tests.outcome != 'success'
-         run: exit 1
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
 
-   run_tests_6:
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout Ivy 🛎
-         uses: actions/checkout@v2
-         with:
-           path: ivy
-           persist-credentials: false
-           submodules: "recursive"
-           fetch-depth: 100
+  run_tests_5:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }}
 
-       - name: Update Mapping and Determine Tests
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         run: |
-           source ./ivy/clone_mapping.sh master6
-           pip install pydriller pymongo
-           cp Mapping/tests.pbz2 ivy/
-           cd ivy
-           python determine_tests.py 
-           cd ..
-           cp ivy/tests.pbz2 Mapping/
-           cd Mapping
-           git add .
-           git commit -m "Update Mapping"
-           git push origin master6
-         continue-on-error: true
+      - name: Update Mapping and Determine Tests
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        run: |
+          source ./ivy/clone_mapping.sh master5
+          pip install pydriller pymongo
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          python determine_tests.py 
+          cd ..
+          cp ivy/tests.pbz2 Mapping/
+          cd Mapping
+          git add .
+          git commit -m "Update Mapping"
+          git push origin master5
+        continue-on-error: true
 
-       - name: Run Tests
-         id: tests
-         run: |
-           cd ivy
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
-         continue-on-error: true
+        continue-on-error: true
 
-       - name: Check on failures
-         if: steps.tests.outcome != 'success'
-         run: exit 1
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
 
-   run_tests_7:
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout Ivy 🛎
-         uses: actions/checkout@v2
-         with:
-           path: ivy
-           persist-credentials: false
-           submodules: "recursive"
-           fetch-depth: 100
+  run_tests_6:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }}
 
-       - name: Update Mapping and Determine Tests
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         run: |
-           source ./ivy/clone_mapping.sh master7
-           pip install pydriller pymongo
-           cp Mapping/tests.pbz2 ivy/
-           cd ivy
-           python determine_tests.py 
-           cd ..
-           cp ivy/tests.pbz2 Mapping/
-           cd Mapping
-           git add .
-           git commit -m "Update Mapping"
-           git push origin master7
-         continue-on-error: true
+      - name: Update Mapping and Determine Tests
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        run: |
+          source ./ivy/clone_mapping.sh master6
+          pip install pydriller pymongo
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          python determine_tests.py 
+          cd ..
+          cp ivy/tests.pbz2 Mapping/
+          cd Mapping
+          git add .
+          git commit -m "Update Mapping"
+          git push origin master6
+        continue-on-error: true
 
-       - name: Run Tests
-         id: tests
-         run: |
-           cd ivy
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
-         continue-on-error: true
+        continue-on-error: true
 
-       - name: Check on failures
-         if: steps.tests.outcome != 'success'
-         run: exit 1
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
 
-   run_tests_8:
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout Ivy 🛎
-         uses: actions/checkout@v2
-         with:
-           path: ivy
-           persist-credentials: false
-           submodules: "recursive"
-           fetch-depth: 100
+  run_tests_7:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }}
 
-       - name: Update Mapping and Determine Tests
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         run: |
-           source ./ivy/clone_mapping.sh master8
-           pip install pydriller pymongo
-           cp Mapping/tests.pbz2 ivy/
-           cd ivy
-           python determine_tests.py 
-           cd ..
-           cp ivy/tests.pbz2 Mapping/
-           cd Mapping
-           git add .
-           git commit -m "Update Mapping"
-           git push origin master8
-         continue-on-error: true
+      - name: Update Mapping and Determine Tests
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        run: |
+          source ./ivy/clone_mapping.sh master7
+          pip install pydriller pymongo
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          python determine_tests.py 
+          cd ..
+          cp ivy/tests.pbz2 Mapping/
+          cd Mapping
+          git add .
+          git commit -m "Update Mapping"
+          git push origin master7
+        continue-on-error: true
 
-       - name: Run Tests
-         id: tests
-         run: |
-           cd ivy
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
-         continue-on-error: true
+        continue-on-error: true
 
-       - name: Check on failures
-         if: steps.tests.outcome != 'success'
-         run: exit 1
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
 
-   run_tests_9:
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout Ivy 🛎
-         uses: actions/checkout@v2
-         with:
-           path: ivy
-           persist-credentials: false
-           submodules: "recursive"
-           fetch-depth: 100
+  run_tests_8:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }}
 
-       - name: Update Mapping and Determine Tests
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         run: |
-           source ./ivy/clone_mapping.sh master9
-           pip install pydriller pymongo
-           cp Mapping/tests.pbz2 ivy/
-           cd ivy
-           python determine_tests.py 
-           cd ..
-           cp ivy/tests.pbz2 Mapping/
-           cd Mapping
-           git add .
-           git commit -m "Update Mapping"
-           git push origin master9
-         continue-on-error: true
+      - name: Update Mapping and Determine Tests
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        run: |
+          source ./ivy/clone_mapping.sh master8
+          pip install pydriller pymongo
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          python determine_tests.py 
+          cd ..
+          cp ivy/tests.pbz2 Mapping/
+          cd Mapping
+          git add .
+          git commit -m "Update Mapping"
+          git push origin master8
+        continue-on-error: true
 
-       - name: Run Tests
-         id: tests
-         run: |
-           cd ivy
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
-         continue-on-error: true
+        continue-on-error: true
 
-       - name: Check on failures
-         if: steps.tests.outcome != 'success'
-         run: exit 1
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
 
-   run_tests_10:
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout Ivy 🛎
-         uses: actions/checkout@v2
-         with:
-           path: ivy
-           persist-credentials: false
-           submodules: "recursive"
-           fetch-depth: 100
+  run_tests_9:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }}
 
-       - name: Update Mapping and Determine Tests
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         run: |
-           source ./ivy/clone_mapping.sh master10
-           pip install pydriller pymongo
-           cp Mapping/tests.pbz2 ivy/
-           cd ivy
-           python determine_tests.py 
-           cd ..
-           cp ivy/tests.pbz2 Mapping/
-           cd Mapping
-           git add .
-           git commit -m "Update Mapping"
-           git push origin master10
-         continue-on-error: true
+      - name: Update Mapping and Determine Tests
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        run: |
+          source ./ivy/clone_mapping.sh master9
+          pip install pydriller pymongo
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          python determine_tests.py 
+          cd ..
+          cp ivy/tests.pbz2 Mapping/
+          cd Mapping
+          git add .
+          git commit -m "Update Mapping"
+          git push origin master9
+        continue-on-error: true
 
-       - name: Run Tests
-         id: tests
-         run: |
-           cd ivy
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
-         continue-on-error: true
+        continue-on-error: true
 
-       - name: Check on failures
-         if: steps.tests.outcome != 'success'
-         run: exit 1
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
 
-   run_tests_11:
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout Ivy 🛎
-         uses: actions/checkout@v2
-         with:
-           path: ivy
-           persist-credentials: false
-           submodules: "recursive"
-           fetch-depth: 100
+  run_tests_10:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }}
 
-       - name: Update Mapping and Determine Tests
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         run: |
-           source ./ivy/clone_mapping.sh master11
-           pip install pydriller pymongo
-           cp Mapping/tests.pbz2 ivy/
-           cd ivy
-           python determine_tests.py 
-           cd ..
-           cp ivy/tests.pbz2 Mapping/
-           cd Mapping
-           git add .
-           git commit -m "Update Mapping"
-           git push origin master11
-         continue-on-error: true
+      - name: Update Mapping and Determine Tests
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        run: |
+          source ./ivy/clone_mapping.sh master10
+          pip install pydriller pymongo
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          python determine_tests.py 
+          cd ..
+          cp ivy/tests.pbz2 Mapping/
+          cd Mapping
+          git add .
+          git commit -m "Update Mapping"
+          git push origin master10
+        continue-on-error: true
 
-       - name: Run Tests
-         id: tests
-         run: |
-           cd ivy
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
-         continue-on-error: true
+        continue-on-error: true
 
-       - name: Check on failures
-         if: steps.tests.outcome != 'success'
-         run: exit 1
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
 
-   run_tests_12:
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout Ivy 🛎
-         uses: actions/checkout@v2
-         with:
-           path: ivy
-           persist-credentials: false
-           submodules: "recursive"
-           fetch-depth: 100
+  run_tests_11:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }}
 
-       - name: Update Mapping and Determine Tests
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         run: |
-           source ./ivy/clone_mapping.sh master12
-           pip install pydriller pymongo
-           cp Mapping/tests.pbz2 ivy/
-           cd ivy
-           python determine_tests.py 
-           cd ..
-           cp ivy/tests.pbz2 Mapping/
-           cd Mapping
-           git add .
-           git commit -m "Update Mapping"
-           git push origin master12
-         continue-on-error: true
+      - name: Update Mapping and Determine Tests
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        run: |
+          source ./ivy/clone_mapping.sh master11
+          pip install pydriller pymongo
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          python determine_tests.py 
+          cd ..
+          cp ivy/tests.pbz2 Mapping/
+          cd Mapping
+          git add .
+          git commit -m "Update Mapping"
+          git push origin master11
+        continue-on-error: true
 
-       - name: Run Tests
-         id: tests
-         run: |
-           cd ivy
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
-         continue-on-error: true
+        continue-on-error: true
 
-       - name: Check on failures
-         if: steps.tests.outcome != 'success'
-         run: exit 1
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
 
-   run_tests_13:
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout Ivy 🛎
-         uses: actions/checkout@v2
-         with:
-           path: ivy
-           persist-credentials: false
-           submodules: "recursive"
-           fetch-depth: 100
+  run_tests_12:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }}
 
-       - name: Update Mapping and Determine Tests
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         run: |
-           source ./ivy/clone_mapping.sh master13
-           pip install pydriller pymongo
-           cp Mapping/tests.pbz2 ivy/
-           cd ivy
-           python determine_tests.py 
-           cd ..
-           cp ivy/tests.pbz2 Mapping/
-           cd Mapping
-           git add .
-           git commit -m "Update Mapping"
-           git push origin master13
-         continue-on-error: true
+      - name: Update Mapping and Determine Tests
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        run: |
+          source ./ivy/clone_mapping.sh master12
+          pip install pydriller pymongo
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          python determine_tests.py 
+          cd ..
+          cp ivy/tests.pbz2 Mapping/
+          cd Mapping
+          git add .
+          git commit -m "Update Mapping"
+          git push origin master12
+        continue-on-error: true
 
-       - name: Run Tests
-         id: tests
-         run: |
-           cd ivy
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
-         continue-on-error: true
+        continue-on-error: true
 
-       - name: Check on failures
-         if: steps.tests.outcome != 'success'
-         run: exit 1
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
 
-   run_tests_14:
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout Ivy 🛎
-         uses: actions/checkout@v2
-         with:
-           path: ivy
-           persist-credentials: false
-           submodules: "recursive"
-           fetch-depth: 100
+  run_tests_13:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-             github_token: ${{ secrets.GITHUB_TOKEN }}
-             job_name: ${{ github.job }}
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }}
 
-       - name: Update Mapping and Determine Tests
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         run: |
-           source ./ivy/clone_mapping.sh master14
-           pip install pydriller pymongo
-           cp Mapping/tests.pbz2 ivy/
-           cd ivy
-           python determine_tests.py 
-           cd ..
-           cp ivy/tests.pbz2 Mapping/
-           cd Mapping
-           git add .
-           git commit -m "Update Mapping"
-           git push origin master14
-         continue-on-error: true
+      - name: Update Mapping and Determine Tests
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        run: |
+          source ./ivy/clone_mapping.sh master13
+          pip install pydriller pymongo
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          python determine_tests.py 
+          cd ..
+          cp ivy/tests.pbz2 Mapping/
+          cd Mapping
+          git add .
+          git commit -m "Update Mapping"
+          git push origin master13
+        continue-on-error: true
 
-       - name: Run Tests
-         id: tests
-         run: |
-           cd ivy
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
-         continue-on-error: true
+        continue-on-error: true
 
-       - name: Check on failures
-         if: steps.tests.outcome != 'success'
-         run: exit 1
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
 
-   run_tests_15:
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout Ivy 🛎
-         uses: actions/checkout@v2
-         with:
-           path: ivy
-           persist-credentials: false
-           submodules: "recursive"
-           fetch-depth: 100
+  run_tests_14:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }}
 
-       - name: Update Mapping and Determine Tests
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         run: |
-           source ./ivy/clone_mapping.sh master15
-           pip install pydriller pymongo
-           cp Mapping/tests.pbz2 ivy/
-           cd ivy
-           python determine_tests.py 
-           cd ..
-           cp ivy/tests.pbz2 Mapping/
-           cd Mapping
-           git add .
-           git commit -m "Update Mapping"
-           git push origin master15
-         continue-on-error: true
+      - name: Update Mapping and Determine Tests
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        run: |
+          source ./ivy/clone_mapping.sh master14
+          pip install pydriller pymongo
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          python determine_tests.py 
+          cd ..
+          cp ivy/tests.pbz2 Mapping/
+          cd Mapping
+          git add .
+          git commit -m "Update Mapping"
+          git push origin master14
+        continue-on-error: true
 
-       - name: Run Tests
-         id: tests
-         run: |
-           cd ivy
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
-         continue-on-error: true
+        continue-on-error: true
 
-       - name: Check on failures
-         if: steps.tests.outcome != 'success'
-         run: exit 1
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
 
-   run_tests_16:
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout Ivy 🛎
-         uses: actions/checkout@v2
-         with:
-           path: ivy
-           persist-credentials: false
-           submodules: "recursive"
-           fetch-depth: 100
+  run_tests_15:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }}
 
-       - name: Update Mapping and Determine Tests
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         run: |
-           source ./ivy/clone_mapping.sh master16
-           pip install pydriller pymongo
-           cp Mapping/tests.pbz2 ivy/
-           cd ivy
-           python determine_tests.py 
-           cd ..
-           cp ivy/tests.pbz2 Mapping/
-           cd Mapping
-           git add .
-           git commit -m "Update Mapping"
-           git push origin master16
-         continue-on-error: true
+      - name: Update Mapping and Determine Tests
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        run: |
+          source ./ivy/clone_mapping.sh master15
+          pip install pydriller pymongo
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          python determine_tests.py 
+          cd ..
+          cp ivy/tests.pbz2 Mapping/
+          cd Mapping
+          git add .
+          git commit -m "Update Mapping"
+          git push origin master15
+        continue-on-error: true
 
-       - name: Run Tests
-         id: tests
-         run: |
-           cd ivy
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
-         continue-on-error: true
+        continue-on-error: true
 
-       - name: Check on failures
-         if: steps.tests.outcome != 'success'
-         run: exit 1
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
 
-   run_tests_17:
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout Ivy 🛎
-         uses: actions/checkout@v2
-         with:
-           path: ivy
-           persist-credentials: false
-           submodules: "recursive"
-           fetch-depth: 100
+  run_tests_16:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }}
 
-       - name: Update Mapping and Determine Tests
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         run: |
-           source ./ivy/clone_mapping.sh master17
-           pip install pydriller pymongo
-           cp Mapping/tests.pbz2 ivy/
-           cd ivy
-           python determine_tests.py 
-           cd ..
-           cp ivy/tests.pbz2 Mapping/
-           cd Mapping
-           git add .
-           git commit -m "Update Mapping"
-           git push origin master17
-         continue-on-error: true
+      - name: Update Mapping and Determine Tests
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        run: |
+          source ./ivy/clone_mapping.sh master16
+          pip install pydriller pymongo
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          python determine_tests.py 
+          cd ..
+          cp ivy/tests.pbz2 Mapping/
+          cd Mapping
+          git add .
+          git commit -m "Update Mapping"
+          git push origin master16
+        continue-on-error: true
 
-       - name: Run Tests
-         id: tests
-         run: |
-           cd ivy
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
-         continue-on-error: true
+        continue-on-error: true
 
-       - name: Check on failures
-         if: steps.tests.outcome != 'success'
-         run: exit 1
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
 
-   run_tests_18:
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout Ivy 🛎
-         uses: actions/checkout@v2
-         with:
-           path: ivy
-           persist-credentials: false
-           submodules: "recursive"
-           fetch-depth: 100
+  run_tests_17:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }}
 
-       - name: Update Mapping and Determine Tests
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         run: |
-           source ./ivy/clone_mapping.sh master18
-           pip install pydriller pymongo
-           cp Mapping/tests.pbz2 ivy/
-           cd ivy
-           python determine_tests.py 
-           cd ..
-           cp ivy/tests.pbz2 Mapping/
-           cd Mapping
-           git add .
-           git commit -m "Update Mapping"
-           git push origin master18
-         continue-on-error: true
+      - name: Update Mapping and Determine Tests
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        run: |
+          source ./ivy/clone_mapping.sh master17
+          pip install pydriller pymongo
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          python determine_tests.py 
+          cd ..
+          cp ivy/tests.pbz2 Mapping/
+          cd Mapping
+          git add .
+          git commit -m "Update Mapping"
+          git push origin master17
+        continue-on-error: true
 
-       - name: Run Tests
-         id: tests
-         run: |
-           cd ivy
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
-         continue-on-error: true
+        continue-on-error: true
 
-       - name: Check on failures
-         if: steps.tests.outcome != 'success'
-         run: exit 1
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
 
-   run_tests_19:
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout Ivy 🛎
-         uses: actions/checkout@v2
-         with:
-           path: ivy
-           persist-credentials: false
-           submodules: "recursive"
-           fetch-depth: 100
+  run_tests_18:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }}
 
-       - name: Update Mapping and Determine Tests
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         run: |
-           source ./ivy/clone_mapping.sh master19
-           pip install pydriller pymongo
-           cp Mapping/tests.pbz2 ivy/
-           cd ivy
-           python determine_tests.py 
-           cd ..
-           cp ivy/tests.pbz2 Mapping/
-           cd Mapping
-           git add .
-           git commit -m "Update Mapping"
-           git push origin master19
-         continue-on-error: true
+      - name: Update Mapping and Determine Tests
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        run: |
+          source ./ivy/clone_mapping.sh master18
+          pip install pydriller pymongo
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          python determine_tests.py 
+          cd ..
+          cp ivy/tests.pbz2 Mapping/
+          cd Mapping
+          git add .
+          git commit -m "Update Mapping"
+          git push origin master18
+        continue-on-error: true
 
-       - name: Run Tests
-         id: tests
-         run: |
-           cd ivy
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
-         continue-on-error: true
+        continue-on-error: true
 
-       - name: Check on failures
-         if: steps.tests.outcome != 'success'
-         run: exit 1
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
 
-   run_tests_20:
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout Ivy 🛎
-         uses: actions/checkout@v2
-         with:
-           path: ivy
-           persist-credentials: false
-           submodules: "recursive"
-           fetch-depth: 100
+  run_tests_19:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }}
 
-       - name: Update Mapping and Determine Tests
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         run: |
-           source ./ivy/clone_mapping.sh master20
-           pip install pydriller pymongo
-           cp Mapping/tests.pbz2 ivy/
-           cd ivy
-           python determine_tests.py 
-           cd ..
-           cp ivy/tests.pbz2 Mapping/
-           cd Mapping
-           git add .
-           git commit -m "Update Mapping"
-           git push origin master20
-         continue-on-error: true
+      - name: Update Mapping and Determine Tests
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        run: |
+          source ./ivy/clone_mapping.sh master19
+          pip install pydriller pymongo
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          python determine_tests.py 
+          cd ..
+          cp ivy/tests.pbz2 Mapping/
+          cd Mapping
+          git add .
+          git commit -m "Update Mapping"
+          git push origin master19
+        continue-on-error: true
 
-       - name: Run Tests
-         id: tests
-         run: |
-           cd ivy
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
-         continue-on-error: true
+        continue-on-error: true
 
-       - name: Check on failures
-         if: steps.tests.outcome != 'success'
-         run: exit 1
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
 
-   run_tests_21:
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout Ivy 🛎
-         uses: actions/checkout@v2
-         with:
-           path: ivy
-           persist-credentials: false
-           submodules: "recursive"
-           fetch-depth: 100
+  run_tests_20:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }}
 
-       - name: Update Mapping and Determine Tests
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         run: |
-           source ./ivy/clone_mapping.sh master21
-           pip install pydriller pymongo
-           cp Mapping/tests.pbz2 ivy/
-           cd ivy
-           python determine_tests.py 
-           cd ..
-           cp ivy/tests.pbz2 Mapping/
-           cd Mapping
-           git add .
-           git commit -m "Update Mapping"
-           git push origin master21
-         continue-on-error: true
+      - name: Update Mapping and Determine Tests
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        run: |
+          source ./ivy/clone_mapping.sh master20
+          pip install pydriller pymongo
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          python determine_tests.py 
+          cd ..
+          cp ivy/tests.pbz2 Mapping/
+          cd Mapping
+          git add .
+          git commit -m "Update Mapping"
+          git push origin master20
+        continue-on-error: true
 
-       - name: Run Tests
-         id: tests
-         run: |
-           cd ivy
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
-         continue-on-error: true
+        continue-on-error: true
 
-       - name: Check on failures
-         if: steps.tests.outcome != 'success'
-         run: exit 1
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
 
-   run_tests_22:
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout Ivy 🛎
-         uses: actions/checkout@v2
-         with:
-           path: ivy
-           persist-credentials: false
-           submodules: "recursive"
-           fetch-depth: 100
+  run_tests_21:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }}
 
-       - name: Update Mapping and Determine Tests
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         run: |
-           source ./ivy/clone_mapping.sh master22
-           pip install pydriller pymongo
-           cp Mapping/tests.pbz2 ivy/
-           cd ivy
-           python determine_tests.py 
-           cd ..
-           cp ivy/tests.pbz2 Mapping/
-           cd Mapping
-           git add .
-           git commit -m "Update Mapping"
-           git push origin master22
-         continue-on-error: true
+      - name: Update Mapping and Determine Tests
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        run: |
+          source ./ivy/clone_mapping.sh master21
+          pip install pydriller pymongo
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          python determine_tests.py 
+          cd ..
+          cp ivy/tests.pbz2 Mapping/
+          cd Mapping
+          git add .
+          git commit -m "Update Mapping"
+          git push origin master21
+        continue-on-error: true
 
-       - name: Run Tests
-         id: tests
-         run: |
-           cd ivy
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
-         continue-on-error: true
+        continue-on-error: true
 
-       - name: Check on failures
-         if: steps.tests.outcome != 'success'
-         run: exit 1
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
 
-   run_tests_23:
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout Ivy 🛎
-         uses: actions/checkout@v2
-         with:
-           path: ivy
-           persist-credentials: false
-           submodules: "recursive"
-           fetch-depth: 100
+  run_tests_22:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }}
 
-       - name: Update Mapping and Determine Tests
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         run: |
-           source ./ivy/clone_mapping.sh master23
-           pip install pydriller pymongo
-           cp Mapping/tests.pbz2 ivy/
-           cd ivy
-           python determine_tests.py 
-           cd ..
-           cp ivy/tests.pbz2 Mapping/
-           cd Mapping
-           git add .
-           git commit -m "Update Mapping"
-           git push origin master23
-         continue-on-error: true
+      - name: Update Mapping and Determine Tests
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        run: |
+          source ./ivy/clone_mapping.sh master22
+          pip install pydriller pymongo
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          python determine_tests.py 
+          cd ..
+          cp ivy/tests.pbz2 Mapping/
+          cd Mapping
+          git add .
+          git commit -m "Update Mapping"
+          git push origin master22
+        continue-on-error: true
 
-       - name: Run Tests
-         id: tests
-         run: |
-           cd ivy
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
-         continue-on-error: true
+        continue-on-error: true
 
-       - name: Check on failures
-         if: steps.tests.outcome != 'success'
-         run: exit 1
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
 
-   run_tests_24:
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout Ivy 🛎
-         uses: actions/checkout@v2
-         with:
-           path: ivy
-           persist-credentials: false
-           submodules: "recursive"
-           fetch-depth: 100
+  run_tests_23:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }}
 
-       - name: Update Mapping and Determine Tests
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         run: |
-           source ./ivy/clone_mapping.sh master24
-           pip install pydriller pymongo
-           cp Mapping/tests.pbz2 ivy/
-           cd ivy
-           python determine_tests.py 
-           cd ..
-           cp ivy/tests.pbz2 Mapping/
-           cd Mapping
-           git add .
-           git commit -m "Update Mapping"
-           git push origin master24
-         continue-on-error: true
+      - name: Update Mapping and Determine Tests
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        run: |
+          source ./ivy/clone_mapping.sh master23
+          pip install pydriller pymongo
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          python determine_tests.py 
+          cd ..
+          cp ivy/tests.pbz2 Mapping/
+          cd Mapping
+          git add .
+          git commit -m "Update Mapping"
+          git push origin master23
+        continue-on-error: true
 
-       - name: Run Tests
-         id: tests
-         run: |
-           cd ivy
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
-         continue-on-error: true
+        continue-on-error: true
 
-       - name: Check on failures
-         if: steps.tests.outcome != 'success'
-         run: exit 1
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
 
-   run_tests_25:
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout Ivy 🛎
-         uses: actions/checkout@v2
-         with:
-           path: ivy
-           persist-credentials: false
-           submodules: "recursive"
-           fetch-depth: 100
+  run_tests_24:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }}
 
-       - name: Update Mapping and Determine Tests
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         run: |
-           source ./ivy/clone_mapping.sh master25
-           pip install pydriller pymongo
-           cp Mapping/tests.pbz2 ivy/
-           cd ivy
-           python determine_tests.py 
-           cd ..
-           cp ivy/tests.pbz2 Mapping/
-           cd Mapping
-           git add .
-           git commit -m "Update Mapping"
-           git push origin master25
-         continue-on-error: true
+      - name: Update Mapping and Determine Tests
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        run: |
+          source ./ivy/clone_mapping.sh master24
+          pip install pydriller pymongo
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          python determine_tests.py 
+          cd ..
+          cp ivy/tests.pbz2 Mapping/
+          cd Mapping
+          git add .
+          git commit -m "Update Mapping"
+          git push origin master24
+        continue-on-error: true
 
-       - name: Run Tests
-         id: tests
-         run: |
-           cd ivy
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
-         continue-on-error: true
+        continue-on-error: true
 
-       - name: Check on failures
-         if: steps.tests.outcome != 'success'
-         run: exit 1
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
 
-   run_tests_26:
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout Ivy 🛎
-         uses: actions/checkout@v2
-         with:
-           path: ivy
-           persist-credentials: false
-           submodules: "recursive"
-           fetch-depth: 100
+  run_tests_25:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }}
 
-       - name: Update Mapping and Determine Tests
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         run: |
-           source ./ivy/clone_mapping.sh master26
-           pip install pydriller pymongo
-           cp Mapping/tests.pbz2 ivy/
-           cd ivy
-           python determine_tests.py 
-           cd ..
-           cp ivy/tests.pbz2 Mapping/
-           cd Mapping
-           git add .
-           git commit -m "Update Mapping"
-           git push origin master26
-         continue-on-error: true
+      - name: Update Mapping and Determine Tests
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        run: |
+          source ./ivy/clone_mapping.sh master25
+          pip install pydriller pymongo
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          python determine_tests.py 
+          cd ..
+          cp ivy/tests.pbz2 Mapping/
+          cd Mapping
+          git add .
+          git commit -m "Update Mapping"
+          git push origin master25
+        continue-on-error: true
 
-       - name: Run Tests
-         id: tests
-         run: |
-           cd ivy
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
-         continue-on-error: true
+        continue-on-error: true
 
-       - name: Check on failures
-         if: steps.tests.outcome != 'success'
-         run: exit 1
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
 
-   run_tests_27:
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout Ivy 🛎
-         uses: actions/checkout@v2
-         with:
-           path: ivy
-           persist-credentials: false
-           submodules: "recursive"
-           fetch-depth: 100
+  run_tests_26:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }}
 
-       - name: Update Mapping and Determine Tests
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         run: |
-           source ./ivy/clone_mapping.sh master27
-           pip install pydriller pymongo
-           cp Mapping/tests.pbz2 ivy/
-           cd ivy
-           python determine_tests.py 
-           cd ..
-           cp ivy/tests.pbz2 Mapping/
-           cd Mapping
-           git add .
-           git commit -m "Update Mapping"
-           git push origin master27
-         continue-on-error: true
+      - name: Update Mapping and Determine Tests
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        run: |
+          source ./ivy/clone_mapping.sh master26
+          pip install pydriller pymongo
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          python determine_tests.py 
+          cd ..
+          cp ivy/tests.pbz2 Mapping/
+          cd Mapping
+          git add .
+          git commit -m "Update Mapping"
+          git push origin master26
+        continue-on-error: true
 
-       - name: Run Tests
-         id: tests
-         run: |
-           cd ivy
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
-         continue-on-error: true
+        continue-on-error: true
 
-       - name: Check on failures
-         if: steps.tests.outcome != 'success'
-         run: exit 1
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
 
-   run_tests_28:
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout Ivy 🛎
-         uses: actions/checkout@v2
-         with:
-           path: ivy
-           persist-credentials: false
-           submodules: "recursive"
-           fetch-depth: 100
+  run_tests_27:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }}
 
-       - name: Update Mapping and Determine Tests
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         run: |
-           source ./ivy/clone_mapping.sh master28
-           pip install pydriller pymongo
-           cp Mapping/tests.pbz2 ivy/
-           cd ivy
-           python determine_tests.py 
-           cd ..
-           cp ivy/tests.pbz2 Mapping/
-           cd Mapping
-           git add .
-           git commit -m "Update Mapping"
-           git push origin master28
-         continue-on-error: true
+      - name: Update Mapping and Determine Tests
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        run: |
+          source ./ivy/clone_mapping.sh master27
+          pip install pydriller pymongo
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          python determine_tests.py 
+          cd ..
+          cp ivy/tests.pbz2 Mapping/
+          cd Mapping
+          git add .
+          git commit -m "Update Mapping"
+          git push origin master27
+        continue-on-error: true
 
-       - name: Run Tests
-         id: tests
-         run: |
-           cd ivy
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
-         continue-on-error: true
+        continue-on-error: true
 
-       - name: Check on failures
-         if: steps.tests.outcome != 'success'
-         run: exit 1
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
 
-   run_tests_29:
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout Ivy 🛎
-         uses: actions/checkout@v2
-         with:
-           path: ivy
-           persist-credentials: false
-           submodules: "recursive"
-           fetch-depth: 100
+  run_tests_28:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }}
 
-       - name: Update Mapping and Determine Tests
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         run: |
-           source ./ivy/clone_mapping.sh master29
-           pip install pydriller pymongo
-           cp Mapping/tests.pbz2 ivy/
-           cd ivy
-           python determine_tests.py 
-           cd ..
-           cp ivy/tests.pbz2 Mapping/
-           cd Mapping
-           git add .
-           git commit -m "Update Mapping"
-           git push origin master29
-         continue-on-error: true
+      - name: Update Mapping and Determine Tests
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        run: |
+          source ./ivy/clone_mapping.sh master28
+          pip install pydriller pymongo
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          python determine_tests.py 
+          cd ..
+          cp ivy/tests.pbz2 Mapping/
+          cd Mapping
+          git add .
+          git commit -m "Update Mapping"
+          git push origin master28
+        continue-on-error: true
 
-       - name: Run Tests
-         id: tests
-         run: |
-           cd ivy
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
-         continue-on-error: true
+        continue-on-error: true
 
-       - name: Check on failures
-         if: steps.tests.outcome != 'success'
-         run: exit 1
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
 
-   run_tests_30:
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout Ivy 🛎
-         uses: actions/checkout@v2
-         with:
-           path: ivy
-           persist-credentials: false
-           submodules: "recursive"
-           fetch-depth: 100
+  run_tests_29:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }}
 
-       - name: Update Mapping and Determine Tests
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         run: |
-           source ./ivy/clone_mapping.sh master30
-           pip install pydriller pymongo
-           cp Mapping/tests.pbz2 ivy/
-           cd ivy
-           python determine_tests.py 
-           cd ..
-           cp ivy/tests.pbz2 Mapping/
-           cd Mapping
-           git add .
-           git commit -m "Update Mapping"
-           git push origin master30
-         continue-on-error: true
+      - name: Update Mapping and Determine Tests
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        run: |
+          source ./ivy/clone_mapping.sh master29
+          pip install pydriller pymongo
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          python determine_tests.py 
+          cd ..
+          cp ivy/tests.pbz2 Mapping/
+          cd Mapping
+          git add .
+          git commit -m "Update Mapping"
+          git push origin master29
+        continue-on-error: true
 
-       - name: Run Tests
-         id: tests
-         run: |
-           cd ivy
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
-         continue-on-error: true
+        continue-on-error: true
 
-       - name: Check on failures
-         if: steps.tests.outcome != 'success'
-         run: exit 1
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
 
-   run_tests_31:
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout Ivy 🛎
-         uses: actions/checkout@v2
-         with:
-           path: ivy
-           persist-credentials: false
-           submodules: "recursive"
-           fetch-depth: 100
+  run_tests_30:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }}
 
-       - name: Update Mapping and Determine Tests
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         run: |
-           source ./ivy/clone_mapping.sh master31
-           pip install pydriller pymongo
-           cp Mapping/tests.pbz2 ivy/
-           cd ivy
-           python determine_tests.py 
-           cd ..
-           cp ivy/tests.pbz2 Mapping/
-           cd Mapping
-           git add .
-           git commit -m "Update Mapping"
-           git push origin master31
-         continue-on-error: true
+      - name: Update Mapping and Determine Tests
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        run: |
+          source ./ivy/clone_mapping.sh master30
+          pip install pydriller pymongo
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          python determine_tests.py 
+          cd ..
+          cp ivy/tests.pbz2 Mapping/
+          cd Mapping
+          git add .
+          git commit -m "Update Mapping"
+          git push origin master30
+        continue-on-error: true
 
-       - name: Run Tests
-         id: tests
-         run: |
-           cd ivy
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
-         continue-on-error: true
+        continue-on-error: true
 
-       - name: Check on failures
-         if: steps.tests.outcome != 'success'
-         run: exit 1
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
 
-   run_tests_32:
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout Ivy 🛎
-         uses: actions/checkout@v2
-         with:
-           path: ivy
-           persist-credentials: false
-           submodules: "recursive"
-           fetch-depth: 100
+  run_tests_31:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
 
-       - name: Get Job URL
-         uses: Tiryoh/gha-jobid-action@v0
-         id: jobs
-         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            job_name: ${{ github.job }}
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }}
 
-       - name: Update Mapping and Determine Tests
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         run: |
-           source ./ivy/clone_mapping.sh master32
-           pip install pydriller pymongo
-           cp Mapping/tests.pbz2 ivy/
-           cd ivy
-           python determine_tests.py 
-           cd ..
-           cp ivy/tests.pbz2 Mapping/
-           cd Mapping
-           git add .
-           git commit -m "Update Mapping"
-           git push origin master32
-         continue-on-error: true
+      - name: Update Mapping and Determine Tests
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        run: |
+          source ./ivy/clone_mapping.sh master31
+          pip install pydriller pymongo
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          python determine_tests.py 
+          cd ..
+          cp ivy/tests.pbz2 Mapping/
+          cd Mapping
+          git add .
+          git commit -m "Update Mapping"
+          git push origin master31
+        continue-on-error: true
 
-       - name: Run Tests
-         id: tests
-         run: |
-           cd ivy
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
-         continue-on-error: true
+        continue-on-error: true
 
-       - name: Check on failures
-         if: steps.tests.outcome != 'success'
-         run: exit 1
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
+
+  run_tests_32:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 100
+
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }}
+
+      - name: Update Mapping and Determine Tests
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        run: |
+          source ./ivy/clone_mapping.sh master32
+          pip install pydriller pymongo
+          cp Mapping/tests.pbz2 ivy/
+          cd ivy
+          python determine_tests.py 
+          cd ..
+          cp ivy/tests.pbz2 Mapping/
+          cd Mapping
+          git add .
+          git commit -m "Update Mapping"
+          git push origin master32
+        continue-on-error: true
+
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
+        continue-on-error: true
+
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
