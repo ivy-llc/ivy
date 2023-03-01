@@ -149,13 +149,13 @@ def isclose(
 
 
 def angle(
-    input_tensor: paddle.Tensor,
+    input: paddle.Tensor,
     /,
     *,
     deg: Optional[bool] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-        return paddle.angle(input_tensor)
+        return paddle.angle(input)
 
 
 def imag(
