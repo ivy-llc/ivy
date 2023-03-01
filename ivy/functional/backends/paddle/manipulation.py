@@ -35,7 +35,7 @@ def expand_dims(
     axis: Union[int, Sequence[int]] = 0,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle.expand (x, axis)
+    return paddle.expand(x, axis)
 
 
 def flip(
@@ -58,6 +58,12 @@ def permute_dims(
     return paddle.transpose(x, axes)
 
 
+def _reshape_fortran_paddle(x, shape):
+    if len(x.shape) > 0:
+        x = paddle.transpose(x, list(reversed(range(len(x.shape)))))
+    return paddle.transpose(paddle.reshape(x, shape[::-1]), list(range(len(shape)))[::-1])
+
+
 def reshape(
     x: paddle.Tensor,
     /,
@@ -68,7 +74,19 @@ def reshape(
     allowzero: Optional[bool] = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if not allowzero:
+        shape = [
+            new_s if con else old_s
+            for new_s, con, old_s in zip(shape, paddle.tensor(shape) != 0, x.shape)
+        ]
+    if copy:
+        newarr = paddle.clone(x)
+        if order == "F":
+            return _reshape_fortran_paddle(newarr, shape)
+        return paddle.reshape(newarr, shape)
+    if order == "F":
+        return _reshape_fortran_paddle(x, shape)
+    return paddle.reshape(x, shape)
 
 
 def roll(
