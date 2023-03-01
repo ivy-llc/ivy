@@ -154,9 +154,8 @@ def angle(
     *,
     deg: Optional[bool] = None,
     out: Optional[paddle.Tensor] = None,
-    name: Optional[str] = None,
 ) -> paddle.Tensor:
-        return paddle.angle(input_tensor, name=name)
+        return paddle.angle(input_tensor)
 
 
 def imag(
