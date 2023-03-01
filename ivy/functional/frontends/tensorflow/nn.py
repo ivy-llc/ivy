@@ -6,14 +6,16 @@ from ivy.functional.frontends.tensorflow import math
 
 
 def _reduce_strides_dilations(dim, stride, dilations):
-    if len(stride) > dim:
-        stride = stride[1:-1]
-    if len(dilations) > dim:
-        dilations = dilations[1:-1]
-    if len(stride) == 1 and dim != 1:
-        stride = stride[0]
-    if len(dilations) == 1 and dim != 1:
-        dilations = dilations[0]
+    if not isinstance(stride, int):
+        if len(stride) > dim:
+            stride = stride[1:-1]
+        if len(stride) == 1 and dim != 1:
+            stride = stride[0]
+    if not isinstance(dilations, int):
+        if len(dilations) > dim:
+            dilations = dilations[1:-1]
+        if len(dilations) == 1 and dim != 1:
+            dilations = dilations[0]
     return stride, dilations
 
 
@@ -34,6 +36,7 @@ def atrous_conv2d_transpose(value, filters, output_shape, rate, padding):
 def conv1d(
     input, filters, stride, padding, data_format="NWC", dilations=None, name=None
 ):
+    dilations = 1 if dilations is None else dilations
     stride, dilations = _reduce_strides_dilations(1, stride, dilations)
     return ivy.conv1d(
         input, filters, stride, padding, data_format=data_format, dilations=dilations
@@ -51,6 +54,7 @@ def conv1d_transpose(
     dilations=None,
     name=None,
 ):
+    dilations = 1 if dilations is None else dilations
     strides, dilations = _reduce_strides_dilations(1, strides, dilations)
     filters = filters.swapaxes(-2, -1)
     return ivy.conv1d_transpose(
@@ -73,6 +77,7 @@ def gelu(features, approximate=False, name=None):
 def conv2d(
     input, filters, strides, padding, data_format="NHWC", dilations=None, name=None
 ):
+    dilations = 1 if dilations is None else dilations
     strides, dilations = _reduce_strides_dilations(2, strides, dilations)
     return ivy.conv2d(
         input, filters, strides, padding, data_format=data_format, dilations=dilations
@@ -90,6 +95,7 @@ def conv2d_transpose(
     dilations=None,
     name=None,
 ):
+    dilations = 1 if dilations is None else dilations
     strides, dilations = _reduce_strides_dilations(2, strides, dilations)
     filters = filters.swapaxes(-2, -1)
     return ivy.conv2d_transpose(
@@ -107,6 +113,7 @@ def conv2d_transpose(
 def conv3d(
     input, filters, strides, padding, data_format="NDHWC", dilations=None, name=None
 ):
+    dilations = 1 if dilations is None else dilations
     strides, dilations = _reduce_strides_dilations(3, strides, dilations)
     return ivy.conv3d(
         input, filters, strides, padding, data_format=data_format, dilations=dilations
@@ -125,6 +132,7 @@ def conv3d_transpose(
     dilations=None,
     name=None,
 ):
+    dilations = 1 if dilations is None else dilations
     strides, dilations = _reduce_strides_dilations(3, strides, dilations)
     filters = filters.swapaxes(-2, -1)
     return ivy.conv3d_transpose(
@@ -149,6 +157,7 @@ def depthwise_conv2d(
     dilations=None,
     name=None,
 ):
+    dilations = 1 if dilations is None else dilations
     strides, dilations = _reduce_strides_dilations(2, strides, dilations)
     fc = filter.shape[-2]
     filter = filter.reshape(
@@ -165,15 +174,38 @@ def depthwise_conv2d(
     )
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, "tensorflow")
+@to_ivy_arrays_and_back
+def separable_conv2d(
+    input,
+    depthwise_filter,
+    pointwise_filter,
+    strides,
+    padding,
+    data_format=None,
+    dilations=None,
+    name=None
+):
+    dilations = 1 if dilations is None else dilations
+    strides, dilations = _reduce_strides_dilations(2, strides, dilations)
+    ret = depthwise_conv2d(input, depthwise_filter, strides=strides, padding=padding,
+                           dilations=dilations, data_format=data_format)
+    return conv2d(ret, pointwise_filter, 1, 'SAME', data_format=data_format)
+
+
 @to_ivy_arrays_and_back
 def batch_normalization(x, mean, variance, offset, scale, variance_epsilon, name=None):
-    inv = 1.0 / ivy.sqrt(variance + variance_epsilon)
-    if scale is not None:
-        inv *= scale
-
-    return x * ivy.astype(inv, x.dtype, copy=False) + ivy.astype(
-        offset - mean * inv if offset is not None else -mean * inv, x.dtype
+    ndims = len(x.shape)
+    x = ivy.permute_dims(x, axes=(0, *range(2, ndims), 1))
+    ret = ivy.batch_norm(
+        x,
+        mean,
+        variance,
+        offset=offset,
+        scale=scale,
+        eps=variance_epsilon,
     )
+    return ivy.permute_dims(ret, axes=(0, ndims-1, *range(1, ndims-1)))
 
 
 @to_ivy_arrays_and_back

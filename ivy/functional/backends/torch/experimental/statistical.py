@@ -20,7 +20,7 @@ def median(
         input,
         0.5,
         axis=axis,
-        keepdim=keepdims,
+        keepdims=keepdims,
         interpolation="midpoint",
     )[0]
 
