@@ -10,7 +10,15 @@ from ivy.utils.exceptions import IvyNotImplementedException
 
 
 def variable(x, /):
-    raise IvyNotImplementedException()
+    if ivy.is_int_dtype(x.dtype):
+        x = ivy.astype(x, ivy.default_float_dtype()).to_native()
+    if not x.is_leaf:
+        ret = x.detach()
+        ret.stop_gradient = False
+        return ret
+    ret = x.clone()
+    ret.stop_gradient = False
+    return ret
 
 
 def is_variable(x, /, *, exclusive: bool = False):
