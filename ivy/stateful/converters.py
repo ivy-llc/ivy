@@ -113,10 +113,18 @@ class ModuleConverters:
             The new trainable torch module instance.
 
         """
-        if not importlib.util.find_spec("haiku"):
+        hk_spec = importlib.util.find_spec("hk")
+        flat_mapping_spec = importlib.util.find_spec(
+            "FlatMapping", "haiku._src.data_structures"
+        )
+        if not hk_spec:
             import haiku as hk
-        if not importlib.util.find_spec("FlatMapping", "haiku._src.data_structures"):
+        else:
+            hk = importlib.util.module_from_spec(hk_spec)
+        if not flat_mapping_spec:
             from haiku._src.data_structures import FlatMapping
+        else:
+            FlatMapping = importlib.util.module_from_spec(flat_mapping_spec)
 
         def _hk_flat_map_to_dict(hk_flat_map):
             ret_dict = dict()
@@ -344,8 +352,11 @@ class ModuleConverters:
         ret
             The new trainable ivy.Module instance.
         """
-        if not importlib.util.find_spec("torch"):
+        torch_spec = importlib.util.find_spec("torch")
+        if not torch_spec:
             import torch
+        else:
+            torch = importlib.util.module_from_spec(torch_spec)
 
         class TorchIvyModule(ivy.Module):
             def __init__(
