@@ -480,6 +480,7 @@ def test_function(
             return ret_np_flat, ret_np_from_gt_flat
         return ret, ret_from_gt
 
+    assert ivy.dev(ret) == ivy.dev(ret_from_gt), "PANIC! Device not correct!"
     if isinstance(rtol_, dict):
         rtol_ = _get_framework_rtol(rtol_, fw)
     if isinstance(atol_, dict):
