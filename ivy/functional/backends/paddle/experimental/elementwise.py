@@ -132,6 +132,8 @@ def gcd(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    x1=paddle.to_tensor(x1)
+    x2=paddle.to_tensor(x2)
     return paddle.gcd(x1, x2)
 
 
