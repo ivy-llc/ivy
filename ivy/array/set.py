@@ -6,7 +6,7 @@ from typing import Optional, Tuple
 import ivy
 
 
-class ArrayWithSet(abc.ABC):
+class _ArrayWithSet(abc.ABC):
     def unique_counts(self: ivy.Array) -> Tuple[ivy.Array, ivy.Array]:
         """
         ivy.Array instance method variant of ivy.unique_counts. This method simply

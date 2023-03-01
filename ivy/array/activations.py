@@ -9,7 +9,7 @@ import ivy
 # ToDo: implement all methods here as public instance methods
 
 
-class ArrayWithActivations(abc.ABC):
+class _ArrayWithActivations(abc.ABC):
     def relu(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.relu. This method simply wraps the
