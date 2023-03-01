@@ -577,8 +577,10 @@
               
   <h1>Source code for ivy.utils.backend.handler</h1><div class="highlight"><pre>
 <span></span><span class="c1"># global</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">types</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">import</span> <span class="nn">importlib</span>
 <span class="kn">import</span> <span class="nn">functools</span>
@@ -619,21 +621,18 @@
 <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.tensorflow&quot;</span>
 <span class="n">_array_types</span><span class="p">[</span><span class="s2">&quot;torch&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.torch&quot;</span>
 <span class="n">_array_types</span><span class="p">[</span><span class="s2">&quot;torch.nn.parameter&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.torch&quot;</span>
-<span class="n">_array_types</span><span class="p">[</span><span class="s2">&quot;paddle&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.paddle&quot;</span>
 
 <span class="n">_backend_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 <span class="n">_backend_dict</span><span class="p">[</span><span class="s2">&quot;numpy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.numpy&quot;</span>
 <span class="n">_backend_dict</span><span class="p">[</span><span class="s2">&quot;jax&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.jax&quot;</span>
 <span class="n">_backend_dict</span><span class="p">[</span><span class="s2">&quot;tensorflow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.tensorflow&quot;</span>
 <span class="n">_backend_dict</span><span class="p">[</span><span class="s2">&quot;torch&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.torch&quot;</span>
-<span class="n">_backend_dict</span><span class="p">[</span><span class="s2">&quot;paddle&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.paddle&quot;</span>
 
 <span class="n">_backend_reverse_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 <span class="n">_backend_reverse_dict</span><span class="p">[</span><span class="s2">&quot;ivy.functional.backends.numpy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;numpy&quot;</span>
 <span class="n">_backend_reverse_dict</span><span class="p">[</span><span class="s2">&quot;ivy.functional.backends.jax&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;jax&quot;</span>
 <span class="n">_backend_reverse_dict</span><span class="p">[</span><span class="s2">&quot;ivy.functional.backends.tensorflow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;tensorflow&quot;</span>
 <span class="n">_backend_reverse_dict</span><span class="p">[</span><span class="s2">&quot;ivy.functional.backends.torch&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;torch&quot;</span>
-<span class="n">_backend_reverse_dict</span><span class="p">[</span><span class="s2">&quot;ivy.functional.backends.paddle&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;paddle&quot;</span>
 
 <span class="c1"># Backend Getting/Setting #</span>
 <span class="c1"># ----------------------- #</span>
@@ -824,17 +823,35 @@
     <span class="k">return</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">_backend_dict</span><span class="p">[</span><span class="n">implicit_backend</span><span class="p">])</span></div>
 
 
-<span class="k">def</span> <span class="nf">_set_backend_as_ivy</span><span class="p">(</span><span class="n">original_dict</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">backend</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_set_backend_as_ivy</span><span class="p">(</span>
+    <span class="n">original_dict</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">backend</span><span class="p">,</span> <span class="n">invalid_dtypes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend_str</span><span class="o">=</span><span class="kc">None</span>
+<span class="p">):</span>
+    <span class="n">invalid_dtypes</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">backend</span><span class="o">.</span><span class="n">invalid_dtypes</span> <span class="k">if</span> <span class="n">invalid_dtypes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">invalid_dtypes</span>
+    <span class="p">)</span>
+    <span class="n">backend_str</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span> <span class="k">if</span> <span class="n">backend_str</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">backend_str</span>
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">original_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">compositional</span> <span class="o">=</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">backend</span><span class="o">.</span><span class="vm">__dict__</span>
         <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">backend</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">backend</span><span class="o">.</span><span class="n">invalid_dtypes</span> <span class="ow">and</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">target</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">invalid_dtypes</span> <span class="ow">and</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">target</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
                 <span class="k">del</span> <span class="n">target</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
                 <span class="k">continue</span>
             <span class="n">backend</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
         <span class="n">target</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">_wrap_function</span><span class="p">(</span>
             <span class="n">key</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">to_wrap</span><span class="o">=</span><span class="n">backend</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">original</span><span class="o">=</span><span class="n">v</span><span class="p">,</span> <span class="n">compositional</span><span class="o">=</span><span class="n">compositional</span>
         <span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">ModuleType</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="s2">&quot;ivy.functional.&quot;</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="vm">__name__</span>
+            <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;__init__.py&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">backend_str</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="vm">__file__</span>
+        <span class="p">):</span>
+            <span class="n">_set_backend_as_ivy</span><span class="p">(</span>
+                <span class="n">v</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">,</span>
+                <span class="n">target</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">],</span>
+                <span class="n">backend</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">],</span>
+                <span class="n">invalid_dtypes</span><span class="o">=</span><span class="n">invalid_dtypes</span><span class="p">,</span>
+                <span class="n">backend_str</span><span class="o">=</span><span class="n">backend_str</span><span class="p">,</span>
+            <span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_handle_backend_specific_vars</span><span class="p">(</span><span class="n">backend</span><span class="p">):</span>

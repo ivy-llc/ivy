@@ -970,6 +970,32 @@ a shape that the inputs broadcast to.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="ivy.array.layers.ArrayWithLayers.dropout3d">
+<span class="sig-name descname"><span class="pre">dropout3d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prob</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">training</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'NDHWC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/layers.html#ArrayWithLayers.dropout3d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.layers.ArrayWithLayers.dropout3d" title="Permalink to this definition">#</a></dt>
+<dd><p>ivy.Array instance method variant of ivy.dropout3d. This method simply
+wraps the function, and so the docstring for ivy.droput3d also applies
+to this method with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – The input array x to perform dropout on.</p></li>
+<li><p><strong>prob</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The probability of zeroing out each array element, float between 0 and 1.</p></li>
+<li><p><strong>training</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Turn on dropout if training, turn off otherwise. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)</p></li>
+<li><p><strong>data_format</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – “NDHWC” or “NCDHW”. Default is <code class="docutils literal notranslate"><span class="pre">&quot;NDHWC&quot;</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">'NDHWC'</span></code>)</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+a shape that the inputs broadcast to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>ret</em> – Result array of the output after dropout is performed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.layers.ArrayWithLayers.linear">
 <span class="sig-name descname"><span class="pre">linear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weight</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/layers.html#ArrayWithLayers.linear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.layers.ArrayWithLayers.linear" title="Permalink to this definition">#</a></dt>
 <dd><p>ivy.Array instance method variant of ivy.linear. This method simply
