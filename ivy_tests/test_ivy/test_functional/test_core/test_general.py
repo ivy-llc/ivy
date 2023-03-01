@@ -3,49 +3,15 @@
 # global
 import time
 import math
-from types import SimpleNamespace
-
-try:
-    import tensorflow as tf
-except ImportError:
-    tf = SimpleNamespace()
-    tf.__version__ = None
-
-
-try:
-    import jax.numpy as jnp
-except ImportError:
-    jnp = SimpleNamespace()
-
+import importlib
 import pytest
 from hypothesis import given, assume, strategies as st
 import numpy as np
 from collections.abc import Sequence
 
-try:
-    import torch.multiprocessing as multiprocessing
-except ImportError:
-    multiprocessing = SimpleNamespace()
-
 # local
 import threading
 import ivy
-
-try:
-    import ivy.functional.backends.jax
-except ImportError:
-    ivy.functional.backends.jax = SimpleNamespace()
-
-try:
-    import ivy.functional.backends.tensorflow
-except ImportError:
-    ivy.functional.backends.tensorflow = SimpleNamespace()
-
-try:
-    import ivy.functional.backends.torch
-except ImportError:
-    ivy.functional.backends.torch = SimpleNamespace()
-
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 from ivy_tests.test_ivy.helpers.assertions import assert_all_close
@@ -637,6 +603,11 @@ def test_scatter_flat(
     # scatter_flat throws an error while computing gradients for tensorflow
     # this has been fixed in the newer versions of tensorflow (2.10.0 onwards)
     if "tensorflow" in backend_fw.__name__:
+        tf_spec = importlib.util.find_spec("tf")
+        if not tf_spec:
+            import tensorflow as tf
+        else:
+            tf = importlib.util.module_from_spec(tf_spec)
         grad_support_version = [2, 10, 0]
         k = 0
         for number in [int(s) for s in tf.__version__.split(".") if s.isdigit()]:
@@ -987,6 +958,12 @@ def test_framework_setting_with_threading():
         # Numpy is the conflicting framework being tested against
         pytest.skip()
 
+    jnp_spec = importlib.util.find_spec("jnp")
+    if not jnp_spec:
+        import jax.numpy as jnp
+    else:
+        jnp = importlib.util.module_from_spec(jnp_spec)
+
     def thread_fn():
         x_ = jnp.array([0.0, 1.0, 2.0])
         ivy.set_backend("jax")
@@ -1018,6 +995,12 @@ def test_framework_setting_with_multiprocessing():
     if ivy.current_backend_str() == "numpy":
         # Numpy is the conflicting framework being tested against
         pytest.skip()
+
+    multiprocessing_spec = importlib.util.find_spec("multiprocessing", "torch")
+    if not multiprocessing_spec:
+        import torch.multiprocessing as multiprocessing
+    else:
+        multiprocessing = importlib.util.module_from_spec(multiprocessing_spec)
 
     def worker_fn(out_queue):
         ivy.set_backend("numpy")
