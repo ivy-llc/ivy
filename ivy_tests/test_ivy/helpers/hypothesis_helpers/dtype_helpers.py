@@ -104,11 +104,10 @@ def get_dtypes(
         dtype string
     """
 
-
     if prune_function:
         retrieval_fn = _get_fn_dtypes
         if test_globals.CURRENT_RUNNING_TEST is not test_globals._Notsetval:
-            valid_dtypes = set(retrieval_fn(test_globals.CURRENT_BACKEND(),kind))
+            valid_dtypes = set(retrieval_fn(test_globals.CURRENT_BACKEND(), kind))
         else:
             raise RuntimeError(
                 "No function is set to prune, calling "
@@ -127,22 +126,27 @@ def get_dtypes(
 
     # If being called from a frontend test
     import time
+
     if test_globals.CURRENT_FRONTEND is not test_globals._Notsetval or isinstance(
         test_globals.CURRENT_FRONTEND_STR, list
     ):  # NOQA
         if isinstance(test_globals.CURRENT_FRONTEND_STR, list):
             process = test_globals.CURRENT_FRONTEND_STR[1]
             try:
-
                 if test_globals.CURRENT_RUNNING_TEST.is_method:
                     process.stdin.write("1a" + "\n")
-                    process.stdin.write(jsonpickle.dumps(test_globals.CURRENT_RUNNING_TEST.is_method) + "\n")
+                    process.stdin.write(
+                        jsonpickle.dumps(test_globals.CURRENT_RUNNING_TEST.is_method)
+                        + "\n"
+                    )
                 else:
                     process.stdin.write("1" + "\n")
-                process.stdin.write(f"{str(retrieval_fn.__name__)}"+ "\n")
+                process.stdin.write(f"{str(retrieval_fn.__name__)}" + "\n")
                 process.stdin.write(f"{str(kind)}" + "\n")
-                process.stdin.write(f"{test_globals.CURRENT_DEVICE}"+ "\n")
-                process.stdin.write(f"{test_globals.CURRENT_RUNNING_TEST.fn_tree}"+ "\n")
+                process.stdin.write(f"{test_globals.CURRENT_DEVICE}" + "\n")
+                process.stdin.write(
+                    f"{test_globals.CURRENT_RUNNING_TEST.fn_tree}" + "\n"
+                )
 
                 process.stdin.flush()
             except Exception as e:
@@ -161,7 +165,7 @@ def get_dtypes(
             else:
                 print(process.stderr.readlines())
                 raise Exception
-            frontend_dtypes= frontend_ret
+            frontend_dtypes = frontend_ret
             valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
 
         else:
@@ -173,17 +177,19 @@ def get_dtypes(
         test_globals.CURRENT_GROUND_TRUTH_BACKEND is not test_globals._Notsetval  # NOQA
     )
     if ground_truth_is_set:
-        if isinstance(test_globals.CURRENT_GROUND_TRUTH_BACKEND,list):
+        if isinstance(test_globals.CURRENT_GROUND_TRUTH_BACKEND, list):
             process = test_globals.CURRENT_GROUND_TRUTH_BACKEND[1]
             try:
                 if test_globals.CURRENT_RUNNING_TEST.is_method:
                     process.stdin.write("1a" + "\n")
                 else:
                     process.stdin.write("1" + "\n")
-                process.stdin.write(f"{str(retrieval_fn.__name__)}"+ "\n")
+                process.stdin.write(f"{str(retrieval_fn.__name__)}" + "\n")
                 process.stdin.write(f"{str(kind)}" + "\n")
-                process.stdin.write(f"{test_globals.CURRENT_DEVICE}"+ "\n")
-                process.stdin.write(f"{test_globals.CURRENT_RUNNING_TEST.fn_tree}"+ "\n")
+                process.stdin.write(f"{test_globals.CURRENT_DEVICE}" + "\n")
+                process.stdin.write(
+                    f"{test_globals.CURRENT_RUNNING_TEST.fn_tree}" + "\n"
+                )
                 process.stdin.flush()
             except Exception as e:
                 print(
@@ -198,9 +204,8 @@ def get_dtypes(
                 print(process.stderr.readlines())
                 raise Exception
 
-            valid_dtypes=valid_dtypes.intersection(backend_ret)
+            valid_dtypes = valid_dtypes.intersection(backend_ret)
         else:
-
             valid_dtypes = valid_dtypes.intersection(
                 retrieval_fn(test_globals.CURRENT_GROUND_TRUTH_BACKEND(), kind)
             )
