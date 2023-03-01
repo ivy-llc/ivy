@@ -273,7 +273,8 @@ def slogdet(
     x: paddle.Tensor,
     /,
 ) -> Tuple[paddle.Tensor, paddle.Tensor]:
-    results = NamedTuple("slogdet", [("sign", paddle.Tensor), ("logabsdet", paddle.Tensor)])
+    results = NamedTuple(
+        "slogdet", [("sign", paddle.Tensor), ("logabsdet", paddle.Tensor)])
     sign, logabsdet = paddle.linalg.slogdet(x)
     return results(sign, logabsdet)
 
@@ -292,7 +293,13 @@ def solve(
 def svd(
     x: paddle.Tensor, /, *, full_matrices: bool = True, compute_uv: bool = True
 ) -> Union[paddle.Tensor, Tuple[paddle.Tensor, ...]]:
-    raise IvyNotImplementedException()
+    ret = paddle.linalg.svd(x, full_matrices=full_matrices)
+    if compute_uv:
+        results = namedtuple("svd", "U S Vh")
+        return results(*ret)
+    else:
+        results = namedtuple("svd", "S")
+        return results(ret[1])
 
 
 def svdvals(
