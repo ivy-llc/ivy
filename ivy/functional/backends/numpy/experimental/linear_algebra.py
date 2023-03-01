@@ -1,5 +1,5 @@
 import math
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Sequence
 import numpy as np
 
 import ivy
@@ -137,3 +137,15 @@ def adjoint(
     axes = list(range(len(x.shape)))
     axes[-1], axes[-2] = axes[-2], axes[-1]
     return np.conjugate(np.transpose(x, axes=axes))
+
+
+def multi_dot(
+    x: Sequence[np.ndarray], 
+    /,
+    *, 
+    out: Optional[np.array] = None,
+) -> np.ndarray: 
+    return np.linalg.multi_dot(x, out=out)
+
+
+multi_dot.support_native_out = True
