@@ -8,7 +8,6 @@ except ImportError:
     torch = SimpleNamespace()
 
 import ivy
-import torch
 from hypothesis import strategies as st, given, assume
 
 # local
