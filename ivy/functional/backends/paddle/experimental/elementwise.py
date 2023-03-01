@@ -303,4 +303,7 @@ def xlogy(
 
 
 def real(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if out is not None:
+        return paddle.real(x, out=out)
+    else:
+        return paddle.real(x)
