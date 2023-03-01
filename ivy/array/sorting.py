@@ -41,10 +41,13 @@ class ArrayWithSorting(abc.ABC):
             of ``x`` values which compare as equal (i.e., the
             relative order of ``x`` values which compare as
             equal is implementation-dependent). Default: ``True``.
+        out
+            optional output array, for writing the result to. It must have the same
+            shape as input.
 
         Returns
         -------
-        out
+        ret
             an array of indices. The returned array must have the same shape as ``x``.
             The returned array must have the default array index data type.
 
@@ -102,7 +105,7 @@ class ArrayWithSorting(abc.ABC):
         /,
         *,
         side="left",
-        sorter=None,
+        sorter: Optional = None,
         ret_dtype=ivy.int64,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
