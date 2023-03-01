@@ -136,7 +136,7 @@ def inplace_increment(
     x: Union[ivy.Array, paddle.Tensor],
     val: Union[ivy.Array, paddle.Tensor],
 ) -> ivy.Array:
-    return paddle.index_add_(x,val)
+    return paddle.add_n((x)
 
 
 def inplace_update(
