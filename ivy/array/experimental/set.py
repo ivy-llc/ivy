@@ -2,5 +2,5 @@
 import abc
 
 
-class ArrayWithSetExperimental(abc.ABC):
+class _ArrayWithSetExperimental(abc.ABC):
     pass
