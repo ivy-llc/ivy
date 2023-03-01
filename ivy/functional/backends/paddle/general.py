@@ -144,7 +144,23 @@ def inplace_update(
     val: Union[ivy.Array, paddle.Tensor],
     ensure_in_backend: bool = False,
 ) -> ivy.Array:
-    raise IvyNotImplementedException()
+
+    if ivy.is_array(x) and ivy.is_array(val):
+        (x_native, val_native), _ = ivy.args_to_native(x, val)
+
+        if val_native.shape == x_native.shape:
+            if x_native.dtype != val_native.dtype:
+                x_native = x_native.astype(val_native.dtype)
+            paddle.assign(val_native, x_native)
+        else:
+            x_native = val_native
+        if ivy.is_ivy_array(x):
+            x.data = x_native
+        else:
+            x = ivy.Array(x_native)
+        return x
+    else:
+        return val
 
 
 def inplace_variables_supported():
