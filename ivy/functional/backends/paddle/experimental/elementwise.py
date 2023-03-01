@@ -122,8 +122,6 @@ def nansum(
     keepdims: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if out is not None:
-        raise ValueError("The 'out' argument is not supported in this implementation.")
     return paddle.nansum(x, axis=axis, dtype=dtype)
 
 
@@ -147,8 +145,6 @@ def isclose(
     equal_nan: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if out is not None:
-        raise ValueError("The 'out' argument is not supported in this implementation.")
     return paddle.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
 
 
@@ -160,11 +156,6 @@ def angle(
     out: Optional[paddle.Tensor] = None,
     name: Optional[str] = None,
 ) -> paddle.Tensor:
-    if deg is not None:
-        raise ValueError("The 'deg' argument is not supported in this implementation.")
-    if out is not None:
-        return paddle.angle(input_tensor, out=out, name=name)
-    else:
         return paddle.angle(input_tensor, name=name)
 
 
@@ -225,8 +216,6 @@ def diff(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x=paddle.to_tensor(x)
-    if out is not None:
-        raise ValueError("The 'out' argument is not supported in this implementation.")
     return paddle.diff(x, n=n, axis=axis, prepend=prepend, append=append)
 
 
