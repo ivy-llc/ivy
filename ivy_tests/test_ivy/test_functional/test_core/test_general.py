@@ -2066,7 +2066,8 @@ def _fn3(x, y):
 
 
 # vmap
-@given(
+@handle_test(
+    fn_tree="functional.ivy.vmap",
     func=st.sampled_from([_fn1, _fn2, _fn3]),
     dtype_and_arrays_and_axes=helpers.arrays_and_axes(
         allow_none=False,
