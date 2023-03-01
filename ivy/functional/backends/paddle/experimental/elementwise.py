@@ -293,4 +293,5 @@ def count_nonzero(
     keepdims: Optional[bool] = False,
     name: Optional[str] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    non_zero_counts = paddle.sum(x != 0, axis=axis, keepdim=keepdims, name=name)
+    return non_zero_counts
