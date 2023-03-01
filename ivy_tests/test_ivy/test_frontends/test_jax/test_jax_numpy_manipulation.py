@@ -886,7 +886,7 @@ def test_jax_numpy_blackman(
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_bloc(
+def test_jax_numpy_block(
     *,
     xs_n_input_dtypes_n_unique_idx,
     on_device,
