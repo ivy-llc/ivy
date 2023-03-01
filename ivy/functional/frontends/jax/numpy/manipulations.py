@@ -1,6 +1,6 @@
 # local
 import ivy
-import jax.numpy as jnp
+import ivy.numpy as np
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_jax_dtype,
@@ -164,15 +164,22 @@ def bartlett(M):
 
 @to_ivy_arrays_and_back
 def blackman(M):
-    n = jnp.arange(0, M)
-    a0 = 0.42659
-    a1 = 0.49656
-    a2 = 0.076849
+    if M < 1:
+        return np.array([])
+
+    if M == 1:
+        return np.ones(1)
+
+    alpha = 0.16
+    a0 = (1 - alpha) / 2
+    a1 = 1 / 2
+    a2 = alpha / 2
+
+    n = np.arange(0, M)
     ret = (
-        a0
-        - a1 * jnp.cos(2 * jnp.pi * n / (M - 1))
-        + a2 * jnp.cos(4 * jnp.pi * n / (M - 1))
+        a0 - a1 * np.cos(2 * np.pi * n / (M - 1)) + a2 * np.cos(4 * np.pi * n / (M - 1))
     )
+
     return ret
 
 
