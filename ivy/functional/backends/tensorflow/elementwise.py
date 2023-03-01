@@ -50,7 +50,9 @@ def add(
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if alpha not in (1, None):
+        ivy.set_array_mode(False)
         x2 = multiply(x2, alpha)
+        ivy.unset_array_mode()
     return tf.add(x1, x2)
 
 
@@ -629,7 +631,9 @@ def subtract(
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if alpha not in (1, None):
+        ivy.set_array_mode(False)
         x2 = multiply(x2, alpha)
+        ivy.unset_array_mode()
     return tf.subtract(x1, x2)
 
 
