@@ -76,11 +76,13 @@ def softplus(
     x: paddle.Tensor,
     /,
     *,
-    beta: Optional[Union[int, float]] = 1,
-    threshold: Optional[Union[int, float]] = 20,
+    beta: Optional[Union[int, float]] = None,
+    threshold: Optional[Union[int, float]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x , x_dtype = _dtype_helper(x)
+    threshold = threshold if threshold is not None else 20
+    beta = beta if beta is not None else 1
 
     return F.softplus(x, beta=beta, threshold=threshold).cast(x_dtype)
 
