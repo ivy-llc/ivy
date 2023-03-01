@@ -321,7 +321,7 @@ def trace(
     axis2: int = 1,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.trace(x, offset=offset, axis1=axis1, axis2=axis2)
 
 
 def vecdot(
