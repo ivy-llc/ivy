@@ -644,3 +644,19 @@ def ldexp(
         x2 = tf.cast(x2, x1.dtype)
         ret = x1 * tf.math.pow(2, x2)
     return ret
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("unsigned")}, backend_version)
+def frexp(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[Tuple[tf.Tensor, tf.Tensor], Tuple[tf.Variable, tf.Variable]]] = None,
+) -> Union[Tuple[tf.Tensor, tf.Tensor], Tuple[tf.Variable, tf.Variable]]:
+    e = tf.math.floor(tf.math.log(tf.math.abs(x)) / tf.cast(tf.math.log(2.), x.dtype))
+    e = tf.cast(e, x.dtype)
+    while tf.reduce_any(tf.abs(x / tf.math.pow(2, e)) >= 1):
+        e += tf.cast(tf.abs(x / tf.math.pow(2, e)) >= 1, e.dtype)
+    m = x / tf.math.pow(2, e)
+    e = tf.cast(e, tf.int32)
+    return m, e
