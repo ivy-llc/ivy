@@ -1,5 +1,10 @@
 from hypothesis import strategies as st
-import tensorflow as tf
+from types import SimpleNamespace
+
+try:
+    import tensorflow as tf
+except ImportError:
+    tf = SimpleNamespace()
 import sys
 
 # local
