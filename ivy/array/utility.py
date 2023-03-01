@@ -6,7 +6,7 @@ import abc
 import ivy
 
 
-class ArrayWithUtility(abc.ABC):
+class _ArrayWithUtility(abc.ABC):
     def all(
         self: ivy.Array,
         /,

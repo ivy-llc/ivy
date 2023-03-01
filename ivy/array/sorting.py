@@ -7,7 +7,7 @@ from typing import Optional, Union
 import ivy
 
 
-class ArrayWithSorting(abc.ABC):
+class _ArrayWithSorting(abc.ABC):
     def argsort(
         self: ivy.Array,
         /,
