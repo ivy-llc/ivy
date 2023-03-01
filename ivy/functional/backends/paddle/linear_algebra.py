@@ -125,12 +125,57 @@ def matrix_norm(
     x: paddle.Tensor,
     /,
     *,
-    ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
+    ord: Optional[Union[int, float,
+                        Literal[inf, -inf, "fro", "nuc"]]] = "fro",
     axis: Optional[Tuple[int, int]] = (-2, -1),
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    _expand_dims = False
+    if x.ndim == 2:
+        x = paddle.unsqueeze(x, axis=0)
+        _expand_dims = True
+
+    if ord == -float("inf"):
+        ret = paddle.min(
+            paddle.sum(paddle.abs(x), axis=axis[1], keepdim=True), axis=axis
+        )
+
+    elif ord == -1:
+        ret = paddle.min(
+            paddle.sum(paddle.abs(x), axis=axis[0], keepdim=True), axis=axis
+        )
+    elif ord == -2:
+        ret = paddle.min(
+            paddle.linalg.svd(x)[1], axis=axis, keepdim=keepdims
+        )
+    elif ord == "nuc":
+        if paddle.shape(x).numpy() == 0:
+            ret = x
+        else:
+            ret = paddle.sum(paddle.linalg.svd(x)[0], axis=-1)
+    elif ord == 'fro':
+        ret = paddle.linalg.norm(x, p=ord, axis=axis, keepdim=keepdims)
+    elif ord == float("inf"):
+        ret = paddle.max(
+            paddle.sum(paddle.abs(x), axis=axis[1], keepdim=True), axis=axis
+        )
+
+    elif ord == 1:
+        ret = paddle.max(
+            paddle.sum(paddle.abs(x), axis=axis[0], keepdim=True), axis=axis
+        )
+    elif ord == 2:
+        ret = paddle.max(
+            paddle.linalg.svd(x)[1], axis=axis, keepdim=keepdims
+        )
+    if keepdims:
+        ret = paddle.reshape(ret, x.shape[:-2] + [1, 1])
+    else:
+        ret = paddle.reshape(ret, x.shape[:-2])
+    if _expand_dims:
+        ret = paddle.squeeze(ret, axis=0)
+    return ret
 
 
 def eig(
