@@ -288,7 +288,20 @@ def solve(
     adjoint: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if adjoint:
+        x1 = paddle.moveaxis(x1, -2, -1).conj()
+    expanded_last = False
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if len(x2.shape) <= 1:
+        if x2.shape[-1] == x1.shape[-1]:
+            expanded_last = True
+            x2 = paddle.unsqueeze(x2, axis=1)
+    for i in range(len(x1.shape) - 2):
+        x2 = paddle.unsqueeze(x2, axis=0)
+    ret = paddle.linalg.solve(x1, x2)
+    if expanded_last:
+        ret = paddle.squeeze(ret, axis=-1)
+    return ret
 
 
 def svd(
