@@ -99,7 +99,7 @@ def inv(
     adjoint: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.inverse(x)
 
 
 def matmul(
@@ -191,8 +191,7 @@ def eig(
 def matrix_power(
     x: paddle.Tensor, n: int, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
-
+     return paddle.linalg.matrix_power(x, n)
 
 def matrix_rank(
     x: paddle.Tensor,
@@ -375,7 +374,7 @@ def tensordot(
     axes: Union[int, Tuple[List[int], List[int]]] = 2,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.tensordot(x1, x2, axes)
 
 
 def trace(
@@ -398,7 +397,7 @@ def vecdot(
     axis: int = -1,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.tensordot(x1, x2, axis)
 
 
 def vector_norm(
