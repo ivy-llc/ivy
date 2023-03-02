@@ -16,6 +16,7 @@ mod_backend = {
     "numpy": None,
     "jax": None,
     "torch": None,
+    "paddle": None,
 }  # multiversion
 
 ground_backend = None  # multiversion
