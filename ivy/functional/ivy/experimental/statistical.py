@@ -252,8 +252,8 @@ def nanmedian(
     overwrite_input: Optional[bool] = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """ivy.Array instance method variant of ivy.nanmedian. This method simply
-     wraps the function, and so the docstring for ivy.nanmedian also applies to
+    """ivy.Array instance method variant of ivy.nanmedian. This method simply 
+    wraps the function, and so the docstring for ivy.nanmedian also applies to
     this method with minimal changes.
 
     Parameters
@@ -286,6 +286,7 @@ def nanmedian(
         A new array holding the result. If the input contains integers
 
     Examples
+    --------
     >>> a = ivy.Array([[10.0, ivy.nan, 4], [3, 2, 1]])
     >>> a.nanmedian(a)
         3.0

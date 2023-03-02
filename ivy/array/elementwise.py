@@ -7,7 +7,7 @@ import ivy
 
 
 # noinspection PyUnresolvedReferences
-class ArrayWithElementwise(abc.ABC):
+class _ArrayWithElementwise(abc.ABC):
     def abs(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.abs. This method simply wraps the

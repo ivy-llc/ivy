@@ -215,6 +215,13 @@ def split(tensor, split_size_or_sections, dim=0):
     )
 
 
+@to_ivy_arrays_and_back
+def unbind(input, dim=0):
+    shape = list(input.shape)
+    shape.pop(dim)
+    return tuple([x.reshape(tuple(shape)) for x in split(input, 1, dim=dim)])
+
+
 def _get_indices_or_sections(indices_or_sections, indices, sections):
     if not ivy.exists(indices_or_sections):
         if ivy.exists(indices) and not ivy.exists(sections):
