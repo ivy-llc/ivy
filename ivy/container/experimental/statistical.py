@@ -772,6 +772,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
             A new array holding the result. If the input contains integers
 
         Examples
+        --------
         >>> a = ivy.Container([[10.0, ivy.nan, 4], [3, 2, 1]])
         >>> a.nanmedian(a)
             3.0
@@ -800,7 +801,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         ivy.Container static method variant of ivy.bincount. This method simply wraps
         the function, and so the docstring for ivy.bincount also applies to this method
         with minimal changes.
-
+        
         Parameters
         ----------
         x
@@ -849,7 +850,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         """ivy.Array instance method variant of ivy.bincount. This method simply
         wraps the function, and so the docstring for ivy.bincount also applies to
         this method with minimal changes.
-
+        
         Parameters
         ----------
         self

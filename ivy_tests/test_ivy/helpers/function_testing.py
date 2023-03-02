@@ -62,6 +62,21 @@ from .assertions import (
 )
 from . import globals
 
+try:
+    os.environ["IVY_ROOT"] = ".ivy"
+    import ivy.compiler.compiler as ic
+except Exception:
+    ic = types.SimpleNamespace()
+    ic.compile = lambda func, args, kwargs: func
+
+
+# Temporary (.so) configuration
+def compiled_if_required(fn, test_compile=False, args=None, kwargs=None):
+    if test_compile:
+        fn = ic.compile(fn, args=args, kwargs=kwargs)
+    return fn
+
+
 available_frameworks = available_frameworkss()
 
 
@@ -555,7 +570,7 @@ def test_frontend_function(
     function_module = importlib.import_module(frontend_submods)
     frontend_fn = getattr(function_module, fn_name)
 
-    args, kwargs, = create_frontend_args_kwargs(
+    args, kwargs = create_frontend_args_kwargs(
         args_np=args_np,
         arg_np_vals=arg_np_vals,
         args_idxs=args_idxs,

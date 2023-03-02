@@ -88,9 +88,7 @@ class InterruptedTest(BaseException):
 def _get_ivy_numpy(version=None):
     """Import Numpy module from ivy"""
     if version:
-
         if version.split("/")[1] != importlib.import_module("numpy").__version__:
-
             config.reset_sys_modules_to_base()
         config.allow_global_framework_imports(fw=[version])
 
@@ -191,7 +189,6 @@ def _set_frontend(framework: str):
     if CURRENT_FRONTEND is not _Notsetval:
         raise InterruptedTest(CURRENT_RUNNING_TEST)
     if isinstance(framework, list):
-
         CURRENT_FRONTEND = FWS_DICT[framework[0].split("/")[0]]
         CURRENT_FRONTEND_STR = framework
     else:

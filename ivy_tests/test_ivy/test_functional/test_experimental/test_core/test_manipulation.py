@@ -613,7 +613,7 @@ def _get_split_locations(draw, min_num_dims, axis=None):
     )
     if len(shape) == 1:
         axis = draw(st.just(0))
-    elif axis:
+    elif ivy.exists(axis):
         axis = draw(st.just(axis))
     else:
         axis = draw(

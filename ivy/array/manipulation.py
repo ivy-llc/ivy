@@ -11,7 +11,7 @@ from ivy import handle_view
 # ToDo: implement all methods here as public instance methods
 
 
-class ArrayWithManipulation(abc.ABC):
+class _ArrayWithManipulation(abc.ABC):
     def view(
         self: ivy.Array,
         /,
