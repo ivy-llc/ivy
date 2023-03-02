@@ -36,6 +36,11 @@ def roll(input, shifts, dims=None):
 
 
 @to_ivy_arrays_and_back
+def meshgrid(*tensors, indexing=None):
+    return ivy.meshgrid(*tensors, indexing=indexing)
+
+
+@to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {"1.11.0 and below": ("uint8", "bfloat16", "float16"), "1.12.1": ()},
     "torch",
