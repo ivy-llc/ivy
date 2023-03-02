@@ -8,7 +8,7 @@ from typing import Optional, Union, List, Dict
 
 
 # noinspection PyMissingConstructor
-class ContainerWithActivations(ContainerBase):
+class _ContainerWithActivations(ContainerBase):
     @staticmethod
     def static_relu(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],

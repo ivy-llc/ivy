@@ -18,7 +18,7 @@ import ivy
 from ivy.container.base import ContainerBase
 
 
-class ContainerWithManipulationExperimental(ContainerBase):
+class _ContainerWithManipulationExperimental(ContainerBase):
     @staticmethod
     def static_moveaxis(
         a: Union[ivy.Array, ivy.NativeArray, ivy.Container],

@@ -6,7 +6,7 @@ import ivy
 from ivy.container.base import ContainerBase
 
 
-class ContainerWithCreationExperimental(ContainerBase):
+class _ContainerWithCreationExperimental(ContainerBase):
     @staticmethod
     def static_triu_indices(
         n_rows: int,
