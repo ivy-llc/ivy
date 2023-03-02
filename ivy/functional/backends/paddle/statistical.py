@@ -10,10 +10,28 @@ import paddle
 import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
 from . import backend_version
+from ivy.func_wrapper import with_unsupported_dtypes
 
 # Array API Standard #
 # -------------------#
 
+
+@with_unsupported_dtypes(
+    {
+        "2.4.2 and below": (
+            "int8",
+            "int16",
+            "uint8",
+            "uint16",
+            "bfloat16",
+            "float16",
+            "complex64",
+            "complex128",
+            "bool",
+        )
+    },
+    backend_version,
+)
 def min(
     x: paddle.Tensor,
     /,
@@ -25,6 +43,22 @@ def min(
     return paddle.min(x, axis=axis, keepdim=keepdims)
 
 
+@with_unsupported_dtypes(
+    {
+        "2.4.2 and below": (
+            "int8",
+            "int16",
+            "uint8",
+            "uint16",
+            "bfloat16",
+            "float16",
+            "complex64",
+            "complex128",
+            "bool",
+        )
+    },
+    backend_version,
+)
 def max(
     x: paddle.Tensor,
     /,
@@ -36,6 +70,10 @@ def max(
     return paddle.max(x, axis=axis, keepdims=keepdims)
 
 
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ("int8", "int16", "int32", "int64", "float16")},
+    backend_version,
+)
 def mean(
     x: paddle.Tensor,
     /,
@@ -47,10 +85,22 @@ def mean(
     return paddle.mean(x, axis=axis, keepdim=keepdims)
 
 
-def _infer_dtype(dtype: paddle.dtype) -> paddle.dtype:
-    raise IvyNotImplementedException()
-
-
+@with_unsupported_dtypes(
+    {
+        "2.4.2 and below": (
+            "int8",
+            "int16",
+            "uint8",
+            "uint16",
+            "bfloat16",
+            "float16",
+            "complex64",
+            "complex128",
+            "bool",
+        )
+    },
+    backend_version,
+)
 def prod(
     x: paddle.Tensor,
     /,
@@ -63,6 +113,24 @@ def prod(
     return paddle.prod(x, axis=axis, keepdim=keepdims, dtype=dtype)
 
 
+@with_unsupported_dtypes(
+    {
+        "2.4.2 and below": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "uint8",
+            "uint16",
+            "bfloat16",
+            "float16",
+            "complex64",
+            "complex128",
+            "bool",
+        )
+    },
+    backend_version,
+)
 def std(
     x: paddle.Tensor,
     /,
@@ -94,6 +162,23 @@ def std(
     )
     return ret
 
+
+@with_unsupported_dtypes(
+    {
+        "2.4.2 and below": (
+            "int8",
+            "int16",
+            "uint8",
+            "uint16",
+            "bfloat16",
+            "float16",
+            "complex64",
+            "complex128",
+            "bool",
+        )
+    },
+    backend_version,
+)
 def sum(
     x: paddle.Tensor,
     /,
@@ -106,6 +191,24 @@ def sum(
     return paddle.sum(x, axis=axis, dtype=dtype, keepdim=keepdims)
 
 
+@with_unsupported_dtypes(
+    {
+        "2.4.2 and below": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "uint8",
+            "uint16",
+            "bfloat16",
+            "float16",
+            "complex64",
+            "complex128",
+            "bool",
+        )
+    },
+    backend_version,
+)
 def var(
     x: paddle.Tensor,
     /,
@@ -131,18 +234,30 @@ def var(
         ret = paddle.var(x, axis=axis, unbiased=False, keepdim=keepdims)
         ret = ivy.full(ret.shape, float("nan"), dtype=ret.dtype)
         return ret
-    else:    
+    else:
         ret = paddle.mul(
-        paddle.var(x, axis=axis, unbiased=False, keepdim=keepdims),
-        (size / (size - correction)) ** 0.5,
+            paddle.var(x, axis=axis, unbiased=False, keepdim=keepdims),
+            (size / (size - correction)) ** 0.5,
         )
     return ret
-    
 
 
 # Extra #
 # ----- #
-
+@with_unsupported_dtypes(
+    {
+        "2.4.2 and below": (
+            "int8",
+            "int16",
+            "uint8",
+            "uint16",
+            "bfloat16",
+            "float16",
+            "bool",
+        )
+    },
+    backend_version,
+)
 def cumprod(
     x: paddle.Tensor,
     /,
@@ -156,6 +271,22 @@ def cumprod(
     raise IvyNotImplementedException()
 
 
+@with_unsupported_dtypes(
+    {
+        "2.4.2 and below": (
+            "int8",
+            "int16",
+            "uint8",
+            "uint16",
+            "bfloat16",
+            "float16",
+            "complex64",
+            "complex128",
+            "bool",
+        )
+    },
+    backend_version,
+)
 def cumsum(
     x: paddle.Tensor,
     axis: int = 0,
