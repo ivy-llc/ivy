@@ -13,5 +13,5 @@ Searching
    :maxdepth: -1
    :caption: Searching
 
-   searching/ArrayWithSearching.rst
+   searching/_ArrayWithSearching.rst
 
