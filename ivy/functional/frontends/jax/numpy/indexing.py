@@ -18,3 +18,9 @@ def diag(v, k=0):
 @to_ivy_arrays_and_back
 def take_along_axis(a, indices, axis):
     return ivy.take_along_axis(a, indices, axis)
+
+  
+@to_ivy_arrays_and_back
+def diag_indices(n, ndim=2):
+    idx = ivy.arange(n, dtype=int)
+    return (idx,) * ndim

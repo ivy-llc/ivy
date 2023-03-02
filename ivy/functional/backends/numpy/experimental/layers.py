@@ -8,6 +8,7 @@ from typing import Optional, Union, Tuple, Literal
 import ivy
 from ivy.functional.ivy.layers import _handle_padding
 from ivy.functional.backends.numpy.layers import _add_dilations
+from ivy.functional.ivy.experimental.layers import _padding_ceil_mode
 
 
 def max_pool1d(
@@ -121,7 +122,7 @@ def max_pool2d(
     pad_list = list(pad_list)
     if ceil_mode:
         for i in range(2):
-            pad_list[i] = ivy.padding_ceil_mode(
+            pad_list[i] = _padding_ceil_mode(
                 x_shape[i], kernel[i], pad_list[i], strides[i]
             )
 

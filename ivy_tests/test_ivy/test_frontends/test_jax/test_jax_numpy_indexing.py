@@ -108,6 +108,7 @@ def test_jax_numpy_diag(
     )
 
 
+# take_along_axis
 @handle_frontend_test(
     fn_tree="jax.numpy.take_along_axis",
     dtype_x_indices_axis=helpers.array_indices_axis(
@@ -139,4 +140,32 @@ def test_jax_numpy_take_along_axis(
         arr=x,
         indices=indices,
         axis=axis,
+    )
+
+    
+# diag_indices
+@handle_frontend_test(
+    fn_tree="jax.numpy.diag_indices",
+    n=helpers.ints(min_value=1, max_value=10),
+    ndim=helpers.ints(min_value=2, max_value=10),
+    dtype=helpers.get_dtypes("valid", full=False),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_diag_indices(
+    n,
+    ndim,
+    dtype,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        n=n,
+        ndim=ndim,
     )
