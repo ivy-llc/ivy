@@ -72,7 +72,34 @@ def test_numpy_diag(
         v=x[0],
         k=k,
     )
-    
+
+
+@handle_frontend_test(
+    fn_tree="numpy.diag_indices",
+    n=helpers.ints(min_value=1, max_value=10),
+    ndim=helpers.ints(min_value=2, max_value=10),
+    dtype=helpers.get_dtypes("valid", full=False),
+    test_with_out=st.just(False),
+)
+def test_numpy_diag_indices(
+    n,
+    ndim,
+    dtype,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        n=n,
+        ndim=ndim,
+    )
+
 
 @st.composite
 def max_value_as_shape_prod(draw):
@@ -115,7 +142,7 @@ def test_numpy_unravel_index(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        indices=np.asarray(x[0], dtype=input_dtype[0]),
+        indices=x[0],
         shape=shape,
     )
 
