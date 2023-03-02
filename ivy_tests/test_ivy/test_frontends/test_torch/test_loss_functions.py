@@ -617,7 +617,7 @@ def test_torch_gaussian_nll_loss(
     fn_tree,
     frontend,
     test_flags,
- ):
+):
     inputs_dtype, input = dtype_and_input
     target_dtype, target = dtype_and_target
     var_dtype, var = dtype_and_var
