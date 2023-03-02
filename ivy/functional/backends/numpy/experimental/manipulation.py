@@ -285,3 +285,34 @@ take_along_axis.support_native_out = False
 
 def broadcast_shapes(shapes: Union[List[int], List[Tuple]]) -> List[int]:
     return np.broadcast_shapes(*shapes)
+
+def numpy.histogram(a, 
+                    bins=10, 
+                    range=None, 
+                    normed=None, 
+                    weights=None, 
+                    density=None):
+
+    bins = int(10)
+    if bins = sequence:
+        a = np.arange(5, 15)
+    elif bins is str:
+        np.array.histogram_bin_edges()
+
+    return hist: array
+            bin_edged:np.array, np.dtype float
+
+def numpy.histogram_2(a, 
+                    bins=10, 
+                    range=None, 
+                    normed=None, 
+                    weights=None, 
+                    density=None):
+    weight = a
+    if density = True:
+        density = 1
+    elif density = False:
+        density = bins
+
+    return hist: array
+            bin_edged:np.array, np.dtype float

@@ -118,3 +118,18 @@ def corrcoef(
         xarr = xarr.T if not rowvar else xarr
 
     return torch.corrcoef(xarr)
+
+def histogram(
+    x: torch.Tensor,
+    /,
+    *,
+    weights: Optional[torch.Tensor] = None,
+    range: Optional[int] = None,
+    density: Optional[bool] = False,
+) -> torch.Tensor:
+
+
+torch.histogram(torch.tensor([1., 2, 1]), bins=4, range=(0., 3.), 
+weight=torch.tensor([1., 2., 4.]))
+torch.histogram(torch.tensor([1., 2, 1]), bins=4, range=(0., 3.), 
+weight=torch.tensor([1., 2., 4.]), density=True)

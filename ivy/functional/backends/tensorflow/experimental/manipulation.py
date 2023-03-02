@@ -199,3 +199,28 @@ def broadcast_shapes(
     else:
         return [shapes[0]]
     return tuple(desired_shape.numpy().tolist())
+
+def tfp.stats.histogram(
+    x,
+    edges,
+    axis=None,
+    weights=None,
+    extend_lower_interval=False,
+    extend_upper_interval=False,
+    dtype=None,
+    name=None
+    )
+
+# x.shape = [1000, 2]
+# x[:, 0] ~ Uniform(0, 1), x[:, 1] ~ Uniform(1, 2).
+x = tf.stack([tf.random.uniform([1000]), 1 + tf.random.uniform([1000])],
+             axis=-1)
+
+# edges ==> bins [0, 0.5), [0.5, 1.0), [1.0, 1.5), [1.5, 2.0].
+edges = [0., 0.5, 1.0, 1.5, 2.0]
+
+tfp.stats.histogram(x, edges)
+==> approximately [500, 500, 500, 500]
+
+tfp.stats.histogram(x, edges, axis=0)
+==> approximately [[500, 500, 0, 0], [0, 0, 500, 500]]

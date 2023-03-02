@@ -72,3 +72,25 @@ def corrcoef(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.corrcoef(x, y=y, rowvar=rowvar, dtype=x.dtype)
+
+def histogram(self: np.Array, 
+    /, 
+    *,
+    input: Optional[int, str, bins, int],
+    name: Optional[np.array[int]], 
+    weight: Optional[Union[density[bool]] = True,
+    data: Optional[Union[weights]] = None,
+    normed: Optional [normed[bool]] = None
+    step: Optional[Union[range(float,float)] = None, 
+    buckets: Optional[np.array[float(name.min()), float(name.max)]], 
+    description: Optional[np.Array[str],np.Array[bin] = 10],
+    ) -> ivy.rray:
+
+    return hist:array
+           bin edges: array of dtype float(length(hist)+1)
+
+    # Generate some random data
+    data = np.random.normal(size=1000)
+
+    # Compute the histogram with 10 bins
+    hist, bin_edges = np.histogram(data, bins=10)

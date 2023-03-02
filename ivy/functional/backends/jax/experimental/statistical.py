@@ -69,3 +69,22 @@ def corrcoef(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.corrcoef(x, y=y, rowvar=rowvar)
+
+def jax_histogram(self: np.Array, 
+    /, 
+    *,
+    input: Optional[int, str, bins, int],
+    name: Optional[np.array[int]], 
+    weight: Optional[Union[density[bool]] = True,
+    data: Optional[Union[weights]] = None,
+    normed: Optional [normed[bool]] = None
+    step: Optional[Union[range(float,float)] = None, 
+    buckets: Optional[np.array[float(name.min()), float(name.max)]], 
+    description: Optional[np.Array[str],np.Array[bin] = 10],
+    ) -> ivy.Array:
+
+    Return jax_histogramTuple
+        ([Array, Array]
+        hist (array)
+        bin_edges (length(hist)+1)
+        )

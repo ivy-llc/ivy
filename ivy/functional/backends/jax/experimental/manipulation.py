@@ -286,3 +286,21 @@ def hsplit(
 
 def broadcast_shapes(shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     return jnp.broadcast_shapes(*shapes)
+
+def jax_histogram(
+    a, 
+    bins=10, 
+    range=None, 
+    density=False, 
+    weights=None, 
+    cumulative=False)
+
+    return Tuple[Array, Array]
+        hist (array)
+        bin_edges (length(hist)+1)
+
+# Generate some random data
+data = jax_histogram.random.normal(size=1000)
+
+# Compute the histogram with 10 bins
+hist, bin_edges = jax_histogram.histogram(data, bins=10)

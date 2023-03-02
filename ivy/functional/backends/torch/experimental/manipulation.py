@@ -227,3 +227,20 @@ take_along_axis.support_native_out = True
 
 def broadcast_shapes(shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     return tuple(torch.broadcast_shapes(*shapes))
+
+def torch_histogram(input, 
+    bins, 
+    *, 
+    range=None, 
+    weight=None, 
+    density=False, 
+    out=None
+
+    return 1d tensor: bin_edges(Tensor),
+            hist (Tensor)
+
+
+torch.histogram(torch.tensor([1., 2, 1]), bins=4, range=(0., 3.), 
+weight=torch.tensor([1., 2., 4.]))
+torch.histogram(torch.tensor([1., 2, 1]), bins=4, range=(0., 3.), 
+weight=torch.tensor([1., 2., 4.]), density=True)
