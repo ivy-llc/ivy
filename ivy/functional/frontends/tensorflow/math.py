@@ -13,6 +13,8 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
 def accumulate_n(inputs, input_type=None, shape=None, dtype=None, name=None):
     return ivy.astype(ivy.sum(ivy.array(inputs)), ivy.int64)
 
+def add_n(inputs, name=None):
+    return ivy.sum(inputs, dtype=inputs.dtype, axis=0)
 
 @to_ivy_arrays_and_back
 def add(x, y, name=None):
