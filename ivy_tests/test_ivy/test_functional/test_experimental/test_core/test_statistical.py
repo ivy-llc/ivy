@@ -316,3 +316,33 @@ def test_bincount(
         weights=x[1],
         minlength=min_length,
     )
+ 
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.average",
+    dtype_x_axis=statistical_dtype_values(function="average"),
+    keep_dims=st.booleans(),
+    test_gradients=st.just(False),
+
+)
+def test_average(
+    *,
+    dtype_x_axis,
+    keep_dims,
+    test_flags,
+    backend_fw,
+    fn_name,
+    ground_truth_backend,
+
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_function(
+        axis=axis,
+        keepdims=keep_dims,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=input_dtype,
+        input=x[0],
+    )
