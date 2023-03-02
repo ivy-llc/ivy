@@ -63,8 +63,12 @@ from .assertions import (
 )
 from . import globals
 
-os.environ["IVY_ROOT"] = ".ivy"
-import ivy.compiler.compiler as ic
+try:
+    os.environ["IVY_ROOT"] = ".ivy"
+    import ivy.compiler.compiler as ic
+except Exception:
+    ic = types.SimpleNamespace()
+    ic.compile = lambda func, args, kwargs: func
 
 
 # Temporary (.so) configuration
@@ -576,7 +580,7 @@ def test_frontend_function(
     function_module = importlib.import_module(frontend_submods)
     frontend_fn = getattr(function_module, fn_name)
 
-    (args, kwargs,) = create_frontend_args_kwargs(
+    args, kwargs = create_frontend_args_kwargs(
         args_np=args_np,
         arg_np_vals=arg_np_vals,
         args_idxs=args_idxs,

@@ -18,7 +18,7 @@ import ivy
 from ivy import handle_view
 
 
-class ArrayWithManipulationExperimental(abc.ABC):
+class _ArrayWithManipulationExperimental(abc.ABC):
     @handle_view
     def moveaxis(
         self: ivy.Array,
