@@ -791,7 +791,7 @@ def embedding(
     /,
     *,
     max_norm: Optional[int] = None,
-    out=None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Embeds a given tensor of indices using a given tensor of weights.
 
