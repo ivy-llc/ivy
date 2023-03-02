@@ -305,3 +305,17 @@ def einsum(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()
+
+
+def unravel_index(
+    indices: paddle.Tensor,
+    shape: paddle.Tensor,
+) -> paddle.Tensor:
+    coord = []
+    for dim in reversed(shape):
+        coord.append(indices % dim)
+        indices = indices // dim
+
+    coord = paddle.stack(coord[::-1], axis=-1)
+
+    return coord
