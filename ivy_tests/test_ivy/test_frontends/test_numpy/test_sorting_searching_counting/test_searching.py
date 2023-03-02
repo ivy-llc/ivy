@@ -343,3 +343,40 @@ def test_numpy_nanargmin(
         axis=axis,
         keepdims=keep_dims,
     )
+
+
+@st.composite
+def broadcastable_duo(draw):
+    dtype = draw(helpers.get_dtypes("valid"))
+    shapes = draw(
+        hnp.mutually_broadcastable_shapes(num_shapes=2, min_dims=1, min_side=1)
+    )
+    condition_shape, arr_shape = shapes.input_shapes
+    condition = draw(hnp.arrays(hnp.boolean_dtypes(), condition_shape))
+    arr = draw(helpers.array_values(dtype=dtype[0], shape=arr_shape))
+    return condition, arr, dtype
+
+
+# extract
+@handle_frontend_test(
+    fn_tree="numpy.extract",
+    dtype_arr_condition=broadcastable_duo(),
+    test_with_out=st.just(False),
+)
+def test_numpy_extract(
+    dtype_arr_condition,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    condition, arr, dtype = dtype_arr_condition
+    helpers.test_frontend_function(
+        input_dtypes=["bool", dtype],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        condition=condition,
+        arr=arr,
+    )
