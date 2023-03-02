@@ -61,7 +61,6 @@ Experimental
    experimental/interp.rst
    experimental/compute_weight_mat.rst
    experimental/interpolate.rst
-   experimental/padding_ceil_mode.rst
    experimental/l2_normalize.rst
    experimental/instance_norm.rst
    experimental/lp_normalize.rst

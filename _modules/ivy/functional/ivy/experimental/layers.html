@@ -1764,7 +1764,7 @@
     <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">((</span><span class="n">w</span> <span class="o">-</span> <span class="n">f</span> <span class="o">+</span> <span class="n">p</span><span class="p">)</span> <span class="o">/</span> <span class="n">s</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
 
 
-<div class="viewcode-block" id="padding_ceil_mode"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/padding_ceil_mode.html#ivy.functional.ivy.experimental.padding_ceil_mode">[docs]</a><span class="k">def</span> <span class="nf">padding_ceil_mode</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_padding_ceil_mode</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
     <span class="n">remaining_pixels</span> <span class="o">=</span> <span class="p">(</span><span class="n">w</span> <span class="o">-</span> <span class="n">f</span> <span class="o">+</span> <span class="nb">sum</span><span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="o">%</span> <span class="n">s</span>
     <span class="k">if</span> <span class="n">s</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">remaining_pixels</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">f</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">input_size</span> <span class="o">=</span> <span class="n">w</span> <span class="o">+</span> <span class="nb">sum</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
@@ -1786,7 +1786,7 @@
             <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
             <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">new_pad</span> <span class="o">-</span> <span class="nb">sum</span><span class="p">(</span><span class="n">p</span><span class="p">),</span>
         <span class="p">)</span>
-    <span class="k">return</span> <span class="n">p</span></div>
+    <span class="k">return</span> <span class="n">p</span>
 </pre></div>
 
             </article>

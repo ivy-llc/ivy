@@ -29,5 +29,4 @@ Layers
    layers/interp.rst
    layers/compute_weight_mat.rst
    layers/interpolate.rst
-   layers/padding_ceil_mode.rst
 
