@@ -4,7 +4,14 @@ from typing import Union, Optional, Sequence
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import (
+    handle_out_argument,
+    to_native_arrays_and_back,
+    handle_nestable,
+    infer_dtype,
+    with_unsupported_dtypes,
+)
+from ivy.utils.exceptions import handle_exceptions
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 from . import backend_version
 
@@ -256,6 +263,9 @@ einsum.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
 def percentile(
     x: np.ndarray,
     q: np.ndarray,
@@ -263,11 +273,11 @@ def percentile(
     *,
     interpolation: Optional[str] = None,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
+    keep_dims: bool = False,
     out: Optional[np.ndarray] = None,
     method: str = "linear",
     overwrite_input: bool = False
 ) -> np.ndarray:
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return np.asarray(np.percentile(a=x, q=q, axis=axis, keepdims=keepdims, out=out,method=method,
+    return np.asarray(np.percentile(a=x, q=q, axis=axis, keepdims=keep_dims, out=out,method=method,
                                     overwrite_input=overwrite_input,interpolation=interpolation))

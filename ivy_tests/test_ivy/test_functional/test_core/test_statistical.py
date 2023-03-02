@@ -439,3 +439,38 @@ def test_einsum(
         rtol_=1e-2,
         atol_=1e-2,
     )
+
+
+# percentile
+@handle_test(
+    fn_tree="functional.ivy.percentile",
+    dtype_and_x=statistical_dtype_values(function="percentile"),
+    keep_dims=st.booleans(),
+    test_gradients=st.just(False),
+    test_with_out=st.just(False),
+)
+def test_percentile(
+    *,
+    dtype_and_x,
+    keep_dims,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x, axis, interpolation, q = dtype_and_x
+    print("\n\nthis is the output being output\n\n", x,q)
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        a=x[0],
+        q=q,
+        axis=axis,
+        interpolation=interpolation[0],
+        keepdims=keep_dims,
+    )

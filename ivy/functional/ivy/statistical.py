@@ -1282,40 +1282,40 @@ def einsum(
 @handle_array_like_without_promotion
 @handle_array_function
 def percentile(
-    x: Union[ivy.Array, ivy.NativeArray],
+    a: Union[ivy.Array, ivy.NativeArray],
     q: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     interpolation: Optional[str] = None,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
+    keep_dims: bool = False,
     out: Optional[ivy.Array] = None,
     method: str = "linear",
     overwrite_input: bool = False
 ) -> ivy.Array:
-    """Calculates the q-th percentile of the array ``x``.
+    """Calculates the q-th percentile of the array ``a``.
 
     .. note::
        When the number of elements over which to compute the q-th percentile is zero, some specification-compliant libraries may
-       choose to raise an error, (e.g., if ``x`` is a ``NaN`` input array, return ``NaN``),
+       choose to raise an error, (e.g., if ``a`` is a ``NaN`` input array, return ``NaN``),
 
     **Special Cases**
 
-    Let ``x_i`` is the element from x or just x itself.
+    Let ``x_i`` is the element from ``a`` or just ``a`` itself.
 
     -   If ``x_i`` is ``NaN``, the q-th percentile is ``NaN`` (i.e., ``NaN`` values
         propagate).
 
     Parameters
     ----------
-    x
+    a
         input array. Should have a floating-point data type.
     q
         Percentile or sequence of percentiles to compute, which must be between 0 and 100 inclusive.
     axis
         axis or axes along which q-th percentile must be computed. By default, the percentile
         must be computed over the entire array. Default: ``None``.
-    keepdims
+    keep_dims
         bool, if ``True``, the reduced axes (dimensions) must be included in the result
         as singleton dimensions, and, accordingly, the result must be compatible with
         the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced
@@ -1323,7 +1323,7 @@ def percentile(
     out
         optional output array, for writing the result to.
     overwrite_input: bool
-        If True, then allow the input array x to be modified by intermediate calculations,
+        If True, then allow the input array ``a`` to be modified by intermediate calculations,
         to save memory.
     method: str
         This parameter specifies the method to use for estimating the percentile.
@@ -1335,13 +1335,13 @@ def percentile(
         scalar or array, if the q-th percentile was computed over the entire array, a
         zero-dimensional array containing the q-th percentile; otherwise, a
         non-zero-dimensional array containing the q-th percentile. The returned
-        array must have the same data type as ``x``.
+        array must have the same data type as ``a``.
         .. note::
            While this specification recommends that this function only accept input
            arrays having a floating-point data type, specification-compliant array
            libraries may choose to accept input arrays having an integer data type.
            While mixed data type promotion is implementation-defined, if the input
-           array ``x`` has an integer data type, the returned array must have the
+           array ``a`` has an integer data type, the returned array must have the
            default floating-point data type.
 
 
@@ -1429,5 +1429,5 @@ def percentile(
     }
 
     """
-    return current_backend(x).percentile(x, q, axis=axis, keepdims=keepdims, out=out, method=method,
+    return current_backend(a).percentile(a, q, axis=axis, keep_dims=keep_dims, out=out, method=method,
                                          overwrite_input=overwrite_input, interpolation=interpolation)

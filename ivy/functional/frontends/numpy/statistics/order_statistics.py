@@ -14,8 +14,10 @@ def percentile(a,
                interpolation=None):
 
     axis = tuple(axis) if isinstance(axis, list) else axis
-    a = ivy.astype(ivy.array(a))
-    ret = ivy.percentile(a, q, axis=axis, overwrite_input=overwrite_input, method=method, keepdims=keepdims,
+
+    a = ivy.array(a)
+
+    ret = ivy.percentile(a, q, axis=axis, overwrite_input=overwrite_input, method=method, keep_dims=keepdims,
                          interpolation=interpolation, out=out)
 
     return ret
