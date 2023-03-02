@@ -972,7 +972,7 @@ def test_method(
     xs_grad_idxs=None,
     ret_grad_idxs=None,
     ground_truth_backend: str,
-    device_: str = "cpu",
+    on_device: str,
     return_flat_np_arrays: bool = False,
 ):
     """Tests a class-method that consumes (or returns) arrays for the current backend
@@ -1101,6 +1101,7 @@ def test_method(
         kwargs_idxs=con_kwargs_idxs,
         input_dtypes=init_input_dtypes,
         test_flags=init_flags,
+        on_device=on_device,
     )
     # end constructor #
 
@@ -1151,6 +1152,7 @@ def test_method(
         kwargs_idxs=met_kwargs_idxs,
         input_dtypes=method_input_dtypes,
         test_flags=method_flags,
+        on_device=on_device,
     )
     # End Method #
 
@@ -1176,6 +1178,7 @@ def test_method(
     ret, ret_np_flat = get_ret_and_flattened_np_array(
         ins.__getattribute__(method_name), *args_method, **kwargs_method
     )
+    ret_device = ivy.device(ret)
 
     # Compute the return with a Ground Truth backend
 
@@ -1268,6 +1271,7 @@ def test_method(
                 fw_list[k] = []
             fw_list[k].extend(v)
 
+        ret_from_gt_device = ivy.device(ground_ret) 
         ivy.unset_backend()
     # gradient test
 
@@ -1323,6 +1327,13 @@ def test_method(
                 ret_grad_idxs=ret_grad_idxs,
                 ground_truth_backend=ground_truth_backend,
             )
+
+    assert (
+        ret_device == ret_from_gt_device
+    ), f"ground truth backend ({ground_truth_backend}) returned array on device {ret_from_gt_device} but target backend ({ivy.backend}) returned array on device {ret_device}"
+    assert (
+        ret_device == device_
+    ), f"device is set to {on_device}, but ground truth produced array on {ret_device}"
 
     # assuming value test will be handled manually in the test function
     if not test_values:
