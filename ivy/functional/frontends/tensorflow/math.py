@@ -475,5 +475,5 @@ def acos(x, name="acos"):
     return ivy.acos(x)
 
 @to_ivy_arrays_and_back
-def atan(x, name="acos"):
+def atan(x, name="atan"):
     return ivy.atan(x)
