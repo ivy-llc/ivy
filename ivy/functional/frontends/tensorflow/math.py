@@ -471,3 +471,8 @@ def asin(x, name=None):
 @to_ivy_arrays_and_back
 def acos(x, name="acos"):
     return ivy.acos(x)
+
+
+@to_ivy_arrays_and_back
+def square(x, name=None):
+    return ivy.square(x)
