@@ -1,5 +1,5 @@
 import math
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Sequence
 import jax.numpy as jnp
 from ivy.functional.backends.jax import JaxArray
 
@@ -128,3 +128,12 @@ def adjoint(
     axes = list(range(len(x.shape)))
     axes[-1], axes[-2] = axes[-2], axes[-1]
     return jnp.conjugate(jnp.transpose(x, axes=axes))
+
+
+def multi_dot(
+    x: Sequence[JaxArray], 
+    /, 
+    *, 
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.linalg.multi_dot(x)
