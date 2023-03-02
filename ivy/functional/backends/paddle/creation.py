@@ -466,7 +466,10 @@ def copy_array(
     to_ivy_array: Optional[bool] = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if to_ivy_array:
+        return ivy.to_ivy(x.clone())
+    return x.clone()
+    # raise IvyNotImplementedException()
 
 
 def one_hot(
