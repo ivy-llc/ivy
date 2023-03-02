@@ -262,7 +262,10 @@ class ndarray:
             return np_frontend.ravel(self._ivy_array, order="F")
         else:
             return np_frontend.ravel(self._ivy_array, order="C")
-
+    
+    def fill(self, num):
+        return np_frontend.fill(self._ivy_array, num)
+    
     def repeat(self, repeats, axis=None):
         return np_frontend.repeat(self._ivy_array, repeats, axis=axis)
 
