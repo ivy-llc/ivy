@@ -16,7 +16,7 @@ def _as_varaible_strategy(draw):
             and globals.CURRENT_FRONTEND().backend == "numpy"
         ):
             return draw(st.just([False]))
-    elif globals.CURRENT_FRONTEND_STR[0].split('/')[0]=='numpy':
+    elif globals.CURRENT_FRONTEND_STR[0].split("/")[0] == "numpy":
         # multiversion changes go here
         return draw(st.just([False]))
     return draw(st.lists(st.booleans(), min_size=1, max_size=1))

@@ -549,13 +549,12 @@ def handle_method(
         else:
             wrapped_test = test_fn
 
-
         wrapped_test.test_data = TestData(
             test_fn=wrapped_test,
             fn_tree=method_tree,
             fn_name=method_name,
             supported_device_dtypes=supported_device_dtypes,
-            is_method=True
+            is_method=True,
         )
 
         wrapped_test.ground_truth_backend = ground_truth_backend
@@ -671,7 +670,7 @@ def handle_frontend_method(
             fn_tree=f"{init_tree}.{method_name}",
             fn_name=method_name,
             supported_device_dtypes=supported_device_dtypes,
-            is_method=[method_name, class_tree,split_index]
+            is_method=[method_name, class_tree, split_index],
         )
 
         return wrapped_test
