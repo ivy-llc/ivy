@@ -265,9 +265,16 @@ def matrix_rank(
 
 
 def matrix_transpose(
-    x: paddle.Tensor, /, *, conjugate: bool = False, out: Optional[paddle.Tensor] = None
+    x: paddle.Tensor,
+    /, 
+    *,
+    perm: Union[Tuple[List[int], List[int]]] = None,
+    conjugate: bool = False, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    ndim = len(x.shape)
+    perm = list(range(ndim))
+    perm[-1], perm[-2] = perm[-2], perm[-1]
+    return paddle.transpose(x, perm=perm)
 
 
 def outer(
