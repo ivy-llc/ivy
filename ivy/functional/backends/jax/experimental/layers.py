@@ -202,7 +202,7 @@ def avg_pool1d(
         jnp.ones(div_shape, dtype=res.dtype), 0.0, jlax.add, kernel, strides, padding, 1
     )
     if data_format == "NCW":
-        res = jnp.transpose(x, (0, 2, 1))
+        res = jnp.transpose(res, (0, 2, 1))
     return res
 
 
