@@ -375,7 +375,7 @@ class ContainerWithSorting(ContainerBase):
         *,
         side: Literal["left", "right"] = "left",
         sorter: Optional[Union[ivy.Array, ivy.NativeArray, List[int]]] = None,
-        ret_dtype: Union[ivy.Dtype, ivy.DefaultDtype] = ivy.int64,
+        ret_dtype: Union[ivy.Dtype, ivy.NativeDtype] = ivy.int64,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
