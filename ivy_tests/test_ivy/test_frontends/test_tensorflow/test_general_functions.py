@@ -665,6 +665,35 @@ def test_tensorflow_shape(
     )
 
 
+#size
+@handle_frontend_test(
+    fn_tree="tensorflow.size",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    output_dtype=st.sampled_from(["int32", "int64"]),
+)
+def test_tensorflow_size(
+    *,
+    dtype_and_x,
+    output_dtype,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    (
+        input_dtype,
+        x,
+    ) = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        out_type=output_dtype,
+    )
+
 @handle_frontend_test(
     fn_tree="tensorflow.shape_n",
     dtype_and_x=helpers.dtype_and_values(

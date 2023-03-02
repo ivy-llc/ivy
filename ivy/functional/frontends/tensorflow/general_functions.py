@@ -346,6 +346,10 @@ def roll(input, shift, axis, name=None):
     return ivy.roll(input, shift, axis=axis)
 
 
+def size(input, out_type=ivy.int32, name=None):
+    return ivy.size(input, out_type)
+
+
 @to_ivy_arrays_and_back
 def split(
     value, num_or_size_splits, axis=0, num=None, name=None
