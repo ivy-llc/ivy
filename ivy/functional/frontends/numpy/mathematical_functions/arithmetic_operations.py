@@ -314,3 +314,26 @@ def _fmod(
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
+
+
+@handle_numpy_out
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
+def _modf(
+    x,
+    /,
+    out=None,
+):
+    integral_part = ivy.floor(x)
+    fractional_part = x - integral_part
+    return fractional_part, integral_part
+
+
+_true_divide = _divide
+
+
+
+
+

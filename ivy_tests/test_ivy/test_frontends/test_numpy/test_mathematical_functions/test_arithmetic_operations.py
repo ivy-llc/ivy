@@ -640,3 +640,43 @@ def test_numpy_fmod(
         dtype=dtype,
         subok=True,
     )
+
+
+# modf
+@handle_frontend_test(
+    fn_tree="numpy.modf",
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("numeric"),
+                num_arrays=1,
+                max_dims=1,
+                min_side=5,
+                max_side=5,
+            )
+        ],
+        get_dtypes_kind="numeric",
+    ),
+    number_positional_args=1,
+)
+def test_numpy_modf(
+    dtypes_values_casting,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, casting, dtype = dtypes_values_casting[0]
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=[input_dtype],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=x,
+        out=None,
+        casting=casting,
+        order="K",
+        dtype=dtype,
+        subok=True,
+    )
