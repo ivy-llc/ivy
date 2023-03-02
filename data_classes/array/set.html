@@ -43,8 +43,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'data_classes/array/set';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="ArrayWithSet" href="set/ArrayWithSet.html" />
-    <link rel="prev" title="ArrayWithSearching" href="searching/ArrayWithSearching.html" />
+    <link rel="next" title="_ArrayWithSet" href="set/_ArrayWithSet.html" />
+    <link rel="prev" title="_ArrayWithSearching" href="searching/_ArrayWithSearching.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="docsearch:language" content="en">
   </head>
@@ -580,135 +580,6 @@
               
   <section id="module-ivy.array.set">
 <span id="set"></span><h1>Set<a class="headerlink" href="#module-ivy.array.set" title="Permalink to this heading">#</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="ivy.array.set.ArrayWithSet">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy.array.set.</span></span><span class="sig-name descname"><span class="pre">ArrayWithSet</span></span><a class="reference internal" href="../../_modules/ivy/array/set.html#ArrayWithSet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.set.ArrayWithSet" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.array.set.ArrayWithSet.unique_all">
-<span class="sig-name descname"><span class="pre">unique_all</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/set.html#ArrayWithSet.unique_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.set.ArrayWithSet.unique_all" title="Permalink to this definition">#</a></dt>
-<dd><p>ivy.Array instance method variant of ivy.unique_all. This method simply
-wraps the function, and so the docstring for ivy.unique_all also applies
-to this method with minimal changes.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – input array. If <code class="docutils literal notranslate"><span class="pre">self</span></code> has more than one dimension, the function
-must flatten <code class="docutils literal notranslate"><span class="pre">self</span></code> and return the unique elements of the
-flattened array.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]</p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><p><em>ret</em> – a namedtuple <code class="docutils literal notranslate"><span class="pre">(values,</span> <span class="pre">indices,</span> <span class="pre">inverse_indices,</span> <span class="pre">counts)</span></code>.
-The details can be found in the docstring for ivy.unique_all.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The order of unique elements is not specified and may vary between
-implementations.</p>
-</div>
-</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">unique_all</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
-<span class="go">Results(values=ivy.array([1, 2, 5, 9]),</span>
-<span class="go">        indices=ivy.array([3, 2, 1, 0]),</span>
-<span class="go">        inverse_indices=ivy.array([[3, 2], [1, 0]]),</span>
-<span class="go">       counts=ivy.array([1, 1, 1, 1]))</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.array.set.ArrayWithSet.unique_counts">
-<span class="sig-name descname"><span class="pre">unique_counts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/set.html#ArrayWithSet.unique_counts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.set.ArrayWithSet.unique_counts" title="Permalink to this definition">#</a></dt>
-<dd><p>ivy.Array instance method variant of ivy.unique_counts. This method simply
-wraps the function, and so the docstring for ivy.unique_counts also applies
-to this method with minimal changes.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – input array. If <code class="docutils literal notranslate"><span class="pre">x</span></code> has more than one dimension, the function must flatten
-<code class="docutils literal notranslate"><span class="pre">x</span></code> and return the unique elements of the flattened array.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]</p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><p><em>ret</em> – a namedtuple <code class="docutils literal notranslate"><span class="pre">(values,</span> <span class="pre">counts)</span></code> whose</p>
-<ul class="simple">
-<li><p>first element must have the field name <code class="docutils literal notranslate"><span class="pre">values</span></code> and must be an</p></li>
-</ul>
-<p>array containing the unique elements of <code class="docutils literal notranslate"><span class="pre">x</span></code>.
-The array must have the same data type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.
-- second element must have the field name <code class="docutils literal notranslate"><span class="pre">counts</span></code> and must be an array
-containing the number of times each unique element occurs in <code class="docutils literal notranslate"><span class="pre">x</span></code>.
-The returned array must have same shape as <code class="docutils literal notranslate"><span class="pre">values</span></code> and must
-have the default array index data type.</p>
-</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span> <span class="p">,</span> <span class="mf">1.</span> <span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">unique_counts</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="go">Results(values=ivy.array([0.,1.,2.]),counts=ivy.array([2,2,1]))</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.array.set.ArrayWithSet.unique_inverse">
-<span class="sig-name descname"><span class="pre">unique_inverse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/set.html#ArrayWithSet.unique_inverse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.set.ArrayWithSet.unique_inverse" title="Permalink to this definition">#</a></dt>
-<dd><p>ivy.Array instance method variant of ivy.unique_inverse. This method simply
-wraps the function, and so the docstring for ivy.unique_inverse also applies
-to this method with minimal changes.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – input array. If <code class="docutils literal notranslate"><span class="pre">x</span></code> has more than one dimension, the function must
-flatten <code class="docutils literal notranslate"><span class="pre">x</span></code> and return the unique elements of the flattened array.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]</p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><p><em>ret</em> – a namedtuple <code class="docutils literal notranslate"><span class="pre">(values,</span> <span class="pre">inverse_indices)</span></code> whose</p>
-<ul class="simple">
-<li><p>first element must have the field name <code class="docutils literal notranslate"><span class="pre">values</span></code> and must be an array
-containing the unique elements of <code class="docutils literal notranslate"><span class="pre">x</span></code>. The array must have the same data
-type as <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p></li>
-<li><p>second element must have the field name <code class="docutils literal notranslate"><span class="pre">inverse_indices</span></code> and must be
-an array containing the indices of <code class="docutils literal notranslate"><span class="pre">values</span></code> that reconstruct <code class="docutils literal notranslate"><span class="pre">x</span></code>.
-The array must have the same shape as <code class="docutils literal notranslate"><span class="pre">x</span></code> and must have the default
-array index data type.</p></li>
-</ul>
-</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.3</span><span class="p">,</span><span class="mf">0.4</span><span class="p">,</span><span class="mf">0.7</span><span class="p">,</span><span class="mf">0.4</span><span class="p">,</span><span class="mf">0.2</span><span class="p">,</span><span class="mf">0.8</span><span class="p">,</span><span class="mf">0.5</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">unique_inverse</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="go">Results(values=ivy.array([0.2, 0.3, 0.4, 0.5, 0.7, 0.8]),</span>
-<span class="go">        inverse_indices=ivy.array([1, 2, 4, 2, 0, 5, 3]))</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.array.set.ArrayWithSet.unique_values">
-<span class="sig-name descname"><span class="pre">unique_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/set.html#ArrayWithSet.unique_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.set.ArrayWithSet.unique_values" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
 <div class="toctree-wrapper compound">
 </div>
 </section>
@@ -721,17 +592,17 @@ array index data type.</p></li>
             <footer class="bd-footer-article">
                 <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-  <a class='left-prev' id="prev-link" href="searching/ArrayWithSearching.html" title="previous page">
+  <a class='left-prev' id="prev-link" href="searching/_ArrayWithSearching.html" title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
           <p class="prev-next-subtitle">previous</p>
-          <p class="prev-next-title">ArrayWithSearching</p>
+          <p class="prev-next-title">_ArrayWithSearching</p>
       </div>
   </a>
-  <a class='right-next' id="next-link" href="set/ArrayWithSet.html" title="next page">
+  <a class='right-next' id="next-link" href="set/_ArrayWithSet.html" title="next page">
   <div class="prev-next-info">
       <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">ArrayWithSet</p>
+      <p class="prev-next-title">_ArrayWithSet</p>
   </div>
   <i class="fa-solid fa-angle-right"></i>
   </a>
@@ -753,7 +624,7 @@ array index data type.</p></li>
     <p aria-level="2" class="caption" role="heading"><span class="caption-text">Array</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="activations.html">Activations</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="activations/ArrayWithActivations.html">ArrayWithActivations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="activations/_ArrayWithActivations.html">_ArrayWithActivations</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="conversions.html">Conversions</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
@@ -764,76 +635,76 @@ array index data type.</p></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="creation.html">Creation</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="creation/ArrayWithCreation.html">ArrayWithCreation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="creation/_ArrayWithCreation.html">_ArrayWithCreation</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="data_type.html">Data type</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="data_type/ArrayWithDataTypes.html">ArrayWithDataTypes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_type/_ArrayWithDataTypes.html">_ArrayWithDataTypes</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="device.html">Device</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="device/ArrayWithDevice.html">ArrayWithDevice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device/_ArrayWithDevice.html">_ArrayWithDevice</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="elementwise.html">Elementwise</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="elementwise/ArrayWithElementwise.html">ArrayWithElementwise</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elementwise/_ArrayWithElementwise.html">_ArrayWithElementwise</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="experimental.html">Experimental</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="general.html">General</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="general/ArrayWithGeneral.html">ArrayWithGeneral</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/_ArrayWithGeneral.html">_ArrayWithGeneral</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="gradients.html">Gradients</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-8"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="gradients/ArrayWithGradients.html">ArrayWithGradients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradients/_ArrayWithGradients.html">_ArrayWithGradients</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="image.html">Image</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-9"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="image/ArrayWithImage.html">ArrayWithImage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="image/_ArrayWithImage.html">_ArrayWithImage</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="layers.html">Layers</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-10"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="layers/ArrayWithLayers.html">ArrayWithLayers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="layers/_ArrayWithLayers.html">_ArrayWithLayers</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="linear_algebra.html">Linear algebra</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-11"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="linear_algebra/ArrayWithLinearAlgebra.html">ArrayWithLinearAlgebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_algebra/_ArrayWithLinearAlgebra.html">_ArrayWithLinearAlgebra</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="losses.html">Losses</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-12"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="losses/ArrayWithLosses.html">ArrayWithLosses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="losses/_ArrayWithLosses.html">_ArrayWithLosses</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="manipulation.html">Manipulation</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-13"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="manipulation/ArrayWithManipulation.html">ArrayWithManipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manipulation/_ArrayWithManipulation.html">_ArrayWithManipulation</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="norms.html">Norms</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-14"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="norms/ArrayWithNorms.html">ArrayWithNorms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="norms/_ArrayWithNorms.html">_ArrayWithNorms</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="random.html">Random</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-15"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="random/ArrayWithRandom.html">ArrayWithRandom</a></li>
+<li class="toctree-l2"><a class="reference internal" href="random/_ArrayWithRandom.html">_ArrayWithRandom</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="searching.html">Searching</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-16"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="searching/ArrayWithSearching.html">ArrayWithSearching</a></li>
+<li class="toctree-l2"><a class="reference internal" href="searching/_ArrayWithSearching.html">_ArrayWithSearching</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Set</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-17"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="set/ArrayWithSet.html">ArrayWithSet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="set/_ArrayWithSet.html">_ArrayWithSet</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="sorting.html">Sorting</a><input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-18"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="sorting/ArrayWithSorting.html">ArrayWithSorting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sorting/_ArrayWithSorting.html">_ArrayWithSorting</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="statistical.html">Statistical</a><input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-19"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="statistical/ArrayWithStatistical.html">ArrayWithStatistical</a></li>
+<li class="toctree-l2"><a class="reference internal" href="statistical/_ArrayWithStatistical.html">_ArrayWithStatistical</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="utility.html">Utility</a><input class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-20"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="utility/ArrayWithUtility.html">ArrayWithUtility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utility/_ArrayWithUtility.html">_ArrayWithUtility</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="wrapping.html">Wrapping</a><input class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-21"><i class="fa-solid fa-chevron-down"></i></label><ul>

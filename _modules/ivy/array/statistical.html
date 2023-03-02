@@ -586,8 +586,8 @@
 <span class="c1"># ToDo: implement all methods here as public instance methods</span>
 
 
-<div class="viewcode-block" id="ArrayWithStatistical"><a class="viewcode-back" href="../../../data_classes/array/statistical/ArrayWithStatistical.html#ivy.array.statistical.ArrayWithStatistical">[docs]</a><span class="k">class</span> <span class="nc">ArrayWithStatistical</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
-<div class="viewcode-block" id="ArrayWithStatistical.min"><a class="viewcode-back" href="../../../data_classes/array/statistical/ArrayWithStatistical.html#ivy.array.statistical.ArrayWithStatistical.min">[docs]</a>    <span class="k">def</span> <span class="nf">min</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithStatistical"><a class="viewcode-back" href="../../../data_classes/array/statistical/_ArrayWithStatistical.html#ivy.array.statistical._ArrayWithStatistical">[docs]</a><span class="k">class</span> <span class="nc">_ArrayWithStatistical</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+<div class="viewcode-block" id="_ArrayWithStatistical.min"><a class="viewcode-back" href="../../../data_classes/array/statistical/_ArrayWithStatistical.html#ivy.array.statistical._ArrayWithStatistical.min">[docs]</a>    <span class="k">def</span> <span class="nf">min</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -650,7 +650,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithStatistical.max"><a class="viewcode-back" href="../../../data_classes/array/statistical/ArrayWithStatistical.html#ivy.array.statistical.ArrayWithStatistical.max">[docs]</a>    <span class="k">def</span> <span class="nf">max</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithStatistical.max"><a class="viewcode-back" href="../../../data_classes/array/statistical/_ArrayWithStatistical.html#ivy.array.statistical._ArrayWithStatistical.max">[docs]</a>    <span class="k">def</span> <span class="nf">max</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -713,7 +713,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithStatistical.mean"><a class="viewcode-back" href="../../../data_classes/array/statistical/ArrayWithStatistical.html#ivy.array.statistical.ArrayWithStatistical.mean">[docs]</a>    <span class="k">def</span> <span class="nf">mean</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithStatistical.mean"><a class="viewcode-back" href="../../../data_classes/array/statistical/_ArrayWithStatistical.html#ivy.array.statistical._ArrayWithStatistical.mean">[docs]</a>    <span class="k">def</span> <span class="nf">mean</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -800,7 +800,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithStatistical.var"><a class="viewcode-back" href="../../../data_classes/array/statistical/ArrayWithStatistical.html#ivy.array.statistical.ArrayWithStatistical.var">[docs]</a>    <span class="k">def</span> <span class="nf">var</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithStatistical.var"><a class="viewcode-back" href="../../../data_classes/array/statistical/_ArrayWithStatistical.html#ivy.array.statistical._ArrayWithStatistical.var">[docs]</a>    <span class="k">def</span> <span class="nf">var</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -887,7 +887,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">correction</span><span class="o">=</span><span class="n">correction</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithStatistical.prod"><a class="viewcode-back" href="../../../data_classes/array/statistical/ArrayWithStatistical.html#ivy.array.statistical.ArrayWithStatistical.prod">[docs]</a>    <span class="k">def</span> <span class="nf">prod</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithStatistical.prod"><a class="viewcode-back" href="../../../data_classes/array/statistical/_ArrayWithStatistical.html#ivy.array.statistical._ArrayWithStatistical.prod">[docs]</a>    <span class="k">def</span> <span class="nf">prod</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -962,7 +962,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithStatistical.sum"><a class="viewcode-back" href="../../../data_classes/array/statistical/ArrayWithStatistical.html#ivy.array.statistical.ArrayWithStatistical.sum">[docs]</a>    <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithStatistical.sum"><a class="viewcode-back" href="../../../data_classes/array/statistical/_ArrayWithStatistical.html#ivy.array.statistical._ArrayWithStatistical.sum">[docs]</a>    <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -973,7 +973,7 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithStatistical.std"><a class="viewcode-back" href="../../../data_classes/array/statistical/ArrayWithStatistical.html#ivy.array.statistical.ArrayWithStatistical.std">[docs]</a>    <span class="k">def</span> <span class="nf">std</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithStatistical.std"><a class="viewcode-back" href="../../../data_classes/array/statistical/_ArrayWithStatistical.html#ivy.array.statistical._ArrayWithStatistical.std">[docs]</a>    <span class="k">def</span> <span class="nf">std</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -1069,7 +1069,7 @@
     <span class="c1"># Extra #</span>
     <span class="c1"># ----- #</span>
 
-<div class="viewcode-block" id="ArrayWithStatistical.cumsum"><a class="viewcode-back" href="../../../data_classes/array/statistical/ArrayWithStatistical.html#ivy.array.statistical.ArrayWithStatistical.cumsum">[docs]</a>    <span class="k">def</span> <span class="nf">cumsum</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithStatistical.cumsum"><a class="viewcode-back" href="../../../data_classes/array/statistical/_ArrayWithStatistical.html#ivy.array.statistical._ArrayWithStatistical.cumsum">[docs]</a>    <span class="k">def</span> <span class="nf">cumsum</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">exclusive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -1143,7 +1143,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">,</span> <span class="n">reverse</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithStatistical.cumprod"><a class="viewcode-back" href="../../../data_classes/array/statistical/ArrayWithStatistical.html#ivy.array.statistical.ArrayWithStatistical.cumprod">[docs]</a>    <span class="k">def</span> <span class="nf">cumprod</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithStatistical.cumprod"><a class="viewcode-back" href="../../../data_classes/array/statistical/_ArrayWithStatistical.html#ivy.array.statistical._ArrayWithStatistical.cumprod">[docs]</a>    <span class="k">def</span> <span class="nf">cumprod</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -1202,7 +1202,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithStatistical.einsum"><a class="viewcode-back" href="../../../data_classes/array/statistical/ArrayWithStatistical.html#ivy.array.statistical.ArrayWithStatistical.einsum">[docs]</a>    <span class="k">def</span> <span class="nf">einsum</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithStatistical.einsum"><a class="viewcode-back" href="../../../data_classes/array/statistical/_ArrayWithStatistical.html#ivy.array.statistical._ArrayWithStatistical.einsum">[docs]</a>    <span class="k">def</span> <span class="nf">einsum</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">equation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>

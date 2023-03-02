@@ -43,8 +43,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'data_classes/array/utility';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="ArrayWithUtility" href="utility/ArrayWithUtility.html" />
-    <link rel="prev" title="ArrayWithStatistical" href="statistical/ArrayWithStatistical.html" />
+    <link rel="next" title="_ArrayWithUtility" href="utility/_ArrayWithUtility.html" />
+    <link rel="prev" title="_ArrayWithStatistical" href="statistical/_ArrayWithStatistical.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="docsearch:language" content="en">
   </head>
@@ -580,122 +580,6 @@
               
   <section id="module-ivy.array.utility">
 <span id="utility"></span><h1>Utility<a class="headerlink" href="#module-ivy.array.utility" title="Permalink to this heading">#</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="ivy.array.utility.ArrayWithUtility">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy.array.utility.</span></span><span class="sig-name descname"><span class="pre">ArrayWithUtility</span></span><a class="reference internal" href="../../_modules/ivy/array/utility.html#ArrayWithUtility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.utility.ArrayWithUtility" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.array.utility.ArrayWithUtility.all">
-<span class="sig-name descname"><span class="pre">all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepdims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/utility.html#ArrayWithUtility.all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.utility.ArrayWithUtility.all" title="Permalink to this definition">#</a></dt>
-<dd><p>ivy.Array instance method variant of ivy.all. This method simply wraps the
-function, and so the docstring for ivy.all also applies to this method
-with minimal changes.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – input array.</p></li>
-<li><p><strong>axis</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]]) – axis or axes along which to perform a logical AND reduction. By default, a (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
-logical AND reduction must be performed over the entire array. If a tuple of
-integers, logical AND reductions must be performed over multiple axes. A
-valid <code class="docutils literal notranslate"><span class="pre">axis</span></code> must be an integer on the interval <code class="docutils literal notranslate"><span class="pre">[-N,</span> <span class="pre">N)</span></code>, where <code class="docutils literal notranslate"><span class="pre">N</span></code>
-is the rank(number of dimensions) of <code class="docutils literal notranslate"><span class="pre">self</span></code>. If an <code class="docutils literal notranslate"><span class="pre">axis</span></code> is specified
-as a negative integer, the function must determine the axis along which to
-perform a reduction by counting backward from the last dimension (where
-<code class="docutils literal notranslate"><span class="pre">-1</span></code> refers to the last dimension). If provided an invalid <code class="docutils literal notranslate"><span class="pre">axis</span></code>, the
-function must raise an exception. Default  <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
-<li><p><strong>keepdims</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the reduced axes (dimensions) must be included in the result as (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
-singleton dimensions, and, accordingly, the result must be compatible with
-the input array (see <span class="xref std std-ref">broadcasting</span>). Otherwise, if <code class="docutils literal notranslate"><span class="pre">False</span></code>, the
-reduced axes(dimensions) must not be included in the result.
-Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
-the inputs broadcast to.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><em>ret</em> – if a logical AND reduction was performed over the entire array, the returned
-array must be a zero-dimensional array containing the test result;
-otherwise, the returned array must be a non-zero-dimensional array
-containing the test results. The returned array must have a data type of
-<code class="docutils literal notranslate"><span class="pre">bool</span></code>.</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="go">ivy.array(False)</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="go">ivy.array([[False, False],</span>
-<span class="go">       [ True,  True]])</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.array.utility.ArrayWithUtility.any">
-<span class="sig-name descname"><span class="pre">any</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepdims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/utility.html#ArrayWithUtility.any"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.utility.ArrayWithUtility.any" title="Permalink to this definition">#</a></dt>
-<dd><p>ivy.Array instance method variant of ivy.any. This method simply wraps the
-function, and so the docstring for ivy.any also applies to this method
-with minimal changes.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – input array.</p></li>
-<li><p><strong>axis</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]]) – axis or axes along which to perform a logical OR reduction. By default, a (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
-logical OR reduction must be performed over the entire array. If a tuple of
-integers, logical OR reductions must be performed over multiple axes. A
-valid <code class="docutils literal notranslate"><span class="pre">axis</span></code> must be an integer on the interval <code class="docutils literal notranslate"><span class="pre">[-N,</span> <span class="pre">N)</span></code>, where <code class="docutils literal notranslate"><span class="pre">N</span></code>
-is the rank(number of dimensions) of <code class="docutils literal notranslate"><span class="pre">self</span></code>. If an <code class="docutils literal notranslate"><span class="pre">axis</span></code> is specified
-as a negative integer, the function must determine the axis along which to
-perform a reduction by counting backward from the last dimension (where
-<code class="docutils literal notranslate"><span class="pre">-1</span></code> refers to the last dimension). If provided an invalid <code class="docutils literal notranslate"><span class="pre">axis</span></code>, the
-function must raise an exception. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
-<li><p><strong>keepdims</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the reduced axes (dimensions) must be included in the result as (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
-singleton dimensions, and, accordingly, the result must be compatible with
-the input array (see <span class="xref std std-ref">broadcasting</span>). Otherwise, if <code class="docutils literal notranslate"><span class="pre">False</span></code>, the
-reduced axes(dimensions) must not be included in the result.
-Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
-the inputs broadcast to.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><em>ret</em> – if a logical OR reduction was performed over the entire array, the returned
-array must be a zero-dimensional array containing the test result;
-otherwise, the returned array must be a non-zero-dimensional array
-containing the test results. The returned array must have a data type of
-<code class="docutils literal notranslate"><span class="pre">bool</span></code>.</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="go">ivy.array(True)</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="go">ivy.array([[ True, False],</span>
-<span class="go">       [ True,  True]])</span>
-</pre></div>
-</div>
-</dd></dl>
-
-</dd></dl>
-
 <div class="toctree-wrapper compound">
 </div>
 </section>
@@ -708,17 +592,17 @@ containing the test results. The returned array must have a data type of
             <footer class="bd-footer-article">
                 <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-  <a class='left-prev' id="prev-link" href="statistical/ArrayWithStatistical.html" title="previous page">
+  <a class='left-prev' id="prev-link" href="statistical/_ArrayWithStatistical.html" title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
           <p class="prev-next-subtitle">previous</p>
-          <p class="prev-next-title">ArrayWithStatistical</p>
+          <p class="prev-next-title">_ArrayWithStatistical</p>
       </div>
   </a>
-  <a class='right-next' id="next-link" href="utility/ArrayWithUtility.html" title="next page">
+  <a class='right-next' id="next-link" href="utility/_ArrayWithUtility.html" title="next page">
   <div class="prev-next-info">
       <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">ArrayWithUtility</p>
+      <p class="prev-next-title">_ArrayWithUtility</p>
   </div>
   <i class="fa-solid fa-angle-right"></i>
   </a>
@@ -740,7 +624,7 @@ containing the test results. The returned array must have a data type of
     <p aria-level="2" class="caption" role="heading"><span class="caption-text">Array</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="activations.html">Activations</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="activations/ArrayWithActivations.html">ArrayWithActivations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="activations/_ArrayWithActivations.html">_ArrayWithActivations</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="conversions.html">Conversions</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
@@ -751,76 +635,76 @@ containing the test results. The returned array must have a data type of
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="creation.html">Creation</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="creation/ArrayWithCreation.html">ArrayWithCreation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="creation/_ArrayWithCreation.html">_ArrayWithCreation</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="data_type.html">Data type</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="data_type/ArrayWithDataTypes.html">ArrayWithDataTypes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_type/_ArrayWithDataTypes.html">_ArrayWithDataTypes</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="device.html">Device</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="device/ArrayWithDevice.html">ArrayWithDevice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device/_ArrayWithDevice.html">_ArrayWithDevice</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="elementwise.html">Elementwise</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="elementwise/ArrayWithElementwise.html">ArrayWithElementwise</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elementwise/_ArrayWithElementwise.html">_ArrayWithElementwise</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="experimental.html">Experimental</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="general.html">General</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="general/ArrayWithGeneral.html">ArrayWithGeneral</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/_ArrayWithGeneral.html">_ArrayWithGeneral</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="gradients.html">Gradients</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-8"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="gradients/ArrayWithGradients.html">ArrayWithGradients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradients/_ArrayWithGradients.html">_ArrayWithGradients</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="image.html">Image</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-9"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="image/ArrayWithImage.html">ArrayWithImage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="image/_ArrayWithImage.html">_ArrayWithImage</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="layers.html">Layers</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-10"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="layers/ArrayWithLayers.html">ArrayWithLayers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="layers/_ArrayWithLayers.html">_ArrayWithLayers</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="linear_algebra.html">Linear algebra</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-11"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="linear_algebra/ArrayWithLinearAlgebra.html">ArrayWithLinearAlgebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_algebra/_ArrayWithLinearAlgebra.html">_ArrayWithLinearAlgebra</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="losses.html">Losses</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-12"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="losses/ArrayWithLosses.html">ArrayWithLosses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="losses/_ArrayWithLosses.html">_ArrayWithLosses</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="manipulation.html">Manipulation</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-13"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="manipulation/ArrayWithManipulation.html">ArrayWithManipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manipulation/_ArrayWithManipulation.html">_ArrayWithManipulation</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="norms.html">Norms</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-14"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="norms/ArrayWithNorms.html">ArrayWithNorms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="norms/_ArrayWithNorms.html">_ArrayWithNorms</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="random.html">Random</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-15"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="random/ArrayWithRandom.html">ArrayWithRandom</a></li>
+<li class="toctree-l2"><a class="reference internal" href="random/_ArrayWithRandom.html">_ArrayWithRandom</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="searching.html">Searching</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-16"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="searching/ArrayWithSearching.html">ArrayWithSearching</a></li>
+<li class="toctree-l2"><a class="reference internal" href="searching/_ArrayWithSearching.html">_ArrayWithSearching</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="set.html">Set</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-17"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="set/ArrayWithSet.html">ArrayWithSet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="set/_ArrayWithSet.html">_ArrayWithSet</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="sorting.html">Sorting</a><input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-18"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="sorting/ArrayWithSorting.html">ArrayWithSorting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sorting/_ArrayWithSorting.html">_ArrayWithSorting</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="statistical.html">Statistical</a><input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-19"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="statistical/ArrayWithStatistical.html">ArrayWithStatistical</a></li>
+<li class="toctree-l2"><a class="reference internal" href="statistical/_ArrayWithStatistical.html">_ArrayWithStatistical</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Utility</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-20"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="utility/ArrayWithUtility.html">ArrayWithUtility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utility/_ArrayWithUtility.html">_ArrayWithUtility</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="wrapping.html">Wrapping</a><input class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-21"><i class="fa-solid fa-chevron-down"></i></label><ul>

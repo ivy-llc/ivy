@@ -13,5 +13,5 @@ Linear algebra
    :maxdepth: -1
    :caption: Linear algebra
 
-   linear_algebra/ArrayWithLinearAlgebra.rst
+   linear_algebra/_ArrayWithLinearAlgebra.rst
 
