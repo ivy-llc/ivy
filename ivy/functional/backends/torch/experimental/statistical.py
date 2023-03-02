@@ -22,7 +22,7 @@ def median(
         axis=axis,
         keepdims=keepdims,
         interpolation="midpoint",
-    )[0]
+    ).type_as(input)
 
 
 median.support_native_out = False
