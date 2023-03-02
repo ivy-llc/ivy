@@ -279,6 +279,7 @@ def test_numpy_sort(
         axis=axis,
     )
 
+
 @handle_frontend_test(
     fn_tree="jax.numpy.where",
     dtype_and_x=helpers.dtype_and_values(
