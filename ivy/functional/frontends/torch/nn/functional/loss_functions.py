@@ -304,6 +304,47 @@ def nll_loss(
 
 
 @to_ivy_arrays_and_back
+def gaussian_nll_loss(
+    input,
+    target,
+    var,
+    full=False,
+    eps=1e-6,
+    reduction="mean"
+):
+
+    if var.shape != input.shape:
+        if input.shape[:-1] == var.shape:
+            var.unsqueeze(dim=2)
+    elif input.shape[:-1] == var.shape[:-1] and var.shape[-1] == 1:
+        pass
+    else:
+        ivy.utils.exceptions.IvyError(
+            f"var is of incorrect size"
+        )
+
+    if reduction is not None and reduction != "mean" and reduction != "sum":
+        raise ivy.utils.exceptions.IvyError(
+            f"{reduction} is not valid"
+        )
+
+    if ivy.any(var < 0):
+        raise ivy.utils.exceptions.IvyError(
+            "var has negative entry/entries"
+        )
+
+    loss = 0.5 * (ivy.log(var) + (input - target)**2 / var)
+
+    if full:
+        loss += 0.5 * ivy.log(2 * ivy.pi)
+
+    reduction = _get_reduction_func(reduction)
+    ret = reduction(loss)
+
+    return ret
+
+
+@to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
 def soft_margin_loss(
     input,
