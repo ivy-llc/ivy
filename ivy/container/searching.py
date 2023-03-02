@@ -461,7 +461,7 @@ class ContainerWithSearching(ContainerBase):
 
         Parameters
         ----------
-        self
+        x
             Boolean array, for which indices are desired.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.

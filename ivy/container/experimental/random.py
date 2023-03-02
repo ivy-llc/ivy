@@ -477,6 +477,7 @@ class ContainerWithRandomExperimental(ContainerBase):
             shape=shape,
             device=device,
             dtype=dtype,
+            seed=seed,
             out=out,
         )
 

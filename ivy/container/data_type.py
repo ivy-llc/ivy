@@ -109,7 +109,7 @@ class ContainerWithDataTypes(ContainerBase):
 
         Parameters
         ----------
-        x
+        self
             array to cast.
         dtype
             desired data type.
@@ -1276,8 +1276,6 @@ class ContainerWithDataTypes(ContainerBase):
 
         Parameters
         ----------
-        self
-            input container from which to cast.
         arrays_and_dtypes
             an arbitrary number of input arrays and/or dtypes.
         key_chains
