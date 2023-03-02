@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union
+from typing import Optional, Union, Literal, List
 
 # local
 
@@ -104,9 +104,9 @@ class _ArrayWithSorting(abc.ABC):
         v: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
-        side="left",
-        sorter: Optional = None,
-        ret_dtype=ivy.int64,
+        side: Literal["left", "right"] = "left",
+        sorter: Optional[Union[ivy.Array, ivy.NativeArray, List[int]]] = None,
+        ret_dtype: Union[ivy.Dtype, ivy.DefaultDtype] = ivy.int64,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
