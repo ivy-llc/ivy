@@ -15,6 +15,7 @@ torch # unpinned, we test for latest version now
 torch-scatter # unpinned, mod_name=torch_scatter
 functorch # unpinned, we test for latest version now
 scipy # unpinned
+paddlepaddle
 dm-haiku # unpinned mod_name=haiku
 pydriller
 tqdm
