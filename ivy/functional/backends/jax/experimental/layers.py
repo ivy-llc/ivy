@@ -10,6 +10,7 @@ import ivy
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.random import RNG
 from ivy.functional.ivy.layers import _handle_padding
+from ivy.functional.ivy.experimental.layers import _padding_ceil_mode
 
 
 def _from_int_to_tuple(arg, dim):
@@ -78,7 +79,7 @@ def general_pool(
 
     if ceil_mode:
         for i in range(len(dims) - 2):
-            pad_list[i + 1] = ivy.padding_ceil_mode(
+            pad_list[i + 1] = _padding_ceil_mode(
                 inputs.shape[i + 1],
                 new_window_shape[i],
                 pad_list[i + 1],
