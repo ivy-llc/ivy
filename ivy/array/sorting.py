@@ -106,7 +106,7 @@ class _ArrayWithSorting(abc.ABC):
         *,
         side: Literal["left", "right"] = "left",
         sorter: Optional[Union[ivy.Array, ivy.NativeArray, List[int]]] = None,
-        ret_dtype: Union[ivy.Dtype, ivy.DefaultDtype] = ivy.int64,
+        ret_dtype: Union[ivy.Dtype, ivy.NativeDtype] = ivy.int64,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
