@@ -21,8 +21,8 @@ permissions:
   actions: read
 
 jobs:
-   if: ${{ github.event.inputs.gpu == true }}
    run_tests_gpu:
+     if: ${{ github.event.inputs.gpu == true }}
      runs-on: self-hosted
      steps:
        - name: Checkout Ivy 🛎
