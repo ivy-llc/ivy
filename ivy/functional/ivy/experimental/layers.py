@@ -1186,7 +1186,7 @@ def _output_ceil_shape(w, f, p, s):
     return math.ceil((w - f + p) / s) + 1
 
 
-def padding_ceil_mode(w, f, p, s):
+def _padding_ceil_mode(w, f, p, s):
     remaining_pixels = (w - f + sum(p)) % s
     if s > 1 and remaining_pixels != 0 and f > 1:
         input_size = w + sum(p)
