@@ -875,6 +875,45 @@ class ContainerWithStatisticalExperimental(ContainerBase):
 
         return self.static_bincount(self, weights=weights, minlength=minlength, out=out)
     
+    
+    @staticmethod
+    def static_average(
+            input: ivy.Container,
+            /,
+            *,
+            axis: Optional[Union[Tuple[int], int]] = None,
+            keepdims: Optional[bool] = False,
+
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.average.
+
+        Parameters
+        ----------
+        input
+            Input container including arrays.
+        axis
+            Axis or axes along which the average are computed.
+
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result
+            as dimensions with size one. With this option, the result will broadcast
+            correctly against the original a.
+
+        Returns
+        -------
+        ret
+            The average of the array elements in the container.
+
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "average",
+            input,
+            axis=axis,
+            keepdims=keepdims,
+
+        )
+
     def average(
             self: ivy.Container,
             /,
