@@ -688,3 +688,59 @@ class _ArrayWithLayersExperimental(abc.ABC):
             antialias=antialias,
             out=out,
         )
+
+    def adaptive_avg_pool1d(
+        self: ivy.Array,
+        output_size: int,
+    ) -> ivy.Array:
+        """
+        Applies a 1D adaptive average pooling over an input signal composed of several
+        input planes.
+
+        Parameters
+        ----------
+        self
+            Input array. Must have shape (N, C, L_in) or (C, L_in) where N is
+            the batch dimension, C is the feature dimension, and L_in is the spatial
+            dimension.
+        output_size
+            Spatial output size.
+
+        Returns
+        -------
+            The result of the pooling operation. Will have shape (N, C, L_out) or
+            (C, L_out), where L_out = `output_size`
+
+        """
+        return ivy.adaptive_avg_pool1d(
+            self._data,
+            output_size,
+        )
+
+    def adaptive_avg_pool2d(
+        self: ivy.Array,
+        output_size: Union[Sequence[int], int],
+    ) -> ivy.Array:
+        """
+        Applies a 2D adaptive average pooling over an input signal composed of several
+        input planes.
+
+        Parameters
+        ----------
+        self
+            Input array. Must have shape (N, C, H_in, W_in) or (C, H_in, W_in) where N
+            is the batch dimension, C is the feature dimension, and H_in and W_in are
+            the 2 spatial dimensions.
+        output_size
+            Spatial output size.
+
+        Returns
+        -------
+            The result of the pooling operation. Will have shape (N, C, S_0, S_1) or
+            (C, S_0, S_1), where S = `output_size`
+
+        """
+        return ivy.adaptive_avg_pool2d(
+            self._data,
+            output_size,
+        )
