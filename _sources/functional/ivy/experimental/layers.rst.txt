@@ -29,4 +29,6 @@ Layers
    layers/interp.rst
    layers/compute_weight_mat.rst
    layers/interpolate.rst
+   layers/adaptive_avg_pool1d.rst
+   layers/adaptive_avg_pool2d.rst
 

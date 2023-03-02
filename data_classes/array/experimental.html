@@ -2008,6 +2008,60 @@ elements in test_elements and False otherwise.</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy.array.experimental.</span></span><span class="sig-name descname"><span class="pre">_ArrayWithLayersExperimental</span></span><a class="reference internal" href="../../_modules/ivy/array/experimental/layers.html#_ArrayWithLayersExperimental"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.experimental._ArrayWithLayersExperimental" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
 <dl class="py method">
+<dt class="sig sig-object py" id="ivy.array.experimental._ArrayWithLayersExperimental.adaptive_avg_pool1d">
+<span class="sig-name descname"><span class="pre">adaptive_avg_pool1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/experimental/layers.html#_ArrayWithLayersExperimental.adaptive_avg_pool1d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.experimental._ArrayWithLayersExperimental.adaptive_avg_pool1d" title="Permalink to this definition">#</a></dt>
+<dd><p>Applies a 1D adaptive average pooling over an input signal composed of several
+input planes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – Input array. Must have shape (N, C, L_in) or (C, L_in) where N is
+the batch dimension, C is the feature dimension, and L_in is the spatial
+dimension.</p></li>
+<li><p><strong>output_size</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Spatial output size.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><em>The result of the pooling operation. Will have shape (N, C, L_out) or</em></p></li>
+<li><p>(C, L_out), where L_out = <cite>output_size</cite></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.array.experimental._ArrayWithLayersExperimental.adaptive_avg_pool2d">
+<span class="sig-name descname"><span class="pre">adaptive_avg_pool2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/experimental/layers.html#_ArrayWithLayersExperimental.adaptive_avg_pool2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.experimental._ArrayWithLayersExperimental.adaptive_avg_pool2d" title="Permalink to this definition">#</a></dt>
+<dd><p>Applies a 2D adaptive average pooling over an input signal composed of several
+input planes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – Input array. Must have shape (N, C, H_in, W_in) or (C, H_in, W_in) where N
+is the batch dimension, C is the feature dimension, and H_in and W_in are
+the 2 spatial dimensions.</p></li>
+<li><p><strong>output_size</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – Spatial output size.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><em>The result of the pooling operation. Will have shape (N, C, S_0, S_1) or</em></p></li>
+<li><p>(C, S_0, S_1), where S = <cite>output_size</cite></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.experimental._ArrayWithLayersExperimental.avg_pool1d">
 <span class="sig-name descname"><span class="pre">avg_pool1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'NWC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/experimental/layers.html#_ArrayWithLayersExperimental.avg_pool1d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.experimental._ArrayWithLayersExperimental.avg_pool1d" title="Permalink to this definition">#</a></dt>
 <dd><p>ivy.Array instance method variant of <cite>ivy.avg_pool1d</cite>. This method simply

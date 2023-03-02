@@ -578,8 +578,8 @@
   <h1>Source code for ivy.functional.ivy.experimental.layers</h1><div class="highlight"><pre>
 <span></span><span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Sequence</span>
-
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
@@ -1757,9 +1757,6 @@
 <span class="n">interpolate</span><span class="o">.</span><span class="n">mixed_function</span> <span class="o">=</span> <span class="kc">True</span>
 
 
-<span class="c1"># Helpers #</span>
-
-
 <span class="k">def</span> <span class="nf">_output_ceil_shape</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">((</span><span class="n">w</span> <span class="o">-</span> <span class="n">f</span> <span class="o">+</span> <span class="n">p</span><span class="p">)</span> <span class="o">/</span> <span class="n">s</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
 
@@ -1787,6 +1784,191 @@
             <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">new_pad</span> <span class="o">-</span> <span class="nb">sum</span><span class="p">(</span><span class="n">p</span><span class="p">),</span>
         <span class="p">)</span>
     <span class="k">return</span> <span class="n">p</span>
+
+
+<span class="k">def</span> <span class="nf">_compute_idx</span><span class="p">(</span><span class="n">in_size</span><span class="p">,</span> <span class="n">out_size</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
+    <span class="n">out_range</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">out_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">i0</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">trunc_divide</span><span class="p">(</span><span class="n">out_range</span> <span class="o">*</span> <span class="n">in_size</span><span class="p">,</span> <span class="n">out_size</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">maxlength</span> <span class="o">=</span> <span class="n">in_size</span> <span class="o">//</span> <span class="n">out_size</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">in_size_mod</span> <span class="o">=</span> <span class="n">in_size</span> <span class="o">%</span> <span class="n">out_size</span>
+    <span class="c1"># adaptive = True iff there are kernels with different lengths</span>
+    <span class="n">adaptive</span> <span class="o">=</span> <span class="ow">not</span> <span class="p">(</span><span class="n">in_size_mod</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">out_size</span> <span class="o">%</span> <span class="n">in_size_mod</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">adaptive</span><span class="p">:</span>
+        <span class="n">maxlength</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">elif</span> <span class="n">in_size_mod</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">maxlength</span> <span class="o">-=</span> <span class="mi">1</span>
+    <span class="n">range_max</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">maxlength</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">i0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">range_max</span>
+    <span class="k">if</span> <span class="n">adaptive</span><span class="p">:</span>
+        <span class="n">maxval</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="n">in_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">maxval</span><span class="p">)</span>
+        <span class="n">i1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">trunc_divide</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">out_range</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">in_size</span> <span class="o">+</span> <span class="n">out_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">out_size</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="n">i1</span> <span class="o">-</span> <span class="n">i0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="n">maxlength</span>
+    <span class="k">return</span> <span class="n">idx</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">range_max</span><span class="p">,</span> <span class="n">adaptive</span>
+
+
+<span class="k">def</span> <span class="nf">_expand_to_dim</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x</span>
+
+
+<span class="k">def</span> <span class="nf">_mask</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">range_max</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">vals</span><span class="p">,</span> <span class="n">length</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">dim</span> <span class="o">&lt;</span> <span class="mi">0</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">greater_equal</span><span class="p">(</span><span class="n">range_max</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">dim</span> <span class="o">==</span> <span class="o">-</span><span class="mi">2</span><span class="p">:</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">_expand_to_dim</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">vals</span><span class="p">)</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="n">_expand_to_dim</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="o">-</span><span class="n">dim</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">vals</span><span class="p">,</span> <span class="n">length</span>
+
+
+<div class="viewcode-block" id="adaptive_avg_pool1d"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/layers/adaptive_avg_pool1d.html#ivy.functional.ivy.experimental.adaptive_avg_pool1d">[docs]</a><span class="k">def</span> <span class="nf">adaptive_avg_pool1d</span><span class="p">(</span>
+        <span class="nb">input</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+        <span class="n">output_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Applies a 1D adaptive average pooling over an input signal composed of several input</span>
+<span class="sd">    planes.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    input</span>
+<span class="sd">        Input array. Must have shape (N, C, L_in) or (C, L_in) where N is</span>
+<span class="sd">        the batch dimension, C is the feature dimension, and L_in is the spatial</span>
+<span class="sd">        dimension.</span>
+<span class="sd">    output_size</span>
+<span class="sd">        Spatial output size.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        The result of the pooling operation. Will have shape (N, C, L_out) or</span>
+<span class="sd">        (C, L_out), where L_out = `output_size`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">squeeze</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="nb">input</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">squeeze</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="si">}</span><span class="s2">D input, but only 2D and 3D inputs are supported.&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">%</span> <span class="n">output_size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">stride</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="n">output_size</span>
+        <span class="n">kernel_size</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">output_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">stride</span>
+        <span class="n">pooled_output</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">avg_pool1d</span><span class="p">(</span>
+            <span class="nb">input</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">,</span> <span class="n">stride</span><span class="p">,</span> <span class="s2">&quot;VALID&quot;</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="s2">&quot;NCW&quot;</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">squeeze</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">pooled_output</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pooled_output</span>
+
+    <span class="n">idxw</span><span class="p">,</span> <span class="n">length_w</span><span class="p">,</span> <span class="n">range_max_w</span><span class="p">,</span> <span class="n">adaptive_w</span> <span class="o">=</span> <span class="n">_compute_idx</span><span class="p">(</span>
+        <span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">output_size</span><span class="p">,</span> <span class="nb">input</span><span class="o">.</span><span class="n">device</span>
+    <span class="p">)</span>
+
+    <span class="c1"># to numpy and back in order to bypass a slicing error in tensorflow</span>
+    <span class="n">vals</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()[</span><span class="o">...</span><span class="p">,</span> <span class="n">idxw</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">adaptive_w</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">vals</span><span class="p">,</span> <span class="n">length_w</span> <span class="o">=</span> <span class="n">_mask</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">length_w</span><span class="p">,</span> <span class="n">range_max_w</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">ret</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">vals</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="n">ret</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="n">vals</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="n">ret</span> <span class="o">+</span> <span class="n">vals</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span>
+    <span class="n">pooled_output</span> <span class="o">=</span> <span class="n">ret</span> <span class="o">/</span> <span class="n">length_w</span>
+
+    <span class="k">if</span> <span class="n">squeeze</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">pooled_output</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pooled_output</span></div>
+
+
+<div class="viewcode-block" id="adaptive_avg_pool2d"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/layers/adaptive_avg_pool2d.html#ivy.functional.ivy.experimental.adaptive_avg_pool2d">[docs]</a><span class="k">def</span> <span class="nf">adaptive_avg_pool2d</span><span class="p">(</span>
+        <span class="nb">input</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+        <span class="n">output_size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">int</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Applies a 2D adaptive average pooling over an input signal composed of several input</span>
+<span class="sd">    planes.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    input</span>
+<span class="sd">        Input array. Must have shape (N, C, H_in, W_in) or (C, H_in, W_in) where N is</span>
+<span class="sd">        the batch dimension, C is the feature dimension, and H_in and W_in are the 2</span>
+<span class="sd">        spatial dimensions.</span>
+<span class="sd">    output_size</span>
+<span class="sd">        Spatial output size.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        The result of the pooling operation. Will have shape (N, C, S_0, S_1) or</span>
+<span class="sd">        (C, S_0, S_1), where S = `output_size`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">squeeze</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="nb">input</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">squeeze</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="si">}</span><span class="s2">D input, but only 3D and 4D inputs are supported.&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">i_s</span> <span class="o">%</span> <span class="n">o_s</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">i_s</span><span class="p">,</span> <span class="n">o_s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:],</span> <span class="n">output_size</span><span class="p">)):</span>
+        <span class="n">stride</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">i_s</span> <span class="o">//</span> <span class="n">o_s</span> <span class="k">for</span> <span class="n">i_s</span><span class="p">,</span> <span class="n">o_s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:],</span> <span class="n">output_size</span><span class="p">))</span>
+        <span class="n">kernel_size</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+            <span class="n">i_s</span> <span class="o">-</span> <span class="p">(</span><span class="n">o_s</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">st</span>
+            <span class="k">for</span> <span class="n">i_s</span><span class="p">,</span> <span class="n">o_s</span><span class="p">,</span> <span class="n">st</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:],</span> <span class="n">output_size</span><span class="p">,</span> <span class="n">stride</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">pooled_output</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">avg_pool2d</span><span class="p">(</span>
+            <span class="nb">input</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">,</span> <span class="n">stride</span><span class="p">,</span> <span class="s2">&quot;VALID&quot;</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="s2">&quot;NCHW&quot;</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">squeeze</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">pooled_output</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pooled_output</span>
+
+    <span class="n">idxh</span><span class="p">,</span> <span class="n">length_h</span><span class="p">,</span> <span class="n">range_max_h</span><span class="p">,</span> <span class="n">adaptive_h</span> <span class="o">=</span> <span class="n">_compute_idx</span><span class="p">(</span>
+        <span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">output_size</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="nb">input</span><span class="o">.</span><span class="n">device</span>
+    <span class="p">)</span>
+    <span class="n">idxw</span><span class="p">,</span> <span class="n">length_w</span><span class="p">,</span> <span class="n">range_max_w</span><span class="p">,</span> <span class="n">adaptive_w</span> <span class="o">=</span> <span class="n">_compute_idx</span><span class="p">(</span>
+        <span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">output_size</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="nb">input</span><span class="o">.</span><span class="n">device</span>
+    <span class="p">)</span>
+
+    <span class="c1"># to numpy and back in order to bypass a slicing error in tensorflow</span>
+    <span class="n">vals</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()[</span><span class="o">...</span><span class="p">,</span> <span class="n">_expand_to_dim</span><span class="p">(</span><span class="n">idxh</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">idxw</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">adaptive_h</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">adaptive_w</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="n">vals</span><span class="p">,</span> <span class="n">length_h</span> <span class="o">=</span> <span class="n">_mask</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">length_h</span><span class="p">,</span> <span class="n">range_max_h</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">vals</span><span class="p">,</span> <span class="n">length_w</span> <span class="o">=</span> <span class="n">_mask</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">length_w</span><span class="p">,</span> <span class="n">range_max_w</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">ret</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">vals</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">]),</span> <span class="nb">range</span><span class="p">(</span><span class="n">vals</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])):</span>
+        <span class="k">if</span> <span class="n">ret</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="n">vals</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="n">j</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="n">ret</span> <span class="o">+</span> <span class="n">vals</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="n">j</span><span class="p">]</span>
+    <span class="n">pooled_output</span> <span class="o">=</span> <span class="n">ret</span> <span class="o">/</span> <span class="p">(</span><span class="n">length_h</span> <span class="o">*</span> <span class="n">length_w</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">squeeze</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">pooled_output</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pooled_output</span></div>
 </pre></div>
 
             </article>
