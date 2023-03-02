@@ -12,7 +12,7 @@ inf = float("inf")
 
 
 # noinspection PyMissingConstructor,PyMethodParameters
-class ContainerWithLinearAlgebra(ContainerBase):
+class _ContainerWithLinearAlgebra(ContainerBase):
     @staticmethod
     def static_matmul(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],

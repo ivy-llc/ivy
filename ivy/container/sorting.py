@@ -9,7 +9,7 @@ import ivy
 
 
 # noinspection PyMissingConstructor
-class ContainerWithSorting(ContainerBase):
+class _ContainerWithSorting(ContainerBase):
     @staticmethod
     def static_argsort(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],

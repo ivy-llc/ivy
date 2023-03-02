@@ -8,7 +8,7 @@ from ivy.container.base import ContainerBase
 
 
 # noinspection PyMissingConstructor
-class ContainerWithSearching(ContainerBase):
+class _ContainerWithSearching(ContainerBase):
     @staticmethod
     def static_argmax(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],

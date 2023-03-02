@@ -6,7 +6,7 @@ import ivy
 from ivy.container.base import ContainerBase
 
 
-class ContainerWithActivationExperimental(ContainerBase):
+class _ContainerWithActivationExperimental(ContainerBase):
     @staticmethod
     def static_logit(
         x: Union[float, int, ivy.Container],
