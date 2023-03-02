@@ -13,5 +13,5 @@ Losses
    :maxdepth: -1
    :caption: Losses
 
-   losses/_ArrayWithLosses.rst
+   losses/ArrayWithLosses.rst
 

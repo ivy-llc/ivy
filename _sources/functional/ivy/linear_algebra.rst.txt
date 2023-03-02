@@ -42,7 +42,6 @@ Linear algebra
    linear_algebra/diag.rst
    linear_algebra/vander.rst
    linear_algebra/vector_to_skew_symmetric_matrix.rst
-   linear_algebra/lu_factor.rst
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
 .. _`linear algebra forum`: https://discord.com/channels/799879767196958751/1028299123046240366
