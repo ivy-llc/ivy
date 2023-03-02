@@ -8,7 +8,7 @@ import ivy
 from ivy.container.base import ContainerBase
 
 
-class ContainerWithCreation(ContainerBase):
+class _ContainerWithCreation(ContainerBase):
     @staticmethod
     def static_arange(
         start: Number,

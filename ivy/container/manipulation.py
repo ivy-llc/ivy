@@ -16,7 +16,7 @@ import ivy
 from ivy.container.base import ContainerBase
 
 
-class ContainerWithManipulation(ContainerBase):
+class _ContainerWithManipulation(ContainerBase):
     @staticmethod
     def static_concat(
         xs: Union[

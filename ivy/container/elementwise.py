@@ -6,7 +6,7 @@ import ivy
 from ivy.container.base import ContainerBase
 
 
-class ContainerWithElementwise(ContainerBase):
+class _ContainerWithElementwise(ContainerBase):
     @staticmethod
     def static_abs(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],

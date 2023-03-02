@@ -8,7 +8,7 @@ from ivy.container.base import ContainerBase
 # ToDo: implement all methods here as public instance methods
 
 
-class ContainerWithStatistical(ContainerBase):
+class _ContainerWithStatistical(ContainerBase):
     def min(
         self: ivy.Container,
         /,

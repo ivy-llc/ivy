@@ -9,7 +9,7 @@ from ivy.container.base import ContainerBase
 
 
 # noinspection PyMissingConstructor
-class ContainerWithDataTypes(ContainerBase):
+class _ContainerWithDataTypes(ContainerBase):
     @staticmethod
     def static_astype(
         x: ivy.Container,
