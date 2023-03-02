@@ -77,7 +77,7 @@ def reshape(
     if not allowzero:
         shape = [
             new_s if con else old_s
-            for new_s, con, old_s in zip(shape, paddle.tensor(shape) != 0, x.shape)
+            for new_s, con, old_s in zip(shape, paddle.to_tensor(shape) != 0, x.shape)
         ]
     if copy:
         newarr = paddle.clone(x)
