@@ -6,12 +6,12 @@ import ivy
 from ivy.container.base import ContainerBase
 
 
-class ContainerWithCreationExperimental(ContainerBase):
+class _ContainerWithCreationExperimental(ContainerBase):
     @staticmethod
     def static_triu_indices(
         n_rows: int,
         n_cols: Optional[int] = None,
-        k: Optional[int] = 0,
+        k: int = 0,
         /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -38,7 +38,7 @@ class ContainerWithCreationExperimental(ContainerBase):
         self: ivy.Container,
         n_rows: int,
         n_cols: Optional[int] = None,
-        k: Optional[int] = 0,
+        k: int = 0,
         /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -64,7 +64,7 @@ class ContainerWithCreationExperimental(ContainerBase):
     @staticmethod
     def static_hann_window(
         window_length: Union[int, ivy.Container],
-        periodic: Optional[bool] = True,
+        periodic: bool = True,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -120,7 +120,7 @@ class ContainerWithCreationExperimental(ContainerBase):
 
     def hann_window(
         self: ivy.Container,
-        periodic: Optional[bool] = True,
+        periodic: bool = True,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         *,
         out: Optional[ivy.Container] = None,
@@ -401,9 +401,9 @@ class ContainerWithCreationExperimental(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        periodic: Optional[bool] = True,
-        alpha: Optional[float] = 0.54,
-        beta: Optional[float] = 0.46,
+        periodic: bool = True,
+        alpha: float = 0.54,
+        beta: float = 0.46,
         dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
@@ -464,9 +464,9 @@ class ContainerWithCreationExperimental(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        periodic: Optional[bool] = True,
-        alpha: Optional[float] = 0.54,
-        beta: Optional[float] = 0.46,
+        periodic: bool = True,
+        alpha: float = 0.54,
+        beta: float = 0.46,
         dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
@@ -618,7 +618,7 @@ class ContainerWithCreationExperimental(ContainerBase):
     def static_tril_indices(
         n_rows: int,
         n_cols: Optional[int] = None,
-        k: Optional[int] = 0,
+        k: int = 0,
         /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -643,7 +643,7 @@ class ContainerWithCreationExperimental(ContainerBase):
         self: ivy.Container,
         n_rows: int,
         n_cols: Optional[int] = None,
-        k: Optional[int] = 0,
+        k: int = 0,
         /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -687,6 +687,10 @@ class ContainerWithCreationExperimental(ContainerBase):
         ----------
         x
             input array or container from which to derive the output container shape.
+        k
+            index of the diagonal. A positive value refers to an upper diagonal,
+            a negative value to a lower diagonal, and 0 to the main diagonal.
+            Default: ``0``.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply

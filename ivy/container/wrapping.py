@@ -2,7 +2,7 @@
 import ivy
 
 # global
-from typing import Callable, Type, List, Iterable, Optional
+from typing import Callable, Type, List, Iterable, Optional, Union, Sequence, Dict
 from types import ModuleType
 
 TO_IGNORE = ["is_ivy_array", "is_native_array", "is_array", "shape"]
@@ -27,10 +27,10 @@ def _wrap_function(function_name: str, static: bool) -> Callable:
 
     def new_function(
         *args,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
+        key_chains: Optional[Union[Sequence[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
         **kwargs
     ):
