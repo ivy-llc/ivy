@@ -584,8 +584,8 @@
 <span class="kn">import</span> <span class="nn">ivy</span>
 
 
-<div class="viewcode-block" id="ArrayWithLosses"><a class="viewcode-back" href="../../../data_classes/array/losses/ArrayWithLosses.html#ivy.array.losses.ArrayWithLosses">[docs]</a><span class="k">class</span> <span class="nc">ArrayWithLosses</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
-<div class="viewcode-block" id="ArrayWithLosses.cross_entropy"><a class="viewcode-back" href="../../../data_classes/array/losses/ArrayWithLosses.html#ivy.array.losses.ArrayWithLosses.cross_entropy">[docs]</a>    <span class="k">def</span> <span class="nf">cross_entropy</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithLosses"><a class="viewcode-back" href="../../../data_classes/array/losses/_ArrayWithLosses.html#ivy.array.losses._ArrayWithLosses">[docs]</a><span class="k">class</span> <span class="nc">_ArrayWithLosses</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+<div class="viewcode-block" id="_ArrayWithLosses.cross_entropy"><a class="viewcode-back" href="../../../data_classes/array/losses/_ArrayWithLosses.html#ivy.array.losses._ArrayWithLosses.cross_entropy">[docs]</a>    <span class="k">def</span> <span class="nf">cross_entropy</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">pred</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
@@ -634,7 +634,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="n">epsilon</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="n">reduction</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithLosses.binary_cross_entropy"><a class="viewcode-back" href="../../../data_classes/array/losses/ArrayWithLosses.html#ivy.array.losses.ArrayWithLosses.binary_cross_entropy">[docs]</a>    <span class="k">def</span> <span class="nf">binary_cross_entropy</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithLosses.binary_cross_entropy"><a class="viewcode-back" href="../../../data_classes/array/losses/_ArrayWithLosses.html#ivy.array.losses._ArrayWithLosses.binary_cross_entropy">[docs]</a>    <span class="k">def</span> <span class="nf">binary_cross_entropy</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">pred</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
@@ -678,7 +678,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="n">epsilon</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="n">reduction</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithLosses.sparse_cross_entropy"><a class="viewcode-back" href="../../../data_classes/array/losses/ArrayWithLosses.html#ivy.array.losses.ArrayWithLosses.sparse_cross_entropy">[docs]</a>    <span class="k">def</span> <span class="nf">sparse_cross_entropy</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithLosses.sparse_cross_entropy"><a class="viewcode-back" href="../../../data_classes/array/losses/_ArrayWithLosses.html#ivy.array.losses._ArrayWithLosses.sparse_cross_entropy">[docs]</a>    <span class="k">def</span> <span class="nf">sparse_cross_entropy</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">pred</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
