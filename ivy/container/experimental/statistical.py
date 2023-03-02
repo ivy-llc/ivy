@@ -6,7 +6,7 @@ import ivy
 from ivy.container.base import ContainerBase
 
 
-class ContainerWithStatisticalExperimental(ContainerBase):
+class _ContainerWithStatisticalExperimental(ContainerBase):
     @staticmethod
     def static_median(
         input: ivy.Container,

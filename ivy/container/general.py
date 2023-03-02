@@ -10,7 +10,7 @@ import ivy
 
 
 # noinspection PyMissingConstructor
-class ContainerWithGeneral(ContainerBase):
+class _ContainerWithGeneral(ContainerBase):
     @staticmethod
     def static_is_native_array(
         x: ivy.Container,
@@ -3649,7 +3649,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerWithGeneral.static_supports_inplace_updates(
+        return _ContainerWithGeneral.static_supports_inplace_updates(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -3802,7 +3802,7 @@ class ContainerWithGeneral(ContainerBase):
             c: ivy.array(2)
         }
         """
-        return ContainerWithGeneral.static_get_num_dims(
+        return _ContainerWithGeneral.static_get_num_dims(
             self,
             as_array=as_array,
             key_chains=key_chains,
@@ -3934,7 +3934,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerWithGeneral.static_array_equal(
+        return _ContainerWithGeneral.static_array_equal(
             self,
             x,
             key_chains=key_chains,

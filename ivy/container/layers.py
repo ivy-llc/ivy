@@ -12,7 +12,7 @@ import ivy
 
 
 # noinspection PyMissingConstructor
-class ContainerWithLayers(ContainerBase):
+class _ContainerWithLayers(ContainerBase):
     @staticmethod
     def static_linear(
         x: ivy.Container,
