@@ -56,6 +56,7 @@ jobs:
          run: exit 1
 
    run_tests_cpu:
+     if: ${{ github.event.inputs.gpu == 'false' }}
      runs-on: ubuntu-latest
      steps:
          - name: Checkout Ivy 🛎
