@@ -1,5 +1,3 @@
-from typing import Optional
-
 import ivy
 from ivy.container.base import ContainerBase
 
@@ -11,9 +9,9 @@ class ContainerWithGeneralExperimental(ContainerBase):
         test_elements: ivy.Container,
         /,
         *,
-        assume_unique: Optional[bool] = False,
-        invert: Optional[bool] = False,
-    ) -> ContainerBase:
+        assume_unique: bool = False,
+        invert: bool = False,
+    ) -> ivy.Container:
         """Container instance method variant of ivy.isin. This method simply
         wraps the function, and so the docstring for ivy.isin also applies to
         this method with minimal changes.
@@ -60,8 +58,8 @@ class ContainerWithGeneralExperimental(ContainerBase):
         test_elements: ivy.Container,
         /,
         *,
-        assume_unique: Optional[bool] = False,
-        invert: Optional[bool] = False,
+        assume_unique: bool = False,
+        invert: bool = False,
     ) -> ivy.Container:
         """Container instance method variant of ivy.isin. This method simply
         wraps the function, and so the docstring for ivy.isin also applies to
