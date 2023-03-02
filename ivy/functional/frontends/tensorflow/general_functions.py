@@ -111,6 +111,9 @@ def reshape(tensor, shape, name=None):
 def rank(input, **kwargs):
     return ivy.astype(ivy.array(input.ndim), ivy.int32)
 
+@to_ivy_arrays_and_back
+def scan(elems, initializer = None, parallel_iterations = 10, back_prop = True, swap_memory = False, infer_shape = True, reverse = False, name = None):
+    return ivy.scan(elems, initializer = None, parallel_iterations = 10, back_prop = True, swap_memory = False, infer_shape = True, reverse = False, name = None)
 
 @handle_tf_dtype
 @to_ivy_arrays_and_back
