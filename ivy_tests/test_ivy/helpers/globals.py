@@ -219,7 +219,7 @@ def _set_device(device: str):
     if CURRENT_DEVICE is not _Notsetval or CURRENT_DEVICE_STRIPPED is not _Notsetval:
         raise InterruptedTest(CURRENT_RUNNING_TEST)
     CURRENT_DEVICE = device
-    CURRENT_DEVICE_STRIPPED = device.rpartition(":")[0]
+    CURRENT_DEVICE_STRIPPED = device.partition(":")[0]
 
 
 # Teardown
