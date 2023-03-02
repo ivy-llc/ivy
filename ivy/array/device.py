@@ -8,7 +8,7 @@ import ivy
 # ToDo: implement all methods here as public instance methods
 
 
-class ArrayWithDevice(abc.ABC):
+class _ArrayWithDevice(abc.ABC):
     def dev(
         self: ivy.Array, *, as_native: bool = False
     ) -> Union[ivy.Device, ivy.NativeDevice]:

@@ -984,6 +984,36 @@ def test_torch_tensor_split(
     )
 
 
+# unbind
+@handle_frontend_test(
+    fn_tree="torch.unbind",
+    dtype_value_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+)
+def test_torch_unbind(
+    *,
+    dtype_value_axis,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtypes, value, axis = dtype_value_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=value[0],
+        dim=axis,
+    )
+
+
 # dsplit
 @handle_frontend_test(
     fn_tree="torch.dsplit",
@@ -992,7 +1022,6 @@ def test_torch_tensor_split(
         shape=st.shared(helpers.get_shape(min_num_dims=3), key="value_shape"),
     ),
     indices_or_sections=_get_split_locations(min_num_dims=3, axis=2),
-    number_positional_args=st.just(2),
 )
 def test_torch_dsplit(
     *,
@@ -1023,7 +1052,6 @@ def test_torch_dsplit(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
     indices_or_sections=_get_split_locations(min_num_dims=1, axis=1),
-    number_positional_args=st.just(2),
 )
 def test_torch_hsplit(
     *,
@@ -1063,7 +1091,6 @@ def test_torch_hsplit(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="value_shape"),
     ),
     indices_or_sections=_get_split_locations(min_num_dims=2, axis=0),
-    number_positional_args=st.just(2),
 )
 def test_torch_vsplit(
     *,

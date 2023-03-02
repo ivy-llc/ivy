@@ -58,7 +58,8 @@ def unravel_index(
     for dim in reversed(shape):
         output.append(temp % dim)
         temp = temp // dim
-    ret = tf.constant(reversed(output), dtype=tf.int32)
+    output.reverse()
+    ret = tf.convert_to_tensor(output, dtype=tf.int32)
     return tuple(ret)
 
 

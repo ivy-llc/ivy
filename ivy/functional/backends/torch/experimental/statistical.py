@@ -19,8 +19,8 @@ def median(
     return quantile(
         input,
         0.5,
-        dim=axis,
-        keepdim=keepdims,
+        axis=axis,
+        keepdims=keepdims,
         interpolation="midpoint",
     )[0]
 
@@ -56,8 +56,8 @@ def quantile(
     interpolation: Optional[str] = "linear",
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
+    temp = a.to(torch.float64)
     if isinstance(axis, list) or isinstance(axis, tuple):
-        temp = a.detach()
         dimension = len(a.size())
         for x in axis:
             axis1 = x
@@ -69,7 +69,7 @@ def quantile(
             temp, q, dim=-1, keepdim=keepdims, interpolation=interpolation, out=out
         )
     return torch.quantile(
-        a, q, dim=axis, keepdim=keepdims, interpolation=interpolation, out=out
+        temp, q, dim=axis, keepdim=keepdims, interpolation=interpolation, out=out
     )
 
 

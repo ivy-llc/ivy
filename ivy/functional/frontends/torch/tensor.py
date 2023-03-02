@@ -296,7 +296,7 @@ class Tensor:
 
     def to(self, *args, **kwargs):
         if len(args) > 0:
-            if isinstance(args[0], ivy.Dtype):
+            if isinstance(args[0], (ivy.Dtype, ivy.NativeDtype)):
                 if self.dtype == args[0]:
                     return self
                 else:
@@ -649,6 +649,32 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def sigmoid(self):
         return torch_frontend.sigmoid(self.ivy_array)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def softmax(self, dim=None, dtype=None):
+        return torch_frontend.nn.functional.softmax(
+            self._ivy_array, dim=dim, dtype=dtype
+        )
+
+    def repeat(self, *args, repeats=None):
+        if args and repeats:
+            raise ivy.utils.exceptions.IvyException(
+                "repeat() got multiple values for argument 'repeats'"
+            )
+        if args:
+            if isinstance(args[0], (tuple, list)):
+                repeats = args[0]
+            else:
+                repeats = args
+        elif not isinstance(repeats, (tuple, list)):
+            raise ivy.utils.exceptions.IvyException(
+                "repeat(): argument 'repeats' must be tuple of ints"
+            )
+
+        return torch_frontend.tile(self._ivy_array, repeats)
+
+    def unbind(self, dim=0):
+        return torch_frontend.unbind(self._ivy_array, dim=dim)
 
     # Special Methods #
     # -------------------#

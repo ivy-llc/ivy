@@ -8,7 +8,7 @@ import ivy
 # ToDo: implement all methods here as public instance methods
 
 
-class ArrayWithGradients(abc.ABC):
+class _ArrayWithGradients(abc.ABC):
     def stop_gradient(
         self: ivy.Array,
         /,

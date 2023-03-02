@@ -107,3 +107,39 @@ def test_tensorflow_depthwise_conv2d(
         name=None,
         data_format=data_format,
     )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.compat.v1.nn.separable_conv2d",
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NHWC"]),
+        padding=st.sampled_from(["VALID", "SAME"]),
+        type="separable",
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_separable_conv2d(
+    *,
+    x_f_d_df,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+        depthwise_filter=filters[0],
+        pointwise_filter=filters[1],
+        strides=stride,
+        padding=padding,
+        rate=dilation,
+        name=None,
+        data_format=data_format,
+    )
