@@ -476,3 +476,7 @@ def acos(x, name="acos"):
 @to_ivy_arrays_and_back
 def is_nan(x, name=None):
     return ivy.isnan(x)
+
+@to_ivy_arrays_and_back
+def atan(x, name="atan"):
+    return ivy.atan(x)
