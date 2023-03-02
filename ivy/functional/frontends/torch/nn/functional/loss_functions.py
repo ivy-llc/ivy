@@ -315,13 +315,13 @@ def gaussian_nll_loss(
 
     if var.shape != input.shape:
         if input.shape[:-1] == var.shape:
-            var.unsqueeze(dim=2)
-    elif input.shape[:-1] == var.shape[:-1] and var.shape[-1] == 1:
-        pass
-    else:
-        ivy.utils.exceptions.IvyError(
-            f"var is of incorrect size"
-        )
+            var = torch_frontend.unsqueeze(var, dim=2)
+        elif input.shape[:-1] == var.shape[:-1] and var.shape[-1] == 1:
+            pass
+        else:
+            raise ivy.utils.exceptions.IvyError(
+                "var is of incorrect size"
+            )
 
     if reduction is not None and reduction != "mean" and reduction != "sum":
         raise ivy.utils.exceptions.IvyError(
@@ -332,6 +332,11 @@ def gaussian_nll_loss(
         raise ivy.utils.exceptions.IvyError(
             "var has negative entry/entries"
         )
+
+    var = torch_frontend.tensor(ivy.array(var, copy=True))
+    ivy.set_with_grads(False)
+    var = torch_frontend.clamp(var, min=eps)
+    ivy.unset_with_grads()
 
     loss = 0.5 * (ivy.log(var) + (input - target)**2 / var)
 
