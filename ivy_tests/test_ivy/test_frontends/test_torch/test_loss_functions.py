@@ -577,7 +577,7 @@ def test_torch_nll_loss(
         max_dim_size=5,
     ),
     dtype_and_target=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_value=0.0,
         max_value=1.0,
         allow_inf=False,
@@ -587,7 +587,7 @@ def test_torch_nll_loss(
         max_dim_size=5,
     ),
     dtype_and_var=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         allow_inf=False,
         min_value=0.0,
         min_num_dims=1,
