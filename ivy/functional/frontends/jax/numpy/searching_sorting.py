@@ -131,3 +131,7 @@ def sort(
     if out == x:
         x = ivy.sort(x, out=x)
     return x
+
+@to_ivy_arrays_and_back
+def where(condition, x=None, y=None):
+    return ivy.where(condition,x,y)

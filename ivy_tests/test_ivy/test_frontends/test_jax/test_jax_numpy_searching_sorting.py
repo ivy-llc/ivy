@@ -278,3 +278,37 @@ def test_numpy_sort(
         a=x[0],
         axis=axis,
     )
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.where",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("bool")
+    ),
+    dtype_and_a=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True
+    )
+)
+def test_numpy_where(
+    frontend,
+    on_device,
+    *,
+    dtype_and_x,
+    dtype_and_a,
+    fn_tree,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    input_dtypea, a = dtype_and_a
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        condition=x[0],
+        x=a[0],
+        y=a[1],
+    )
