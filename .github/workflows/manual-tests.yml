@@ -42,12 +42,6 @@ jobs:
        - name: Run Tests
          id: tests
          run: |
-<<<<<<< HEAD
-           pip install pymongo
-           cd ivy
-           python setup_tests.py ${{ github.event.inputs.test }} 
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
-=======
              pip install pymongo
              cd ivy
              mkdir .ivy
@@ -55,7 +49,6 @@ jobs:
              echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
              python setup_tests.py ${{ github.event.inputs.test }} 
              python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.event.inputs.gpu }} ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
->>>>>>> master
          continue-on-error: true
 
        - name: Check on failures
