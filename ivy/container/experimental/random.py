@@ -6,7 +6,7 @@ import ivy
 from ivy.container.base import ContainerBase
 
 
-class ContainerWithRandomExperimental(ContainerBase):
+class _ContainerWithRandomExperimental(ContainerBase):
     # dirichlet
     @staticmethod
     def static_dirichlet(
@@ -477,6 +477,7 @@ class ContainerWithRandomExperimental(ContainerBase):
             shape=shape,
             device=device,
             dtype=dtype,
+            seed=seed,
             out=out,
         )
 

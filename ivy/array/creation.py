@@ -11,7 +11,7 @@ import ivy
 # -------------------#
 
 
-class ArrayWithCreation(abc.ABC):
+class _ArrayWithCreation(abc.ABC):
     def asarray(
         self: ivy.Array,
         /,
@@ -303,6 +303,9 @@ class ArrayWithCreation(abc.ABC):
         arrays
             an arbitrary number of one-dimensional arrays representing grid coordinates.
             Each array should have the same numeric data type.
+        sparse
+            if True, a sparse grid is returned in order to conserve memory. Default:
+            ``False``.
         indexing
             Cartesian ``'xy'`` or matrix ``'ij'`` indexing of output. If provided zero
             or one one-dimensional vector(s) (i.e., the zero- and one-dimensional cases,
@@ -351,7 +354,7 @@ class ArrayWithCreation(abc.ABC):
     def copy_array(
         self: ivy.Array,
         *,
-        to_ivy_array: Optional[bool] = True,
+        to_ivy_array: bool = True,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -417,7 +420,7 @@ class ArrayWithCreation(abc.ABC):
         off_value: Optional[Number] = None,
         axis: Optional[int] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        device: Union[ivy.Device, ivy.NativeDevice] = None,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -493,9 +496,9 @@ class ArrayWithCreation(abc.ABC):
         stop: Union[ivy.Array, ivy.NativeArray, float],
         /,
         num: int,
-        axis: int = None,
-        endpoint: bool = True,
         *,
+        axis: Optional[int] = None,
+        endpoint: bool = True,
         out: Optional[ivy.Container] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -522,7 +525,7 @@ class ArrayWithCreation(abc.ABC):
         endpoint: bool = True,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-        out: Optional[ivy.Container] = None,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.logspace. This method simply wraps the

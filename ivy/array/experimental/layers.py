@@ -6,7 +6,7 @@ from typing import Optional, Union, Tuple, Literal, Sequence
 import ivy
 
 
-class ArrayWithLayersExperimental(abc.ABC):
+class _ArrayWithLayersExperimental(abc.ABC):
     def max_pool1d(
         self: ivy.Array,
         kernel: Union[int, Tuple[int]],
@@ -87,7 +87,7 @@ class ArrayWithLayersExperimental(abc.ABC):
 
         Parameters
         ----------
-        x
+        self
             Input image *[batch_size,h,w,d_in]*.
         kernel
             The size of the window for each dimension of the input tensor.
@@ -404,9 +404,9 @@ class ArrayWithLayersExperimental(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        type: Optional[Literal[1, 2, 3, 4]] = 2,
+        type: Literal[1, 2, 3, 4] = 2,
         n: Optional[int] = None,
-        axis: Optional[int] = -1,
+        axis: int = -1,
         norm: Optional[Literal["ortho"]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -453,7 +453,7 @@ class ArrayWithLayersExperimental(abc.ABC):
         dim: int,
         /,
         *,
-        norm: Optional[str] = "backward",
+        norm: str = "backward",
         n: Optional[Union[int, Tuple[int]]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -508,7 +508,7 @@ class ArrayWithLayersExperimental(abc.ABC):
         self: ivy.Array,
         dim: int,
         *,
-        norm: Optional[str] = "backward",
+        norm: str = "backward",
         n: Optional[Union[int, Tuple[int]]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -559,7 +559,14 @@ class ArrayWithLayersExperimental(abc.ABC):
             out=out,
         )
 
-    def embedding(self, indices, /, *, max_norm=None, out=None):
+    def embedding(
+        self: ivy.Array,
+        indices: ivy.Array,
+        /,
+        *,
+        max_norm: Optional[int] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         return ivy.embedding(self._data, indices, max_norm=max_norm, out=out)
 
     def dft(
@@ -570,7 +577,7 @@ class ArrayWithLayersExperimental(abc.ABC):
         inverse: bool = False,
         onesided: bool = False,
         dft_length: Optional[Union[int, Tuple[int]]] = None,
-        norm: Optional[str] = "backward",
+        norm: str = "backward",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -642,7 +649,7 @@ class ArrayWithLayersExperimental(abc.ABC):
         *,
         mode: Union[Literal["linear", "bilinear", "trilinear", "nearest"]] = "linear",
         align_corners: Optional[bool] = None,
-        antialias: Optional[bool] = False,
+        antialias: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -687,4 +694,60 @@ class ArrayWithLayersExperimental(abc.ABC):
             align_corners=align_corners,
             antialias=antialias,
             out=out,
+        )
+
+    def adaptive_avg_pool1d(
+        self: ivy.Array,
+        output_size: int,
+    ) -> ivy.Array:
+        """
+        Applies a 1D adaptive average pooling over an input signal composed of several
+        input planes.
+
+        Parameters
+        ----------
+        self
+            Input array. Must have shape (N, C, L_in) or (C, L_in) where N is
+            the batch dimension, C is the feature dimension, and L_in is the spatial
+            dimension.
+        output_size
+            Spatial output size.
+
+        Returns
+        -------
+            The result of the pooling operation. Will have shape (N, C, L_out) or
+            (C, L_out), where L_out = `output_size`
+
+        """
+        return ivy.adaptive_avg_pool1d(
+            self._data,
+            output_size,
+        )
+
+    def adaptive_avg_pool2d(
+        self: ivy.Array,
+        output_size: Union[Sequence[int], int],
+    ) -> ivy.Array:
+        """
+        Applies a 2D adaptive average pooling over an input signal composed of several
+        input planes.
+
+        Parameters
+        ----------
+        self
+            Input array. Must have shape (N, C, H_in, W_in) or (C, H_in, W_in) where N
+            is the batch dimension, C is the feature dimension, and H_in and W_in are
+            the 2 spatial dimensions.
+        output_size
+            Spatial output size.
+
+        Returns
+        -------
+            The result of the pooling operation. Will have shape (N, C, S_0, S_1) or
+            (C, S_0, S_1), where S = `output_size`
+
+        """
+        return ivy.adaptive_avg_pool2d(
+            self._data,
+            output_size,
         )

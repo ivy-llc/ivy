@@ -10,7 +10,7 @@ from typing import Any, Iterable, Union, Optional, Dict, Callable, List, Tuple
 import ivy
 
 
-class ArrayWithGeneral(abc.ABC):
+class _ArrayWithGeneral(abc.ABC):
     def is_native_array(
         self: ivy.Array,
         /,
@@ -49,7 +49,7 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.is_native_array(self, exclusive=exclusive)
 
-    def is_ivy_array(self: ivy.Array, /, *, exclusive: Optional[bool] = False) -> bool:
+    def is_ivy_array(self: ivy.Array, /, *, exclusive: bool = False) -> bool:
         """
         ivy.Array instance method variant of ivy.is_ivy_array. This method simply
         wraps the function, and so the docstring for ivy.is_ivy_array also
@@ -216,8 +216,8 @@ class ArrayWithGeneral(abc.ABC):
         indices: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
-        axis: Optional[int] = -1,
-        batch_dims: Optional[int] = 0,
+        axis: int = -1,
+        batch_dims: int = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -318,7 +318,7 @@ class ArrayWithGeneral(abc.ABC):
         indices: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
-        batch_dims: Optional[int] = 0,
+        batch_dims: int = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -529,6 +529,8 @@ class ArrayWithGeneral(abc.ABC):
         ----------
         self
             input array.
+        copy
+            whether to copy the array to a new address or not. Default is ``True``.
 
         Returns
         -------
@@ -657,8 +659,10 @@ class ArrayWithGeneral(abc.ABC):
     def stable_divide(
         self,
         denominator: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
-        min_denominator: Union[
-            Number, ivy.Array, ivy.NativeArray, ivy.Container
+        /,
+        *,
+        min_denominator: Optional[
+            Union[Number, ivy.Array, ivy.NativeArray, ivy.Container]
         ] = None,
     ) -> ivy.Array:
         """
@@ -1046,7 +1050,7 @@ class ArrayWithGeneral(abc.ABC):
         exponent: Union[Number, ivy.Array, ivy.NativeArray],
         /,
         *,
-        min_base: float = None,
+        min_base: Optional[float] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.stable_pow. This method simply wraps

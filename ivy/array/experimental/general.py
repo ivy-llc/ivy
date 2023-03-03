@@ -1,19 +1,18 @@
 # global
 import abc
-from typing import Optional
 
 # local
 import ivy
 
 
-class ArrayWithGeneralExperimental(abc.ABC):
+class _ArrayWithGeneralExperimental(abc.ABC):
     def isin(
         self: ivy.Array,
         test_elements: ivy.Array,
         /,
         *,
-        assume_unique: Optional[bool] = False,
-        invert: Optional[bool] = False,
+        assume_unique: bool = False,
+        invert: bool = False,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.isin. This method simply
         wraps the function, and so the docstring for ivy.isin also applies to
