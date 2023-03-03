@@ -1,4 +1,4 @@
-# BASE CUDA IMAGE #/
+# BASE CUDA IMAGE #
 # ----------------#
 
 ARG UBUNTU_VERSION=20.04
@@ -99,8 +99,7 @@ RUN apt-get install -y python-opengl
 # ----#
 
 # Make sure torch installed before torch-scatter (in optional.txt)
-RUN pip install torch==1.13.0+cu116 --extra-index-url https://download.pytorch.org/whl/cu116
-RUN pip install torch-scatter -f https://data.pyg.org/whl/torch-1.13.0+cu116.html
+RUN pip install torch==1.11.0+cu113 --extra-index-url https://download.pytorch.org/whl/cu113
 
 # Install Ivy Upstream
 RUN git clone --recurse-submodules https://github.com/unifyai/ivy && \
@@ -116,7 +115,6 @@ COPY requirements/requirements.txt .
 RUN pip3 install --no-cache-dir -r requirements.txt
 
 # Install local optional
-#ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/python3.8/dist-packages/torch/lib/../../nvidia/cublas/lib/
 COPY requirements/optional.txt .
 RUN pip3 install --no-cache-dir -r optional.txt
 

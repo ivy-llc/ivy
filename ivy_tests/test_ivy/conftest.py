@@ -39,6 +39,13 @@ if "ARRAY_API_TESTS_MODULE" not in os.environ:
     os.environ["ARRAY_API_TESTS_MODULE"] = "ivy.functional.backends.numpy"
 
 
+def pytest_report_header(config):
+    return [
+        f"device: {config.getoption('device')}",
+        f"number of Hypothesis examples: {config.getoption('num_examples')}",
+    ]
+
+
 def pytest_configure(config):
     global available_frameworks
 
