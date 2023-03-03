@@ -8,7 +8,7 @@ import paddle
 # local
 import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
-
+from ivy.func_wrapper import with_unsupported_dtypes
 # noinspection PyProtectedMember
 from ivy.functional.ivy.manipulation import _calculate_out_shape
 from . import backend_version
@@ -64,6 +64,10 @@ def _reshape_fortran_paddle(x, shape):
     return paddle.transpose(paddle.reshape(x, shape[::-1]), list(range(len(shape)))[::-1])
 
 
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ("uint8", "bfloat16")},
+    backend_version,
+)
 def reshape(
     x: paddle.Tensor,
     /,
@@ -74,6 +78,14 @@ def reshape(
     allowzero: Optional[bool] = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if len(shape) == 0:
+        out_scalar = True
+        out_dtype = x.dtype
+        shape = [1]
+    else:
+        out_scalar = False
+    if len(x.shape) == 0:
+        x = paddle.reshape(x, shape=[1])
     if not allowzero:
         shape = [
             new_s if con else old_s
@@ -82,11 +94,31 @@ def reshape(
     if copy:
         newarr = paddle.clone(x)
         if order == "F":
-            return _reshape_fortran_paddle(newarr, shape)
-        return paddle.reshape(newarr, shape)
+            ret = _reshape_fortran_paddle(newarr, shape)
+            if out_scalar:
+                ret = paddle.full(shape=(), fill_value=ret.item()).cast(out_dtype)
+                ret.stop_gradient = x.stop_gradient
+                return ret
+            return ret
+        ret = paddle.reshape(newarr, shape)
+        if out_scalar:
+            ret = paddle.full(shape=(), fill_value=ret.item()).cast(out_dtype)
+            ret.stop_gradient = x.stop_gradient
+            return ret
+        return ret
     if order == "F":
-        return _reshape_fortran_paddle(x, shape)
-    return paddle.reshape(x, shape)
+        ret = _reshape_fortran_paddle(x, shape)
+        if out_scalar:
+            ret = paddle.full(shape=(), fill_value=ret.item()).cast(out_dtype)
+            ret.stop_gradient = x.stop_gradient
+            return ret
+        return ret
+    ret = paddle.reshape(x, shape)
+    if out_scalar:
+        ret = paddle.full(shape=(), fill_value=ret.item()).cast(out_dtype)
+        ret.stop_gradient = x.stop_gradient
+        return ret
+    return ret
 
 
 def roll(
@@ -110,6 +142,10 @@ def squeeze(
     raise IvyNotImplementedException()
 
 
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ("uint16", "bfloat16")},
+    backend_version,
+)
 def stack(
     arrays: Union[Tuple[paddle.Tensor], List[paddle.Tensor]],
     /,
@@ -117,7 +153,34 @@ def stack(
     axis: int = 0,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+
+    # The input list is converted to a tensor to promote the dtypes of the elements to the same dtype.
+    # This is necessary because the stack function does not support mixed dtypes.
+    dtype_list = set(map(lambda x: x.dtype, arrays))
+    if len(dtype_list) == 1:
+        dtype = dtype_list.pop()
+    elif len(dtype_list) == 2:
+        dtype = ivy.promote_types(*dtype_list)
+    else:
+        raise ValueError("Cannot promote more than 2 dtypes per stack.")
+
+    arrays = paddle.to_tensor(arrays, dtype=dtype)
+    if len(arrays.shape) == 1:  # handles scalar tensors
+        return arrays
+    if 'complex' in str(dtype):
+        real_list = []
+        imag_list = []
+        for array in arrays:
+            real_list.append(paddle.real(array))
+            imag_list.append(paddle.imag(array))
+        re_stacked = paddle.stack(real_list, axis=axis)
+        imag_stacked = paddle.stack(imag_list, axis=axis)
+        return re_stacked + imag_stacked * 1j
+    else:
+        arrays_list = []
+        for array in arrays.cast('float64'):
+            arrays_list.append(array)
+        return paddle.stack(arrays_list, axis=axis).cast(dtype)
 
 
 # Extra #
