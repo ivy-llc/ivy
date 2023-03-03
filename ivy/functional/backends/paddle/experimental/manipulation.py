@@ -24,7 +24,7 @@ def heaviside(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.heaviside(x1, x2)
 
 
 def flipud(
