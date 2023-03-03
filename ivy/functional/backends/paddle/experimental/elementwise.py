@@ -223,7 +223,6 @@ def hypot(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    result = paddle.pow(x1, 2) + paddle.pow(x2, 2)
     raise IvyNotImplementedException()
 
 
