@@ -236,6 +236,15 @@ def full(
         )
 
 
+def array(
+    object: Union[tf.Tensor, tf.Variable, bool, int, float, NestedSequence, SupportsBufferProtocol],
+    *,
+    dtype: Optional[tf.Dtype] = None,
+    device: str,
+):
+    return tf.Tensor(object, dtype=dtype, device=device)
+
+
 def full_like(
     x: Union[tf.Tensor, tf.Variable],
     /,

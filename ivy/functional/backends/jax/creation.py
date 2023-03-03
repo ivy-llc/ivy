@@ -142,6 +142,15 @@ def full(
     )
 
 
+def array(
+    object: Union[JaxArray, bool, int, float, NestedSequence, SupportsBufferProtocol],
+    *,
+    copy: True,
+    dtype: Optional[jnp.dtype] = None,
+):
+    return jax.numpy.array(object, dtype=dtype, copy=copy)
+
+
 def full_like(
     x: JaxArray,
     /,

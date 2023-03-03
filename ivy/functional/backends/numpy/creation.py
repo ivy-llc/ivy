@@ -128,6 +128,16 @@ def full(
     )
 
 
+def array(
+    object: Union[np.ndarray, bool, int, float, NestedSequence, SupportsBufferProtocol],
+    *,
+    copy: True,
+    dtype: Optional[np.array] = None,
+    like: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.array(object, dtype=dtype, copy=copy, like=like)
+
+
 def full_like(
     x: np.ndarray,
     /,

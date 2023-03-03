@@ -293,6 +293,18 @@ def full(
 full.support_native_out = True
 
 
+def array(
+    object: Union[torch.Tensor, bool, int, float, NestedSequence, SupportsBufferProtocol],
+    *,
+    dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
+    device: torch.device,
+):
+    return torch.Tensor(object, dtype=dtype, device=device)
+
+
+array.support_native_out = True
+
+
 def full_like(
     x: torch.Tensor,
     /,
