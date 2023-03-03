@@ -96,20 +96,28 @@ def reshape(
         if order == "F":
             ret = _reshape_fortran_paddle(newarr, shape)
             if out_scalar:
-                return paddle.full(shape=(), fill_value=ret.item()).cast(out_dtype)
+                ret = paddle.full(shape=(), fill_value=ret.item()).cast(out_dtype)
+                ret.stop_gradient = x.stop_gradient
+                return ret
             return ret
         ret = paddle.reshape(newarr, shape)
         if out_scalar:
-            return paddle.full(shape=(), fill_value=ret.item()).cast(out_dtype)
+            ret = paddle.full(shape=(), fill_value=ret.item()).cast(out_dtype)
+            ret.stop_gradient = x.stop_gradient
+            return ret
         return ret
     if order == "F":
         ret = _reshape_fortran_paddle(x, shape)
         if out_scalar:
-            return paddle.full(shape=(), fill_value=ret.item()).cast(out_dtype)
+            ret = paddle.full(shape=(), fill_value=ret.item()).cast(out_dtype)
+            ret.stop_gradient = x.stop_gradient
+            return ret
         return ret
     ret = paddle.reshape(x, shape)
     if out_scalar:
-        return paddle.full(shape=(), fill_value=ret.item()).cast(out_dtype)
+        ret = paddle.full(shape=(), fill_value=ret.item()).cast(out_dtype)
+        ret.stop_gradient = x.stop_gradient
+        return ret
     return ret
 
 
