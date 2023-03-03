@@ -33,7 +33,7 @@ def flipud(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.flipud(m)
 
 
 def vstack(
