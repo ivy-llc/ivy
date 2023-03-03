@@ -9,110 +9,131 @@ from typing import Optional
 # local
 import ivy
 from .conversions import *
-from .activations import ArrayWithActivations
-from .creation import ArrayWithCreation
-from .data_type import ArrayWithDataTypes
-from .device import ArrayWithDevice
-from .elementwise import ArrayWithElementwise
-from .general import ArrayWithGeneral
-from .gradients import ArrayWithGradients
-from .image import ArrayWithImage
-from .layers import ArrayWithLayers
-from .linear_algebra import ArrayWithLinearAlgebra
-from .losses import ArrayWithLosses
-from .manipulation import ArrayWithManipulation
-from .norms import ArrayWithNorms
-from .random import ArrayWithRandom
-from .searching import ArrayWithSearching
-from .set import ArrayWithSet
-from .sorting import ArrayWithSorting
-from .statistical import ArrayWithStatistical
-from .utility import ArrayWithUtility
-from .experimental import *
+from .activations import _ArrayWithActivations
+from .creation import _ArrayWithCreation
+from .data_type import _ArrayWithDataTypes
+from .device import _ArrayWithDevice
+from .elementwise import _ArrayWithElementwise
+from .general import _ArrayWithGeneral
+from .gradients import _ArrayWithGradients
+from .image import _ArrayWithImage
+from .layers import _ArrayWithLayers
+from .linear_algebra import _ArrayWithLinearAlgebra
+from .losses import _ArrayWithLosses
+from .manipulation import _ArrayWithManipulation
+from .norms import _ArrayWithNorms
+from .random import _ArrayWithRandom
+from .searching import _ArrayWithSearching
+from .set import _ArrayWithSet
+from .sorting import _ArrayWithSorting
+from .statistical import _ArrayWithStatistical
+from .utility import _ArrayWithUtility
 from ivy.func_wrapper import handle_view_indexing
+from .experimental import (
+    _ArrayWithSearchingExperimental,
+    _ArrayWithActivationsExperimental,
+    _ArrayWithConversionsExperimental,
+    _ArrayWithCreationExperimental,
+    _ArrayWithData_typeExperimental,
+    _ArrayWithDeviceExperimental,
+    _ArrayWithElementWiseExperimental,
+    _ArrayWithGeneralExperimental,
+    _ArrayWithGradientsExperimental,
+    _ArrayWithImageExperimental,
+    _ArrayWithLayersExperimental,
+    _ArrayWithLinearAlgebraExperimental,
+    _ArrayWithLossesExperimental,
+    _ArrayWithManipulationExperimental,
+    _ArrayWithNormsExperimental,
+    _ArrayWithRandomExperimental,
+    _ArrayWithSetExperimental,
+    _ArrayWithSortingExperimental,
+    _ArrayWithStatisticalExperimental,
+    _ArrayWithUtilityExperimental,
+)
 
 
 class Array(
-    ArrayWithActivations,
-    ArrayWithCreation,
-    ArrayWithDataTypes,
-    ArrayWithDevice,
-    ArrayWithElementwise,
-    ArrayWithGeneral,
-    ArrayWithGradients,
-    ArrayWithImage,
-    ArrayWithLayers,
-    ArrayWithLinearAlgebra,
-    ArrayWithLosses,
-    ArrayWithManipulation,
-    ArrayWithNorms,
-    ArrayWithRandom,
-    ArrayWithSearching,
-    ArrayWithSet,
-    ArrayWithSorting,
-    ArrayWithStatistical,
-    ArrayWithUtility,
-    ArrayWithActivationsExperimental,
-    ArrayWithConversionsExperimental,
-    ArrayWithCreationExperimental,
-    ArrayWithData_typeExperimental,
-    ArrayWithDeviceExperimental,
-    ArrayWithElementWiseExperimental,
-    ArrayWithGeneralExperimental,
-    ArrayWithGradientsExperimental,
-    ArrayWithImageExperimental,
-    ArrayWithLayersExperimental,
-    ArrayWithLinearAlgebraExperimental,
-    ArrayWithLossesExperimental,
-    ArrayWithManipulationExperimental,
-    ArrayWithNormsExperimental,
-    ArrayWithRandomExperimental,
-    ArrayWithSearchingExperimental,
-    ArrayWithSetExperimental,
-    ArrayWithSortingExperimental,
-    ArrayWithStatisticalExperimental,
-    ArrayWithUtilityExperimental,
+    _ArrayWithActivations,
+    _ArrayWithCreation,
+    _ArrayWithDataTypes,
+    _ArrayWithDevice,
+    _ArrayWithElementwise,
+    _ArrayWithGeneral,
+    _ArrayWithGradients,
+    _ArrayWithImage,
+    _ArrayWithLayers,
+    _ArrayWithLinearAlgebra,
+    _ArrayWithLosses,
+    _ArrayWithManipulation,
+    _ArrayWithNorms,
+    _ArrayWithRandom,
+    _ArrayWithSearching,
+    _ArrayWithSet,
+    _ArrayWithSorting,
+    _ArrayWithStatistical,
+    _ArrayWithUtility,
+    _ArrayWithActivationsExperimental,
+    _ArrayWithConversionsExperimental,
+    _ArrayWithCreationExperimental,
+    _ArrayWithData_typeExperimental,
+    _ArrayWithDeviceExperimental,
+    _ArrayWithElementWiseExperimental,
+    _ArrayWithGeneralExperimental,
+    _ArrayWithGradientsExperimental,
+    _ArrayWithImageExperimental,
+    _ArrayWithLayersExperimental,
+    _ArrayWithLinearAlgebraExperimental,
+    _ArrayWithLossesExperimental,
+    _ArrayWithManipulationExperimental,
+    _ArrayWithNormsExperimental,
+    _ArrayWithRandomExperimental,
+    _ArrayWithSearchingExperimental,
+    _ArrayWithSetExperimental,
+    _ArrayWithSortingExperimental,
+    _ArrayWithStatisticalExperimental,
+    _ArrayWithUtilityExperimental,
 ):
     def __init__(self, data, dynamic_backend=None):
-        ArrayWithActivations.__init__(self)
-        ArrayWithCreation.__init__(self)
-        ArrayWithDataTypes.__init__(self)
-        ArrayWithDevice.__init__(self)
-        ArrayWithElementwise.__init__(self)
-        ArrayWithGeneral.__init__(self)
-        ArrayWithGradients.__init__(self)
-        ArrayWithImage.__init__(self)
-        ArrayWithLayers.__init__(self)
-        ArrayWithLinearAlgebra.__init__(self)
-        ArrayWithLosses.__init__(self)
-        ArrayWithManipulation.__init__(self)
-        ArrayWithNorms.__init__(self)
-        ArrayWithRandom.__init__(self)
-        ArrayWithSearching.__init__(self)
-        ArrayWithSet.__init__(self)
-        ArrayWithSorting.__init__(self)
-        ArrayWithStatistical.__init__(self)
-        ArrayWithUtility.__init__(self)
-        ArrayWithActivationsExperimental.__init__(self),
-        ArrayWithConversionsExperimental.__init__(self),
-        ArrayWithCreationExperimental.__init__(self),
-        ArrayWithData_typeExperimental.__init__(self),
-        ArrayWithDeviceExperimental.__init__(self),
-        ArrayWithElementWiseExperimental.__init__(self),
-        ArrayWithGeneralExperimental.__init__(self),
-        ArrayWithGradientsExperimental.__init__(self),
-        ArrayWithImageExperimental.__init__(self),
-        ArrayWithLayersExperimental.__init__(self),
-        ArrayWithLinearAlgebraExperimental.__init__(self),
-        ArrayWithLossesExperimental.__init__(self),
-        ArrayWithManipulationExperimental.__init__(self),
-        ArrayWithNormsExperimental.__init__(self),
-        ArrayWithRandomExperimental.__init__(self),
-        ArrayWithSearchingExperimental.__init__(self),
-        ArrayWithSetExperimental.__init__(self),
-        ArrayWithSortingExperimental.__init__(self),
-        ArrayWithStatisticalExperimental.__init__(self),
-        ArrayWithUtilityExperimental.__init__(self),
+        _ArrayWithActivations.__init__(self)
+        _ArrayWithCreation.__init__(self)
+        _ArrayWithDataTypes.__init__(self)
+        _ArrayWithDevice.__init__(self)
+        _ArrayWithElementwise.__init__(self)
+        _ArrayWithGeneral.__init__(self)
+        _ArrayWithGradients.__init__(self)
+        _ArrayWithImage.__init__(self)
+        _ArrayWithLayers.__init__(self)
+        _ArrayWithLinearAlgebra.__init__(self)
+        _ArrayWithLosses.__init__(self)
+        _ArrayWithManipulation.__init__(self)
+        _ArrayWithNorms.__init__(self)
+        _ArrayWithRandom.__init__(self)
+        _ArrayWithSearching.__init__(self)
+        _ArrayWithSet.__init__(self)
+        _ArrayWithSorting.__init__(self)
+        _ArrayWithStatistical.__init__(self)
+        _ArrayWithUtility.__init__(self)
+        _ArrayWithActivationsExperimental.__init__(self),
+        _ArrayWithConversionsExperimental.__init__(self),
+        _ArrayWithCreationExperimental.__init__(self),
+        _ArrayWithData_typeExperimental.__init__(self),
+        _ArrayWithDeviceExperimental.__init__(self),
+        _ArrayWithElementWiseExperimental.__init__(self),
+        _ArrayWithGeneralExperimental.__init__(self),
+        _ArrayWithGradientsExperimental.__init__(self),
+        _ArrayWithImageExperimental.__init__(self),
+        _ArrayWithLayersExperimental.__init__(self),
+        _ArrayWithLinearAlgebraExperimental.__init__(self),
+        _ArrayWithLossesExperimental.__init__(self),
+        _ArrayWithManipulationExperimental.__init__(self),
+        _ArrayWithNormsExperimental.__init__(self),
+        _ArrayWithRandomExperimental.__init__(self),
+        _ArrayWithSearchingExperimental.__init__(self),
+        _ArrayWithSetExperimental.__init__(self),
+        _ArrayWithSortingExperimental.__init__(self),
+        _ArrayWithStatisticalExperimental.__init__(self),
+        _ArrayWithUtilityExperimental.__init__(self),
         self._init(data, dynamic_backend)
         self._view_attributes(data)
 
@@ -392,7 +413,7 @@ class Array(
         ----------
         self
             Input array or float.
-        other
+        power
             Array or float power. Must be compatible with ``self``
             (see :ref:`broadcasting`). Should have a numeric data type.
 

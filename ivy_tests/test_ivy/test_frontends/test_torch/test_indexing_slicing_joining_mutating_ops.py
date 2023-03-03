@@ -8,6 +8,9 @@ import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_splits
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa
+    _get_split_locations,
+)
 
 
 # noinspection DuplicatedCode
@@ -940,42 +943,75 @@ def test_torch_split(
     )
 
 
-@st.composite
-def _get_split_locations(draw, min_num_dims, axis):
-    """
-    Generate valid splits, either by generating an integer that evenly divides the axis
-    or a list of split locations.
-    """
-    shape = draw(
-        st.shared(helpers.get_shape(min_num_dims=min_num_dims), key="value_shape")
+# tensor_split
+@handle_frontend_test(
+    fn_tree="torch.tensor_split",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+    ),
+    indices_or_sections=_get_split_locations(min_num_dims=1),
+    axis=st.shared(
+        helpers.get_axis(
+            shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+            force_int=True,
+        ),
+        key="target_axis",
+    ),
+    number_positional_args=st.just(2),
+    test_with_out=st.just(False),
+)
+def test_torch_tensor_split(
+    *,
+    dtype_value,
+    indices_or_sections,
+    axis,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, value = dtype_value
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=value[0],
+        indices_or_sections=indices_or_sections,
+        dim=axis,
     )
-    if len(shape) == 1:
-        axis = draw(st.just(0))
-    else:
-        axis = draw(st.just(axis))
 
-    @st.composite
-    def get_int_split(draw):
-        if shape[axis] == 0:
-            return 0
-        factors = []
-        for i in range(1, shape[axis] + 1):
-            if shape[axis] % i == 0:
-                factors.append(i)
-        return draw(st.sampled_from(factors))
 
-    @st.composite
-    def get_list_split(draw):
-        return draw(
-            st.lists(
-                st.integers(min_value=0, max_value=shape[axis]),
-                min_size=0,
-                max_size=shape[axis],
-                unique=True,
-            ).map(sorted)
-        )
-
-    return draw(get_list_split() | get_int_split())
+# unbind
+@handle_frontend_test(
+    fn_tree="torch.unbind",
+    dtype_value_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+)
+def test_torch_unbind(
+    *,
+    dtype_value_axis,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtypes, value, axis = dtype_value_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=value[0],
+        dim=axis,
+    )
 
 
 # dsplit
@@ -986,7 +1022,6 @@ def _get_split_locations(draw, min_num_dims, axis):
         shape=st.shared(helpers.get_shape(min_num_dims=3), key="value_shape"),
     ),
     indices_or_sections=_get_split_locations(min_num_dims=3, axis=2),
-    number_positional_args=st.just(2),
 )
 def test_torch_dsplit(
     *,
@@ -1017,7 +1052,6 @@ def test_torch_dsplit(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
     indices_or_sections=_get_split_locations(min_num_dims=1, axis=1),
-    number_positional_args=st.just(2),
 )
 def test_torch_hsplit(
     *,
@@ -1057,7 +1091,6 @@ def test_torch_hsplit(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="value_shape"),
     ),
     indices_or_sections=_get_split_locations(min_num_dims=2, axis=0),
-    number_positional_args=st.just(2),
 )
 def test_torch_vsplit(
     *,

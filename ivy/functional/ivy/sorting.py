@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional
+from typing import Union, Optional, Literal, List
 
 # local
 import ivy
@@ -252,9 +252,9 @@ def searchsorted(
     v: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    side="left",
-    sorter=None,
-    ret_dtype=ivy.int64,
+    side: Literal["left", "right"] = "left",
+    sorter: Optional[Union[ivy.Array, ivy.NativeArray, List[int]]] = None,
+    ret_dtype: Union[ivy.Dtype, ivy.NativeDtype] = ivy.int64,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the indices of the inserted elements in a sorted array.
