@@ -74,7 +74,7 @@ def top_k(
     largest: Optional[bool] = True,
     out: Optional[Tuple[paddle.Tensor, paddle.Tensor]] = None,
 ) -> Tuple[paddle.Tensor, paddle.Tensor]:
-    return paddle.topk(x, k, axis, largest)
+    return paddle.topk(x, k, axis=axis, largest=largest)
     
 
 
