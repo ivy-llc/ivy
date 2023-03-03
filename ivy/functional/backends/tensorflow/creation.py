@@ -241,6 +241,7 @@ def array(
     *,
     dtype: Optional[tf.Dtype] = None,
     device: str,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
     return tf.Tensor(object, dtype=dtype, device=device)
 
