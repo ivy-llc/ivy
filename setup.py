@@ -29,12 +29,15 @@ def _replace_logos_html(txt):
     # html-containing chunks
     chunks = txt.split(".. raw:: html")
 
+    # light-dark logo
+    chunks[0] = _remove_dark_logo(chunks[0])
+
     # backend logos
     backends_chunk = chunks[2]
     bc = backends_chunk.split("\n\n")
     img_str = (
         ".. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logos/supported/frameworks.png?raw=true\n"  # noqa
-        "   :width: 100%"
+        "   :width: 100%\n"
         "   :class: dark-light"
     )
     backends_chunk = "\n\n".join(bc[0:1] + [img_str] + bc[2:])
@@ -44,9 +47,13 @@ def _replace_logos_html(txt):
         [
             ".. raw:: html".join(chunks[0:2]),
             backends_chunk,
-            ".. raw:: html".join(chunks[2:]),
+            ".. raw:: html".join(chunks[3:]),
         ]
     )
+
+
+def _remove_dark_logo(txt):
+    return txt.split("\n\n")[0]
 
 
 def _is_html(line):
@@ -77,7 +84,6 @@ text = read_description("README.rst")
 lines = _replace_logos_html(text).split("\n")
 lines = [line for line in lines if not (_is_html(line) or _is_raw_block(line))]
 long_description = "\n".join(lines)
-
 with open("ivy/_version.py") as f:
     exec(f.read(), __version__)
 

@@ -8,7 +8,7 @@ from typing import Optional, Union, List, Dict
 
 
 # noinspection PyMissingConstructor
-class ContainerWithActivations(ContainerBase):
+class _ContainerWithActivations(ContainerBase):
     @staticmethod
     def static_relu(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -264,7 +264,7 @@ class ContainerWithActivations(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        approximate: Optional[ivy.Container] = None,
+        approximate: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,

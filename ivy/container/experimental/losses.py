@@ -3,7 +3,7 @@ from typing import Union, Optional, List, Dict
 import ivy
 
 
-class ContainerWithLossesExperimental(ContainerBase):
+class _ContainerWithLossesExperimental(ContainerBase):
     @staticmethod
     def static_binary_cross_entropy_with_logits(
         true: Union[ivy.Array, ivy.NativeArray],

@@ -12,7 +12,7 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         /,
         *,
         axis: Optional[Union[Tuple[int], int]] = None,
-        keepdims: Optional[bool] = False,
+        keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.median. This method simply
@@ -52,7 +52,7 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         /,
         *,
         axis: Optional[Union[Tuple[int], int]] = None,
-        keepdims: Optional[bool] = False,
+        keepdims: bool = False,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -146,7 +146,7 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
 
         Parameters
         ----------
-        a
+        self
             Input array.
         q
             Quantile or sequence of quantiles to compute, which must be
@@ -219,8 +219,8 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        y: ivy.Array = None,
-        rowvar: Optional[bool] = True,
+        y: Optional[ivy.Array] = None,
+        rowvar: bool = True,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.corrcoef. This method simply
@@ -229,7 +229,7 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
 
         Parameters
         ----------
-        x
+        self
             Input array.
         y
             An additional input array.
@@ -262,8 +262,8 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         /,
         *,
         axis: Optional[Union[Tuple[int], int]] = None,
-        keepdims: Optional[bool] = False,
-        overwrite_input: Optional[bool] = False,
+        keepdims: bool = False,
+        overwrite_input: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.nanmedian. This method simply
@@ -324,7 +324,7 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         /,
         *,
         weights: Optional[ivy.Array] = None,
-        minlength: Optional[int] = 0,
+        minlength: int = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.bincount. This method simply
