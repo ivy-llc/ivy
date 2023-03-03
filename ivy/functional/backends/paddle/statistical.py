@@ -268,7 +268,28 @@ def cumprod(
     dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    dtype = paddle.as_native(dtype)
+    if dtype is None:
+        dtype = x.dtype
+
+    if not (exclusive or reverse):
+        return paddle.cumprod(x, dim, dtype=dtype)
+    elif exclusive and reverse:
+        x = paddle.cumprod(paddle.flip(x, dims=(axis,)), dim, dtype=dtype)
+        x = paddle.transpose(x, axis, -1)
+        x = paddle.concat((paddle.ones_like(x[..., -1:]), x[..., :-1]), -1)
+        x = paddle.transpose(x, axis, -1)
+        ret = paddle.flip(x, dims=(axis,))
+    elif exclusive:
+        x = paddle.transpose(x, axis, -1)
+        x = paddle.cat((paddle.ones_like(x[..., -1:]), x[..., :-1]), -1)
+        x = paddle.cumprod(x, -1, dtype=dtype)
+        ret = paddle.transpose(x, axis, -1)
+    else:
+        x = paddle.cumprod(paddle.flip(x, dims=(axis,)), dim, dtype=dtype)
+        ret = paddle.flip(x, dims=(axis,))
+    
+    return ret
 
 
 @with_unsupported_dtypes(
@@ -296,7 +317,30 @@ def cumsum(
     dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    dtype = paddle.dtype
+    if dtype is None:
+        if paddle.is_int_dtype(x.dtype):
+            dtype = paddle.promote_types(x.dtype, paddle.default_int_dtype(as_native=True))
+        dtype = x.dtype
+    if exclusive or reverse:
+        if exclusive and reverse:
+            x = paddle.cumsum(paddle.flip(x, axis=axis), axis=axis, dtype=dtype)
+            x = paddle.transpose(x, axis, -1)
+            x = paddle.concat((paddle.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+            x = paddle.transpose(x, axis, -1)
+            res = paddle.flip(x, axis=axis)
+        elif exclusive:
+            x = paddle.transpose(x, axis, -1)
+            x = paddle.cat((paddle.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+            x = paddle.cumsum(x, -1, dtype=dtype)
+            res = paddle.transpose(x, axis, -1)
+        else:
+            x = paddle.cumsum(paddle.flip(x, axis=axis), axis=axis, dtype=dtype)
+            res = paddle.flip(x, axis=axis)
+        if paddle.exists(out):
+            return paddle.inplace_update(out, res)    
+        return res
+    return paddle.cumsum(x, axis=axis, dtype=dtype)
 
 
 def einsum(
@@ -304,4 +348,9 @@ def einsum(
     *operands: paddle.Tensor,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    dtype = paddle.promote_types_of_inputs(operands)
+    operands = (
+        paddle.astype(operand, paddle.float32, copy=False).to_native()
+        for operand in operands
+    )
+    return paddle.astype(paddle.einsum(equation, *operands), dtype, copy=False)
