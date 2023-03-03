@@ -57,6 +57,7 @@ def quantile(
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
     temp = a.to(torch.float64)
+    qt = q.to(torch.float64)
     if isinstance(axis, list) or isinstance(axis, tuple):
         dimension = len(a.size())
         for x in axis:
@@ -66,10 +67,10 @@ def quantile(
                 axis1 = axis2
         temp = torch.flatten(temp, start_dim=dimension - len(axis))
         return torch.quantile(
-            temp, q, dim=-1, keepdim=keepdims, interpolation=interpolation, out=out
+            temp, qt, dim=-1, keepdim=keepdims, interpolation=interpolation, out=out
         )
     return torch.quantile(
-        temp, q, dim=axis, keepdim=keepdims, interpolation=interpolation, out=out
+        temp, qt, dim=axis, keepdim=keepdims, interpolation=interpolation, out=out
     )
 
 

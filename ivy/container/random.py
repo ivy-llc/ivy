@@ -7,7 +7,7 @@ from ivy.container.base import ContainerBase
 
 
 # noinspection PyMissingConstructor
-class ContainerWithRandom(ContainerBase):
+class _ContainerWithRandom(ContainerBase):
     @staticmethod
     def static_random_uniform(
         *,
@@ -590,7 +590,7 @@ class ContainerWithRandom(ContainerBase):
         /,
         *,
         batch_size: int = 1,
-        probs: Union[ivy.Array, ivy.NativeArray, ivy.Container] = None,
+        probs: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         replace: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
