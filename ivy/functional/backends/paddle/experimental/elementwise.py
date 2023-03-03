@@ -4,7 +4,7 @@ from numbers import Number
 from math import pi
 import paddle
 from ivy.utils.exceptions import IvyNotImplementedException
-
+from ivy.func_wrapper import with_unsupported_dtypes
 # local
 import ivy
 from ivy import promote_types_of_inputs
@@ -162,6 +162,11 @@ def angle(
     return result
 
 
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ("int8", "int16", "int32", "int64", "uint8",
+                         "uint16", "bfloat16", "float16", "float32", "float64", "bool")},
+    backend_version,
+)
 def imag(
     val: paddle.Tensor,
     /,
@@ -172,16 +177,16 @@ def imag(
 
 
 def nan_to_num(x: paddle.Tensor,
-    /,
-    *,
-    copy: Optional[bool] = True,
-    nan: Optional[Union[float, int]] = 0.0,
-    posinf: Optional[Union[float, int]] = None,
-    neginf: Optional[Union[float, int]] = None,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
+               /,
+               *,
+               copy: Optional[bool] = True,
+               nan: Optional[Union[float, int]] = 0.0,
+               posinf: Optional[Union[float, int]] = None,
+               neginf: Optional[Union[float, int]] = None,
+               out: Optional[paddle.Tensor] = None,
+               ) -> paddle.Tensor:
     raise IvyNotImplementedException()
-   
+
 
 def logaddexp2(
     x1: Union[paddle.Tensor, float, list, tuple],
@@ -203,7 +208,7 @@ def diff(
     append: Optional[Union[paddle.Tensor, int, float, list, tuple]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    x=paddle.to_tensor(x)
+    x = paddle.to_tensor(x)
     return paddle.diff(x, n=n, axis=axis, prepend=prepend, append=append)
 
 
@@ -226,6 +231,11 @@ def hypot(
     raise IvyNotImplementedException()
 
 
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ("int8", "int16", "int32", "int64", "uint8",
+                         "uint16", "bfloat16", "float16", "complex64", "complex128", "bool")},
+    backend_version,
+)
 def allclose(
     x1: paddle.Tensor,
     x2: paddle.Tensor,
@@ -285,6 +295,11 @@ def xlogy(
     raise IvyNotImplementedException()
 
 
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ("int8", "int16", "int32", "int64", "uint8",
+                         "uint16", "bfloat16", "float16", "float32", "float64", "bool")},
+    backend_version,
+)
 def real(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
 
     return paddle.real(x)
