@@ -79,8 +79,7 @@ def float_power(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    return paddle.pow(x1, x2).astype('float64')
+    raise IvyNotImplementedException()
 
 
 def exp2(
@@ -225,11 +224,7 @@ def hypot(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     result = paddle.pow(x1, 2) + paddle.pow(x2, 2)
-    if paddle.min(result) < 0:
-        raise ValueError("Input to hypot must be non-negative ")
-    if x1.dtype not in  [paddle.float16, paddle.float32, paddle.float64]:
-        raise ValueError("Input to hypot must be float16, float32 or float64 ")
-    return paddle.sqrt(result)
+    raise IvyNotImplementedException()
 
 
 def allclose(
@@ -251,7 +246,7 @@ def fix(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    paddle.floor(x, name="fix")
+    raise IvyNotImplementedException()
 
 
 def nextafter(
