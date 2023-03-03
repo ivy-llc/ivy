@@ -14,12 +14,12 @@ from . import backend_version
 
 
 def min(
-    x: np.ndarray,
-    /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
-    out: Optional[np.ndarray] = None,
+        x: np.ndarray,
+        /,
+        *,
+        axis: Optional[Union[int, Sequence[int]]] = None,
+        keepdims: bool = False,
+        out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     axis = tuple(axis) if isinstance(axis, list) else axis
     return np.asarray(np.amin(a=x, axis=axis, keepdims=keepdims, out=out))
@@ -29,12 +29,12 @@ min.support_native_out = True
 
 
 def max(
-    x: np.ndarray,
-    /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
-    out: Optional[np.ndarray] = None,
+        x: np.ndarray,
+        /,
+        *,
+        axis: Optional[Union[int, Sequence[int]]] = None,
+        keepdims: bool = False,
+        out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     axis = tuple(axis) if isinstance(axis, list) else axis
     return np.asarray(np.amax(a=x, axis=axis, keepdims=keepdims, out=out))
@@ -45,12 +45,12 @@ max.support_native_out = True
 
 @_scalar_output_to_0d_array
 def mean(
-    x: np.ndarray,
-    /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: bool = False,
-    out: Optional[np.ndarray] = None,
+        x: np.ndarray,
+        /,
+        *,
+        axis: Optional[Union[int, Sequence[int]]] = None,
+        keepdims: bool = False,
+        out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     axis = tuple(axis) if isinstance(axis, list) else axis
     return ivy.astype(
@@ -69,13 +69,13 @@ def _infer_dtype(dtype: np.dtype):
 
 
 def prod(
-    x: np.ndarray,
-    /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    dtype: Optional[np.dtype] = None,
-    keepdims: bool = False,
-    out: Optional[np.ndarray] = None,
+        x: np.ndarray,
+        /,
+        *,
+        axis: Optional[Union[int, Sequence[int]]] = None,
+        dtype: Optional[np.dtype] = None,
+        keepdims: bool = False,
+        out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
@@ -88,13 +88,13 @@ prod.support_native_out = True
 
 
 def std(
-    x: np.ndarray,
-    /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    correction: Union[int, float] = 0.0,
-    keepdims: bool = False,
-    out: Optional[np.ndarray] = None,
+        x: np.ndarray,
+        /,
+        *,
+        axis: Optional[Union[int, Sequence[int]]] = None,
+        correction: Union[int, float] = 0.0,
+        keepdims: bool = False,
+        out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     axis = tuple(axis) if isinstance(axis, list) else axis
     return np.asarray(np.std(x, axis=axis, ddof=correction, keepdims=keepdims, out=out))
@@ -104,13 +104,13 @@ std.support_native_out = True
 
 
 def sum(
-    x: np.ndarray,
-    /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    dtype: Optional[np.dtype] = None,
-    keepdims: bool = False,
-    out: Optional[np.ndarray] = None,
+        x: np.ndarray,
+        /,
+        *,
+        axis: Optional[Union[int, Sequence[int]]] = None,
+        dtype: Optional[np.dtype] = None,
+        keepdims: bool = False,
+        out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if dtype is None and not ivy.is_bool_dtype(x):
         dtype = x.dtype
@@ -131,13 +131,13 @@ sum.support_native_out = True
 
 @_scalar_output_to_0d_array
 def var(
-    x: np.ndarray,
-    /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    correction: Union[int, float] = 0.0,
-    keepdims: bool = False,
-    out: Optional[np.ndarray] = None,
+        x: np.ndarray,
+        /,
+        *,
+        axis: Optional[Union[int, Sequence[int]]] = None,
+        correction: Union[int, float] = 0.0,
+        keepdims: bool = False,
+        out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if axis is None:
         axis = tuple(range(len(x.shape)))
@@ -172,14 +172,14 @@ var.support_native_out = True
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, backend_version)
 def cumprod(
-    x: np.ndarray,
-    /,
-    *,
-    axis: int = 0,
-    exclusive: bool = False,
-    reverse: bool = False,
-    dtype: Optional[np.dtype] = None,
-    out: Optional[np.ndarray] = None,
+        x: np.ndarray,
+        /,
+        *,
+        axis: int = 0,
+        exclusive: bool = False,
+        reverse: bool = False,
+        dtype: Optional[np.dtype] = None,
+        out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if dtype is None:
         if x.dtype == "bool":
@@ -208,13 +208,13 @@ cumprod.support_native_out = True
 
 
 def cumsum(
-    x: np.ndarray,
-    axis: int = 0,
-    exclusive: bool = False,
-    reverse: bool = False,
-    *,
-    dtype: Optional[np.dtype] = None,
-    out: Optional[np.ndarray] = None,
+        x: np.ndarray,
+        axis: int = 0,
+        exclusive: bool = False,
+        reverse: bool = False,
+        *,
+        dtype: Optional[np.dtype] = None,
+        out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if dtype is None:
         if x.dtype == "bool":
@@ -247,9 +247,27 @@ cumsum.support_native_out = True
 
 @_scalar_output_to_0d_array
 def einsum(
-    equation: str, *operands: np.ndarray, out: Optional[np.ndarray] = None
+        equation: str, *operands: np.ndarray, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.einsum(equation, *operands, out=out)
 
 
 einsum.support_native_out = True
+
+
+def median(
+        x: np.ndarray,
+        /,
+        *,
+        axis: Optional[Union[int, Sequence[int]]] = None,
+        overwrite_input: bool = False,
+        keepdims: bool = False,
+        out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return np.asarray(
+        np.median(x, axis=axis, overwrite_input=overwrite_input,
+                  keepdims=keepdims, out=out))
+
+
+median.support_native_out = True
