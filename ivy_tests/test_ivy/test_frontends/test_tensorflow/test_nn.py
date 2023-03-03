@@ -1276,11 +1276,12 @@ def test_tensorflow_relu6(
     fn_tree="tensorflow.nn.conv_transpose",
     x_f_d_df=_x_and_filters(
         dtypes=helpers.get_dtypes("float", full=False),
-        data_format=st.sampled_from(["NHWC"]),
-        padding=st.sampled_from(["SAME"]),
-        type="2d",
-        transpose=True,
+        data_format=st.sampled_from(["NWC", "NHWC", "NDHWC"]),
+        padding=st.sampled_from(["SAME", "VALID"]),
+        dilation_max=1,
+        type=None,
     ),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_conv_transpose(
     *,
@@ -1290,7 +1291,7 @@ def test_tensorflow_conv_transpose(
     fn_tree,
     on_device,
 ):
-    input_dtype, x, filters, dilation, data_format, stride, padding, output_shape = x_f_d_df
+    input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -1303,5 +1304,5 @@ def test_tensorflow_conv_transpose(
         padding=padding,
         data_format=data_format,
         dilations=dilation,
-        output_shape = output_shape,
     )
+    

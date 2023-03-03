@@ -489,17 +489,19 @@ def conv_transpose(
     filters,
     output_shape,
     strides,
-    padding="SAME",
-    data_format="NWC",
+    padding='SAME',
+    data_format=None,
     dilations=None,
     name=None,
 ):
     return ivy.conv_general_transpose(
-        input,
-        filters,
-        strides,
-        padding,
-        output_shape=output_shape,
-        data_format=data_format,
-        dilations=dilations,
-    )
+        input, 
+        filters, 
+        output_shape, 
+        strides, 
+        padding, 
+        data_format, 
+        dilations
+        )
+
+
