@@ -1,0 +1,265 @@
+# manupulation.py
+
+jax.numpy.histogram(
+    a, 
+    bins=10, 
+    range=None, 
+    density=False, 
+    weights=None, 
+    cumulative=False)
+
+Return Tuple[Array, Array]
+       hist (array)
+       bin_edges (length(hist)+1)
+
+# Generate some random data
+data = jax_histogram.random.normal(size=1000)
+
+# Compute the histogram with 10 bins
+hist, bin_edges = jax_histogram.histogram(data, bins=10)
+
+# backend
+
+def jax_histogram(self: np.Array, 
+    /, 
+    *,
+    input: Optional[int, str, bins, int],
+    name: Optional[np.array[int]], 
+    weight: Optional[Union[density[bool]] = True,
+    data: Optional[Union[weights]] = None,
+    normed: Optional [normed[bool]] = None
+    step: Optional[Union[range(float,float)] = None, 
+    buckets: Optional[np.array[float(name.min()), float(name.max)]], 
+    description: Optional[np.Array[str],np.Array[bin] = 10],
+    ) -> ivy.Array:
+
+    Return jax_histogramTuple
+        ([Array, Array]
+        hist (array)
+        bin_edges (length(hist)+1)
+        )
+        
+        
+  # JAx Backend histogram 
+
+def histogram(self: np.Array, 
+    /, 
+    *,
+    input: Optional[int, str, bins, int],
+    name: Optional[np.array[int]], 
+    weight: Optional[Union[density[bool]] = True,
+    data: Optional[Union[weights]] = None,
+    normed: Optional [normed[bool]] = None
+    step: Optional[Union[range(float,float)] = None, 
+    buckets: Optional[np.array[float(name.min()), float(name.max)]], 
+    description: Optional[np.Array[str],np.Array[bin] = 10],
+    ) -> ivy.rray:
+
+    return hist:array
+           bin edges: array of dtype float(length(hist)+1)
+
+    # Generate some random data
+    data = np.random.normal(size=1000)
+
+    # Compute the histogram with 10 bins
+    hist, bin_edges = np.histogram(data, bins=10)
+
+
+
+# experimatnal.manupilaion.py ОПИСАНИЕ
+
+
+def numpy.histogram(a, 
+                    bins=10, 
+                    range=None, 
+                    normed=None, 
+                    weights=None, 
+                    density=None):
+
+    bins = int(10)
+    if bins = sequence:
+        a = np.arange(5, 15)
+    elif bins is str:
+        np.array.histogram_bin_edges()
+
+    return hist: array
+            bin_edged:np.array, np.dtype float
+
+def numpy.histogram_2(a, 
+                    bins=10, 
+                    range=None, 
+                    normed=None, 
+                    weights=None, 
+                    density=None):
+    weight = a
+    if density = True:
+        density = 1
+    elif density = False:
+        density = bins
+
+    return hist: array
+            bin_edged:np.array, np.dtype float
+            
+# для manupilation 
+
+#pytorch histogram
+def torch_histogram(input, 
+    bins, 
+    *, 
+    range=None, 
+    weight=None, 
+    density=False, 
+    out=None
+
+    return 1d tensor: bin_edges(Tensor),
+            hist (Tensor)
+
+
+torch.histogram(torch.tensor([1., 2, 1]), bins=4, range=(0., 3.), 
+weight=torch.tensor([1., 2., 4.]))
+torch.histogram(torch.tensor([1., 2, 1]), bins=4, range=(0., 3.), 
+weight=torch.tensor([1., 2., 4.]), density=True)
+
+
+# pythorch backend
+
+def histogram(
+    x: torch.Tensor,
+    /,
+    *,
+    weights: Optional[torch.Tensor] = None,
+    range: Optional[int] = None,
+    density: Optional[bool] = False,
+) -> torch.Tensor:
+
+
+torch.histogram(torch.tensor([1., 2, 1]), bins=4, range=(0., 3.), 
+weight=torch.tensor([1., 2., 4.]))
+torch.histogram(torch.tensor([1., 2, 1]), bins=4, range=(0., 3.), 
+weight=torch.tensor([1., 2., 4.]), density=True)
+
+
+
+
+#Tensorflow
+# manipulation.py
+
+
+def tfp.stats.histogram(
+    x,
+    edges,
+    axis=None,
+    weights=None,
+    extend_lower_interval=False,
+    extend_upper_interval=False,
+    dtype=None,
+    name=None
+    )
+
+# x.shape = [1000, 2]
+# x[:, 0] ~ Uniform(0, 1), x[:, 1] ~ Uniform(1, 2).
+x = tf.stack([tf.random.uniform([1000]), 1 + tf.random.uniform([1000])],
+             axis=-1)
+
+# edges ==> bins [0, 0.5), [0.5, 1.0), [1.0, 1.5), [1.5, 2.0].
+edges = [0., 0.5, 1.0, 1.5, 2.0]
+
+tfp.stats.histogram(x, edges)
+==> approximately [500, 500, 500, 500]
+
+tfp.stats.histogram(x, edges, axis=0)
+==> approximately [[500, 500, 0, 0], [0, 0, 500, 500]]
+
+
+
+# manipulation_1.py
+# tensorflow histogram
+def histogram(x,
+              edges,
+              axis=None,
+              weights=None,
+              extend_lower_interval=False,
+              extend_upper_interval=False,
+              dtype=None,
+              name=None):
+
+  with tf.name_scope(name or 'histogram'):
+
+    # Tensor conversions.
+    in_dtype = dtype_util.common_dtype([x, edges, weights],
+                                       dtype_hint=tf.float32)
+
+    x = tf.convert_to_tensor(x, name='x', dtype=in_dtype)
+    edges = tf.convert_to_tensor(edges, name='edges', dtype=in_dtype)
+    if weights is not None:
+      weights = tf.convert_to_tensor(weights, name='weights', dtype=in_dtype)
+
+    # Move dims in axis to the left end as one flattened dim.
+    # After this, x.shape = [n_samples] + E.
+    if axis is None:
+      x = tf.reshape(x, shape=[-1])
+      if weights is not None:
+        weights = tf.reshape(weights, shape=[-1])
+    else:
+      x_ndims = _get_static_ndims(
+          x, expect_static=True, expect_ndims_at_least=1)
+      axis = _make_static_axis_non_negative_list(axis, x_ndims)
+      if not axis:
+        raise ValueError('`axis` cannot be empty.  Found: {}'.format(axis))
+      x = _move_dims_to_flat_end(x, axis, x_ndims, right_end=False)
+
+      if weights is not None:
+        weights_ndims = _get_static_ndims(
+            x, expect_static=True, expect_ndims_at_least=1)
+        if x_ndims != weights_ndims:
+          raise ValueError('Number of dimensions of `x` and `weights` must '
+                           'coincide. Found: x has {}, weights has {}'.format(
+                               x_ndims, weights_ndims))
+        weights = _move_dims_to_flat_end(weights, axis, weights_ndims,
+                                         right_end=False)
+
+    # bins.shape = x.shape = [n_samples] + E,
+    # and bins[i] is a shape E Tensor of the bins that sample `i` fell into.
+    # E is the "event shape", which is [] if axis is None.
+    bins = find_bins(
+        x,
+        edges=edges,
+        # If not extending intervals, then values outside the edges will return
+        # -1, which gives an error when fed to bincount.
+        extend_lower_interval=extend_lower_interval,
+        extend_upper_interval=extend_upper_interval,
+        dtype=tf.int32)
+
+    # TODO(b/124015136) Use standard tf.math.bincount once it supports `axis`.
+    counts = count_integers(
+        bins,
+        weights=weights,
+        # Ensure we get correct output, even if x did not fall into every bin
+        minlength=tf.shape(edges)[0] - 1,
+        maxlength=tf.shape(edges)[0] - 1,
+        axis=0,
+        dtype=dtype or in_dtype)
+    n_edges = tf.compat.dimension_value(edges.shape[0])
+    if n_edges is not None:
+      tensorshape_util.set_shape(
+          counts,
+          tf.TensorShape([n_edges - 1]).concatenate(counts.shape[1:]))
+    return counts
+
+
+
+
+# backend Tensorflow histogram
+
+tensorfolow_histogram(
+    x: Union[tf.Tensor, tf.Variable,
+    edges: Union[ dtypex1-Dedges.shape[1:]xaxisrank(edges) > 1edges[k]edges.shape[1:]Tensorx],
+    axis: [DTensor]=None,
+    weights:Union[bin[],Tensordtypeshapexx[]]=None,
+    extend_lower_interval:bool=False,
+    extend_upper_interval:[bool]=False,
+    dtype: Union[[int32],[int64] [value:x.dtype]=None],
+    name:str[histogram]=None
+)
+
+    return tf.math.cumsum(x, edges, axes, reverse)  
