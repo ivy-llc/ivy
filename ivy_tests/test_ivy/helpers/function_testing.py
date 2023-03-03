@@ -383,6 +383,7 @@ def test_function(
 
     else:
         ivy.set_backend(ground_truth_backend)
+        ivy.set_default_device(on_device)
         try:
             fn = getattr(ivy, fn_name)
             args, kwargs, _, _, _ = create_args_kwargs(
@@ -903,6 +904,7 @@ def gradient_test(
         grads_np_from_gt_flat = ground_ret
     else:
         ivy.set_backend(ground_truth_backend)
+        ivy.set_default_device(on_device)
         test_unsupported = check_unsupported_dtype(
             fn=ivy.__dict__[fn] if isinstance(fn, str) else fn[1],
             input_dtypes=input_dtypes,
@@ -1223,6 +1225,7 @@ def test_method(
             fw_list[k].extend(v)
     else:
         ivy.set_backend(ground_truth_backend)
+        ivy.set_default_device(on_device)
         args_gt_constructor, kwargs_gt_constructor, _, _, _ = create_args_kwargs(
             args_np=args_np_constructor,
             arg_np_vals=con_arg_np_vals,
