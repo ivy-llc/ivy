@@ -1,5 +1,5 @@
 # global
-from hypothesis import strategies as st, assume
+from hypothesis import strategies as st
 import numpy as np
 
 
@@ -7,7 +7,6 @@ import numpy as np
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-import ivy_tests.test_ivy.helpers as helpers
 
 # Helpers #
 # ------- #
@@ -52,7 +51,7 @@ def statistical_dtype_values(draw, *, function, min_value=None, max_value=None):
                 | helpers.floats(min_value=0, max_value=max_correction - 1)
             )
         return dtype, values, axis, correction
-    if any(ele in function for ele in ["percentile","quantile"]):
+    if any(ele in function for ele in ["percentile", "quantile"]):
         q = draw(
             helpers.array_values(
                 dtype=helpers.get_dtypes("float"),
@@ -78,8 +77,9 @@ def statistical_dtype_values(draw, *, function, min_value=None, max_value=None):
 # percentile
 @handle_frontend_test(
     fn_tree="numpy.percentile",
-    dtype_x_q = statistical_dtype_values(function="percentile"),
+    dtype_x_q=statistical_dtype_values(function="percentile"),
     keep_dims=st.booleans(),
+    overwrite_input=st.booleans(),
 )
 def test_numpy_percentile(
     dtype_x_q,
@@ -88,9 +88,9 @@ def test_numpy_percentile(
     fn_tree,
     on_device,
     keep_dims,
+    overwrite_input
 ):
     input_dtypes, x, axis, interpolation, q = dtype_x_q
-    print("the out put variables are: ", input_dtypes, x[0], q[0], axis)
     if isinstance(axis, tuple):
         axis = axis[0]
 
@@ -103,8 +103,8 @@ def test_numpy_percentile(
         a=x[0],
         q=q,
         axis=axis,
+        overwrite_input=overwrite_input,
         method=interpolation[0],
         out=None,
         keepdims=keep_dims,
     )
-    

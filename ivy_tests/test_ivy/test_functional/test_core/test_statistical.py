@@ -460,7 +460,6 @@ def test_percentile(
     ground_truth_backend,
 ):
     input_dtype, x, axis, interpolation, q = dtype_and_x
-    print("\n\nthis is the output being output\n\n", x,q)
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,

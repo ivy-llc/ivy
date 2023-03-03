@@ -6,9 +6,7 @@ from typing import Union, Optional, Sequence
 import ivy
 from ivy.func_wrapper import (
     handle_out_argument,
-    to_native_arrays_and_back,
     handle_nestable,
-    infer_dtype,
     with_unsupported_dtypes,
 )
 from ivy.utils.exceptions import handle_exceptions
@@ -279,5 +277,6 @@ def percentile(
     overwrite_input: bool = False
 ) -> np.ndarray:
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return np.asarray(np.percentile(a=x, q=q, axis=axis, keepdims=keep_dims, out=out,method=method,
-                                    overwrite_input=overwrite_input,interpolation=interpolation))
+    return np.asarray(np.percentile(a=x, q=q, axis=axis, keepdims=keep_dims, out=out, 
+                                    method=method, overwrite_input=overwrite_input, 
+                                    interpolation=interpolation))

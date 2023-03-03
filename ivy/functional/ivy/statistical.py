@@ -1296,8 +1296,9 @@ def percentile(
     """Calculates the q-th percentile of the array ``a``.
 
     .. note::
-       When the number of elements over which to compute the q-th percentile is zero, some specification-compliant libraries may
-       choose to raise an error, (e.g., if ``a`` is a ``NaN`` input array, return ``NaN``),
+       When the number of elements over which to compute the q-th percentile is zero,
+       some specification-compliant libraries may choose to raise an error, 
+       (e.g., if ``a`` is a ``NaN`` input array, return ``NaN``),
 
     **Special Cases**
 
@@ -1311,10 +1312,11 @@ def percentile(
     a
         input array. Should have a floating-point data type.
     q
-        Percentile or sequence of percentiles to compute, which must be between 0 and 100 inclusive.
+        Percentile or sequence of percentiles to compute, which must be between 0 and 
+        100 inclusive.
     axis
-        axis or axes along which q-th percentile must be computed. By default, the percentile
-        must be computed over the entire array. Default: ``None``.
+        axis or axes along which q-th percentile must be computed. By default, the 
+        percentile must be computed over the entire array. Default: ``None``.
     keep_dims
         bool, if ``True``, the reduced axes (dimensions) must be included in the result
         as singleton dimensions, and, accordingly, the result must be compatible with
@@ -1323,8 +1325,8 @@ def percentile(
     out
         optional output array, for writing the result to.
     overwrite_input: bool
-        If True, then allow the input array ``a`` to be modified by intermediate calculations,
-        to save memory.
+        If True, then allow the input array ``a`` to be modified by intermediate 
+        calculations, to save memory.
     method: str
         This parameter specifies the method to use for estimating the percentile.
 
@@ -1429,5 +1431,7 @@ def percentile(
     }
 
     """
-    return current_backend(a).percentile(a, q, axis=axis, keep_dims=keep_dims, out=out, method=method,
-                                         overwrite_input=overwrite_input, interpolation=interpolation)
+    return current_backend(a).percentile(a, q, axis=axis, keep_dims=keep_dims, 
+                                         out=out, method=method, 
+                                         overwrite_input=overwrite_input, 
+                                         interpolation=interpolation)
