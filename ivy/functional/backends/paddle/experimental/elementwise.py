@@ -80,7 +80,7 @@ def float_power(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2 = promote_types_of_inputs(x1, x2)
-    return paddle.pow(x1, x2)
+    return paddle.pow(x1, x2).astype('float64')
 
 
 def exp2(
