@@ -283,3 +283,7 @@ def xlogy(
 
 def real(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     raise IvyNotImplementedException()
+
+
+def exp2(x: paddle.Tensor, /, *, out:Optional[paddle.tensor] = None) -> paddle.Tensor:
+    raise IvyNotImplementedException()
