@@ -135,6 +135,7 @@ def test_function(
     ret_grad_idxs=None,
     ground_truth_backend: str,
     on_device: str,
+    assert_device: bool = False,
     return_flat_np_arrays: bool = False,
     **all_as_kwargs_np,
 ):
@@ -469,12 +470,13 @@ def test_function(
 
     ret_device = ivy.dev(ret)
 
-    assert (
-        ret_device == ret_from_gt_device
-    ), f"ground truth backend ({ground_truth_backend}) returned array on device {ret_from_gt_device} but target backend ({ivy.backend}) returned array on device {ret_device}"
-    assert (
-        ret_device == on_device
-    ), f"device is set to {on_device}, but ground truth produced array on {ret_device}"
+    if assert_device:
+        assert (
+            ret_device == ret_from_gt_device
+        ), f"ground truth backend ({ground_truth_backend}) returned array on device {ret_from_gt_device} but target backend ({ivy.backend}) returned array on device {ret_device}"
+        assert (
+            ret_device == on_device
+        ), f"device is set to {on_device}, but ground truth produced array on {ret_device}"
 
     # assuming value test will be handled manually in the test function
     if not test_values:
@@ -969,6 +971,7 @@ def test_method(
     ret_grad_idxs=None,
     ground_truth_backend: str,
     on_device: str,
+    assert_device: bool = False,
     return_flat_np_arrays: bool = False,
 ):
     """Tests a class-method that consumes (or returns) arrays for the current backend
@@ -1327,12 +1330,13 @@ def test_method(
                 on_device=on_device,
             )
 
-    assert (
-        ret_device == ret_from_gt_device
-    ), f"ground truth backend ({ground_truth_backend}) returned array on device {ret_from_gt_device} but target backend ({ivy.backend}) returned array on device {ret_device}"
-    assert (
-        ret_device == on_device
-    ), f"device is set to {on_device}, but ground truth produced array on {ret_device}"
+    if assert_device:
+        assert (
+            ret_device == ret_from_gt_device
+        ), f"ground truth backend ({ground_truth_backend}) returned array on device {ret_from_gt_device} but target backend ({ivy.backend}) returned array on device {ret_device}"
+        assert (
+            ret_device == on_device
+        ), f"device is set to {on_device}, but ground truth produced array on {ret_device}"
 
     # assuming value test will be handled manually in the test function
     if not test_values:
