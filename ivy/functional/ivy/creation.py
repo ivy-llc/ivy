@@ -1451,7 +1451,13 @@ def full(
 @handle_array_like_without_promotion
 @handle_array_function
 def array(
-    object: Union[ivy.Array, ivy.NativeArray, bool, int, float, NestedSequence, SupportsBufferProtocol],
+    object: Union[ivy.Array,
+                 ivy.NativeArray,
+                 bool,
+                 int,
+                 float,
+                 NestedSequence,
+                 SupportsBufferProtocol],
     *,
     copy: Optional[bool] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
@@ -1465,8 +1471,9 @@ def array(
     ----------
 
     object
-        An array, any object exposing the array interface, an object whose __array__ method returns an array,
-        or any (nested) sequence. If object is a scalar, a 0-dimensional array containing object is returned.
+        An array, any object exposing the array interface, an object
+        whose __array__ method returns an array, or any (nested) sequence. 
+        If object is a scalar, a 0-dimensional array containing object is returned.
     copy
         boolean, indicating whether or not to copy the input. Default: ``None``.
     dtype
@@ -1484,9 +1491,9 @@ def array(
     ret
         An array interpretation of object.
 
-        Both the description and the type hints above assumes an array input for simplicity,
-        but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-        instances in place of the arguments.
+        Both the description and the type hints above assumes an array input
+        for simplicity, but this function is *nestable*, and therefore also 
+        accepts :class:`ivy.Container`instances in place of the arguments.
 
     Examples:
     -------
@@ -1507,14 +1514,15 @@ def array(
     >>> ivy.array([1, 2, 3], dtype=complex)
     ivy.array([ 1.+0.j,  2.+0.j,  3.+0.j])
 
-    >>> y= ivy.ones([2, 4], dtype=ivy.float64, device=cuda0)
+    >>> y= ivy.ones([2, 3], dtype=ivy.float64, device=cuda0)
     >>>ivy.array(y)
-    ivy.array([[ 1.0000,  1.0000,  1.0000,  1.0000],
-               [ 1.0000,  1.0000,  1.0000,  1.0000]], dtype=ivy.float64, device='cuda:0')
+    ivy.array([[ 1.0000,  1.0000,  1.0000],
+               [ 1.0000,  1.0000,  1.0000]], dtype=ivy.float64, device='cuda:0')
 
 
     """
-    return current_backend().array(object, dtype=dtype, copy=copy, device=device, like=like)
+    return current_backend().array(object, dtype=dtype, copy=copy, device=device,
+                                   like=like)
 
 
 @to_native_arrays_and_back
