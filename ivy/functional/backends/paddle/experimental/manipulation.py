@@ -74,7 +74,8 @@ def top_k(
     largest: Optional[bool] = True,
     out: Optional[Tuple[paddle.Tensor, paddle.Tensor]] = None,
 ) -> Tuple[paddle.Tensor, paddle.Tensor]:
-    raise IvyNotImplementedException()
+    return paddle.topk(x, k, axis, largest)
+    
 
 
 def fliplr(
