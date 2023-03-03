@@ -38,11 +38,11 @@ def variable_data(x: paddle.Tensor, /) -> paddle.Tensor:
 def _grad_func(y, xs, retain_grads):
     """Gradient calculation function."""
     # Creating a zero gradient nest for the case where no gradients are computed
-    grads_ = paddle.static.nested_map(
+    grads_ = ivy.nested_map(
         xs,
-        lambda x: paddle.zeros_like(x),
-        include_subgraph=True,
-        stop_gradient=False
+        lambda x: ivy.to_native(ivy.zeros_like(x)),
+        include_derived=True,
+        shallow=False,
     )
 
     # Gradient calculation
@@ -55,23 +55,24 @@ def _grad_func(y, xs, retain_grads):
             allow_unused=True,
         )[0]
         grads = grads_ if grads is None else grads
-    elif isinstance(xs, paddle.static.NestedMutableSequence):
-        grads = paddle.static.nested_map(
-            xs,
-            lambda x: x._grad_ivar() if x._grad_ivar() is not None else paddle.zeros_like(x),
-            include_subgraph=True,
-            stop_gradient=False
+    elif isinstance(xs, ivy.Container):
+        grads = xs.cont_from_flat_list(
+            list(
+                paddle.grad(
+                    outputs=[y],
+                    inputs=[v for k, v in xs.cont_to_iterator()],
+                    retain_graph=True,
+                    create_graph=retain_grads,
+                    allow_unused=True,
+                )
+            )
         )
         # Returning zeros if no gradients are computed for consistent results
-        if isinstance(grads, paddle.static.NestedMutableSequence):
-            grads = paddle.static.nested_map(
-                grads, lambda x: paddle.zeros_like(x) if x._grad_ivar() is None else x,
-                include_subgraph=True,
-                stop_gradient=False
+        if isinstance(grads, ivy.Container):
+            grads = ivy.nested_map(
+                grads, lambda x: 0 if x is None else x, include_derived=True
             )
-            grads = paddle.static.nested_map(
-                lambda x, y: x + y, grads, grads_
-            )
+            grads += grads_
         else:
             grads = grads_ if grads is None else grads
     else:
@@ -86,10 +87,8 @@ def _grad_func(y, xs, retain_grads):
             )[0]
             return grad if grad is not None else paddle.zeros_like(x)
 
-        grads = paddle.static.nested_map(xs, grad_, include_subgraph=True, stop_gradient=False)
-        grads = paddle.static.nested_map(
-            lambda x, y: x + y, grads, grads_
-        )
+        grads = ivy.nested_map(xs, grad_, include_derived=True, shallow=False)
+        grads = ivy.nested_multi_map(lambda x, _: (x[0] + x[1]), [grads, grads_])
     return grads
 
 
