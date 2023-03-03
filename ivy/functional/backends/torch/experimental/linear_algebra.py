@@ -164,3 +164,18 @@ def multi_dot(
 
 
 multi_dot.support_native_out = True
+
+
+def solve_triangular(
+    a: torch.Tensor,
+    b: torch.Tensor,
+    /,
+    *,
+    lower: bool = True,
+    adjoint: bool = False,
+    unit_diagonal: bool = False,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.linalg.solve_triangular(
+        a, b, lower=lower, adjoint=adjoint, unit_diagonal=unit_diagonal, out=out
+    )

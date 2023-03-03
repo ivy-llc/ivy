@@ -507,3 +507,54 @@ def multi_dot(
                [ 80, 148]])
     """
     return current_backend(x).multi_dot(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def solve_triangular(
+    a: Union[ivy.Array, ivy.NativeArray],
+    b: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    lower: bool = True,
+    adjoint: bool = False,
+    unit_diagonal: bool = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Solve the equation a x = b for x, assuming a is a triangular matrix.
+
+    Parameters
+    ----------
+    a
+        The matrix in the equation.
+    b
+        The right-hand side matrix in the equation.
+    lower
+        Whether a is a lower or upper triangular matrix.
+    adjoint
+        Whether to solve with a or a.T.
+    unit_diagonal
+        Whether the main diagonal of a is assumed to be all ones.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    x
+        The solution to the system a x = b. Shape of x is the same as b.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> a = ivy.array([[1, 0, 0], [2, 1, 0], [3, 2, 1]])
+    >>> b = ivy.array([[1], [2], [3]])
+    >>> ivy.solve_triangular(a, b)
+    ivy.array([[1.],
+               [1.],
+               [1.]])
+    """
+    return current_backend(a).solve_triangular(a, b, lower=lower, adjoint=adjoint,
+                                               unit_diagonal=unit_diagonal, out=out)

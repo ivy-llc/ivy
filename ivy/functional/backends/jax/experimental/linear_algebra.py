@@ -137,3 +137,18 @@ def multi_dot(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.linalg.multi_dot(x)
+
+
+def solve_triangular(
+    a: JaxArray,
+    b: JaxArray,
+    /,
+    *,
+    lower: bool = True,
+    adjoint: bool = False,
+    unit_diagonal: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.linalg.solve_triangular(
+        a, b, lower=lower, adjoint=adjoint, unit_diagonal=unit_diagonal
+    )

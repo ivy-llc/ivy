@@ -148,3 +148,20 @@ def multi_dot(
         raise ValueError("Expecting at least two tensors.")
     dot_out = reduce(tf.matmul, x)
     return dot_out
+
+
+def solve_traingular(
+    a: Union[tf.Tensor, tf.Variable],
+    b: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    lower: bool = False,
+    adjoint: bool = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.linalg.triangular_solve(
+        a,
+        b,
+        lower=lower,
+        adjoint=adjoint,
+    )

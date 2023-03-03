@@ -149,3 +149,25 @@ def multi_dot(
 
 
 multi_dot.support_native_out = True
+
+
+def solve_triangular(
+    a: np.ndarray,
+    b: np.ndarray,
+    /,
+    *,
+    lower: bool = True,
+    adjoint: bool = False,
+    unit_diagonal: bool = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.linalg.solve_triangular(
+        a,
+        b, 
+        lower=lower, 
+        adjoint=adjoint, 
+        unit_diagonal=unit_diagonal\
+        )
+
+
+solve_triangular.support_native_out = True

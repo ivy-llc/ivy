@@ -238,3 +238,33 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
                    [ 80, 148]])
         """
         return ivy.multi_dot((self._data, *x), out=out)
+    
+    def solve_triangular(
+        self: ivy.Array,
+        b: ivy.Array,
+        /,
+        *,
+        lower: bool = True,
+        unit_diagonal: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.solve_triangular.
+        This method simply wraps the function, and so the docstring for
+        ivy.solve_triangular also applies to this method with minimal changes.
+
+        Examples
+        --------
+        >>> A = ivy.array([[1, 0, 0], [2, 1, 0], [3, 4, 1]])
+        >>> b = ivy.array([1, 2, 3])
+        >>> A.solve_triangular(b)
+        ivy.array([1., 0., 0.])
+        """
+        return ivy.solve_triangular(
+            self._data,
+            b,
+            lower=lower,
+            unit_diagonal=unit_diagonal,
+            out=out,
+        )
+            

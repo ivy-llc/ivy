@@ -779,3 +779,65 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+    
+    @staticmethod
+    def static_solve_triangular(
+        a: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        b: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        lower: bool = True,
+        transpose: bool = False,
+        conjugate: bool = False,
+        unit_diagonal: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.solve_triangular. This method simply wraps
+        the function, and so the docstring for ivy.solve_triangular also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        a
+            array of shape (n, n) or (n, n, k).
+        b
+            array of shape (n,) or (n, k).
+        lower
+            whether the matrix is to be considered as lower triangular.
+        transpose
+            whether to solve with a transpose of matrix a.
+        conjugate
+            whether to solve with a conjugate transpose of matrix a.
+        unit_diagonal
+            whether the diagonal elements of a are assumed to be 1 and will not be referenced.
+
+        Returns
+        -------
+        ret
+            solution to the system a x = b. Shape of return matches b.
+
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> a = ivy.Container(x=ivy.array([[1., 0.], [2., 3.]]),
+        ...                   y=ivy.array([[1., 0.], [2., 3.]]))
+        >>> b = ivy.Container(x=ivy.array([1., 2.]),
+        ...                   y=ivy.array([1., 2.]))
+        >>> ivy.Container.static_solve_triangular(a, b, lower=True)
+        {
+            x: ivy.array([1., 0.]),
+            y: ivy.array([1., 0.])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "solve_triangular",
+            (a, b),
+            out=out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+        )
+    
