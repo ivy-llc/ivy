@@ -6,8 +6,10 @@ from typing import Optional, Union
 import ivy
 
 
-class ArrayWithActivationsExperimental(abc.ABC):
-    def logit(self, /, *, eps=None, out=None):
+class _ArrayWithActivationsExperimental(abc.ABC):
+    def logit(
+        self, /, *, eps: Optional[float] = None, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.logit. This method
         simply wraps the function, and so the docstring for ivy.logit
@@ -48,7 +50,7 @@ class ArrayWithActivationsExperimental(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        threshold: Optional[Union[int, float]] = 0,
+        threshold: Union[int, float] = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -86,7 +88,7 @@ class ArrayWithActivationsExperimental(abc.ABC):
         slope: Union[float, ivy.NativeArray, ivy.Array],
         /,
         *,
-        out: Optional["ivy.Array"] = None,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         Prelu takes input data (Array) and slope array as input,
@@ -101,12 +103,15 @@ class ArrayWithActivationsExperimental(abc.ABC):
         self
             input array.
         slope
-            Slope Array. The shape of slope can be smaller then first input X;
+            Slope Array. The shape of slope can be smaller than first input X;
             if so, its shape must be unidirectional broadcastable to X.
         out
             Optional output array.
+
         Returns
         -------
+        ret
+            input array with prelu applied elementwise.
         """
         return ivy.prelu(self._data, slope, out=out)
 
@@ -115,7 +120,7 @@ class ArrayWithActivationsExperimental(abc.ABC):
 
         Parameters
         ----------
-        x
+        self
             input array
         out
             optional output array, for writing the result to.
@@ -125,7 +130,7 @@ class ArrayWithActivationsExperimental(abc.ABC):
         -------
         ret
             an array containing the rectified linear unit 6 activation
-            of each element in ``x``.
+            of each element in input.
 
         Examples
         --------

@@ -6,7 +6,7 @@ import ivy
 from ivy.container.base import ContainerBase
 
 
-class ContainerWithActivationExperimental(ContainerBase):
+class _ContainerWithActivationExperimental(ContainerBase):
     @staticmethod
     def static_logit(
         x: Union[float, int, ivy.Container],
@@ -125,7 +125,7 @@ class ContainerWithActivationExperimental(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        threshold: Optional[Union[int, float]] = 0,
+        threshold: Union[int, float] = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -190,7 +190,7 @@ class ContainerWithActivationExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        threshold: Optional[Union[int, float]] = 0,
+        threshold: Union[int, float] = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -260,7 +260,7 @@ class ContainerWithActivationExperimental(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional["ivy.Array"] = None,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
 

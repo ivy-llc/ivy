@@ -12,11 +12,18 @@ on:
         default: false
         required: false
 
+      gpu:
+        description: 'Gpu based Testing :'
+        default: false
+        required: false
+
 permissions:
   actions: read
+
 jobs:
-   run_tests:
-     runs-on: ubuntu-latest-16-cores
+   run_tests_gpu:
+     if: ${{ github.event.inputs.gpu == 'true' }}
+     runs-on: self-hosted
      steps:
        - name: Checkout Ivy 🛎
          uses: actions/checkout@v2
@@ -35,12 +42,52 @@ jobs:
        - name: Run Tests
          id: tests
          run: |
-           pip install pymongo
-           cd ivy
-           python setup_tests.py ${{ github.event.inputs.test }} 
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
+             pip install pymongo
+             cd ivy
+             mkdir .ivy
+             touch .ivy/key.pem
+             echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+             python setup_tests.py ${{ github.event.inputs.test }} 
+             python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' ${{ github.event.inputs.gpu }} ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Check on failures
          if: steps.tests.outcome != 'success'
          run: exit 1
+
+   run_tests_cpu:
+     if: ${{ github.event.inputs.gpu == 'false' }}
+     runs-on: ubuntu-latest
+     steps:
+         - name: Checkout Ivy 🛎
+           uses: actions/checkout@v2
+           with:
+               path: ivy
+               persist-credentials: false
+               submodules: "recursive"
+
+         - name: Get Job URL
+           uses: Tiryoh/gha-jobid-action@v0
+           id: jobs
+           with:
+                github_token: ${{ secrets.GITHUB_TOKEN }}
+                job_name: ${{ github.job }}
+
+         - name: Run Tests
+           id: tests
+           run: |
+              pip install pymongo
+              cd ivy
+              mkdir .ivy
+              touch .ivy/key.pem
+              echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+              python setup_tests.py ${{ github.event.inputs.test }} 
+              python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
+           continue-on-error: true
+
+         - name: Check on failures
+           if: steps.tests.outcome != 'success'
+           run: exit 1
+
+
+

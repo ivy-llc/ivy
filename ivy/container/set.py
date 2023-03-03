@@ -6,7 +6,7 @@ from ivy.container.base import ContainerBase
 import ivy
 
 
-class ContainerWithSet(ContainerBase):
+class _ContainerWithSet(ContainerBase):
     @staticmethod
     def static_unique_all(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],

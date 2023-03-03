@@ -1,12 +1,12 @@
 # global
-from typing import Union, Optional, List, Dict, Tuple
+from typing import Union, Optional, List, Dict, Tuple, Sequence
 
 # local
 from ivy.container.base import ContainerBase
 import ivy
 
 
-class ContainerWithLinearAlgebraExperimental(ContainerBase):
+class _ContainerWithLinearAlgebraExperimental(ContainerBase):
     @staticmethod
     def static_eigh_tridiagonal(
         alpha: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -195,11 +195,11 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        offset: Optional[int] = 0,
-        padding_value: Optional[float] = 0,
-        align: Optional[str] = "RIGHT_LEFT",
-        num_rows: Optional[int] = -1,
-        num_cols: Optional[int] = -1,
+        offset: int = 0,
+        padding_value: float = 0,
+        align: str = "RIGHT_LEFT",
+        num_rows: int = -1,
+        num_cols: int = -1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -225,11 +225,11 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        offset: Optional[int] = 0,
-        padding_value: Optional[float] = 0,
-        align: Optional[str] = "RIGHT_LEFT",
-        num_rows: Optional[int] = -1,
-        num_cols: Optional[int] = -1,
+        offset: int = 0,
+        padding_value: float = 0,
+        align: str = "RIGHT_LEFT",
+        num_rows: int = -1,
+        num_cols: int = -1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -679,4 +679,103 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
         """
         return self.static_adjoint(
             self, key_chains=key_chains, to_apply=to_apply, out=out
+        )
+
+    @staticmethod
+    def static_multi_dot(
+        x: Sequence[Union[ivy.Container, ivy.Array, ivy.NativeArray]],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.multi_dot. This method simply wraps
+        the function, and so the docstring for ivy.multi_dot also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            sequence of matrices to multiply.
+        out
+            optional output array, for writing the result to. It must have a valid
+            shape, i.e. the resulting shape after applying regular matrix multiplication
+            to the inputs.
+
+        Returns
+        -------
+        ret
+            dot product of the arrays.
+
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> a = ivy.Container(x=ivy.arange(2 * 3).reshape((2, 3)),
+        ...                   y=ivy.arange(2 * 3).reshape((2, 3)))
+        >>> b = ivy.Container(x=ivy.arange(3 * 2).reshape((3, 2)),
+        ...                   y=ivy.arange(3 * 2).reshape((3, 2)))
+        >>> c = ivy.Container(x=ivy.arange(2 * 2).reshape((2, 2)),
+        ...                   y=ivy.arange(2 * 2).reshape((2, 2)))
+        >>> ivy.Container.static_multi_dot((a, b, c))
+        {
+            x: ivy.array([[26, 49],
+                          [80, 148]]),
+            y: ivy.array([[26, 49],
+                          [80, 148]])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "multi_dot",
+            x,
+            out=out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def multi_dot(
+        self: ivy.Container,
+        arrays: Sequence[Union[ivy.Container, ivy.Array, ivy.NativeArray]],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = True,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.multi_dot.
+        This method simply wraps the function, and so the docstring for
+        ivy.multi_dot also applies to this method with minimal changes.
+
+        Examples
+        --------
+        >>> a = ivy.Container(x=ivy.arange(2 * 3).reshape((2, 3)),
+        ...                   y=ivy.arange(2 * 3).reshape((2, 3)))
+        >>> b = ivy.Container(x=ivy.arange(3 * 2).reshape((3, 2)),
+        ...                   y=ivy.arange(3 * 2).reshape((3, 2)))
+        >>> c = ivy.Container(x=ivy.arange(2 * 2).reshape((2, 2)),
+        ...                   y=ivy.arange(2 * 2).reshape((2, 2)))
+        >>> a.multi_dot((b, c))
+        {
+            x: ivy.array([[26, 49],
+                          [80, 148]]),
+            y: ivy.array([[26, 49],
+                          [80, 148]])
+        }
+        """
+        return self.static_multi_dot(
+            (self, *arrays),
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
         )
