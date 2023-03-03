@@ -5,6 +5,7 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     handle_numpy_out,
 )
 
+
 @to_ivy_arrays_and_back
 # @from_zero_dim_arrays_to_scalar
 @handle_numpy_out
