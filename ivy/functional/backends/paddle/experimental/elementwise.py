@@ -245,7 +245,7 @@ def fix(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    paddle.floor(x, name="fix")
 
 
 def nextafter(
