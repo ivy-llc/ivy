@@ -6,24 +6,54 @@ from typing import Optional, Union
 # global
 import paddle
 import paddle.nn.functional as F
+
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
-def _dtype_helper(x: paddle.Tensor):
-    # used since all paddle activations only support float32 and float64
-    if x.dtype not in [paddle.float32, paddle.float64]:
-        return x.cast(paddle.float32), x.dtype
-    return x, x.dtype
-
-
+@with_unsupported_dtypes(
+    {
+        "2.4.2 and below": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "uint8",
+            "uint16",
+            "bfloat16",
+            "float16",
+            "complex64",
+            "complex128",
+            "bool",
+        )
+    },
+    backend_version,
+)
 def relu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    x , x_dtype = _dtype_helper(x)
 
-    return F.relu(x).cast(x_dtype)
+    return F.relu(x)
 
 
+@with_unsupported_dtypes(
+    {
+        "2.4.2 and below": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "uint8",
+            "uint16",
+            "bfloat16",
+            "float16",
+            "complex64",
+            "complex128",
+            "bool",
+        )
+    },
+    backend_version,
+)
 def leaky_relu(
     x: paddle.Tensor,
     /,
@@ -31,11 +61,28 @@ def leaky_relu(
     alpha: float = 0.2,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    x , x_dtype = _dtype_helper(x)
 
-    return F.leaky_relu(x, negative_slope=alpha).cast(x_dtype)
+    return F.leaky_relu(x, negative_slope=alpha)
 
 
+@with_unsupported_dtypes(
+    {
+        "2.4.2 and below": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "uint8",
+            "uint16",
+            "bfloat16",
+            "float16",
+            "complex64",
+            "complex128",
+            "bool",
+        )
+    },
+    backend_version,
+)
 def gelu(
     x: paddle.Tensor,
     /,
@@ -43,61 +90,146 @@ def gelu(
     approximate: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    x , x_dtype = _dtype_helper(x)
-    ret = F.gelu(x, approximate=approximate)
-    if ivy.is_int_dtype(x_dtype):
-        ret = ret.round()
-    return ret.cast(x_dtype)
+
+    return F.gelu(x, approximate=approximate)
 
 
-def sigmoid(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
-            ) -> paddle.Tensor:
-    x , x_dtype = _dtype_helper(x)
-    # ideally, the output should be cast to x_dtype, 
-    # but since sigmoid result is bounded between 0 and 1
-    # if x_dtype was an integer the result will be zeros
+@with_unsupported_dtypes(
+    {
+        "2.4.2 and below": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "uint8",
+            "uint16",
+            "bfloat16",
+            "float16",
+            "complex64",
+            "complex128",
+            "bool",
+        )
+    },
+    backend_version,
+)
+def sigmoid(
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
 
     return F.sigmoid(x)
 
 
+@with_unsupported_dtypes(
+    {
+        "2.4.2 and below": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "uint8",
+            "uint16",
+            "bfloat16",
+            "float16",
+            "complex64",
+            "complex128",
+            "bool",
+        )
+    },
+    backend_version,
+)
 def softmax(
     x: paddle.Tensor,
     /,
     *,
-    axis: Optional[int] = -1,
+    axis: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    x , x_dtype = _dtype_helper(x)
+    if axis is None:
+        axis = -1
+    return F.softmax(x, axis=axis)
 
-    return F.softmax(x, axis=axis).cast(x_dtype)
 
-
+@with_unsupported_dtypes(
+    {
+        "2.4.2 and below": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "uint8",
+            "uint16",
+            "bfloat16",
+            "float16",
+            "complex64",
+            "complex128",
+            "bool",
+        )
+    },
+    backend_version,
+)
 def softplus(
     x: paddle.Tensor,
     /,
     *,
-    beta: Optional[Union[int, float]] = 1,
-    threshold: Optional[Union[int, float]] = 20,
+    beta: Optional[Union[int, float]] = None,
+    threshold: Optional[Union[int, float]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    x , x_dtype = _dtype_helper(x)
 
-    return F.softplus(x, beta=beta, threshold=threshold).cast(x_dtype)
+    threshold = threshold if threshold is not None else 20
+    beta = beta if beta is not None else 1
+
+    return F.softplus(x, beta=beta, threshold=threshold)
 
 
+@with_unsupported_dtypes(
+    {
+        "2.4.2 and below": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "uint8",
+            "uint16",
+            "bfloat16",
+            "float16",
+            "complex64",
+            "complex128",
+            "bool",
+        )
+    },
+    backend_version,
+)
 def log_softmax(
     x: paddle.Tensor,
     /,
     *,
-    axis: Optional[int] = -1,
+    axis: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
 ):
-    x , x_dtype = _dtype_helper(x)
+    if axis is None:
+        axis = -1
+    return F.log_softmax(x, axis=axis)
 
-    return F.log_softmax(x, axis=axis).cast(x_dtype)
 
-
+@with_unsupported_dtypes(
+    {
+        "2.4.2 and below": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "uint8",
+            "uint16",
+            "bfloat16",
+            "float16",
+            "complex64",
+            "complex128",
+            "bool",
+        )
+    },
+    backend_version,
+)
 def mish(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    x , x_dtype = _dtype_helper(x)
 
-    return F.mish(x).cast(x_dtype)
+    return F.mish(x)

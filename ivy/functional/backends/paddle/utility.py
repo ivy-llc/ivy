@@ -26,9 +26,6 @@ def all(
     return x
 
 
-all.support_native_out = True
-
-
 def any(
     x: paddle.Tensor,
     /,
@@ -42,16 +39,15 @@ def any(
         num_dims = len(x.shape)
         axis = list(range(num_dims))
     if isinstance(axis, int):
-        return paddle.any(x, dim=axis, keepdim=keepdims)
+        return paddle.any(x, axis=axis, keepdim=keepdims)
     dims = len(x.shape)
     axis = [i % dims for i in axis]
     axis.sort()
     for i, a in enumerate(axis):
-        x = paddle.any(x, dim=a if keepdims else a - i, keepdim=keepdims)
+        x = paddle.any(x, axis=a if keepdims else a - i, keepdim=keepdims)
     return x
 
 
-any.support_native_out = True
 
 
 
