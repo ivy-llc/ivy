@@ -1,5 +1,6 @@
 # global
 # flake8: noqa
+import os
 import copy
 from typing import Union, List
 import numpy as np
@@ -61,6 +62,7 @@ from .assertions import (
     check_unsupported_dtype,
 )
 from . import globals
+
 
 try:
     os.environ["IVY_ROOT"] = ".ivy"
@@ -308,16 +310,25 @@ def test_function(
             instance = ivy.index_nest(kwargs, instance_idx)
             kwargs = ivy.copy_nest(kwargs, to_mutable=False)
             ivy.prune_nest_at_index(kwargs, instance_idx)
+        if test_flags.test_compile:
+            instance_func = lambda instance, *args, **kwargs: instance.__getattribute__(
+                fn_name
+            )(*args, **kwargs)
+            args = [instance, *args]
+        else:
+            instance_func = instance.__getattribute__(fn_name)
         ret, ret_np_flat = get_ret_and_flattened_np_array(
-            instance.__getattribute__(fn_name), *args, **kwargs
+            instance_func,
+            *args,
+            test_compile=test_flags.test_compile,
+            **kwargs,
         )
     else:
         ret, ret_np_flat = get_ret_and_flattened_np_array(
-            ivy.__dict__[fn_name], *args, **kwargs
+            ivy.__dict__[fn_name], *args, test_compile=test_flags.test_compile, **kwargs
         )
-
     # assert idx of return if the idx of the out array provided
-    if test_flags.with_out:
+    if test_flags.with_out and not test_flags.test_compile:
         test_ret = (
             ret[getattr(ivy.__dict__[fn_name], "out_index")]
             if hasattr(ivy.__dict__[fn_name], "out_index")
@@ -351,7 +362,6 @@ def test_function(
                 ),
                 lambda x: not x,
             )
-
     # compute the return with a Ground Truth backend
 
     if isinstance(ground_truth_backend, list):
@@ -398,9 +408,12 @@ def test_function(
                 on_device=on_device,
             )
             ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
-                ivy.__dict__[fn_name], *args, **kwargs
+                ivy.__dict__[fn_name],
+                *args,
+                test_compile=test_flags.test_compile,
+                **kwargs,
             )
-            if test_flags.with_out:
+            if test_flags.with_out and not test_flags.test_compile:
                 test_ret_from_gt = (
                     ret_from_gt[getattr(ivy.__dict__[fn_name], "out_index")]
                     if hasattr(ivy.__dict__[fn_name], "out_index")
@@ -413,7 +426,11 @@ def test_function(
                     include_derived=True,
                 )
                 ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
-                    ivy.__dict__[fn_name], *args, **kwargs, out=out_from_gt
+                    ivy.__dict__[fn_name],
+                    *args,
+                    test_compile=test_flags.test_compile,
+                    **kwargs,
+                    out=out_from_gt,
                 )
         except Exception as e:
             ivy.unset_backend()
@@ -832,6 +849,7 @@ def gradient_test(
     kwargs_np,
     input_dtypes,
     test_flags,
+    test_compile: bool = False,
     rtol_: float = None,
     atol_: float = 1e-06,
     xs_grad_idxs=None,
@@ -841,11 +859,10 @@ def gradient_test(
 ):
     def grad_fn(all_args):
         args, kwargs, i = all_args
-        ret = (
-            ivy.__dict__[fn](*args, **kwargs)
-            if isinstance(fn, str)
-            else fn[i](*args, **kwargs)
-        )
+        call_fn = ivy.__dict__[fn] if isinstance(fn, str) else fn[i]
+        ret = compiled_if_required(
+            call_fn, test_compile=test_compile, args=args, kwargs=kwargs
+        )(*args, **kwargs)
         return ivy.nested_map(ret, ivy.mean, include_derived=True)
 
     # extract all arrays from the arguments and keyword arguments
@@ -969,6 +986,7 @@ def test_method(
     test_gradients: bool = False,
     xs_grad_idxs=None,
     ret_grad_idxs=None,
+    test_compile: bool = False,
     ground_truth_backend: str,
     on_device: str,
     return_flat_np_arrays: bool = False,
@@ -1032,6 +1050,8 @@ def test_method(
     ret_grad_idxs
         Indices of the returned arrays for which to return computed gradients. If None,
         gradients are returned for all returned arrays. (Default value = None)
+    test_compile
+        If True, test for the correctness of compilation.
     ground_truth_backend
         Ground Truth Backend to compare the result-values.
     device_
@@ -1050,6 +1070,8 @@ def test_method(
     if isinstance(globals.CURRENT_GROUND_TRUTH_BACKEND, list):
         # override the ground truth in favor of multiversion
         ground_truth_backend = globals.CURRENT_GROUND_TRUTH_BACKEND
+        ground_truth_backend = globals.CURRENT_GROUND_TRUTH_BACKEND
+
     init_input_dtypes = ivy.default(init_input_dtypes, [])
 
     # Constructor arguments #
@@ -1174,7 +1196,10 @@ def test_method(
         if method_with_v:
             kwargs_method = dict(**kwargs_method, v=v)
     ret, ret_np_flat = get_ret_and_flattened_np_array(
-        ins.__getattribute__(method_name), *args_method, **kwargs_method
+        ins.__getattribute__(method_name),
+        *args_method,
+        test_compile=test_compile,
+        **kwargs_method,
     )
     ret_device = ivy.dev(ret)
 
@@ -1262,7 +1287,10 @@ def test_method(
             )
             kwargs_gt_method = dict(**kwargs_gt_method, v=v_gt)
         ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
-            ins_gt.__getattribute__(method_name), *args_gt_method, **kwargs_gt_method
+            ins_gt.__getattribute__(method_name),
+            *args_gt_method,
+            test_compile=test_compile,
+            **kwargs_gt_method,
         )
         fw_list = gradient_unsupported_dtypes(fn=ins.__getattribute__(method_name))
         fw_list2 = gradient_unsupported_dtypes(fn=ins_gt.__getattribute__(method_name))
@@ -1303,6 +1331,7 @@ def test_method(
                     kwargs_np=kwargs_np_method,
                     input_dtypes=method_input_dtypes,
                     test_flags=method_flags,
+                    test_compile=test_compile,
                     rtol_=rtol_,
                     atol_=atol_,
                     xs_grad_idxs=xs_grad_idxs,
@@ -1322,6 +1351,7 @@ def test_method(
                 kwargs_np=kwargs_np_method,
                 input_dtypes=method_input_dtypes,
                 test_flags=method_flags,
+                test_compile=test_compile,
                 rtol_=rtol_,
                 atol_=atol_,
                 xs_grad_idxs=xs_grad_idxs,
@@ -1872,11 +1902,12 @@ def flatten_and_to_np(*, ret):
     return [ivy.to_numpy(x) for x in ret_flat]
 
 
-def get_ret_and_flattened_np_array(fn, *args, **kwargs):
+def get_ret_and_flattened_np_array(fn, *args, test_compile: bool = False, **kwargs):
     """
     Runs func with args and kwargs, and returns the result along with its flattened
     version.
     """
+    fn = compiled_if_required(fn, test_compile=test_compile, args=args, kwargs=kwargs)
     ret = fn(*args, **kwargs)
 
     def map_fn(x):
@@ -1884,6 +1915,8 @@ def get_ret_and_flattened_np_array(fn, *args, **kwargs):
             return x.ivy_array
         if isinstance(x, ivy.functional.frontends.numpy.ndarray):
             return x.ivy_array
+        elif ivy.is_native_array(x):
+            return ivy.to_ivy(x)
         return x
 
     ret = ivy.nested_map(ret, map_fn, include_derived={tuple: True})
