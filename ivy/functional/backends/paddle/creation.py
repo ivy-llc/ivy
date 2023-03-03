@@ -143,7 +143,7 @@ def asarray(
         dtype = ivy.as_native_dtype(ivy.as_ivy_dtype(obj.dtype.name))
 
     elif isinstance(obj, (Number,bool)):
-        return paddle.full(shape=(), fill_value=obj)
+        return paddle.full(shape=(), fill_value=obj).cast(dtype)
 
     else:
         dtype = ivy.as_native_dtype((ivy.default_dtype(dtype=dtype, item=obj)))
