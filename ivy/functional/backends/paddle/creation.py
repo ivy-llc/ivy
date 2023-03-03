@@ -77,12 +77,12 @@ def _stack_tensors(x, dtype):
     #TODO: change paddle.stack to ivy.stack
     if isinstance(x, (list, tuple)) and len(x) != 0 and isinstance(x[0], (list, tuple)):
         for i, item in enumerate(x):
-            x[i] = _stack_tensors(item, 'complex128')
-        x = paddle.stack(x).cast(dtype)
+            x[i] = _stack_tensors(item, dtype)
+        x = ivy.stack(x)
     else:
         if isinstance(x, (list, tuple)):
             if isinstance(x[0], paddle.Tensor):
-                x = paddle.stack([paddle.to_tensor(i,dtype='complex128') for i in x]).cast(dtype)
+                x = ivy.stack([i for i in x])
             else:
                 x = paddle.to_tensor(x, dtype=dtype)
     return x
@@ -131,7 +131,7 @@ def asarray(
         if isinstance(obj[0], paddle.Tensor) or contain_tensor:
             if copy is True:
                 return (
-                    paddle.stack([paddle.to_tensor(i,dtype='float64') for i in obj])
+                    ivy.stack([i for i in obj])
                     .cast(dtype)
                     .clone()
                     .detach()
@@ -141,6 +141,9 @@ def asarray(
 
     elif isinstance(obj, np.ndarray) and dtype is None:
         dtype = ivy.as_native_dtype(ivy.as_ivy_dtype(obj.dtype.name))
+
+    elif isinstance(obj, (Number,bool)):
+        return paddle.full(shape=(), fill_value=obj)
 
     else:
         dtype = ivy.as_native_dtype((ivy.default_dtype(dtype=dtype, item=obj)))
