@@ -715,3 +715,39 @@ def test_tensorflow_linalg_cross(
         a=x[0],
         b=x[1],
     )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.svd",
+    test_with_out=st.just(False),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes(kind="float"),
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5
+    ),
+    full_matrices=st.booleans(),
+    compute_uv=st.booleans(),
+)
+def test_tensorflow_linalg_svd(
+    *,
+    dtype_and_x,
+    full_matrices,
+    compute_uv,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensor=x[0],
+        full_matrices=full_matrices,
+        compute_uv=compute_uv
+    )

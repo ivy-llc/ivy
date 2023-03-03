@@ -226,3 +226,34 @@ def cholesky(input, name=None):
 @to_ivy_arrays_and_back
 def cross(a, b, name=None):
     return ivy.cross(a, b)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "2.11.0 and below": (
+            "float16",
+            "bool",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+        )
+    },
+    "tensorflow",
+)
+def svd(tensor, full_matrices=False, compute_uv=True, name=None):
+    # ivy and tf have different return order
+    if compute_uv:
+        U, S, Vh = ivy.svd(tensor, full_matrices=full_matrices, compute_uv=compute_uv)
+        # in case of complex dtype, set conjugate=True
+        dtype = ivy.dtype(Vh)
+        conjugate = True if "complex" in dtype else False
+
+        return S, U, ivy.matrix_transpose(Vh, conjugate=conjugate)
+
+    return ivy.svd(tensor, full_matrices=full_matrices, compute_uv=compute_uv)
