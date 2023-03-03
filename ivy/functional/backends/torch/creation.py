@@ -298,11 +298,9 @@ def array(
     *,
     dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
     device: torch.device,
+    out: Optional[torch.Tensor] = None,
 ):
     return torch.Tensor(object, dtype=dtype, device=device)
-
-
-array.support_native_out = True
 
 
 def full_like(
