@@ -40,7 +40,7 @@ def is_native_array(x, /, *, exclusive=False):
             x,
             (
                 jax.interpreters.xla._DeviceArray,
-                jaxlib.xla_extension.DeviceArray,
+                jax.Array,
                 Buffer,
             ),
         )
@@ -48,7 +48,7 @@ def is_native_array(x, /, *, exclusive=False):
         x,
         (
             jax.interpreters.xla._DeviceArray,
-            jaxlib.xla_extension.DeviceArray,
+            jax.Array,
             Buffer,
             jax.interpreters.ad.JVPTracer,
             jax.core.ShapedArray,
