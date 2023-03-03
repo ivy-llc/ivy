@@ -16,3 +16,16 @@ def dropout(input, p=0.5, training=True, inplace=False):
         ivy.inplace_update(input, ret)
         return input
     return ret
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+def dropout1d(input, p=0.5, training=True, inplace=False):
+    if not training:
+        ret = input
+    else:
+        ret = ivy.dropout1d(input, p)
+    if inplace:
+        ivy.inplace_update(input, ret)
+        return input
+    return ret
