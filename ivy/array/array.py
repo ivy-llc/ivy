@@ -413,7 +413,7 @@ class Array(
         ----------
         self
             Input array or float.
-        other
+        power
             Array or float power. Must be compatible with ``self``
             (see :ref:`broadcasting`). Should have a numeric data type.
 
