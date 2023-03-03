@@ -147,6 +147,7 @@ def array(
     *,
     copy: True,
     dtype: Optional[jnp.dtype] = None,
+    out: Optional[JaxArray] = None,
 ):
     return jax.numpy.array(object, dtype=dtype, copy=copy)
 
