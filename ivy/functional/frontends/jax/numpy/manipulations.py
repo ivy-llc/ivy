@@ -89,14 +89,14 @@ def stack(arrays, axis=0, out=None, dtype=None):
 
 @to_ivy_arrays_and_back
 def take(
-        a,
-        indices,
-        axis=None,
-        out=None,
-        mode=None,
-        unique_indices=False,
-        indices_are_sorted=False,
-        fill_value=None,
+    a,
+    indices,
+    axis=None,
+    out=None,
+    mode=None,
+    unique_indices=False,
+    indices_are_sorted=False,
+    fill_value=None,
 ):
     return ivy.take_along_axis(a, indices, axis, out=out)
 
@@ -171,18 +171,22 @@ def bartlett(M):
 @to_ivy_arrays_and_back
 def blackman(M):
     if M < 1:
-        return np.array([])
+        return ivy.array([])
 
     if M == 1:
-        return np.ones(1)
+        return ivy.ones(1)
 
     alpha = 0.16
     a0 = (1 - alpha) / 2
     a1 = 1 / 2
     a2 = alpha / 2
 
-    n = np.arange(0, M)
-    ret = a0 - a1 * np.cos(2 * np.pi * n / (M - 1)) + a2 * np.cos(4 * np.pi * n / (M - 1))
+    n = ivy.arange(0, M)
+    ret = (
+        a0
+        - a1 * np.cos(2 * ivy.pi * n / (M - 1))
+        + a2 * ivy.cos(4 * np.pi * n / (M - 1))
+    )
 
     return ret
 
