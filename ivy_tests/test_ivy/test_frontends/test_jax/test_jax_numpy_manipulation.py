@@ -876,20 +876,20 @@ def test_jax_numpy_hsplit(
 )
 def test_jax_numpy_bartlett(
     *,
-    dtype_and_M,
+    dtype_and_m,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
-    input_dtype, M = dtype_and_M
+    input_dtype, m = dtype_and_m
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        M=M[0],
+        M=m[0],
     )
 
 
@@ -904,20 +904,20 @@ def test_jax_numpy_bartlett(
 )
 def test_jax_numpy_blackman(
     *,
-    dtype_and_M,
+    dtype_and_m,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
-    input_dtype, M = dtype_and_M
+    input_dtype, m = dtype_and_m
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        M=M[0],
+        M=m[0],
     )
 
 

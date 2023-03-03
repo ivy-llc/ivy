@@ -158,11 +158,11 @@ def bartlett(M):
     if M == 1:
         return ivy.ones(1)
     elif M % 2 == 0:
-        return ivy.concatenate(
+        return ivy.concat(
             (ivy.linspace(0, 1, M // 2 + 1), ivy.linspace(1, 0, M // 2 + 1)[1:])
         )
     else:
-        return ivy.concatenate(
+        return ivy.concat(
             (ivy.linspace(0, 1, (M + 1) // 2), ivy.linspace(1, 0, (M + 1) // 2 - 1)[1:])
         )
 
@@ -192,7 +192,7 @@ def blackman(M):
 
 @to_ivy_arrays_and_back
 def block(arrays):
-    concatenated = ivy.concatenate(arrays, axis=1)
+    concatenated = ivy.concat(arrays, axis=1)
     num_rows = arrays[0].shape[0]
     num_cols = sum(arr.shape[1] for arr in arrays)
     ret = ivy.reshape(concatenated, (num_rows, num_cols))
