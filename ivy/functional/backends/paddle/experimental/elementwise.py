@@ -168,7 +168,7 @@ def imag(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.imag(val)
 
 
 def nan_to_num(x: paddle.Tensor,
@@ -236,7 +236,7 @@ def allclose(
     equal_nan: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> bool:
-    raise IvyNotImplementedException()
+    return paddle.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
 
 
 def fix(
