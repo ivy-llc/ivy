@@ -223,7 +223,12 @@ def hypot(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    result = paddle.pow(x1, 2) + paddle.pow(x2, 2)
+    if paddle.min(result) < 0:
+        raise ValueError("Input to hypot must be non-negative ")
+    if x1.dtype not in  [paddle.float16, paddle.float32, paddle.float64]:
+        raise ValueError("Input to hypot must be float16, float32 or float64 ")
+    return paddle.sqrt(result)
 
 
 def allclose(
