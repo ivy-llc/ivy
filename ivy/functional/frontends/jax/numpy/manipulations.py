@@ -1,6 +1,5 @@
 # local
 import ivy
-import ivy.numpy as np
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_jax_dtype,
@@ -184,8 +183,8 @@ def blackman(M):
     n = ivy.arange(0, M)
     ret = (
         a0
-        - a1 * np.cos(2 * ivy.pi * n / (M - 1))
-        + a2 * ivy.cos(4 * np.pi * n / (M - 1))
+        - a1 * ivy.cos(2 * ivy.pi * n / (M - 1))
+        + a2 * ivy.cos(4 * ivy.pi * n / (M - 1))
     )
 
     return ret
