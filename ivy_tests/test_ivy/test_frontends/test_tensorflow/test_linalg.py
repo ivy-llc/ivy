@@ -717,7 +717,7 @@ def test_tensorflow_linalg_cross(
         b=x[1],
     )
     
- @handle_frontend_test(
+@handle_frontend_test(
     fn_tree="tensorflow.linalg.svd",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
