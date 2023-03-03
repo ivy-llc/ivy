@@ -364,6 +364,11 @@ def RightShift(*, x, y, name="RightShift"):
 
 
 @to_ivy_arrays_and_back
+def Roll(*, input, shift, axis, name="Roll"):
+    return ivy.roll(input, shift, axis=axis)
+
+
+@to_ivy_arrays_and_back
 def Round(*, x, name="Round"):
     return ivy.round(x)
 

@@ -2605,6 +2605,38 @@ def test_tensorflow_Round(  # NOQA
 
 
 @handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Roll",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        valid_axis=True,
+        force_int_axis=True,
+        min_num_dims=1,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Roll(  # NOQA
+    *,
+    dtype_x_axis,
+    shift,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        shift=shift,
+        axis=axis,
+    )
+
+
+@handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Unpack",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid", full=True),
