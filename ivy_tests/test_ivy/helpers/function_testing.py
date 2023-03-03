@@ -1164,7 +1164,7 @@ def test_method(
     if isinstance(ins, ivy.Module):
         if init_with_v:
             v = ivy.Container(
-                ins._create_variables(device=device_, dtype=method_input_dtypes[0])
+                ins._create_variables(device=on_device, dtype=method_input_dtypes[0])
             )
             ins = ivy.__dict__[class_name](*args_constructor, **kwargs_constructor, v=v)
         v = ins.__getattribute__("v")
@@ -1174,7 +1174,7 @@ def test_method(
     ret, ret_np_flat = get_ret_and_flattened_np_array(
         ins.__getattribute__(method_name), *args_method, **kwargs_method
     )
-    ret_device = ivy.device(ret)
+    ret_device = ivy.dev(ret)
 
     # Compute the return with a Ground Truth backend
 
@@ -1232,6 +1232,7 @@ def test_method(
             kwargs_idxs=con_kwargs_idxs,
             input_dtypes=init_input_dtypes,
             test_flags=init_flags,
+            on_device=on_device,
         )
         args_gt_method, kwargs_gt_method, _, _, _ = create_args_kwargs(
             args_np=args_np_method,
@@ -1242,6 +1243,7 @@ def test_method(
             kwargs_idxs=met_kwargs_idxs,
             input_dtypes=method_input_dtypes,
             test_flags=method_flags,
+            on_device=on_device,
         )
         ins_gt = ivy.__dict__[class_name](*args_gt_constructor, **kwargs_gt_constructor)
         # ToDo : remove this when the handle_method can properly compute unsupported dtypes
@@ -1266,7 +1268,7 @@ def test_method(
                 fw_list[k] = []
             fw_list[k].extend(v)
 
-        ret_from_gt_device = ivy.device(ground_ret)
+        ret_from_gt_device = ivy.dev(ret_from_gt)
         ivy.unset_backend()
     # gradient test
 
@@ -1303,6 +1305,7 @@ def test_method(
                     xs_grad_idxs=xs_grad_idxs,
                     ret_grad_idxs=ret_grad_idxs,
                     ground_truth_backend=ground_truth_backend,
+                    on_device=on_device,
                 )
 
         else:
@@ -1321,13 +1324,14 @@ def test_method(
                 xs_grad_idxs=xs_grad_idxs,
                 ret_grad_idxs=ret_grad_idxs,
                 ground_truth_backend=ground_truth_backend,
+                on_device=on_device,
             )
 
     assert (
         ret_device == ret_from_gt_device
     ), f"ground truth backend ({ground_truth_backend}) returned array on device {ret_from_gt_device} but target backend ({ivy.backend}) returned array on device {ret_device}"
     assert (
-        ret_device == device_
+        ret_device == on_device
     ), f"device is set to {on_device}, but ground truth produced array on {ret_device}"
 
     # assuming value test will be handled manually in the test function
