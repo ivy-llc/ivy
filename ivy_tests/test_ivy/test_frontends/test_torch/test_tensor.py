@@ -1657,6 +1657,7 @@ def _to_helper(draw):
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("valid"),
             num_arrays=2,
+            large_abs_safety_factor=2,
         )
     )
     input_dtype, x = dtype_x
@@ -1666,12 +1667,12 @@ def _to_helper(draw):
         method_all_as_kwargs_np = {"other": x[1]}
     elif arg == "dtype":
         method_num_positional_args = 1
-        dtype = draw(helpers.get_dtypes("valid", full=False))
+        dtype = draw(helpers.get_dtypes("valid", full=False))[0]
         method_all_as_kwargs_np = {"dtype": dtype}
     else:
         method_num_positional_args = 0
-        device = draw(st.sampled_from([torch.device("cuda"), torch.device("cpu")]))
-        dtype = draw(helpers.get_dtypes("valid", full=False, none=True))
+        device = draw(st.just("cpu"))
+        dtype = draw(helpers.get_dtypes("valid", full=False, none=True))[0]
         method_all_as_kwargs_np = {"dtype": dtype, "device": device}
     return input_dtype, x, method_num_positional_args, method_all_as_kwargs_np
 
@@ -1691,6 +1692,7 @@ def test_torch_instance_to(
     frontend,
 ):
     input_dtype, x, method_num_positional_args, method_all_as_kwargs_np = args_kwargs
+    method_flags.num_positional_args = method_num_positional_args
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={

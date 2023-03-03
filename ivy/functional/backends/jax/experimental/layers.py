@@ -10,6 +10,7 @@ import ivy
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.random import RNG
 from ivy.functional.ivy.layers import _handle_padding
+from ivy.functional.ivy.experimental.layers import _padding_ceil_mode
 
 
 def _from_int_to_tuple(arg, dim):
@@ -21,7 +22,7 @@ def _from_int_to_tuple(arg, dim):
 
 
 def general_pool(
-    inputs, init, reduce_fn, window_shape, strides, padding, dim, dilation, ceil_mode
+    inputs, init, reduce_fn, window_shape, strides, padding, dim, dilation=1, ceil_mode=False,
 ):
     window_shape = _from_int_to_tuple(window_shape, dim)
     strides = _from_int_to_tuple(strides, dim)
@@ -78,7 +79,7 @@ def general_pool(
 
     if ceil_mode:
         for i in range(len(dims) - 2):
-            pad_list[i + 1] = ivy.padding_ceil_mode(
+            pad_list[i + 1] = _padding_ceil_mode(
                 inputs.shape[i + 1],
                 new_window_shape[i],
                 pad_list[i + 1],
@@ -199,10 +200,10 @@ def avg_pool1d(
     if len(div_shape) - 2 == len(kernel):
         div_shape = (1,) + div_shape[1:]
     res = res / general_pool(
-        jnp.ones(div_shape, dtype=res.dtype), 0.0, jlax.add, kernel, strides, padding
+        jnp.ones(div_shape, dtype=res.dtype), 0.0, jlax.add, kernel, strides, padding, 1
     )
     if data_format == "NCW":
-        res = jnp.transpose(x, (0, 2, 1))
+        res = jnp.transpose(res, (0, 2, 1))
     return res
 
 
@@ -235,7 +236,7 @@ def avg_pool2d(
     if len(div_shape) - 2 == len(kernel):
         div_shape = (1,) + div_shape[1:]
     res = res / general_pool(
-        jnp.ones(div_shape, dtype=res.dtype), 0.0, jlax.add, kernel, strides, padding
+        jnp.ones(div_shape, dtype=res.dtype), 0.0, jlax.add, kernel, strides, padding, 2
     )
     if data_format == "NCHW":
         return jnp.transpose(res, (0, 3, 1, 2))
@@ -269,7 +270,7 @@ def avg_pool3d(
     res = general_pool(x, 0.0, jlax.add, kernel, strides, padding, 3)
 
     res = res / general_pool(
-        jnp.ones_like(x, dtype=res.dtype), 0.0, jlax.add, kernel, strides, padding
+        jnp.ones_like(x, dtype=res.dtype), 0.0, jlax.add, kernel, strides, padding, 3
     )
 
     if data_format == "NCDHW":

@@ -8,6 +8,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 import ivy
 from ivy.functional.ivy.layers import _handle_padding
+from ivy.functional.ivy.experimental.layers import _padding_ceil_mode
 
 
 def _from_int_to_tuple(arg, dim):
@@ -75,7 +76,7 @@ def max_pool2d(
 
     if ceil_mode:
         for i in range(2):
-            padding[i] = ivy.padding_ceil_mode(
+            padding[i] = _padding_ceil_mode(
                 x_shape[i], new_kernel[i], padding[i], strides[i]
             )
 

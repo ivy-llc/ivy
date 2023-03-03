@@ -13,3 +13,9 @@ def diagonal(a, offset=0, axis1=0, axis2=1):
 @to_ivy_arrays_and_back
 def diag(v, k=0):
     return ivy.diag(v, k=k)
+
+
+@to_ivy_arrays_and_back
+def diag_indices(n, ndim=2):
+    idx = ivy.arange(n, dtype=int)
+    return (idx,) * ndim
