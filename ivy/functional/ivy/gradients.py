@@ -1141,14 +1141,12 @@ def lars_update(
 @handle_array_like_without_promotion
 @handle_array_function
 def adam_update(
-    w: Union[ivy.Array, ivy.NativeArray],
-    dcdw: Union[ivy.Array, ivy.NativeArray],
-    lr: Union[float, ivy.Array, ivy.NativeArray],
-    mw_tm1: Union[ivy.Array, ivy.NativeArray],
-    vw_tm1: Union[ivy.Array, ivy.NativeArray],
+    w: ivy.Array,
+    dcdw: ivy.Array,
+    lr: Union[float, ivy.Array],
+    mw_tm1: ivy.Array,
+    vw_tm1: ivy.Array,
     step: int,
-    /,
-    *,
     beta1: float = 0.9,
     beta2: float = 0.999,
     epsilon: float = 1e-7,
