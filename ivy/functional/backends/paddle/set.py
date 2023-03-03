@@ -1,6 +1,5 @@
 # global
 import paddle
-import paddle.fluid as fluid
 from typing import Tuple, Optional
 from collections import namedtuple
 from ivy.func_wrapper import with_unsupported_dtypes
@@ -37,7 +36,8 @@ def unique_counts(x: paddle.Tensor, /) -> Tuple[paddle.Tensor, paddle.Tensor]:
 
 
 @with_unsupported_dtypes(
-    {"2.4.2 and below": ("int8", "int16", "uint8", "uint16", "bfloat16", "float16", "float32", "float64", "bool")},
+    {"2.4.2 and below": ("int8", "int16", "uint8", "uint16", "bfloat16",
+                         "float16", "complex64", "complex128", "bool")},
     backend_version,
 )
 def unique_inverse(x: paddle.Tensor, /) -> Tuple[paddle.Tensor, paddle.Tensor]:
@@ -47,8 +47,10 @@ def unique_inverse(x: paddle.Tensor, /) -> Tuple[paddle.Tensor, paddle.Tensor]:
 
     if nan_count > 0:
         inverse_val[nan_idx] = len(unique)
-        unique_nan = paddle.full(shape=[1, nan_count], fill_value=float('nan')).cast(x.dtype)
-        unique = fluid.layers.concat(input=[unique.astype(x.dtype), paddle.reshape(unique_nan, [nan_count])], axis=0)
+        unique_nan = paddle.full(shape=[1, nan_count],
+                                 fill_value=float('nan')).cast(x.dtype)
+        unique = paddle.concat(
+            [unique.astype(x.dtype), paddle.reshape(unique_nan, [nan_count])], axis=0)
 
     Results = namedtuple("Results", ["values", "inverse_indices"])
     return Results(unique, inverse_val)
