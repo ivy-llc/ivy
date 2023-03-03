@@ -134,6 +134,7 @@ def array(
     copy: True,
     dtype: Optional[np.array] = None,
     like: Optional[np.ndarray] = None,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.array(object, dtype=dtype, copy=copy, like=like)
 
