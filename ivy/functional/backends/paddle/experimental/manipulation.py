@@ -4,6 +4,7 @@ from .. import backend_version
 import paddle
 from ivy.utils.exceptions import IvyNotImplementedException
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 
 
 def moveaxis(
@@ -17,6 +18,11 @@ def moveaxis(
     return paddle.moveaxis(a, source, destination)
 
 
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ('int8', 'int16', 'uint8', 'uint16', 'bfloat16',
+                         'float16', 'complex64', 'complex128', 'bool')},
+    backend_version,
+)
 def heaviside(
     x1: paddle.Tensor,
     x2: paddle.Tensor,
