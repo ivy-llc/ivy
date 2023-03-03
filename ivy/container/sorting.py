@@ -1,5 +1,5 @@
 # global
-from typing import Optional, List, Union, Dict
+from typing import Optional, List, Union, Dict, Literal
 
 # local
 from ivy.container.base import ContainerBase
@@ -9,7 +9,7 @@ import ivy
 
 
 # noinspection PyMissingConstructor
-class ContainerWithSorting(ContainerBase):
+class _ContainerWithSorting(ContainerBase):
     @staticmethod
     def static_argsort(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -340,7 +340,7 @@ class ContainerWithSorting(ContainerBase):
         /,
         *,
         side="left",
-        sorter=None,
+        sorter: Optional = None,
         ret_dtype=ivy.int64,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -373,9 +373,9 @@ class ContainerWithSorting(ContainerBase):
         v: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        side="left",
-        sorter=None,
-        ret_dtype=ivy.int64,
+        side: Literal["left", "right"] = "left",
+        sorter: Optional[Union[ivy.Array, ivy.NativeArray, List[int]]] = None,
+        ret_dtype: Union[ivy.Dtype, ivy.NativeDtype] = ivy.int64,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,

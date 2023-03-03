@@ -1128,9 +1128,9 @@ def test_method(
         method_flags.native_arrays = [
             method_flags.native_arrays[0] for _ in range(num_arrays_method)
         ]
-    if len(method_flags.container_flags) < num_arrays_method:
-        method_flags.container_flags = [
-            method_flags.container_flags[0] for _ in range(num_arrays_method)
+    if len(method_flags.container) < num_arrays_method:
+        method_flags.container = [
+            method_flags.container[0] for _ in range(num_arrays_method)
         ]
 
     method_flags.as_variable = [
