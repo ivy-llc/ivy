@@ -133,7 +133,7 @@ def dstack(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.dtack(arrays)
 
 
 def atleast_2d(*arys: paddle.Tensor) -> List[paddle.Tensor]:
