@@ -28,7 +28,10 @@ from ivy.functional.backends.paddle.device import to_device
 # Array API Standard #
 # -------------------#
 
-
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ("uint16", "bfloat16")},
+    backend_version,
+)
 def arange(
     start: float,
     /,
@@ -66,18 +69,20 @@ def arange(
             return to_device(paddle.arange(start, stop, step), device)
     else:
         dtype = ivy.as_native_dtype(ivy.default_dtype(dtype=dtype))
-        return to_device(paddle.arange(start, stop, step, dtype=dtype), device)
+        return to_device(paddle.arange(start, stop, step).cast(dtype), device)
 
 
 def _stack_tensors(x, dtype):
+
+    #TODO: change paddle.stack to ivy.stack
     if isinstance(x, (list, tuple)) and len(x) != 0 and isinstance(x[0], (list, tuple)):
         for i, item in enumerate(x):
-            x[i] = _stack_tensors(item, dtype)
-        x = paddle.stack(x)
+            x[i] = _stack_tensors(item, 'complex128')
+        x = paddle.stack(x).cast(dtype)
     else:
         if isinstance(x, (list, tuple)):
             if isinstance(x[0], paddle.Tensor):
-                x = paddle.stack([paddle.to_tensor(i, dtype=dtype) for i in x])
+                x = paddle.stack([paddle.to_tensor(i,dtype='complex128') for i in x]).cast(dtype)
             else:
                 x = paddle.to_tensor(x, dtype=dtype)
     return x
@@ -126,7 +131,8 @@ def asarray(
         if isinstance(obj[0], paddle.Tensor) or contain_tensor:
             if copy is True:
                 return (
-                    paddle.stack([paddle.to_tensor(i, dtype=dtype) for i in obj])
+                    paddle.stack([paddle.to_tensor(i,dtype='float64') for i in obj])
+                    .cast(dtype)
                     .clone()
                     .detach()
                 )
@@ -442,6 +448,10 @@ def zeros(
     return to_device(paddle.zeros(shape=shape, dtype=dtype), device)
 
 
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ("uint16", "bfloat16")},
+    backend_version,
+)
 def zeros_like(
     x: paddle.Tensor,
     /,
@@ -450,7 +460,9 @@ def zeros_like(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return to_device(paddle.zeros_like(x=x, dtype=dtype), device)
+    if dtype is None:
+        dtype = x.dtype
+    return to_device(paddle.zeros_like(x=x.cast('float32')).cast(dtype), device)
 
 
 # Extra #
