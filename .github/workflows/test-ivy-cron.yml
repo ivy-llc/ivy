@@ -23,16 +23,6 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           job_name: ${{ github.job }}
 
-<<<<<<< HEAD
-      - name: Run Tests
-        id: tests
-        run: |
-          cd ivy
-          pip install pymongo
-          python run_tests_CLI/cron_tests.py ${{ github.run_number }}
-          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
-        continue-on-error: true
-=======
        - name: Run Tests
          id: tests
          run: |
@@ -44,7 +34,6 @@ jobs:
            python run_tests_CLI/cron_tests.py ${{ github.run_number }}
            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
->>>>>>> master
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
