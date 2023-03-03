@@ -14,7 +14,7 @@ def moveaxis(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.moveaxis(a, source, destination)
 
 
 def heaviside(
