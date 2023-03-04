@@ -74,7 +74,10 @@ def top_k(
     largest: Optional[bool] = True,
     out: Optional[Tuple[paddle.Tensor, paddle.Tensor]] = None,
 ) -> Tuple[paddle.Tensor, paddle.Tensor]:
-    return paddle.topk(x, k, axis=axis, largest=largest)
+    topk_res = NamedTuple("top_k", [("values", paddle.Tensor), 
+                                    ("indices", paddle.Tensor)])
+    val, indices = paddle.topk(x, k, axis=axis, largest=largest)
+    return topk_res(val, indices)
     
 
 def fliplr(
