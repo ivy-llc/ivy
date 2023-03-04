@@ -180,7 +180,7 @@ def lists(
         )
         if not isinstance(min_size, int):
             min_size = draw(st.shared(integers, key=min_size))
-        else:
+        if not isinstance(max_size, int):
             max_size = draw(st.shared(integers, key=max_size))
 
     return draw(st.lists(x, min_size=min_size, max_size=max_size))

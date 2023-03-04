@@ -19,6 +19,7 @@ from ivy_tests.test_ivy.helpers.test_parameter_flags import (
     BuiltContainerStrategy,
     BuiltWithOutStrategy,
     BuiltInplaceStrategy,
+    BuiltCompileStrategy,
 )
 from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
 from ivy_tests.test_ivy.helpers.available_frameworks import (
@@ -37,6 +38,7 @@ cmd_line_args = (
     "with_out",
     "instance_method",
     "test_gradients",
+    "test_compile",
 )
 cmd_line_args_lists = (
     "as_variable",
@@ -63,11 +65,7 @@ def num_positional_args_method(draw, *, method):
     -------
     A strategy that can be used in the @given hypothesis decorator.
     """
-    total, num_positional_only, num_keyword_only, = (
-        0,
-        0,
-        0,
-    )
+    total, num_positional_only, num_keyword_only = (0, 0, 0)
     for param in inspect.signature(method).parameters.values():
         if param.name == "self":
             continue
@@ -256,6 +254,7 @@ def handle_test(
     test_instance_method=BuiltInstanceStrategy,
     test_with_out=BuiltWithOutStrategy,
     test_gradients=BuiltGradientStrategy,
+    test_compile=BuiltCompileStrategy,
     as_variable_flags=BuiltAsVariableStrategy,
     native_array_flags=BuiltNativeArrayStrategy,
     container_flags=BuiltContainerStrategy,
@@ -288,6 +287,10 @@ def handle_test(
         A search strategy that generates a boolean to test the function with arrays as
         gradients
 
+    test_compile
+        A search strategy that generates a boolean to graph compile and test the
+        function
+
     as_variable_flags
         A search strategy that generates a list of boolean flags for array inputs to be
         passed as a Variable array
@@ -316,6 +319,7 @@ def handle_test(
             instance_method=test_instance_method,
             with_out=test_with_out,
             test_gradients=test_gradients,
+            test_compile=test_compile,
             as_variable=as_variable_flags,
             native_arrays=native_array_flags,
             container_flags=container_flags,
@@ -465,6 +469,7 @@ def handle_method(
     method_tree: str = None,
     ground_truth_backend: str = ground_truth,
     test_gradients=BuiltGradientStrategy,
+    test_compile=BuiltCompileStrategy,
     init_num_positional_args=None,
     init_native_arrays=BuiltNativeArrayStrategy,
     init_as_variable_flags=BuiltAsVariableStrategy,
@@ -494,6 +499,7 @@ def handle_method(
     possible_arguments = {
         "ground_truth_backend": st.just(ground_truth_backend),
         "test_gradients": test_gradients,
+        "test_compile": test_compile,
     }
 
     if is_hypothesis_test and is_method_tree_provided:
@@ -545,13 +551,12 @@ def handle_method(
         else:
             wrapped_test = test_fn
 
-
         wrapped_test.test_data = TestData(
             test_fn=wrapped_test,
             fn_tree=method_tree,
             fn_name=method_name,
             supported_device_dtypes=supported_device_dtypes,
-            is_method=True
+            is_method=True,
         )
 
         wrapped_test.ground_truth_backend = ground_truth_backend
@@ -635,11 +640,11 @@ def handle_frontend_method(
             )
             try:
                 ivy_init_modules = importlib.import_module(ivy_init_module)
-            except:
+            except Exception:
                 ivy_init_modules = str(ivy_init_module)
             try:
                 framework_init_modules = importlib.import_module(framework_init_module)
-            except:
+            except Exception:
                 framework_init_modules = str(framework_init_module)
             frontend_helper_data = FrontendMethodData(
                 ivy_init_module=ivy_init_modules,
@@ -667,7 +672,7 @@ def handle_frontend_method(
             fn_tree=f"{init_tree}.{method_name}",
             fn_name=method_name,
             supported_device_dtypes=supported_device_dtypes,
-            is_method=[method_name, class_tree,split_index]
+            is_method=[method_name, class_tree, split_index],
         )
 
         return wrapped_test

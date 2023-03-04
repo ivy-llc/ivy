@@ -11,7 +11,7 @@ import ivy
 # ToDo: update docstrings and typehints according to ivy\layers
 
 
-class ArrayWithLayers(abc.ABC):
+class _ArrayWithLayers(abc.ABC):
     def linear(
         self: ivy.Array,
         weight: Union[ivy.Array, ivy.NativeArray],
@@ -76,7 +76,7 @@ class ArrayWithLayers(abc.ABC):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         training: bool = True,
         seed: Optional[int] = None,
-        noise_shape: Sequence[int] = None,
+        noise_shape: Optional[Sequence[int]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -321,18 +321,18 @@ class ArrayWithLayers(abc.ABC):
 
     def multi_head_attention(
         self: ivy.Array,
-        scale,
-        num_heads,
+        scale: float,
+        num_heads: int,
         /,
         *,
-        context: Union[ivy.Array, ivy.NativeArray] = None,
-        mask: Union[ivy.Array, ivy.NativeArray] = None,
-        to_q_fn: Callable = None,
-        to_kv_fn: Callable = None,
-        to_out_fn: Callable = None,
-        to_q_v=None,
-        to_kv_v=None,
-        to_out_v=None,
+        context: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        to_q_fn: Optional[Callable] = None,
+        to_kv_fn: Optional[Callable] = None,
+        to_out_fn: Optional[Callable] = None,
+        to_q_v: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        to_kv_v: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        to_out_v: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         return ivy.multi_head_attention(
@@ -487,7 +487,7 @@ class ArrayWithLayers(abc.ABC):
         /,
         *,
         data_format: str = "NHWC",
-        dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = 1,
+        dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -678,7 +678,7 @@ class ArrayWithLayers(abc.ABC):
         /,
         *,
         data_format: str = "NDHWC",
-        dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
+        dilations: Union[int, Tuple[int, int, int]] = 1,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """

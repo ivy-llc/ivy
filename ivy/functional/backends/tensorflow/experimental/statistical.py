@@ -58,7 +58,8 @@ def unravel_index(
     for dim in reversed(shape):
         output.append(temp % dim)
         temp = temp // dim
-    ret = tf.constant(reversed(output), dtype=tf.int32)
+    output.reverse()
+    ret = tf.convert_to_tensor(output, dtype=tf.int32)
     return tuple(ret)
 
 
@@ -75,7 +76,7 @@ def quantile(
     axis = tuple(axis) if isinstance(axis, list) else axis
 
     result = tfp.stats.percentile(
-        a, q * 100, axis=axis, interpolation=interpolation, keepdims=keepdims
+        a, tf.math.multiply(q, 100), axis=axis, interpolation=interpolation, keepdims=keepdims
     )
     return result
 

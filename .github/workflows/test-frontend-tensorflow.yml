@@ -1,7 +1,9 @@
 name: test-frontend-tensorflow
 on:
-  pull_request:
-    types: [labeled, opened, synchronize, reopened, review_requested]
+  workflow_dispatch:
+#  pull_request:
+#    types: [labeled, opened, synchronize, reopened, review_requested]
+
 jobs:
   run-nightly-tests:
     if: contains(github.event.pull_request.labels.*.name, 'Exhaustive CI') || contains(github.event.pull_request.labels.*.name, 'TensorFlow Frontend')
