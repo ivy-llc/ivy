@@ -651,8 +651,8 @@ def test_numpy_fmod(
                 available_dtypes=helpers.get_dtypes("numeric"),
                 num_arrays=1,
                 max_dims=1,
-                min_side=5,
-                max_side=5,
+                exclude_min=True,
+                shared_dtype=True,
             )
         ],
         get_dtypes_kind="numeric",

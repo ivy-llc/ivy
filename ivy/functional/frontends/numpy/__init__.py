@@ -525,6 +525,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations
     _reciprocal,
     _subtract,
     _true_divide,
+    _modf,
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functions import (
@@ -665,3 +666,4 @@ matmul = ufunc("_matmul")
 maximum = ufunc("_maximum")
 minimum = ufunc("_minimum")
 real = ufunc("_real")
+modf = ufunc("_modf")
