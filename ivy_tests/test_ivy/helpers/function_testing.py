@@ -137,7 +137,6 @@ def test_function(
     ret_grad_idxs=None,
     ground_truth_backend: str,
     on_device: str,
-    assert_device: bool = False,
     return_flat_np_arrays: bool = False,
     **all_as_kwargs_np,
 ):
@@ -993,7 +992,6 @@ def test_method(
     test_compile: bool = False,
     ground_truth_backend: str,
     on_device: str,
-    assert_device: bool = False,
     return_flat_np_arrays: bool = False,
 ):
     """Tests a class-method that consumes (or returns) arrays for the current backend
@@ -1206,7 +1204,6 @@ def test_method(
         test_compile=test_compile,
         **kwargs_method,
     )
-    ret_device = ivy.dev(ret)
 
     # Compute the return with a Ground Truth backend
 
@@ -1304,7 +1301,9 @@ def test_method(
                 fw_list[k] = []
             fw_list[k].extend(v)
 
-        ret_from_gt_device = ivy.dev(ret_from_gt)
+        gt_returned_array = isinstance(ret_from_gt, ivy.Array)
+        if gt_returned_array:
+            ret_from_gt_device = ivy.dev(ret_from_gt)
         ivy.unset_backend()
     # gradient test
 
@@ -1365,7 +1364,8 @@ def test_method(
                 on_device=on_device,
             )
 
-    if assert_device:
+    if gt_returned_array:
+        ret_device = ivy.dev(ret)
         assert (
             ret_device == ret_from_gt_device
         ), f"ground truth backend ({ground_truth_backend}) returned array on device {ret_from_gt_device} but target backend ({ivy.backend}) returned array on device {ret_device}"
