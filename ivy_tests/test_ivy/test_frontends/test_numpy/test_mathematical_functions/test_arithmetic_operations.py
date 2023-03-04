@@ -650,31 +650,43 @@ def test_numpy_fmod(
             lambda: helpers.dtype_and_values(
                 available_dtypes=helpers.get_dtypes("numeric"),
                 num_arrays=1,
-                max_dims=1,
                 exclude_min=True,
                 shared_dtype=True,
+                large_abs_safety_factor=6,
+                small_abs_safety_factor=6,
+                safety_factor_scale="log",
             )
         ],
         get_dtypes_kind="numeric",
     ),
-    number_positional_args=1,
+    where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="modf"
+    ),
 )
 def test_numpy_modf(
     dtypes_values_casting,
+    where,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    input_dtype, x, casting, dtype = dtypes_values_casting[0]
+    input_dtype, x, casting, dtype = dtypes_values_casting
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=[input_dtype],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x1=x,
+        x1=xs[0],
         out=None,
+        where=where,
         casting=casting,
         order="K",
         dtype=dtype,
