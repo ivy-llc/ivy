@@ -1143,6 +1143,37 @@ def test_torch_row_stack(
     )
 
 
+# column_stack
+@handle_frontend_test(
+    fn_tree="torch.column_stack",
+    dtype_value_shape=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=st.integers(2, 5),
+        min_shape=2,
+        max_shape=5,
+    ),
+)
+def test_torch_column_stack(
+    *,
+    dtype_value_shape,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, value = dtype_value_shape
+    # exclude cases where number of rows in input tensors is not the same
+    assume(all(v.shape[0] == value[0].shape[0] for v in value[1:]))
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensors=value,
+    )
+
+
 @handle_frontend_test(
     fn_tree="torch.where",
     broadcastables=_broadcastable_trio(),

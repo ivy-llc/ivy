@@ -278,6 +278,11 @@ def row_stack(tensors, *, out=None):
 
 
 @to_ivy_arrays_and_back
+def column_stack(tensors, *, out = None):
+    return ivy.hstack(tensors, out = out)
+
+
+@to_ivy_arrays_and_back
 def where(condition, input=None, other=None):
     if not ivy.exists(input) and not ivy.exists(other):
         return nonzero(condition, as_tuple=True)
