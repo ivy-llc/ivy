@@ -33,7 +33,7 @@ def flipud(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle.flipud(m)
+    raise IvyNotImplementedException()
 
 
 def vstack(
@@ -133,7 +133,7 @@ def dstack(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle.dtack(arrays)
+    raise IvyNotImplementedException()
 
 
 def atleast_2d(*arys: paddle.Tensor) -> List[paddle.Tensor]:
