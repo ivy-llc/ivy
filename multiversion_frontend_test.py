@@ -60,8 +60,8 @@ class NativeClass:
         self._native_class = native_class
 
 
-def _get_fn_dtypes(framework,fn_tree,type, device=None,kind="valid"):
-    if type=='1':
+def _get_fn_dtypes(framework, fn_tree, type, device=None, kind="valid"):
+    if type == '1':
         callable_fn, fn_name, fn_mod = _import_fn(fn_tree)
         supported_device_dtypes = _get_supported_devices_dtypes(fn_name, fn_mod)
         return supported_device_dtypes[framework][
@@ -69,8 +69,6 @@ def _get_fn_dtypes(framework,fn_tree,type, device=None,kind="valid"):
         ][kind]
     else:
         method_name, class_tree, split_index = type
-
-
         class_module_path, class_name = (
             class_tree[:split_index],
             class_tree[split_index + 1:],
@@ -84,7 +82,7 @@ def _get_fn_dtypes(framework,fn_tree,type, device=None,kind="valid"):
         ][kind]
 
 
-def _get_type_dict(framework,fn_tree,type, device=None,kind="valid"):
+def _get_type_dict(framework, fn_tree, type, device=None, kind="valid"):
     if kind == "valid":
         return framework.valid_dtypes
     elif kind == "numeric":
@@ -117,8 +115,8 @@ def _get_type_dict(framework,fn_tree,type, device=None,kind="valid"):
         raise RuntimeError("{} is an unknown kind!".format(kind))
 
 
-def dtype_handler(framework,type):
-    if type=='1a':
+def dtype_handler(framework, type):
+    if type == '1a':
         type=jsonpickle.loads(input())
 
     z=input()
