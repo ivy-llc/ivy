@@ -139,3 +139,32 @@ def bincount(
         ret = tf.math.bincount(x, minlength=minlength)
         ret = tf.cast(ret, x.dtype)
     return ret
+
+def tensorfolow_histogram2(
+    self: tf.Tensor,
+    /,
+    *,
+    name: Optional[tf.Tensor],
+    data: Optional[Union[tf.Tensor]],
+    step: Optional[Union[tf.Tensor]] = None,
+    buckets: Optional[tf.Tensor[int]],
+    description: Optional[tf.Tensor[str]],
+) -> ivy.Array:
+
+    a = tf.summary.create_file_writer("test/logs")
+    with a.as_default():
+        for step in range(100):
+
+            # Generate fake "activations".
+
+            activations = [
+                tf.random.normal([1000], mean=step, stddev=1),
+                tf.random.normal([1000], mean=step, stddev=10),
+                tf.random.normal([1000], mean=step, stddev=100),
+            ]
+
+            tf.summary.histogram("layer1/activate", activations[0], step=step)
+            tf.summary.histogram("layer2/activate", activations[1], step=step)
+            tf.summary.histogram("layer3/activate", activations[2], step=step)
+
+    return a
