@@ -860,16 +860,17 @@ def clip_vector_norm(
     p: float = 2.0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Clips (limits) the vector p-norm of an array.
+    """
+    Clips (limits) the vector p-norm of an array.
 
     Parameters
     ----------
     x
-        array, input array containing elements to clip.
+        Input array containing elements to clip.
     max_norm
-        float, the maximum value of the array norm.
+        The maximum value of the array norm.
     p
-        optional float, the p-value for computing the p-norm. Default is 2.
+        The p-value for computing the p-norm. Default is 2.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -877,7 +878,7 @@ def clip_vector_norm(
     Returns
     -------
     ret
-        An array with the vector norm downscaled to the max norm if needed.
+        An array with the matrix norm downscaled to the max norm if needed.
 
     Functional Examples
     ------------------
@@ -947,7 +948,8 @@ def clip_matrix_norm(
     p: float = 2.0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Clips (limits) the matrix norm of an array.
+    """
+    Clips (limits) the matrix norm of an array.
 
     Parameters
     ----------
