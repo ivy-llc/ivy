@@ -134,7 +134,7 @@ class EagerTensor:
         return y.__rmatmul__(self._ivy_array)
 
     def __mul__(self, x, name="mul"):
-        return tf_frontend.math.multiply(x, self._ivy_array, name=name)
+        return tf_frontend.math.multiply(self._ivy_array, x, name=name)
 
     def __mod__(self, x, name="mod"):
         return ivy.remainder(x, self._ivy_array, name=name)
@@ -194,13 +194,13 @@ class EagerTensor:
             return tf_frontend.math.truediv(
                 tf_frontend.cast(self, ivy.float32),
                 tf_frontend.cast(y, ivy.float32),
-                name=name
+                name=name,
             )
         if str(dtype) in ["uint32", "int32", "uint64", "int64"]:
             return tf_frontend.math.truediv(
                 tf_frontend.cast(self, ivy.float64),
                 tf_frontend.cast(y, ivy.float64),
-                name=name
+                name=name,
             )
         return tf_frontend.math.truediv(self._ivy_array, y, name=name)
 

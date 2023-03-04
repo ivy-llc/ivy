@@ -18,7 +18,7 @@ import ivy
 from ivy import handle_view
 
 
-class ArrayWithManipulationExperimental(abc.ABC):
+class _ArrayWithManipulationExperimental(abc.ABC):
     @handle_view
     def moveaxis(
         self: ivy.Array,
@@ -201,8 +201,8 @@ class ArrayWithManipulationExperimental(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        k: Optional[int] = 1,
-        axes: Optional[Tuple[int, int]] = (0, 1),
+        k: int = 1,
+        axes: Tuple[int, int] = (0, 1),
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -258,7 +258,7 @@ class ArrayWithManipulationExperimental(abc.ABC):
         /,
         *,
         axis: Optional[int] = None,
-        largest: Optional[bool] = True,
+        largest: bool = True,
         out: Optional[tuple] = None,
     ) -> Tuple[ivy.Array, ivy.NativeArray]:
         """ivy.Array instance method variant of ivy.top_k. This method simply
@@ -267,7 +267,7 @@ class ArrayWithManipulationExperimental(abc.ABC):
 
         Parameters
         ----------
-        x
+        self
             The array to compute top_k for.
         k
             Number of top elements to retun must not exceed the array size.
@@ -364,9 +364,9 @@ class ArrayWithManipulationExperimental(abc.ABC):
     def flatten(
         self: ivy.Array,
         *,
-        start_dim: Optional[int] = 0,
-        end_dim: Optional[int] = -1,
-        order: Optional[str] = "C",
+        start_dim: int = 0,
+        end_dim: int = -1,
+        order: str = "C",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.flatten. This method simply
@@ -391,7 +391,9 @@ class ArrayWithManipulationExperimental(abc.ABC):
             the first index changing fastest, and the last index changing slowest.
             Note that the ‘C’ and ‘F’ options take no account of the memory layout
             of the underlying array, and only refer to the order of indexing.
-            Default order is 'C'
+            Default order is 'C'.
+        out
+            Optional output, for writing the result to.
 
         Returns
         -------
@@ -465,28 +467,26 @@ class ArrayWithManipulationExperimental(abc.ABC):
         pad_width: Union[Iterable[Tuple[int]], int],
         /,
         *,
-        mode: Optional[
-            Union[
-                Literal[
-                    "constant",
-                    "edge",
-                    "linear_ramp",
-                    "maximum",
-                    "mean",
-                    "median",
-                    "minimum",
-                    "reflect",
-                    "symmetric",
-                    "wrap",
-                    "empty",
-                ],
-                Callable,
-            ]
+        mode: Union[
+            Literal[
+                "constant",
+                "edge",
+                "linear_ramp",
+                "maximum",
+                "mean",
+                "median",
+                "minimum",
+                "reflect",
+                "symmetric",
+                "wrap",
+                "empty",
+            ],
+            Callable,
         ] = "constant",
         stat_length: Optional[Union[Iterable[Tuple[int]], int]] = None,
-        constant_values: Optional[Union[Iterable[Tuple[Number]], Number]] = 0,
-        end_values: Optional[Union[Iterable[Tuple[Number]], Number]] = 0,
-        reflect_type: Optional[Literal["even", "odd"]] = "even",
+        constant_values: Union[Iterable[Tuple[Number]], Number] = 0,
+        end_values: Union[Iterable[Tuple[Number]], Number] = 0,
+        reflect_type: Literal["even", "odd"] = "even",
         out: Optional[ivy.Array] = None,
         **kwargs: Optional[Any],
     ) -> ivy.Array:
@@ -809,12 +809,22 @@ class ArrayWithManipulationExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
+        Broadcast the input Array following the given shape
+        and the broadcast rule.
 
         Parameters
         ----------
+        self
+            Array input.
         shape
-        device
+            A 1-D Array indicates the shape you want to expand to,
+            following the broadcast rule
         out
+            optional output array, for writing the result to.
 
+        Returns
+        -------
+        ret
+            Output Array
         """
         return ivy.expand(self._data, shape, out=out)

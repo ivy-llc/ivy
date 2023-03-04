@@ -8,7 +8,7 @@ import ivy
 from ivy.container.base import ContainerBase
 
 
-class ContainerWithCreation(ContainerBase):
+class _ContainerWithCreation(ContainerBase):
     @staticmethod
     def static_arange(
         start: Number,
@@ -701,7 +701,7 @@ class ContainerWithCreation(ContainerBase):
         stop: Union[ivy.Array, ivy.NativeArray, float],
         /,
         num: int,
-        axis: int = None,
+        axis: Optional[int] = None,
         endpoint: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -733,7 +733,7 @@ class ContainerWithCreation(ContainerBase):
         stop: Union[ivy.Array, ivy.NativeArray, float, ivy.Container],
         /,
         num: int,
-        axis: int = None,
+        axis: Optional[int] = None,
         endpoint: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,

@@ -12,7 +12,7 @@ inf = float("inf")
 
 
 # noinspection PyMissingConstructor,PyMethodParameters
-class ContainerWithLinearAlgebra(ContainerBase):
+class _ContainerWithLinearAlgebra(ContainerBase):
     @staticmethod
     def static_matmul(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -166,7 +166,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        upper: Optional[bool] = False,
+        upper: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -766,7 +766,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        UPLO: Optional[str] = "L",
+        UPLO: str = "L",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -788,7 +788,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        UPLO: Optional[str] = "L",
+        UPLO: str = "L",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -810,7 +810,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        UPLO: Optional[str] = "L",
+        UPLO: str = "L",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -881,7 +881,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        UPLO: Optional[str] = "L",
+        UPLO: str = "L",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1252,8 +1252,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-        axis: Optional[Tuple[int, int]] = (-2, -1),
+        ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",
+        axis: Tuple[int, int] = (-2, -1),
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1341,8 +1341,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-        axis: Optional[Tuple[int, int]] = (-2, -1),
+        ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",
+        axis: Tuple[int, int] = (-2, -1),
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -2374,17 +2374,52 @@ class ContainerWithLinearAlgebra(ContainerBase):
             out=out,
         )
 
-    def tensorsolve(
-        self: ivy.Container,
-        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+    @staticmethod
+    def static_tensorsolve(
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        axes: Union[int, Tuple[List[int], List[int]]] = None,
+        axes: Optional[Union[int, Tuple[List[int], List[int]]]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.tensorsolve(
+        return ContainerBase.cont_multi_map_in_function(
+            "tensorsolve",
+            x1,
+            x2,
+            axes=axes,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def tensorsolve(
+        self: ivy.Container,
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        axes: Optional[Union[int, Tuple[List[int], List[int]]]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.static_tensorsolve(
             self,
             x2,
             axes=axes,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
         )
 
     @staticmethod
@@ -2612,8 +2647,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
         /,
         *,
         axis: Optional[Union[int, Sequence[int]]] = None,
-        keepdims: Optional[bool] = False,
-        ord: Optional[Union[int, float, Literal[inf, -inf]]] = 2,
+        keepdims: bool = False,
+        ord: Union[int, float, Literal[inf, -inf]] = 2,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -2727,8 +2762,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
         /,
         *,
         axis: Optional[Union[int, Sequence[int]]] = None,
-        keepdims: Optional[bool] = False,
-        ord: Optional[Union[int, float, Literal[inf, -inf]]] = 2,
+        keepdims: bool = False,
+        ord: Union[int, float, Literal[inf, -inf]] = 2,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -2880,7 +2915,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         /,
         *,
         N: Optional[int] = None,
-        increasing: Optional[bool] = False,
+        increasing: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2951,7 +2986,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         /,
         *,
         N: Optional[int] = None,
-        increasing: Optional[bool] = False,
+        increasing: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
