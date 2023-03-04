@@ -8,7 +8,7 @@ from ivy.container.base import ContainerBase
 # ToDo: implement all methods here as public instance methods
 
 
-class ContainerWithDevice(ContainerBase):
+class _ContainerWithDevice(ContainerBase):
     @staticmethod
     def static_dev(x: ivy.Container, /, *, as_native: bool = False) -> ivy.Container:
         """

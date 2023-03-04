@@ -6,7 +6,7 @@ import ivy
 from ivy.container.base import ContainerBase
 
 
-class ContainerWithLosses(ContainerBase):
+class _ContainerWithLosses(ContainerBase):
     @staticmethod
     def static_cross_entropy(
         true: Union[ivy.Container, ivy.Array, ivy.NativeArray],

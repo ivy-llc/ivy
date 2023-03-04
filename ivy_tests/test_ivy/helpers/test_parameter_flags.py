@@ -183,14 +183,14 @@ class MethodTestFlags:
         self.num_positional_args = num_positional_args
         self.native_arrays = native_arrays
         self.as_variable = as_variable
-        self.container_flags = container_flags
+        self.container = container_flags
 
     def __str__(self):
         return (
             f"num_positional_args={self.num_positional_args}. "
             f"native_arrays={self.native_arrays}. "
             f"as_variable={self.as_variable}. "
-            f"container_flags={self.container_flags}. "
+            f"container_flags={self.container}. "
         )
 
     def __repr__(self):

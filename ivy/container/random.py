@@ -7,7 +7,7 @@ from ivy.container.base import ContainerBase
 
 
 # noinspection PyMissingConstructor
-class ContainerWithRandom(ContainerBase):
+class _ContainerWithRandom(ContainerBase):
     @staticmethod
     def static_random_uniform(
         *,

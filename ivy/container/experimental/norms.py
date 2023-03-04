@@ -3,7 +3,7 @@ from typing import Union, List, Dict, Optional
 import ivy
 
 
-class ContainerWithNormsExperimental(ContainerBase):
+class _ContainerWithNormsExperimental(ContainerBase):
     @staticmethod
     def static_l2_normalize(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
