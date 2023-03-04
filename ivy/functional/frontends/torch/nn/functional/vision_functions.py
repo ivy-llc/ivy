@@ -313,4 +313,11 @@ def upsample_nearest(input, size=None, scale_factor=None):
 @to_ivy_arrays_and_back
 def upsample_bilinear(input, size=None, scale_factor=None):
 
-    return interpolate(input, size=size, scale_factor=scale_factor, mode="bilinear", align_corners=True)
+    return interpolate
+    (
+        input,
+        size=size,
+        scale_factor=scale_factor,
+        mode="bilinear",
+        align_corners=True
+    )

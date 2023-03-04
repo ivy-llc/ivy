@@ -22,7 +22,8 @@ def _from_int_to_tuple(arg, dim):
 
 
 def general_pool(
-    inputs, init, reduce_fn, window_shape, strides, padding, dim, dilation=1, ceil_mode=False,
+    inputs, init, reduce_fn, window_shape, strides, 
+    padding, dim, dilation=1, ceil_mode = False,
 ):
     window_shape = _from_int_to_tuple(window_shape, dim)
     strides = _from_int_to_tuple(strides, dim)

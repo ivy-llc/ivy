@@ -12,7 +12,6 @@ import ivy
 from . import number_helpers as nh
 from . import array_helpers as ah
 from .. import globals as test_globals
-from ivy_tests import conftest
 
 _dtype_kind_keys = {
     "valid",
@@ -125,7 +124,6 @@ def get_dtypes(
     # FN_DTYPES & BACKEND_DTYPES & FRONTEND_DTYPES & GROUND_TRUTH_DTYPES
 
     # If being called from a frontend test
-    import time
 
     if test_globals.CURRENT_FRONTEND is not test_globals._Notsetval or isinstance(
         test_globals.CURRENT_FRONTEND_STR, list
@@ -160,7 +158,7 @@ def get_dtypes(
             if frontend_ret:
                 try:
                     frontend_ret = jsonpickle.loads(make_json_pickable(frontend_ret))
-                except:
+                except Exception as e:
                     raise Exception(f"source of all bugsss   {frontend_ret}")
             else:
                 print(process.stderr.readlines())

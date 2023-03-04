@@ -205,7 +205,7 @@ def batch_normalization(x, mean, variance, offset, scale, variance_epsilon, name
         scale=scale,
         eps=variance_epsilon,
     )
-    return ivy.permute_dims(ret, axes=(0, ndims-1, *range(1, ndims-1)))
+    return ivy.permute_dims(ret, axes=(0, ndims - 1, *range(1, ndims - 1)))
 
 
 @to_ivy_arrays_and_back
@@ -479,5 +479,5 @@ def softmax(logits, axis=None, name=None):
 
 
 @to_ivy_arrays_and_back
-def relu6(features, name=None):
+def clip(features, name=None):
     return ivy.clip(features, 0, 6)
