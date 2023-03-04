@@ -67,11 +67,11 @@ def max(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle.max(x, axis=axis, keepdims=keepdims)
+    return paddle.max(x, axis=axis, keepdim=keepdims)
 
 
 @with_unsupported_dtypes(
-    {"2.4.2 and below": ("int8", "int16", "int32", "int64", "float16")},
+    {"2.4.2 and below": ("int8", "int16", "int32", "int64", "bfloat16", "float16")},
     backend_version,
 )
 def mean(
