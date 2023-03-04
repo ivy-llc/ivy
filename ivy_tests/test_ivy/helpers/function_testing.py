@@ -580,7 +580,7 @@ def test_frontend_function(
     function_module = importlib.import_module(frontend_submods)
     frontend_fn = getattr(function_module, fn_name)
 
-    (args, kwargs,) = create_frontend_args_kwargs(
+    args, kwargs = create_frontend_args_kwargs(
         args_np=args_np,
         arg_np_vals=arg_np_vals,
         args_idxs=args_idxs,
@@ -1130,9 +1130,9 @@ def test_method(
         method_flags.native_arrays = [
             method_flags.native_arrays[0] for _ in range(num_arrays_method)
         ]
-    if len(method_flags.container_flags) < num_arrays_method:
-        method_flags.container_flags = [
-            method_flags.container_flags[0] for _ in range(num_arrays_method)
+    if len(method_flags.container) < num_arrays_method:
+        method_flags.container = [
+            method_flags.container[0] for _ in range(num_arrays_method)
         ]
 
     method_flags.as_variable = [
@@ -1721,9 +1721,9 @@ def create_frontend_args_kwargs(
     """
 
     # create args
-    def _apply_flags(args_to_iterate):
+    def _apply_flags(args_to_iterate, offset):
         ret = []
-        for i, entry in enumerate(args_to_iterate):
+        for i, entry in enumerate(args_to_iterate, start=offset):
             x = ivy.array(entry, dtype=input_dtypes[i])
             if test_flags.as_variable[i]:
                 x = _variable(x)
@@ -1733,11 +1733,13 @@ def create_frontend_args_kwargs(
         return ret
 
     args = ivy.copy_nest(args_np, to_mutable=False)
-    ivy.set_nest_at_indices(args, args_idxs, _apply_flags(arg_np_vals))
+    ivy.set_nest_at_indices(args, args_idxs, _apply_flags(arg_np_vals, 0))
 
     # create kwargs
     kwargs = ivy.copy_nest(kwargs_np, to_mutable=False)
-    ivy.set_nest_at_indices(kwargs, kwargs_idxs, _apply_flags(kwarg_np_vals))
+    ivy.set_nest_at_indices(
+        kwargs, kwargs_idxs, _apply_flags(kwarg_np_vals, len(arg_np_vals))
+    )
     return args, kwargs
 
 
@@ -1769,9 +1771,9 @@ def create_args_kwargs(
     keyword-arguments.
     """
 
-    def _apply_flags(args_to_iterate):
+    def _apply_flags(args_to_iterate, offset):
         ret = []
-        for i, entry in enumerate(args_to_iterate):
+        for i, entry in enumerate(args_to_iterate, start=offset):
             x = ivy.array(entry, dtype=input_dtypes[i])
             if test_flags.as_variable[i]:
                 x = _variable(x)
@@ -1784,11 +1786,13 @@ def create_args_kwargs(
 
     # create args
     args = ivy.copy_nest(args_np, to_mutable=False)
-    ivy.set_nest_at_indices(args, args_idxs, _apply_flags(arg_np_vals))
+    ivy.set_nest_at_indices(args, args_idxs, _apply_flags(arg_np_vals, 0))
 
     # create kwargs
     kwargs = ivy.copy_nest(kwargs_np, to_mutable=False)
-    ivy.set_nest_at_indices(kwargs, kwargs_idxs, _apply_flags(kwarg_np_vals))
+    ivy.set_nest_at_indices(
+        kwargs, kwargs_idxs, _apply_flags(kwarg_np_vals, len(arg_np_vals))
+    )
     return args, kwargs, len(arg_np_vals), args_idxs, kwargs_idxs
 
 

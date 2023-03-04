@@ -140,11 +140,14 @@ class Array(
     def _init(self, data, dynamic_backend=None):
         if ivy.is_ivy_array(data):
             self._data = data.data
-        else:
-            ivy.utils.assertions.check_true(
-                ivy.is_native_array(data), "data must be native array"
-            )
+        elif ivy.is_native_array(data):
             self._data = data
+        elif isinstance(data, np.ndarray):
+            self._data = ivy.asarray(data)._data
+        else:
+            raise ivy.utils.exceptions.IvyException(
+                "data must be ivy array, native array or ndarray"
+            )
         self._shape = self._data.shape
         self._size = (
             functools.reduce(mul, self._data.shape) if len(self._data.shape) > 0 else 0
@@ -413,7 +416,7 @@ class Array(
         ----------
         self
             Input array or float.
-        other
+        power
             Array or float power. Must be compatible with ``self``
             (see :ref:`broadcasting`). Should have a numeric data type.
 

@@ -65,11 +65,7 @@ def num_positional_args_method(draw, *, method):
     -------
     A strategy that can be used in the @given hypothesis decorator.
     """
-    total, num_positional_only, num_keyword_only, = (
-        0,
-        0,
-        0,
-    )
+    total, num_positional_only, num_keyword_only = (0, 0, 0)
     for param in inspect.signature(method).parameters.values():
         if param.name == "self":
             continue
