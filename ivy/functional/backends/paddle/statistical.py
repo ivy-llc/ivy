@@ -316,6 +316,6 @@ def unravel_index(
         coord.append(indices % dim)
         indices = indices // dim
 
-    coord = paddle.stack(coord[::-1], dim=-1)
+    coord = paddle.stack(coord[::-1], axis=-1)
 
     return coord
