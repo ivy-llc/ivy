@@ -116,22 +116,22 @@ def _get_type_dict(framework, fn_tree, type, device=None, kind="valid"):
 
 
 def dtype_handler(framework, type):
-    if type == '1a':
+    if type == "1a":
         type=jsonpickle.loads(input())
 
-    z=input()
-    retrieval_fn=globals()[z]
-    z=input()
-    kind=z
-    z=input()
-    device=z
-    z=input()
-    fn_tree=z
+    z = input()
+    retrieval_fn = globals()[z]
+    z = input()
+    kind = z
+    z = input()
+    device = z
+    z = input()
+    fn_tree = z
 
-    if retrieval_fn.__name__== '_get_type_dict':
+    if retrieval_fn.__name__ ==  '_get_type_dict':
         framework = importlib.import_module("ivy.functional.backends." + framework)
-    dtypes = retrieval_fn(framework,fn_tree,type,device,kind)
-    dtypes = jsonpickle.dumps(dtypes,kind)
+    dtypes = retrieval_fn(framework, fn_tree, type, device, kind)
+    dtypes = jsonpickle.dumps(dtypes, kind)
     print(dtypes)
 
 
@@ -242,7 +242,7 @@ if __name__ == "__main__":
         raise Exception(f"lalalalal {fw_lis}")
     import numpy
     try:
-        #check numpy bfloat16 enabled or not
+        # check numpy bfloat16 enabled or not
         numpy.dtype("bfloat16")
     except:
         import paddle_bfloat
@@ -297,8 +297,8 @@ if __name__ == "__main__":
             )
 
             frontend_ret = frontend_fw.__dict__[func](*args_frontend, **kwargs_frontend)
-            if isinstance(frontend_ret,tuple) or isinstance(frontend_ret,list):
-                frontend_ret=ivy.nested_map(frontend_ret,ivy.to_numpy)
+            if isinstance(frontend_ret, tuple) or isinstance(frontend_ret, list):
+                frontend_ret=ivy.nested_map(frontend_ret, ivy.to_numpy)
             else:
                 frontend_ret = ivy.to_numpy(frontend_ret)
             frontend_ret = jsonpickle.dumps(frontend_ret)
