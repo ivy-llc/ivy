@@ -45,4 +45,9 @@ def unique_inverse(x: paddle.Tensor, /) -> Tuple[paddle.Tensor, paddle.Tensor]:
 def unique_values(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    nan_count = paddle.sum(paddle.isnan(x))
+    unique = paddle.unique(x)
+    if nan_count > 0:
+        nans = paddle.full(shape=[nan_count], fill_value=float('nan')).cast(x.dtype)
+        unique = paddle.concat([unique, nans])
+    return unique
