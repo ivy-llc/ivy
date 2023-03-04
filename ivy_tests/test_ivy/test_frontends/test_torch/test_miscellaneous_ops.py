@@ -137,6 +137,46 @@ def test_torch_roll(
     )
 
 
+# meshgrid
+@handle_frontend_test(
+    fn_tree="torch.meshgrid",
+    dtypes_and_tensors=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=st.integers(min_value=2, max_value=5),
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=5,
+        shared_dtype=True,
+    ),
+    indexing=st.sampled_from(['ij', 'xy']),
+)
+def test_torch_meshgrid(
+    *,
+    dtypes_and_tensors,
+    indexing,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtypes, tensors = dtypes_and_tensors
+    kwargs = {
+        f"tensor{i}": np.array(tensor, dtype=dtypes[i])
+        for i, tensor in enumerate(tensors)
+    }
+    kwargs['indexing'] = indexing
+    test_flags.num_positional_args = len(tensors)
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        **kwargs,
+    )
+
+
 # fliplr
 @handle_frontend_test(
     fn_tree="torch.fliplr",
