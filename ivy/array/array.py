@@ -29,7 +29,6 @@ from .sorting import _ArrayWithSorting
 from .statistical import _ArrayWithStatistical
 from .utility import _ArrayWithUtility
 from ivy.func_wrapper import handle_view_indexing
-from ivy.utils.backend.handler import _determine_backend_from_args
 from .experimental import (
     _ArrayWithSearchingExperimental,
     _ArrayWithActivationsExperimental,
@@ -95,7 +94,7 @@ class Array(
     _ArrayWithStatisticalExperimental,
     _ArrayWithUtilityExperimental,
 ):
-    def __init__(self, data):
+    def __init__(self, data, dynamic_backend=None):
         _ArrayWithActivations.__init__(self)
         _ArrayWithCreation.__init__(self)
         _ArrayWithDataTypes.__init__(self)
@@ -135,24 +134,20 @@ class Array(
         _ArrayWithSortingExperimental.__init__(self),
         _ArrayWithStatisticalExperimental.__init__(self),
         _ArrayWithUtilityExperimental.__init__(self),
-        self._init(data)
+        self._init(data, dynamic_backend)
         self._view_attributes(data)
 
-    def _init(self, data):
-        self._backend = _determine_backend_from_args(data)
+    def _init(self, data, dynamic_backend=None):
         if ivy.is_ivy_array(data):
             self._data = data.data
-        elif ivy.exists(self._backend) and self._backend.is_native_array(data):
+        elif ivy.is_native_array(data):
             self._data = data
-            self._backend = _determine_backend_from_args(data)
-            if self._backend != ivy.current_backend(data):
-                self.dynamic_backend = True
-                self._backend = ivy.current_backend(data)
-            else:
-                self._dynamic_backend = ivy.get_dynamic_backend()
+        elif isinstance(data, np.ndarray):
+            self._data = ivy.current_backend().asarray(data).data
         else:
-            self._data = ivy.array(data).data
-
+            raise ivy.utils.exceptions.IvyException(
+                "data must be native array or ndarray"
+            )
         self._shape = self._data.shape
         self._size = (
             functools.reduce(mul, self._data.shape) if len(self._data.shape) > 0 else 0
@@ -166,6 +161,10 @@ class Array(
         else:
             self._post_repr = ")"
         self.backend = ivy.current_backend_str()
+        if dynamic_backend is not None:
+            self._dynamic_backend = dynamic_backend
+        else:
+            self._dynamic_backend = ivy.get_dynamic_backend()
 
     def _view_attributes(self, data):
         if hasattr(data, "base"):
@@ -187,6 +186,7 @@ class Array(
     @dynamic_backend.setter
     def dynamic_backend(self, value):
         from ivy.functional.ivy.gradients import _variable
+        from ivy.utils.backend.handler import _determine_backend_from_args
 
         if value == False:
             self._backend = _determine_backend_from_args(self)
