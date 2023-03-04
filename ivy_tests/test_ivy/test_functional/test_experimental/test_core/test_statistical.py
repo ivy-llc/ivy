@@ -154,6 +154,7 @@ def test_histogram(
         ground_truth_backend=ground_truth_backend,
     )
 
+
 @handle_test(
     fn_tree="functional.ivy.experimental.median",
     dtype_x_axis=statistical_dtype_values(function="median"),
