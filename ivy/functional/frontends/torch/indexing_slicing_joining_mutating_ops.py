@@ -278,8 +278,8 @@ def row_stack(tensors, *, out=None):
 
 
 @to_ivy_arrays_and_back
-def column_stack(tensors, *, out = None):
-    return ivy.hstack(tensors, out = out)
+def column_stack(tensors, *, out=None):
+    return ivy.hstack(tensors, out=out)
 
 
 @to_ivy_arrays_and_back
