@@ -10,7 +10,7 @@ import ivy
 from ivy.container.base import ContainerBase
 
 
-class ContainerWithConversions(ContainerBase):
+class _ContainerWithConversions(ContainerBase):
     @staticmethod
     def static_to_native(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],

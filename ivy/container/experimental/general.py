@@ -2,7 +2,7 @@ import ivy
 from ivy.container.base import ContainerBase
 
 
-class ContainerWithGeneralExperimental(ContainerBase):
+class _ContainerWithGeneralExperimental(ContainerBase):
     @staticmethod
     def static_isin(
         element: ivy.Container,

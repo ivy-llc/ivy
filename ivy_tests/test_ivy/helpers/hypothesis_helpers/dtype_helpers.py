@@ -29,7 +29,7 @@ _dtype_kind_keys = {
 
 def _get_fn_dtypes(framework, kind="valid"):
     return test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[framework.backend][
-        test_globals.CURRENT_DEVICE
+        test_globals.CURRENT_DEVICE_STRIPPED
     ][kind]
 
 

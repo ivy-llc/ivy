@@ -465,17 +465,17 @@ def signbit(input, *, out=None):
 
 @to_ivy_arrays_and_back
 def angle(input, *, out=None):
-    return ivy.angle(input, out=out)  
+    return ivy.angle(input, out=out)
 
 
 @to_ivy_arrays_and_back
 def arctan(input, *, out=None):
-    return ivy.arctan(input, out=out)     
+    return ivy.arctan(input, out=out)
 
 
 @to_ivy_arrays_and_back
 def conj_physical(input, *, out=None):
-    return ivy.conj_physical(input, out=out) 
+    return ivy.conj_physical(input, out=out)
 
 
 @to_ivy_arrays_and_back
