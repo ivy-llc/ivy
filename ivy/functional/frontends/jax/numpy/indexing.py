@@ -16,10 +16,10 @@ def diag(v, k=0):
 
 
 @to_ivy_arrays_and_back
-def take_along_axis(a, indices, axis):
-    return ivy.take_along_axis(a, indices, axis)
+def take_along_axis(arr, indices, axis):
+    return ivy.take_along_axis(arr, indices, axis)
 
-  
+
 @to_ivy_arrays_and_back
 def diag_indices(n, ndim=2):
     idx = ivy.arange(n, dtype=int)
