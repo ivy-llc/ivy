@@ -5,7 +5,7 @@ import weakref
 import warnings
 import copy as python_copy
 from types import FunctionType
-from typing import Callable
+from typing import Callable, Type, TypeVar
 import inspect
 
 
@@ -32,6 +32,8 @@ FN_DECORATORS = [
 
 # Helpers #
 # --------#
+T = TypeVar("T")
+A = TypeVar("A")
 
 
 def try_array_function_override(func, overloaded_args, types, args, kwargs):
@@ -158,7 +160,7 @@ def handle_array_function(func):
     return new_func
 
 
-def handle_array_like_without_promotion(fn: Callable) -> Callable:
+def handle_array_like_without_promotion(fn: Callable[[A], T]) -> Callable[[A], T]:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         args = list(args)
@@ -197,7 +199,9 @@ def handle_array_like_without_promotion(fn: Callable) -> Callable:
     return new_fn
 
 
-def inputs_to_native_arrays(fn: Callable) -> Callable:
+def inputs_to_native_arrays(
+    fn: Callable[[ivy.Array], T]
+) -> Callable[[ivy.NativeArray], T]:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         """
@@ -237,7 +241,9 @@ def inputs_to_native_arrays(fn: Callable) -> Callable:
     return new_fn
 
 
-def inputs_to_ivy_arrays(fn: Callable) -> Callable:
+def inputs_to_ivy_arrays(
+    fn: Callable[[ivy.NativeArray], T]
+) -> Callable[[ivy.Array], T]:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         """
@@ -273,7 +279,9 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     return new_fn
 
 
-def outputs_to_ivy_arrays(fn: Callable) -> Callable:
+def outputs_to_ivy_arrays(
+    fn: Callable[..., ivy.NativeArray]
+) -> Callable[..., ivy.Array]:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         """
@@ -305,7 +313,9 @@ def outputs_to_ivy_arrays(fn: Callable) -> Callable:
     return new_fn
 
 
-def output_to_native_arrays(fn: Callable) -> Callable:
+def output_to_native_arrays(
+    fn: Callable[..., ivy.Array]
+) -> Callable[..., ivy.NativeArray]:
     """
     Calls the function, and then converts all `ivy.Array` instances in
     the function return into `ivy.NativeArray` instances.
@@ -332,7 +342,7 @@ def output_to_native_arrays(fn: Callable) -> Callable:
     return new_fn
 
 
-def to_ivy_arrays_and_back(fn: Callable) -> Callable:
+def to_ivy_arrays_and_back(fn: Callable) -> Callable[[ivy.Array], ivy.NativeArray]:
     """
     Wraps `fn` so that input arrays are all converted to `ivy.Array` instances
     and return arrays are all converted to `ivy.NativeArray` instances.
@@ -340,7 +350,7 @@ def to_ivy_arrays_and_back(fn: Callable) -> Callable:
     return output_to_native_arrays(inputs_to_ivy_arrays(fn))
 
 
-def to_native_arrays_and_back(fn: Callable) -> Callable:
+def to_native_arrays_and_back(fn: Callable) -> Callable[[ivy.NativeArray], ivy.Array]:
     """
     Wraps `fn` so that input arrays are all converted to `ivy.NativeArray` instances
     and return arrays are all converted to `ivy.Array` instances.
@@ -348,7 +358,7 @@ def to_native_arrays_and_back(fn: Callable) -> Callable:
     return outputs_to_ivy_arrays(inputs_to_native_arrays(fn))
 
 
-def handle_view(fn: Callable) -> Callable:
+def handle_view(fn: Callable[[A], T]) -> Callable[[A], T]:
     """
     Wraps `fn` and performs view handling if copy is False. Used for functional
     backends (Jax and TensorFlow). Checks if the first arg is a view or original
@@ -377,7 +387,7 @@ def handle_view(fn: Callable) -> Callable:
     return new_fn
 
 
-def handle_view_indexing(fn: Callable) -> Callable:
+def handle_view_indexing(fn: Callable[[A], T]) -> Callable[[A], T]:
     """
     Wraps `fn` and performs view handling specifically for indexing. As with NumPy
     it returns a copy if advanced indexing is performed. Used for functional
@@ -414,7 +424,7 @@ def handle_view_indexing(fn: Callable) -> Callable:
 # -------------------#
 
 
-def infer_dtype(fn: Callable) -> Callable:
+def infer_dtype(fn: Callable[[A], T]) -> Callable[[A, Type[A]], T]:
     @functools.wraps(fn)
     def new_fn(*args, dtype=None, **kwargs):
         """
@@ -447,7 +457,7 @@ def infer_dtype(fn: Callable) -> Callable:
     return new_fn
 
 
-def integer_arrays_to_float(fn: Callable) -> Callable:
+def integer_arrays_to_float(fn: Callable[[A], T]) -> Callable[[A], T]:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         """
@@ -488,7 +498,9 @@ def integer_arrays_to_float(fn: Callable) -> Callable:
 # ----------------#
 
 
-def infer_device(fn: Callable) -> Callable:
+def infer_device(
+    fn: Callable[[ivy.Device], T]
+) -> Callable[[ivy.Device, Type[ivy.Device]], T]:
     @functools.wraps(fn)
     def new_fn(*args, device=None, **kwargs):
         """
@@ -525,7 +537,7 @@ def infer_device(fn: Callable) -> Callable:
 # ------------------------#
 
 
-def handle_out_argument(fn: Callable) -> Callable:
+def handle_out_argument(fn: Callable[[A], T]) -> Callable[[A], T]:
     handle_out_in_backend = hasattr(fn, "support_native_out")
 
     @functools.wraps(fn)
@@ -585,7 +597,7 @@ def handle_out_argument(fn: Callable) -> Callable:
 # ------------------#
 
 
-def handle_nestable(fn: Callable) -> Callable:
+def handle_nestable(fn: Callable[[A], T]) -> Callable[[A], T]:
     fn_name = fn.__name__
 
     @functools.wraps(fn)
@@ -634,8 +646,11 @@ def handle_nestable(fn: Callable) -> Callable:
 
 
 def _wrap_function(
-    key: str, to_wrap: Callable, original: Callable, compositional: bool = False
-) -> Callable:
+    key: str,
+    to_wrap: Callable[[A], T],
+    original: Callable[[A], T],
+    compositional: bool = False,
+) -> Callable[[A], T]:
     """Apply wrapping to backend implementation `to_wrap` if the original implementation
     `original` is also wrapped, and if `to_wrap` is not already wrapped. Attributes
     `handle_nestable`, `infer_device` etc are set during wrapping, hence indicate to
@@ -833,7 +848,7 @@ def _nest_has_nans(x):
     return ivy.nested_any(x, _leaf_has_nans)
 
 
-def handle_nans(fn: Callable) -> Callable:
+def handle_nans(fn: Callable[[A], T]) -> Callable[[A], T]:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         """
