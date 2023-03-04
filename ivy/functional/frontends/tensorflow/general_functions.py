@@ -368,7 +368,3 @@ def repeat(
 
 
 
-@to_ivy_arrays_and_back
-def tensor_scatter_nd_max(tensor,indices,updates,shape=None,out=None):
-    return ivy.scatter_nd(indices, updates,shape,reduction="max",out=tensor)
-
