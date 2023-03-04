@@ -437,7 +437,9 @@ def test_function(
             ivy.unset_backend()
             raise e
         fw_list = gradient_unsupported_dtypes(fn=ivy.__dict__[fn_name])
-        ret_from_gt_device = ivy.dev(ret_from_gt)
+        gt_returned_array = isinstance(ret_from_gt, ivy.Array)
+        if gt_returned_array:
+            ret_from_gt_device = ivy.dev(ret_from_gt)
         ivy.unset_backend()
     # gradient test
     fw = ivy.current_backend_str()
@@ -486,9 +488,9 @@ def test_function(
                 on_device=on_device,
             )
 
-    ret_device = ivy.dev(ret)
+    if gt_returned_array:
+        ret_device = ivy.dev(ret)
 
-    if assert_device:
         assert (
             ret_device == ret_from_gt_device
         ), f"ground truth backend ({ground_truth_backend}) returned array on device {ret_from_gt_device} but target backend ({ivy.backend}) returned array on device {ret_device}"
