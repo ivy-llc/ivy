@@ -3,8 +3,72 @@ import tensorflow as tf
 import tensorflow_probability as tfp
 from tensorflow.python.ops.numpy_ops import np_math_ops
 
-from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from . import backend_version
+
+
+@with_unsupported_dtypes(
+    {
+        "2.9.1 and below": (
+            "bfloat16",
+            "float16",
+        )
+    },
+    backend_version,
+)
+def histogram(
+    a: tf.Tensor,
+    /,
+    *,
+    bins: Optional[Union[int, tf.Tensor, str]] = None,
+    axis: Optional[tf.Tensor] = None,
+    extend_lower_interval: Optional[bool] = False,
+    extend_upper_interval: Optional[bool] = False,
+    dtype: Optional[tf.DType] = None,
+    range: Optional[Tuple[float]] = None,
+    weights: Optional[tf.Tensor] = None,
+    density: Optional[bool] = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Tuple[tf.Tensor]:
+    if range:
+        if type(bins) == int:
+            bins = tf.cast(
+                tf.linspace(start=range[0], stop=range[1], num=bins + 1), dtype=a.dtype
+            )
+    original_bins = tf.identity(bins)
+    flag_lower_interval = False
+    if not extend_lower_interval:
+        if tf.reduce_min(a) < bins[0]:
+            bins = tf.concat([[tf.reduce_min(a)], bins], 0)
+            flag_lower_interval = True
+    flag_upper_interval = False
+    if not extend_upper_interval:
+        if tf.reduce_max(a) > bins[-1]:
+            bins = tf.concat([bins, [tf.reduce_max(a)]], 0)
+            flag_upper_interval = True
+    ret = tfp.stats.histogram(
+        x=a,
+        edges=bins,
+        axis=axis,
+        weights=weights,
+        extend_lower_interval=extend_lower_interval,
+        extend_upper_interval=extend_upper_interval,
+        dtype=dtype,
+        name="histogram",
+    )
+    if not extend_lower_interval:
+        if flag_lower_interval:
+            ret = ret[1:]
+    if not extend_upper_interval:
+        if flag_upper_interval:
+            ret = ret[:-1]
+    if density:
+        pass
+    # TODO: Tensorflow native dtype argument is not working (casting was required)
+    if dtype:
+        ret = tf.cast(ret, dtype)
+        original_bins = tf.cast(original_bins, dtype)
+    return ret, original_bins
 
 
 def median(

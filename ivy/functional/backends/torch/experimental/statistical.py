@@ -1,10 +1,117 @@
 # global
+import ivy
 from typing import Optional, Union, Tuple, Sequence
 import torch
 
 # local
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
+
+
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "bfloat16",
+            "float16",
+        )
+    },
+    backend_version,
+)
+def histogram(
+    a: torch.tensor,
+    /,
+    *,
+    bins: Optional[Union[int, torch.tensor, str]] = None,
+    axis: Optional[torch.Tensor] = None,
+    extend_lower_interval: Optional[bool] = False,
+    extend_upper_interval: Optional[bool] = False,
+    dtype: Optional[torch.dtype] = None,
+    range: Optional[Tuple[float]] = None,
+    weights: Optional[torch.tensor] = None,
+    density: Optional[bool] = False,
+    out: Optional[torch.tensor] = None,
+) -> Tuple[torch.tensor]:
+    if range:
+        bins = torch.linspace(
+            start=range[0], end=range[1], steps=bins + 1, dtype=a.dtype
+        )
+        range = None
+    bins_out = bins.clone()
+    if extend_lower_interval:
+        bins[0] = -torch.inf
+    if extend_upper_interval:
+        bins[-1] = torch.inf
+    if a.ndim > 0 and axis is not None:
+        inverted_shape_dims = list(torch.flip(torch.arange(a.ndim), dims=[0]))
+        inverted_shape_dims.remove(axis)
+        inverted_shape_dims.append(axis)
+        a_along_axis_1d = (
+            a.permute(inverted_shape_dims).flatten().reshape((-1, a.shape[axis]))
+        )
+        if weights is None:
+            ret = []
+            for a_1d in a_along_axis_1d:
+                ret_1d = torch.histogram(
+                    a_1d,
+                    bins=bins,
+                    # TODO: waiting tensorflow version support to density
+                    # density=density,
+                )[0]
+                ret.append(ret_1d)
+        else:
+            weights_along_axis_1d = (
+                weights.permute(inverted_shape_dims)
+                .flatten()
+                .reshape((-1, weights.shape[axis]))
+            )
+            ret = []
+            for a_1d, weights_1d in zip(a_along_axis_1d, weights_along_axis_1d):
+                ret_1d = torch.histogram(
+                    a_1d,
+                    bins=bins,
+                    weight=weights_1d,
+                    # TODO: waiting tensorflow version support to density
+                    # density=density,
+                )[0]
+                ret.append(ret_1d.tolist())
+        out_shape = list(a.shape)
+        del out_shape[axis]
+        out_shape.insert(0, len(bins) - 1)
+        ret = torch.tensor(ret)
+        ret = ret.flatten()
+        index = torch.zeros(len(out_shape), dtype=int)
+        ret_shaped = torch.zeros(out_shape)
+        dim = 0
+        i = 0
+        if index.tolist() == (torch.tensor(out_shape) - 1).tolist():
+            ret_shaped[tuple(index)] = ret[i]
+        while index.tolist() != (torch.tensor(out_shape) - 1).tolist():
+            ret_shaped[tuple(index)] = ret[i]
+            dim_full_flag = False
+            while index[dim] == out_shape[dim] - 1:
+                index[dim] = 0
+                dim += 1
+                dim_full_flag = True
+            index[dim] += 1
+            i += 1
+            if dim_full_flag:
+                dim = 0
+        if index.tolist() == (torch.tensor(out_shape) - 1).tolist():
+            ret_shaped[tuple(index)] = ret[i]
+        ret = ret_shaped
+    else:
+        ret = torch.histogram(
+            a, bins=bins, range=range, weight=weights, density=density
+        )[0]
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype:
+        ret = ret.type(dtype)
+        bins_out = bins_out.type(dtype)
+
+    return ret, bins_out
+
+
+histogram.support_native_out = True
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
