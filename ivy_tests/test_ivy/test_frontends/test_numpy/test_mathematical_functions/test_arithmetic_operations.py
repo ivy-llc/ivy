@@ -649,8 +649,7 @@ def test_numpy_fmod(
         arr_func=[
             lambda: helpers.dtype_and_values(
                 available_dtypes=helpers.get_dtypes("numeric"),
-                num_arrays=1,
-                exclude_min=True,
+                num_arrays=2,
                 shared_dtype=True,
                 large_abs_safety_factor=6,
                 small_abs_safety_factor=6,
@@ -684,7 +683,7 @@ def test_numpy_modf(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x1=xs[0],
+        x1=x[0],
         out=None,
         where=where,
         casting=casting,
