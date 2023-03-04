@@ -143,10 +143,10 @@ class Array(
         elif ivy.is_native_array(data):
             self._data = data
         elif isinstance(data, np.ndarray):
-            self._data = ivy.current_backend().asarray(data).data
+            self._data = ivy.asarray(data)._data
         else:
             raise ivy.utils.exceptions.IvyException(
-                "data must be native array or ndarray"
+                "data must be ivy array, native array or ndarray"
             )
         self._shape = self._data.shape
         self._size = (
