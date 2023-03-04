@@ -943,3 +943,85 @@ def test_jax_numpy_hsplit(
         ary=value[0],
         indices_or_sections=indices_or_sections,
     )
+
+
+# bartlett
+@handle_frontend_test(
+    fn_tree="jax.numpy.bartlett",
+    dtype_and_m=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=2,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_bartlett(
+    *,
+    dtype_and_m,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, m = dtype_and_m
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        M=m[0],
+    )
+
+
+# blackman
+@handle_frontend_test(
+    fn_tree="jax.numpy.blackman",
+    dtype_and_m=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=2,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_blackman(
+    *,
+    dtype_and_m,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, m = dtype_and_m
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        M=m[0],
+    )
+
+
+# block
+@handle_frontend_test(
+    fn_tree="jax.numpy.block",
+    xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_block(
+    *,
+    xs_n_input_dtypes_n_unique_idx,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        arrays=xs,
+        axis=unique_idx,
+    )
