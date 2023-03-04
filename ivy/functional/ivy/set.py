@@ -250,7 +250,8 @@ def unique_values(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns the unique elements of an input array ``x``.
+    """
+    Returns the unique elements of an input array ``x``.
 
     .. admonition:: Data-dependent output shape
         :class: important
