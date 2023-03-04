@@ -300,3 +300,45 @@ def count_nonzero(
 ) -> paddle.Tensor:
     non_zero_count = paddle.sum(x != 0, axis=axis, keepdim=keepdims, name=name)
     return non_zero_count
+def trapz(
+    y: paddle.Tensor,
+    /,
+    *,
+    x: Optional[paddle.Tensor] = None,
+    dx: Optional[float] = None,
+    axis: Optional[int] = -1,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if x is not None:
+        if len(x.shape) != len(y.shape):
+            raise ValueError("Shape of `x` must match shape of `y`")
+        if x.shape[axis] != y.shape[axis]:
+            raise ValueError("Length of `x` along axis must match length of `y`")
+        dx = paddle.to_tensor(x, dtype=paddle.float32).diff(axis=axis)
+    elif dx is None:
+        raise ValueError("Either `x` or `dx` must be specified")
+    else:
+        dx = paddle.to_tensor(dx)
+
+    slice1 = [slice(None)] * len(y.shape)
+    slice2 = [slice(None)] * len(y.shape)
+
+    slice1[axis] = slice(1, None)
+    slice2[axis] = slice(None, -1)
+
+    div_factor = paddle.to_tensor(2.0, dtype=y.dtype)
+    slice_factor = paddle.to_tensor(1.0, dtype=y.dtype)
+
+    slice_factor = slice_factor.unsqueeze(axis)
+    div_factor = div_factor.unsqueeze(axis)
+
+    if out is not None:
+        out_slice = [slice(None)] * len(y.shape)
+        out_slice[axis] = slice(1, None)
+        out_slice = tuple(out_slice)
+        out[out_slice] = dx * (slice_factor * y[slice1] + slice_factor * y[slice2]) / div_factor
+        ret = out
+    else:
+        ret = dx * (slice_factor * y[slice1] + slice_factor * y[slice2]) / div_factor
+    return ret.sum(axis=axis)
+
