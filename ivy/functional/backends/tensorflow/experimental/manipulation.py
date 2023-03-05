@@ -215,8 +215,6 @@ def expand(
             shape[i] = x.shape[i]
     return tf.broadcast_to(x, shape)
 
-import tensorflow as tf
-from typing import Union
 
 def tensorflow_histogram(
     x: Union[tf.Tensor, tf.Variable],
