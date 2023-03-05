@@ -34,9 +34,17 @@ UNSET_TEST_CONFIG = {"list": [], "flag": []}
 UNSET_TEST_API_CONFIG = {"list": [], "flag": []}
 
 TEST_PARAMS_CONFIG = []
+UNSUPPORTED_FRAEMWORK_DEVICES = {"numpy": ["gpu", "tpu"]}
 
 if "ARRAY_API_TESTS_MODULE" not in os.environ:
     os.environ["ARRAY_API_TESTS_MODULE"] = "ivy.functional.backends.numpy"
+
+
+def pytest_report_header(config):
+    return [
+        f"device: {config.getoption('device')}",
+        f"number of Hypothesis examples: {config.getoption('num_examples')}",
+    ]
 
 
 def pytest_configure(config):
@@ -120,6 +128,12 @@ def pytest_configure(config):
     # create test configs
     for backend_str in backend_strs:
         for device in devices:
+            if (
+                backend_str in UNSUPPORTED_FRAEMWORK_DEVICES.keys()
+                and device.partition(":")[0]
+                in UNSUPPORTED_FRAEMWORK_DEVICES[backend_str]
+            ):
+                continue
             for compile_graph in compile_modes:
                 for implicit in implicit_modes:
                     if "/" in backend_str:
