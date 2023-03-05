@@ -92,6 +92,15 @@ def floor(x):
     return ivy.floor(x)
 
 
+@with_unsupported_dtypes(
+    {"0.3.14 and below": ("bfloat16", "float16")},
+    "jax",
+)
+@to_ivy_arrays_and_back
+def gradient(f, *varargs, axis=None, edge_order=None):
+    return ivy.gradient(f, varargs, axis=axis, edge_order=edge_order)
+
+
 @to_ivy_arrays_and_back
 def mod(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
