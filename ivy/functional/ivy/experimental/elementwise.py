@@ -1451,3 +1451,36 @@ def ldexp(
     ivy.array([1, 4, 12])
     """
     return ivy.current_backend(x1, x2).ldexp(x1, x2, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+def frexp(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[Tuple[ivy.Array, ivy.Array]] = None,
+) -> Tuple[ivy.Array, ivy.Array]:
+    """
+    Decompose the elements of x into mantissa and twos exponent.
+    Parameters
+    ----------
+    x
+        Input array.
+    out
+        optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
+    Returns
+    -------
+    ret
+        A tuple of two arrays, the mantissa and the twos exponent.
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, 3])
+    >>> ivy.frexp(x)
+    (ivy.array([0.5, 0.5, 0.75]), ivy.array([1, 2, 2]))
+    """
+    return ivy.current_backend(x).frexp(x, out=out)

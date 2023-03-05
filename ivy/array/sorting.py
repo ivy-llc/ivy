@@ -1,13 +1,13 @@
 # global
 import abc
-from typing import Optional, Union
+from typing import Optional, Union, Literal, List
 
 # local
 
 import ivy
 
 
-class ArrayWithSorting(abc.ABC):
+class _ArrayWithSorting(abc.ABC):
     def argsort(
         self: ivy.Array,
         /,
@@ -41,10 +41,13 @@ class ArrayWithSorting(abc.ABC):
             of ``x`` values which compare as equal (i.e., the
             relative order of ``x`` values which compare as
             equal is implementation-dependent). Default: ``True``.
+        out
+            optional output array, for writing the result to. It must have the same
+            shape as input.
 
         Returns
         -------
-        out
+        ret
             an array of indices. The returned array must have the same shape as ``x``.
             The returned array must have the default array index data type.
 
@@ -101,9 +104,9 @@ class ArrayWithSorting(abc.ABC):
         v: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
-        side="left",
-        sorter=None,
-        ret_dtype=ivy.int64,
+        side: Literal["left", "right"] = "left",
+        sorter: Optional[Union[ivy.Array, ivy.NativeArray, List[int]]] = None,
+        ret_dtype: Union[ivy.Dtype, ivy.NativeDtype] = ivy.int64,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """

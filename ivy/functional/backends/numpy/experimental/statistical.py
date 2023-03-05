@@ -105,3 +105,23 @@ def nanmedian(
 
 
 nanmedian.support_native_out = True
+
+
+def bincount(
+    x: np.ndarray,
+    /,
+    *,
+    weights: Optional[np.ndarray] = None,
+    minlength: Optional[int] = 0,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if weights is not None:
+        ret = np.bincount(x, weights=weights, minlength=minlength)
+        ret = ret.astype(weights.dtype)
+    else:
+        ret = np.bincount(x, minlength=minlength)
+        ret = ret.astype(x.dtype)
+    return ret
+
+
+bincount.support_native_out = False
