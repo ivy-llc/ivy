@@ -215,31 +215,23 @@ def expand(
             shape[i] = x.shape[i]
     return tf.broadcast_to(x, shape)
 
-def tensorfolow_histogram2(
-    self: tf.Tensor,
-    /,
-    *,
-    name: Optional[tf.Tensor],
-    data: Optional[Union[tf.Tensor]],
-    step: Optional[Union[tf.Tensor]] = None,
-    buckets: Optional[tf.Tensor[int]],
-    description: Optional[tf.Tensor[str]],
-) -> ivy.Array:
+import tensorflow as tf
+from typing import Union
 
-    a = tf.summary.create_file_writer("test/logs")
-    with a.as_default():
-        for step in range(100):
-
-            # Generate fake "activations".
-
-            activations = [
-                tf.random.normal([1000], mean=step, stddev=1),
-                tf.random.normal([1000], mean=step, stddev=10),
-                tf.random.normal([1000], mean=step, stddev=100),
-            ]
-
-            tf.summary.histogram("layer1/activate", activations[0], step=step)
-            tf.summary.histogram("layer2/activate", activations[1], step=step)
-            tf.summary.histogram("layer3/activate", activations[2], step=step)
-
-    return a
+def tensorflow_histogram(
+    x: Union[tf.Tensor, tf.Variable],
+    edges: Union[tf.Tensor, tf.Variable],
+    axis: int = None,
+    weights: Union[None, tf.Tensor] = None,
+    extend_lower_interval: bool = False,
+    extend_upper_interval: bool = False,
+    dtype: Union[tf.DType, None] = None,
+    name: str = "histogram"
+) -> tf.Tensor:
+    # Compute the histogram using tf.histogram_fixed_width or tf.histogram_fixed_width_bins
+    hist = tf.histogram_fixed_width(x, edges, weights=weights, 
+                                     axis=axis, 
+                                     expand_binnumbers=extend_lower_interval or extend_upper_interval,
+                                     dtype=dtype,
+                                     name=name)
+    return hist

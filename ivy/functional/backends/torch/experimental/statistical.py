@@ -149,7 +149,7 @@ def bincount(
 
 bincount.support_native_out = False
 
-def histogram(
+def pytorch_histogram(
     x: torch.Tensor,
     /,
     *,
@@ -157,9 +157,6 @@ def histogram(
     range: Optional[int] = None,
     density: Optional[bool] = False,
 ) -> torch.Tensor:
-
-
-torch.histogram(torch.tensor([1., 2, 1]), bins=4, range=(0., 3.), 
-weight=torch.tensor([1., 2., 4.]))
-torch.histogram(torch.tensor([1., 2, 1]), bins=4, range=(0., 3.), 
-weight=torch.tensor([1., 2., 4.]), density=True)
+    # Compute the histogram with the given arguments
+    hist = torch.histc(x, bins=range, weights=weights, density=density)
+    return hist
