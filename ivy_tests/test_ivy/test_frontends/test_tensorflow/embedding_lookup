@@ -1,0 +1,21 @@
+import ivy
+import tensorflow as tf
+
+class EmbeddingLookup(tf.keras.layers.Layer):
+    def __init__(self, input_dim, output_dim, **kwargs):
+        super(EmbeddingLookup, self).__init__(**kwargs)
+        self.input_dim = input_dim
+        self.output_dim = output_dim
+
+        self.embedding = tf.Variable(tf.random.normal([input_dim, output_dim]))
+
+    def call(self, inputs):
+        return tf.nn.embedding_lookup(self.embedding, inputs)
+
+    def forward(self, x):
+        if ivy.is_jax(x):
+            raise Exception('JAX backend not yet supported for TensorFlow EmbeddingLookup.')
+        return ivy.to_numpy(self.call(ivy.to_native(x)))
+
+    def backward(self, dy):
+        raise Exception('Backward pass not yet supported for TensorFlow EmbeddingLookup.')
