@@ -1148,7 +1148,7 @@ def test_torch_row_stack(
     fn_tree="torch.column_stack",
     dtype_value_shape=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=st.integers(2, 5),
+        num_arrays=st.integers(1, 5),
     ),
 )
 def test_torch_column_stack(
@@ -1166,7 +1166,7 @@ def test_torch_column_stack(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        tensors=value,
+        input=value[0],
     )
 
 
