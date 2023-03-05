@@ -57,3 +57,8 @@ def isscalar(element):
 @to_ivy_arrays_and_back
 def isfortran(a: np.ndarray):
     return a.flags.fnc
+
+
+@to_ivy_arrays_and_back
+def isrealobj(x: any):
+    return not ivy.is_complex_dtype(x)
