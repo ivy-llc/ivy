@@ -1154,6 +1154,7 @@ def test_torch_row_stack(
 def test_torch_column_stack(
     *,
     dtype_value_shape,
+    with_out,
     on_device,
     fn_tree,
     frontend,
@@ -1162,6 +1163,7 @@ def test_torch_column_stack(
     input_dtype, value = dtype_value_shape
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        with_out=with_out,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
