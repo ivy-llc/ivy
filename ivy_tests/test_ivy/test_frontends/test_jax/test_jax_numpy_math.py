@@ -2352,7 +2352,6 @@ def test_jax_numpy_gradient(
     kwargs = {"f":arrays[0]}
     test_flags.num_positional_args = 1
     if len(arrays) > 1:
-        test_flags.num_positional_args += len(arrays[1])
         kwargs["varargs"] = arrays[1]
     if len(arrays) > 2:
         kwargs["axis"] = arrays[2]
