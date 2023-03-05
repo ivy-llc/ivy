@@ -185,7 +185,19 @@ def nan_to_num(x: paddle.Tensor,
                neginf: Optional[Union[float, int]] = None,
                out: Optional[paddle.Tensor] = None,
                ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if x.dtype!=paddle.float64:
+        x=paddle.cast(x,dtype='float64')
+    
+    posinf = posinf if posinf is not None else 1.79769313e308
+    neginf = neginf if neginf is not None else -1.79769313e308
+    ret = paddle.where(paddle.isnan(x), nan, x)
+    ret = paddle.where(paddle.logical_and(paddle.isinf(ret), ret > 0), posinf, ret)
+    ret = paddle.where(paddle.logical_and(paddle.isinf(ret), ret < 0), neginf, ret)
+    if copy:
+        return ret.clone()
+    else:
+        x= ret
+        return x
 
 
 def logaddexp2(
