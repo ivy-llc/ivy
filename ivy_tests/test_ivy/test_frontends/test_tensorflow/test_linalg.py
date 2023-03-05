@@ -769,3 +769,25 @@ def test_tensorflow_svd(
         atol=1e-2,
         ground_truth_backend=frontend,
     )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.diag",
+    dtype_and_input=_get_dtype_and_matrix(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_diag(
+    dtype_and_input,
+    frontend,
+    test_flags,
+    fn_tree,
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x=x[0],
+    )
+
