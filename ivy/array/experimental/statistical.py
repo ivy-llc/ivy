@@ -6,13 +6,13 @@ from typing import Optional, Union, Tuple, Sequence
 import ivy
 
 
-class ArrayWithStatisticalExperimental(abc.ABC):
+class _ArrayWithStatisticalExperimental(abc.ABC):
     def median(
         self: ivy.Array,
         /,
         *,
         axis: Optional[Union[Tuple[int], int]] = None,
-        keepdims: Optional[bool] = False,
+        keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.median. This method simply
@@ -52,7 +52,7 @@ class ArrayWithStatisticalExperimental(abc.ABC):
         /,
         *,
         axis: Optional[Union[Tuple[int], int]] = None,
-        keepdims: Optional[bool] = False,
+        keepdims: bool = False,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -146,7 +146,7 @@ class ArrayWithStatisticalExperimental(abc.ABC):
 
         Parameters
         ----------
-        a
+        self
             Input array.
         q
             Quantile or sequence of quantiles to compute, which must be
@@ -219,8 +219,8 @@ class ArrayWithStatisticalExperimental(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        y: ivy.Array = None,
-        rowvar: Optional[bool] = True,
+        y: Optional[ivy.Array] = None,
+        rowvar: bool = True,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.corrcoef. This method simply
@@ -229,7 +229,7 @@ class ArrayWithStatisticalExperimental(abc.ABC):
 
         Parameters
         ----------
-        x
+        self
             Input array.
         y
             An additional input array.
@@ -262,8 +262,8 @@ class ArrayWithStatisticalExperimental(abc.ABC):
         /,
         *,
         axis: Optional[Union[Tuple[int], int]] = None,
-        keepdims: Optional[bool] = False,
-        overwrite_input: Optional[bool] = False,
+        keepdims: bool = False,
+        overwrite_input: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.nanmedian. This method simply
@@ -303,6 +303,7 @@ class ArrayWithStatisticalExperimental(abc.ABC):
             A new array holding the result. If the input contains integers
 
         Examples
+        --------
         >>> a = ivy.Array([[10.0, ivy.nan, 4], [3, 2, 1]])
         >>> a.nanmedian(a)
             3.0
@@ -315,5 +316,51 @@ class ArrayWithStatisticalExperimental(abc.ABC):
             axis=axis,
             keepdims=keepdims,
             overwrite_input=overwrite_input,
+            out=out,
+        )
+
+    def bincount(
+        self,
+        /,
+        *,
+        weights: Optional[ivy.Array] = None,
+        minlength: int = 0,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.bincount. This method simply
+        wraps the function, and so the docstring for ivy.bincount also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array. The array is flattened if it is not already 1-dimensional.
+        weights
+            Optional weights, array of the same shape as self.
+        minlength
+            A minimum number of bins for the output array.
+        out
+            An array of the same shape as the returned array, or of the shape
+            (minlength,) if minlength is specified.
+
+        Returns
+        -------
+        ret
+            The result of binning the input array.
+
+        Examples
+        --------
+        >>> a = ivy.array([0, 1, 1, 3, 2, 1, 7])
+        >>> a.bincount()
+            ivy.array([1, 3, 1, 1, 0, 0, 0, 1])
+        >>> a.bincount(minlength=10)
+            ivy.array([1, 3, 1, 1, 0, 0, 0, 1, 0, 0])
+        >>> a.bincount(weights=ivy.array([0.3, 0.5, 0.2, 0.7, 1., 0.6, 1.]))
+            ivy.array([0.3, 1.3, 1. , 0.7, 0. , 0. , 0. , 1. ])
+        """
+        return ivy.bincount(
+            self._data,
+            weights=weights,
+            minlength=minlength,
             out=out,
         )

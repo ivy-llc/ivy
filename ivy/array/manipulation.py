@@ -11,11 +11,11 @@ from ivy import handle_view
 # ToDo: implement all methods here as public instance methods
 
 
-class ArrayWithManipulation(abc.ABC):
+class _ArrayWithManipulation(abc.ABC):
     def view(
         self: ivy.Array,
         /,
-        shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]] = None,
+        shape: Optional[Union[ivy.Shape, ivy.NativeShape, Sequence[int]]] = None,
     ) -> ivy.Array:
         if shape:
             return self.reshape(shape)
@@ -29,7 +29,7 @@ class ArrayWithManipulation(abc.ABC):
         ],
         /,
         *,
-        axis: Optional[int] = 0,
+        axis: int = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -205,8 +205,8 @@ class ArrayWithManipulation(abc.ABC):
         shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
         *,
         copy: Optional[bool] = None,
-        order: Optional[str] = "C",
-        allowzero: Optional[bool] = True,
+        order: str = "C",
+        allowzero: bool = True,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -448,7 +448,7 @@ class ArrayWithManipulation(abc.ABC):
         /,
         pad_width: Iterable[Tuple[int]],
         *,
-        value: Optional[Number] = 0,
+        value: Number = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """

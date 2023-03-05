@@ -6,7 +6,7 @@ from typing import Optional, Union
 import ivy
 
 
-class ArrayWithLosses(abc.ABC):
+class _ArrayWithLosses(abc.ABC):
     def cross_entropy(
         self: ivy.Array,
         pred: Union[ivy.Array, ivy.NativeArray],
@@ -128,6 +128,10 @@ class ArrayWithLosses(abc.ABC):
             a float in [0.0, 1.0] specifying the amount of smoothing when calculating
             the loss. If epsilon is ``0``, no smoothing will be applied.
             Default: ``1e-7``.
+        epsilon
+            a float in [0.0, 1.0] specifying the amount of smoothing when calculating
+            the loss. If epsilon is ``0``, no smoothing will be applied. Default:
+            ``1e-7``.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.

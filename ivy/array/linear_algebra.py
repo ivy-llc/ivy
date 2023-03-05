@@ -8,7 +8,7 @@ import ivy
 inf = float("inf")
 
 
-class ArrayWithLinearAlgebra(abc.ABC):
+class _ArrayWithLinearAlgebra(abc.ABC):
     def matmul(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
@@ -37,6 +37,12 @@ class ArrayWithLinearAlgebra(abc.ABC):
             if True, ``x1`` is transposed before multiplication.
         transpose_b
             if True, ``x2`` is transposed before multiplication.
+        adjoint_a
+            If True, takes the conjugate of the matrix then the transpose of the matrix.
+            adjoint_a and transpose_a can not be true at the same time.
+        adjoint_b
+            If True, takes the conjugate of the matrix then the transpose of the matrix.
+            adjoint_b and transpose_b can not be true at the same time.
         out
             optional output array, for writing the result to. It must have a
             shape that the inputs broadcast to.
@@ -295,7 +301,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        UPLO: Optional[str] = "L",
+        UPLO: str = "L",
         out: Optional[ivy.Array] = None,
     ) -> Tuple[ivy.Array]:
         return ivy.eigh(self._data, UPLO=UPLO, out=out)
@@ -304,7 +310,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        UPLO: Optional[str] = "L",
+        UPLO: str = "L",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -397,8 +403,8 @@ class ArrayWithLinearAlgebra(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-        axis: Optional[Tuple[int, int]] = (-2, -1),
+        ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",
+        axis: Tuple[int, int] = (-2, -1),
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -800,7 +806,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         x2: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
-        axes: Union[int, Tuple[List[int], List[int]]] = None,
+        axes: Optional[Union[int, Tuple[List[int], List[int]]]] = None,
     ) -> Tuple[ivy.Array]:
         return ivy.tensorsolve(self._data, x2, axes=axes)
 
@@ -873,8 +879,8 @@ class ArrayWithLinearAlgebra(abc.ABC):
         /,
         *,
         axis: Optional[Union[int, Sequence[int]]] = None,
-        keepdims: Optional[bool] = False,
-        ord: Optional[Union[int, float, Literal[inf, -inf]]] = 2,
+        keepdims: bool = False,
+        ord: Union[int, float, Literal[inf, -inf]] = 2,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -968,7 +974,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         /,
         *,
         N: Optional[int] = None,
-        increasing: Optional[bool] = False,
+        increasing: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """

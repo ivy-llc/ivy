@@ -4,7 +4,7 @@ signature.
 
 # global
 import tensorflow as tf
-from typing import Union, Optional, Callable
+from typing import Sequence, Union, Optional, Callable
 
 # local
 import ivy
@@ -60,7 +60,13 @@ def _grad_func(y, xs, xs_required, tape):
 
 
 def execute_with_gradients(
-    func, xs, /, *, retain_grads=False, xs_grad_idxs=None, ret_grad_idxs=None
+    func,
+    xs: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    retain_grads: bool = False,
+    xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
+    ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
 ):
     # Conversion of required arrays to float variables and duplicate index chains
     xs, xs_required, required_duplicate_index_chains, _ = _get_required_float_variables(

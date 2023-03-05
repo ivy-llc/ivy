@@ -7,8 +7,7 @@ from typing import Optional
 import ivy
 
 
-class ArrayWithSortingExperimental(abc.ABC):
-    # msort
+class _ArrayWithSortingExperimental(abc.ABC):
     def msort(
         self: ivy.Array,
         /,
@@ -43,7 +42,6 @@ class ArrayWithSortingExperimental(abc.ABC):
         """
         return ivy.msort(self._data, out=out)
 
-    # lexsort
     def lexsort(
         self: ivy.Array,
         /,

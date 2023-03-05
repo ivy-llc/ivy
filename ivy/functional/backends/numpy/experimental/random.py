@@ -84,9 +84,9 @@ def poisson(
 
 
 def bernoulli(
-    probs: [float, np.ndarray],
+    probs: Union[float, np.ndarray],
     *,
-    logits: [float, np.ndarray] = None,
+    logits: Optional[Union[float, np.ndarray]] = None,
     shape: Optional[Union[ivy.NativeArray, Sequence[int]]] = None,
     device: str = None,
     dtype: np.dtype = None,
