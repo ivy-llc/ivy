@@ -2,5 +2,5 @@
 import abc
 
 
-class ArrayWithConversionsExperimental(abc.ABC):
+class _ArrayWithConversionsExperimental(abc.ABC):
     pass

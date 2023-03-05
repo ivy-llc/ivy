@@ -19,10 +19,10 @@ def median(
     return quantile(
         input,
         0.5,
-        dim=axis,
-        keepdim=keepdims,
+        axis=axis,
+        keepdims=keepdims,
         interpolation="midpoint",
-    )[0]
+    ).type_as(input)
 
 
 median.support_native_out = False
@@ -56,8 +56,12 @@ def quantile(
     interpolation: Optional[str] = "linear",
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
+    temp = a.to(torch.float64)
+    if isinstance(q, torch.tensor):
+        qt = q.to(torch.float64)
+    else:
+        qt = q
     if isinstance(axis, list) or isinstance(axis, tuple):
-        temp = a.detach()
         dimension = len(a.size())
         for x in axis:
             axis1 = x
@@ -66,10 +70,10 @@ def quantile(
                 axis1 = axis2
         temp = torch.flatten(temp, start_dim=dimension - len(axis))
         return torch.quantile(
-            temp, q, dim=-1, keepdim=keepdims, interpolation=interpolation, out=out
+            temp, qt, dim=-1, keepdim=keepdims, interpolation=interpolation, out=out
         )
     return torch.quantile(
-        a, q, dim=axis, keepdim=keepdims, interpolation=interpolation, out=out
+        temp, qt, dim=axis, keepdim=keepdims, interpolation=interpolation, out=out
     )
 
 
@@ -127,3 +131,23 @@ def unravel_index(
 
 
 unravel_index.support_native_out = False
+
+
+def bincount(
+    x: torch.Tensor,
+    /,
+    *,
+    weights: Optional[torch.Tensor] = None,
+    minlength: Optional[int] = 0,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if weights is None:
+        ret = torch.bincount(x, minlength=minlength)
+        ret = ret.to(x.dtype)
+    else:
+        ret = torch.bincount(x, weights=weights, minlength=minlength)
+        ret = ret.to(weights.dtype)
+    return ret
+
+
+bincount.support_native_out = False

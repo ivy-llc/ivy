@@ -1,22 +1,22 @@
 from hypothesis import strategies as st  # NOQA
-from . import globals
+from . import globals as test_globals
 
 
 @st.composite
 def _as_varaible_strategy(draw):
     if (
-        globals.CURRENT_BACKEND is not globals._Notsetval
-        and globals.CURRENT_BACKEND().backend == "numpy"
+        test_globals.CURRENT_BACKEND is not test_globals._Notsetval
+        and test_globals.CURRENT_BACKEND().backend == "numpy"
     ):
         return draw(st.just([False]))
-    if not globals.CURRENT_FRONTEND_STR:
+    if not test_globals.CURRENT_FRONTEND_STR:
         # non multiversion changes go here
         if (
-            globals.CURRENT_FRONTEND is not globals._Notsetval
-            and globals.CURRENT_FRONTEND().backend == "numpy"
+            test_globals.CURRENT_FRONTEND is not test_globals._Notsetval
+            and test_globals.CURRENT_FRONTEND().backend == "numpy"
         ):
             return draw(st.just([False]))
-    elif globals.CURRENT_FRONTEND_STR[0].split('/')[0]=='numpy':
+    elif test_globals.CURRENT_FRONTEND_STR[0].split("/")[0] == "numpy":
         # multiversion changes go here
         return draw(st.just([False]))
     return draw(st.lists(st.booleans(), min_size=1, max_size=1))
@@ -29,6 +29,7 @@ BuiltInstanceStrategy = st.booleans()
 BuiltInplaceStrategy = st.just(False)
 BuiltGradientStrategy = st.booleans()
 BuiltWithOutStrategy = st.booleans()
+BuiltCompileStrategy = st.booleans()
 
 
 flags_mapping = {
@@ -39,6 +40,7 @@ flags_mapping = {
     "test_gradients": "BuiltGradientStrategy",
     "with_out": "BuiltWithOutStrategy",
     "inplace": "BuiltInplace",
+    "test_compile": "BuiltCompileStrategy",
 }
 
 
@@ -65,6 +67,7 @@ class FunctionTestFlags:
         native_arrays,
         container,
         test_gradients,
+        test_compile,
     ):
         self.num_positional_args = num_positional_args
         self.with_out = with_out
@@ -73,6 +76,7 @@ class FunctionTestFlags:
         self.container = container
         self.as_variable = as_variable
         self.test_gradients = test_gradients
+        self.test_compile = test_compile
 
     def __str__(self):
         return (
@@ -82,7 +86,8 @@ class FunctionTestFlags:
             f"native_arrays={self.native_arrays}. "
             f"container={self.container}. "
             f"as_variable={self.as_variable}. "
-            f"test_gradients={self.test_gradients}."
+            f"test_gradients={self.test_gradients}. "
+            f"test_compile={self.test_compile}. "
         )
 
     def __repr__(self):
@@ -97,6 +102,7 @@ def function_flags(
     instance_method,
     with_out,
     test_gradients,
+    test_compile,
     as_variable,
     native_arrays,
     container_flags,
@@ -108,6 +114,7 @@ def function_flags(
             with_out=with_out,
             instance_method=instance_method,
             test_gradients=test_gradients,
+            test_compile=test_compile,
             as_variable=as_variable,
             native_arrays=native_arrays,
             container=container_flags,
@@ -176,14 +183,14 @@ class MethodTestFlags:
         self.num_positional_args = num_positional_args
         self.native_arrays = native_arrays
         self.as_variable = as_variable
-        self.container_flags = container_flags
+        self.container = container_flags
 
     def __str__(self):
         return (
             f"num_positional_args={self.num_positional_args}. "
             f"native_arrays={self.native_arrays}. "
             f"as_variable={self.as_variable}. "
-            f"container_flags={self.container_flags}. "
+            f"container_flags={self.container}. "
         )
 
     def __repr__(self):

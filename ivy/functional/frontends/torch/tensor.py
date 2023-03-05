@@ -296,15 +296,44 @@ class Tensor:
 
     def to(self, *args, **kwargs):
         if len(args) > 0:
-            if isinstance(args[0], ivy.Dtype):
+            if isinstance(args[0], (ivy.Dtype, ivy.NativeDtype)):
                 if self.dtype == args[0]:
                     return self
                 else:
                     cast_tensor = self.clone()
                     cast_tensor.ivy_array = ivy.asarray(self._ivy_array, dtype=args[0])
                     return cast_tensor
+            if isinstance(args[0], (ivy.Device, ivy.NativeDevice, str)):
+                if isinstance(args[0], str):
+                    ivy.utils.assertions.check_elem_in_list(
+                        args[0],
+                        [
+                            "cpu",
+                            "cuda",
+                            "xpu",
+                            "mkldnn",
+                            "opengl",
+                            "opencl",
+                            "ideep",
+                            "hip",
+                            "ve",
+                            "ort",
+                            "mlc",
+                            "xla",
+                            "lazy",
+                            "vulkan",
+                            "meta",
+                            "hpu",
+                        ],
+                    )
+                if self.device == args[0]:
+                    return self
+                else:
+                    cast_tensor = self.clone()
+                    cast_tensor.ivy_array = ivy.asarray(self._ivy_array, device=args[0])
+                    return cast_tensor
             else:
-                if self.dtype == args[0].dtype and self.device == args[0].device:
+                if self.dtype == args[0].dtype and self.device == ivy.dev(args[0]):
                     return self
                 else:
                     cast_tensor = self.clone()
@@ -415,6 +444,21 @@ class Tensor:
 
     def split(self, split_size, dim=0):
         return torch_frontend.split(self, split_size, dim)
+
+    def vsplit(self, indices_or_sections=None, /, *, indices=None, sections=None):
+        return torch_frontend.vsplit(
+            self.ivy_array, indices_or_sections, indices=indices, sections=sections
+        )
+
+    def hsplit(self, indices_or_sections=None, /, *, indices=None, sections=None):
+        return torch_frontend.hsplit(
+            self.ivy_array, indices_or_sections, indices=indices, sections=sections
+        )
+
+    def dsplit(self, indices_or_sections=None, /, *, indices=None, sections=None):
+        return torch_frontend.dsplit(
+            self.ivy_array, indices_or_sections, indices=indices, sections=sections
+        )
 
     def dim(self):
         return self._ivy_array.ndim
@@ -650,10 +694,36 @@ class Tensor:
     def sigmoid(self):
         return torch_frontend.sigmoid(self.ivy_array)
 
-    def bitwise_and_(self, other):
-        self.ivy_array = self.bitwise_and(other).ivy_array
-        return self
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def softmax(self, dim=None, dtype=None):
+        return torch_frontend.nn.functional.softmax(
+            self._ivy_array, dim=dim, dtype=dtype
+        )
 
+    def repeat(self, *args, repeats=None):
+        if args and repeats:
+            raise ivy.utils.exceptions.IvyException(
+                "repeat() got multiple values for argument 'repeats'"
+            )
+        if args:
+            if isinstance(args[0], (tuple, list)):
+                repeats = args[0]
+            else:
+                repeats = args
+        elif not isinstance(repeats, (tuple, list)):
+            raise ivy.utils.exceptions.IvyException(
+                "repeat(): argument 'repeats' must be tuple of ints"
+            )
+
+        return torch_frontend.tile(self._ivy_array, repeats)
+
+    def unbind(self, dim=0):
+        return torch_frontend.unbind(self._ivy_array, dim=dim)
+    
+    def bitwise_and_(self, other):
+	      self.ivy_array = self.bitwise_and(other).ivy_array
+        return self
+        
     # Special Methods #
     # -------------------#
 

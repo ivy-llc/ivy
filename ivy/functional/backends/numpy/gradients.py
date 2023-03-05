@@ -2,6 +2,7 @@
 
 # global
 import logging
+from typing import Optional, Sequence, Union
 import ivy
 
 
@@ -24,7 +25,13 @@ def variable_data(x, /):
 
 
 def execute_with_gradients(
-    func, xs, /, *, retain_grads=False, xs_grad_idxs=None, ret_grad_idxs=None
+    func,
+    xs,
+    /,
+    *,
+    retain_grads: bool = False,
+    xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
+    ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
 ):
     logging.warning(
         "NumPy does not support autograd, "

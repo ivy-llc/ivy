@@ -7,7 +7,7 @@ from numbers import Number
 import ivy
 
 
-class ArrayWithElementWiseExperimental(abc.ABC):
+class _ArrayWithElementWiseExperimental(abc.ABC):
     def sinc(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.sinc. This method simply wraps the
@@ -85,7 +85,6 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         Parameters
         ----------
         self
-        x1
             First input array.
         x2
             Second input array
@@ -125,7 +124,6 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         Parameters
         ----------
         self
-        x1
             First input array.
         x2
             Second input array
@@ -165,7 +163,6 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         Parameters
         ----------
         self
-        x1
             First input array.
         x2
             Second input array
@@ -196,8 +193,8 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         /,
         *,
         x: Optional[ivy.Array] = None,
-        dx: Optional[float] = 1.0,
-        axis: Optional[int] = -1,
+        dx: float = 1.0,
+        axis: int = -1,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.trapz. This method simply
@@ -358,7 +355,7 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         /,
         *,
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
-        keepdims: Optional[bool] = False,
+        keepdims: bool = False,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -412,7 +409,7 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         *,
         axis: Optional[Union[tuple, int]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        keepdims: Optional[bool] = False,
+        keepdims: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Array:
         """
@@ -499,10 +496,10 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         b: ivy.Array,
         /,
         *,
-        rtol: Optional[float] = 1e-05,
-        atol: Optional[float] = 1e-08,
-        equal_nan: Optional[bool] = False,
-        out: Optional[ivy.Container] = None,
+        rtol: float = 1e-05,
+        atol: float = 1e-08,
+        equal_nan: bool = False,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.isclose. This method simply
@@ -557,7 +554,7 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        deg: Optional[bool] = False,
+        deg: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -608,7 +605,7 @@ class ArrayWithElementWiseExperimental(abc.ABC):
 
         Parameters
         ----------
-        val
+        self
             Array-like input.
         out
             optional output array, for writing the result to.
@@ -634,8 +631,8 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        copy: Optional[bool] = True,
-        nan: Optional[Union[float, int]] = 0.0,
+        copy: bool = True,
+        nan: Union[float, int] = 0.0,
         posinf: Optional[Union[float, int]] = None,
         neginf: Optional[Union[float, int]] = None,
         out: Optional[ivy.Array] = None,
@@ -720,7 +717,6 @@ class ArrayWithElementWiseExperimental(abc.ABC):
 
     def signbit(
         self: Union[ivy.Array, float, int, list, tuple],
-        x2: Union[ivy.Array, float, int, list, tuple],
         /,
         *,
         out: Optional[ivy.Array] = None,
@@ -791,9 +787,9 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         x2: ivy.Array,
         /,
         *,
-        rtol: Optional[float] = 1e-05,
-        atol: Optional[float] = 1e-08,
-        equal_nan: Optional[bool] = False,
+        rtol: float = 1e-05,
+        atol: float = 1e-08,
+        equal_nan: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> bool:
         """
@@ -930,8 +926,8 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         x2: ivy.Array,
         /,
         *,
-        out: Optional[ivy.Container] = None,
-    ) -> bool:
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.nextafter. This method simply
         wraps the function, and so the docstring for ivy.nextafter also applies to
@@ -966,8 +962,8 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         q: ivy.Array,
         /,
         *,
-        out: Optional[ivy.Container] = None,
-    ) -> bool:
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.zeta. This method simply
         wraps the function, and so the docstring for ivy.zeta also applies to
@@ -977,7 +973,7 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         ----------
         self
             First input array.
-        x2
+        q
             Second input array.
         out
             Alternate output array in which to place the result.
@@ -1002,22 +998,22 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         self: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
-        spacing: Optional[Union[int, list, tuple]] = 1,
-        edge_order: Optional[int] = 1,
+        spacing: Union[int, list, tuple] = 1,
+        edge_order: int = 1,
         axis: Optional[Union[int, list, tuple]] = None,
     ) -> Union[ivy.Array, List[ivy.Array]]:
         """Calculates gradient of x with respect to (w.r.t.) spacing
 
         Parameters
         ----------
-        x
+        self
             input array representing outcomes of the function
-            spacing
+        spacing
             if not given, indices of x will be used
             if scalar indices of x will be scaled with this value
             if array gradient of x w.r.t. spacing
         edge_order
-            1 or 2, for 'frist order' and 'second order' estimation
+            1 or 2, for 'first order' and 'second order' estimation
             of boundary values of gradient respectively.
             Note: jax supports edge_order=1 case only
         axis
@@ -1076,8 +1072,8 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         y: ivy.Array,
         /,
         *,
-        out: Optional[ivy.Container] = None,
-    ) -> bool:
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.xlogy. This method simply
         wraps the function, and so the docstring for ivy.xlogy also applies to
@@ -1145,9 +1141,9 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         self: ivy.Array, /, *, threshold: float = 0, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
-        Maps the values of the input tensor to either 0 or 1,
-        element-wise, based on the outcome of a comparison
-        against a threshold value.
+        Maps the values of the input tensor to either 0 or 1, element-wise, based on
+        the outcome of a comparison against a threshold value.
+
         Parameters
         ----------
         self
@@ -1158,6 +1154,7 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         out
             optional output array, for writing the result to.
             It must have a shape that the inputs broadcast to.
+
         Returns
         -------
         ret
@@ -1198,19 +1195,46 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         x2: ivy.Array,
         /,
         *,
-        out: Optional[ivy.Container] = None,
-        **kwargs,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.ldexp. This method simply wraps
         the function, and so the docstring for ivy.ldexp also applies to this
         method with minimal changes.
+
         Parameters
         ----------
         self
             Input array.
         x2
             The array of exponents.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            The next representable values of x1 in the direction of x2.
+
+        Examples
+        --------
+        >>> x = ivy.array([1.0, 2.0, 3.0])
+        >>> y = ivy.array([3.0, 2.0, 1.0])
+        >>> x.ldexp(y)
+        ivy.array([8.0, 8.0, 6.0])
+        """
+        return ivy.ldexp(self._data, x2, out=out, **kwargs)
+
+    def frexp(self: ivy.Array, /, *, out: Optional[Tuple[ivy.Array, ivy.Array]] = None, **kwargs) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.frexp. This method simply wraps
+        the function, and so the docstring for ivy.frexp also applies to this
+        method with minimal changes.
+        Parameters
+        ----------
+        self
+            Input array.
         out
             Alternate output array in which to place the result.
             The default is None.
@@ -1221,8 +1245,7 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([1.0, 2.0, 3.0])
-        >>> y = ivy.array([3.0, 2.0, 1.0])
-        >>> x.ldexp(y)
-        ivy.array([8.0, 8.0, 6.0])
+        >>> x.frexp()
+        ivy.array([[0.5, 0.5, 0.75], [1, 2, 2]])
         """
-        return ivy.ldexp(self._data, x2, out=out, **kwargs)
+        return ivy.frexp(self._data, out=out, **kwargs)
