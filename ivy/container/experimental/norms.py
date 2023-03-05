@@ -3,11 +3,11 @@ from typing import Union, List, Dict, Optional
 import ivy
 
 
-class ContainerWithNormsExperimental(ContainerBase):
+class _ContainerWithNormsExperimental(ContainerBase):
     @staticmethod
     def static_l2_normalize(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        axis: int = None,
+        axis: Optional[int] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -72,7 +72,7 @@ class ContainerWithNormsExperimental(ContainerBase):
 
     def l2_normalize(
         self,
-        axis=None,
+        axis: Optional[int] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -139,12 +139,12 @@ class ContainerWithNormsExperimental(ContainerBase):
         scale: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         eps: float = 1e-05,
-        momentum: Optional[float] = 0.1,
+        momentum: float = 0.1,
         data_format: str = "NCHW",
         running_mean: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         running_stddev: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-        affine: Optional[bool] = True,
-        track_running_stats: Optional[bool] = False,
+        affine: bool = True,
+        track_running_stats: bool = False,
         out: Optional[ivy.Array] = None,
     ):
         """ivy.Container static method variant of ivy.instance_norm.
@@ -271,14 +271,14 @@ class ContainerWithNormsExperimental(ContainerBase):
         scale: Optional[Union[ivy.Container, ivy.Array, ivy.NativeArray]] = None,
         bias: Optional[Union[ivy.Container, ivy.Array, ivy.NativeArray]] = None,
         eps: float = 1e-05,
-        momentum: Optional[float] = 0.1,
+        momentum: float = 0.1,
         data_format: str = "NCHW",
         running_mean: Optional[Union[ivy.Container, ivy.Array, ivy.NativeArray]] = None,
         running_stddev: Optional[
             Union[ivy.Container, ivy.Array, ivy.NativeArray]
         ] = None,
-        affine: Optional[bool] = True,
-        track_running_stats: Optional[bool] = False,
+        affine: bool = True,
+        track_running_stats: bool = False,
         out: Optional[ivy.Array] = None,
     ):
         """ivy.Container instance method variant of ivy.instance_norm.
@@ -403,12 +403,12 @@ class ContainerWithNormsExperimental(ContainerBase):
     def static_lp_normalize(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         p: float = 2,
-        axis: int = None,
+        axis: Optional[int] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out=None,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.lp_normalize.
@@ -472,12 +472,12 @@ class ContainerWithNormsExperimental(ContainerBase):
     def lp_normalize(
         self,
         p: float = 2,
-        axis: int = None,
+        axis: Optional[int] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out=None,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.l2_normalize.
         This method simply wraps the function, and so the

@@ -8,12 +8,12 @@ import ivy
 # ToDo: implement all methods here as public instance methods
 
 
-class ArrayWithStatistical(abc.ABC):
+class _ArrayWithStatistical(abc.ABC):
     def min(
         self: ivy.Array,
         /,
         *,
-        axis: Union[int, Sequence[int]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -22,7 +22,7 @@ class ArrayWithStatistical(abc.ABC):
 
         Parameters
         ----------
-        x
+        self
             Input array. Should have a real-valued data type.
         axis
             axis or axes along which minimum values must be computed.
@@ -76,7 +76,7 @@ class ArrayWithStatistical(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        axis: Union[int, Sequence[int]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -139,7 +139,7 @@ class ArrayWithStatistical(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        axis: Union[int, Sequence[int]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -226,7 +226,7 @@ class ArrayWithStatistical(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        axis: Union[int, Sequence[int]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         correction: Union[int, float] = 0.0,
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
@@ -313,7 +313,7 @@ class ArrayWithStatistical(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        axis: Union[int, Sequence[int]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         keepdims: bool = False,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
@@ -388,7 +388,7 @@ class ArrayWithStatistical(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        axis: Union[int, Sequence[int]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         keepdims: bool = False,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
@@ -399,7 +399,7 @@ class ArrayWithStatistical(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        axis: Union[int, Sequence[int]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         correction: Union[int, float] = 0.0,
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
@@ -592,6 +592,22 @@ class ArrayWithStatistical(abc.ABC):
         reverse
             Whether to perform the cumprod from last to first element in the selected
             axis. Default is ``False`` (from first to last element)
+        dtype
+            data type of the returned array. If None, if the default data type
+            corresponding to the data type “kind” (integer or floating-point) of x
+            has a smaller range of values than the data type of x (e.g., x has data
+            type int64 and the default data type is int32, or x has data type uint64
+            and the default data type is int64), the returned array must have the
+            same data type as x. if x has a floating-point data type, the returned array
+            must have the default floating-point data type. if x has a signed integer
+            data type (e.g., int16), the returned array must have the default integer
+            data type. if x has an unsigned integer data type (e.g., uint16), the
+            returned array must have an unsigned integer data type having the same
+            number of bits as the default integer data type (e.g., if the default
+            integer data type is int32, the returned array must have a uint32 data
+            type). If the data type (either specified or resolved) differs from the
+            data type of x, the input array should be cast to the specified data type
+            before computing the product. Default: ``None``.
         out
             optional output array, for writing the result to.
 
@@ -627,7 +643,7 @@ class ArrayWithStatistical(abc.ABC):
     def einsum(
         self: ivy.Array,
         equation: str,
-        *args,
+        *operands: Union[ivy.Array, ivy.NativeArray],
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -700,4 +716,4 @@ class ArrayWithStatistical(abc.ABC):
         ivy.array(510)
 
         """
-        return ivy.einsum(equation, *(self._data,) + args, out=out)
+        return ivy.einsum(equation, *(self._data,) + operands, out=out)

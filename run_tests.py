@@ -71,7 +71,7 @@ def remove_from_db(collection, id, submod, backend, test):
     return
 
 
-def run_multiversion_testing(failed):
+def run_multiversion_testing(failed, with_gpu):
     with open("tests_to_run", "r") as f:
         for line in f:
             test, frontend, backend = line.split(",")
@@ -80,7 +80,7 @@ def run_multiversion_testing(failed):
             )
             print(test, frontend, backend)
         ret = os.system(
-            f'docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion /opt/miniconda/envs/multienv/bin/python -m pytest --tb=short {test} --frontend={frontend} --backend={backend}'  # noqa
+                f'docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion /opt/miniconda/envs/multienv/bin/python -m pytest --tb=short {test} --frontend={frontend} --backend={backend}'  # noqa
         )
         if ret != 0:
             exit(1)
@@ -93,13 +93,18 @@ if __name__ == "__main__":
     redis_pass = sys.argv[2]
     mongo_key = sys.argv[3]
     version_flag = sys.argv[4]
-    workflow_id = sys.argv[5]
-    if len(sys.argv) > 6:
+    gpu_flag = sys.argv[5]
+    workflow_id = sys.argv[6]
+    if len(sys.argv) > 7:
         print(f"Job URL available -: {sys.argv}")
-        run_id = sys.argv[6]
+        run_id = sys.argv[7]
     else:
         run_id = "https://github.com/unifyai/ivy/actions/runs/" + workflow_id
     failed = False
+    #Gpu based testing
+    with_gpu = False
+    if gpu_flag == "true":
+        with_gpu = True
     # multiversion testing
     if version_flag == "true":
         run_multiversion_testing(failed)
@@ -112,13 +117,13 @@ if __name__ == "__main__":
             test, backend = line.split(",")
             coll, submod, test_fn = get_submodule(test)
             print(coll, submod, test_fn)
-            if len(sys.argv) > 2:
+            if with_gpu:
                 ret = os.system(
-                    f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --tb=short {test} --backend {backend}'  # noqa
-                )
+                f'docker run -it --rm --gpus all --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest-gpu python3 -m pytest --tb=short {test} --backend {backend} --device gpu:0'  # noqa
+            )
             else:
                 ret = os.system(
-                    f'docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --tb=short {test} --backend {backend}'  # noqa
+                    f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --tb=short {test} --backend {backend}'  # noqa
                 )
             if ret != 0:
                 res = make_clickable(run_id, result_config["failure"])

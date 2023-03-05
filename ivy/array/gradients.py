@@ -8,7 +8,7 @@ import ivy
 # ToDo: implement all methods here as public instance methods
 
 
-class ArrayWithGradients(abc.ABC):
+class _ArrayWithGradients(abc.ABC):
     def stop_gradient(
         self: ivy.Array,
         /,
@@ -182,15 +182,12 @@ class ArrayWithGradients(abc.ABC):
         lr
             Learning rate(s), the rate(s) at which the weights should be
             updated relative to the gradient.
-        inplace
-            Whether to perform the operation inplace, for backends which support inplace
-            variable updates, and handle gradients behind the scenes such as PyTorch.
-            If the update step should form part of a computation graph
-            (i.e. higher order optimization), then this should be set to False.
-            Default is ``True``, provided the backend framework supports it.
         stop_gradients
             Whether to stop the gradients of the variables after each gradient step.
             Default is ``True``.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
 
         Returns
         -------
