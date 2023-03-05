@@ -231,3 +231,8 @@ def cross(a, b, name=None):
 @to_ivy_arrays_and_back
 def svd(a, /, *, full_matrices=False, compute_uv=True, name=None):
     return ivy.svd(a, compute_uv=compute_uv, full_matrices=full_matrices)
+
+@to_ivy_arrays_and_back
+def matmul(a,b, transpose_a=False, transpose_b=False, adjoint_a=False,
+    adjoint_b=False, a_is_sparse=False, b_is_sparse=False,output_type=None, name=None):
+    return ivy.matmul(a, b, transpose_a, transpose_b, adjoint_a, adjoint_b)

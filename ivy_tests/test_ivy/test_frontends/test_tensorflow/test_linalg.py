@@ -769,3 +769,28 @@ def test_tensorflow_svd(
         atol=1e-2,
         ground_truth_backend=frontend,
     )
+
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.matmul",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+        min_dim_size=2,
+        max_dim_size=2,
+        shared_dtype=True,
+    ),
+)
+def test_tensorflow_linalg_matmuls(
+    frontend, on_device, dtype_and_x, *, fn_tree, test_flags
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        b=x[1],
+    )
+
