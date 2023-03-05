@@ -2,5 +2,5 @@
 import abc
 
 
-class ArrayWithSearchingExperimental(abc.ABC):
+class _ArrayWithSearchingExperimental(abc.ABC):
     pass

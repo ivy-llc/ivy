@@ -54,7 +54,7 @@ def allclose(input, other, rtol=1e-05, atol=1e-08, equal_nan=False):
 @to_ivy_arrays_and_back
 def equal(input, other):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
-    return ivy.all_equal(input, other, equality_matrix=False)
+    return ivy.equal(input, other)
 
 
 @to_ivy_arrays_and_back
