@@ -282,6 +282,8 @@ def inplace_increment(
 def inplace_update(
     x: Union[ivy.Array, torch.Tensor],
     val: Union[ivy.Array, torch.Tensor],
+    /,
+    *,
     ensure_in_backend: bool = False,
 ) -> ivy.Array:
     ivy.utils.assertions.check_inplace_sizes_valid(x, val)
