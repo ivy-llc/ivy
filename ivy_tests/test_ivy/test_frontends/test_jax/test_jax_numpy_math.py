@@ -2389,3 +2389,35 @@ def test_jax_numpy_conj(
         on_device=on_device,
         x=x[0],
     )
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.gradient",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_jax_numpy_gradient(
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtypes, arrays = dtype_and_x
+    kwargs = {"f":arrays[0]}
+    test_flags.num_positional_args = 1
+    if len(arrays) > 1:
+        kwargs["varargs"] = arrays[1]
+    if len(arrays) > 2:
+        kwargs["axis"] = arrays[2]
+    if len(arrays) > 3:
+        kwargs["edge_order"] = arrays[3] 
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        **kwargs,
+    )
