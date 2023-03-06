@@ -555,7 +555,10 @@ def test_array__radd__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
+    init_container_flags=st.just([False]),
+    init_as_variable_flags=st.just([False]),
     method_container_flags=st.just([False]),
+    method_as_variable_flags=st.just([False]),
 )
 def test_array__iadd__(
     dtype_and_x,
@@ -661,7 +664,10 @@ def test_array__rsub__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
+    init_container_flags=st.just([False]),
+    init_as_variable_flags=st.just([False]),
     method_container_flags=st.just([False]),
+    method_as_variable_flags=st.just([False]),
 )
 def test_array__isub__(
     dtype_and_x,
@@ -767,7 +773,10 @@ def test_array__rmul__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
+    init_container_flags=st.just([False]),
+    init_as_variable_flags=st.just([False]),
     method_container_flags=st.just([False]),
+    method_as_variable_flags=st.just([False]),
 )
 def test_array__imul__(
     dtype_and_x,
@@ -875,7 +884,10 @@ def test_array__rmod__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
+    init_container_flags=st.just([False]),
+    init_as_variable_flags=st.just([False]),
     method_container_flags=st.just([False]),
+    method_as_variable_flags=st.just([False]),
 )
 def test_array__imod__(
     dtype_and_x,
@@ -1054,7 +1066,10 @@ def test_array__rtruediv__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
+    init_container_flags=st.just([False]),
+    init_as_variable_flags=st.just([False]),
     method_container_flags=st.just([False]),
+    method_as_variable_flags=st.just([False]),
 )
 def test_array__itruediv__(
     dtype_and_x,
@@ -1162,7 +1177,10 @@ def test_array__rfloordiv__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
+    init_container_flags=st.just([False]),
+    init_as_variable_flags=st.just([False]),
     method_container_flags=st.just([False]),
+    method_as_variable_flags=st.just([False]),
 )
 def test_array__ifloordiv__(
     dtype_and_x,
@@ -1255,7 +1273,10 @@ def test_array__rmatmul__(
     method_tree="Array.__imatmul__",
     x1=_get_first_matrix_and_dtype(),
     x2=_get_second_matrix_and_dtype(),
+    init_container_flags=st.just([False]),
+    init_as_variable_flags=st.just([False]),
     method_container_flags=st.just([False]),
+    method_as_variable_flags=st.just([False]),
 )
 def test_array__imatmul__(
     x1,

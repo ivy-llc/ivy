@@ -7,6 +7,7 @@ import numpy as np
 import types
 import importlib
 import inspect
+from collections import OrderedDict
 
 try:
     import jsonpickle
@@ -1114,8 +1115,8 @@ def test_method(
         for v, d in zip(init_flags.as_variable, init_input_dtypes)
     ]
 
-    # Create Args
-    args_constructor, kwargs_constructor, _, _, _ = create_args_kwargs(
+    # Save original constructor data for inplace operations
+    con_data = OrderedDict(
         args_np=args_np_constructor,
         arg_np_vals=con_arg_np_vals,
         args_idxs=con_args_idxs,
@@ -1126,6 +1127,10 @@ def test_method(
         test_flags=init_flags,
         on_device=on_device,
     )
+    org_con_data = copy.deepcopy(con_data)
+
+    # Create Args
+    args_constructor, kwargs_constructor, _, _, _ = create_args_kwargs(**con_data)
     # end constructor #
 
     # method arguments #
@@ -1211,14 +1216,8 @@ def test_method(
         process = ground_truth_backend[1]
         try:
             process.stdin.write("3" + "\n")
-            process.stdin.write(jsonpickle.dumps(args_np_constructor) + "\n")
-            process.stdin.write(jsonpickle.dumps(con_arg_np_vals) + "\n")
-            process.stdin.write(jsonpickle.dumps(con_args_idxs) + "\n")
-            process.stdin.write(jsonpickle.dumps(kwargs_np_constructor) + "\n")
-            process.stdin.write(jsonpickle.dumps(con_kwarg_np_vals) + "\n")
-            process.stdin.write(jsonpickle.dumps(con_kwargs_idxs) + "\n")
-            process.stdin.write(jsonpickle.dumps(init_input_dtypes) + "\n")
-            process.stdin.write(jsonpickle.dumps(init_flags) + "\n")
+            for arg in org_con_data.values():
+                process.stdin.write(jsonpickle.dumps(arg) + "\n")
             process.stdin.write(jsonpickle.dumps(args_np_method) + "\n")
             process.stdin.write(jsonpickle.dumps(met_arg_np_vals) + "\n")
             process.stdin.write(jsonpickle.dumps(met_args_idxs) + "\n")
@@ -1254,15 +1253,7 @@ def test_method(
         ivy.set_backend(ground_truth_backend)
         ivy.set_default_device(on_device)
         args_gt_constructor, kwargs_gt_constructor, _, _, _ = create_args_kwargs(
-            args_np=args_np_constructor,
-            arg_np_vals=con_arg_np_vals,
-            args_idxs=con_args_idxs,
-            kwargs_np=kwargs_np_constructor,
-            kwarg_np_vals=con_kwarg_np_vals,
-            kwargs_idxs=con_kwargs_idxs,
-            input_dtypes=init_input_dtypes,
-            test_flags=init_flags,
-            on_device=on_device,
+            **org_con_data
         )
         args_gt_method, kwargs_gt_method, _, _, _ = create_args_kwargs(
             args_np=args_np_method,
@@ -1823,7 +1814,7 @@ def create_args_kwargs(
                 x = _variable(x)
             if test_flags.native_arrays[i]:
                 x = ivy.to_native(x)
-            if test_flags.container[i]:
+            if test_flags.container_flags[i]:
                 x = as_cont(x=x)
             ret.append(x)
         return ret
