@@ -1162,13 +1162,13 @@ def test_torch_column_stack(
 ):
     input_dtype, value = dtype_value_shape
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtype * len(value),
         with_out=with_out,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=value[0],
+        tensors=value,
     )
 
 
