@@ -1,14 +1,15 @@
 from hypothesis import strategies as st  # NOQA
-from . import globals
+from . import globals as test_globals
 
 
 @st.composite
 def _as_varaible_strategy(draw):
     if (
-        globals.CURRENT_BACKEND is not globals._Notsetval
-        and globals.CURRENT_BACKEND().backend == "numpy"
+        test_globals.CURRENT_BACKEND is not test_globals._Notsetval
+        and test_globals.CURRENT_BACKEND().backend == "numpy"
     ):
         return draw(st.just([False]))
+<<<<<<< HEAD
     if not globals.CURRENT_FRONTEND_STR:
         # non multiversion changes go here
         if (
@@ -17,6 +18,16 @@ def _as_varaible_strategy(draw):
         ):
             return draw(st.just([False]))
     elif globals.CURRENT_FRONTEND_STR[0].split("/")[0] == "numpy":
+=======
+    if not test_globals.CURRENT_FRONTEND_STR:
+        # non multiversion changes go here
+        if (
+            test_globals.CURRENT_FRONTEND is not test_globals._Notsetval
+            and test_globals.CURRENT_FRONTEND().backend == "numpy"
+        ):
+            return draw(st.just([False]))
+    elif test_globals.CURRENT_FRONTEND_STR[0].split("/")[0] == "numpy":
+>>>>>>> upstream/master
         # multiversion changes go here
         return draw(st.just([False]))
     return draw(st.lists(st.booleans(), min_size=1, max_size=1))
@@ -183,14 +194,14 @@ class MethodTestFlags:
         self.num_positional_args = num_positional_args
         self.native_arrays = native_arrays
         self.as_variable = as_variable
-        self.container_flags = container_flags
+        self.container = container_flags
 
     def __str__(self):
         return (
             f"num_positional_args={self.num_positional_args}. "
             f"native_arrays={self.native_arrays}. "
             f"as_variable={self.as_variable}. "
-            f"container_flags={self.container_flags}. "
+            f"container_flags={self.container}. "
         )
 
     def __repr__(self):

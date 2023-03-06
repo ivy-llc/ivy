@@ -37,6 +37,10 @@ CURRENT_BACKEND: callable = _Notsetval
 CURRENT_FRONTEND: callable = _Notsetval
 CURRENT_RUNNING_TEST = _Notsetval
 CURRENT_DEVICE = _Notsetval
+<<<<<<< HEAD
+=======
+CURRENT_DEVICE_STRIPPED = _Notsetval
+>>>>>>> upstream/master
 CURRENT_FRONTEND_STR = None
 
 
@@ -214,10 +218,11 @@ def _set_ground_truth_backend(framework: str):
 
 
 def _set_device(device: str):
-    global CURRENT_DEVICE
-    if CURRENT_DEVICE is not _Notsetval:
+    global CURRENT_DEVICE, CURRENT_DEVICE_STRIPPED
+    if CURRENT_DEVICE is not _Notsetval or CURRENT_DEVICE_STRIPPED is not _Notsetval:
         raise InterruptedTest(CURRENT_RUNNING_TEST)
     CURRENT_DEVICE = device
+    CURRENT_DEVICE_STRIPPED = device.partition(":")[0]
 
 
 # Teardown
@@ -244,5 +249,6 @@ def _unset_ground_truth_backend():
 
 
 def _unset_device():
-    global CURRENT_DEVICE
+    global CURRENT_DEVICE, CURRENT_DEVICE_STRIPPED
     CURRENT_DEVICE = _Notsetval
+    CURRENT_DEVICE_STRIPPED = _Notsetval

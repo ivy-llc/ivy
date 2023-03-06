@@ -27,6 +27,22 @@ def diff(a, n=1, axis=-1, prepend=None, append=None):
 
 
 @to_ivy_arrays_and_back
+def ediff1d(ary, to_end=None, to_begin=None):
+    diffs = ivy.diff(ary)
+    if to_begin is not None:
+        if not isinstance(to_begin, (list, tuple)):
+            to_begin = [to_begin]
+        to_begin = ivy.array(to_begin)
+        diffs = ivy.concat((to_begin, diffs))
+    if to_end is not None:
+        if not isinstance(to_end, (list, tuple)):
+            to_end = [to_end]
+        to_end = ivy.array(to_end)
+        diffs = ivy.concat((diffs, to_end))
+    return diffs
+
+
+@to_ivy_arrays_and_back
 def arctan(x):
     ret = ivy.atan(x)
     return ret
@@ -467,3 +483,17 @@ def floor_divide(x1, x2, /, out=None):
 def inner(a, b):
     a, b = promote_types_of_jax_inputs(a, b)
     return ivy.inner(a, b)
+
+
+def outer(a, b, out=None):
+    return ivy.outer(a, b, out=out)
+
+
+@to_ivy_arrays_and_back
+def reciprocal(x, /):
+    return ivy.reciprocal(x)
+
+
+@to_ivy_arrays_and_back
+def conj(x, /):
+    return ivy.conj(x)

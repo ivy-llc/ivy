@@ -170,6 +170,56 @@ def test_tensorflow_negative(
     )
 
 
+# sqrt
+@handle_frontend_test(
+    fn_tree="tensorflow.math.sqrt",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_sqrt(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# negative
+@handle_frontend_test(
+    fn_tree="tensorflow.math.negative",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_negative(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 # multiply
 @handle_frontend_test(
     fn_tree="tensorflow.math.multiply",
@@ -1633,7 +1683,11 @@ def test_tensorflow_asin(
     )
 
 
+<<<<<<< HEAD
 #acos 
+=======
+# acos
+>>>>>>> upstream/master
 @handle_frontend_test(
     fn_tree="tensorflow.math.acos",
     dtype_and_x=helpers.dtype_and_values(
@@ -1654,7 +1708,11 @@ def test_tensorflow_acos(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+<<<<<<< HEAD
         frontend = frontend,
+=======
+        frontend=frontend,
+>>>>>>> upstream/master
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -1712,3 +1770,85 @@ def test_tensorflow_is_nan(
         on_device=on_device,
         x=x[0],
     )
+<<<<<<< HEAD
+=======
+
+# is_finite
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.math.is_finite",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_is_finite(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# atan
+@handle_frontend_test(
+    fn_tree="tensorflow.math.atan",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_atan(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# log
+@handle_frontend_test(
+    fn_tree="tensorflow.math.log",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_tensorflow_log(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+>>>>>>> upstream/master
