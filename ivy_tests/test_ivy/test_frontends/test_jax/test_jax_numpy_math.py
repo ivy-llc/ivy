@@ -2302,7 +2302,7 @@ def test_jax_numpy_inner(
     )
 
 
- # outer   
+# outer   
 @handle_frontend_test(
     fn_tree="jax.numpy.outer",
     dtype_and_x=helpers.dtype_and_values(
