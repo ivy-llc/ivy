@@ -4,6 +4,15 @@ import warnings
 from ivy._version import __version__ as __version__
 import builtins
 import numpy as np
+import importlib
+
+
+modules = ["jax", "tensorflow", "torch"]
+
+
+for module in modules:
+    if importlib.find_spec(module) is not None:
+        warnings.warn(f"{module} module detected,only Numpy should be imported")
 
 
 warnings.filterwarnings("ignore", module="^(?!.*ivy).*$")
