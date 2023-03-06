@@ -80,6 +80,7 @@ def test_numpy_expand_dims(
         axis=axis,
     )
 
+
 @handle_frontend_test(
     fn_tree="numpy.atleast_1d",
     dtype_and_x=helpers.dtype_and_values(
