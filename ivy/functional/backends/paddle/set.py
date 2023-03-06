@@ -9,23 +9,33 @@ from . import backend_version
 from ivy.utils.exceptions import IvyNotImplementedException
 
 
-def unique_all(
-    x: paddle.Tensor,
-    /,
-) -> Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor, paddle.Tensor]:
-        # Flatten the tensor to 1D
-        flat_x = paddle.flatten(x)
-        sorted_x = paddle.sort(flat_x)[0]
-        indices = paddle.where(sorted_x[1:] != sorted_x[:-1])[0] + 1
-        indices = paddle.concat([paddle.to_tensor([0]), indices, paddle.to_tensor([len(flat_x)])])
-        if len(indices) == 2:
-            unique_x = sorted_x[indices[:-1]]
+def unique_all(x: paddle.Tensor, /,) -> Tuple[paddle.Tensor, paddle.Tensor, int ,paddle.Tensor]:
+    # Flatten the tensor to 1D
+    flat_x = paddle.flatten(x)
+    sorted_x = paddle.sort(flat_x)[0]
+    indices = paddle.where(sorted_x[1:] != sorted_x[:-1])[0] + 1
+    indices = paddle.concat([paddle.to_tensor([0]), indices, paddle.to_tensor([len(flat_x)])])
+    nan_indices = paddle.where(paddle.isnan(sorted_x))[0]
+    nan_count = len(nan_indices)
+    counts = None
+    if nan_count > 0:
+        nan_values = paddle.full([nan_count], float('nan'), dtype=x.dtype)
+        sorted_x = paddle.concat([sorted_x, nan_values], axis=0)
+        nan_counts = paddle.to_tensor([paddle.count_nonzero(paddle.isnan(flat_x)).numpy()])
+        counts = nan_counts
+    if len(indices) == 2:
+        unique_x = sorted_x[indices[:-1]]
+        if counts is None:
+            counts = paddle.to_tensor([len(flat_x)])
+    else:
+        unique_x = sorted_x[indices[:-1]]
+        if counts is None:
             counts = paddle.to_tensor([len(flat_x)])
         else:
-            unique_x = sorted_x[indices[:-1]]
             counts = indices[1:] - indices[:-1]
 
-        return unique_x
+    ret = namedtuple("Results", ["values", "counts", "nan_count", "nan_indices"])
+    return ret(unique_x, counts, nan_count, nan_indices)
 
 
 @with_unsupported_dtypes(
