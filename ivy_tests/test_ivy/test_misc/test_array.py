@@ -1242,6 +1242,7 @@ def test_array__matmul__(
     method_tree="Array.__rmatmul__",
     x1=_get_first_matrix_and_dtype(),
     x2=_get_second_matrix_and_dtype(),
+    init_container_flags=st.just([False]),
 )
 def test_array__rmatmul__(
     x1,
@@ -1309,6 +1310,7 @@ def test_array__imatmul__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__abs__(
     dtype_and_x,
@@ -1340,6 +1342,7 @@ def test_array__abs__(
         available_dtypes=helpers.get_dtypes("numeric"),
         max_num_dims=0,
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__float__(
     dtype_and_x,
@@ -1373,7 +1376,7 @@ def test_array__float__(
         min_value=-1e15,
         max_value=1e15,
     ),
-    method_container_flags=st.just([False]),
+    init_container_flags=st.just([False]),
 )
 def test_array__int__(
     dtype_and_x,
@@ -1407,6 +1410,7 @@ def test_array__int__(
         min_value=0,
         max_value=1,
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__bool__(
     dtype_and_x,
@@ -1439,6 +1443,7 @@ def test_array__bool__(
         num_arrays=2,
         shared_dtype=True,
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__lt__(
     dtype_and_x,
@@ -1471,6 +1476,7 @@ def test_array__lt__(
         num_arrays=2,
         shared_dtype=True,
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__le__(
     dtype_and_x,
@@ -1503,6 +1509,7 @@ def test_array__le__(
         num_arrays=2,
         shared_dtype=True,
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__eq__(
     dtype_and_x,
@@ -1535,6 +1542,7 @@ def test_array__eq__(
         num_arrays=2,
         shared_dtype=True,
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__ne__(
     dtype_and_x,
@@ -1567,6 +1575,7 @@ def test_array__ne__(
         num_arrays=2,
         shared_dtype=True,
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__gt__(
     dtype_and_x,
@@ -1599,6 +1608,7 @@ def test_array__gt__(
         num_arrays=2,
         shared_dtype=True,
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__ge__(
     dtype_and_x,
@@ -1631,6 +1641,7 @@ def test_array__ge__(
         num_arrays=2,
         shared_dtype=True,
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__and__(
     dtype_and_x,
@@ -1663,6 +1674,7 @@ def test_array__and__(
         num_arrays=2,
         shared_dtype=True,
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__rand__(
     dtype_and_x,
@@ -1695,6 +1707,7 @@ def test_array__rand__(
         num_arrays=2,
         shared_dtype=True,
     ),
+    init_container_flags=st.just([False]),
     method_container_flags=st.just([False]),
 )
 def test_array__iand__(
@@ -1728,6 +1741,7 @@ def test_array__iand__(
         num_arrays=2,
         shared_dtype=True,
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__or__(
     dtype_and_x,
@@ -1760,6 +1774,7 @@ def test_array__or__(
         num_arrays=2,
         shared_dtype=True,
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__ror__(
     dtype_and_x,
@@ -1792,6 +1807,7 @@ def test_array__ror__(
         num_arrays=2,
         shared_dtype=True,
     ),
+    init_container_flags=st.just([False]),
     method_container_flags=st.just([False]),
 )
 def test_array__ior__(
@@ -1823,6 +1839,7 @@ def test_array__ior__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__invert__(
     dtype_and_x,
@@ -1855,6 +1872,7 @@ def test_array__invert__(
         num_arrays=2,
         shared_dtype=True,
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__xor__(
     dtype_and_x,
@@ -1887,6 +1905,7 @@ def test_array__xor__(
         num_arrays=2,
         shared_dtype=True,
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__rxor__(
     dtype_and_x,
@@ -1919,6 +1938,7 @@ def test_array__rxor__(
         num_arrays=2,
         shared_dtype=True,
     ),
+    init_container_flags=st.just([False]),
     method_container_flags=st.just([False]),
 )
 def test_array__ixor__(
@@ -1952,6 +1972,7 @@ def test_array__ixor__(
         num_arrays=2,
         array_api_dtypes=True,
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__lshift__(
     dtype_and_x,
@@ -1963,7 +1984,7 @@ def test_array__lshift__(
     on_device,
 ):
     dtype, x = dtype_and_x
-    x[1] = np.asarray(np.clip(x[1], 0, np.iinfo(dtype[1]).bits - 1), dtype=dtype[1])
+    x[1] = np.asarray(np.clip(x[1], 0, np.iinfo(dtype[0]).bits - 1), dtype=dtype[1])
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
@@ -1985,6 +2006,7 @@ def test_array__lshift__(
         num_arrays=2,
         array_api_dtypes=True,
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__rlshift__(
     dtype_and_x,
@@ -1996,7 +2018,7 @@ def test_array__rlshift__(
     on_device,
 ):
     dtype, x = dtype_and_x
-    x[0] = np.asarray(np.clip(x[1], 0, np.iinfo(dtype[1]).bits - 1), dtype=dtype[1])
+    x[0] = np.asarray(np.clip(x[0], 0, np.iinfo(dtype[1]).bits - 1), dtype=dtype[0])
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
@@ -2016,8 +2038,10 @@ def test_array__rlshift__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
+        shared_dtype=True,
         array_api_dtypes=True,
     ),
+    init_container_flags=st.just([False]),
     method_container_flags=st.just([False]),
 )
 def test_array__ilshift__(
@@ -2030,7 +2054,7 @@ def test_array__ilshift__(
     on_device,
 ):
     dtype, x = dtype_and_x
-    x[1] = np.asarray(np.clip(x[1], 0, np.iinfo(dtype[1]).bits - 1), dtype=dtype[1])
+    x[1] = np.asarray(np.clip(x[1], 0, np.iinfo(dtype[0]).bits - 1), dtype=dtype[1])
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
@@ -2050,9 +2074,9 @@ def test_array__ilshift__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
-        min_value=0,
-        shared_dtype=True,
+        array_api_dtypes=True,
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__rshift__(
     dtype_and_x,
@@ -2064,7 +2088,7 @@ def test_array__rshift__(
     on_device,
 ):
     dtype, x = dtype_and_x
-    x[1] = np.asarray(np.clip(x[1], 0, np.iinfo(dtype[1]).bits - 1), dtype=dtype[1])
+    x[1] = np.asarray(np.clip(x[1], 0, np.iinfo(dtype[0]).bits - 1), dtype=dtype[1])
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
@@ -2086,6 +2110,7 @@ def test_array__rshift__(
         num_arrays=2,
         array_api_dtypes=True,
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__rrshift__(
     dtype_and_x,
@@ -2097,7 +2122,7 @@ def test_array__rrshift__(
     on_device,
 ):
     dtype, x = dtype_and_x
-    x[0] = np.asarray(np.clip(x[0], 0, np.iinfo(dtype[0]).bits - 1), dtype=dtype[0])
+    x[0] = np.asarray(np.clip(x[0], 0, np.iinfo(dtype[1]).bits - 1), dtype=dtype[0])
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
@@ -2117,8 +2142,10 @@ def test_array__rrshift__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
+        shared_dtype=True,
         array_api_dtypes=True,
     ),
+    init_container_flags=st.just([False]),
     method_container_flags=st.just([False]),
 )
 def test_array__irshift__(
@@ -2131,7 +2158,7 @@ def test_array__irshift__(
     on_device,
 ):
     dtype, x = dtype_and_x
-    x[1] = np.asarray(np.clip(x[1], 0, np.iinfo(dtype[1]).bits - 1), dtype=dtype[1])
+    x[1] = np.asarray(np.clip(x[1], 0, np.iinfo(dtype[0]).bits - 1), dtype=dtype[1])
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
@@ -2151,6 +2178,7 @@ def test_array__irshift__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__deepcopy__(
     dtype_and_x,
@@ -2183,6 +2211,7 @@ def test_array__deepcopy__(
         min_dim_size=2,
         min_num_dims=1,
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__len__(
     dtype_and_x,
@@ -2215,6 +2244,7 @@ def test_array__len__(
         min_dim_size=2,
         min_num_dims=1,
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__iter__(
     dtype_and_x,

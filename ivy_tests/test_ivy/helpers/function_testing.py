@@ -1814,7 +1814,7 @@ def create_args_kwargs(
                 x = _variable(x)
             if test_flags.native_arrays[i]:
                 x = ivy.to_native(x)
-            if test_flags.container_flags[i]:
+            if test_flags.container[i]:
                 x = as_cont(x=x)
             ret.append(x)
         return ret
