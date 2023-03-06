@@ -8,12 +8,12 @@ from ivy.container.base import ContainerBase
 # ToDo: implement all methods here as public instance methods
 
 
-class ContainerWithStatistical(ContainerBase):
+class _ContainerWithStatistical(ContainerBase):
     def min(
         self: ivy.Container,
         /,
         *,
-        axis: Union[int, Sequence[int]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -29,14 +29,13 @@ class ContainerWithStatistical(ContainerBase):
 
         Parameters
         ----------
-        x
-            Input cotainer. Should have a real-valued data type.
+        self
+            Input container. Should have a real-valued data type.
         axis
             axis or axes along which minimum values must be computed.
             By default, the minimum value must be computed over the
             entire array. If a tuple of integers, minimum values must
             be computed over multiple axes. Default: ``None``.
-
         keepdims
             optional boolean, if ``True``, the reduced axes
             (dimensions) must be included in the result as
@@ -96,7 +95,7 @@ class ContainerWithStatistical(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: Union[int, Sequence[int]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -111,14 +110,13 @@ class ContainerWithStatistical(ContainerBase):
 
         Parameters
         ----------
-        x
+        self
             Input container. Should have a real-valued data type.
         axis
             axis or axes along which max values must be computed.
             By default, the maximum value must be computed over
             the entire array. If a tuple of integers, maximum values
             must be computed over multiple axes. Default: ``None``.
-
         keepdims
             optional boolean, if ``True``, the reduced axes (dimensions)
             must be included in the result as singleton dimensions,
@@ -175,7 +173,7 @@ class ContainerWithStatistical(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: Union[int, Sequence[int]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -308,7 +306,7 @@ class ContainerWithStatistical(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: Union[int, Sequence[int]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         correction: Union[int, float] = 0.0,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -428,7 +426,7 @@ class ContainerWithStatistical(ContainerBase):
         x: ivy.Container,
         /,
         *,
-        axis: Union[int, Sequence[int]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         correction: Union[int, float] = 0.0,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -445,7 +443,7 @@ class ContainerWithStatistical(ContainerBase):
 
         Parameters
         ----------
-        self
+        x
             input array. Should have a floating-point data type.
         key_chains
             The key-chains to apply or not apply the method to.
@@ -502,7 +500,7 @@ class ContainerWithStatistical(ContainerBase):
         x: ivy.Container,
         /,
         *,
-        axis: Union[int, Sequence[int]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -641,7 +639,7 @@ class ContainerWithStatistical(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: Union[int, Sequence[int]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -780,7 +778,7 @@ class ContainerWithStatistical(ContainerBase):
         x: ivy.Container,
         /,
         *,
-        axis: Union[int, Sequence[int]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -806,7 +804,7 @@ class ContainerWithStatistical(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: Union[int, Sequence[int]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -831,7 +829,7 @@ class ContainerWithStatistical(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: Union[int, Sequence[int]] = None,
+        axis: Optional[Union[int, Sequence[int]]] = None,
         correction: Union[int, float] = 0.0,
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,

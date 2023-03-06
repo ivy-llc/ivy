@@ -2,7 +2,7 @@
 import math
 
 import torch
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Sequence
 
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
@@ -152,3 +152,15 @@ def adjoint(
 ) -> torch.Tensor:
     _check_valid_dimension_size(x)
     return torch.adjoint(x).resolve_conj()
+
+
+def multi_dot(
+    x: Sequence[torch.Tensor], 
+    /, 
+    *, 
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.linalg.multi_dot(x, out=out)
+
+
+multi_dot.support_native_out = True

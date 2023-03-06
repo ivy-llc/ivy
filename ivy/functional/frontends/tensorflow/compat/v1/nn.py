@@ -96,3 +96,28 @@ def depthwise_conv2d(
         data_format=data_format,
         dilations=dilations,
     )
+
+
+@with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16",)}, "tensorflow")
+def separable_conv2d(
+    input,
+    depthwise_filter,
+    pointwise_filter,
+    strides,
+    padding,
+    rate=None,
+    name=None,
+    data_format=None,
+    dilations=None
+):
+    if rate:
+        dilations = rate
+    return tf_nn.separable_conv2d(
+        input,
+        depthwise_filter,
+        pointwise_filter,
+        strides,
+        padding,
+        data_format=data_format,
+        dilations=dilations,
+    )

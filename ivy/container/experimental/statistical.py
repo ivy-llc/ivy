@@ -6,14 +6,14 @@ import ivy
 from ivy.container.base import ContainerBase
 
 
-class ContainerWithStatisticalExperimental(ContainerBase):
+class _ContainerWithStatisticalExperimental(ContainerBase):
     @staticmethod
     def static_median(
         input: ivy.Container,
         /,
         *,
         axis: Optional[Union[Tuple[int], int]] = None,
-        keepdims: Optional[bool] = False,
+        keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -70,7 +70,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         /,
         *,
         axis: Optional[Union[Tuple[int], int]] = None,
-        keepdims: Optional[bool] = False,
+        keepdims: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.median. This method simply
@@ -116,7 +116,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         /,
         *,
         axis: Optional[Union[Tuple[int], int]] = None,
-        keepdims: Optional[bool] = False,
+        keepdims: bool = False,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -181,7 +181,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         /,
         *,
         axis: Optional[Union[Tuple[int], int]] = None,
-        keepdims: Optional[bool] = False,
+        keepdims: bool = False,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
@@ -247,7 +247,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
 
         Parameters
         ----------
-        input
+        indices
             Input container including arrays.
         shape
             The shape of the array to use for unraveling indices.
@@ -574,8 +574,8 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         x: ivy.Container,
         /,
         *,
-        y: ivy.Container = None,
-        rowvar: Optional[bool] = True,
+        y: Optional[ivy.Container] = None,
+        rowvar: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = False,
         prune_unapplied: bool = False,
@@ -631,8 +631,8 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        y: ivy.Container = None,
-        rowvar: Optional[bool] = True,
+        y: Optional[ivy.Container] = None,
+        rowvar: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.corrcoef. This method simply
@@ -675,7 +675,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         /,
         *,
         axis: Optional[Union[Tuple[int], int]] = None,
-        keepdims: Optional[bool] = False,
+        keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -732,7 +732,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         /,
         *,
         axis: Optional[Union[Tuple[int], int]] = None,
-        keepdims: Optional[bool] = False,
+        keepdims: bool = False,
         overwrite_input: Optional[bool] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
@@ -772,6 +772,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
             A new array holding the result. If the input contains integers
 
         Examples
+        --------
         >>> a = ivy.Container([[10.0, ivy.nan, 4], [3, 2, 1]])
         >>> a.nanmedian(a)
             3.0
@@ -782,3 +783,95 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         return self.static_nanmedian(
             self, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out
         )
+
+    @staticmethod
+    def static_bincount(
+        x: ivy.Container,
+        /,
+        *,
+        weights: Optional[ivy.Container] = None,
+        minlength: int = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.bincount. This method simply wraps
+        the function, and so the docstring for ivy.bincount also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input container including arrays.
+        weights
+            An optional input container including arrays.
+        minlength
+            A minimum number of bins for the output array.
+
+        Returns
+        -------
+        ret
+            The bincount of the array elements.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.array([1, 1, 2, 2, 2, 3]),
+                            b=ivy.array([1, 1, 2, 2, 2, 3]))
+        >>> ivy.Container.static_bincount(x)
+            {
+                a: array([0, 2, 3, 1])
+                b: array([0, 2, 3, 1])
+            }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "bincount",
+            x,
+            weights=weights,
+            minlength=minlength,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def bincount(
+        self: ivy.Container,
+        /,
+        *,
+        weights: Optional[ivy.Container] = None,
+        minlength: int = 0,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Array instance method variant of ivy.bincount. This method simply
+        wraps the function, and so the docstring for ivy.bincount also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        weights
+            An optional input array.
+        minlength
+            A minimum number of bins for the output array.
+
+        Returns
+        -------
+        ret
+            The bincount of the array elements.
+
+        Examples
+        --------
+        >>> a = ivy.Container([[10.0, ivy.nan, 4], [3, 2, 1]])
+        >>> a.bincount(a)
+            3.0
+        >>> a.bincount(a, axis=0)
+            array([6.5, 2. , 2.5])
+        """
+
+        return self.static_bincount(self, weights=weights, minlength=minlength, out=out)

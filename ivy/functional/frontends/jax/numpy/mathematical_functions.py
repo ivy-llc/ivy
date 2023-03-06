@@ -468,6 +468,15 @@ def inner(a, b):
     a, b = promote_types_of_jax_inputs(a, b)
     return ivy.inner(a, b)
 
+  
+def outer(a, b, out=None):
+    return ivy.outer(a, b, out=out)
+
+
+@to_ivy_arrays_and_back
+def reciprocal(x, /):
+    return ivy.reciprocal(x)
+    
 
 @to_ivy_arrays_and_back
 def conj(x, /):

@@ -16,7 +16,7 @@ import ivy
 from ivy.container.base import ContainerBase
 
 
-class ContainerWithManipulation(ContainerBase):
+class _ContainerWithManipulation(ContainerBase):
     @staticmethod
     def static_concat(
         xs: Union[
@@ -25,7 +25,7 @@ class ContainerWithManipulation(ContainerBase):
         ],
         /,
         *,
-        axis: Optional[int] = 0,
+        axis: int = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -56,7 +56,7 @@ class ContainerWithManipulation(ContainerBase):
             List[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
         ],
         *,
-        axis: Optional[int] = 0,
+        axis: int = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -392,9 +392,9 @@ class ContainerWithManipulation(ContainerBase):
 
         Parameters
         ----------
-        self
+        x
             input container.
-        axis
+        axes
             tuple containing a permutation of (0, 1, ..., N-1) where N is the number
             of axes (dimensions) of x.
         out
@@ -447,7 +447,7 @@ class ContainerWithManipulation(ContainerBase):
         ----------
         self
             input container.
-        axis
+        axes
             tuple containing a permutation of (0, 1, ..., N-1) where N is the number
             of axes (dimensions) of x.
         out
@@ -647,8 +647,8 @@ class ContainerWithManipulation(ContainerBase):
         map_sequences: bool = False,
         copy: Optional[bool] = None,
         out: Optional[ivy.Container] = None,
-        order: Optional[str] = "C",
-        allowzero: Optional[bool] = True,
+        order: str = "C",
+        allowzero: bool = True,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.reshape. This method simply wraps the
@@ -759,8 +759,8 @@ class ContainerWithManipulation(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         copy: Optional[bool] = None,
-        order: Optional[str] = "C",
-        allowzero: Optional[bool] = True,
+        order: str = "C",
+        allowzero: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """

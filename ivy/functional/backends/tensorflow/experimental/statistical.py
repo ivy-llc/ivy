@@ -58,7 +58,8 @@ def unravel_index(
     for dim in reversed(shape):
         output.append(temp % dim)
         temp = temp // dim
-    ret = tf.constant(reversed(output), dtype=tf.int32)
+    output.reverse()
+    ret = tf.convert_to_tensor(output, dtype=tf.int32)
     return tuple(ret)
 
 
@@ -75,7 +76,7 @@ def quantile(
     axis = tuple(axis) if isinstance(axis, list) else axis
 
     result = tfp.stats.percentile(
-        a, q * 100, axis=axis, interpolation=interpolation, keepdims=keepdims
+        a, tf.math.multiply(q, 100), axis=axis, interpolation=interpolation, keepdims=keepdims
     )
     return result
 
@@ -121,3 +122,20 @@ def nanmedian(
         interpolation="midpoint",
         keepdims=keepdims,
     )
+
+
+def bincount(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    weights: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    minlength: int = 0,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if weights is not None:
+        ret = tf.math.bincount(x, weights=weights, minlength=minlength)
+        ret = tf.cast(ret, weights.dtype)
+    else:
+        ret = tf.math.bincount(x, minlength=minlength)
+        ret = tf.cast(ret, x.dtype)
+    return ret
