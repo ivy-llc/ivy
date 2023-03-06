@@ -38,7 +38,7 @@ def unique(
 
 
 @to_ivy_arrays_and_back
-def qappend(arr, values, axis=None):
+def append(arr, values, axis=None):
     if axis is None:
         return ivy.concat((ivy.flatten(arr), ivy.flatten(values)), axis=0)
     else:
