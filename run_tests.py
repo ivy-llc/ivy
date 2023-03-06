@@ -79,11 +79,11 @@ def run_multiversion_testing():
                 # This is a frontend test
                 backend, frontend = backend.split(";")
                 ret = os.system(
-                    f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:latest /opt/miniconda/envs/multienv/bin/python -m pytest --tb=short {test} --frontend={frontend} --backend {backend}'
+                    f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:latest /opt/miniconda/envs/multienv/bin/python -m pytest --tb=short {test} --frontend={frontend} --backend={backend}'
                 )
             else:
                 ret = os.system(
-                    f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:latest /opt/miniconda/envs/multienv/bin/python -m pytest --tb=short {test} --backend {backend}'
+                    f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:latest /opt/miniconda/envs/multienv/bin/python -m pytest --tb=short {test} --backend={backend}'
                 )
             if ret != 0:
                 failed = True
