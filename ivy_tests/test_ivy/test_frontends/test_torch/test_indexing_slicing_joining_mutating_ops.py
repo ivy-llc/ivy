@@ -1143,6 +1143,7 @@ def test_torch_row_stack(
     )
 
 
+ ivy-torch-column
 # column_stack
 @handle_frontend_test(
     fn_tree="torch.column_stack",

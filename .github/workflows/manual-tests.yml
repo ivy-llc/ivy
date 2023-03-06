@@ -57,6 +57,7 @@ jobs:
 
    run_tests_cpu:
      if: ${{ github.event.inputs.gpu == 'false' }}
+     ivy-torch-column
      runs-on: ubuntu-latest
      steps:
          - name: Checkout Ivy 🛎

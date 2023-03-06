@@ -57,7 +57,13 @@ def quantile(
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
     temp = a.to(torch.float64)
-    qt = q.to(torch.float64)
+    ivy-torch-column
+        return ivy.ldexp(self._data, x2, out=out, **kwargs)
+    def frexp(self: ivy.Array, /, *, out: Optional[Tuple[ivy.Array, ivy.Array]] = None, **kwargs) -> ivy.Array:
+
+        return ivy.ldexp(self._data, x2, out=out)
+
+    
     if isinstance(axis, list) or isinstance(axis, tuple):
         dimension = len(a.size())
         for x in axis:

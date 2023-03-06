@@ -3,7 +3,6 @@ import os
 import sys
 from pymongo import MongoClient
 
-
 submodules = (
     "test_functional",
     "test_experimental",
@@ -71,6 +70,7 @@ def remove_from_db(collection, id, submod, backend, test):
     return
 
 
+ivy-torch-column
 def run_multiversion_testing(failed, with_gpu):
     with open("tests_to_run", "r") as f:
         for line in f:
@@ -88,6 +88,7 @@ def run_multiversion_testing(failed, with_gpu):
             exit(0)
 
 
+
 if __name__ == "__main__":
     redis_url = sys.argv[1]
     redis_pass = sys.argv[2]
@@ -101,13 +102,15 @@ if __name__ == "__main__":
     else:
         run_id = "https://github.com/unifyai/ivy/actions/runs/" + workflow_id
     failed = False
+ ivy-torch-column
     #Gpu based testing
+
     with_gpu = False
     if gpu_flag == "true":
         with_gpu = True
     # multiversion testing
     if version_flag == "true":
-        run_multiversion_testing(failed)
+        run_multiversion_testing()
     cluster = MongoClient(
         f"mongodb+srv://deep-ivy:{mongo_key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa
     )
@@ -119,11 +122,13 @@ if __name__ == "__main__":
             print(coll, submod, test_fn)
             if with_gpu:
                 ret = os.system(
+ ivy-torch-column
                 f'docker run -it --rm --gpus all --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest-gpu python3 -m pytest --tb=short {test} --backend {backend} --device gpu:0'  # noqa
             )
             else:
                 ret = os.system(
                     f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --tb=short {test} --backend {backend}'  # noqa
+
                 )
             if ret != 0:
                 res = make_clickable(run_id, result_config["failure"])

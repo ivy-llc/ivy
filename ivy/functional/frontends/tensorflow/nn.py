@@ -184,6 +184,7 @@ def separable_conv2d(
     padding,
     data_format=None,
     dilations=None,
+   ivy-torch-column
     name=None
 ):
     dilations = 1 if dilations is None else dilations
@@ -192,6 +193,21 @@ def separable_conv2d(
                            dilations=dilations, data_format=data_format)
     return conv2d(ret, pointwise_filter, 1, 'SAME', data_format=data_format)
 
+
+
+    name=None,
+):
+    dilations = 1 if dilations is None else dilations
+    strides, dilations = _reduce_strides_dilations(2, strides, dilations)
+    ret = depthwise_conv2d(
+        input,
+        depthwise_filter,
+        strides=strides,
+        padding=padding,
+        dilations=dilations,
+        data_format=data_format,
+    )
+    return conv2d(ret, pointwise_filter, 1, "SAME", data_format=data_format)
 
 @to_ivy_arrays_and_back
 def batch_normalization(x, mean, variance, offset, scale, variance_epsilon, name=None):
@@ -205,6 +221,7 @@ def batch_normalization(x, mean, variance, offset, scale, variance_epsilon, name
         scale=scale,
         eps=variance_epsilon,
     )
+ ivy-torch-column
     return ivy.permute_dims(ret, axes=(0, ndims-1, *range(1, ndims-1)))
 
 
@@ -476,8 +493,3 @@ def relu6(features, name=None):
 @to_ivy_arrays_and_back
 def softmax(logits, axis=None, name=None):
     return ivy.softmax(logits, axis=axis)
-
-
-@to_ivy_arrays_and_back
-def relu6(features, name=None):
-    return ivy.clip(features, 0, 6)
