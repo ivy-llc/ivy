@@ -206,11 +206,6 @@ def multiply_no_nan(x, y, name="multiply_no_nan"):
 
 
 @to_ivy_arrays_and_back
-def negative(x, name=None):
-    return ivy.negative(x)
-
-
-@to_ivy_arrays_and_back
 def polyval(coeffs, x, name=None):
     ivy.utils.assertions.check_isinstance(coeffs, list)
     x = ivy.array(x)
