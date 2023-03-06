@@ -19,3 +19,7 @@ def expand_dims(
     axis,
 ):
     return ivy.expand_dims(a, axis=axis)
+
+@to_ivy_arrays_and_back
+def atleast_1d(*arys):
+    return ivy.atleast_1d(*arys)
