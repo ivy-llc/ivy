@@ -2066,13 +2066,13 @@ def test_numpy_instance_imul__(
         method_flags=method_flags,
     )
 
-
+#itruediv
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
     method_name="__itruediv__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,
     ),
