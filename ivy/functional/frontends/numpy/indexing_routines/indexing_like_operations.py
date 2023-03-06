@@ -24,3 +24,16 @@ def diag(v, k=0):
 @to_ivy_arrays_and_back
 def take_along_axis(arr, indices, axis):
     return ivy.take_along_axis(arr, indices, axis)
+
+@to_ivy_arrays_and_back
+def take(
+    a,
+    indices,
+    axis=None,
+    out=None,
+    mode=None,
+    unique_indices=False,
+    indices_are_sorted=False,
+    fill_value=None,
+):
+    return ivy.take_along_axis(a, indices, axis, out=out)
