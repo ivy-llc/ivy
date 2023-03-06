@@ -206,6 +206,11 @@ def multiply_no_nan(x, y, name="multiply_no_nan"):
 
 
 @to_ivy_arrays_and_back
+def negative(x, name=None):
+    return ivy.negative(x)
+
+
+@to_ivy_arrays_and_back
 def polyval(coeffs, x, name=None):
     ivy.utils.assertions.check_isinstance(coeffs, list)
     x = ivy.array(x)
@@ -487,13 +492,6 @@ def is_nan(x, name=None):
 def is_finite(x, name=None):
     return ivy.isfinite(x)
 
-
 @to_ivy_arrays_and_back
 def atan(x, name=None):
     return ivy.atan(x)
-
-
-@to_ivy_arrays_and_back
-def log(x, name=None):
-    return ivy.log(x)
-
