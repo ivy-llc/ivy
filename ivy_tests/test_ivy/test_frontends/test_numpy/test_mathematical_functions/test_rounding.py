@@ -7,46 +7,48 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 # floor
 @handle_frontend_test(
     fn_tree="numpy.floor",
-    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
-        arr_func=[
-            lambda: helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("float"),
-            )
-        ],
-        get_dtypes_kind="float",
+    dtypes_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
     ),
     where=np_frontend_helpers.where(),
-    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
-        fn_name="floor"
-    ),
 )
 def test_numpy_floor(
-    dtypes_values_casting,
+    dtype_and_x,
     where,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
     frontend,
-    test_flags,
     fn_tree,
     on_device,
 ):
-    input_dtypes, x, casting, dtype = dtypes_values_casting
+    input_dtypes, x = dtype_and_x
+    dtype, input_dtype, casting,  = np_frontend_helpers.handle_dtype_and_casting(
+        dtypes = input_dtype,
+        get_dtypes_kind = "float",
+    )
     where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtypes,
-        test_flags=test_flags,
+        where = where,
+        input_dtype = input_dtypes,
+        test_flags = test_flags
     )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-        out=None,
-        where=where,
-        casting=casting,
-        order="K",
-        dtype=dtype,
-        subok=True,
+        input_dtypes = input_dtypes,
+        as_variable_flags = as_variable,
+        with_out = with_out,
+        num_positional_args = num_positional_args,
+        native_array_flags = native_array,
+        frontend = frontend,
+        fn_tree = fn_tree,
+        on_device = on_device,
+        x = x[0],
+        out = None,
+        where = where,
+        casting = casting,
+        order = "K",
+        dtype = dtype,
+        subok = True,
     )
 
 

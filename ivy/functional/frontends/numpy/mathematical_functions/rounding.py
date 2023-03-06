@@ -16,14 +16,14 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def floor(
+def _floor(
     x,
     /,
     out=None,
     *,
     where=True,
     casting="same_kind",
-    order="k",
+    order="K",
     dtype=None,
     subok=True,
 ):
