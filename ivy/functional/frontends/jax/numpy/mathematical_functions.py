@@ -27,6 +27,11 @@ def diff(a, n=1, axis=-1, prepend=None, append=None):
 
 
 @to_ivy_arrays_and_back
+def ediff1d(ary, to_end=None, to_begin=None):
+    return ivy.ediff1d(ary, to_end=to_end, to_begin=to_begin, out=None)
+
+
+@to_ivy_arrays_and_back
 def arctan(x):
     ret = ivy.atan(x)
     return ret

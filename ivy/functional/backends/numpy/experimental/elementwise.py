@@ -335,6 +335,22 @@ def diff(
 diff.support_native_out = False
 
 
+def ediff1d(
+    x: Union[np.ndarray, list, tuple],
+    /,
+    *,
+    to_end: Optional[Union[np.ndarray, int, float, list, tuple]] = None,
+    to_begin: Optional[Union[np.ndarray, int, float, list, tuple]] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    to_end = to_end if to_end is not None else np._NoValue
+    to_begin = to_begin if to_begin is not None else np._NoValue
+    return np.ediff1d(x, to_end=to_end, to_begin=to_begin)
+
+
+ediff1d.support_native_out = False
+
+
 @_scalar_output_to_0d_array
 def allclose(
     x1: np.ndarray,
