@@ -1,6 +1,7 @@
 from typing import Optional, Union, Sequence, Tuple, NamedTuple, List
 from numbers import Number
 from .. import backend_version
+from ivy.func_wrapper import with_unsupported_dtypes
 import paddle
 from ivy.utils.exceptions import IvyNotImplementedException
 import ivy
@@ -75,6 +76,10 @@ def rot90(
     raise IvyNotImplementedException()
 
 
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ("uint16", "bfloat16", "complex64", "complex128", "bool")},
+    backend_version,
+)
 def top_k(
     x: paddle.Tensor,
     k: int,
@@ -84,8 +89,11 @@ def top_k(
     largest: Optional[bool] = True,
     out: Optional[Tuple[paddle.Tensor, paddle.Tensor]] = None,
 ) -> Tuple[paddle.Tensor, paddle.Tensor]:
-    raise IvyNotImplementedException()
-
+    topk_res = NamedTuple("top_k", [("values", paddle.Tensor), 
+                                    ("indices", paddle.Tensor)])
+    val, indices = paddle.topk(x, k, axis=axis, largest=largest)
+    return topk_res(val, indices)
+    
 
 def fliplr(
     m: paddle.Tensor,
