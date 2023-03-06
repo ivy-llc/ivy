@@ -771,3 +771,68 @@ def test_torch_vdot(
         input=vec1,
         other=vec2,
     )
+
+
+@st.composite
+def _get_dtype_and_matrices(draw):
+    dim1 = draw(helpers.ints(min_value=2, max_value=7))
+    dim2 = draw(helpers.ints(min_value=2, max_value=7))
+    dtype = draw(helpers.get_dtypes("float", full=False))
+
+    matr1 = draw(
+        helpers.array_values(
+            dtype=dtype[0], shape=(dim1, dim2), min_value=1, max_value=10
+        )
+    )
+    matr2 = draw(
+        helpers.array_values(
+            dtype=dtype[0], shape=(dim1, dim2), min_value=1, max_value=10
+        )
+    )
+
+    return dtype, matr1, matr2
+
+
+@handle_frontend_test(
+    fn_tree="torch.trapezoid",
+    test_with_out=st.just(False),
+    dtype_y_x=_get_dtype_and_matrices(),
+    use_x=st.booleans(),
+    dim=st.integers(min_value=0, max_value=1),
+    dx=st.floats(),
+)
+def test_torch_trapezoid(
+    dtype_y_x,
+    use_x,
+    dim,
+    dx,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, y, x = dtype_y_x
+    if use_x:
+        test_flags.num_positional_args = 2
+        helpers.test_frontend_function(
+            input_dtypes=dtype,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            y=y,
+            x=x,
+            dim=-1,
+        )
+    else:
+        test_flags.num_positional_args = 1
+        helpers.test_frontend_function(
+            input_dtypes=dtype,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            y=y,
+            dx=dx,
+            dim=dim,
+        )
