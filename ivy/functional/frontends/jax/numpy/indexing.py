@@ -15,6 +15,7 @@ def diag(v, k=0):
     return ivy.diag(v, k=k)
 
 
+# take_along_axis
 @to_ivy_arrays_and_back
 def take_along_axis(arr, indices, axis):
     return ivy.take_along_axis(arr, indices, axis)

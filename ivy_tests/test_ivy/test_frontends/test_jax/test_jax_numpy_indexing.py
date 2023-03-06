@@ -142,7 +142,7 @@ def test_jax_numpy_take_along_axis(
         axis=axis,
     )
 
-    
+
 # diag_indices
 @handle_frontend_test(
     fn_tree="jax.numpy.diag_indices",
