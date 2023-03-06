@@ -487,6 +487,13 @@ def is_nan(x, name=None):
 def is_finite(x, name=None):
     return ivy.isfinite(x)
 
+
 @to_ivy_arrays_and_back
 def atan(x, name=None):
     return ivy.atan(x)
+
+
+@to_ivy_arrays_and_back
+def log(x, name=None):
+    return ivy.log(x)
+
