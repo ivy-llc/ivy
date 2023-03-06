@@ -40,3 +40,9 @@ def pairwise_distance(x1, x2, *, p=2.0, eps=1e-06, keepdim=False):
         output_dim = x2_dim
 
     return ivy.vector_norm(x1 - x2 + eps, ord=p, axis=output_dim - 1, keepdims=keepdim)
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@to_ivy_arrays_and_back
+def pdist(x1, p=2.0):
+    x1 = torch_frontend.promote_types_of_torch_inputs(x1)
+    return ivy.vector_norm(x1, ord=p)

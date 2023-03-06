@@ -80,3 +80,36 @@ def test_torch_pairwise_distance(
         p=p,
         keepdim=keepdim,
     )
+
+# pDist
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.pdist",
+    d_type_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=1,
+        max_value=5,
+        min_dim_size=1,
+        shared_dtype=True,
+    ),
+    p=st.integers(min_value=0)
+)
+def test_torch_pdist(
+    *,
+    d_type_and_x,
+    p,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x = d_type_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-01,
+        x=x,
+        p=p
+    )
