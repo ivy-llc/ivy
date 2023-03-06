@@ -1,11 +1,17 @@
 from typing import Optional, Union, Sequence, Tuple, NamedTuple, List
 from numbers import Number
 from .. import backend_version
+from ivy.func_wrapper import with_unsupported_dtypes
 import paddle
 from ivy.utils.exceptions import IvyNotImplementedException
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 
 
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ('int8', 'int16', 'uint8', 'uint16')},
+    backend_version,
+)
 def moveaxis(
     a: paddle.Tensor,
     source: Union[int, Sequence[int]],
@@ -14,9 +20,14 @@ def moveaxis(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.moveaxis(a, source, destination)
 
 
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ('int8', 'int16', 'uint8', 'uint16', 'bfloat16',
+                         'float16', 'complex64', 'complex128', 'bool')},
+    backend_version,
+)
 def heaviside(
     x1: paddle.Tensor,
     x2: paddle.Tensor,
@@ -24,7 +35,7 @@ def heaviside(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.heaviside(x1, x2)
 
 
 def flipud(
@@ -65,6 +76,10 @@ def rot90(
     raise IvyNotImplementedException()
 
 
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ("uint16", "bfloat16", "complex64", "complex128", "bool")},
+    backend_version,
+)
 def top_k(
     x: paddle.Tensor,
     k: int,
@@ -74,8 +89,11 @@ def top_k(
     largest: Optional[bool] = True,
     out: Optional[Tuple[paddle.Tensor, paddle.Tensor]] = None,
 ) -> Tuple[paddle.Tensor, paddle.Tensor]:
-    raise IvyNotImplementedException()
-
+    topk_res = NamedTuple("top_k", [("values", paddle.Tensor), 
+                                    ("indices", paddle.Tensor)])
+    val, indices = paddle.topk(x, k, axis=axis, largest=largest)
+    return topk_res(val, indices)
+    
 
 def fliplr(
     m: paddle.Tensor,

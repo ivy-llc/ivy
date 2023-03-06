@@ -32,7 +32,6 @@ native_dtype_dict = {
     "int32": paddle.int32,
     "int64": paddle.int64,
     "uint8": paddle.uint8,
-    "uint16": paddle.bfloat16,
     "bfloat16": paddle.bfloat16,
     "float16": paddle.float16,
     "float32": paddle.float32,
@@ -124,8 +123,13 @@ def astype(
     return x.cast(dtype)
 
 
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ("int8", "int16", "uint8", "uint16",
+                         "bfloat16", "float16", "complex64", "complex128")},
+    backend_version,
+)
 def broadcast_arrays(*arrays: paddle.Tensor) -> List[paddle.Tensor]:
-    return list(paddle.broadcast_tensors(*arrays))
+    return list(paddle.broadcast_tensors(arrays))
 
 
 def broadcast_to(
@@ -149,7 +153,7 @@ def finfo(type: Union[paddle.dtype, str, paddle.Tensor], /) -> Finfo:
 
     if ivy.as_native_dtype(type) == paddle.bfloat16:
         return Finfo(Bfloat16Finfo())
-    
+
     return Finfo(np.finfo(type))
 
 
@@ -159,7 +163,7 @@ def iinfo(type: Union[paddle.dtype, str, paddle.Tensor], /) -> Iinfo:
         type = str(type.dtype)[7:]
     elif isinstance(type, paddle.dtype):
         type = str(type)[7:]
-        
+
     return Iinfo(np.iinfo(type))
 
 
