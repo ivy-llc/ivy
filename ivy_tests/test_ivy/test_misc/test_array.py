@@ -223,7 +223,11 @@ def test_array_property_T(
     )
 
 
-@handle_method(method_tree="Array.__getitem__", query_dtype_and_x=_getitem_setitem())
+@handle_method(
+    method_tree="Array.__getitem__",
+    query_dtype_and_x=_getitem_setitem(),
+    init_container_flags=st.just([False]),
+)
 def test_array__getitem__(
     query_dtype_and_x,
     init_flags,
@@ -253,6 +257,7 @@ def test_array__getitem__(
     method_tree="Array.__setitem__",
     query_dtype_and_x=_getitem_setitem(),
     val=st.floats(min_value=-6, max_value=6),
+    init_container_flags=st.just([False]),
 )
 def test_array__setitem__(
     query_dtype_and_x,
@@ -291,6 +296,7 @@ def test_array__setitem__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__pos__(
     dtype_and_x,
@@ -321,6 +327,7 @@ def test_array__pos__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__neg__(
     dtype_and_x,
@@ -333,6 +340,7 @@ def test_array__neg__(
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -348,6 +356,7 @@ def test_array__neg__(
 @handle_method(
     method_tree="Array.__pow__",
     dtype_and_x=pow_helper(),
+    init_container_flags=st.just([False]),
 )
 def test_array__pow__(
     dtype_and_x,
@@ -391,6 +400,7 @@ def test_array__pow__(
 @handle_method(
     method_tree="Array.__rpow__",
     dtype_and_x=pow_helper(),
+    init_container_flags=st.just([False]),
 )
 def test_array__rpow__(
     dtype_and_x,
@@ -433,8 +443,11 @@ def test_array__rpow__(
 
 @handle_method(
     method_tree="Array.__ipow__",
-    dtype_and_x=pow_helper(),
+    dtype_and_x=pow_helper(inplace=True),
+    init_container_flags=st.just([False]),
+    init_as_variable_flags=st.just([False]),
     method_container_flags=st.just([False]),
+    method_as_variable_flags=st.just([False]),
 )
 def test_array__ipow__(
     dtype_and_x,
@@ -449,11 +462,6 @@ def test_array__ipow__(
 
     # bfloat16 is not supported by numpy
     assume(not ("bfloat16" in input_dtype))
-
-    # Make sure x2 isn't a float when x1 is integer
-    assume(
-        not (ivy.is_int_dtype(input_dtype[0] and ivy.is_float_dtype(input_dtype[1])))
-    )
 
     # Make sure x2 is non-negative when both is integer
     if ivy.is_int_dtype(input_dtype[1]) and ivy.is_int_dtype(input_dtype[0]):
@@ -485,6 +493,7 @@ def test_array__ipow__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__add__(
     dtype_and_x,
@@ -520,6 +529,7 @@ def test_array__add__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__radd__(
     dtype_and_x,
@@ -594,6 +604,7 @@ def test_array__iadd__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__sub__(
     dtype_and_x,
@@ -629,6 +640,7 @@ def test_array__sub__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__rsub__(
     dtype_and_x,
@@ -703,6 +715,7 @@ def test_array__isub__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__mul__(
     dtype_and_x,
@@ -738,6 +751,7 @@ def test_array__mul__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__rmul__(
     dtype_and_x,
@@ -812,6 +826,7 @@ def test_array__imul__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__mod__(
     dtype_and_x,
@@ -848,6 +863,7 @@ def test_array__mod__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__rmod__(
     dtype_and_x,
@@ -924,6 +940,7 @@ def test_array__imod__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__divmod__(
     dtype_and_x,
@@ -960,6 +977,7 @@ def test_array__divmod__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__rdivmod__(
     dtype_and_x,
@@ -996,6 +1014,7 @@ def test_array__rdivmod__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__truediv__(
     dtype_and_x,
@@ -1031,6 +1050,7 @@ def test_array__truediv__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__rtruediv__(
     dtype_and_x,
@@ -1105,6 +1125,7 @@ def test_array__itruediv__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__floordiv__(
     dtype_and_x,
@@ -1141,6 +1162,7 @@ def test_array__floordiv__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
+    init_container_flags=st.just([False]),
 )
 def test_array__rfloordiv__(
     dtype_and_x,
@@ -1211,6 +1233,7 @@ def test_array__ifloordiv__(
     method_tree="Array.__matmul__",
     x=_get_first_matrix_and_dtype(),
     y=_get_second_matrix_and_dtype(),
+    init_container_flags=st.just([False]),
 )
 def test_array__matmul__(
     x,

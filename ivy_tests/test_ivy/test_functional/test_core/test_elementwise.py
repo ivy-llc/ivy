@@ -1390,7 +1390,7 @@ def test_positive(
 
 
 @st.composite
-def pow_helper(draw, available_dtypes=None):
+def pow_helper(draw, available_dtypes=None, inplace=False):
     if available_dtypes is None:
         available_dtypes = helpers.get_dtypes("numeric")
     dtype1, x1 = draw(
@@ -1414,6 +1414,8 @@ def pow_helper(draw, available_dtypes=None):
             cast_filter
         )
     )
+    if inplace:
+        dtype2 = dtype1
     if ivy.is_int_dtype(dtype2):
         max_val = ivy.iinfo(dtype2).max
     else:
