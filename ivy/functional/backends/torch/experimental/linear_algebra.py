@@ -2,7 +2,7 @@
 import math
 
 import torch
-from typing import Optional, Tuple, Sequence
+from typing import Optional, Tuple, Sequence, Union
 
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
@@ -155,12 +155,25 @@ def adjoint(
 
 
 def multi_dot(
-    x: Sequence[torch.Tensor], 
-    /, 
-    *, 
+    x: Sequence[torch.Tensor],
+    /,
+    *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.linalg.multi_dot(x, out=out)
 
 
 multi_dot.support_native_out = True
+
+
+def cond(
+    x: torch.Tensor,
+    /,
+    *,
+    p: Optional[Union[None, int, str]] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.linalg.cond(x, p=p, out=out)
+
+
+cond.support_native_out = False

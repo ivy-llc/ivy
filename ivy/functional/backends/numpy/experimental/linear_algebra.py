@@ -1,5 +1,5 @@
 import math
-from typing import Optional, Tuple, Sequence
+from typing import Optional, Tuple, Sequence, Union, Any
 import numpy as np
 
 import ivy
@@ -140,12 +140,25 @@ def adjoint(
 
 
 def multi_dot(
-    x: Sequence[np.ndarray], 
+    x: Sequence[np.ndarray],
     /,
-    *, 
+    *,
     out: Optional[np.array] = None,
-) -> np.ndarray: 
+) -> np.ndarray:
     return np.linalg.multi_dot(x, out=out)
 
 
 multi_dot.support_native_out = True
+
+
+def cond(
+    x: np.ndarray,
+    /,
+    *,
+    p: Optional[Union[None, int, str]] = None,
+    out: Optional[np.ndarray] = None,
+) -> Any:
+    return np.linalg.cond(x, p=p)
+
+
+cond.support_native_out = False
