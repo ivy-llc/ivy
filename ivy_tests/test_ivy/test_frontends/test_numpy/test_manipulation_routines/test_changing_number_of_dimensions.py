@@ -1,4 +1,5 @@
 # local
+import numpy as np
 import ivy_tests.test_ivy.helpers as helpers
 from hypothesis import strategies as st
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -77,4 +78,36 @@ def test_numpy_expand_dims(
         on_device=on_device,
         a=x[0],
         axis=axis,
+    )
+
+
+# atleast_1d
+@handle_frontend_test(
+    fn_tree="numpy.atleast_1d",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=helpers.ints(min_value=1, max_value=10),
+    ),
+    test_with_out=st.just(False),
+)
+def test_numpy_atleast_1d(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, arrays = dtype_and_x
+    arys = {}
+    for i, (array, idtype) in enumerate(zip(arrays, input_dtype)):
+        arys["arrs{}".format(i)] = np.asarray(array, dtype=idtype)
+    test_flags.num_positional_args = len(arys)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        **arys,
     )
