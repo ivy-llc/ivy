@@ -14,5 +14,4 @@ Sorting
    :caption: Sorting
 
    sorting/msort.rst
-   sorting/lexsort.rst
 
