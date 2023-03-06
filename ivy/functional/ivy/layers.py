@@ -131,6 +131,13 @@ def linear(
     }
     
     """
+    if ivy.current_backend(x).backend == 'torch':
+        return ivy.current_backend(x).linear(
+            x,
+            weight,
+            bias,
+            out
+        )
     outer_batch_shape = list(weight.shape[:-2])
     num_outer_batch_dims = len(outer_batch_shape)
     inner_batch_shape = list(x.shape[num_outer_batch_dims:-1])
@@ -166,6 +173,7 @@ def linear(
         return ivy.inplace_update(out, y)
     return y
 
+linear.mixed_function = True
 
 # Dropout #
 
