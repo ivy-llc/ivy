@@ -814,25 +814,15 @@ def test_torch_trapezoid(
     dtype, y, x = dtype_y_x
     if use_x:
         test_flags.num_positional_args = 2
-        helpers.test_frontend_function(
-            input_dtypes=dtype,
-            frontend=frontend,
-            test_flags=test_flags,
-            fn_tree=fn_tree,
-            on_device=on_device,
-            y=y,
-            x=x,
-            dim=-1,
-        )
+        kwargs = {"y": y, "x": x, "dim": -1}
     else:
         test_flags.num_positional_args = 1
-        helpers.test_frontend_function(
-            input_dtypes=dtype,
-            frontend=frontend,
-            test_flags=test_flags,
-            fn_tree=fn_tree,
-            on_device=on_device,
-            y=y,
-            dx=dx,
-            dim=dim,
-        )
+        kwargs = {"y": y, "dx": dx, "dim": dim}
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        **kwargs
+    )
