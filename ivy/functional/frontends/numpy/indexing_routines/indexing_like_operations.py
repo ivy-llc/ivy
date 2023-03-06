@@ -1,3 +1,5 @@
+import numpy as np
+
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
@@ -24,3 +26,9 @@ def diag(v, k=0):
 @to_ivy_arrays_and_back
 def take_along_axis(arr, indices, axis):
     return ivy.take_along_axis(arr, indices, axis)
+
+
+@to_ivy_arrays_and_back
+def unravel_index(indices, shape, order='C'):
+    ret = ivy.unravel_index(indices, shape)
+    return tuple(np.asarray(x, dtype=np.int64) for x in ret)
