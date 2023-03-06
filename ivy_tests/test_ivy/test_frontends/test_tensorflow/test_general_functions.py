@@ -1374,6 +1374,37 @@ def test_tensorflow_boolean_mask(
         mask=mask,
     )
 
+# unique
+@handle_frontend_test(
+    fn_tree="tensorflow.unique",
+    dtype_input=helpers.dtype_and_values(
+        available_dtypes=["float32", "float64", "int8",
+                          "int16", "int32", "int64"],
+        min_num_dims=1,
+        max_num_dims=1
+    ),
+    out_idx=st.sampled_from(["int32", "int64"]),
+    test_with_out=st.just(False)
+)
+def test_tensorflow_unique(
+    *,
+    dtype_input,
+    out_idx,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags
+):
+    input_dtype, input = dtype_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=input[0],
+        out_idx=out_idx
+    )
 
 # where
 @handle_frontend_test(
