@@ -101,7 +101,7 @@ def fliplr(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.flip(m, axis=[-1])
 
 
 def i0(
