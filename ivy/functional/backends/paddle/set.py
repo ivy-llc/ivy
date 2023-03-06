@@ -17,7 +17,8 @@ def unique_all(
 
 
 @with_unsupported_dtypes(
-    {"2.4.2 and below": ("int8", "int16", "uint8", "uint16", "bfloat16", "float16", "float32", "float64", "bool")},
+    {"2.4.2 and below": ("int8", "int16", "uint8", "uint16", "bfloat16",
+                         "float16", "complex64", "complex128", "bool")},
     backend_version,
 )
 def unique_counts(x: paddle.Tensor, /) -> Tuple[paddle.Tensor, paddle.Tensor]:
@@ -25,10 +26,13 @@ def unique_counts(x: paddle.Tensor, /) -> Tuple[paddle.Tensor, paddle.Tensor]:
     nan_count = paddle.count_nonzero(paddle.where(paddle.isnan(x) > 0)).numpy()[0]
 
     if nan_count > 0:
-        unique_nan = paddle.full(shape=[1, nan_count], fill_value=float('nan')).cast(x.dtype)
+        unique_nan = paddle.full(shape=[1, nan_count],
+                                 fill_value=float('nan')).cast(x.dtype)
         counts_nan = paddle.full(shape=[1, nan_count], fill_value=1).cast(x.dtype)
-        unique = paddle.concat(input=[unique.astype(x.dtype), paddle.reshape(unique_nan, [nan_count])], axis=0)
-        counts = paddle.concat(input=[counts.astype(x.dtype), paddle.reshape(counts_nan, [nan_count])], axis=0)
+        unique = paddle.concat(
+            [unique.astype(x.dtype), paddle.reshape(unique_nan, [nan_count])], axis=0)
+        counts = paddle.concat(
+            [counts.astype(x.dtype), paddle.reshape(counts_nan, [nan_count])], axis=0)
 
     Results = namedtuple("Results", ["values", "counts"])
     return Results(unique, counts)
@@ -37,8 +41,18 @@ def unique_counts(x: paddle.Tensor, /) -> Tuple[paddle.Tensor, paddle.Tensor]:
 def unique_inverse(x: paddle.Tensor, /) -> Tuple[paddle.Tensor, paddle.Tensor]:
     raise IvyNotImplementedException()
 
-
+    
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ("complex64", "complex128")},
+    backend_version,
+)
 def unique_values(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    x_dtype = x.dtype
+    nan_count = paddle.sum(paddle.isnan(x.cast("float64")))
+    unique = paddle.unique(x.cast('float64'))
+    if nan_count > 0:
+        nans = paddle.full(shape=[nan_count], fill_value=float('nan')).cast(unique.dtype)
+        unique = paddle.concat([unique, nans])
+    return unique.cast(x_dtype)

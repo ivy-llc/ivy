@@ -144,7 +144,11 @@ def stop_gradient(
     preserve_type: bool = True,
     out: Optional[paddle.Tensor] = None,
 ):
-    raise IvyNotImplementedException()
+    is_var = is_variable(x)
+    x.stop_gradient = True
+    if is_var and preserve_type:
+        return variable(x)
+    return x
 
 
 def jac(func: Callable):
