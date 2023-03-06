@@ -160,3 +160,4 @@ def tensorflow_histogram(
                                      dtype=dtype,
                                      name=name)
     return hist
+

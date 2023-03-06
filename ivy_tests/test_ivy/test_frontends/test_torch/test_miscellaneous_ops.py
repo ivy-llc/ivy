@@ -149,7 +149,11 @@ def test_torch_roll(
         max_dim_size=5,
         shared_dtype=True,
     ),
+
     indexing=st.sampled_from(['ij', 'xy']),
+
+    indexing=st.sampled_from(["ij", "xy"]),
+
 )
 def test_torch_meshgrid(
     *,
@@ -165,7 +169,11 @@ def test_torch_meshgrid(
         f"tensor{i}": np.array(tensor, dtype=dtypes[i])
         for i, tensor in enumerate(tensors)
     }
+
     kwargs['indexing'] = indexing
+
+    kwargs["indexing"] = indexing
+
     test_flags.num_positional_args = len(tensors)
     helpers.test_frontend_function(
         input_dtypes=dtypes,

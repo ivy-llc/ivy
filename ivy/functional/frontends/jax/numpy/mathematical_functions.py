@@ -469,6 +469,21 @@ def inner(a, b):
     return ivy.inner(a, b)
 
 
+
 @to_ivy_arrays_and_back
 def outer(a, b, out=None):
     return ivy.outer(a, b, out=out)
+
+def outer(a, b, out=None):
+    return ivy.outer(a, b, out=out)
+
+
+@to_ivy_arrays_and_back
+def reciprocal(x, /):
+    return ivy.reciprocal(x)
+
+
+@to_ivy_arrays_and_back
+def conj(x, /):
+    return ivy.conj(x)
+

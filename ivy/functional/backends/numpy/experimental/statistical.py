@@ -126,6 +126,7 @@ def bincount(
 
 bincount.support_native_out = False
 
+
 def histogram(data: np.ndarray, 
               input: Optional[Union[int, str, np.ndarray]] = None,
               name: Optional[np.ndarray[int]] = None, 

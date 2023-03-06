@@ -7,7 +7,11 @@ permissions:
   actions: read
 jobs:
   run-nightly-tests:
+
     runs-on: ubuntu-latest-16-core
+
+    runs-on: ubuntu-latest-16-cores
+
     steps:
       - name: Checkout 🛎️Ivy
         uses: actions/checkout@v2
@@ -34,4 +38,8 @@ jobs:
 
       - name: Check on failures
         if: steps.tests.outcome != 'success'
+
         run: exit 1
+
+        run: exit 1
+

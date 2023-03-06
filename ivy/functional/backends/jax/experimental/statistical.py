@@ -104,6 +104,7 @@ def bincount(
         ret = jnp.bincount(x, minlength=minlength).astype(x.dtype)
     return ret
 
+
 import numpy as np
 
 

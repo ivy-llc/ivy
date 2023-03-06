@@ -78,12 +78,20 @@ def run_multiversion_testing():
             if ";" in backend:
                 # This is a frontend test
                 backend, frontend = backend.split(";")
+
                 ret = os.system(
                     f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:latest /opt/miniconda/envs/multienv/bin/python -m pytest --tb=short {test} --frontend={frontend} --backend {backend}'
                 )
             else:
                 ret = os.system(
                     f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:latest /opt/miniconda/envs/multienv/bin/python -m pytest --tb=short {test} --backend {backend}'
+
+                command = f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:latest /opt/miniconda/envs/multienv/bin/python -m pytest --tb=short {test} --backend={backend} --frontend={frontend}'  # noqa
+                print(command)
+                ret = os.system(command)
+            else:
+                ret = os.system(
+                    f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:latest /opt/miniconda/envs/multienv/bin/python -m pytest --tb=short {test} --backend={backend}'  # noqa
                 )
             if ret != 0:
                 failed = True
@@ -123,12 +131,20 @@ if __name__ == "__main__":
             print(coll, submod, test_fn)
             if with_gpu:
                 ret = os.system(
+
                     f'docker run -it --rm --gpus all --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest-gpu python3 -m pytest --tb=short {test} --backend {backend} --device gpu:0'
+
+                    f'docker run -it --rm --gpus all --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest-gpu python3 -m pytest --tb=short {test} --backend {backend} --device gpu:0'  # noqa
+
                     # noqa
                 )
             else:
                 ret = os.system(
+
                     f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --tb=short {test} --backend {backend}'
+
+                    f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --tb=short {test} --backend {backend}'  # noqa
+
                     # noqa
                 )
             if ret != 0:
