@@ -2192,7 +2192,9 @@ def test_torch_arctan(
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
-    )
+     ivy-torch-column
+    )    
+
 
 
 # conj_physical
@@ -2245,6 +2247,8 @@ def test_torch_nextafter(
         on_device=on_device,
         input=x[0],
     )
+ ivy-torch-column
+
 
 
 # fmod

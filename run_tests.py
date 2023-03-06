@@ -70,26 +70,23 @@ def remove_from_db(collection, id, submod, backend, test):
     return
 
 
-def run_multiversion_testing():
-    failed = False
+ivy-torch-column
+def run_multiversion_testing(failed, with_gpu):
     with open("tests_to_run", "r") as f:
         for line in f:
-            test, backend = line.split(",")
-            if ";" in backend:
-                # This is a frontend test
-                backend, frontend = backend.split(";")
-                command = f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:latest /opt/miniconda/envs/multienv/bin/python -m pytest --tb=short {test} --backend={backend} --frontend={frontend}'  # noqa
-                print(command)
-                ret = os.system(command)
-            else:
-                ret = os.system(
-                    f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:latest /opt/miniconda/envs/multienv/bin/python -m pytest --tb=short {test} --backend={backend}'  # noqa
-                )
-            if ret != 0:
-                failed = True
-    if failed:
-        exit(1)
-    exit(0)
+            test, frontend, backend = line.split(",")
+            frontend, backend = frontend.split("=")[1], backend.split("=")[1].replace(
+                ":", ","
+            )
+            print(test, frontend, backend)
+        ret = os.system(
+                f'docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion /opt/miniconda/envs/multienv/bin/python -m pytest --tb=short {test} --frontend={frontend} --backend={backend}'  # noqa
+        )
+        if ret != 0:
+            exit(1)
+        else:
+            exit(0)
+
 
 
 if __name__ == "__main__":
@@ -105,7 +102,9 @@ if __name__ == "__main__":
     else:
         run_id = "https://github.com/unifyai/ivy/actions/runs/" + workflow_id
     failed = False
-    # Gpu based testing
+ ivy-torch-column
+    #Gpu based testing
+
     with_gpu = False
     if gpu_flag == "true":
         with_gpu = True
@@ -123,13 +122,13 @@ if __name__ == "__main__":
             print(coll, submod, test_fn)
             if with_gpu:
                 ret = os.system(
-                    f'docker run -it --rm --gpus all --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest-gpu python3 -m pytest --tb=short {test} --backend {backend} --device gpu:0'  # noqa
-                    # noqa
-                )
+ ivy-torch-column
+                f'docker run -it --rm --gpus all --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest-gpu python3 -m pytest --tb=short {test} --backend {backend} --device gpu:0'  # noqa
+            )
             else:
                 ret = os.system(
                     f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --tb=short {test} --backend {backend}'  # noqa
-                    # noqa
+
                 )
             if ret != 0:
                 res = make_clickable(run_id, result_config["failure"])

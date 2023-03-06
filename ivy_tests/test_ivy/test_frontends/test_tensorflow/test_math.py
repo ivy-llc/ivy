@@ -1740,6 +1740,8 @@ def test_tensorflow_is_finite(
         on_device=on_device,
         x=x[0],
     )
+ ivy-torch-column
+
 
 
 # atan

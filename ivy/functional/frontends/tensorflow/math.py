@@ -486,6 +486,8 @@ def is_nan(x, name=None):
 )
 def is_finite(x, name=None):
     return ivy.isfinite(x)
+ ivy-torch-column
+=======
 
 
 @to_ivy_arrays_and_back
