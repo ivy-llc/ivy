@@ -97,12 +97,11 @@ supports_gradients = True
 def closest_valid_dtype(type, /):
     if type is None:
         return ivy.default_dtype()
-    type_str = ivy.as_ivy_dtype(type)
-    if type_str in invalid_dtypes:
+    if isinstance(type, str) and type in invalid_dtypes:
         return {"uint16": native_uint8, "uint32": native_uint8, "uint64": native_uint8}[
-            type_str
+            type
         ]
-    return type
+    return ivy.as_native_dtype(type)
 
 
 backend = "torch"
