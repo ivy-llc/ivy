@@ -365,3 +365,9 @@ def repeat(
         name=None,
 ):
     return ivy.repeat(input, repeats, axis=axis)
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@to_ivy_arrays_and_back
+def unstack(value: ivy.array, axis=0, num=None, name=None):
+    return ivy.unstack(value, axis=axis)
