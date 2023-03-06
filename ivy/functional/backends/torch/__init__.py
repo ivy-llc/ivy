@@ -117,10 +117,10 @@ from . import device
 from .device import *
 from . import elementwise
 from .elementwise import *
-from . import general
-from .general import *
 from . import gradients
 from .gradients import *
+from . import general
+from .general import *
 from . import layers
 from .layers import *
 from . import linear_algebra as linalg
