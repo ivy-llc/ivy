@@ -325,33 +325,6 @@ def diff(
 gcd.support_native_out = False
 
 
-def ediff1d(
-    x: Union[torch.Tensor, list, tuple],
-    /,
-    *,
-    to_end: Optional[Union[torch.Tensor, int, float, list, tuple]] = None,
-    to_begin: Optional[Union[torch.Tensor, int, float, list, tuple]] = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    if not isinstance(x, torch.Tensor):
-        x = torch.tensor(x)
-    diffs = torch.diff(x)
-    if to_begin is not None:
-        if not isinstance(to_begin, (list, tuple)):
-            to_begin = [to_begin]
-        to_begin = torch.tensor(to_begin)
-        diffs = torch.cat((to_begin, diffs), dim=0)
-    if to_end is not None:
-        if not isinstance(to_end, (list, tuple)):
-            to_end = [to_end]
-        to_end = torch.tensor(to_end)
-        diffs = torch.cat((diffs, to_end), dim=0)
-    return diffs
-
-
-ediff1d.support_native_out = False
-
-
 def signbit(
     x: Union[torch.Tensor, float, int, list, tuple],
     /,

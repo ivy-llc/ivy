@@ -239,22 +239,6 @@ def diff(
     return jnp.diff(x, n=n, axis=axis, prepend=prepend, append=append)
 
 
-def ediff1d(
-    x: JaxArray,
-    /,
-    *,
-    to_end: Optional[Union[JaxArray, int, float, list, tuple]] = None,
-    to_begin: Optional[Union[JaxArray, int, float, list, tuple]] = None,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    x = jnp.asarray(x)
-    if isinstance(to_end, (list, tuple)):
-        to_end = jnp.asarray(to_end)
-    if isinstance(to_begin, (list, tuple)):
-        to_begin = jnp.asarray(to_begin)
-    return jnp.ediff1d(x, to_end=to_end, to_begin=to_begin)
-
-
 def fix(
     x: JaxArray,
     /,

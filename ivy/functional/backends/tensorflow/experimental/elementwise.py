@@ -335,24 +335,6 @@ def diff(
     },
     backend_version,
 )
-def ediff1d(
-    x: Union[tf.Tensor, tf.Variable, list, tuple],
-    /,
-    *,
-    to_end: Optional[Union[tf.Tensor, tf.Variable, int, float, list, tuple]] = None,
-    to_begin: Optional[Union[tf.Tensor, tf.Variable, int, float, list, tuple]] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    diffs = tf.experimental.numpy.diff(x)
-    if to_end is not None:
-        if not isinstance(to_end, (list, tuple)):
-            to_end = [to_end]
-        diffs = tf.concat([diffs, to_end], axis=0)
-    if to_begin is not None:
-        if not isinstance(to_begin, (list, tuple)):
-            to_begin = [to_begin]
-        diffs = tf.concat([to_begin, diffs], axis=0)
-    return diffs
 
 
 @with_unsupported_dtypes(
