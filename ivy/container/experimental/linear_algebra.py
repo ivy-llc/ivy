@@ -6,7 +6,7 @@ from ivy.container.base import ContainerBase
 import ivy
 
 
-class _ContainerWithLinearAlgebraExperimental(ContainerBase):
+class ContainerWithLinearAlgebraExperimental(ContainerBase):
     @staticmethod
     def static_eigh_tridiagonal(
         alpha: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -195,11 +195,11 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        offset: int = 0,
-        padding_value: float = 0,
-        align: str = "RIGHT_LEFT",
-        num_rows: int = -1,
-        num_cols: int = -1,
+        offset: Optional[int] = 0,
+        padding_value: Optional[float] = 0,
+        align: Optional[str] = "RIGHT_LEFT",
+        num_rows: Optional[int] = -1,
+        num_cols: Optional[int] = -1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -225,11 +225,11 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        offset: int = 0,
-        padding_value: float = 0,
-        align: str = "RIGHT_LEFT",
-        num_rows: int = -1,
-        num_cols: int = -1,
+        offset: Optional[int] = 0,
+        padding_value: Optional[float] = 0,
+        align: Optional[str] = "RIGHT_LEFT",
+        num_rows: Optional[int] = -1,
+        num_cols: Optional[int] = -1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -714,18 +714,18 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         Examples
         --------
         With :class:`ivy.Container` input:
-
-        >>> a = ivy.Container(x=ivy.arange(2 * 3).reshape((2, 3)),
+        
+        >>> a = ivy.Container(x=ivy.arange(2 * 3).reshape((2, 3)), 
         ...                   y=ivy.arange(2 * 3).reshape((2, 3)))
-        >>> b = ivy.Container(x=ivy.arange(3 * 2).reshape((3, 2)),
+        >>> b = ivy.Container(x=ivy.arange(3 * 2).reshape((3, 2)), 
         ...                   y=ivy.arange(3 * 2).reshape((3, 2)))
-        >>> c = ivy.Container(x=ivy.arange(2 * 2).reshape((2, 2)),
+        >>> c = ivy.Container(x=ivy.arange(2 * 2).reshape((2, 2)), 
         ...                   y=ivy.arange(2 * 2).reshape((2, 2)))
         >>> ivy.Container.static_multi_dot((a, b, c))
         {
-            x: ivy.array([[26, 49],
+            x: ivy.array([[26, 49], 
                           [80, 148]]),
-            y: ivy.array([[26, 49],
+            y: ivy.array([[26, 49], 
                           [80, 148]])
         }
         """
@@ -757,17 +757,17 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
 
         Examples
         --------
-        >>> a = ivy.Container(x=ivy.arange(2 * 3).reshape((2, 3)),
+        >>> a = ivy.Container(x=ivy.arange(2 * 3).reshape((2, 3)), 
         ...                   y=ivy.arange(2 * 3).reshape((2, 3)))
-        >>> b = ivy.Container(x=ivy.arange(3 * 2).reshape((3, 2)),
+        >>> b = ivy.Container(x=ivy.arange(3 * 2).reshape((3, 2)), 
         ...                   y=ivy.arange(3 * 2).reshape((3, 2)))
-        >>> c = ivy.Container(x=ivy.arange(2 * 2).reshape((2, 2)),
+        >>> c = ivy.Container(x=ivy.arange(2 * 2).reshape((2, 2)), 
         ...                   y=ivy.arange(2 * 2).reshape((2, 2)))
         >>> a.multi_dot((b, c))
         {
-            x: ivy.array([[26, 49],
+            x: ivy.array([[26, 49], 
                           [80, 148]]),
-            y: ivy.array([[26, 49],
+            y: ivy.array([[26, 49], 
                           [80, 148]])
         }
         """

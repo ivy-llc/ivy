@@ -356,12 +356,3 @@ def split(
         axis=axis,
         with_remainder=False
     )
-
-
-def repeat(
-        input,
-        repeats,
-        axis=None,
-        name=None,
-):
-    return ivy.repeat(input, repeats, axis=axis)

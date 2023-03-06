@@ -6,14 +6,14 @@ import ivy
 from ivy.container.base import ContainerBase
 
 
-class _ContainerWithStatisticalExperimental(ContainerBase):
+class ContainerWithStatisticalExperimental(ContainerBase):
     @staticmethod
     def static_median(
         input: ivy.Container,
         /,
         *,
         axis: Optional[Union[Tuple[int], int]] = None,
-        keepdims: bool = False,
+        keepdims: Optional[bool] = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -70,7 +70,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         /,
         *,
         axis: Optional[Union[Tuple[int], int]] = None,
-        keepdims: bool = False,
+        keepdims: Optional[bool] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.median. This method simply
@@ -116,7 +116,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         /,
         *,
         axis: Optional[Union[Tuple[int], int]] = None,
-        keepdims: bool = False,
+        keepdims: Optional[bool] = False,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -181,7 +181,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         /,
         *,
         axis: Optional[Union[Tuple[int], int]] = None,
-        keepdims: bool = False,
+        keepdims: Optional[bool] = False,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
@@ -247,7 +247,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
 
         Parameters
         ----------
-        indices
+        input
             Input container including arrays.
         shape
             The shape of the array to use for unraveling indices.
@@ -574,8 +574,8 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         x: ivy.Container,
         /,
         *,
-        y: Optional[ivy.Container] = None,
-        rowvar: bool = True,
+        y: ivy.Container = None,
+        rowvar: Optional[bool] = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = False,
         prune_unapplied: bool = False,
@@ -631,8 +631,8 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        y: Optional[ivy.Container] = None,
-        rowvar: bool = True,
+        y: ivy.Container = None,
+        rowvar: Optional[bool] = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.corrcoef. This method simply
@@ -675,7 +675,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         /,
         *,
         axis: Optional[Union[Tuple[int], int]] = None,
-        keepdims: bool = False,
+        keepdims: Optional[bool] = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -732,7 +732,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         /,
         *,
         axis: Optional[Union[Tuple[int], int]] = None,
-        keepdims: bool = False,
+        keepdims: Optional[bool] = False,
         overwrite_input: Optional[bool] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
@@ -790,7 +790,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         /,
         *,
         weights: Optional[ivy.Container] = None,
-        minlength: int = 0,
+        minlength: Optional[int] = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -801,7 +801,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         ivy.Container static method variant of ivy.bincount. This method simply wraps
         the function, and so the docstring for ivy.bincount also applies to this method
         with minimal changes.
-
+        
         Parameters
         ----------
         x
@@ -844,13 +844,13 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         /,
         *,
         weights: Optional[ivy.Container] = None,
-        minlength: int = 0,
+        minlength: Optional[int] = 0,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Array instance method variant of ivy.bincount. This method simply
         wraps the function, and so the docstring for ivy.bincount also applies to
         this method with minimal changes.
-
+        
         Parameters
         ----------
         self

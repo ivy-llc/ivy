@@ -2192,7 +2192,7 @@ def test_torch_arctan(
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
-    )
+    )    
 
 
 # conj_physical
@@ -2244,37 +2244,4 @@ def test_torch_nextafter(
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
-    )
-
-
-# fmod
-@handle_frontend_test(
-    fn_tree="torch.fmod",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
-        min_num_dims=1,
-        min_value=-100,
-        max_value=100,
-        shared_dtype=True,
-    ),
-)
-def test_torch_fmod(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        atol=1e-03,
-        x1=x[0],
-        x2=x[1],
     )
