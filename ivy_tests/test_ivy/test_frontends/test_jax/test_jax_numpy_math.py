@@ -119,6 +119,7 @@ def test_jax_numpy_diff(
     )
 
 
+# ediff1d
 @handle_frontend_test(
     fn_tree="jax.numpy.ediff1d",
     dtype_and_x=helpers.dtype_and_values(
