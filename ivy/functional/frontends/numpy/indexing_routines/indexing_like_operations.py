@@ -24,3 +24,8 @@ def diag(v, k=0):
 @to_ivy_arrays_and_back
 def take_along_axis(arr, indices, axis):
     return ivy.take_along_axis(arr, indices, axis)
+
+
+@to_ivy_arrays_and_back
+def tril_indices(n_rows, n_cols, k=0, /):
+    return ivy.tril_indices(n_rows, k, n_cols)

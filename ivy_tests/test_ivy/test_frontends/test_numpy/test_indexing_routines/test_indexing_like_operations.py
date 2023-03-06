@@ -132,3 +132,31 @@ def test_numpy_take_along_axis(
         indices=indices,
         axis=axis,
     )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.tril_indices",
+    n_rows=helpers.ints(min_value=1, max_value=10),
+    n_cols=helpers.ints(min_value=1, max_value=10),
+    k=st.integers(min_value=-10, max_value=10),
+)
+def test_tril_indices(
+    *,
+    n_rows,
+    n_cols,
+    k,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=["int32"],
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        n_rows=n_rows,
+        n_cols=n_cols,
+        k=k,
+    )
