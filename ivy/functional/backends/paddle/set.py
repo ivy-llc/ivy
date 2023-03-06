@@ -41,7 +41,11 @@ def unique_counts(x: paddle.Tensor, /) -> Tuple[paddle.Tensor, paddle.Tensor]:
 def unique_inverse(x: paddle.Tensor, /) -> Tuple[paddle.Tensor, paddle.Tensor]:
     raise IvyNotImplementedException()
 
-
+    
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ("complex64", "complex128")},
+    backend_version,
+)
 def unique_values(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
