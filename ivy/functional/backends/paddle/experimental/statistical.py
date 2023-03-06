@@ -70,9 +70,13 @@ def nanmedian(
 
 def unravel_index(
     indices: paddle.Tensor,
-    shape: Tuple[int],
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
+    shape: paddle.Tensor,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    coord = []
+    for dim in reversed(shape):
+        coord.append(indices % dim)
+        indices = indices // dim
+
+    coord = paddle.stack(coord[::-1], axis=-1)
+
+    return coord
