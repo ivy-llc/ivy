@@ -1,5 +1,5 @@
 import math
-from typing import Optional, Tuple, Sequence
+from typing import Optional, Tuple, Sequence, Union, Any
 import numpy as np
 
 import ivy
@@ -149,3 +149,16 @@ def multi_dot(
 
 
 multi_dot.support_native_out = True
+
+
+def cond(
+    x: np.ndarray,
+    /,
+    *,
+    p: Optional[Union[None, int, str]] = None,
+    out: Optional[np.ndarray] = None,
+) -> Any:
+    return np.linalg.cond(x, p=p)
+
+
+cond.support_native_out = False

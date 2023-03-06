@@ -1,5 +1,5 @@
 import math
-from typing import Optional, Tuple, Sequence
+from typing import Optional, Tuple, Sequence, Union
 import jax.numpy as jnp
 from ivy.functional.backends.jax import JaxArray
 
@@ -137,3 +137,13 @@ def multi_dot(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.linalg.multi_dot(x)
+
+
+def cond(
+    x: JaxArray,
+    /,
+    *,
+    p: Optional[Union[int, str, None]] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.linalg.cond(x, p=p)

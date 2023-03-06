@@ -238,3 +238,23 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
                    [ 80, 148]])
         """
         return ivy.multi_dot((self._data, *x), out=out)
+
+    def cond(
+            self: ivy.Array, /, *, p: Optional[Union[int, float, str]] = None
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.cond.
+        This method simply wraps the function, and so the docstring for
+        ivy.cond also applies to this method with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([[1,2], [3,4]])
+        >>> x.cond()
+        ivy.array(14.933034373659268)
+
+        >>> x = ivy.array([[1,2], [3,4]])
+        >>> x.cond(p=ivy.inf)
+        ivy.array(21.0)
+        """
+        return ivy.cond(self._data, p=p)
