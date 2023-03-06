@@ -890,53 +890,6 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
             self._data, n=n, axis=axis, prepend=prepend, append=append, out=out
         )
 
-    def ediff1d(
-            self: ivy.Array,
-            /,
-            *,
-            to_end: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
-            to_begin: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
-            out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
-        """Compute the differences between consecutive elements of a one-dimensional input array `self`.
-
-        Parameters
-        ----------
-        self
-            array-like input.
-        to_end
-            Values to append to the end of the returned differences.
-            Default value is `None`.
-        to_begin
-            Values to prepend to the beginning of the input array `self`.
-            Default value is `None`.
-        out
-            Array to write the output to.
-            If provided, the output will be written to this array instead of a new array.
-            Default value is `None`.
-
-        Returns
-        -------
-            The differences between consecutive elements of the input array `x`.
-
-        Notes
-        -----
-        This implementation uses the NumPy library's `ediff1d` function to calculate the differences between consecutive
-        elements of the input array. If `to_end` or `to_begin` is not None, the output tensor is modified to include
-        the specified values at the end or beginning of the tensor, respectively.
-
-        Examples
-        --------
-        >>> x = ivy.array([1, 2, 4, 7, 0])
-        >>> ivy.ediff1d(x)
-        array([ 1,  2,  3, -7])
-        >>> ivy.ediff1d(x, to_begin=0, to_end=99)
-        array([ 0,  1,  2,  3, -7, 99])
-
-        """
-        return ivy.ediff1d(
-            self._data, to_end=to_end, to_begin=to_begin, out=out
-        )
 
     def fix(
         self: ivy.Array,
