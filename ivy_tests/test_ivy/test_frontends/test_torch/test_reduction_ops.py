@@ -638,6 +638,40 @@ def test_torch_var_mean(
         keepdim=keepdims,
     )
 
+@handle_frontend_test(
+   fn_tree="torch.unique",
+   #dim deberia cubrirse con esto
+   #dtype_and_x=statistical_dtype_values_experimental(function="unique"),
+   dtype_and_x=statistical_dtype_values_experimental(function="unique"),
+   return_inverse = st.booleans(),
+   sorted=st.booleans(),
+   return_counts = st.booleans()
+)
+def test_torch_unique(
+   *,
+   dtype_and_x,
+   return_inverse,
+   sorted,
+   return_counts,
+   on_device,
+   fn_tree,
+   frontend,
+   test_flags,
+):
+   input_dtype, x, axis = dtype_and_x
+   helpers.test_frontend_function(
+       input_dtypes=input_dtype,
+       frontend=frontend,
+       test_flags=test_flags,
+       fn_tree=fn_tree,
+       on_device=on_device,
+       #este no se porque tiene ese indice
+       input=x[0],
+       sorted=sorted,
+       return_inverse=return_inverse,
+       return_counts = return_counts,
+       dim=axis,
+   )
 
 @handle_frontend_test(
     fn_tree="torch.aminmax",

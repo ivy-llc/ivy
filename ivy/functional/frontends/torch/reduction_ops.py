@@ -148,6 +148,47 @@ def var_mean(input, dim, unbiased, keepdim=False, *, out=None):
 
 
 @to_ivy_arrays_and_back
+# sorted: if true -> ascending order
+def unique(input, sorted=True, return_inverse=False, return_counts=False, dim=None):
+    var_type = ivy.dtype(input)
+    print("---------------------------New Test----------------------")
+    print("input: ", input)
+    print("dim: ", dim)
+    if dim is None:
+        # Flatten input tensor if dim is not specified
+        input = input.reshape(-1)
+    else:
+        # Permute the dimensions of the input tensor to put the target dimension in the last position
+        input_dims = len(input.shape)
+        input = input.permute(*([d for d in range(input_dims) if d != dim] + [dim]))
+        input_shape = input.shape
+        input = input.reshape(-1, input_shape[-1])
+
+    unique_values_tensor = ivy.unique_values(input)
+    unique_values_tensor = ivy.astype(unique_values_tensor, var_type)
+    print('values_array : ', unique_values_tensor)
+
+    if return_inverse:
+        print('inverse is ', return_inverse)
+        inverse = ivy.unique_inverse(input).values
+        print('inverse: ', inverse)
+        if return_counts:
+            print('counts is ', return_counts)
+            counts = ivy.unique_counts(input).counts
+            print('counts: ', counts)
+            return unique_values_tensor, inverse, counts
+        else:
+            print('counts is ', return_counts)
+            return unique_values_tensor, inverse
+    else:
+        print('inverse is ', return_inverse)
+        if return_counts:
+            print('counts is ', return_counts)
+            counts = ivy.unique_counts(input).counts
+            print('counts: ', counts)
+            return unique_values_tensor, counts
+    return unique_values_tensor
+@to_ivy_arrays_and_back
 def aminmax(input, *, dim=None, keepdim=False, out=None):
     minmax_tuple = namedtuple("minmax", ["min", "max"])
     return minmax_tuple(
