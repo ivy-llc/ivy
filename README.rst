@@ -297,6 +297,7 @@ At last, we build the training pipeline in pure ivy.
         num_classes=num_classes,
         device=device,
     )
+    model_name = type(model).__name__.lower()
 
     # training loop
     def train(images, classes, epochs, model, device, num_classes=10, batch_size=32):
