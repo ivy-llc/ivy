@@ -298,7 +298,15 @@ At last, we build the training pipeline in pure ivy.
         device=device,
     )
     model_name = type(model).__name__.lower()
-
+    
+    
+    # defining some training params
+    optimizer= ivy.Adam(1e-4)
+    batch_size = 64 
+    num_epochs = 20
+    num_classes = 10
+    
+    
     # training loop
     def train(images, classes, epochs, model, device, num_classes=10, batch_size=32):
         # training metrics
@@ -357,6 +365,10 @@ At last, we build the training pipeline in pure ivy.
             f = csv.writer(f)
             f.writerow(fields)
             f.writerows(metrics)
+            
+            
+  # assuming the dataset(images and classes) are already prepared in a folder      
+  train(images, classes, num_epochs, model, device, num_classes = num_classes, batch_size = batch_size)
 
 
 .. raw:: html
