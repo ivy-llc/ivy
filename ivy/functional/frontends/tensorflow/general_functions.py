@@ -95,6 +95,9 @@ def convert_to_tensor(value, dtype=None, dtype_hint=None, name=None):
         return EagerTensor(value.ivy_array)
     return EagerTensor(value)
 
+@to_ivy_arrays_and_back
+def scan(elems, initializer=None, parallel_iterations=10, back_prop=True, swap_memory=False, infer_shape=True, reverse=False, name=None):
+    return ivy.scan(elems, initializer=None, parallel_iterations=10, back_prop=True, swap_memory=False, infer_shape=True, reverse=False, name=None)
 
 @to_ivy_arrays_and_back
 def einsum(equation, *inputs, **kwargs):
