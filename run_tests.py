@@ -77,6 +77,9 @@ def remove_from_db(collection, id, submod, backend, test):
 
 def run_multiversion_testing():
     failed = False
+    cluster = MongoClient(
+        f"mongodb+srv://deep-ivy:{mongo_key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa
+    )
     db = cluster["Ivy_tests_copy"]
     with open("tests_to_run", "r") as f:
         for line in f:
