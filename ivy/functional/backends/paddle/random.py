@@ -69,7 +69,10 @@ def randint(
 
 
 def seed(*, seed_value: int = 0) -> None:
-    raise IvyNotImplementedException()
+	try:
+		paddle_gen=paddle.seed(seed_value)
+	except:
+	    raise IvyNotImplementedException()
 
 
 def shuffle(
