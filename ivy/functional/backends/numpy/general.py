@@ -13,6 +13,7 @@ import ivy
 from ivy.functional.backends.numpy.device import _to_device
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def array_equal(x0: np.ndarray, x1: np.ndarray, /) -> bool:
     return np.array_equal(x0, x1)
 
@@ -36,6 +37,7 @@ def to_numpy(x: np.ndarray, /, *, copy: bool = True) -> np.ndarray:
         return x
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def to_scalar(x: np.ndarray, /) -> Number:
     if isinstance(x, (float, int)):
         return x
@@ -219,6 +221,7 @@ def multiprocessing(context=None):
     )
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def scatter_flat(
     indices: np.ndarray,
     updates: np.ndarray,
@@ -271,6 +274,7 @@ def scatter_flat(
 scatter_flat.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 def scatter_nd(
     indices: np.ndarray,
     updates: np.ndarray,
