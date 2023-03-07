@@ -147,11 +147,13 @@ def test_jax_numpy_diag_indices(
         max_dim_size=10,
         indices_same_dims=True,
     ),
+    mode=st.sampled_from(['clip', 'fill', 'drop']),
     test_with_out=st.just(False),
 )
 def test_jax_numpy_take_along_axis(
     *,
     dtype_x_indices_axis,
+    mode,
     test_flags,
     frontend,
     fn_tree,
@@ -167,4 +169,5 @@ def test_jax_numpy_take_along_axis(
         arr=x,
         indices=indices,
         axis=axis,
+        mode=mode,
     )
