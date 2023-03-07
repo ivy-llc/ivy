@@ -43,7 +43,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'testing/hypothesis_helpers/dtype_helpers/get_dtypes';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="General helpers" href="../general_helpers.html" />
+    <link rel="next" title="make_json_pickable" href="make_json_pickable.html" />
     <link rel="prev" title="get_castable_dtype" href="get_castable_dtype.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="docsearch:language" content="en">
@@ -299,7 +299,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../functional/ivy.html">
+                      <a class="nav-link nav-internal" href="../../../functional/ivy/activations.html">
                         Functions
                       </a>
                     </li>
@@ -385,6 +385,48 @@
                     <li class="nav-item">
                       <a class="nav-link nav-internal" href="../../../nested_array/nested_array.html">
                         Nested array
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../utils/backend.html">
+                        Backend
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../utils/_importlib.html">
+                        Importlib
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../utils/assertions.html">
+                        Assertions
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../utils/dynamic_import.html">
+                        Dynamic import
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../utils/inspection.html">
+                        Inspection
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../utils/verbosity.html">
+                        Verbosity
                       </a>
                     </li>
                 
@@ -540,7 +582,7 @@
 <h1>get_dtypes<a class="headerlink" href="#get-dtypes" title="Permalink to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers.get_dtypes">
-<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers.</span></span><span class="sig-name descname"><span class="pre">get_dtypes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kind</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">none</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy_tests/test_ivy/helpers/hypothesis_helpers/dtype_helpers.html#get_dtypes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers.get_dtypes" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers.</span></span><span class="sig-name descname"><span class="pre">get_dtypes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'valid'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">none</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy_tests/test_ivy/helpers/hypothesis_helpers/dtype_helpers.html#get_dtypes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers.get_dtypes" title="Permalink to this definition">#</a></dt>
 <dd><p>Draws a valid dtypes for the test function. For frontend tests,
 it draws the data types from the intersection between backend
 framework data types and frontend framework dtypes, otherwise,
@@ -583,10 +625,10 @@ real_and_complex, float_and_complex, bool, and unsigned</p></li>
           <p class="prev-next-title">get_castable_dtype</p>
       </div>
   </a>
-  <a class='right-next' id="next-link" href="../general_helpers.html" title="next page">
+  <a class='right-next' id="next-link" href="make_json_pickable.html" title="next page">
   <div class="prev-next-info">
       <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">General helpers</p>
+      <p class="prev-next-title">make_json_pickable</p>
   </div>
   <i class="fa-solid fa-angle-right"></i>
   </a>
@@ -617,7 +659,7 @@ real_and_complex, float_and_complex, bool, and unsigned</p></li>
 <li class="toctree-l2"><a class="reference internal" href="../array_helpers/broadcast_shapes.html">broadcast_shapes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../array_helpers/dtype_and_values.html">dtype_and_values</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../array_helpers/dtype_values_axis.html">dtype_values_axis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../array_helpers/list_of_length.html">list_of_length</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../array_helpers/list_of_size.html">list_of_size</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../array_helpers/lists.html">lists</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../array_helpers/mutually_broadcastable_shapes.html">mutually_broadcastable_shapes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../array_helpers/prod.html">prod</a></li>
@@ -627,6 +669,7 @@ real_and_complex, float_and_complex, bool, and unsigned</p></li>
 <li class="toctree-l2"><a class="reference internal" href="array_dtypes.html">array_dtypes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="get_castable_dtype.html">get_castable_dtype</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">get_dtypes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="make_json_pickable.html">make_json_pickable</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../general_helpers.html">General helpers</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>

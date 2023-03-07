@@ -296,7 +296,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../../functional/ivy.html">
+                      <a class="nav-link nav-internal" href="../../../../functional/ivy/activations.html">
                         Functions
                       </a>
                     </li>
@@ -382,6 +382,48 @@
                     <li class="nav-item">
                       <a class="nav-link nav-internal" href="../../../../nested_array/nested_array.html">
                         Nested array
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../../utils/backend.html">
+                        Backend
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../../utils/_importlib.html">
+                        Importlib
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../../utils/assertions.html">
+                        Assertions
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../../utils/dynamic_import.html">
+                        Dynamic import
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../../utils/inspection.html">
+                        Inspection
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../../utils/verbosity.html">
+                        Verbosity
                       </a>
                     </li>
                 
@@ -537,13 +579,13 @@
 <span></span><span class="sd">&quot;&quot;&quot;Collection of gradient Ivy functions.&quot;&quot;&quot;</span>
 
 <span class="c1"># global</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
-<span class="kn">from</span> <span class="nn">ivy.backend_handler</span> <span class="kn">import</span> <span class="n">current_backend</span>
+<span class="kn">from</span> <span class="nn">ivy.utils.backend</span> <span class="kn">import</span> <span class="n">current_backend</span>
 
 <span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">handle_array_function</span><span class="p">,</span>
@@ -553,7 +595,7 @@
     <span class="n">handle_nestable</span><span class="p">,</span>
     <span class="n">handle_array_like_without_promotion</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
+<span class="kn">from</span> <span class="nn">ivy.utils.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
 
 
 <span class="c1"># Helpers #</span>
@@ -899,7 +941,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">with_grads</span><span class="p">):</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_elem_in_list</span><span class="p">(</span><span class="n">with_grads</span><span class="p">,</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">])</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_elem_in_list</span><span class="p">(</span><span class="n">with_grads</span><span class="p">,</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">with_grads</span>
     <span class="k">global</span> <span class="n">with_grads_stack</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">with_grads_stack</span><span class="p">:</span>
@@ -949,7 +991,7 @@
 <span class="sd">    False</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_elem_in_list</span><span class="p">(</span><span class="n">with_grads</span><span class="p">,</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">])</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_elem_in_list</span><span class="p">(</span><span class="n">with_grads</span><span class="p">,</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">])</span>
     <span class="k">global</span> <span class="n">with_grads_stack</span>
     <span class="n">with_grads_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">with_grads</span><span class="p">)</span></div>
 
@@ -1067,11 +1109,15 @@
 
 
 <div class="viewcode-block" id="execute_with_gradients"><a class="viewcode-back" href="../../../../functional/ivy/gradients/execute_with_gradients.html#ivy.functional.ivy.gradients.execute_with_gradients">[docs]</a><span class="nd">@handle_exceptions</span>
-<span class="nd">@handle_array_like_without_promotion</span>
-<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">execute_with_gradients</span><span class="p">(</span>
-    <span class="n">func</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">retain_grads</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">xs_grad_idxs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ret_grad_idxs</span><span class="o">=</span><span class="kc">None</span>
-<span class="p">):</span>
+    <span class="n">func</span><span class="p">,</span>
+    <span class="n">xs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">retain_grads</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">xs_grad_idxs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">ret_grad_idxs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Call function func with input of xs variables, and return the function result</span>
 <span class="sd">    func_ret and the gradients of each output variable w.r.t each input variable,</span>
 
@@ -1098,6 +1144,39 @@
 <span class="sd">        the function result func_ret and a dictionary of gradients of each output</span>
 <span class="sd">        variable w.r.t each input variable.</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1, 4, 6], [2, 6, 9]])</span>
+<span class="sd">    &gt;&gt;&gt; func = lambda x: ivy.mean(ivy.square(x))</span>
+<span class="sd">    &gt;&gt;&gt; func_ret = ivy.execute_with_gradients(func, x, retain_grads=True)</span>
+<span class="sd">    &gt;&gt;&gt; print(func_ret)</span>
+<span class="sd">    (ivy.array(29.), ivy.array([[0.33333334, 1.33333337, 2.        ],</span>
+<span class="sd">       [0.66666669, 2.        , 3.        ]]))</span>
+
+<span class="sd">    With :class:`ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a = ivy.array([1, 4, 6]),</span>
+<span class="sd">    ...                   b = ivy.array([2, 6, 9]))</span>
+<span class="sd">    &gt;&gt;&gt; func = lambda x: ivy.mean(ivy.square(x))</span>
+<span class="sd">    &gt;&gt;&gt; func_ret = ivy.execute_with_gradients(func, x, retain_grads=True)</span>
+<span class="sd">    &gt;&gt;&gt; print(func_ret)</span>
+<span class="sd">    ({</span>
+<span class="sd">    a: ivy.array(17.666666),</span>
+<span class="sd">    b: ivy.array(40.333332)</span>
+<span class="sd">    },</span>
+<span class="sd">    {</span>
+<span class="sd">    a: {</span>
+<span class="sd">        a: ivy.array([0.66666669, 2.66666675, 4.]),</span>
+<span class="sd">        b: ivy.array([0., 0., 0.])</span>
+<span class="sd">    },</span>
+<span class="sd">    b: {</span>
+<span class="sd">        a: ivy.array([0., 0., 0.]),</span>
+<span class="sd">        b: ivy.array([1.33333337, 4., 6.])</span>
+<span class="sd">    }</span>
+<span class="sd">    })</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span>
         <span class="n">func</span><span class="p">,</span>
@@ -1111,9 +1190,7 @@
 <span class="n">execute_with_gradients</span><span class="o">.</span><span class="n">computes_gradients</span> <span class="o">=</span> <span class="kc">True</span>
 
 
-<div class="viewcode-block" id="value_and_grad"><a class="viewcode-back" href="../../../../functional/ivy/gradients/value_and_grad.html#ivy.functional.ivy.gradients.value_and_grad">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
-<span class="nd">@handle_exceptions</span>
-<span class="nd">@handle_array_function</span>
+<div class="viewcode-block" id="value_and_grad"><a class="viewcode-back" href="../../../../functional/ivy/gradients/value_and_grad.html#ivy.functional.ivy.gradients.value_and_grad">[docs]</a><span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">value_and_grad</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a function that evaluates both func and the gradient of func.</span>
@@ -1147,9 +1224,7 @@
 <span class="n">value_and_grad</span><span class="o">.</span><span class="n">computes_gradients</span> <span class="o">=</span> <span class="kc">True</span>
 
 
-<div class="viewcode-block" id="jac"><a class="viewcode-back" href="../../../../functional/ivy/gradients/jac.html#ivy.functional.ivy.gradients.jac">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
-<span class="nd">@handle_exceptions</span>
-<span class="nd">@handle_array_function</span>
+<div class="viewcode-block" id="jac"><a class="viewcode-back" href="../../../../functional/ivy/gradients/jac.html#ivy.functional.ivy.gradients.jac">[docs]</a><span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">jac</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Call function func, and return func&#39;s Jacobian partial derivatives.</span>
 
@@ -1183,9 +1258,7 @@
 <span class="n">jac</span><span class="o">.</span><span class="n">computes_gradients</span> <span class="o">=</span> <span class="kc">True</span>
 
 
-<div class="viewcode-block" id="grad"><a class="viewcode-back" href="../../../../functional/ivy/gradients/grad.html#ivy.functional.ivy.gradients.grad">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
-<span class="nd">@handle_exceptions</span>
-<span class="nd">@handle_array_function</span>
+<div class="viewcode-block" id="grad"><a class="viewcode-back" href="../../../../functional/ivy/gradients/grad.html#ivy.functional.ivy.gradients.grad">[docs]</a><span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">grad</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Call function func, and return func&#39;s gradients.</span>
 

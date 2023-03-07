@@ -299,7 +299,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../functional/ivy.html">
+                      <a class="nav-link nav-internal" href="../functional/ivy/activations.html">
                         Functions
                       </a>
                     </li>
@@ -385,6 +385,48 @@
                     <li class="nav-item">
                       <a class="nav-link nav-internal" href="../nested_array/nested_array.html">
                         Nested array
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../utils/backend.html">
+                        Backend
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../utils/_importlib.html">
+                        Importlib
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../utils/assertions.html">
+                        Assertions
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../utils/dynamic_import.html">
+                        Dynamic import
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../utils/inspection.html">
+                        Inspection
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../utils/verbosity.html">
+                        Verbosity
                       </a>
                     </li>
                 
@@ -737,8 +779,11 @@ Add the remote python interpreter by:</p>
 Click the “+” on top left and it should add a docker connection.</p></li>
 <li><p>Going to settings -&gt; project -&gt; Python Interpreter</p></li>
 <li><p>Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.</p></li>
-<li><p>Choosing “Docker” from the left panel.
-Type python3 (with the number) in python interpreter path and press ok.</p></li>
+<li><p>Choosing “On Docker” from the dropdown menu.</p></li>
+<li><p>Choosing “Docker” from the “Docker server” dropdown menu, choosing “Pull” if you want to use a remote interpreter, and using <code class="code docutils literal notranslate"><span class="pre">unifyai/ivy:latest</span></code> as the image tag.</p></li>
+<li><p>If you don’t want to use a remote interpreter, choose “Build” and use the suitable Dockerfile; then choosing <code class="code docutils literal notranslate"><span class="pre">docker/Dockerfile</span></code> to be the Dockerfile.</p></li>
+<li><p>Clicking next and navigating to system interpreter tab from the menu on the left.</p></li>
+<li><p>Choosing the built interpreter from the dropdown menu.</p></li>
 </ol>
 </li>
 </ol>
@@ -876,10 +921,9 @@ To get more detailed information on errors in the code, we recommend doing the f
 </ol>
 <p>Now, if Hypothesis detects an error in the code it will return more detailed information on each of the failing examples:</p>
 <a class="reference internal image-reference" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/more_detailed_hypothesis_logs/detailed_hypothesis_example.png?raw=true"><img alt="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/more_detailed_hypothesis_logs/detailed_hypothesis_example.png?raw=true" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/more_detailed_hypothesis_logs/detailed_hypothesis_example.png?raw=true" style="width: 420px;" /></a>
-<p>For questions, please reach out on the <a href="#id10"><span class="problematic" id="id11">`setting up discussion`_</span></a>
-or on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/942114744691740772">docker channel</a>!</p>
+<p>For questions, please reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/942114744691740772">docker channel</a>!</p>
 <p><strong>“Empty Suite” error fix:</strong></p>
-<p>Click on the “green arrow button” from where you run the funcion in PyCharm. Open “Modify Run Configuration…”, under “Target:” on the right side click on “…” it’ll open a new window, manually add the path to the specific function, For instance, for stateful -&gt; “test_stateful.test_submodule_name.test_function_name” and for functional -&gt; “test_submodule_name.test_function_name”, the function will pop up below, select that, click on “Apply” then “OK”. Now, do not run the test from the “green arrow button” in the left panel, run it from above where there is a “green arrow button” on the left side of the “debugger button” making sure you’ve selected the latest modified configuration of that specific test you want to run.</p>
+<p>Click on the “green arrow button” from where you run the function in PyCharm. Open “Modify Run Configuration…”, under “Target:” on the right side click on “…” it’ll open a new window, manually add the path to the specific function, For instance, for stateful -&gt; “test_stateful.test_submodule_name.test_function_name” and for functional -&gt; “test_submodule_name.test_function_name”, the function will pop up below, select that, click on “Apply” then “OK”. Now, do not run the test from the “green arrow button” in the left panel, run it from above where there is a “green arrow button” on the left side of the “debugger button” making sure you’ve selected the latest modified configuration of that specific test you want to run.</p>
 </section>
 </section>
 <section id="setting-up-for-free">

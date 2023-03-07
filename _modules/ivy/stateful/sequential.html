@@ -296,7 +296,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../functional/ivy.html">
+                      <a class="nav-link nav-internal" href="../../../functional/ivy/activations.html">
                         Functions
                       </a>
                     </li>
@@ -382,6 +382,48 @@
                     <li class="nav-item">
                       <a class="nav-link nav-internal" href="../../../nested_array/nested_array.html">
                         Nested array
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../utils/backend.html">
+                        Backend
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../utils/_importlib.html">
+                        Importlib
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../utils/assertions.html">
+                        Assertions
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../utils/dynamic_import.html">
+                        Dynamic import
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../utils/inspection.html">
+                        Inspection
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../utils/verbosity.html">
+                        Verbosity
                       </a>
                     </li>
                 
@@ -574,7 +616,7 @@
                     <span class="n">submod</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;submodules&quot;</span><span class="p">][</span><span class="s2">&quot;v&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span>
                 <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">submod</span><span class="o">.</span><span class="n">v</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+                        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
                             <span class="s2">&quot;variables v passed to Sequential class must have key &quot;</span>
                             <span class="s2">&quot;chains in the form of &quot;</span>
                             <span class="s1">&#39;&quot;submodules/v</span><span class="si">{}</span><span class="s1">&quot;, where </span><span class="si">{}</span><span class="s1"> is an idx&#39;</span>
@@ -603,7 +645,7 @@
                 <span class="n">x</span> <span class="o">=</span> <span class="n">submod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">submodules</span><span class="p">[</span><span class="s2">&quot;v&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)])</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">submod</span><span class="o">.</span><span class="n">v</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+                    <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
                         <span class="s2">&quot;variables v passed to Sequential class must have key chains &quot;</span>
                         <span class="s2">&quot;in the form of &quot;</span>
                         <span class="s1">&#39;&quot;submodules/v</span><span class="si">{}</span><span class="s1">&quot;, where </span><span class="si">{}</span><span class="s1"> is an idx&#39;</span>

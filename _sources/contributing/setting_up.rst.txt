@@ -234,8 +234,11 @@ MacOS
       Click the "+" on top left and it should add a docker connection.
    b. Going to settings -> project -> Python Interpreter
    c. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
-   d. Choosing "Docker" from the left panel.
-      Type python3 (with the number) in python interpreter path and press ok.
+   d. Choosing "On Docker" from the dropdown menu.
+   e. Choosing "Docker" from the "Docker server" dropdown menu, choosing "Pull" if you want to use a remote interpreter, and using :code:`unifyai/ivy:latest` as the image tag.
+   f. If you don't want to use a remote interpreter, choose "Build" and use the suitable Dockerfile; then choosing :code:`docker/Dockerfile` to be the Dockerfile.
+   g. Clicking next and navigating to system interpreter tab from the menu on the left.
+   h. Choosing the built interpreter from the dropdown menu.
 
 Once these steps are finished, your interpreter should be set up correctly!
 If Docker's latest version causes error, try using an earlier version by visiting `Docker release note <https://docs.docker.com/desktop/release-notes/>`_.
@@ -409,12 +412,11 @@ Now, if Hypothesis detects an error in the code it will return more detailed inf
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/more_detailed_hypothesis_logs/detailed_hypothesis_example.png?raw=true
    :width: 420
 
-For questions, please reach out on the `setting up discussion`_
-or on `discord`_ in the `docker channel`_!
+For questions, please reach out on `discord`_ in the `docker channel`_!
 
 **"Empty Suite" error fix:**
 
-Click on the "green arrow button" from where you run the funcion in PyCharm. Open "Modify Run Configuration...", under "Target:" on the right side click on "..." it'll open a new window, manually add the path to the specific function, For instance, for stateful -> "test_stateful.test_submodule_name.test_function_name" and for functional -> "test_submodule_name.test_function_name", the function will pop up below, select that, click on "Apply" then "OK". Now, do not run the test from the "green arrow button" in the left panel, run it from above where there is a "green arrow button" on the left side of the "debugger button" making sure you've selected the latest modified configuration of that specific test you want to run.
+Click on the "green arrow button" from where you run the function in PyCharm. Open "Modify Run Configuration...", under "Target:" on the right side click on "..." it'll open a new window, manually add the path to the specific function, For instance, for stateful -> "test_stateful.test_submodule_name.test_function_name" and for functional -> "test_submodule_name.test_function_name", the function will pop up below, select that, click on "Apply" then "OK". Now, do not run the test from the "green arrow button" in the left panel, run it from above where there is a "green arrow button" on the left side of the "debugger button" making sure you've selected the latest modified configuration of that specific test you want to run.
 
 Setting up for Free
 -------------------

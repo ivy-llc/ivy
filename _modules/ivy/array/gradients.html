@@ -296,7 +296,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../functional/ivy.html">
+                      <a class="nav-link nav-internal" href="../../../functional/ivy/activations.html">
                         Functions
                       </a>
                     </li>
@@ -382,6 +382,48 @@
                     <li class="nav-item">
                       <a class="nav-link nav-internal" href="../../../nested_array/nested_array.html">
                         Nested array
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../utils/backend.html">
+                        Backend
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../utils/_importlib.html">
+                        Importlib
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../utils/assertions.html">
+                        Assertions
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../utils/dynamic_import.html">
+                        Dynamic import
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../utils/inspection.html">
+                        Inspection
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../utils/verbosity.html">
+                        Verbosity
                       </a>
                     </li>
                 
@@ -544,8 +586,8 @@
 <span class="c1"># ToDo: implement all methods here as public instance methods</span>
 
 
-<div class="viewcode-block" id="ArrayWithGradients"><a class="viewcode-back" href="../../../data_classes/array/gradients/ArrayWithGradients.html#ivy.array.gradients.ArrayWithGradients">[docs]</a><span class="k">class</span> <span class="nc">ArrayWithGradients</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
-<div class="viewcode-block" id="ArrayWithGradients.stop_gradient"><a class="viewcode-back" href="../../../data_classes/array/gradients/ArrayWithGradients.html#ivy.array.gradients.ArrayWithGradients.stop_gradient">[docs]</a>    <span class="k">def</span> <span class="nf">stop_gradient</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithGradients"><a class="viewcode-back" href="../../../data_classes/array/gradients/_ArrayWithGradients.html#ivy.array.gradients._ArrayWithGradients">[docs]</a><span class="k">class</span> <span class="nc">_ArrayWithGradients</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+<div class="viewcode-block" id="_ArrayWithGradients.stop_gradient"><a class="viewcode-back" href="../../../data_classes/array/gradients/_ArrayWithGradients.html#ivy.array.gradients._ArrayWithGradients.stop_gradient">[docs]</a>    <span class="k">def</span> <span class="nf">stop_gradient</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -583,7 +625,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">stop_gradient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">preserve_type</span><span class="o">=</span><span class="n">preserve_type</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithGradients.adam_step"><a class="viewcode-back" href="../../../data_classes/array/gradients/ArrayWithGradients.html#ivy.array.gradients.ArrayWithGradients.adam_step">[docs]</a>    <span class="k">def</span> <span class="nf">adam_step</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithGradients.adam_step"><a class="viewcode-back" href="../../../data_classes/array/gradients/_ArrayWithGradients.html#ivy.array.gradients._ArrayWithGradients.adam_step">[docs]</a>    <span class="k">def</span> <span class="nf">adam_step</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">mw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">vw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -645,7 +687,7 @@
             <span class="bp">self</span><span class="p">,</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">beta1</span><span class="o">=</span><span class="n">beta1</span><span class="p">,</span> <span class="n">beta2</span><span class="o">=</span><span class="n">beta2</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="n">epsilon</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithGradients.optimizer_update"><a class="viewcode-back" href="../../../data_classes/array/gradients/ArrayWithGradients.html#ivy.array.gradients.ArrayWithGradients.optimizer_update">[docs]</a>    <span class="k">def</span> <span class="nf">optimizer_update</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithGradients.optimizer_update"><a class="viewcode-back" href="../../../data_classes/array/gradients/_ArrayWithGradients.html#ivy.array.gradients._ArrayWithGradients.optimizer_update">[docs]</a>    <span class="k">def</span> <span class="nf">optimizer_update</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">effective_grad</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">lr</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -694,7 +736,7 @@
             <span class="bp">self</span><span class="p">,</span> <span class="n">effective_grad</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="o">=</span><span class="n">stop_gradients</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithGradients.gradient_descent_update"><a class="viewcode-back" href="../../../data_classes/array/gradients/ArrayWithGradients.html#ivy.array.gradients.ArrayWithGradients.gradient_descent_update">[docs]</a>    <span class="k">def</span> <span class="nf">gradient_descent_update</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithGradients.gradient_descent_update"><a class="viewcode-back" href="../../../data_classes/array/gradients/_ArrayWithGradients.html#ivy.array.gradients._ArrayWithGradients.gradient_descent_update">[docs]</a>    <span class="k">def</span> <span class="nf">gradient_descent_update</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">dcdw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">lr</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -755,7 +797,7 @@
             <span class="bp">self</span><span class="p">,</span> <span class="n">dcdw</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="o">=</span><span class="n">stop_gradients</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithGradients.lars_update"><a class="viewcode-back" href="../../../data_classes/array/gradients/ArrayWithGradients.html#ivy.array.gradients.ArrayWithGradients.lars_update">[docs]</a>    <span class="k">def</span> <span class="nf">lars_update</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithGradients.lars_update"><a class="viewcode-back" href="../../../data_classes/array/gradients/_ArrayWithGradients.html#ivy.array.gradients._ArrayWithGradients.lars_update">[docs]</a>    <span class="k">def</span> <span class="nf">lars_update</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">dcdw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">lr</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -802,7 +844,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithGradients.adam_update"><a class="viewcode-back" href="../../../data_classes/array/gradients/ArrayWithGradients.html#ivy.array.gradients.ArrayWithGradients.adam_update">[docs]</a>    <span class="k">def</span> <span class="nf">adam_update</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithGradients.adam_update"><a class="viewcode-back" href="../../../data_classes/array/gradients/_ArrayWithGradients.html#ivy.array.gradients._ArrayWithGradients.adam_update">[docs]</a>    <span class="k">def</span> <span class="nf">adam_update</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">dcdw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">lr</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -888,7 +930,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ArrayWithGradients.lamb_update"><a class="viewcode-back" href="../../../data_classes/array/gradients/ArrayWithGradients.html#ivy.array.gradients.ArrayWithGradients.lamb_update">[docs]</a>    <span class="k">def</span> <span class="nf">lamb_update</span><span class="p">(</span>
+<div class="viewcode-block" id="_ArrayWithGradients.lamb_update"><a class="viewcode-back" href="../../../data_classes/array/gradients/_ArrayWithGradients.html#ivy.array.gradients._ArrayWithGradients.lamb_update">[docs]</a>    <span class="k">def</span> <span class="nf">lamb_update</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">dcdw</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">lr</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>

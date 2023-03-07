@@ -296,7 +296,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../../functional/ivy.html">
+                      <a class="nav-link nav-internal" href="../../../../functional/ivy/activations.html">
                         Functions
                       </a>
                     </li>
@@ -382,6 +382,48 @@
                     <li class="nav-item">
                       <a class="nav-link nav-internal" href="../../../../nested_array/nested_array.html">
                         Nested array
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../../utils/backend.html">
+                        Backend
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../../utils/_importlib.html">
+                        Importlib
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../../utils/assertions.html">
+                        Assertions
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../../utils/dynamic_import.html">
+                        Dynamic import
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../../utils/inspection.html">
+                        Inspection
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../../utils/verbosity.html">
+                        Verbosity
                       </a>
                     </li>
                 
@@ -538,7 +580,7 @@
 
 
 <div class="viewcode-block" id="available_frameworks"><a class="viewcode-back" href="../../../../testing/available_frameworks/available_frameworks.html#ivy_tests.test_ivy.helpers.available_frameworks.available_frameworks">[docs]</a><span class="k">def</span> <span class="nf">available_frameworks</span><span class="p">():</span>
-    <span class="n">available_frameworks_lis</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;numpy&quot;</span><span class="p">,</span> <span class="s2">&quot;jax&quot;</span><span class="p">,</span> <span class="s2">&quot;tensorflow&quot;</span><span class="p">,</span> <span class="s2">&quot;torch&quot;</span><span class="p">]</span>
+    <span class="n">available_frameworks_lis</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;numpy&quot;</span><span class="p">,</span> <span class="s2">&quot;jax&quot;</span><span class="p">,</span> <span class="s2">&quot;tensorflow&quot;</span><span class="p">,</span> <span class="s2">&quot;torch&quot;</span><span class="p">,</span> <span class="s2">&quot;paddle&quot;</span><span class="p">]</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">jax</span>
 
@@ -559,6 +601,13 @@
         <span class="k">assert</span> <span class="n">torch</span><span class="p">,</span> <span class="s2">&quot;torch is imported to see if the user has it installed&quot;</span>
     <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
         <span class="n">available_frameworks_lis</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">paddle</span>
+
+        <span class="k">assert</span> <span class="n">paddle</span><span class="p">,</span> <span class="s2">&quot;Paddle is imported to see if the user has it installed&quot;</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="n">available_frameworks_lis</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;paddle&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">available_frameworks_lis</span></div>
 
 
@@ -571,6 +620,8 @@
         <span class="n">g_truth</span> <span class="o">=</span> <span class="s2">&quot;torch&quot;</span>
     <span class="k">elif</span> <span class="s2">&quot;jax&quot;</span> <span class="ow">in</span> <span class="n">available_framework_lis</span><span class="p">:</span>
         <span class="n">g_truth</span> <span class="o">=</span> <span class="s2">&quot;jax&quot;</span>
+    <span class="k">elif</span> <span class="s2">&quot;paddle&quot;</span> <span class="ow">in</span> <span class="n">available_framework_lis</span><span class="p">:</span>
+        <span class="n">g_truth</span> <span class="o">=</span> <span class="s2">&quot;paddle&quot;</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">g_truth</span> <span class="o">=</span> <span class="s2">&quot;numpy&quot;</span>
     <span class="k">return</span> <span class="n">g_truth</span></div>

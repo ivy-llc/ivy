@@ -21,7 +21,7 @@ Array helpers
 	array_helpers/broadcast_shapes.rst
 	array_helpers/dtype_and_values.rst
 	array_helpers/dtype_values_axis.rst
-	array_helpers/list_of_length.rst
+	array_helpers/list_of_size.rst
 	array_helpers/lists.rst
 	array_helpers/mutually_broadcastable_shapes.rst
 	array_helpers/prod.rst

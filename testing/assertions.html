@@ -44,7 +44,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="assert_all_close" href="assertions/assert_all_close.html" />
-    <link rel="prev" title="NestedArray" href="../nested_array/nested_array/NestedArray.html" />
+    <link rel="prev" title="cprint" href="../utils/verbosity/cprint.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="docsearch:language" content="en">
   </head>
@@ -299,7 +299,7 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../functional/ivy.html">
+                      <a class="nav-link nav-internal" href="../functional/ivy/activations.html">
                         Functions
                       </a>
                     </li>
@@ -385,6 +385,48 @@
                     <li class="nav-item">
                       <a class="nav-link nav-internal" href="../nested_array/nested_array.html">
                         Nested array
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../utils/backend.html">
+                        Backend
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../utils/_importlib.html">
+                        Importlib
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../utils/assertions.html">
+                        Assertions
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../utils/dynamic_import.html">
+                        Dynamic import
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../utils/inspection.html">
+                        Inspection
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../utils/verbosity.html">
+                        Verbosity
                       </a>
                     </li>
                 
@@ -541,7 +583,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.assertions.assert_all_close">
 <span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.assertions.</span></span><span class="sig-name descname"><span class="pre">assert_all_close</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ret_np</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ret_from_gt_np</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_truth_backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'TensorFlow'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_tests/test_ivy/helpers/assertions.html#assert_all_close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.assertions.assert_all_close" title="Permalink to this definition">#</a></dt>
-<dd><p>Matches the ret_np and ret_from_np inputs element-by-element to ensure that
+<dd><p>Matches the ret_np and ret_from_gt_np inputs element-by-element to ensure that
 they are the same.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -647,7 +689,7 @@ data type.</p>
 <dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.assertions.value_test">
 <span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.assertions.</span></span><span class="sig-name descname"><span class="pre">value_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ret_np_flat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ret_np_from_gt_flat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_truth_backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'TensorFlow'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_tests/test_ivy/helpers/assertions.html#value_test"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.assertions.value_test" title="Permalink to this definition">#</a></dt>
 <dd><p>Performs a value test for matching the arrays in ret_np_flat and
-ret_from_np_flat.</p>
+ret_from_np_gt_flat.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -678,11 +720,11 @@ truth framework.</p></li>
             <footer class="bd-footer-article">
                 <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-  <a class='left-prev' id="prev-link" href="../nested_array/nested_array/NestedArray.html" title="previous page">
+  <a class='left-prev' id="prev-link" href="../utils/verbosity/cprint.html" title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
           <p class="prev-next-subtitle">previous</p>
-          <p class="prev-next-title">NestedArray</p>
+          <p class="prev-next-title">cprint</p>
       </div>
   </a>
   <a class='right-next' id="next-link" href="assertions/assert_all_close.html" title="next page">

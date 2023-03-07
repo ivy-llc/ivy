@@ -160,4 +160,5 @@ html {
 
 i.fa-chevron-down {
   display: none;
+  visibility: hidden;
 }
