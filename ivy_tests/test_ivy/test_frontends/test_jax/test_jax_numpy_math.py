@@ -2342,7 +2342,6 @@ def test_jax_numpy_inner(
     )
 
 
-# outer
 @handle_frontend_test(
     fn_tree="jax.numpy.outer",
     dtype_and_x=helpers.dtype_and_values(
@@ -2404,13 +2403,14 @@ def test_jax_numpy_reciprocal(
         x=x[0],
     )
 
-
+    
 # conj
 @handle_frontend_test(
     fn_tree="jax.numpy.conj",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-    ),
+
+      
 )
 def test_jax_numpy_conj(
     *,
