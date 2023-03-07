@@ -94,9 +94,9 @@ def floor(x):
 
 @to_ivy_arrays_and_back
 def gradient(f, *spacing, axis=None, edge_order=None):
-    if edge_order != None:
+    if edge_order is not None:
         raise NotImplementedError("edge_order is not implemented in jax.numpy.")
-    return ivy.gradient(f, spacing=varargs, axis=axis, edge_order=edge_order)
+    return ivy.gradient(f, spacing=spacing, axis=axis, edge_order=edge_order)
 
 
 @to_ivy_arrays_and_back
