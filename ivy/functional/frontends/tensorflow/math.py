@@ -495,3 +495,7 @@ def is_finite(x, name=None):
 @to_ivy_arrays_and_back
 def atan(x, name=None):
     return ivy.atan(x)
+
+@to_ivy_arrays_and_back
+def add_n(x, name=None):
+    return ivy.add_n(x)
