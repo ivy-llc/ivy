@@ -213,7 +213,7 @@ def is_native_array(x, /, *, exclusive=False):
     return False
 
 
-def multiprocessing(context=None):
+def multiprocessing(context: Optional[str] = None):
     return (
         _multiprocessing if context is None else _multiprocessing.get_context(context)
     )

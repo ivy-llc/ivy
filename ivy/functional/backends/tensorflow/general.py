@@ -253,7 +253,7 @@ def inplace_variables_supported():
     return True
 
 
-def multiprocessing(context=None):
+def multiprocessing(context: Optional[str] = None):
     return (
         _multiprocessing if context is None else _multiprocessing.get_context(context)
     )

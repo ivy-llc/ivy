@@ -309,7 +309,7 @@ def inplace_variables_supported():
     return True
 
 
-def multiprocessing(context=None):
+def multiprocessing(context: Optional[str] = None):
     import torch.multiprocessing
 
     if context is None:

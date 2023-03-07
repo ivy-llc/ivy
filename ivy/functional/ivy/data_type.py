@@ -1004,7 +1004,7 @@ def default_float_dtype(
     *,
     input: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     float_dtype: Optional[Union[ivy.FloatDtype, ivy.NativeDtype]] = None,
-    as_native: Optional[bool] = False,
+    as_native: bool = False,
 ) -> Union[ivy.Dtype, str, ivy.NativeDtype]:
     """
     Parameters
@@ -1145,7 +1145,7 @@ def default_dtype(
     *,
     dtype: Optional[Union[ivy.Dtype, str]] = None,
     item: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    as_native: Optional[bool] = False,
+    as_native: bool = False,
 ) -> Union[ivy.Dtype, ivy.NativeDtype, str]:
     """
     Parameters
@@ -1205,7 +1205,7 @@ def default_int_dtype(
     *,
     input: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     int_dtype: Optional[Union[ivy.IntDtype, ivy.NativeDtype]] = None,
-    as_native: Optional[bool] = False,
+    as_native: bool = False,
 ) -> Union[ivy.IntDtype, ivy.NativeDtype]:
     """
     Parameters
@@ -1314,7 +1314,7 @@ def default_uint_dtype(
     *,
     input: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     uint_dtype: Optional[Union[ivy.UintDtype, ivy.NativeDtype]] = None,
-    as_native: Optional[bool] = False,
+    as_native: bool = False,
 ) -> Union[ivy.UintDtype, ivy.NativeDtype]:
     """
     Parameters
@@ -1411,7 +1411,7 @@ def default_complex_dtype(
     *,
     input: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     complex_dtype: Optional[Union[ivy.ComplexDtype, ivy.NativeDtype]] = None,
-    as_native: Optional[bool] = False,
+    as_native: bool = False,
 ) -> Union[ivy.Dtype, str, ivy.NativeDtype]:
     """
     Parameters

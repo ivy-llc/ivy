@@ -439,9 +439,9 @@ def dct(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    type: Optional[Literal[1, 2, 3, 4]] = 2,
+    type: Literal[1, 2, 3, 4] = 2,
     n: Optional[int] = None,
-    axis: Optional[int] = -1,
+    axis: int = -1,
     norm: Optional[Literal["ortho"]] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
@@ -537,7 +537,7 @@ def fft(
     dim: int,
     /,
     *,
-    norm: Optional[str] = "backward",
+    norm: str = "backward",
     n: Optional[Union[int, Tuple[int]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -724,7 +724,7 @@ def ifft(
     x: Union[ivy.Array, ivy.NativeArray],
     dim: int,
     *,
-    norm: Optional[str] = "backward",
+    norm: str = "backward",
     n: Optional[Union[int, Tuple[int]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -851,7 +851,7 @@ def dft(
     inverse: bool = False,
     onesided: bool = False,
     dft_length: Optional[Union[int, Tuple[int]]] = None,
-    norm: Optional[str] = "backward",
+    norm: str = "backward",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -1024,11 +1024,11 @@ def interpolate(
     size: Union[Sequence[int], int],
     /,
     *,
-    mode: Union[
-        Literal["linear", "bilinear", "trilinear", "nearest", "area", "nearest_exact"]
+    mode: Literal[
+        "linear", "bilinear", "trilinear", "nearest", "area", "nearest_exact"
     ] = "linear",
     align_corners: Optional[bool] = None,
-    antialias: Optional[bool] = False,
+    antialias: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -1253,8 +1253,8 @@ def _mask(vals, length, range_max, dim):
 
 
 def adaptive_avg_pool1d(
-        input: Union[ivy.Array, ivy.NativeArray],
-        output_size: int,
+    input: Union[ivy.Array, ivy.NativeArray],
+    output_size: int,
 ) -> ivy.Array:
     """
     Applies a 1D adaptive average pooling over an input signal composed of several input
@@ -1320,8 +1320,8 @@ def adaptive_avg_pool1d(
 
 
 def adaptive_avg_pool2d(
-        input: Union[ivy.Array, ivy.NativeArray],
-        output_size: Union[Sequence[int], int],
+    input: Union[ivy.Array, ivy.NativeArray],
+    output_size: Union[Sequence[int], int],
 ) -> ivy.Array:
     """
     Applies a 2D adaptive average pooling over an input signal composed of several input
