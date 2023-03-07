@@ -9,7 +9,7 @@ import ivy
 # ToDo: implement all methods here as public instance methods
 
 
-class ArrayWithActivations(abc.ABC):
+class _ArrayWithActivations(abc.ABC):
     def relu(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.relu. This method simply wraps the
@@ -142,7 +142,7 @@ class ArrayWithActivations(abc.ABC):
         return ivy.sigmoid(self._data, out=out)
 
     def softmax(
-        x: Union[ivy.Array, ivy.NativeArray],
+        self: ivy.Array,
         /,
         *,
         axis: Optional[int] = None,
@@ -155,7 +155,7 @@ class ArrayWithActivations(abc.ABC):
 
         Parameters
         ----------
-        x
+        self
             input array.
         axis
             the axis or axes along which the softmax should be computed
@@ -175,7 +175,7 @@ class ArrayWithActivations(abc.ABC):
         >>> print(y)
         ivy.array([0.422, 0.155, 0.422])
         """
-        return ivy.softmax(x, axis=axis, out=out)
+        return ivy.softmax(self._data, axis=axis, out=out)
 
     def softplus(
         self: ivy.Array,

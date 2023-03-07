@@ -1,5 +1,5 @@
 from ivy.container.base import ContainerBase
 
 
-class ContainerWithSearchingExperimental(ContainerBase):
+class _ContainerWithSearchingExperimental(ContainerBase):
     pass

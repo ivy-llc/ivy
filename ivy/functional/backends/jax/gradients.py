@@ -6,7 +6,7 @@ import jax.lax as jlax
 import jaxlib
 from jaxlib.xla_extension import Buffer
 from ivy.functional.backends.jax import JaxArray
-from typing import Optional, Callable
+from typing import Optional, Callable, Sequence, Union
 
 
 # local
@@ -29,7 +29,13 @@ def is_variable(x, /, *, exclusive=False):
     if exclusive:
         return False
     return isinstance(
-        x, (jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceArray, Buffer)
+        x,
+        (
+            jax.interpreters.xla._DeviceArray,
+            jax.Array,
+            jaxlib.xla_extension.DeviceArray,
+            Buffer,
+        ),
     )
 
 
@@ -73,7 +79,13 @@ def _forward_fn(
 
 
 def execute_with_gradients(
-    func, xs, /, *, retain_grads=False, xs_grad_idxs=None, ret_grad_idxs=None
+    func,
+    xs: JaxArray,
+    /,
+    *,
+    retain_grads: bool = False,
+    xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
+    ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
 ):
     # Conversion of required arrays to float variables and duplicate index chains
     (

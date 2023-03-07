@@ -7,7 +7,7 @@ import ivy
 from ivy.container.base import ContainerBase
 
 
-class ContainerWithElementWiseExperimental(ContainerBase):
+class _ContainerWithElementWiseExperimental(ContainerBase):
     @staticmethod
     def static_sinc(
         x: ivy.Container,
@@ -807,7 +807,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         /,
         *,
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
-        keepdims: Optional[bool] = False,
+        keepdims: bool = False,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -897,7 +897,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         /,
         *,
         axis: Optional[Union[int, Tuple[int, ...]]] = None,
-        keepdims: Optional[bool] = False,
+        keepdims: bool = False,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -989,7 +989,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         *,
         axis: Optional[Union[tuple, int]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        keepdims: Optional[bool] = False,
+        keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1064,7 +1064,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         *,
         axis: Optional[Union[tuple, int]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        keepdims: Optional[bool] = False,
+        keepdims: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1214,9 +1214,9 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         b: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        rtol: Optional[float] = 1e-05,
-        atol: Optional[float] = 1e-08,
-        equal_nan: Optional[bool] = False,
+        rtol: float = 1e-05,
+        atol: float = 1e-08,
+        equal_nan: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1313,9 +1313,9 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         b: ivy.Container,
         /,
         *,
-        rtol: Optional[float] = 1e-05,
-        atol: Optional[float] = 1e-08,
-        equal_nan: Optional[bool] = False,
+        rtol: float = 1e-05,
+        atol: float = 1e-08,
+        equal_nan: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1415,7 +1415,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        deg: Optional[bool] = False,
+        deg: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1476,7 +1476,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        deg: Optional[bool] = False,
+        deg: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1628,8 +1628,8 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        copy: Optional[bool] = True,
-        nan: Optional[Union[float, int]] = 0.0,
+        copy: bool = True,
+        nan: Union[float, int] = 0.0,
         posinf: Optional[Union[float, int]] = None,
         neginf: Optional[Union[float, int]] = None,
         out: Optional[ivy.Container] = None,
@@ -1693,8 +1693,8 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        copy: Optional[bool] = True,
-        nan: Optional[Union[float, int]] = 0.0,
+        copy: bool = True,
+        nan: Union[float, int] = 0.0,
         posinf: Optional[Union[float, int]] = None,
         neginf: Optional[Union[float, int]] = None,
         out: Optional[ivy.Container] = None,
@@ -2056,9 +2056,9 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        rtol: Optional[float] = 1e-05,
-        atol: Optional[float] = 1e-08,
-        equal_nan: Optional[bool] = False,
+        rtol: float = 1e-05,
+        atol: float = 1e-08,
+        equal_nan: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2147,9 +2147,9 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         x2: ivy.Container,
         /,
         *,
-        rtol: Optional[float] = 1e-05,
-        atol: Optional[float] = 1e-08,
-        equal_nan: Optional[bool] = False,
+        rtol: float = 1e-05,
+        atol: float = 1e-08,
+        equal_nan: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2714,8 +2714,8 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        spacing: Optional[Union[int, list, tuple]] = 1,
-        edge_order: Optional[int] = 1,
+        spacing: Union[int, list, tuple] = 1,
+        edge_order: int = 1,
         axis: Optional[Union[int, list, tuple]] = None,
     ) -> ivy.Container:
         return ContainerBase.cont_multi_map_in_function(
@@ -2734,8 +2734,8 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        spacing: Optional[Union[int, list, tuple]] = 1,
-        edge_order: Optional[int] = 1,
+        spacing: Union[int, list, tuple] = 1,
+        edge_order: int = 1,
         axis: Optional[Union[int, list, tuple]] = None,
     ) -> ivy.Container:
         """Calculates gradient of x with respect to (w.r.t.) spacing
@@ -3168,6 +3168,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(
             "binarizer",
             x,
+            threshold=threshold,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -3448,3 +3449,93 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         }
         """
         return self.static_ldexp(self, x2, out=out)
+
+    @staticmethod
+    def static_frexp(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.frexp. This method simply
+        wraps the function, and so the docstring for ivy.frexp also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            The container whose arrays should be split into mantissa and exponent.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container including the mantissa and exponent of x.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 5, 10]))
+        >>> ivy.Container.static_frexp(x)
+        {
+            a: (ivy.array([0.5, 0.5, 0.75]), ivy.array([1, 1, 2])),
+            b: (ivy.array([0.5, 0.625, 0.625]), ivy.array([1, 3, 4]))
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "frexp",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def frexp(
+        self: ivy.Container,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.frexp. This method simply
+        wraps the function, and so the docstring for ivy.frexp also applies to this
+        method with minimal changes.
+        Parameters
+        ----------
+        self
+            The container whose arrays should be split into mantissa and exponent.
+        out
+            optional output container, for writing the result to.
+        Returns
+        -------
+        ret
+            container including the mantissa and exponent of x.
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 5, 10]))
+        >>> x.frexp()
+        {
+            a: (ivy.array([0.5, 0.5, 0.75]), ivy.array([1, 1, 2])),
+            b: (ivy.array([0.5, 0.625, 0.625]), ivy.array([1, 3, 4]))
+        }
+        """
+        return self.static_frexp(self, out=out)

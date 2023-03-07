@@ -10,7 +10,7 @@ from typing import Any, Iterable, Union, Optional, Dict, Callable, List, Tuple
 import ivy
 
 
-class ArrayWithGeneral(abc.ABC):
+class _ArrayWithGeneral(abc.ABC):
     def is_native_array(
         self: ivy.Array,
         /,
@@ -49,7 +49,7 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.is_native_array(self, exclusive=exclusive)
 
-    def is_ivy_array(self: ivy.Array, /, *, exclusive: Optional[bool] = False) -> bool:
+    def is_ivy_array(self: ivy.Array, /, *, exclusive: bool = False) -> bool:
         """
         ivy.Array instance method variant of ivy.is_ivy_array. This method simply
         wraps the function, and so the docstring for ivy.is_ivy_array also
@@ -216,8 +216,8 @@ class ArrayWithGeneral(abc.ABC):
         indices: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
-        axis: Optional[int] = -1,
-        batch_dims: Optional[int] = 0,
+        axis: int = -1,
+        batch_dims: int = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -318,7 +318,7 @@ class ArrayWithGeneral(abc.ABC):
         indices: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
-        batch_dims: Optional[int] = 0,
+        batch_dims: int = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -533,6 +533,8 @@ class ArrayWithGeneral(abc.ABC):
         ----------
         self
             input array.
+        copy
+            whether to copy the array to a new address or not. Default is ``True``.
 
         Returns
         -------
@@ -661,8 +663,10 @@ class ArrayWithGeneral(abc.ABC):
     def stable_divide(
         self,
         denominator: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
-        min_denominator: Union[
-            Number, ivy.Array, ivy.NativeArray, ivy.Container
+        /,
+        *,
+        min_denominator: Optional[
+            Union[Number, ivy.Array, ivy.NativeArray, ivy.Container]
         ] = None,
     ) -> ivy.Array:
         """
@@ -1050,7 +1054,7 @@ class ArrayWithGeneral(abc.ABC):
         exponent: Union[Number, ivy.Array, ivy.NativeArray],
         /,
         *,
-        min_base: float = None,
+        min_base: Optional[float] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.stable_pow. This method simply wraps
@@ -1077,6 +1081,8 @@ class ArrayWithGeneral(abc.ABC):
     def inplace_update(
         self: ivy.Array,
         val: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
         ensure_in_backend: bool = False,
     ) -> ivy.Array:
         """
@@ -1099,6 +1105,32 @@ class ArrayWithGeneral(abc.ABC):
         -------
         ret
             The array following the in-place update.
+
+        Examples
+        --------
+
+        With :class:`ivy.Array` input and default backend set as `numpy`:
+        
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = ivy.array([0])
+        >>> x.inplace_update(y)
+        >>> print(x)
+        ivy.array([0])
+        
+        With :class:`ivy.Array` input and default backend set as `torch`:
+        
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = ivy.array([0])
+        >>> x.inplace_update(y, ensure_in_backend=True)
+        >>> print(x)
+        ivy.array([0])
+        
+        With :class:`ivy.Array` input and default backend set as `jax`:
+        
+        >>> x = ivy.array([4, 5, 6])
+        >>> y = ivy.array([1])
+        >>> x.inplace_update(y, ensure_in_backend=True)
+        IvyBackendException: jax: inplace_update: JAX does not natively support inplace updates
 
         """
         return ivy.inplace_update(self, val, ensure_in_backend=ensure_in_backend)

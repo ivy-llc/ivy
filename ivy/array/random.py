@@ -6,7 +6,7 @@ from typing import Optional, Union
 import ivy
 
 
-class ArrayWithRandom(abc.ABC):
+class _ArrayWithRandom(abc.ABC):
     def random_uniform(
         self: ivy.Array,
         /,

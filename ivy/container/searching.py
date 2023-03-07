@@ -8,7 +8,7 @@ from ivy.container.base import ContainerBase
 
 
 # noinspection PyMissingConstructor
-class ContainerWithSearching(ContainerBase):
+class _ContainerWithSearching(ContainerBase):
     @staticmethod
     def static_argmax(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
@@ -461,7 +461,7 @@ class ContainerWithSearching(ContainerBase):
 
         Parameters
         ----------
-        self
+        x
             Boolean array, for which indices are desired.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
