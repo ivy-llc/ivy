@@ -44,8 +44,8 @@ def beta(
     /,
     *,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: jaxlib.xla_extension.Device = None,
-    dtype: jnp.dtype = None,
+    device: Optional[jaxlib.xla_extension.Device] = None,
+    dtype: Optional[jnp.dtype] = None,
     seed: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
@@ -63,8 +63,8 @@ def gamma(
     /,
     *,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: jaxlib.xla_extension.Device = None,
-    dtype: jnp.dtype = None,
+    device: Optional[jaxlib.xla_extension.Device] = None,
+    dtype: Optional[jnp.dtype] = None,
     seed: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
@@ -81,8 +81,8 @@ def poisson(
     lam: Union[float, JaxArray],
     *,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: jaxlib.xla_extension.Device,
-    dtype: jnp.dtype = None,
+    device: Optional[jaxlib.xla_extension.Device] = None,
+    dtype: Optional[jnp.dtype] = None,
     seed: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
@@ -102,10 +102,10 @@ def poisson(
 def bernoulli(
     probs: Union[float, JaxArray],
     *,
-    logits: Union[float, JaxArray] = None,
+    logits: Optional[Union[float, JaxArray]] = None,
     shape: Optional[Union[ivy.NativeArray, Sequence[int]]] = None,
-    device: jaxlib.xla_extension.Device,
-    dtype: jnp.dtype = None,
+    device: Optional[jaxlib.xla_extension.Device] = None,
+    dtype: Optional[jnp.dtype] = None,
     seed: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:

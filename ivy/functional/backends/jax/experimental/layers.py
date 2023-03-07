@@ -291,9 +291,9 @@ def dct(
     x: JaxArray,
     /,
     *,
-    type: Optional[Literal[1, 2, 3, 4]] = 2,
+    type: Literal[1, 2, 3, 4] = 2,
     n: Optional[int] = None,
-    axis: Optional[int] = -1,
+    axis: int = -1,
     norm: Optional[Literal["ortho"]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
@@ -366,8 +366,8 @@ def fft(
     dim: int,
     /,
     *,
-    norm: Optional[str] = "backward",
-    n: Union[int, Tuple[int]] = None,
+    norm: str = "backward",
+    n: Optional[Union[int, Tuple[int]]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if not isinstance(dim, int):
@@ -451,8 +451,8 @@ def ifft(
     x: JaxArray,
     dim: int,
     *,
-    norm: Optional[str] = "backward",
-    n: Union[int, Tuple[int]] = None,
+    norm: str = "backward",
+    n: Optional[Union[int, Tuple[int]]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if not isinstance(dim, int):
@@ -484,9 +484,9 @@ def interpolate(
     size: Union[Sequence[int], int],
     /,
     *,
-    mode: Union[Literal["linear", "bilinear"]] = "linear",
+    mode: Literal["linear", "bilinear"] = "linear",
     align_corners: Optional[bool] = None,
-    antialias: Optional[bool] = False,
+    antialias: bool = False,
     out: Optional[JaxArray] = None,
 ):
     if align_corners or mode in ["area", "nearest"]:

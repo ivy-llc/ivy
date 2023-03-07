@@ -15,7 +15,7 @@ import ivy
 def triu_indices(
     n_rows: int,
     n_cols: Optional[int] = None,
-    k: Optional[int] = 0,
+    k: int = 0,
     /,
     *,
     device: str,
@@ -28,7 +28,7 @@ def triu_indices(
 def vorbis_window(
     window_length: np.ndarray,
     *,
-    dtype: Optional[np.dtype] = np.float32,
+    dtype: np.dtype = np.float32,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.array(
@@ -51,7 +51,7 @@ vorbis_window.support_native_out = False
 def tril_indices(
     n_rows: int,
     n_cols: Optional[int] = None,
-    k: Optional[int] = 0,
+    k: int = 0,
     /,
     *,
     device: str,
@@ -65,7 +65,7 @@ def hann_window(
     size: int,
     /,
     *,
-    periodic: Optional[bool] = True,
+    periodic: bool = True,
     dtype: Optional[np.dtype] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
