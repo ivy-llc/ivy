@@ -45,17 +45,18 @@ def test_pickle_to_string(dtype_and_x, on_device):
     ),
 )
 def test_pickle_to_and_from_disk(dtype_and_x, on_device):
+    # creating ivy.array to pickle it
     input_dtype, x = dtype_and_x
     assume("bfloat16" not in input_dtype)
     x = ivy.array(x[0], dtype=input_dtype[0], device=on_device)
 
+    # setting file_name-> saving file
     save_filepath = "ivy_array.pickle"
     pickle.dump(x, open(save_filepath, "wb"))
 
+    # checking file_existance-> loading file-> removing file
     assert os.path.exists(save_filepath)
-
     unpickled_arr = pickle.load(open(save_filepath, "rb"))
-
     os.remove(save_filepath)
 
     # check for equality
