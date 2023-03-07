@@ -23,5 +23,5 @@ def diag_indices(n, ndim=2):
 
 # take_along_axis
 @to_ivy_arrays_and_back
-def take_along_axis(arr, indices, axis, mode):
-    return ivy.take_along_axis(arr, indices, axis, mode)
+def take_along_axis(arr, indices, axis, mode='fill'):
+    return ivy.take_along_axis(arr, indices, axis, mode=mode)
