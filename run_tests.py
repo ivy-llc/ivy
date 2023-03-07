@@ -53,10 +53,15 @@ def get_submodule(test_path):
     return coll, submod, test_fn
 
 
-def update_individual_test_results(collection, id, submod, backend, test, result):
+def update_individual_test_results(collection, id, submod, backend, test, result, backend_version=None, frontend_version=None):
+    key = submod + "." + backend + "." + test
+    if backend_version is not None:
+        key += "." + backend_version
+    if frontend_version is not None:
+        key += "." + frontend_version
     collection.update_one(
         {"_id": id},
-        {"$set": {submod + "." + backend + "." + test: result}},
+        {"$set": {key: result}},
         upsert=True,
     )
     return
@@ -72,12 +77,17 @@ def remove_from_db(collection, id, submod, backend, test):
 
 def run_multiversion_testing():
     failed = False
+    db = cluster["Ivy_tests_copy"]
     with open("tests_to_run", "r") as f:
         for line in f:
             test, backend = line.split(",")
+            coll, submod, test_fn = get_submodule(test)
+            print(coll, submod, test_fn)
+            frontend_version = None
             if ";" in backend:
                 # This is a frontend test
                 backend, frontend = backend.split(";")
+                frontend_version = '/'.join(frontend.split("/")[1:])
                 command = f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:latest /opt/miniconda/envs/multienv/bin/python -m pytest --tb=short {test} --backend={backend} --frontend={frontend}'
                 ret = os.system(command)
             else:
@@ -85,7 +95,16 @@ def run_multiversion_testing():
                     f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:latest /opt/miniconda/envs/multienv/bin/python -m pytest --tb=short {test} --backend={backend}'
                 )
             if ret != 0:
+                res = make_clickable(run_id, result_config["failure"])
                 failed = True
+            else:
+                res = make_clickable(run_id, result_config["success"])
+            backend_list = backend.split("/")
+            backend_name = backend_list[0]
+            backend_version = '/'.join(backend_list[1:])
+            update_individual_test_results(
+                db[coll[0]], coll[1], submod, backend_name, test_fn, res, backend_version, frontend_version
+            )
     if failed:
         exit(1)
     exit(0)
