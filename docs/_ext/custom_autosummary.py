@@ -4,6 +4,7 @@ from docutils.parsers.rst import directives
 from docutils import nodes
 from docutils.statemachine import ViewList
 
+import sphinx
 from sphinx.ext.autosummary import Autosummary
 from sphinx.application import Sphinx
 from sphinx.util import logging
@@ -114,3 +115,8 @@ def setup(app: Sphinx):
     app.setup_extension("sphinx.ext.autosummary")
     app.add_directive("autosummary", CustomAutosummary, override=True)
     app.add_config_value("ivy_toctree_caption_map", {}, True)
+
+    return {
+        "version": sphinx.__display_version__,
+        "parallel_read_safe": True,
+    }
