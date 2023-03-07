@@ -198,6 +198,7 @@ The `Ivy Stateful API <https://lets-unify.ai/ivy/design/ivy_as_a_framework/ivy_s
 
     import ivy
 
+    # a simple image classification model
     class IvyNet(ivy.Module):
         def __init__(
             self,
@@ -247,6 +248,40 @@ At last, we build the training pipeline in pure ivy.
 .. raw:: html
 
    <details>
+   <summary><a>Defining some helper functions</a></summary>
+
+.. code-block:: python
+
+    # helper function for loading the dataset in batches
+    def generate_batches(images, classes, dataset_size, batch_size=32):
+        targets = {k: v for v, k in enumerate(np.unique(classes))}
+        y_train = [targets[classes[i]] for i in range(len(classes))]
+        if batch_size > dataset_size:
+            raise ivy.utils.exceptions.IvyError("Use a smaller batch size")
+        for idx in range(0, dataset_size, batch_size):
+            yield ivy.stack(images[idx : min(idx + batch_size, dataset_size)]), ivy.array(
+                y_train[idx : min(idx + batch_size, dataset_size)]
+            )
+
+    # get the number of current predictions
+    def num_correct(preds, labels):
+        return (preds.argmax() == labels).sum().to_numpy().item()
+
+
+    # this is passed as an argument to ivy's function for computing gradients
+    def loss_fn(params):
+        v, model, x, y = params
+        y_pred, probs = model(x)
+        return ivy.cross_entropy(y, probs), probs
+
+
+.. raw:: html
+
+   </details>
+
+.. raw:: html
+
+   <details>
    <summary><a>Train this model</a></summary>
 
 .. code-block:: python
@@ -263,30 +298,7 @@ At last, we build the training pipeline in pure ivy.
         device=device,
     )
 
-    # helper function for loading the dataset in batches
-    def generate_batches(images, classes, dataset_size, batch_size=32):
-    targets = {k: v for v, k in enumerate(np.unique(classes))}
-    y_train = [targets[classes[i]] for i in range(len(classes))]
-
-    if batch_size > dataset_size:
-        raise ivy.utils.exceptions.IvyError("Use a smaller batch size")
-
-    for idx in range(0, dataset_size, batch_size):
-        yield ivy.stack(images[idx : min(idx + batch_size, dataset_size)]), ivy.array(
-            y_train[idx : min(idx + batch_size, dataset_size)]
-        )
-
-    # get the number of current predictions
-    def num_correct(preds, labels):
-        return (preds.argmax() == labels).sum().to_numpy().item()
-
-
-    def loss_fn(params):
-        v, model, x, y = params
-        y_pred, probs = model(x)
-        return ivy.cross_entropy(y, probs), probs
-
-
+    # training loop
     def train(images, classes, epochs, model, device, num_classes=10, batch_size=32):
         # training metrics
         epoch_loss = 0.0
