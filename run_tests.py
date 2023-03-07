@@ -105,7 +105,7 @@ def run_multiversion_testing():
             else:
                 res = make_clickable(run_id, result_config["success"])
             backend_list = backend.split("/")
-            backend_name = backend_list[0]
+            backend_name = backend_list[0] + "\n"
             backend_version = '/'.join(backend_list[1:])
             update_individual_test_results(
                 db[coll[0]], coll[1], submod, backend_name, test_fn, res, backend_version, frontend_version
