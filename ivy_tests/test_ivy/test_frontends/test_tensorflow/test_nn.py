@@ -1271,7 +1271,7 @@ def test_tensorflow_relu6(
         features=x[0],
     )
 @handle_frontend_test(
-    fn_name="tensorflow.nn.avg_pool1d",
+    fn_tree="tensorflow.nn.avg_pool1d",
     x_f_d_df = _x_and_filters(
         dtypes=helpers.get_dtypes("float", full=False),
         data_format=st.sampled_from(["NWC","NCW"]),
