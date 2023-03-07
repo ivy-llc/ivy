@@ -4,13 +4,14 @@
 import jax
 import numpy as np
 import jax.numpy as jnp
-import jaxlib
 from numbers import Number
 from operator import mul
 from functools import reduce
-from jaxlib.xla_extension import Buffer
 from typing import Iterable, Optional, Union, Sequence, Callable
 import multiprocessing as _multiprocessing
+
+# jax.Array is a feature that need to be enabled by the following line
+jax.config.update("jax_array", True)
 
 # necessary import, because stateful imports jax as soon as you import ivy, however,
 # during multiversion # jax is not there, and therefore a later import results in some
@@ -23,7 +24,7 @@ from haiku._src.data_structures import FlatMapping
 # local
 import ivy
 from ivy.functional.backends.jax.device import _to_device, _to_array
-from ivy.functional.backends.jax import JaxArray
+from ivy.functional.backends.jax import JaxArray, NativeArray
 
 
 def container_types():
@@ -36,20 +37,11 @@ def current_backend_str() -> str:
 
 def is_native_array(x, /, *, exclusive=False):
     if exclusive:
-        return isinstance(
-            x,
-            (
-                jax.interpreters.xla._DeviceArray,
-                jax.Array,
-                Buffer,
-            ),
-        )
+        return isinstance(x, NativeArray)
     return isinstance(
         x,
         (
-            jax.interpreters.xla._DeviceArray,
-            jax.Array,
-            Buffer,
+            NativeArray,
             jax.interpreters.ad.JVPTracer,
             jax.core.ShapedArray,
             jax.interpreters.partial_eval.DynamicJaxprTracer,
@@ -209,6 +201,8 @@ def inplace_increment(
 def inplace_update(
     x: Union[ivy.Array, JaxArray],
     val: Union[ivy.Array, JaxArray],
+    /,
+    *,
     ensure_in_backend: bool = False,
 ) -> ivy.Array:
     if ivy.is_array(x) and ivy.is_array(val):
@@ -324,7 +318,6 @@ def scatter_nd(
     reduction="sum",
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-
     # parse numeric inputs
     if (
         indices not in [Ellipsis, ()]
