@@ -10,8 +10,6 @@ from functools import reduce
 from typing import Iterable, Optional, Union, Sequence, Callable
 import multiprocessing as _multiprocessing
 
-# jax.Array is a feature that need to be enabled by the following line
-jax.config.update("jax_array", True)
 
 # necessary import, because stateful imports jax as soon as you import ivy, however,
 # during multiversion # jax is not there, and therefore a later import results in some
