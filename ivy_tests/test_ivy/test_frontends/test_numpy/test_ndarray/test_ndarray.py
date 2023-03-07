@@ -2066,7 +2066,8 @@ def test_numpy_instance_imul__(
         method_flags=method_flags,
     )
 
-#itruediv
+
+# __itruediv__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
