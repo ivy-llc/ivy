@@ -107,14 +107,13 @@ class Module(ModuleConverters, ModuleHelpers):
         self._submod_depth = None
         self._submods_to_track = None
         self._track_submod_call_order = False
-        self.submod_rets = ivy.Container(
-            alphabetical_keys=False, ivyh=ivy.get_backend(backend="numpy")
-        )
         self.expected_submod_rets = None
         self.submod_dict = dict()
-        self.submod_call_order = ivy.Container(
-            alphabetical_keys=False, ivyh=ivy.get_backend(backend="numpy")
-        )
+        with ivy.utils.backend.ContextManager("numpy") as backend:
+            self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=backend)
+            self.submod_call_order = ivy.Container(
+                alphabetical_keys=False, ivyh=backend
+            )
         self._sub_mods = set()
         self._dtype = dtype
         self._args = args
