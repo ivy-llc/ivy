@@ -2192,7 +2192,7 @@ def test_torch_arctan(
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
-    )    
+    )
 
 
 # conj_physical
@@ -2278,4 +2278,3 @@ def test_torch_fmod(
         x1=x[0],
         x2=x[1],
     )
-   
