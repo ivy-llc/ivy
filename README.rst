@@ -252,6 +252,19 @@ At last, we build the training pipeline
    <summary><a>Train this model</a></summary>
 
 .. code-block:: python
+
+   lots_of_code = "this text block"
+
+.. raw:: html
+
+   </details>
+
+.. raw:: html
+
+   <details>
+   <summary><a></a></summary>
+
+.. code-block:: python
     # train the model on gpu if it's available
     device = "cuda:0" if ivy.gpu_is_available() else "cpu"
 
