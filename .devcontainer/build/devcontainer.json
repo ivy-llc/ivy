@@ -3,8 +3,7 @@
 
 	"build": {
 		"dockerfile": "../../docker/Dockerfile",
-		"context": "..",
-		"target": "development"
+		"context": ".."
 	},
 
 	"customizations": {
