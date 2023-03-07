@@ -713,6 +713,8 @@ from .utils import assertions, exceptions, verbosity
 from .utils.backend import handler
 from . import functional
 from .functional import *
+from . import alias
+from .alias import *
 from . import stateful
 from .stateful import *
 from ivy.utils.inspection import fn_array_spec, add_array_specs
