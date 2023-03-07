@@ -670,6 +670,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
             - bilinear
             - trilinear
             - nearest
+            - area
         scale_factor
             Multiplier for spatial size that defines the output size (overwriting `size`).
         align_corners
