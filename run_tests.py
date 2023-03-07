@@ -79,7 +79,6 @@ def run_multiversion_testing():
                 # This is a frontend test
                 backend, frontend = backend.split(";")
                 command = f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:latest /opt/miniconda/envs/multienv/bin/python -m pytest --tb=short {test} --backend={backend} --frontend={frontend}'
-                print(command)
                 ret = os.system(command)
             else:
                 ret = os.system(
