@@ -49,7 +49,7 @@ if "tensorflow" in available_frameworks():
 if "jax" in available_frameworks():
     available_array_types_input.append(("jax", jnp.array(3.0)))
     available_array_types_class.append(
-        ("jax", "<class 'jaxlib.xla_extension.DeviceArray'>")
+        ("jax", "<class 'jaxlib.xla_extension.DeviceArray'>", "<class 'jax.Array'>")
     )
 
 

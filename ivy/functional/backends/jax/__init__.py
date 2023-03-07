@@ -39,11 +39,15 @@ use = ivy.utils.backend.ContextManager(_module_in_memory)
 
 # noinspection PyUnresolvedReferences
 JaxArray = Union[
-    jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceArray, Buffer
+    jax.interpreters.xla._DeviceArray,
+    jax.Array,
+    jaxlib.xla_extension.DeviceArray,
+    Buffer,
 ]
 # noinspection PyUnresolvedReferences,PyProtectedMember
 NativeArray = (
     jax.interpreters.xla._DeviceArray,
+    jax.Array,
     jaxlib.xla_extension.DeviceArray,
     Buffer,
 )
@@ -141,15 +145,12 @@ native_inplace_support = False
 supports_gradients = True
 
 
-def closest_valid_dtype(type, /):
+def closest_valid_dtype(type=None, /, as_native=False):
     if type is None:
-        return ivy.default_dtype()
-    type_str = as_ivy_dtype(type)  # noqa
-    if type_str in invalid_dtypes:
-        return {"int64": ivy.int32, "uint64": ivy.uint32, "float64": ivy.float32}[
-            type_str
-        ]
-    return type
+        type = ivy.default_dtype()
+    if isinstance(type, str) and type in invalid_dtypes:
+        return {"int64": ivy.int32, "uint64": ivy.uint32, "float64": ivy.float32}[type]
+    return ivy.as_ivy_dtype(type) if not as_native else ivy.as_native_dtype(type)
 
 
 backend = "jax"
