@@ -12,7 +12,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 
 
 @to_ivy_arrays_and_back
-def Angle(x, name=None):
+def Angle(x, name="Angle"):
     return ivy.angle(x)
 
 
