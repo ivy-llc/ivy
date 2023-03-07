@@ -17,7 +17,6 @@ from ivy.functional.backends.numpy.device import _to_device
 
 
 @with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
-@_scalar_output_to_0d_array
 def array_equal(x0: np.ndarray, x1: np.ndarray, /) -> bool:
     return np.array_equal(x0, x1)
 
