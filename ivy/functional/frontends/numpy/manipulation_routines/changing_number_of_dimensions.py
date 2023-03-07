@@ -23,3 +23,7 @@ def expand_dims(
 
 def atleast_2d(*arys):
     return ivy.atleast_2d(*arys)
+
+
+def atleast_3d(*arys):
+    return ivy.atleast_3d(*arys)
