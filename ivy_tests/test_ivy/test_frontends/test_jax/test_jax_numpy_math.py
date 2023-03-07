@@ -119,6 +119,46 @@ def test_jax_numpy_diff(
     )
 
 
+# ediff1d
+@handle_frontend_test(
+    fn_tree="jax.numpy.ediff1d",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=1
+    ),
+    to_end=helpers.ints(
+        min_value=-1,
+        max_value=10,
+    ),
+    to_begin=helpers.ints(
+        min_value=-1,
+        max_value=10,
+    ),
+)
+def test_jax_numpy_ediff1d(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    to_end,
+    to_begin,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_flags=test_flags,
+        ary=x[0],
+        to_end=to_end,
+        to_begin=to_begin,
+    )
+
+
 # arctan
 @handle_frontend_test(
     fn_tree="jax.numpy.arctan",
@@ -2302,6 +2342,7 @@ def test_jax_numpy_inner(
     )
 
 
+# outer
 @handle_frontend_test(
     fn_tree="jax.numpy.outer",
     dtype_and_x=helpers.dtype_and_values(
@@ -2331,4 +2372,60 @@ def test_jax_numpy_outer(
         on_device=on_device,
         a=xs[0],
         b=xs[1],
+    )
+
+
+# reciprocal
+@handle_frontend_test(
+    fn_tree="jax.numpy.reciprocal",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        small_abs_safety_factor=4,
+        large_abs_safety_factor=4,
+        safety_factor_scale="log",
+        num_arrays=1,
+    ),
+)
+def test_jax_numpy_reciprocal(
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# conj
+@handle_frontend_test(
+    fn_tree="jax.numpy.conj",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_jax_numpy_conj(
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
     )
