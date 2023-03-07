@@ -95,29 +95,24 @@ def test_tensorflow_normal(
 # random_gamma
 @handle_frontend_test(
     fn_tree="tensorflow.random.gamma",
-    shape=helpers.get_shape(
-        allow_none=False,
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=10,
-    ),
+    shape=helpers.get_shape(allow_none=False, min_num_dims=1, min_dim_size=1),
     alpha=helpers.floats(min_value=1, max_value=10),
     beta=helpers.floats(min_value=1, max_value=10),
-    dtype=helpers.get_dtypes("float", full=False),
+    dtype=helpers.get_dtypes("float", full=True),
     seed=helpers.ints(min_value=0, max_value=10),
     test_with_out=st.just(False),
 )
-def test_tensorflow_gamma(
-    frontend,
-    fn_tree,
-    on_device,
+def test_tensorflow_Gamma(
+    *,
     shape,
     alpha,
     beta,
     dtype,
     seed,
     test_flags,
+    frontend,
+    fn_tree,
+    on_device,
 ):
 
     helpers.test_frontend_function(

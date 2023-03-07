@@ -22,8 +22,19 @@ def normal(shape, mean=0.0, stddev=1.0, dtype=ivy.float32, seed=None, name=None)
 
 
 @with_unsupported_dtypes(
-    {"2.9.0 and below": ("int8", "int16", "int32", "int64", "unsigned")}, "tensorflow"
+    {
+        "2.9.0 and below": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "float16",
+            "bfloat",
+            "float64",
+        )
+    },
+    "tensorflow",
 )
 @to_ivy_arrays_and_back
-def gamma(shape, alpha, beta=None, dtype=ivy.float32, seed=None, name=None):
+def gamma(shape, alpha, beta, dtype=ivy.float32, seed=None):
     return ivy.gamma(alpha, beta, shape=shape, dtype=dtype, seed=seed)
