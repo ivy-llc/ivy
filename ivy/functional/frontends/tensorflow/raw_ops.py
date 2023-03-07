@@ -12,6 +12,11 @@ from ivy.func_wrapper import with_unsupported_dtypes
 
 
 @to_ivy_arrays_and_back
+def Angle(x, name=None):
+    return ivy.angle(x)
+
+
+@to_ivy_arrays_and_back
 def AddN(*, inputs, name="AddN"):
     return ivy.sum(inputs, dtype=inputs.dtype, axis=0)
 
