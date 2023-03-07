@@ -50,11 +50,15 @@ def expand_dims(
     x: torch.Tensor,
     /,
     *,
+    copy: Optional[bool] = None,
     axis: Union[int, Sequence[int]] = 0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     out_shape = _calculate_out_shape(axis, x.shape)
     # torch.reshape since it can operate on contiguous and non_contiguous tensors
+    if copy:
+        newarr = torch.clone(x)
+        return newarr.reshape(out_shape)
     return x.reshape(out_shape)
 
 
@@ -129,7 +133,6 @@ def roll(
     /,
     shift: Union[int, Sequence[int]],
     *,
-    copy: Optional[bool] = None,
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -140,9 +143,6 @@ def roll(
         shift = [shift for _ in range(len(axis))]
     if isinstance(shift, torch.Tensor):
         shift = shift.tolist()
-    if copy:
-        newarr = torch.clone(x)
-        return torch.roll(newarr, shift, axis)
     return torch.roll(x, shift, axis)
 
 
@@ -285,14 +285,10 @@ def tile(
     /, 
     repeats: Sequence[int], 
     *, 
-    copy: Optional[bool] = None,
     out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     if isinstance(repeats, torch.Tensor):
         repeats = repeats.detach().cpu().numpy().tolist()
-    if copy:
-        newarr = torch.clone(x)
-        return newarr.repeat(repeats)
     return x.repeat(repeats)
 
 
