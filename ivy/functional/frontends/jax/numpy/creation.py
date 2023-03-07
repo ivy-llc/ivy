@@ -119,6 +119,8 @@ def empty_like(a, dtype=None, shape=None):
 @to_ivy_arrays_and_back
 def full(shape, fill_value, dtype=None):
     return ivy.full(shape, fill_value, dtype=dtype)
+
+
 @to_ivy_arrays_and_back
 def double(x):
     return ivy.astype(x, ivy.double, copy=False)

@@ -5,6 +5,7 @@ from ivy_tests.test_ivy.test_frontends.test_numpy.test_creation_routines.test_fr
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
+import jax.numpy as jnp
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
@@ -548,7 +549,9 @@ def test_jax_numpy_full(
         fill_value=fill_value,
         dtype=dtype,
     )
-    @handle_frontend_test(
+
+
+@handle_frontend_test(
     fn_tree="jax.numpy.double",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("double"),
@@ -567,12 +570,10 @@ def test_jax_numpy_double(
     # Check if the input datatype is double
     if dtype_and_x[0] != "float64":
         return
-
     # Generate test inputs
     input_dtype, x = dtype_and_x
     input_shape = x.shape
     y = jnp.random.randn(*input_shape).astype(jnp.float64)
-
     # Test the function using the helper function from the `helpers` module
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
