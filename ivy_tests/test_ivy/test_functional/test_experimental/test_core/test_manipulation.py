@@ -926,6 +926,7 @@ def test_hsplit(
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
         indices_or_sections=indices_or_sections,
     )
