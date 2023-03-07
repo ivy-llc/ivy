@@ -333,6 +333,7 @@ def one_hot(
 ):
     return ivy.one_hot(indices, depth)
 
+
 @to_ivy_arrays_and_back
 def unique(x, out_idx=ivy.int32, name=None):
     ivy.assertions.check_elem_in_list(
@@ -343,10 +344,10 @@ def unique(x, out_idx=ivy.int32, name=None):
     result, indices, _, _ = ivy.unique_all(x)
     indices = ivy.argsort(indices)
     result = result[indices]
-    indices = ivy.array(ivy.map(
-        lambda x:ivy.to_scalar(ivy.argwhere(ivy.equal(result, x))[0][0]),
-        unique = {'x' : x}), dtype=out_idx)
+    fn = lambda x: ivy.to_scalar(ivy.argwhere(ivy.equal(result, x))[0][0])
+    indices = ivy.array(ivy.map(fn, unique={'x' : x}), dtype=out_idx)
     return result, indices
+
 
 @to_ivy_arrays_and_back
 def where(condition: ivy.array, x=None, y=None, name=None):

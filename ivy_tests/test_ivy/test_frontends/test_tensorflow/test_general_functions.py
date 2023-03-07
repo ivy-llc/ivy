@@ -1374,6 +1374,7 @@ def test_tensorflow_boolean_mask(
         mask=mask,
     )
 
+
 # unique
 @handle_frontend_test(
     fn_tree="tensorflow.unique",
@@ -1405,6 +1406,7 @@ def test_tensorflow_unique(
         x=input[0],
         out_idx=out_idx
     )
+
 
 # where
 @handle_frontend_test(
