@@ -8,6 +8,9 @@ import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_splits
+from ivy_tests.test_ivy.test_functional.test_core.test_searching import (
+    _broadcastable_trio,
+)
 from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa
     _get_split_locations,
 )
@@ -1138,3 +1141,42 @@ def test_torch_row_stack(
         on_device=on_device,
         tensors=value,
     )
+
+
+@handle_frontend_test(
+    fn_tree="torch.where",
+    broadcastables=_broadcastable_trio(),
+    only_cond=st.booleans(),
+)
+def test_torch_where(
+    *,
+    broadcastables,
+    only_cond,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    cond, xs, dtypes = broadcastables
+
+    if only_cond:
+        helpers.test_frontend_function(
+            input_dtypes=[dtypes[0]],
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            condition=xs[0],
+        )
+
+    else:
+        helpers.test_frontend_function(
+            input_dtypes=["bool"] + dtypes,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            condition=cond,
+            input=xs[0],
+            other=xs[1],
+        )

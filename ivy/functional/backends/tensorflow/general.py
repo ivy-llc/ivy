@@ -193,6 +193,8 @@ def inplace_increment(
 def inplace_update(
     x: Union[ivy.Array, tf.Tensor],
     val: Union[ivy.Array, tf.Tensor],
+    /,
+    *,
     ensure_in_backend: bool = False,
 ) -> ivy.Array:
     if ivy.is_array(x) and ivy.is_array(val):

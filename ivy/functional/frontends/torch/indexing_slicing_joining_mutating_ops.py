@@ -275,3 +275,10 @@ def vsplit(input, indices_or_sections=None, /, *, indices=None, sections=None):
 @to_ivy_arrays_and_back
 def row_stack(tensors, *, out=None):
     return ivy.vstack(tensors, out=out)
+
+
+@to_ivy_arrays_and_back
+def where(condition, input=None, other=None):
+    if not ivy.exists(input) and not ivy.exists(other):
+        return nonzero(condition, as_tuple=True)
+    return ivy.where(condition, input, other)

@@ -9,7 +9,7 @@ from ivy.container.base import ContainerBase
 
 
 # noinspection PyMissingConstructor
-class ContainerWithNorms(ContainerBase):
+class _ContainerWithNorms(ContainerBase):
     def layer_norm(
         self: ivy.Container,
         normalized_idxs: List[int],
