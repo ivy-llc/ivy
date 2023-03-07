@@ -193,3 +193,8 @@ def vdot(input, other, *, out=None):
         raise RuntimeError("input must be 1D vectors")
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.vecdot(input, other, out=out)
+
+
+@to_ivy_arrays_and_back
+def matrix_exp(input):
+    return torch_frontend.matrix_exp(input)
