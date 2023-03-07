@@ -1,10 +1,43 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
 repos:
 -   repo: https://github.com/psf/black
-    rev: 22.3.0
+    rev: 21.9b0
     hooks:
-    - id: black
-      language_version: python3
--   repo: https://github.com/pycqa/flake8
-    rev: 4.0.1
+    -   id: black
+        args: [--safe]
+
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.2.0
     hooks:
-    - id: flake8
+    -   id: trailing-whitespace
+    -   id: end-of-file-fixer
+    -   id: check-yaml
+    -   id: check-added-large-files
+    -   id: debug-statements
+        language_version: python3
+
+-   repo: https://github.com/PyCQA/flake8
+    rev: 3.9.2
+    hooks:
+    -   id: flake8
+        language_version: python3
+
+-   repo: https://github.com/asottile/reorder_python_imports
+    rev: v2.6.0
+    hooks:
+    -   id: reorder-python-imports
+        args: [--application-directories=.:src, --py36-plus]
+
+-   repo: https://github.com/asottile/pyupgrade
+    rev: v2.29.0
+    hooks:
+    -   id: pyupgrade
+        args: [--py36-plus]
+
+-   repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v0.910
+    hooks:
+    -   id: mypy
+        files: ^src/
+        args: []
