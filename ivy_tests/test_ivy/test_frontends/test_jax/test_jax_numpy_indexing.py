@@ -146,6 +146,7 @@ def test_jax_numpy_diag_indices(
         min_dim_size=1,
         max_dim_size=10,
         indices_same_dims=True,
+        valid_bounds=False,
     ),
     mode=st.sampled_from(['clip', 'fill', 'drop']),
     test_with_out=st.just(False),
