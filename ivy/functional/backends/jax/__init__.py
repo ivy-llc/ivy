@@ -1,5 +1,6 @@
 # global
 import sys
+from packaging import version
 from jax.config import config
 import jaxlib
 import jax
@@ -39,7 +40,9 @@ use = ivy.utils.backend.ContextManager(_module_in_memory)
 
 # noinspection PyUnresolvedReferences
 JaxArray = Union[
-    jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceArray, Buffer
+    jax.interpreters.xla._DeviceArray,
+    jaxlib.xla_extension.DeviceArray,
+    Buffer,
 ]
 # noinspection PyUnresolvedReferences,PyProtectedMember
 NativeArray = (
@@ -47,6 +50,11 @@ NativeArray = (
     jaxlib.xla_extension.DeviceArray,
     Buffer,
 )
+
+if version.parse(jax.__version__) >= version.parse("0.4.1"):
+    JaxArray = Union[JaxArray, jax.Array]
+    NativeArray += (jax.Array,)
+
 # noinspection PyUnresolvedReferences,PyProtectedMember
 NativeVariable = jax.interpreters.xla._DeviceArray
 # noinspection PyUnresolvedReferences
