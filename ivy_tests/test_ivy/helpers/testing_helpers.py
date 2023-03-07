@@ -65,11 +65,7 @@ def num_positional_args_method(draw, *, method):
     -------
     A strategy that can be used in the @given hypothesis decorator.
     """
-    total, num_positional_only, num_keyword_only, = (
-        0,
-        0,
-        0,
-    )
+    total, num_positional_only, num_keyword_only = (0, 0, 0)
     for param in inspect.signature(method).parameters.values():
         if param.name == "self":
             continue
@@ -228,6 +224,14 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
         _tmp_mod = importlib.import_module(fn_module)
         _fn = _tmp_mod.__dict__[fn_name]
         devices_and_dtypes = ivy.function_supported_devices_and_dtypes(_fn)
+        try:
+            # Issue with bfloat16 and tensorflow
+            if "bfloat16" in devices_and_dtypes["gpu"]:
+                tmp = list(devices_and_dtypes["gpu"])
+                tmp.remove("bfloat16")
+                devices_and_dtypes["gpu"] = tuple(tmp)
+        except KeyError:
+            pass
         organized_dtypes = {}
         for device in devices_and_dtypes.keys():
             organized_dtypes[device] = _partition_dtypes_into_kinds(

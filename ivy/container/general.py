@@ -10,7 +10,7 @@ import ivy
 
 
 # noinspection PyMissingConstructor
-class ContainerWithGeneral(ContainerBase):
+class _ContainerWithGeneral(ContainerBase):
     @staticmethod
     def static_is_native_array(
         x: ivy.Container,
@@ -607,7 +607,21 @@ class ContainerWithGeneral(ContainerBase):
         -------
         ret
             An array with the vector norm downscaled to the max norm if needed.
-
+        
+        Examples
+        --------
+        
+        With :class:`ivy.Container` input and default backend set as `numpy`:
+        
+        >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))
+        >>> y = ivy.Container(a=ivy.array([1]), b=ivy.array([2]))
+        >>> x.inplace_update(y)
+        >>> print(x)
+        {
+            a: ivy.array([1]),
+            b: ivy.array([2])
+        }
+        
         """
         return self.static_inplace_update(
             self,
@@ -1383,8 +1397,8 @@ class ContainerWithGeneral(ContainerBase):
         indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        axis: Optional[int] = -1,
-        batch_dims: Optional[int] = 0,
+        axis: int = -1,
+        batch_dims: int = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1398,7 +1412,7 @@ class ContainerWithGeneral(ContainerBase):
 
         Parameters
         ----------
-        self
+        params
             The container from which to gather values.
         indices
             The container or array which indicates the indices that will be
@@ -1473,8 +1487,8 @@ class ContainerWithGeneral(ContainerBase):
         indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        axis: Optional[int] = -1,
-        batch_dims: Optional[int] = 0,
+        axis: int = -1,
+        batch_dims: int = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1548,7 +1562,7 @@ class ContainerWithGeneral(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        include_infs=True,
+        include_infs: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1560,7 +1574,7 @@ class ContainerWithGeneral(ContainerBase):
 
         Parameters
         ----------
-        x
+        self
             The container to check for nans.
         include_infs
             Whether to include infs and -infs in the check. Default is True.
@@ -1594,7 +1608,7 @@ class ContainerWithGeneral(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        include_infs=True,
+        include_infs: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1638,7 +1652,7 @@ class ContainerWithGeneral(ContainerBase):
         indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         updates: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
-        shape: Union[ivy.Array, ivy.NativeArray, ivy.Container] = None,
+        shape: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         *,
         reduction: str = "sum",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -1735,7 +1749,7 @@ class ContainerWithGeneral(ContainerBase):
         self: ivy.Container,
         updates: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
-        shape: Union[ivy.Array, ivy.NativeArray, ivy.Container] = None,
+        shape: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         *,
         reduction: str = "sum",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -1973,7 +1987,7 @@ class ContainerWithGeneral(ContainerBase):
         indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        batch_dims: Optional[int] = 0,
+        batch_dims: int = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2033,7 +2047,7 @@ class ContainerWithGeneral(ContainerBase):
         indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        batch_dims: Optional[int] = 0,
+        batch_dims: int = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2063,9 +2077,6 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-        device
-            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as
-            ``x`` if None.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -2928,8 +2939,8 @@ class ContainerWithGeneral(ContainerBase):
         denominator: Union[Number, ivy.Array, ivy.Container],
         /,
         *,
-        min_denominator: Union[
-            Number, ivy.Array, ivy.NativeArray, ivy.Container
+        min_denominator: Optional[
+            Union[Number, ivy.Array, ivy.NativeArray, ivy.Container]
         ] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -3032,8 +3043,8 @@ class ContainerWithGeneral(ContainerBase):
         denominator: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        min_denominator: Union[
-            Number, ivy.Array, ivy.NativeArray, ivy.Container
+        min_denominator: Optional[
+            Union[Number, ivy.Array, ivy.NativeArray, ivy.Container]
         ] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -3121,7 +3132,7 @@ class ContainerWithGeneral(ContainerBase):
         exponent: Union[Number, ivy.Array, ivy.Container],
         /,
         *,
-        min_base: float = None,
+        min_base: Optional[float] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -3175,7 +3186,7 @@ class ContainerWithGeneral(ContainerBase):
         exponent: Union[Number, ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        min_base: float = None,
+        min_base: Optional[float] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -3652,7 +3663,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerWithGeneral.static_supports_inplace_updates(
+        return _ContainerWithGeneral.static_supports_inplace_updates(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -3805,7 +3816,7 @@ class ContainerWithGeneral(ContainerBase):
             c: ivy.array(2)
         }
         """
-        return ContainerWithGeneral.static_get_num_dims(
+        return _ContainerWithGeneral.static_get_num_dims(
             self,
             as_array=as_array,
             key_chains=key_chains,
@@ -3937,7 +3948,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerWithGeneral.static_array_equal(
+        return _ContainerWithGeneral.static_array_equal(
             self,
             x,
             key_chains=key_chains,
