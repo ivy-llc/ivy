@@ -67,6 +67,19 @@ def Atanh(*, x, name="Atanh"):
 
 
 @to_ivy_arrays_and_back
+def avg_pool_3d(x, ksize, strides, padding, name=None):
+    with ivy.name_scope('avg_pool_3d'):
+        output = ivy.raw_ops.AvgPool3D(
+            input=x,
+            ksize=ksize,
+            strides=strides,
+            padding=padding,
+            name=name
+        )
+        return output
+
+
+@to_ivy_arrays_and_back
 def BitwiseAnd(*, x, y, name="BitwiseAnd"):
     x, y = check_tensorflow_casting(x, y)
     return ivy.bitwise_and(x, y)

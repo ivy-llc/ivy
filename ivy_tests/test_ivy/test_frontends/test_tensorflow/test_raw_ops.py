@@ -606,6 +606,41 @@ def test_tensorflow_BitwiseXor(  # NOQA
     )
 
 
+# AvgPool3D
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.AvgPool3D",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+)
+def test_tensorflow_avg_pool_3d(
+    *,
+    dtype_and_x,
+    num_positional_args,
+    as_variable,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    ksize = [1, 2, 2, 2, 1]
+    strides = [1, 2, 2, 2, 1]
+    padding = 'VALID'
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        ksize=ksize,
+        strides=strides,
+        padding=padding
+    )
+
+
 # Atanh
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Atanh",
