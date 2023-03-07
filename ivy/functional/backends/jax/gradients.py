@@ -3,9 +3,7 @@
 # global
 import jax
 import jax.lax as jlax
-import jaxlib
-from jaxlib.xla_extension import Buffer
-from ivy.functional.backends.jax import JaxArray
+from ivy.functional.backends.jax import JaxArray, NativeArray
 from typing import Optional, Callable, Sequence, Union
 
 
@@ -28,15 +26,7 @@ def variable(x, /):
 def is_variable(x, /, *, exclusive=False):
     if exclusive:
         return False
-    return isinstance(
-        x,
-        (
-            jax.interpreters.xla._DeviceArray,
-            jax.Array,
-            jaxlib.xla_extension.DeviceArray,
-            Buffer,
-        ),
-    )
+    return isinstance(x, NativeArray)
 
 
 def variable_data(x: JaxArray, /) -> JaxArray:
