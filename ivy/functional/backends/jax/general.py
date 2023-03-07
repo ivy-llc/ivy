@@ -13,7 +13,7 @@ from typing import Iterable, Optional, Union, Sequence, Callable
 import multiprocessing as _multiprocessing
 
 # jax.Array is a feature that need to be enabled by the following line
-jax.config.update('jax_array', True)
+jax.config.update("jax_array", True)
 
 # necessary import, because stateful imports jax as soon as you import ivy, however,
 # during multiversion # jax is not there, and therefore a later import results in some
@@ -44,6 +44,7 @@ def is_native_array(x, /, *, exclusive=False):
             (
                 jax.interpreters.xla._DeviceArray,
                 jax.Array,
+                jaxlib.xla_extension.DeviceArray,
                 Buffer,
             ),
         )
@@ -52,6 +53,7 @@ def is_native_array(x, /, *, exclusive=False):
         (
             jax.interpreters.xla._DeviceArray,
             jax.Array,
+            jaxlib.xla_extension.DeviceArray,
             Buffer,
             jax.interpreters.ad.JVPTracer,
             jax.core.ShapedArray,
