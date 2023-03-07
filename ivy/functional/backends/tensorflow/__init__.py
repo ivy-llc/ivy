@@ -120,10 +120,10 @@ native_inplace_support = False
 supports_gradients = True
 
 
-def closest_valid_dtype(type, /):
+def closest_valid_dtype(type=None, /, as_native=False):
     if type is None:
-        return ivy.default_dtype()
-    return type
+        type = ivy.default_dtype()
+    return ivy.as_ivy_dtype(type) if not as_native else ivy.as_native_dtype(type)
 
 
 backend = "tensorflow"
