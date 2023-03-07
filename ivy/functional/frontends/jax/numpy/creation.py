@@ -121,6 +121,6 @@ def full(shape, fill_value, dtype=None):
     return ivy.full(shape, fill_value, dtype=dtype)
 
 
-@to_ivy_arrays_and_back
-def double(x):
-    return ivy.astype(x, ivy.double, copy=False)
+
+
+
