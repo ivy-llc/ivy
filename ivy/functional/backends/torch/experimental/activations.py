@@ -34,3 +34,24 @@ relu6.unsupported_dtypes = (
     "float16",
     "bfloat16",
 )
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, backend_version)
+def batch_norm(
+    x: torch.Tensor,
+    mean: torch.Tensor,
+    variance: torch.Tensor,
+    /,
+    *,
+    scale: Optional[torch.Tensor] = None,
+    offset: Optional[torch.Tensor] = None,
+    training: bool = False,
+    eps: float = 1e-5,
+):
+    mean.requires_grad = False
+    variance.requires_grad = False
+    scale.requires_grad = False
+    offset.requires_grad = False
+    return torch.nn.functional.batch_norm(
+        x, mean, variance, weight=scale, bias=offset, training=training, eps=eps
+    )

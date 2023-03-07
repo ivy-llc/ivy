@@ -104,13 +104,12 @@ native_inplace_support = False
 supports_gradients = False
 
 
-def closest_valid_dtype(type, /):
+def closest_valid_dtype(type=None, /, as_native=False):
     if type is None:
-        return ivy.default_dtype()
-    type_str = ivy.as_ivy_dtype(type)
-    if type_str in invalid_dtypes:
-        return {"bfloat16": ivy.float16}[type_str]
-    return type
+        type = ivy.default_dtype()
+    elif isinstance(type, str) and type in invalid_dtypes:
+        type = {"bfloat16": ivy.float16}[type]
+    return ivy.as_ivy_dtype(type) if not as_native else ivy.as_native_dtype(type)
 
 
 backend = "numpy"

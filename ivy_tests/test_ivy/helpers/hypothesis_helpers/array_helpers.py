@@ -180,7 +180,7 @@ def lists(
         )
         if not isinstance(min_size, int):
             min_size = draw(st.shared(integers, key=min_size))
-        else:
+        if not isinstance(max_size, int):
             max_size = draw(st.shared(integers, key=max_size))
 
     return draw(st.lists(x, min_size=min_size, max_size=max_size))
@@ -618,6 +618,7 @@ def array_indices_axis(
     max_dim_size=10,
     first_dimension_only=False,
     indices_same_dims=False,
+    valid_bounds=True,
 ):
     """Generates two arrays x & indices, the values in the indices array are indices
     of the array x. Draws an integers randomly from the minimum and maximum number of
@@ -649,6 +650,8 @@ def array_indices_axis(
         The maximum size of the dimensions of the arrays.
     indices_same_dims
         Set x and indices dimensions to be the same
+    valid_bounds
+        If False, the strategy may produce out-of-bounds indices.
 
     Returns
     -------
@@ -762,6 +765,8 @@ def array_indices_axis(
         max_axis = max(x_shape[0] - 1, 0)
     else:
         max_axis = max(x_shape[axis] - 1, 0)
+    if not valid_bounds:
+        max_axis = max_axis + 10
     indices_dtype, indices = draw(
         dtype_and_values(
             available_dtypes=indices_dtypes,

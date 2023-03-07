@@ -257,8 +257,11 @@ def test_dct(
 
 
 @st.composite
-def _interp_args(draw, scale_factor=False):
-    mode = draw(st.sampled_from(["linear", "bilinear", "trilinear", "nearest", "area"]))
+def _interp_args(draw, mode=None, scale_factor=False):
+    if not mode:
+        mode = draw(
+            st.sampled_from(["linear", "bilinear", "trilinear", "nearest", "area"])
+        )
     align_corners = draw(st.one_of(st.booleans(), st.none()))
     if mode == "linear":
         num_dims = 3
@@ -627,4 +630,79 @@ def test_dft(
         norm=norm,
         rtol_=1e-2,
         atol_=1e-2,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.adaptive_avg_pool1d",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        max_num_dims=3,
+        min_dim_size=5,
+        max_value=100,
+        min_value=-100,
+    ),
+    output_size=helpers.ints(min_value=1, max_value=10),
+    test_with_out=st.just(False),
+    ground_truth_backend="torch",
+    # TODO: need to debug for containers
+)
+def test_adaptive_avg_pool1d(
+    *,
+    dtype_and_x,
+    output_size,
+    test_flags,
+    backend_fw,
+    fn_name,
+    ground_truth_backend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        input=x[0],
+        output_size=output_size,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.adaptive_avg_pool2d",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=3,
+        max_num_dims=4,
+        min_dim_size=5,
+        max_value=100,
+        min_value=-100,
+    ),
+    output_size=st.tuples(
+        helpers.ints(min_value=1, max_value=10),
+        helpers.ints(min_value=1, max_value=10),
+    ),
+    test_with_out=st.just(False),
+    ground_truth_backend="torch",
+    # TODO: need to debug for containers
+)
+def test_adaptive_avg_pool2d(
+    *,
+    dtype_and_x,
+    output_size,
+    test_flags,
+    backend_fw,
+    fn_name,
+    ground_truth_backend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        input=x[0],
+        output_size=output_size,
     )

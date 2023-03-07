@@ -423,17 +423,18 @@ def fomaml_step(
     num_tasks: Optional[int] = None,
     stop_gradients: bool = True,
 ) -> Tuple[ivy.Array, ivy.Container, Any]:
-    """Perform step of first order MAML.
+    """
+    Perform step of first order MAML.
 
     Parameters
     ----------
     batch
         The input batch
     inner_cost_fn
-        callable for the inner loop cost function, receving task-specific sub-batch,
-        inner vars and outer vars
+        callable for the inner loop cost function, receiving sub-batch, inner vars and
+        outer vars
     outer_cost_fn
-        callable for the outer loop cost function, receving task-specific sub-batch,
+        callable for the outer loop cost function, receiving task-specific sub-batch,
         inner vars and outer vars. If None, the cost from the inner loop will also be
         optimized in the outer loop.
     variables
@@ -465,19 +466,22 @@ def fomaml_step(
         Default is ``True``.
     outer_v
         Nested variable keys to be optimized during the inner loop, with same keys and
-        boolean values. (Default value = None)
+        boolean values. 
+        (Default value = None)
     keep_outer_v
         If True, the key chains in inner_v will be kept, otherwise they will be removed.
         Default is ``True``.
     return_inner_v
         Either 'first', 'all', or False. 'first' means the variables for the first task
         inner loop will also be returned. variables for all tasks will be returned with
-        'all'. Default is ``False``.
+        'all'. 
+        Default is ``False``.
     num_tasks
         Number of unique tasks to inner-loop optimize for the meta step. Determined from
         batch by default.
     stop_gradients
-        Whether to stop the gradients of the cost. Default is ``True``.
+        Whether to stop the gradients of the cost. 
+        Default is ``True``.
 
     Returns
     -------
@@ -643,7 +647,7 @@ def maml_step(
     batch
         The input batch
     inner_cost_fn
-        callable for the inner loop cost function, receing sub-batch, inner vars and
+        callable for the inner loop cost function, receiving sub-batch, inner vars and
         outer vars
     outer_cost_fn
         callable for the outer loop cost function, receving task-specific sub-batch,

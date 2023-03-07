@@ -2,5 +2,5 @@
 import abc
 
 
-class ArrayWithGradientsExperimental(abc.ABC):
+class _ArrayWithGradientsExperimental(abc.ABC):
     pass

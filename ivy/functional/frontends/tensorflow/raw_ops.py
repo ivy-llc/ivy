@@ -405,9 +405,7 @@ def Sign(*, x, name="Sign"):
     return ivy.sign(x)
 
 
-@to_ivy_arrays_and_back
-def Split(*, axis, value, num_split, name="Split"):
-    return ivy.split(value, num_or_size_splits=num_split, axis=axis)
+Split = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.split))
 
 
 @to_ivy_arrays_and_back
@@ -615,3 +613,5 @@ Elu.supported_dtypes = {
 @to_ivy_arrays_and_back
 def LinSpace(*, start, stop, num, name=None):
     return ivy.linspace(start, stop, num)
+
+Roll = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.roll))
