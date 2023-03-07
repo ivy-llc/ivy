@@ -29,7 +29,13 @@ def is_variable(x, /, *, exclusive=False):
     if exclusive:
         return False
     return isinstance(
-        x, (jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceArray, Buffer)
+        x,
+        (
+            jax.interpreters.xla._DeviceArray,
+            jax.Array,
+            jaxlib.xla_extension.DeviceArray,
+            Buffer,
+        ),
     )
 
 
