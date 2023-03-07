@@ -303,8 +303,37 @@ class Tensor:
                     cast_tensor = self.clone()
                     cast_tensor.ivy_array = ivy.asarray(self._ivy_array, dtype=args[0])
                     return cast_tensor
+            if isinstance(args[0], (ivy.Device, ivy.NativeDevice, str)):
+                if isinstance(args[0], str):
+                    ivy.utils.assertions.check_elem_in_list(
+                        args[0],
+                        [
+                            "cpu",
+                            "cuda",
+                            "xpu",
+                            "mkldnn",
+                            "opengl",
+                            "opencl",
+                            "ideep",
+                            "hip",
+                            "ve",
+                            "ort",
+                            "mlc",
+                            "xla",
+                            "lazy",
+                            "vulkan",
+                            "meta",
+                            "hpu",
+                        ],
+                    )
+                if self.device == args[0]:
+                    return self
+                else:
+                    cast_tensor = self.clone()
+                    cast_tensor.ivy_array = ivy.asarray(self._ivy_array, device=args[0])
+                    return cast_tensor
             else:
-                if self.dtype == args[0].dtype and self.device == args[0].device:
+                if self.dtype == args[0].dtype and self.device == ivy.dev(args[0]):
                     return self
                 else:
                     cast_tensor = self.clone()
@@ -740,23 +769,38 @@ class Tensor:
         return torch_frontend.div(self._ivy_array, other)
 
     def __iadd__(self, other):
-        torch_frontend.add(self._ivy_array, other, out=self)
+        ret = torch_frontend.add(self._ivy_array, other)
+        self.ivy_array = ivy.inplace_update(
+            self._ivy_array, ivy.astype(ret.ivy_array, self.dtype)
+        )
         return self
 
     def __imod__(self, other):
-        torch_frontend.remainder(self._ivy_array, other, out=self)
+        ret = torch_frontend.remainder(self._ivy_array, other)
+        self.ivy_array = ivy.inplace_update(
+            self._ivy_array, ivy.astype(ret.ivy_array, self.dtype)
+        )
         return self
 
     def __imul__(self, other):
-        torch_frontend.mul(self._ivy_array, other, out=self)
+        ret = torch_frontend.mul(self._ivy_array, other)
+        self.ivy_array = ivy.inplace_update(
+            self._ivy_array, ivy.astype(ret.ivy_array, self.dtype)
+        )
         return self
 
     def __isub__(self, other):
-        torch_frontend.subtract(self._ivy_array, other, out=self)
+        ret = torch_frontend.subtract(self._ivy_array, other)
+        self.ivy_array = ivy.inplace_update(
+            self._ivy_array, ivy.astype(ret.ivy_array, self.dtype)
+        )
         return self
 
     def __itruediv__(self, other):
-        torch_frontend.div(self._ivy_array, other, out=self)
+        ret = torch_frontend.div(self._ivy_array, other)
+        self.ivy_array = ivy.inplace_update(
+            self._ivy_array, ivy.astype(ret.ivy_array, self.dtype)
+        )
         return self
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")

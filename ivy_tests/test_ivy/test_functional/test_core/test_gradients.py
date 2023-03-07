@@ -104,6 +104,7 @@ def test_stop_gradient(
     test_flags,
     backend_fw,
     fn_name,
+    on_device,
     ground_truth_backend,
 ):
     dtype, x = dtype_and_x
@@ -113,6 +114,7 @@ def test_stop_gradient(
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
         preserve_type=preserve_type,
     )
@@ -140,6 +142,7 @@ def test_execute_with_gradients(
     test_flags,
     backend_fw,
     fn_name,
+    on_device,
     ground_truth_backend,
 ):
     def func(xs):
@@ -165,6 +168,7 @@ def test_execute_with_gradients(
         func=func,
         rtol_=1e-1,
         atol_=1e-1,
+        on_device=on_device,
         xs=xs[0],
         retain_grads=retain_grads,
     )
@@ -286,6 +290,7 @@ def test_adam_step(
     test_flags,
     backend_fw,
     fn_name,
+    on_device,
     ground_truth_backend,
 ):
     input_dtypes, [dcdw, mw, vw] = dtype_n_dcdw_n_mw_n_vw
@@ -300,6 +305,7 @@ def test_adam_step(
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-1,
         atol_=1e-1,
         dcdw=dcdw,
@@ -325,6 +331,7 @@ def test_optimizer_update(
     test_flags,
     backend_fw,
     fn_name,
+    on_device,
     ground_truth_backend,
 ):
     input_dtypes, [w, effective_grad], lr = dtype_n_ws_n_effgrad_n_lr
@@ -334,6 +341,7 @@ def test_optimizer_update(
         fw=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
         w=w,
@@ -356,6 +364,7 @@ def test_gradient_descent_update(
     test_flags,
     backend_fw,
     fn_name,
+    on_device,
     ground_truth_backend,
 ):
     input_dtypes, [w, dcdw], lr = dtype_n_ws_n_dcdw_n_lr
@@ -365,6 +374,7 @@ def test_gradient_descent_update(
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
         w=w,
@@ -391,6 +401,7 @@ def test_lars_update(
     test_flags,
     backend_fw,
     fn_name,
+    on_device,
     ground_truth_backend,
 ):
     input_dtypes, [w, dcdw], lr = dtype_n_ws_n_dcdw_n_lr
@@ -403,6 +414,7 @@ def test_lars_update(
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-1,
         atol_=1e-1,
         w=w,
@@ -439,6 +451,7 @@ def test_adam_update(
     test_flags,
     backend_fw,
     fn_name,
+    on_device,
     ground_truth_backend,
 ):
     input_dtypes, [w, dcdw, mw_tm1, vw_tm1], lr = dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr
@@ -450,6 +463,7 @@ def test_adam_update(
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
         w=w,
@@ -497,6 +511,7 @@ def test_lamb_update(
     test_flags,
     backend_fw,
     fn_name,
+    on_device,
     ground_truth_backend,
 ):
     input_dtypes, [w, dcdw, mw_tm1, vw_tm1], lr = dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr
@@ -516,6 +531,7 @@ def test_lamb_update(
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-1,
         atol_=1e-1,
         w=w,
