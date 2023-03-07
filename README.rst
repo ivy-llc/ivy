@@ -472,8 +472,34 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 .. code-block:: python
 
     import ivy
+    import torch
+    import tensorflow as tf
 
-    # ToDo: Write code
+    # Get a pretrained keras model
+    eff_encoder = tf.keras.applications.efficientnet_v2.EfficientNetV2B0(
+        include_top=False, weights="imagenet", input_shape=(224, 224, 3)
+    )
+
+    # Transpile it into a torch.nn.Module with the corresponding parameters
+    noise = tf.random.normal(shape=(1, 224, 224, 3))
+    torch_eff_encoder = ic.transpile(eff_encoder, to="torch", args=(noise,))
+
+
+    # Build a classifier using the transpiled encoder
+    class Classifier(torch.nn.Module):
+        def __init__(self, num_classes=20):
+            super(Classifier, self).__init__()
+            self.encoder = torch_eff_encoder
+            self.fc = torch.nn.Linear(1280, num_classes)
+
+        def forward(self, x):
+            x = self.encoder(x)
+            return self.fc(x)
+
+
+    # Initialize a trainable, customizable, torch.nn.Module
+    classifier = Classifier()
+    ret = classifier(torch.rand((1, 244, 244, 3)))
 
 .. raw:: html
 
