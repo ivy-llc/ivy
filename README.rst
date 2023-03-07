@@ -198,51 +198,169 @@ The `Ivy Stateful API <https://lets-unify.ai/ivy/design/ivy_as_a_framework/ivy_s
 
     import ivy
 
-    class MyModel(ivy.Module):
-        def __init__(self):
-            self.linear0 = ivy.Linear(3, 64)
-            self.linear1 = ivy.Linear(64, 1)
+    # a simple image classification model
+    class IvyNet(ivy.Module):
+        def __init__(
+            self,
+            h_w=(32, 32),
+            input_channels=3,
+            output_channels=512,
+            kernel_size=[3, 3],
+            num_classes=2,
+            data_format="NCHW",
+            device="cpu",
+        ):
+            self.extractor = ivy.Sequential(
+                ivy.Conv2D(input_channels, 6, [5, 5], 1, "SAME", data_format=data_format),
+                ivy.GELU(),
+                ivy.Conv2D(6, 16, [5, 5], 1, "SAME", data_format=data_format),
+                ivy.GELU(),
+                ivy.Conv2D(16, output_channels, [5, 5], 1, "SAME", data_format=data_format),
+                ivy.GELU(),
+            )
+
+            self.classifier = ivy.Sequential(
+                ivy.Linear(h_w[0] * h_w[1] * output_channels, 512),
+                # since padding is same, this would be image_height x image_widht x output_channels
+                ivy.GELU(),
+                ivy.Linear(512, num_classes),
+            )
             ivy.Module.__init__(self)
 
         def _forward(self, x):
-            x = ivy.relu(self.linear0(x))
-            return ivy.sigmoid(self.linear1(x))
+            x = self.extractor(x)
+            x = ivy.flatten(x, start_dim=1, end_dim=-1)  # flatten all dims except batch dim
+            logits = self.classifier(x)
+            probs = ivy.softmax(logits)
+            return logits, probs
 
 
-If we put it all toghether, we'll have something like this. This example uses PyTorch as a backend framework,
-but the backend can easily be changed to your favorite frameworks, such as TensorFlow, or JAX.
+If we put it all toghether, we'll have something like this. This example uses Tensorflow as a backend framework,
+but the backend can easily be changed to your favorite frameworks, such as PyTorch, or JAX.
 
 .. code-block:: python
 
-    import ivy
+    ivy.set_backend('tensorflow')  # change to any backend!
 
-    class MyModel(ivy.Module):
-        def __init__(self):
-            self.linear0 = ivy.Linear(3, 64)
-            self.linear1 = ivy.Linear(64, 1)
-            ivy.Module.__init__(self)
 
-        def _forward(self, x):
-            x = ivy.relu(self.linear0(x))
-            return ivy.sigmoid(self.linear1(x))
+At last, we build the training pipeline in pure ivy.
 
-    ivy.set_backend('torch')  # change to any backend!
-    model = MyModel()
-    optimizer = ivy.Adam(1e-4)
-    x_in = ivy.array([1., 2., 3.])
-    target = ivy.array([0.])
+.. raw:: html
 
-    def loss_fn(v):
-        out = model(x_in, v=v)
-        return ivy.mean((out - target)**2)
+   <details>
+   <summary><a>Defining some helper functions</a></summary>
 
-    for step in range(100):
-        loss, grads = ivy.execute_with_gradients(loss_fn, model.v)
-        model.v = optimizer.step(model.v, grads)
-        print('step {} loss {}'.format(step, ivy.to_numpy(loss).item()))
+.. code-block:: python
 
-    print('Finished training!')
+    # helper function for loading the dataset in batches
+    def generate_batches(images, classes, dataset_size, batch_size=32):
+        targets = {k: v for v, k in enumerate(np.unique(classes))}
+        y_train = [targets[classes[i]] for i in range(len(classes))]
+        if batch_size > dataset_size:
+            raise ivy.utils.exceptions.IvyError("Use a smaller batch size")
+        for idx in range(0, dataset_size, batch_size):
+            yield ivy.stack(images[idx : min(idx + batch_size, dataset_size)]), ivy.array(
+                y_train[idx : min(idx + batch_size, dataset_size)]
+            )
 
+    # get the number of current predictions
+    def num_correct(preds, labels):
+        return (preds.argmax() == labels).sum().to_numpy().item()
+
+
+    # this is passed as an argument to ivy's function for computing gradients
+    def loss_fn(params):
+        v, model, x, y = params
+        y_pred, probs = model(x)
+        return ivy.cross_entropy(y, probs), probs
+
+
+.. raw:: html
+
+   </details>
+
+.. raw:: html
+
+   <details>
+   <summary><a>Train this model</a></summary>
+
+.. code-block:: python
+
+   # train the model on gpu if it's available
+    device = "cuda:0" if ivy.gpu_is_available() else "cpu"
+
+    model = IvyNet(
+        h_w=(28, 28),
+        input_channels=1,
+        output_channels=120,
+        kernel_size=[5, 5],
+        num_classes=num_classes,
+        device=device,
+    )
+
+    # training loop
+    def train(images, classes, epochs, model, device, num_classes=10, batch_size=32):
+        # training metrics
+        epoch_loss = 0.0
+        running_loss = 0.0
+        fields = ["epoch", "epoch_loss", "training_accuracy"]
+        metrics = []
+        dataset_size = len(images)
+
+        for epoch in range(epochs):
+            train_loss, train_correct = 0, 0
+            train_loop = tqdm(
+                generate_batches(images, classes, len(images), batch_size=batch_size),
+                total=dataset_size // batch_size,
+                position=0,
+                leave=True,
+            )
+
+            for xbatch, ybatch in train_loop:
+                if device != "cpu":
+                    xbatch, ybatch = xbatch.to_device("gpu:0"), ybatch.to_device("gpu:0")
+
+                # since the cross entropy function expects the target classes to be in one-hot encoded format
+                ybatch_encoded = ivy.one_hot(ybatch, num_classes)
+
+                # update model params
+                loss_probs, grads = ivy.execute_with_gradients(
+                    loss_fn,
+                    (model.v, model, xbatch, ybatch_encoded),
+                    ret_grad_idxs=[[0]],
+                    xs_grad_idxs=[[0]],
+                )
+                model.v = optimizer.step(model.v, grads["0"])
+
+                batch_loss = ivy.to_numpy(loss_probs[0]).mean().item()  # batch mean loss
+                epoch_loss += batch_loss * xbatch.shape[0]
+                train_correct += num_correct(loss_probs[1], ybatch)
+
+                train_loop.set_description(f"Epoch [{epoch + 1:2d}/{epochs}]")
+                train_loop.set_postfix(
+                    running_loss=batch_loss,
+                    accuracy_percentage=(train_correct / dataset_size) * 100,
+                )
+            epoch_loss = epoch_loss / dataset_size
+            training_accuracy = train_correct / dataset_size
+
+            metrics.append([epoch, epoch_loss, training_accuracy])
+
+            train_loop.write(
+                f"\nAverage training loss: {epoch_loss:.6f}, Train Correct: {train_correct}",
+                end="\n",
+            )
+
+        # write metrics for plotting
+        with open(f"/{model_name}_train_summary.csv", "w") as f:
+            f = csv.writer(f)
+            f.writerow(fields)
+            f.writerows(metrics)
+
+
+.. raw:: html
+
+   </details>
 
 Last but no least, we are also working on specific extension totally written in Ivy and therefore usable within any framework, 
 covering topics like `Mechanics`_, `Computer Vision`_, `Robotics`_, a `Reinforcement Learning Gym`_, `Memory`_ and implementation of various `Models`_ or `Builder tools`_ with trainers, data loaders and more.
