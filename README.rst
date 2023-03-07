@@ -482,7 +482,7 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 
     # Transpile it into a torch.nn.Module with the corresponding parameters
     noise = tf.random.normal(shape=(1, 224, 224, 3))
-    torch_eff_encoder = ic.transpile(eff_encoder, to="torch", args=(noise,))
+    torch_eff_encoder = ivy.transpile(eff_encoder, to="torch", args=(noise,))
 
 
     # Build a classifier using the transpiled encoder
@@ -876,8 +876,45 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 .. code-block:: python
 
     import ivy
+    import jax
+    import haiku as hk
+    import tensorflow as tf
 
-    # ToDo: Write code
+    # Get a pretrained keras model
+    eff_encoder = tf.keras.applications.efficientnet_v2.EfficientNetV2B0(
+        include_top=False, weights="imagenet", input_shape=(224, 224, 3)
+    )
+
+    # Transpile it into a hk.Module with the corresponding parameters
+    noise = tf.random.normal(shape=(1, 224, 224, 3))
+    hk_eff_encoder = ivy.transpile(eff_encoder, to="jax", args=(noise,))
+
+
+    # Build a classifier using the transpiled encoder
+    class Classifier(hk.Module):
+        def __init__(self, num_classes=1000):
+            super(Classifier, self).__init__()
+            self.encoder = hk_eff_encoder()
+            self.fc = hk.Linear(output_size=num_classes, with_bias=True)
+
+        def __call__(self, x):
+            x = self.encoder(x)
+            x = self.fc(x)
+            return x
+
+
+    def _forward_classifier(x):
+        module = Classifier()
+        return module(x)
+
+
+    # Transform the classifier and use it as a standard hk.Module
+    rng_key = jax.random.PRNGKey(42)
+    dummy_x = jax.random.uniform(key=rng_key, shape=(1, 224, 224, 3))
+    forward_classifier = hk.transform(_forward_classifier)
+    params = forward_classifier.init(rng=rng_key, x=dummy_x)
+
+    ret = forward_classifier.apply(params, None, dummy_x)
 
 .. raw:: html
 
