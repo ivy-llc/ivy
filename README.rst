@@ -220,8 +220,7 @@ The `Ivy Stateful API <https://lets-unify.ai/ivy/design/ivy_as_a_framework/ivy_s
             )
 
             self.classifier = ivy.Sequential(
-                ivy.Linear(h_w[0] * h_w[1] * output_channels, 512),
-                # since padding is same, this would be image_height x image_widht x output_channels
+                ivy.Linear(h_w[0] * h_w[1] * output_channels, 512), # since padding is "SAME", this would be image_height x image_width x output_channels
                 ivy.GELU(),
                 ivy.Linear(512, num_classes),
             )
