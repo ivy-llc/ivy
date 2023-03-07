@@ -56,10 +56,10 @@ def get_submodule(test_path):
 def update_individual_test_results(collection, id, submod, backend, test, result, backend_version=None, frontend_version=None):
     key = submod + "." + backend + "." + test
     if backend_version is not None:
-        backend_version.replace(".", "-")
+        backend_version = backend_version.replace(".", "_")
         key += "." + backend_version
     if frontend_version is not None:
-        frontend_version.replace(".", "-")
+        frontend_version = frontend_version.replace(".", "_")
         key += "." + frontend_version
     collection.update_one(
         {"_id": id},
