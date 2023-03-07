@@ -82,7 +82,7 @@ def run_multiversion_testing():
     cluster = MongoClient(
         f"mongodb+srv://deep-ivy:{mongo_key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa
     )
-    db = cluster["Ivy_tests_copy"]
+    db = cluster["Ivy_tests_multi"]
     with open("tests_to_run", "r") as f:
         for line in f:
             test, backend = line.split(",")
