@@ -124,13 +124,9 @@ def roll(
     /,
     shift: Union[int, Sequence[int]],
     *,
-    copy: Optional[bool] = None,
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if copy:
-        newarr = x.copy()
-        return np.roll(newarr, shift, axis)
     return np.roll(x, shift, axis)
 
 
@@ -228,12 +224,8 @@ def tile(
     /, 
     repeats: Sequence[int], 
     *, 
-    copy: Optional[bool] = None,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    if copy:
-        newarr = x.copy()
-        return np.tile(newarr, repeats)
     return np.tile(x, repeats)
 
 
