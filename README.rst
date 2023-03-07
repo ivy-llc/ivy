@@ -244,12 +244,12 @@ but the backend can easily be changed to your favorite frameworks, such as PyTor
     ivy.set_backend('tensorflow')  # change to any backend!
 
 
-At last, we train this model
+At last, we build the training pipeline
 
 .. raw:: html
 
    <details>
-   <summary><a>big code</a></summary>
+   <summary><a>Train this model</a></summary>
 
 .. code-block:: python
     # train the model on gpu if it's available
