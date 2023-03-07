@@ -412,14 +412,15 @@ def interpolate(
     mode: Union[
         Literal["linear", "bilinear", "trilinear", "nearest", "area"]
     ] = "linear",
+    scale_factor: Optional[Union[Sequence[int], int]] = None,
     align_corners: Optional[bool] = None,
     antialias: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
     dims = len(x.shape) - 2
-    if align_corners or dims > 2 or mode in ["nearest", "area"]:
+    if align_corners or scale_factor or dims > 2 or mode in ["nearest", "area"]:
         return ivy.functional.experimental.interpolate(
-            x, size, mode=mode, align_corners=align_corners, antialias=antialias
+            x, size, mode=mode, align_corners=align_corners, antialias=antialias, scale_factor=scale_factor
         )
     size = (size,) * dims if isinstance(size, int) else size
     remove_dim = False

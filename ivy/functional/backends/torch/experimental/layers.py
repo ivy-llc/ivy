@@ -559,16 +559,18 @@ def interpolate(
     /,
     *,
     mode: Optional[Literal["linear", "bilinear", "trilinear"]] = "linear",
+    scale_factor: Optional[Union[Sequence[int], int]] = None,
     align_corners: Optional[bool] = None,
     antialias: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
 ):
     return torch.nn.functional.interpolate(
         x,
-        size,
+        size=size,
         mode=mode,
         align_corners=align_corners,
         antialias=antialias,
+        scale_factor=scale_factor,
     )
 
 

@@ -485,13 +485,14 @@ def interpolate(
     /,
     *,
     mode: Union[Literal["linear", "bilinear"]] = "linear",
+    scale_factor: Optional[Union[Sequence[int], int]] = None,
     align_corners: Optional[bool] = None,
     antialias: Optional[bool] = False,
     out: Optional[JaxArray] = None,
 ):
-    if align_corners or mode in ["area", "nearest"]:
+    if align_corners or scale_factor or mode in ["area", "nearest"]:
         return ivy.functional.experimental.interpolate(
-            x, size, mode=mode, align_corners=align_corners, antialias=antialias
+            x, size, mode=mode, align_corners=align_corners, antialias=antialias, scale_factor=scale_factor
         )
 
     dims = len(x.shape) - 2

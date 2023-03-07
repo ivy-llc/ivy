@@ -1027,6 +1027,7 @@ def interpolate(
     mode: Union[
         Literal["linear", "bilinear", "trilinear", "nearest", "area", "nearest_exact"]
     ] = "linear",
+    scale_factor: Optional[Union[Sequence[int], int]] = None,
     align_corners: Optional[bool] = None,
     antialias: Optional[bool] = False,
     out: Optional[ivy.Array] = None,
@@ -1049,6 +1050,8 @@ def interpolate(
         - trilinear
         - nearest
         - area
+    scale_factor
+        Multiplier for spatial size that defines the output size (overwriting `size`).
     align_corners
         If True, the corner pixels of the input and output tensors are aligned,
         and thus preserving the values at the corner pixels. If False, the corner
@@ -1069,7 +1072,14 @@ def interpolate(
 
     """
     dims = len(x.shape) - 2
-    size = (size,) * dims if isinstance(size, int) else tuple(size)
+    if scale_factor is not None:
+        if isinstance(scale_factor, (float, int)):
+            scale_factor = [scale_factor] * dims
+        size = tuple(
+            [int(math.floor(x.shape[1+i] * scale_factor[i])) for i in range(dims)]
+        )
+    else:
+        size = (size,) * dims if isinstance(size, int) else tuple(size)
     spatial_dims = [2 + i for i in range(dims)]
     input_shape = ivy.shape(x)
     scale = [ivy.divide(size[i], input_shape[spatial_dims[i]]) for i in range(dims)]

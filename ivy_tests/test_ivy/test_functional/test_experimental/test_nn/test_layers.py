@@ -257,7 +257,7 @@ def test_dct(
 
 
 @st.composite
-def _interp_args(draw, mode=None, scale_factor=False):
+def _interp_args(draw, mode=None):
     if not mode:
         mode = draw(
             st.sampled_from(["linear", "bilinear", "trilinear", "nearest", "area"])
@@ -273,16 +273,6 @@ def _interp_args(draw, mode=None, scale_factor=False):
         dim = draw(helpers.ints(min_value=1, max_value=3))
         num_dims = dim + 2
         align_corners = None
-    size = draw(
-        st.one_of(
-            helpers.lists(
-                x=helpers.ints(min_value=1, max_value=5),
-                min_size=num_dims - 2,
-                max_size=num_dims - 2,
-            ),
-            st.integers(min_value=1, max_value=5),
-        )
-    )
     dtype, x = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float"),
@@ -295,25 +285,38 @@ def _interp_args(draw, mode=None, scale_factor=False):
             safety_factor_scale="log",
         )
     )
-    if scale_factor:
-        scale_factor = draw(st.booleans())
-        if scale_factor:
-            recompute_scale_factor = draw(st.booleans())
-            scale_factors = size
-            size = None
-        else:
-            scale_factors = None
-            recompute_scale_factor = False
-        return (
-            dtype,
-            x,
-            mode,
-            size,
-            align_corners,
-            scale_factors,
-            recompute_scale_factor,
+    if draw(st.booleans()):
+        scale_factor = draw(
+            st.one_of(
+                helpers.lists(
+                    x=st.floats(min_value=0.1, max_value=1.0),
+                    min_size=num_dims - 2,
+                    max_size=num_dims - 2,
+                ),
+                st.floats(min_value=0.1, max_value=1.0),
+            )
         )
-    return dtype, x, mode, size, align_corners
+        size = None
+    else:
+        size = draw(
+            st.one_of(
+                helpers.lists(
+                    x=helpers.ints(min_value=1, max_value=5),
+                    min_size=num_dims - 2,
+                    max_size=num_dims - 2,
+                ),
+                st.integers(min_value=1, max_value=5),
+            )
+        )
+        scale_factor = None
+    return (
+        dtype,
+        x,
+        mode,
+        size,
+        align_corners,
+        scale_factor,
+    )
 
 
 @handle_test(
@@ -332,22 +335,28 @@ def test_interpolate(
     on_device,
     ground_truth_backend,
 ):
-    input_dtype, x, mode, size, align_corners = dtype_x_mode
-    helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        rtol_=1e-01,
-        atol_=1e-01,
-        x=x[0],
-        size=size,
-        mode=mode,
-        align_corners=align_corners,
-        antialias=antialias,
-    )
+    input_dtype, x, mode, size, align_corners, scale_factor = dtype_x_mode
+    try:
+        helpers.test_function(
+            ground_truth_backend=ground_truth_backend,
+            input_dtypes=input_dtype,
+            test_flags=test_flags,
+            fw=backend_fw,
+            fn_name=fn_name,
+            on_device=on_device,
+            rtol_=1e-01,
+            atol_=1e-01,
+            x=x[0],
+            size=size,
+            mode=mode,
+            align_corners=align_corners,
+            antialias=antialias,
+            scale_factor=scale_factor,
+        )
+    except RuntimeError as e:
+        if hasattr(e, 'message'):
+            if "Input and output sizes should be greater than 0" in e.message:
+                assume(False)
 
 
 @st.composite

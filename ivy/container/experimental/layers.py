@@ -1367,6 +1367,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         /,
         *,
         mode: Union[Literal["linear", "bilinear", "trilinear", "nearest"]] = "linear",
+        scale_factor: Optional[Union[Sequence[int], int]] = None,
         align_corners: Optional[bool] = None,
         antialias: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -1392,6 +1393,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
             - bilinear
             - trilinear
             - nearest
+        scale_factor
+            Multiplier for spatial size that defines the output size (overwriting `size`).
         align_corners
             If True, the corner pixels of the input and output tensors are aligned,
             and thus preserving the values at the corner pixels. If False, the corner
@@ -1415,6 +1418,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
             x,
             size,
             mode=mode,
+            scale_factor=scale_factor,
             align_corners=align_corners,
             antialias=antialias,
             key_chains=key_chains,
@@ -1430,6 +1434,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         /,
         *,
         mode: Union[Literal["linear", "bilinear", "trilinear", "nearest"]] = "linear",
+        scale_factor: Optional[Union[Sequence[int], int]] = None,
         align_corners: Optional[bool] = None,
         antialias: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -1455,6 +1460,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
             - bilinear
             - trilinear
             - nearest
+        scale_factor
+            Multiplier for spatial size that defines the output size (overwriting `size`).
         align_corners
             If True, the corner pixels of the input and output tensors are aligned,
             and thus preserving the values at the corner pixels. If False, the corner
@@ -1477,6 +1484,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
             self,
             size,
             mode=mode,
+            scale_factor=scale_factor,
             align_corners=align_corners,
             antialias=antialias,
             key_chains=key_chains,
