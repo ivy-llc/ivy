@@ -68,6 +68,9 @@ def flip(
 ) -> np.ndarray:
     num_dims = len(x.shape)
     if not num_dims:
+        if copy:
+            newarr = x.copy()
+            return newarr
         return x
     if axis is None:
         axis = list(range(num_dims))
@@ -186,6 +189,9 @@ def split(
                     num_or_size_splits
                 )
             )
+        if copy:
+            newarr = x.copy()
+            return [newarr]
         return [x]
     if num_or_size_splits is None:
         num_or_size_splits = x.shape[axis]
@@ -272,8 +278,11 @@ def unstack(
     keepdims: bool = False
 ) -> List[np.ndarray]:
     if x.shape == ():
+        if copy:
+            newarr = x.copy()
+            return [newarr]
         return [x]
-    x_split = 0
+    x_split = None
     if copy:
         newarr = x.copy()
         x_split = np.split(newarr, newarr.shape[axis], axis)
