@@ -239,12 +239,10 @@ but the backend can easily be changed to your favorite frameworks, such as PyTor
 
 .. code-block:: python
 
-    import ivy
-
     ivy.set_backend('tensorflow')  # change to any backend!
 
 
-At last, we build the training pipeline
+At last, we build the training pipeline in pure ivy.
 
 .. raw:: html
 
@@ -253,19 +251,7 @@ At last, we build the training pipeline
 
 .. code-block:: python
 
-   lots_of_code = "this text block"
-
-.. raw:: html
-
-   </details>
-
-.. raw:: html
-
-   <details>
-   <summary><a></a></summary>
-
-.. code-block:: python
-    # train the model on gpu if it's available
+   # train the model on gpu if it's available
     device = "cuda:0" if ivy.gpu_is_available() else "cpu"
 
     model = IvyNet(
@@ -277,7 +263,20 @@ At last, we build the training pipeline
         device=device,
     )
 
+    # helper function for loading the dataset in batches
+    def generate_batches(images, classes, dataset_size, batch_size=32):
+    targets = {k: v for v, k in enumerate(np.unique(classes))}
+    y_train = [targets[classes[i]] for i in range(len(classes))]
 
+    if batch_size > dataset_size:
+        raise ivy.utils.exceptions.IvyError("Use a smaller batch size")
+
+    for idx in range(0, dataset_size, batch_size):
+        yield ivy.stack(images[idx : min(idx + batch_size, dataset_size)]), ivy.array(
+            y_train[idx : min(idx + batch_size, dataset_size)]
+        )
+
+    # get the number of current predictions
     def num_correct(preds, labels):
         return (preds.argmax() == labels).sum().to_numpy().item()
 
@@ -345,6 +344,7 @@ At last, we build the training pipeline
             f = csv.writer(f)
             f.writerow(fields)
             f.writerows(metrics)
+
 
 .. raw:: html
 
