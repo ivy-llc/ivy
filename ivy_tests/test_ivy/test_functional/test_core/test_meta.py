@@ -748,13 +748,13 @@ def test_maml_step_unique_vars(
 
 
 # maml step shared vars
-@pytest.mark.parametrize("inner_grad_steps", [1])
-@pytest.mark.parametrize("with_outer_cost_fn", [True])
-@pytest.mark.parametrize("average_across_steps", [True])
-@pytest.mark.parametrize("batched", [True])
-@pytest.mark.parametrize("stop_gradients", [True])
-@pytest.mark.parametrize("num_tasks", [1])
-@pytest.mark.parametrize("return_inner_v", ["first"])
+@pytest.mark.parametrize("inner_grad_steps", [1, 2, 3])
+@pytest.mark.parametrize("with_outer_cost_fn", [True, False])
+@pytest.mark.parametrize("average_across_steps", [True, False])
+@pytest.mark.parametrize("batched", [True, False])
+@pytest.mark.parametrize("stop_gradients", [True, False])
+@pytest.mark.parametrize("num_tasks", [1, 2])
+@pytest.mark.parametrize("return_inner_v", ["first", "all", False])
 def test_maml_step_shared_vars(
     on_device,
     inner_grad_steps,
@@ -950,10 +950,7 @@ def test_maml_step_shared_vars(
     assert np.allclose(ivy.to_scalar(calc_cost), true_cost)
     outer_grads = rets[1]
     assert np.allclose(
-        ivy.to_numpy(outer_grads.latent),
-        ivy.to_numpy(true_outer_grad[0]),
-        atol=0.05,
-        rtol=0.05,
+        ivy.to_numpy(outer_grads.latent), ivy.to_numpy(true_outer_grad[0])
     )
     if return_inner_v:
         inner_v_rets = rets[2]
