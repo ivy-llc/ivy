@@ -13,7 +13,7 @@ RUN apt-get update && \
     pip3 install --upgrade pip && \
     pip3 install setuptools==58.5.3
 
-RUN pip3 install torch==1.13.1+cpu torchvision==0.14.1+cpu torchaudio==0.13.1 -f https://download.pytorch.org/whl/cu111/torch_stable.html
+RUN pip3 install torch==1.13.1 torchvision==0.14.1 torchaudio==0.13.1 -f https://download.pytorch.org/whl/cu111/torch_stable.html
 RUN pip3 install --upgrade torch-scatter -f https://pytorch-geometric.com/whl
 
 # Install Ivy Upstream
