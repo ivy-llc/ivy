@@ -1,6 +1,5 @@
 ..
     ToDo:
-    [ ] Remove links from collapsed examples
     [ ] Review typos
     [ ] Maybe add some images
 
@@ -430,33 +429,11 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
    <summary><h3>I'm using PyTorch&ensp;<img style="height: 1.2em; vertical-align:-20%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/pytorch_logo.png"></h3></summary>
       <blockquote>You can use Ivy to get PyTorch code from:
          <details>
-            <summary><h4>From TensorFlow</h4></summary>
+            <summary>Any model</summary>
             <blockquote>
                <details>
-                  <summary>Any library</summary>
+                  <summary>From TensorFlow</summary>
 
-.. code-block:: python
-
-    import ivy
-    import torch
-    import segmentation_models as sm
-
-    # transpile sm from tensorflow to torch
-    torch_sm = ivy.transpile(sm, source="tensorflow", to="torch")
-
-    # get some image-like arrays
-    output = torch.rand((1, 3, 512, 512))
-    target = torch.rand((1, 3, 512, 512))
-
-    # and use the transpiled version of any function from the library!
-    out = torch_sm.metrics.iou_score(output, target)
-
-.. raw:: html
-
-               </details>
-               <details>
-                  <summary>Any model</summary>
-                  
 .. code-block:: python
 
     import ivy
@@ -491,13 +468,13 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 
                </details>
                <details>
-                  <summary>Any function</summary>
-                  
+                  <summary>From JAX</summary>
+
 .. code-block:: python
 
     import ivy
 
-    # ToDo: Write code
+    # ToDo: Write JAX to torch model
 
 .. raw:: html
 
@@ -506,11 +483,33 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
         </details>
         
         <details>
-            <summary><h4>From Jax</h4></summary>
+            <summary>Any library</summary>
             <blockquote>
                <details>
-                  <summary>Any library</summary>
-                  
+                  <summary>From Tensorflow</summary>
+
+.. code-block:: python
+
+    import ivy
+    import torch
+    import segmentation_models as sm
+
+    # transpile sm from tensorflow to torch
+    torch_sm = ivy.transpile(sm, source="tensorflow", to="torch")
+
+    # get some image-like arrays
+    output = torch.rand((1, 3, 512, 512))
+    target = torch.rand((1, 3, 512, 512))
+
+    # and use the transpiled version of any function from the library!
+    out = torch_sm.metrics.iou_score(output, target)
+
+.. raw:: html
+
+               </details>
+               <details>
+                  <summary>From JAX</summary>
+
 .. code-block:: python
 
     import ivy
@@ -531,38 +530,8 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 
                </details>
                <details>
-                  <summary>Any model</summary>
-                  
-.. code-block:: python
+                  <summary>From NumPy</summary>
 
-    import ivy
-
-    # ToDo: Write code
-
-.. raw:: html
-
-               </details>
-               <details>
-                  <summary>Any function</summary>
-                  
-.. code-block:: python
-
-    import ivy
-
-    # ToDo: Write code
-
-.. raw:: html
-
-               </details>
-            </blockquote>
-        </details>
-        
-        <details>
-            <summary><h4>From NumPy</h4></summary>
-            <blockquote>
-               <details>
-                  <summary>Any library</summary>
-                  
 .. code-block:: python
 
     import ivy
@@ -581,26 +550,44 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 .. raw:: html
 
                </details>
+            </blockquote>
+        </details>
+        
+        <details>
+            <summary>Any function</summary>
+            <blockquote>
                <details>
-                  <summary>Any model</summary>
-                  
+                  <summary>From Tensorflow</summary>
+
 .. code-block:: python
 
     import ivy
 
-    # ToDo: Write code
+    # ToDo: Write tf to torch function
 
 .. raw:: html
 
                </details>
                <details>
-                  <summary>Any function</summary>
-                  
+                  <summary>From JAX</summary>
+
 .. code-block:: python
 
     import ivy
 
-    # ToDo: Write code
+    # ToDo: Write jax to torch function
+
+.. raw:: html
+
+               </details>
+               <details>
+                  <summary>From NumPy</summary>
+
+.. code-block:: python
+
+    import ivy
+
+    # ToDo: Write numpy to torch function
 
 .. raw:: html
 
@@ -615,41 +602,11 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
    <summary><h3>I'm using TensorFlow&ensp;<img style="height: 1.2em; vertical-align:-20%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/tensorflow_logo.png"></h3></summary>
       <blockquote>You can use Ivy to get TensorFlow code from:
          <details>
-            <summary><h4>From PyTorch</h4></summary>
+            <summary>Any model</summary>
             <blockquote>
                <details>
-                  <summary>Any library</summary>
-                  
-.. code-block:: python
+                  <summary>From PyTorch</summary>
 
-    import ivy
-    import kornia
-    import requests
-    import numpy as np
-    import tensorflow as tf
-    from PIL import Image
-
-    # transpile kornia from torch to tensorflow
-    tf_kornia = ivy.transpile(kornia, source="torch", to="tensorflow")
-
-    # get an image
-    url = "http://images.cocodataset.org/train2017/000000000034.jpg"
-    raw_img = Image.open(requests.get(url, stream=True).raw)
-
-    # convert it to the format expected by kornia
-    img = np.array(raw_img)
-    img = tf.transpose(tf.constant(img), (2, 0, 1))
-    img = tf.expand_dims(img, 0) / 255
-
-    # and use the transpiled version of any function from the library!
-    out = tf_kornia.enhance.sharpness(img, 5)
-
-.. raw:: html
-
-               </details>
-               <details>
-                  <summary>Any model</summary>
-                  
 .. code-block:: python
 
     import ivy
@@ -684,13 +641,13 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 
                </details>
                <details>
-                  <summary>Any function</summary>
-                  
+                  <summary>From JAX</summary>
+
 .. code-block:: python
 
     import ivy
 
-    # ToDo: Write code
+    # ToDo: Write JAX to tf model
 
 .. raw:: html
 
@@ -699,11 +656,41 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
         </details>
         
         <details>
-            <summary><h4>From Jax</h4></summary>
+            <summary>Any library</summary>
             <blockquote>
                <details>
-                  <summary>Any library</summary>
-                  
+                  <summary>From PyTorch</summary>
+
+.. code-block:: python
+
+    import ivy
+    import kornia
+    import requests
+    import numpy as np
+    import tensorflow as tf
+    from PIL import Image
+
+    # transpile kornia from torch to tensorflow
+    tf_kornia = ivy.transpile(kornia, source="torch", to="tensorflow")
+
+    # get an image
+    url = "http://images.cocodataset.org/train2017/000000000034.jpg"
+    raw_img = Image.open(requests.get(url, stream=True).raw)
+
+    # convert it to the format expected by kornia
+    img = np.array(raw_img)
+    img = tf.transpose(tf.constant(img), (2, 0, 1))
+    img = tf.expand_dims(img, 0) / 255
+
+    # and use the transpiled version of any function from the library!
+    out = tf_kornia.enhance.sharpness(img, 5)
+
+.. raw:: html
+
+               </details>
+               <details>
+                  <summary>From JAX</summary>
+
 .. code-block:: python
 
     import ivy
@@ -724,38 +711,8 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 
                </details>
                <details>
-                  <summary>Any model</summary>
-                  
-.. code-block:: python
+                  <summary>From NumPy</summary>
 
-    import ivy
-
-    # ToDo: Write code
-
-.. raw:: html
-
-               </details>
-               <details>
-                  <summary>Any function</summary>
-                  
-.. code-block:: python
-
-    import ivy
-
-    # ToDo: Write code
-
-.. raw:: html
-
-               </details>
-            </blockquote>
-        </details>
-        
-        <details>
-            <summary><h4>From NumPy</h4></summary>
-            <blockquote>
-               <details>
-                  <summary>Any library</summary>
-                  
 .. code-block:: python
 
     import ivy
@@ -774,26 +731,44 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 .. raw:: html
 
                </details>
+            </blockquote>
+        </details>
+        
+        <details>
+            <summary>Any function</summary>
+            <blockquote>
                <details>
-                  <summary>Any model</summary>
-                  
+                  <summary>From PyTorch</summary>
+
 .. code-block:: python
 
     import ivy
 
-    # ToDo: Write code
+    # ToDo: Write torch to tf function
 
 .. raw:: html
 
                </details>
                <details>
-                  <summary>Any function</summary>
-                  
+                  <summary>From JAX</summary>
+
 .. code-block:: python
 
     import ivy
 
-    # ToDo: Write code
+    # ToDo: Write jax to tf function
+
+.. raw:: html
+
+               </details>
+               <details>
+                  <summary>From NumPy</summary>
+
+.. code-block:: python
+
+    import ivy
+
+    # ToDo: Write numpy to tf function
 
 .. raw:: html
 
@@ -803,44 +778,16 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
         
      </blockquote>
    </details>
-   
-      <details>
+
+   <details>
    <summary><h3>I'm using Jax&ensp;<img style="height: 1.2em; vertical-align:-20%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/jax_logo.png"></h3></summary>
       <blockquote>You can use Ivy to get JAX code from:
          <details>
-            <summary><h4>From PyTorch</h4></summary>
+            <summary>Any model</summary>
             <blockquote>
                <details>
-                  <summary>Any library</summary>
-                  
-.. code-block:: python
+                  <summary>From PyTorch</summary>
 
-    import ivy
-    import kornia
-    import requests
-    import jax.numpy as jnp
-    from PIL import Image
-
-    # transpile kornia from torch to jax
-    jax_kornia = ivy.transpile(kornia, source="torch", to="jax")
-
-    # get an image
-    url = "http://images.cocodataset.org/train2017/000000000034.jpg"
-    raw_img = Image.open(requests.get(url, stream=True).raw)
-
-    # convert it to the format expected by kornia
-    img = jnp.transpose(jnp.array(raw_img), (2, 0, 1))
-    img = jnp.expand_dims(img, 0) / 255
-
-    # and use the transpiled version of any function from the library!
-    out = jax_kornia.enhance.sharpness(img, 5)
-
-.. raw:: html
-
-               </details>
-               <details>
-                  <summary>Any model</summary>
-                  
 .. code-block:: python
 
     import ivy
@@ -880,55 +827,12 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 
     ret = forward_classifier.apply(params, None, x)
 
-
 .. raw:: html
 
                </details>
                <details>
-                  <summary>Any function</summary>
-                  
-.. code-block:: python
+                  <summary>From TensorFlow</summary>
 
-    import ivy
-
-    # ToDo: Write code
-
-.. raw:: html
-
-               </details>
-            </blockquote>
-        </details>
-        
-        <details>
-            <summary><h4>From TensorFlow</h4></summary>
-            <blockquote>
-               <details>
-                  <summary>Any library</summary>
-                  
-.. code-block:: python
-
-    import ivy
-    import jax
-    import segmentation_models as sm
-
-    # transpile sm from tensorflow to jax
-    jax_sm = ivy.transpile(sm, source="tensorflow", to="jax")
-
-    # get some image-like arrays
-    key = jax.random.PRNGKey(23)
-    key1, key2 = jax.random.split(key)
-    output = jax.random.uniform(key1, (1, 3, 512, 512))
-    target = jax.random.uniform(key2, (1, 3, 512, 512))
-
-    # and use the transpiled version of any function from the library!
-    out = jax_sm.metrics.iou_score(output, target)
-
-.. raw:: html
-
-               </details>
-               <details>
-                  <summary>Any model</summary>
-                  
 .. code-block:: python
 
     import ivy
@@ -972,27 +876,67 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 .. raw:: html
 
                </details>
-               <details>
-                  <summary>Any function</summary>
-                  
-.. code-block:: python
-
-    import ivy
-
-    # ToDo: Write code
-
-.. raw:: html
-
-               </details>
             </blockquote>
         </details>
         
         <details>
-            <summary><h4>From NumPy</h4></summary>
+            <summary>Any library</summary>
             <blockquote>
                <details>
-                  <summary>Any library</summary>
-                  
+                  <summary>From PyTorch</summary>
+
+.. code-block:: python
+
+    import ivy
+    import kornia
+    import requests
+    import jax.numpy as jnp
+    from PIL import Image
+
+    # transpile kornia from torch to jax
+    jax_kornia = ivy.transpile(kornia, source="torch", to="jax")
+
+    # get an image
+    url = "http://images.cocodataset.org/train2017/000000000034.jpg"
+    raw_img = Image.open(requests.get(url, stream=True).raw)
+
+    # convert it to the format expected by kornia
+    img = jnp.transpose(jnp.array(raw_img), (2, 0, 1))
+    img = jnp.expand_dims(img, 0) / 255
+
+    # and use the transpiled version of any function from the library!
+    out = jax_kornia.enhance.sharpness(img, 5)
+
+.. raw:: html
+
+               </details>
+               <details>
+                  <summary>From TensorFlow</summary>
+
+.. code-block:: python
+
+    import ivy
+    import jax
+    import segmentation_models as sm
+
+    # transpile sm from tensorflow to jax
+    jax_sm = ivy.transpile(sm, source="tensorflow", to="jax")
+
+    # get some image-like arrays
+    key = jax.random.PRNGKey(23)
+    key1, key2 = jax.random.split(key)
+    output = jax.random.uniform(key1, (1, 3, 512, 512))
+    target = jax.random.uniform(key2, (1, 3, 512, 512))
+
+    # and use the transpiled version of any function from the library!
+    out = jax_sm.metrics.iou_score(output, target)
+
+.. raw:: html
+
+               </details>
+               <details>
+                  <summary>From NumPy</summary>
+
 .. code-block:: python
 
     import ivy
@@ -1011,26 +955,44 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 .. raw:: html
 
                </details>
+            </blockquote>
+        </details>
+        
+        <details>
+            <summary>Any function</summary>
+            <blockquote>
                <details>
-                  <summary>Any model</summary>
-                  
+                  <summary>From PyTorch</summary>
+
 .. code-block:: python
 
     import ivy
 
-    # ToDo: Write code
+    # ToDo: Write torch to jax function
 
 .. raw:: html
 
                </details>
                <details>
-                  <summary>Any function</summary>
-                  
+                  <summary>From TensorFlow</summary>
+
 .. code-block:: python
 
     import ivy
 
-    # ToDo: Write code
+    # ToDo: Write tf to jax function
+
+.. raw:: html
+
+               </details>
+               <details>
+                  <summary>From NumPy</summary>
+
+.. code-block:: python
+
+    import ivy
+
+    # ToDo: Write numpy to jax function
 
 .. raw:: html
 
@@ -1040,16 +1002,16 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
         
      </blockquote>
    </details>
-   
-      <details>
+
+   <details>
    <summary><h3>I'm using NumPy&ensp;<img style="height: 1.2em; vertical-align:-20%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/numpy_logo.png"></h3></summary>
       <blockquote>You can use Ivy to get NumPy code from:
          <details>
-            <summary><h4>From PyTorch</h4></summary>
+            <summary>Any library</summary>
             <blockquote>
                <details>
-                  <summary>Any library</summary>
-                  
+                  <summary>From PyTorch</summary>
+
 .. code-block:: python
 
     import ivy
@@ -1076,38 +1038,8 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 
                </details>
                <details>
-                  <summary>Any model</summary>
-                  
-.. code-block:: python
+                  <summary>From TensorFlow</summary>
 
-    import ivy
-
-    # ToDo: Write code
-
-.. raw:: html
-
-               </details>
-               <details>
-                  <summary>Any function</summary>
-                  
-.. code-block:: python
-
-    import ivy
-
-    # ToDo: Write code
-
-.. raw:: html
-
-               </details>
-            </blockquote>
-        </details>
-        
-        <details>
-            <summary><h4>From TensorFlow</h4></summary>
-            <blockquote>
-               <details>
-                  <summary>Any library</summary>
-                  
 .. code-block:: python
 
     import ivy
@@ -1128,38 +1060,8 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 
                </details>
                <details>
-                  <summary>Any model</summary>
-                  
-.. code-block:: python
+                  <summary>From Jax</summary>
 
-    import ivy
-
-    # ToDo: Write code
-
-.. raw:: html
-
-               </details>
-               <details>
-                  <summary>Any function</summary>
-                  
-.. code-block:: python
-
-    import ivy
-
-    # ToDo: Write code
-
-.. raw:: html
-
-               </details>
-            </blockquote>
-        </details>
-        
-        <details>
-            <summary><h4>From Jax</h4></summary>
-            <blockquote>
-               <details>
-                  <summary>Any library</summary>
-                  
 .. code-block:: python
 
     import ivy
@@ -1179,26 +1081,44 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 .. raw:: html
 
                </details>
+            </blockquote>
+        </details>
+        
+        <details>
+            <summary>Any function</summary>
+            <blockquote>
                <details>
-                  <summary>Any model</summary>
-                  
+                  <summary>From PyTorch</summary>
+
 .. code-block:: python
 
     import ivy
 
-    # ToDo: Write code
+    # ToDo: Write torch to np function
 
 .. raw:: html
 
                </details>
                <details>
-                  <summary>Any function</summary>
-                  
+                  <summary>From TensorFlow</summary>
+
 .. code-block:: python
 
     import ivy
 
-    # ToDo: Write code
+    # ToDo: Write tf to np function
+
+.. raw:: html
+
+               </details>
+               <details>
+                  <summary>From JAX</summary>
+
+.. code-block:: python
+
+    import ivy
+
+    # ToDo: Write jax to np function
 
 .. raw:: html
 
