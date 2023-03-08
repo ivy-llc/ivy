@@ -424,13 +424,13 @@ def interpolate(
             x, size, mode=mode, align_corners=align_corners, antialias=antialias,
         )
     remove_dim = False
-    if mode == "linear":
+    if mode in ["linear", "tf_area"]:
         if dims == 1:
             size = (1,) + tuple(size)
             x = tf.expand_dims(x, axis=-2)
             dims = 2
             remove_dim = True
-        mode = "bilinear"
+        mode = "bilinear" if mode == "linear" else "area"
     x = tf.transpose(x, (0, *range(2, dims + 2), 1))
     ret = tf.transpose(
         tf.cast(

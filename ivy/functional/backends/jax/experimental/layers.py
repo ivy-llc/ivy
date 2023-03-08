@@ -484,7 +484,18 @@ def interpolate(
     size: Union[Sequence[int], int],
     /,
     *,
-    mode: Union[Literal["linear", "bilinear"]] = "linear",
+    mode: Union[
+        Literal[
+            "linear",
+            "bilinear",
+            "trilinear",
+            "nearest",
+            "area",
+            "nearest_exact",
+            "tf_area",
+            "bicubic",
+        ]
+    ] = "linear",
     scale_factor: Optional[Union[Sequence[int], int]] = None,
     align_corners: Optional[bool] = None,
     antialias: Optional[bool] = False,
@@ -492,7 +503,7 @@ def interpolate(
 ):
     dims = len(x.shape) - 2
     size = _get_size(scale_factor, size, dims, x.shape)
-    if align_corners or mode in ["area", "nearest"]:
+    if align_corners or mode in ["area", "nearest", "tf_area"]:
         return ivy.functional.experimental.interpolate(
             x, size, mode=mode, align_corners=align_corners, antialias=antialias,
         )

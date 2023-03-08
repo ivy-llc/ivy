@@ -984,6 +984,102 @@ def interp(x, xp, fp, left=None, right=None, period=None):
         return ivy.astype(ivy.array(ret), "float64")
 
 
+def _tf_area_dim_scale(index, starting_index, scale, ending_index):
+    if index < starting_index:
+        dim_scale = scale if index + 1 > ending_index else index + 1 - starting_index
+    else:
+        dim_scale = ending_index - index if index + 1 > ending_index else 1.0
+    return dim_scale
+
+
+def _tf_area_indices(dim_index, scale):
+    starting_index = dim_index * scale
+    ending_index = (dim_index + 1) * scale
+    rounded_indices = (
+        int(starting_index),
+        math.ceil(ending_index),
+    )
+    return starting_index, ending_index, rounded_indices
+
+
+def _tf_area_interpolate(x, size, dims):
+    ret = ivy.zeros((x.shape[:2] + size))
+    scale = ivy.divide(ivy.shape(x)[2:], size)
+    area = 1.0 / ivy.prod(scale)
+    for i, ba in enumerate(x):
+        for j, ch in enumerate(ba):
+            if dims == 3:
+                for d_dim in range(size[0]):
+                    for h_dim in range(size[1]):
+                        for w_dim in range(size[2]):
+                            d_in, d_in1, d_index = _tf_area_indices(d_dim, scale[0])
+                            h_in, h_in1, h_index = _tf_area_indices(h_dim, scale[1])
+                            w_in, w_in1, w_index = _tf_area_indices(w_dim, scale[2])
+                            sum_data = ivy.zeros(
+                                (
+                                    d_index[1] - d_index[0],
+                                    h_index[1] - h_index[0],
+                                    w_index[1] - w_index[0],
+                                )
+                            )
+                            for d_ind in range(d_index[0], d_index[1]):
+                                scale_z = _tf_area_dim_scale(
+                                    d_ind, d_in, scale[0], d_in1
+                                )
+                                for h_ind in range(h_index[0], h_index[1]):
+                                    scale_y = _tf_area_dim_scale(
+                                        h_ind, h_in, scale[1], h_in1
+                                    )
+                                    for w_ind in range(w_index[0], w_index[1]):
+                                        scale_x = _tf_area_dim_scale(
+                                            w_ind, w_in, scale[2], w_in1
+                                        )
+                                        sum_data[
+                                            d_ind - d_index[0],
+                                            h_ind - h_index[0],
+                                            w_ind - w_index[0],
+                                        ] = (
+                                            ivy.array(ch[d_ind, h_ind, w_ind])
+                                            * scale_x
+                                            * scale_y
+                                            * scale_z
+                                            * area
+                                        )
+                            ret[i, j, d_dim, h_dim, w_dim] = ivy.sum(sum_data)
+            elif dims == 2:
+                for h_dim in range(size[0]):
+                    for w_dim in range(size[1]):
+                        h_in, h_in1, h_index = _tf_area_indices(h_dim, scale[0])
+                        w_in, w_in1, w_index = _tf_area_indices(w_dim, scale[1])
+                        sum_data = ivy.zeros(
+                            (h_index[1] - h_index[0], w_index[1] - w_index[0])
+                        )
+                        for h_ind in range(h_index[0], h_index[1]):
+                            scale_y = _tf_area_dim_scale(h_ind, h_in, scale[0], h_in1)
+                            for w_ind in range(w_index[0], w_index[1]):
+                                scale_x = _tf_area_dim_scale(
+                                    w_ind, w_in, scale[1], w_in1
+                                )
+                                sum_data[h_ind - h_index[0], w_ind - w_index[0]] = (
+                                    ivy.array(ch[h_ind, w_ind])
+                                    * scale_x
+                                    * scale_y
+                                    * area
+                                )
+                        ret[i, j, h_dim, w_dim] = ivy.sum(sum_data)
+            else:
+                for w_dim in range(size[0]):
+                    w_in, w_in1, w_index = _tf_area_indices(w_dim, scale[0])
+                    sum_data = ivy.zeros((w_index[1] - w_index[0],))
+                    for w_ind in range(w_index[0], w_index[1]):
+                        scale_x = _tf_area_dim_scale(w_ind, w_in, scale[0], w_in1)
+                        sum_data[w_ind - w_index[0]] = (
+                            ivy.array(ch[w_ind]) * scale_x * area
+                        )
+                    ret[i, j, w_dim] = ivy.sum(sum_data)
+    return ret
+
+
 def _fill_triangle_kernel(x):
     return ivy.maximum(0, 1 - ivy.abs(x))
 
@@ -1016,7 +1112,6 @@ def compute_weight_mat(
     )
 
 
-@to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 def interpolate(
@@ -1025,7 +1120,16 @@ def interpolate(
     /,
     *,
     mode: Union[
-        Literal["linear", "bilinear", "trilinear", "nearest", "area", "nearest_exact"]
+        Literal[
+            "linear",
+            "bilinear",
+            "trilinear",
+            "nearest",
+            "area",
+            "nearest_exact",
+            "tf_area",
+            "bicubic",
+        ]
     ] = "linear",
     scale_factor: Optional[Union[Sequence[int], int]] = None,
     align_corners: Optional[bool] = None,
@@ -1050,6 +1154,7 @@ def interpolate(
         - trilinear
         - nearest
         - area
+        - tf_area
         - bicubic
     scale_factor
         Multiplier for spatial size that defines the output size (overwriting `size`).
@@ -1207,6 +1312,8 @@ def interpolate(
                             ], dtype=ivy.float32)
                         mat_r = ivy.array([[u(y_i)] for y_i in y_s])
                         ret[n, c, i, j] = ivy.multi_dot((mat_l, mat_m, mat_r)).squeeze(0)
+    elif mode == "tf_area":
+        ret = _tf_area_interpolate(x, size, dims)
     return ivy.astype(ret, ivy.dtype(x), out=out)
 
 
@@ -1299,8 +1406,8 @@ def _mask(vals, length, range_max, dim):
 
 
 def adaptive_avg_pool1d(
-        input: Union[ivy.Array, ivy.NativeArray],
-        output_size: int,
+    input: Union[ivy.Array, ivy.NativeArray],
+    output_size: int,
 ) -> ivy.Array:
     """
     Applies a 1D adaptive average pooling over an input signal composed of several input
@@ -1366,8 +1473,8 @@ def adaptive_avg_pool1d(
 
 
 def adaptive_avg_pool2d(
-        input: Union[ivy.Array, ivy.NativeArray],
-        output_size: Union[Sequence[int], int],
+    input: Union[ivy.Array, ivy.NativeArray],
+    output_size: Union[Sequence[int], int],
 ) -> ivy.Array:
     """
     Applies a 2D adaptive average pooling over an input signal composed of several input
