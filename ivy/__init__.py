@@ -24,7 +24,7 @@ def is_local():
 class FrameworkStr(str):
     def __new__(cls, fw_str):
         ivy.utils.assertions.check_elem_in_list(
-            fw_str, ["jax", "tensorflow", "torch", "numpy"]
+            fw_str, ivy.utils.backend.handler._backend_dict.keys()
         )
         return str.__new__(cls, fw_str)
 

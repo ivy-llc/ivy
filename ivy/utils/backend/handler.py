@@ -44,17 +44,18 @@ _array_types[
 _array_types["torch"] = "ivy.functional.backends.torch"
 _array_types["torch.nn.parameter"] = "ivy.functional.backends.torch"
 
-_backend_dict = dict()
-_backend_dict["numpy"] = "ivy.functional.backends.numpy"
-_backend_dict["jax"] = "ivy.functional.backends.jax"
-_backend_dict["tensorflow"] = "ivy.functional.backends.tensorflow"
-_backend_dict["torch"] = "ivy.functional.backends.torch"
+_backends_subpackage_path = "ivy.functional.backends"
 
+_backend_dict = dict()
 _backend_reverse_dict = dict()
-_backend_reverse_dict["ivy.functional.backends.numpy"] = "numpy"
-_backend_reverse_dict["ivy.functional.backends.jax"] = "jax"
-_backend_reverse_dict["ivy.functional.backends.tensorflow"] = "tensorflow"
-_backend_reverse_dict["ivy.functional.backends.torch"] = "torch"
+
+for backend in os.listdir(_backends_subpackage_path.replace(".", "/")):
+    if backend.startswith("__"):
+        continue
+    backend_path = f"{_backends_subpackage_path}.{backend}"
+    _backend_dict[backend] = backend_path
+    _backend_reverse_dict[backend_path] = backend
+
 
 # Backend Getting/Setting #
 # ----------------------- #
