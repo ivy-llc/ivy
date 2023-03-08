@@ -9,6 +9,10 @@ from . import backend_version
 from ivy.utils.exceptions import IvyNotImplementedException
 
 
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ("int8", "int16", "uint8", "uint16", "bfloat16", "float16", "complex64", "complex128", "bool")},
+    backend_version,
+)
 def unique_all(x: paddle.Tensor, /,) -> Tuple[paddle.Tensor, paddle.Tensor, int ,paddle.Tensor]:
     # Flatten the tensor to 1D
     flat_x = paddle.flatten(x)
