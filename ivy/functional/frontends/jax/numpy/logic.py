@@ -127,7 +127,6 @@ def any(a, axis=None, out=None, keepdims=False, *, where=None):
 
 alltrue = all
 
-
 sometrue = any
 
 
@@ -188,3 +187,8 @@ def left_shift(x1, x2):
 @to_ivy_arrays_and_back
 def isreal(x, out=None):
     return ivy.isreal(x, out=out)
+
+
+@to_ivy_arrays_and_back
+def iscomplexobj(x):
+    return ivy.is_complex_dtype(x)
