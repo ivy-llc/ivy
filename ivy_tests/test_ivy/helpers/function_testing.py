@@ -396,7 +396,7 @@ def test_function(
         ivy.set_default_device(on_device)
         try:
             fn = getattr(ivy, fn_name)
-            args, kwargs, _, _, _ = create_args_kwargs(
+            args, kwargs, *_ = create_args_kwargs(
                 args_np=args_np,
                 arg_np_vals=arg_np_vals,
                 args_idxs=args_idxs,
@@ -599,7 +599,7 @@ def test_frontend_function(
     function_module = importlib.import_module(frontend_submods)
     frontend_fn = getattr(function_module, fn_name)
 
-    args, kwargs, _, _, _ = create_args_kwargs(
+    args, kwargs, *_ = create_args_kwargs(
         args_np=args_np,
         arg_np_vals=arg_np_vals,
         args_idxs=args_idxs,
@@ -1116,7 +1116,7 @@ def test_method(
     ]
 
     # Create Args
-    args_constructor, kwargs_constructor, _, _, _ = create_args_kwargs(
+    args_constructor, kwargs_constructor, *_ = create_args_kwargs(
         args_np=args_np_constructor,
         arg_np_vals=con_arg_np_vals,
         args_idxs=con_args_idxs,
@@ -1167,7 +1167,7 @@ def test_method(
     ]
 
     # Create Args
-    args_method, kwargs_method, _, _, _ = create_args_kwargs(
+    args_method, kwargs_method, *_ = create_args_kwargs(
         args_np=args_np_method,
         arg_np_vals=met_arg_np_vals,
         args_idxs=met_args_idxs,
@@ -1254,7 +1254,7 @@ def test_method(
     else:
         ivy.set_backend(ground_truth_backend)
         ivy.set_default_device(on_device)
-        args_gt_constructor, kwargs_gt_constructor, _, _, _ = create_args_kwargs(
+        args_gt_constructor, kwargs_gt_constructor, *_ = create_args_kwargs(
             args_np=args_np_constructor,
             arg_np_vals=con_arg_np_vals,
             args_idxs=con_args_idxs,
@@ -1265,7 +1265,7 @@ def test_method(
             test_flags=init_flags,
             on_device=on_device,
         )
-        args_gt_method, kwargs_gt_method, _, _, _ = create_args_kwargs(
+        args_gt_method, kwargs_gt_method, *_ = create_args_kwargs(
             args_np=args_np_method,
             arg_np_vals=met_arg_np_vals,
             args_idxs=met_args_idxs,
@@ -1488,7 +1488,7 @@ def test_frontend_method(
     ]
 
     # Create Args
-    args_constructor, kwargs_constructor, _, _, _ = create_args_kwargs(
+    args_constructor, kwargs_constructor, *_ = create_args_kwargs(
         args_np=args_np_constructor,
         arg_np_vals=con_arg_np_vals,
         args_idxs=con_args_idxs,
@@ -1534,7 +1534,7 @@ def test_frontend_method(
     ]
 
     # Create Args
-    args_method, kwargs_method, _, _, _ = create_args_kwargs(
+    args_method, kwargs_method, *_ = create_args_kwargs(
         args_np=args_np_method,
         arg_np_vals=met_arg_np_vals,
         args_idxs=met_args_idxs,
