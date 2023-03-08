@@ -261,7 +261,17 @@ def _interp_args(draw, mode=None, mode_list=None):
     if not mode and not mode_list:
         mode = draw(
             st.sampled_from(
-                ["linear", "bilinear", "trilinear", "nearest", "area", "tf_area", "bicubic"]
+                [
+                    "linear",
+                    "bilinear",
+                    "trilinear",
+                    "nearest",
+                    "area",
+                    "tf_area",
+                    "bicubic",
+                    "lanczos3",
+                    "lanczos5",
+                ]
             )
         )
     elif mode_list:
@@ -273,7 +283,7 @@ def _interp_args(draw, mode=None, mode_list=None):
         num_dims = 4
     elif mode == "trilinear":
         num_dims = 5
-    elif mode in ["nearest", "area", "tf_area"]:
+    elif mode in ["nearest", "area", "tf_area", "lanczos3", "lanczos5"]:
         dim = draw(helpers.ints(min_value=1, max_value=3))
         num_dims = dim + 2
         align_corners = None
@@ -358,9 +368,11 @@ def test_interpolate(
             scale_factor=scale_factor,
         )
     except Exception as e:
-        if hasattr(e, 'message'):
-            if "output dimensions must be positive" in e.message or\
-                    "Input and output sizes should be greater than 0" in e.message:
+        if hasattr(e, "message"):
+            if (
+                "output dimensions must be positive" in e.message
+                or "Input and output sizes should be greater than 0" in e.message
+            ):
                 assume(False)
 
 
