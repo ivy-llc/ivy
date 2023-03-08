@@ -133,7 +133,11 @@ def broadcast_arrays(*arrays: paddle.Tensor) -> List[paddle.Tensor]:
     for array in arrays:
         if isinstance(array, paddle.Tensor):
             if array.rank().item() == 0:
-                new_arrays.append(array.unsqueeze(0))
+                if array.dtype in [paddle.int16, paddle.float16]:
+                    array, array_dtype = array.astype('float32'), array.dtype
+                    new_arrays.append(array.unsqueeze(0).astype(array_dtype))
+                else:
+                    new_arrays.append(array.unsqueeze(0))
             else:
                 new_arrays.append(array)
         else:

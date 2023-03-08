@@ -130,7 +130,8 @@ def execute_with_gradients(
             }
 
     # Stop further gradient propagation if not retaining gradients
-    return _process_func_ret_and_grads(func_ret, grads, retain_grads)
+    ret = _process_func_ret_and_grads(func_ret, grads, retain_grads)
+    return ret[0], ret[1].astype(ret[0].dtype)
 
 
 def value_and_grad(func):
