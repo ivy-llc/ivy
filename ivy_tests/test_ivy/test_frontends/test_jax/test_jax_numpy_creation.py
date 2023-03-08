@@ -551,6 +551,13 @@ def test_jax_numpy_full(
     )
 
 
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.double",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("double"),
+    ),
+)
 def test_jax_numpy_double(
     *,
     dtype_and_x,
