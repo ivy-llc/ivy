@@ -207,7 +207,7 @@ def take_along_axis(
     axis: int,
     /,
     *,
-    mode: str = 'fill',
+    mode: str = "fill",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if arr.ndim != indices.ndim:
@@ -216,19 +216,20 @@ def take_along_axis(
             + f" got {arr.ndim} vs {indices.ndim}"
         )
     indices = indices.long()
-    if mode not in ['clip', 'fill', 'drop']:
+    if mode not in ["clip", "fill", "drop"]:
         raise ValueError(
-            f"Invalid mode '{mode}'. Valid modes are 'clip', 'fill', 'drop'.")
+            f"Invalid mode '{mode}'. Valid modes are 'clip', 'fill', 'drop'."
+        )
     arr_shape = arr.shape
     if axis < 0:
         axis += arr.ndim
-    if mode == 'clip':
+    if mode == "clip":
         max_index = arr.shape[axis] - 1
         indices = torch.clamp(indices, 0, max_index)
-    elif mode == 'fill' or mode == 'drop':
-        if 'float' in str(arr.dtype):
-            fill_value = float('nan')
-        elif 'uint' in str(arr.dtype):
+    elif mode == "fill" or mode == "drop":
+        if "float" in str(arr.dtype):
+            fill_value = float("nan")
+        elif "uint" in str(arr.dtype):
             fill_value = torch.iinfo(arr.dtype).max
         else:
             fill_value = -torch.iinfo(arr.dtype).max - 1

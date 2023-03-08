@@ -1130,8 +1130,8 @@ class _ArrayWithGeneral(abc.ABC):
         >>> x = ivy.array([4, 5, 6])
         >>> y = ivy.array([1])
         >>> x.inplace_update(y, ensure_in_backend=True)
-        IvyBackendException: jax: inplace_update: JAX does not natively support inplace
-        updates
+        IvyBackendException: jax: inplace_update: JAX does not natively
+        support inplace updates
 
         """
         return ivy.inplace_update(self, val, ensure_in_backend=ensure_in_backend)

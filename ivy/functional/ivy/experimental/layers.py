@@ -1080,8 +1080,16 @@ def _tf_area_interpolate(x, size, dims):
     return ret
 
 
-def _fill_triangle_kernel(x):
+def _triangle_kernel(x):
     return ivy.maximum(0, 1 - ivy.abs(x))
+
+
+def _lanczos_kernel(radius, x):
+    y = radius * ivy.sin(ivy.pi * x) * ivy.sin(ivy.pi * x / radius)
+    out = ivy.where(
+        x > 1e-3, ivy.divide(y, ivy.where(x != 0, ivy.pi**2 * x**2, 1)), 1
+    )
+    return ivy.where(x > radius, 0.0, out)
 
 
 def compute_weight_mat(
@@ -1128,8 +1136,12 @@ def interpolate(
             "area",
             "nearest_exact",
             "tf_area",
+            "bicubic",
+            "lanczos3",
+            "lanczos5",
         ]
     ] = "linear",
+    scale_factor: Optional[Union[Sequence[int], int]] = None,
     align_corners: Optional[bool] = None,
     antialias: Optional[bool] = False,
     out: Optional[ivy.Array] = None,
@@ -1153,6 +1165,9 @@ def interpolate(
         - nearest
         - area
         - tf_area
+        - bicubic
+    scale_factor
+        Multiplier for spatial size that defines the output size (overwriting `size`).
     align_corners
         If True, the corner pixels of the input and output tensors are aligned,
         and thus preserving the values at the corner pixels. If False, the corner
@@ -1172,25 +1187,41 @@ def interpolate(
         resized array
 
     """
+
+    # bicubic kernel
+    def u(s, a=-0.5):
+        abs_s = abs(s)
+        if (abs_s >= 0) & (abs_s <= 1):
+            return (a + 2) * (abs_s**3) - (a + 3) * (abs_s**2) + 1
+        elif (abs_s > 1) & (abs_s <= 2):
+            return a * (abs_s**3) - (5 * a) * (abs_s**2) + (8 * a) * abs_s - 4 * a
+        return 0
+
     dims = len(x.shape) - 2
-    size = (size,) * dims if isinstance(size, int) else tuple(size)
+    size = _get_size(scale_factor, size, dims, x.shape)
     spatial_dims = [2 + i for i in range(dims)]
     input_shape = ivy.shape(x)
     scale = [ivy.divide(size[i], input_shape[spatial_dims[i]]) for i in range(dims)]
-    if mode == "bilinear" or mode == "linear" or mode == "trilinear":
-        if mode == "linear":
+    if mode in ["linear", "bilinear", "trilinear", "lanczos3", "lanczos5"]:
+        kernel_func = _triangle_kernel
+        if mode == "linear" or dims == 1:
             equation = "ijk,km->ijm"
-        elif mode == "bilinear":
+        elif mode == "bilinear" or dims == 2:
             equation = "ijkl,km,ln->ijmn"
-        elif mode == "trilinear":
+        elif mode == "trilinear" or dims == 3:
             equation = "ijklm,kn,lo,mp->ijnop"
+
+        if mode == "lanczos3":
+            kernel_func = lambda inputs: _lanczos_kernel(3, inputs)
+        elif mode == "lanczos5":
+            kernel_func = lambda inputs: _lanczos_kernel(5, inputs)
         output_shape = tuple(input_shape[:2]) + size
         operands = []
         for i, d in enumerate(spatial_dims):
             m = input_shape[d]
             n = output_shape[d]
             w = compute_weight_mat(
-                m, n, scale[i], align_corners, _fill_triangle_kernel, antialias
+                m, n, scale[i], align_corners, kernel_func, antialias
             ).astype(x.dtype)
             operands.append(w)
         ret = ivy.einsum(equation, x, *operands)
@@ -1277,9 +1308,45 @@ def interpolate(
                         ret[i, j, w_dim] = ivy.sum(ch[w_index[0] : w_index[1]]) * (
                             1 / scale_x
                         )
+    elif mode == "bicubic":
+        scale_factor_h = size[0] / x.shape[2]
+        scale_factor_w = size[1] / x.shape[3]
+        x = ivy.pad(x, ((0, 0), (0, 0), (2, 2), (2, 2)), mode="edge")
+        ret = ivy.zeros((*x.shape[:2], size[0], size[1]))
+        for n in range(ret.shape[0]):
+            for c in range(ret.shape[1]):
+                for i in range(ret.shape[2]):
+                    for j in range(ret.shape[3]):
+                        x0, y0 = i / scale_factor_h + 2, j / scale_factor_w + 2
+                        x_s = [math.floor(x0) + i - x0 for i in range(-1, 3, 1)]
+                        y_s = [math.floor(y0) + i - y0 for i in range(-1, 3, 1)]
+                        mat_l = ivy.array([[u(x_i) for x_i in x_s]])
+                        mat_m = ivy.array(
+                            [
+                                [x[n, c, int(x0 + x_i), int(y0 + y_i)] for y_i in y_s]
+                                for x_i in x_s
+                            ],
+                            dtype=ivy.float32,
+                        )
+                        mat_r = ivy.array([[u(y_i)] for y_i in y_s])
+                        ret[n, c, i, j] = ivy.multi_dot((mat_l, mat_m, mat_r)).squeeze(
+                            0
+                        )
     elif mode == "tf_area":
         ret = _tf_area_interpolate(x, size, dims)
     return ivy.astype(ret, ivy.dtype(x), out=out)
+
+
+def _get_size(scale_factor, size, dims, x_shape):
+    if scale_factor is not None:
+        if isinstance(scale_factor, (float, int)):
+            scale_factor = [scale_factor] * dims
+        size = tuple(
+            [int(math.floor(x_shape[2 + i] * scale_factor[i])) for i in range(dims)]
+        )
+    else:
+        size = (size,) * dims if isinstance(size, int) else tuple(size)
+    return size
 
 
 interpolate.mixed_function = True

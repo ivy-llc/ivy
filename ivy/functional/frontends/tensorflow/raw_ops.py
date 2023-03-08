@@ -620,4 +620,5 @@ Elu.supported_dtypes = {
 def LinSpace(*, start, stop, num, name=None):
     return ivy.linspace(start, stop, num)
 
+
 Roll = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.roll))

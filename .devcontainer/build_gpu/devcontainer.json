@@ -3,7 +3,7 @@
 
 	"build": {
 		"dockerfile": "../../docker/DockerfileGPU",
-		"context": ".."
+		"context": "../.."
 	},
 
 	"runArgs": ["--gpus","all"],
