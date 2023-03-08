@@ -1,4 +1,5 @@
 # global
+from packaging import version
 import pytest
 import importlib
 import types
@@ -48,9 +49,12 @@ if "tensorflow" in available_frameworks():
 
 if "jax" in available_frameworks():
     available_array_types_input.append(("jax", jnp.array(3.0)))
-    available_array_types_class.append(
-        ("jax", "<class 'jaxlib.xla_extension.DeviceArray'>")
-    )
+    if version.parse(jax.__version__) >= version.parse("0.4.1"):
+        available_array_types_class.append(("jax", "<class 'jax.Array'>"))
+    else:
+        available_array_types_class.append(
+            ("jax", "<class 'jaxlib.xla_extension.DeviceArray'>")
+        )
 
 
 if "torch" in available_frameworks():
@@ -86,7 +90,6 @@ def test_set_backend(backend, array_type):
 
 @pytest.mark.parametrize(("backend"), available_frameworks())
 def test_unset_backend(backend):
-
     if not ivy.backend_stack:
         assert ivy.unset_backend() is None
 
@@ -179,7 +182,6 @@ backend_combinations = [(a, b) for a in backends for b in backends if a != b]
 
 @pytest.mark.parametrize("middle_backend,end_backend", backend_combinations)
 def test_dynamic_backend_all_combos(middle_backend, end_backend):
-
     # create an ivy array, container and native container
     a = ivy.array([1, 2, 3])
     b = ivy.array([4, 5, 6])
@@ -253,7 +255,6 @@ def test_dynamic_backend_all_combos(middle_backend, end_backend):
 
 
 def test_dynamic_backend_setter():
-
     a = ivy.array([1, 2, 3])
     type_a = type(a.data)
     a.dynamic_backend = False
@@ -272,7 +273,6 @@ def test_dynamic_backend_setter():
 
 
 def test_variables():
-
     # clear the backend stack
     ivy.clear_backend_stack()
 
@@ -295,7 +295,6 @@ def test_variables():
 
 
 def test_dynamic_backend_context_manager():
-
     with ivy.dynamic_backend_as(True):
         a = ivy.array([0.0, 1.0])
         b = ivy.array([2.0, 3.0])

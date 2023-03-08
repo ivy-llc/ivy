@@ -1846,6 +1846,9 @@ def einops_reduce(
     ret
         New array with einops.reduce having been applied.
 
+    This function is *nestable*, and therefore also accepts :code:'ivy.Container'
+    instance in place of the argument.
+
     Examples
     --------
     With :class:`ivy.Array` input:
@@ -1854,7 +1857,7 @@ def einops_reduce(
     ...                [3.66, 24.29, 3.64]])
     >>> reduced = ivy.einops_reduce(x, 'a b -> b', 'mean')
     >>> print(reduced)
-    ivy.array([-0.405, 12.6, 0.15])
+    ivy.array([-0.40499985, 12.61000061, 0.1500001 ])
 
     With :class:`ivy.Container` input:
 
@@ -1865,8 +1868,8 @@ def einops_reduce(
     >>> reduced = ivy.einops_reduce(x, 'a b -> a', 'mean')
     >>> print(reduced)
     {
-        a: ivy.array([-2.29, 10.5]),
-        b: ivy.array([-1.4, 6.21])
+        a: ivy.array([-2.29333329, 10.53000069]),
+        b: ivy.array([-1.39666676, 6.20666695])
     }
 
     """
@@ -2625,22 +2628,22 @@ def inplace_update(
     IvyException
         If backend set doesn't natively support inplace updates and ensure_in_backend is
         True, above exception will be raised.
-    
+
     This function is *nestable*, and therefore also accepts :code:'ivy.Container'
     instance in place of the arguments.
-    
+
     Examples
     --------
     With :class:`ivy.Array` input and default backend set as `numpy`:
-    
+
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.array([0])
     >>> ivy.inplace_update(x, y)
     >>> print(x)
     ivy.array([0])
-    
+
     With :class:`ivy.Container` instances:, and backend set as `torch`:
-    
+
     >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))
     >>> y = ivy.Container(a=ivy.array([1]), b=ivy.array([2]))
     >>> ivy.inplace_update(x, y)
@@ -2649,9 +2652,11 @@ def inplace_update(
         a: ivy.array([1]),
         b: ivy.array([2])
     }
-    
-    With mix of :class:`ivy.Array` and :class:`ivy.Container` instances:, and backend set as `torch`:
-    
+
+    With mix of :class:`ivy.Array` and :class:
+    `ivy.Container` instances:,
+    and backend set as `torch`:
+
     >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))
     >>> y = ivy.array([1, 2])
     >>> ivy.inplace_update(x, y)
@@ -2660,7 +2665,7 @@ def inplace_update(
         a: ivy.array([1, 2]),
         b: ivy.array([1, 2])
     }
-    
+
     """
     return current_backend(x).inplace_update(x, val, ensure_in_backend)
 
