@@ -2725,3 +2725,44 @@ def lu_factor(
         A named tuple (LU, pivots).
     """
     return current_backend(A).lu_factor(A, pivot=pivot, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+def norm(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    ord: Optional[Union[int, float, str]] = None,
+    keepdims: bool = False,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Computes the norm of a tensor.
+
+    Parameters
+    ----------
+    x
+        Input tensor.
+    ord
+        Order of the norm.
+    dim
+        Dimension along which to compute the norm. If None, the norm of the entire tensor is
+        computed.
+    keepdims
+        Whether to keep the dimensions of the input tensor.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Norm of the tensor.
+    """
+
+
+    return current_backend(x).norm(x, axis=axis, ord=ord, keepdims=keepdims, out=out, dtype=dtype)

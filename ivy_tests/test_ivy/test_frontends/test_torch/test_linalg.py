@@ -1035,3 +1035,40 @@ def test_torch_matmul(
         rtol=1e-03,
         atol=1e-06,
     )
+
+
+@handle_frontend_test(
+    fn_tree="torch.linalg.norm",
+    dtype_values_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        valid_axis=True,
+        min_value=-1e04,
+        max_value=1e04,
+    ),
+    test_with_out=st.just(False),
+    kd=st.booleans(),
+    ord=helpers.ints(min_value=1, max_value=2),
+    dtype=helpers.get_dtypes("valid"),
+)
+def test_torch_norm(
+    *,
+    dtype_values_axis,
+    ord,
+    kd,
+    dtype,
+    frontend,
+    fn_tree,
+    on_device,
+    test_flags,
+):
+    dtype, x, axis = dtype_values_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_flags=test_flags,
+        input=x[0],
+        rtol=1e-03,
+        atol=1e-06,
+    )
