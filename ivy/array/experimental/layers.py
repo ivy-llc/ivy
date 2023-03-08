@@ -684,6 +684,10 @@ class _ArrayWithLayersExperimental(abc.ABC):
             - area
             - tf_area
             - bicubic
+            - mitchellcubic
+            - lanczos3
+            - lanczos5
+            - gaussian
         scale_factor
             Multiplier for spatial size that defines the output size
             (overwriting `size`).
