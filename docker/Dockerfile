@@ -29,15 +29,16 @@ RUN git clone --progress --recurse-submodules https://github.com/unifyai/ivy --d
     pip3 install --no-cache-dir -r requirements.txt
 
 # Install local requirements
-COPY requirements/requirements.txt .
+RUN cp ivy/requirements/requirements.txt .
 RUN pip3 install --no-cache-dir -r requirements.txt
 
 # Install local optional
 COPY requirements/optional_cpu.txt .
+COPY requirements/optional.txt .
 RUN pip3 install --no-cache-dir -r optional_cpu.txt
 
 COPY run_tests_CLI/test_dependencies.py .
-RUN python3 test_dependencies.py -fp requirements.txt, optional_cpu.txt && \
+RUN python3 test_dependencies.py -fp requirements.txt,optional.txt && \
     rm -rf requirements.txt && \
-    rm -rf optional_cpu.txt && \
+    rm -rf optional.txt && \
     rm -rf test_dependencies.py
