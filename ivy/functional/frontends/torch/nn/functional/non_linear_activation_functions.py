@@ -98,14 +98,11 @@ def softmax(input, dim=None, _stacklevel=3, dtype=None):
     },
     "torch",
 )
-def gelu(
-    input,
-):  # , *, approximate="none"): ToDo: approximate is added in in PyTorch 1.12.1
-    # if approximate == "none":
-    # approximate = False
-    # else:
-    # approximate = True
-    return ivy.gelu(input, approximate=False)
+def gelu(input, approximate=None):
+    if approximate is None:
+        approximate = False
+
+    return ivy.gelu(input, approximate=approximate)
 
 
 @to_ivy_arrays_and_back
