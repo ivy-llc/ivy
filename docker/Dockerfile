@@ -15,7 +15,8 @@ RUN apt-get update && \
 
 
 RUN pip3 install --no-cache-dir torch --extra-index-url https://download.pytorch.org/whl/cpu
-RUN pip3 install --no-cache-dir --upgrade torch-scatter -f https://pytorch-geometric.com/whl
+RUN export ver=$(pip show torch | grep Version | cut -d ' ' -f2) && \
+    pip3 install --no-cache-dir --upgrade torch-scatter -f https://data.pyg.org/whl/torch-$ver.html
 
 # Install Ivy Upstream
 RUN git clone --progress --recurse-submodules https://github.com/unifyai/ivy --depth 1 && \
