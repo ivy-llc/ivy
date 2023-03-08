@@ -3,7 +3,7 @@ import tensorflow as tf
 import tensorflow_probability as tfp
 from tensorflow.python.ops.numpy_ops import np_math_ops
 
-from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from . import backend_version
 
 
@@ -106,15 +106,7 @@ def corrcoef(
     cor = cov2_t @ cov_t @ cov2_t
     return cor
 
-@with_supported_dtypes(
-    {
-        "2.11.0 and below": (
-            "int32",
-            "int64",
-        )
-    },
-    backend_version,
-)
+@with_unsupported_dtypes({"2.11.0 and below": ("int32","int64",)},backend_version)
 def nanmedian(
     input: Union[tf.Tensor, tf.Variable],
     /,
