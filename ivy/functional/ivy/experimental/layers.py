@@ -1050,6 +1050,7 @@ def interpolate(
         - trilinear
         - nearest
         - area
+        - bicubic
     scale_factor
         Multiplier for spatial size that defines the output size (overwriting `size`).
     align_corners
@@ -1071,15 +1072,18 @@ def interpolate(
         resized array
 
     """
+
+    # bicubic kernel
+    def u(s, a=-0.5):
+        abs_s = abs(s)
+        if (abs_s >= 0) & (abs_s <= 1):
+            return (a + 2) * (abs_s ** 3) - (a + 3) * (abs_s ** 2) + 1
+        elif (abs_s > 1) & (abs_s <= 2):
+            return a * (abs_s ** 3) - (5 * a) * (abs_s ** 2) + (8 * a) * abs_s - 4 * a
+        return 0
+
     dims = len(x.shape) - 2
-    if scale_factor is not None:
-        if isinstance(scale_factor, (float, int)):
-            scale_factor = [scale_factor] * dims
-        size = tuple(
-            [int(math.floor(x.shape[1+i] * scale_factor[i])) for i in range(dims)]
-        )
-    else:
-        size = (size,) * dims if isinstance(size, int) else tuple(size)
+    size = _get_size(scale_factor, size, dims, x.shape)
     spatial_dims = [2 + i for i in range(dims)]
     input_shape = ivy.shape(x)
     scale = [ivy.divide(size[i], input_shape[spatial_dims[i]]) for i in range(dims)]
@@ -1183,7 +1187,39 @@ def interpolate(
                         ret[i, j, w_dim] = ivy.sum(ch[w_index[0] : w_index[1]]) * (
                             1 / scale_x
                         )
+    elif mode == "bicubic":
+        scale_factor_h = size[0] / x.shape[2]
+        scale_factor_w = size[1] / x.shape[3]
+        x = ivy.pad(x, ((0, 0), (0, 0), (2, 2), (2, 2)), mode='edge')
+        ret = ivy.zeros((*x.shape[:2], size[0], size[1]))
+        for n in range(ret.shape[0]):
+            for c in range(ret.shape[1]):
+                for i in range(ret.shape[2]):
+                    for j in range(ret.shape[3]):
+                        x0, y0 = i / scale_factor_h + 2, j / scale_factor_w + 2
+                        x_s = [math.floor(x0) + i - x0 for i in range(-1, 3, 1)]
+                        y_s = [math.floor(y0) + i - y0 for i in range(-1, 3, 1)]
+                        mat_l = ivy.array([[u(x_i) for x_i in x_s]])
+                        mat_m = ivy.array(
+                            [
+                                [x[n, c, int(x0 + x_i), int(y0 + y_i)] for y_i in y_s]
+                                for x_i in x_s
+                            ], dtype=ivy.float32)
+                        mat_r = ivy.array([[u(y_i)] for y_i in y_s])
+                        ret[n, c, i, j] = ivy.multi_dot((mat_l, mat_m, mat_r)).squeeze(0)
     return ivy.astype(ret, ivy.dtype(x), out=out)
+
+
+def _get_size(scale_factor, size, dims, x_shape):
+    if scale_factor is not None:
+        if isinstance(scale_factor, (float, int)):
+            scale_factor = [scale_factor] * dims
+        size = tuple(
+            [int(math.floor(x_shape[2+i] * scale_factor[i])) for i in range(dims)]
+        )
+    else:
+        size = (size,) * dims if isinstance(size, int) else tuple(size)
+    return size
 
 
 interpolate.mixed_function = True

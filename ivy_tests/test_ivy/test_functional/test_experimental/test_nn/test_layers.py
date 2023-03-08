@@ -260,12 +260,14 @@ def test_dct(
 def _interp_args(draw, mode=None):
     if not mode:
         mode = draw(
-            st.sampled_from(["linear", "bilinear", "trilinear", "nearest", "area"])
+            st.sampled_from([
+                "linear", "bilinear", "trilinear", "nearest", "area", "bicubic"
+            ])
         )
     align_corners = draw(st.one_of(st.booleans(), st.none()))
     if mode == "linear":
         num_dims = 3
-    elif mode == "bilinear":
+    elif mode == "bilinear" or mode == "bicubic":
         num_dims = 4
     elif mode == "trilinear":
         num_dims = 5
@@ -289,11 +291,11 @@ def _interp_args(draw, mode=None):
         scale_factor = draw(
             st.one_of(
                 helpers.lists(
-                    x=st.floats(min_value=0.1, max_value=1.0),
+                    x=st.floats(min_value=0.1, max_value=2.0),
                     min_size=num_dims - 2,
                     max_size=num_dims - 2,
                 ),
-                st.floats(min_value=0.1, max_value=1.0),
+                st.floats(min_value=0.1, max_value=2.0),
             )
         )
         size = None
@@ -353,9 +355,10 @@ def test_interpolate(
             antialias=antialias,
             scale_factor=scale_factor,
         )
-    except RuntimeError as e:
+    except Exception as e:
         if hasattr(e, 'message'):
-            if "Input and output sizes should be greater than 0" in e.message:
+            if "output dimensions must be positive" in e.message or\
+                    "Input and output sizes should be greater than 0" in e.message:
                 assume(False)
 
 

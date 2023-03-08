@@ -8,7 +8,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 import ivy
 from ivy.functional.ivy.layers import _handle_padding
-from ivy.functional.ivy.experimental.layers import _padding_ceil_mode
+from ivy.functional.ivy.experimental.layers import _padding_ceil_mode, _get_size
 
 
 def _from_int_to_tuple(arg, dim):
@@ -418,11 +418,11 @@ def interpolate(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
     dims = len(x.shape) - 2
-    if align_corners or scale_factor or dims > 2 or mode in ["nearest", "area"]:
+    size = _get_size(scale_factor, size, dims, x.shape)
+    if align_corners or dims > 2 or mode in ["nearest", "area"]:
         return ivy.functional.experimental.interpolate(
-            x, size, mode=mode, align_corners=align_corners, antialias=antialias, scale_factor=scale_factor
+            x, size, mode=mode, align_corners=align_corners, antialias=antialias,
         )
-    size = (size,) * dims if isinstance(size, int) else size
     remove_dim = False
     if mode == "linear":
         if dims == 1:

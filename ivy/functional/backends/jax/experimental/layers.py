@@ -10,7 +10,7 @@ import ivy
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.random import RNG
 from ivy.functional.ivy.layers import _handle_padding
-from ivy.functional.ivy.experimental.layers import _padding_ceil_mode
+from ivy.functional.ivy.experimental.layers import _padding_ceil_mode, _get_size
 
 
 def _from_int_to_tuple(arg, dim):
@@ -490,13 +490,12 @@ def interpolate(
     antialias: Optional[bool] = False,
     out: Optional[JaxArray] = None,
 ):
-    if align_corners or scale_factor or mode in ["area", "nearest"]:
-        return ivy.functional.experimental.interpolate(
-            x, size, mode=mode, align_corners=align_corners, antialias=antialias, scale_factor=scale_factor
-        )
-
     dims = len(x.shape) - 2
-    size = (size,) * dims if isinstance(size, int) else size
+    size = _get_size(scale_factor, size, dims, x.shape)
+    if align_corners or mode in ["area", "nearest"]:
+        return ivy.functional.experimental.interpolate(
+            x, size, mode=mode, align_corners=align_corners, antialias=antialias,
+        )
     size = [x.shape[0], *size, x.shape[1]]
     x = jnp.transpose(x, (0, *range(2, dims + 2), 1))
     return jnp.transpose(

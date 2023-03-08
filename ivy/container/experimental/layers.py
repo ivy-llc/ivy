@@ -1394,6 +1394,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
             - trilinear
             - nearest
             - area
+            - bicubic
         scale_factor
             Multiplier for spatial size that defines the output size (overwriting `size`).
         align_corners
@@ -1462,6 +1463,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
             - trilinear
             - nearest
             - area
+            - bicubic
         scale_factor
             Multiplier for spatial size that defines the output size (overwriting `size`).
         align_corners
