@@ -4,6 +4,7 @@ import warnings
 from ivy._version import __version__ as __version__
 import builtins
 import numpy as np
+import importlib
 
 
 warnings.filterwarnings("ignore", module="^(?!.*ivy).*$")
@@ -1157,6 +1158,7 @@ def dynamic_backend_as(value):
     return DynamicBackendContext(value)
 
 
-for module in ivy.backend_stack:
-    if module != "numpy":
+modules = ivy.utils.backend.handler._backend_dict.keys()
+for module in modules:
+    if importlib.find_spec(module) is not None:
         warnings.warn(f"{module} module detected,only Numpy should be imported")
