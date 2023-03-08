@@ -271,6 +271,8 @@ def _interp_args(draw, mode=None, mode_list=None):
                     "bicubic",
                     "lanczos3",
                     "lanczos5",
+                    "mitchellcubic",
+                    "gaussian",
                 ]
             )
         )
@@ -279,7 +281,7 @@ def _interp_args(draw, mode=None, mode_list=None):
     align_corners = draw(st.one_of(st.booleans(), st.none()))
     if mode == "linear":
         num_dims = 3
-    elif mode == "bilinear" or mode == "bicubic":
+    elif mode in ["bilinear", "bicubic", "mitchellcubic", "gaussian"]:
         num_dims = 4
     elif mode == "trilinear":
         num_dims = 5

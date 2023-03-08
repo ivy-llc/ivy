@@ -419,8 +419,10 @@ def interpolate(
             "nearest_exact",
             "tf_area",
             "bicubic",
+            "mitchellcubic",
             "lanczos3",
             "lanczos5",
+            "gaussian",
         ]
     ] = "linear",
     scale_factor: Optional[Union[Sequence[int], int]] = None,
