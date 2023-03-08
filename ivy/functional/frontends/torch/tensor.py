@@ -731,6 +731,10 @@ class Tensor:
     def __mod__(self, other):
         return torch_frontend.remainder(self._ivy_array, other)
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
+    def __pow__(self, exponent):
+        return torch_frontend.pow(self._ivy_array, exponent)
+
     def __long__(self, memory_format=None):
         cast_tensor = self.clone()
         cast_tensor.ivy_array = ivy.astype(self._ivy_array, ivy.int64)
