@@ -93,8 +93,12 @@ def top_k(
                                     ("indices", paddle.Tensor)])
     val, indices = paddle.topk(x, k, axis=axis, largest=largest)
     return topk_res(val, indices)
-    
 
+
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ("int8", "int16", "uint8", "uint16", "bfloat16", "float16")},
+    backend_version,
+)
 def fliplr(
     m: paddle.Tensor,
     /,
