@@ -27,6 +27,7 @@ FN_DECORATORS = [
     "with_unsupported_dtypes",
     "handle_nans",
     "handle_array_like_without_promotion",
+    "handle_mixed_functions",
 ]
 
 
@@ -699,7 +700,11 @@ def _wrap_function(
 
         for attr in FN_DECORATORS:
             if hasattr(original, attr) and not hasattr(to_wrap, attr):
-                to_wrap = getattr(ivy, attr)(to_wrap)
+                if attr == 'handle_mixed_functions':
+                    to_wrap = getattr(ivy, attr)(original.__closure__[0].cell_contents)(to_wrap)
+                    to_wrap.compos = original.__closure__[1].cell_contents
+                else:
+                    to_wrap = getattr(ivy, attr)(to_wrap)
     return to_wrap
 
 
@@ -892,3 +897,22 @@ with_unsupported_device_and_dtypes = _dtype_device_wrapper_creator(
 with_supported_device_and_dtypes = _dtype_device_wrapper_creator(
     "supported_device_and_dtype", dict
 )
+
+def handle_mixed_functions(conditions:dict) -> Callable:
+    def inner_function(fn):
+        def new_fn(*args, **kwargs):
+            #loop over the conditions dict containing key = backend
+            # and value as tuple ( pos/kward, index/argname, lambda function)
+            # and run the primary implementation if the condition evaluates to True
+            compos = fn
+            if hasattr(new_fn, 'compos'):
+                compos = getattr(new_fn, 'compos')
+            for backend, condition in conditions.items():
+                if ivy.current_backend_str() == backend:
+                    argtype, key, func = condition
+                    if (argtype == 'pos' and func(args[key])) or (argtype == 'kward' and func(kwargs[key])):
+                        return fn(*args, **kwargs)
+            return compos(*args, **kwargs)
+        new_fn.handle_mixed_functions = True
+        return new_fn
+    return inner_function
