@@ -1,5 +1,9 @@
+import abc
 from hypothesis import strategies as st  # NOQA
 from . import globals as test_globals
+
+import ivy
+from ivy.functional.ivy.gradients import _variable
 
 
 @st.composite
@@ -57,7 +61,17 @@ def build_flag(key: str, value: bool):
 # Strategy Helpers #
 
 
-class FunctionTestFlags:
+def as_cont(*, x):
+    """Returns x as an Ivy Container, containing x at all its leaves."""
+    return ivy.Container({"a": x, "b": {"c": x, "d": x}})
+
+
+class TestFlags(metaclass=abc.ABCMeta):
+    def apply_flags(self, args_to_iterate, input_dtypes, on_device, offset):
+        pass
+
+
+class FunctionTestFlags(TestFlags):
     def __init__(
         self,
         num_positional_args,
@@ -77,6 +91,19 @@ class FunctionTestFlags:
         self.as_variable = as_variable
         self.test_gradients = test_gradients
         self.test_compile = test_compile
+
+    def apply_flags(self, args_to_iterate, input_dtypes, on_device, offset):
+        ret = []
+        for i, entry in enumerate(args_to_iterate, start=offset):
+            x = ivy.array(entry, dtype=input_dtypes[i], device=on_device)
+            if self.as_variable[i]:
+                x = _variable(x)
+            if self.native_arrays[i]:
+                x = ivy.to_native(x)
+            if self.container[i]:
+                x = as_cont(x=x)
+            ret.append(x)
+        return ret
 
     def __str__(self):
         return (
@@ -122,7 +149,7 @@ def function_flags(
     )
 
 
-class FrontendFunctionTestFlags:
+class FrontendFunctionTestFlags(TestFlags):
     def __init__(
         self,
         num_positional_args,
@@ -136,6 +163,17 @@ class FrontendFunctionTestFlags:
         self.inplace = inplace
         self.native_arrays = native_arrays
         self.as_variable = as_variable
+
+    def apply_flags(self, args_to_iterate, input_dtypes, on_device, offset):
+        ret = []
+        for i, entry in enumerate(args_to_iterate, start=offset):
+            x = ivy.array(entry, dtype=input_dtypes[i], device=on_device)
+            if self.as_variable[i]:
+                x = _variable(x)
+            if self.native_arrays[i]:
+                x = ivy.to_native(x)
+            ret.append(x)
+        return ret
 
     def __str__(self):
         return (
@@ -172,7 +210,7 @@ def frontend_function_flags(
     )
 
 
-class MethodTestFlags:
+class MethodTestFlags(TestFlags):
     def __init__(
         self,
         num_positional_args,
@@ -184,6 +222,19 @@ class MethodTestFlags:
         self.native_arrays = native_arrays
         self.as_variable = as_variable
         self.container = container_flags
+
+    def apply_flags(self, args_to_iterate, input_dtypes, on_device, offset):
+        ret = []
+        for i, entry in enumerate(args_to_iterate, start=offset):
+            x = ivy.array(entry, dtype=input_dtypes[i], device=on_device)
+            if self.as_variable[i]:
+                x = _variable(x)
+            if self.native_arrays[i]:
+                x = ivy.to_native(x)
+            if self.container[i]:
+                x = as_cont(x)
+            ret.append(x)
+        return ret
 
     def __str__(self):
         return (
@@ -217,7 +268,7 @@ def method_flags(
     )
 
 
-class FrontendMethodTestFlags:
+class FrontendMethodTestFlags(TestFlags):
     def __init__(
         self,
         num_positional_args,
@@ -227,6 +278,17 @@ class FrontendMethodTestFlags:
         self.num_positional_args = num_positional_args
         self.native_arrays = native_arrays
         self.as_variable = as_variable
+
+    def apply_flags(self, args_to_iterate, input_dtypes, on_device, offset):
+        ret = []
+        for i, entry in enumerate(args_to_iterate, start=offset):
+            x = ivy.array(entry, dtype=input_dtypes[i], device=on_device)
+            if self.as_variable[i]:
+                x = _variable(x)
+            if self.native_arrays[i]:
+                x = ivy.to_native(x)
+            ret.append(x)
+        return ret
 
     def __str__(self):
         return (
