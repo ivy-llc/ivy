@@ -226,7 +226,6 @@ def test_array_property_T(
 @handle_method(
     method_tree="Array.__getitem__",
     query_dtype_and_x=_getitem_setitem(),
-    init_container_flags=st.just([False]),
 )
 def test_array__getitem__(
     query_dtype_and_x,
@@ -257,7 +256,6 @@ def test_array__getitem__(
     method_tree="Array.__setitem__",
     query_dtype_and_x=_getitem_setitem(),
     val=st.floats(min_value=-6, max_value=6),
-    init_container_flags=st.just([False]),
 )
 def test_array__setitem__(
     query_dtype_and_x,
@@ -296,7 +294,6 @@ def test_array__setitem__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__pos__(
     dtype_and_x,
@@ -327,7 +324,6 @@ def test_array__pos__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__neg__(
     dtype_and_x,
@@ -356,7 +352,6 @@ def test_array__neg__(
 @handle_method(
     method_tree="Array.__pow__",
     dtype_and_x=pow_helper(),
-    init_container_flags=st.just([False]),
 )
 def test_array__pow__(
     dtype_and_x,
@@ -400,7 +395,6 @@ def test_array__pow__(
 @handle_method(
     method_tree="Array.__rpow__",
     dtype_and_x=pow_helper(),
-    init_container_flags=st.just([False]),
 )
 def test_array__rpow__(
     dtype_and_x,
@@ -444,7 +438,6 @@ def test_array__rpow__(
 @handle_method(
     method_tree="Array.__ipow__",
     dtype_and_x=pow_helper(inplace=True),
-    init_container_flags=st.just([False]),
     init_as_variable_flags=st.just([False]),
     method_container_flags=st.just([False]),
     method_as_variable_flags=st.just([False]),
@@ -493,7 +486,6 @@ def test_array__ipow__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__add__(
     dtype_and_x,
@@ -529,7 +521,6 @@ def test_array__add__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__radd__(
     dtype_and_x,
@@ -565,7 +556,6 @@ def test_array__radd__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
-    init_container_flags=st.just([False]),
     init_as_variable_flags=st.just([False]),
     method_container_flags=st.just([False]),
     method_as_variable_flags=st.just([False]),
@@ -604,7 +594,6 @@ def test_array__iadd__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__sub__(
     dtype_and_x,
@@ -640,7 +629,6 @@ def test_array__sub__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__rsub__(
     dtype_and_x,
@@ -676,7 +664,6 @@ def test_array__rsub__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
-    init_container_flags=st.just([False]),
     init_as_variable_flags=st.just([False]),
     method_container_flags=st.just([False]),
     method_as_variable_flags=st.just([False]),
@@ -715,7 +702,6 @@ def test_array__isub__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__mul__(
     dtype_and_x,
@@ -751,7 +737,6 @@ def test_array__mul__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__rmul__(
     dtype_and_x,
@@ -787,7 +772,6 @@ def test_array__rmul__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
-    init_container_flags=st.just([False]),
     init_as_variable_flags=st.just([False]),
     method_container_flags=st.just([False]),
     method_as_variable_flags=st.just([False]),
@@ -826,7 +810,6 @@ def test_array__imul__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__mod__(
     dtype_and_x,
@@ -863,7 +846,6 @@ def test_array__mod__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__rmod__(
     dtype_and_x,
@@ -900,7 +882,6 @@ def test_array__rmod__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
-    init_container_flags=st.just([False]),
     init_as_variable_flags=st.just([False]),
     method_container_flags=st.just([False]),
     method_as_variable_flags=st.just([False]),
@@ -940,7 +921,6 @@ def test_array__imod__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__divmod__(
     dtype_and_x,
@@ -977,7 +957,6 @@ def test_array__divmod__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__rdivmod__(
     dtype_and_x,
@@ -1014,7 +993,6 @@ def test_array__rdivmod__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__truediv__(
     dtype_and_x,
@@ -1050,7 +1028,6 @@ def test_array__truediv__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__rtruediv__(
     dtype_and_x,
@@ -1086,7 +1063,6 @@ def test_array__rtruediv__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
-    init_container_flags=st.just([False]),
     init_as_variable_flags=st.just([False]),
     method_container_flags=st.just([False]),
     method_as_variable_flags=st.just([False]),
@@ -1125,7 +1101,6 @@ def test_array__itruediv__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__floordiv__(
     dtype_and_x,
@@ -1162,7 +1137,6 @@ def test_array__floordiv__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__rfloordiv__(
     dtype_and_x,
@@ -1199,7 +1173,6 @@ def test_array__rfloordiv__(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
-    init_container_flags=st.just([False]),
     init_as_variable_flags=st.just([False]),
     method_container_flags=st.just([False]),
     method_as_variable_flags=st.just([False]),
@@ -1233,7 +1206,6 @@ def test_array__ifloordiv__(
     method_tree="Array.__matmul__",
     x=_get_first_matrix_and_dtype(),
     y=_get_second_matrix_and_dtype(),
-    init_container_flags=st.just([False]),
 )
 def test_array__matmul__(
     x,
@@ -1265,7 +1237,6 @@ def test_array__matmul__(
     method_tree="Array.__rmatmul__",
     x1=_get_first_matrix_and_dtype(),
     x2=_get_second_matrix_and_dtype(),
-    init_container_flags=st.just([False]),
 )
 def test_array__rmatmul__(
     x1,
@@ -1297,7 +1268,6 @@ def test_array__rmatmul__(
     method_tree="Array.__imatmul__",
     x1=_get_first_matrix_and_dtype(),
     x2=_get_second_matrix_and_dtype(),
-    init_container_flags=st.just([False]),
     init_as_variable_flags=st.just([False]),
     method_container_flags=st.just([False]),
     method_as_variable_flags=st.just([False]),
@@ -1333,7 +1303,6 @@ def test_array__imatmul__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__abs__(
     dtype_and_x,
@@ -1365,7 +1334,6 @@ def test_array__abs__(
         available_dtypes=helpers.get_dtypes("numeric"),
         max_num_dims=0,
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__float__(
     dtype_and_x,
@@ -1399,7 +1367,6 @@ def test_array__float__(
         min_value=-1e15,
         max_value=1e15,
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__int__(
     dtype_and_x,
@@ -1433,7 +1400,6 @@ def test_array__int__(
         min_value=0,
         max_value=1,
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__bool__(
     dtype_and_x,
@@ -1466,7 +1432,6 @@ def test_array__bool__(
         num_arrays=2,
         shared_dtype=True,
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__lt__(
     dtype_and_x,
@@ -1499,7 +1464,6 @@ def test_array__lt__(
         num_arrays=2,
         shared_dtype=True,
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__le__(
     dtype_and_x,
@@ -1532,7 +1496,6 @@ def test_array__le__(
         num_arrays=2,
         shared_dtype=True,
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__eq__(
     dtype_and_x,
@@ -1565,7 +1528,6 @@ def test_array__eq__(
         num_arrays=2,
         shared_dtype=True,
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__ne__(
     dtype_and_x,
@@ -1598,7 +1560,6 @@ def test_array__ne__(
         num_arrays=2,
         shared_dtype=True,
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__gt__(
     dtype_and_x,
@@ -1631,7 +1592,6 @@ def test_array__gt__(
         num_arrays=2,
         shared_dtype=True,
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__ge__(
     dtype_and_x,
@@ -1664,7 +1624,6 @@ def test_array__ge__(
         num_arrays=2,
         shared_dtype=True,
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__and__(
     dtype_and_x,
@@ -1697,7 +1656,6 @@ def test_array__and__(
         num_arrays=2,
         shared_dtype=True,
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__rand__(
     dtype_and_x,
@@ -1730,7 +1688,6 @@ def test_array__rand__(
         num_arrays=2,
         shared_dtype=True,
     ),
-    init_container_flags=st.just([False]),
     method_container_flags=st.just([False]),
 )
 def test_array__iand__(
@@ -1764,7 +1721,6 @@ def test_array__iand__(
         num_arrays=2,
         shared_dtype=True,
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__or__(
     dtype_and_x,
@@ -1797,7 +1753,6 @@ def test_array__or__(
         num_arrays=2,
         shared_dtype=True,
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__ror__(
     dtype_and_x,
@@ -1830,7 +1785,6 @@ def test_array__ror__(
         num_arrays=2,
         shared_dtype=True,
     ),
-    init_container_flags=st.just([False]),
     method_container_flags=st.just([False]),
 )
 def test_array__ior__(
@@ -1862,7 +1816,6 @@ def test_array__ior__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__invert__(
     dtype_and_x,
@@ -1895,7 +1848,6 @@ def test_array__invert__(
         num_arrays=2,
         shared_dtype=True,
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__xor__(
     dtype_and_x,
@@ -1928,7 +1880,6 @@ def test_array__xor__(
         num_arrays=2,
         shared_dtype=True,
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__rxor__(
     dtype_and_x,
@@ -1961,7 +1912,6 @@ def test_array__rxor__(
         num_arrays=2,
         shared_dtype=True,
     ),
-    init_container_flags=st.just([False]),
     method_container_flags=st.just([False]),
 )
 def test_array__ixor__(
@@ -1995,7 +1945,6 @@ def test_array__ixor__(
         num_arrays=2,
         array_api_dtypes=True,
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__lshift__(
     dtype_and_x,
@@ -2029,7 +1978,6 @@ def test_array__lshift__(
         num_arrays=2,
         array_api_dtypes=True,
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__rlshift__(
     dtype_and_x,
@@ -2064,7 +2012,6 @@ def test_array__rlshift__(
         shared_dtype=True,
         array_api_dtypes=True,
     ),
-    init_container_flags=st.just([False]),
     method_container_flags=st.just([False]),
 )
 def test_array__ilshift__(
@@ -2099,7 +2046,6 @@ def test_array__ilshift__(
         num_arrays=2,
         array_api_dtypes=True,
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__rshift__(
     dtype_and_x,
@@ -2133,7 +2079,6 @@ def test_array__rshift__(
         num_arrays=2,
         array_api_dtypes=True,
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__rrshift__(
     dtype_and_x,
@@ -2168,7 +2113,6 @@ def test_array__rrshift__(
         shared_dtype=True,
         array_api_dtypes=True,
     ),
-    init_container_flags=st.just([False]),
     method_container_flags=st.just([False]),
 )
 def test_array__irshift__(
@@ -2201,7 +2145,6 @@ def test_array__irshift__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__deepcopy__(
     dtype_and_x,
@@ -2234,7 +2177,6 @@ def test_array__deepcopy__(
         min_dim_size=2,
         min_num_dims=1,
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__len__(
     dtype_and_x,
@@ -2267,7 +2209,6 @@ def test_array__len__(
         min_dim_size=2,
         min_num_dims=1,
     ),
-    init_container_flags=st.just([False]),
 )
 def test_array__iter__(
     dtype_and_x,

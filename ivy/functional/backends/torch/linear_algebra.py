@@ -168,8 +168,10 @@ def matmul(
     adjoint_b: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    # torch does not support __imatmul__
-    if out is x1:
+    # torch does not support inplace matmul (same storage in out=)
+    # https://github.com/pytorch/pytorch/issues/58742
+    # https://github.com/pytorch/pytorch/issues/48900
+    if out in (x1, x2):
         out = None
     if transpose_a:
         x1 = torch.t(x1)

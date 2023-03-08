@@ -410,12 +410,8 @@ def hinge_embedding_loss(
 
     loss = ivy.where(
         ivy.logical_or(target == -1, target == 1),
-        ivy.where(
-            target == 1,
-            input,
-            ivy.maximum(0, margin - input)
-        ),
-        ivy.maximum(margin, input)
+        ivy.where(target == 1, input, ivy.maximum(0, margin - input)),
+        ivy.maximum(margin, input),
     )
 
     reduction = _get_reduction(reduction, size_average, reduce)

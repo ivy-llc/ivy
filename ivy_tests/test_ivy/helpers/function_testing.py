@@ -397,7 +397,7 @@ def test_function(
         ivy.set_default_device(on_device)
         try:
             fn = getattr(ivy, fn_name)
-            args, kwargs, _, _, _ = create_args_kwargs(
+            args, kwargs, *_ = create_args_kwargs(
                 args_np=args_np,
                 arg_np_vals=arg_np_vals,
                 args_idxs=args_idxs,
@@ -600,7 +600,7 @@ def test_frontend_function(
     function_module = importlib.import_module(frontend_submods)
     frontend_fn = getattr(function_module, fn_name)
 
-    args, kwargs = create_frontend_args_kwargs(
+    args, kwargs, *_ = create_args_kwargs(
         args_np=args_np,
         arg_np_vals=arg_np_vals,
         args_idxs=args_idxs,
@@ -609,6 +609,7 @@ def test_frontend_function(
         kwargs_idxs=kwargs_idxs,
         input_dtypes=input_dtypes,
         test_flags=test_flags,
+        on_device=on_device,
     )
     args_ivy, kwargs_ivy = ivy.args_to_ivy(*args, **kwargs)
 
@@ -1130,7 +1131,7 @@ def test_method(
     org_con_data = copy.deepcopy(con_data)
 
     # Create Args
-    args_constructor, kwargs_constructor, _, _, _ = create_args_kwargs(**con_data)
+    args_constructor, kwargs_constructor, *_ = create_args_kwargs(**con_data)
     # end constructor #
 
     # method arguments #
@@ -1171,7 +1172,7 @@ def test_method(
     ]
 
     # Create Args
-    args_method, kwargs_method, _, _, _ = create_args_kwargs(
+    args_method, kwargs_method, *_ = create_args_kwargs(
         args_np=args_np_method,
         arg_np_vals=met_arg_np_vals,
         args_idxs=met_args_idxs,
@@ -1252,10 +1253,10 @@ def test_method(
     else:
         ivy.set_backend(ground_truth_backend)
         ivy.set_default_device(on_device)
-        args_gt_constructor, kwargs_gt_constructor, _, _, _ = create_args_kwargs(
+        args_gt_constructor, kwargs_gt_constructor, *_ = create_args_kwargs(
             **org_con_data
         )
-        args_gt_method, kwargs_gt_method, _, _, _ = create_args_kwargs(
+        args_gt_method, kwargs_gt_method, *_ = create_args_kwargs(
             args_np=args_np_method,
             arg_np_vals=met_arg_np_vals,
             args_idxs=met_args_idxs,
@@ -1394,6 +1395,7 @@ def test_frontend_method(
     method_all_as_kwargs_np: dict,
     frontend: str,
     frontend_method_data: FrontendMethodData,
+    on_device,
     rtol_: float = None,
     atol_: float = 1e-06,
     test_values: Union[bool, str] = True,
@@ -1477,7 +1479,7 @@ def test_frontend_method(
     ]
 
     # Create Args
-    args_constructor, kwargs_constructor = create_frontend_args_kwargs(
+    args_constructor, kwargs_constructor, *_ = create_args_kwargs(
         args_np=args_np_constructor,
         arg_np_vals=con_arg_np_vals,
         args_idxs=con_args_idxs,
@@ -1486,6 +1488,7 @@ def test_frontend_method(
         kwargs_idxs=con_kwargs_idxs,
         input_dtypes=init_input_dtypes,
         test_flags=init_flags,
+        on_device=on_device,
     )
     # End constructor #
 
@@ -1522,7 +1525,7 @@ def test_frontend_method(
     ]
 
     # Create Args
-    args_method, kwargs_method = create_frontend_args_kwargs(
+    args_method, kwargs_method, *_ = create_args_kwargs(
         args_np=args_np_method,
         arg_np_vals=met_arg_np_vals,
         args_idxs=met_args_idxs,
@@ -1531,6 +1534,7 @@ def test_frontend_method(
         kwargs_idxs=met_kwargs_idxs,
         input_dtypes=method_input_dtypes,
         test_flags=method_flags,
+        on_device=on_device,
     )
     # End Method #
 
@@ -1727,56 +1731,6 @@ def _get_nested_np_arrays(nest):
     return ret, indices, len(ret)
 
 
-def create_frontend_args_kwargs(
-    *,
-    args_np,
-    arg_np_vals,
-    args_idxs,
-    kwargs_np,
-    kwarg_np_vals,
-    kwargs_idxs,
-    input_dtypes,
-    test_flags: Union[pf.FrontendFunctionTestFlags, pf.FrontendMethodTestFlags],
-):
-    """Creates arguments and keyword-arguments for the function to test.
-
-    Parameters
-    ----------
-    args_np
-        A dictionary of arguments in Numpy.
-    kwargs_np
-        A dictionary of keyword-arguments in Numpy.
-    input_dtypes
-        data-types of the input arguments and keyword-arguments.
-
-    Returns
-    -------
-    Arguments, Keyword-arguments
-    """
-
-    # create args
-    def _apply_flags(args_to_iterate, offset):
-        ret = []
-        for i, entry in enumerate(args_to_iterate, start=offset):
-            x = ivy.array(entry, dtype=input_dtypes[i])
-            if test_flags.as_variable[i]:
-                x = _variable(x)
-            if test_flags.native_arrays[i]:
-                x = ivy.to_native(x)
-            ret.append(x)
-        return ret
-
-    args = ivy.copy_nest(args_np, to_mutable=False)
-    ivy.set_nest_at_indices(args, args_idxs, _apply_flags(arg_np_vals, 0))
-
-    # create kwargs
-    kwargs = ivy.copy_nest(kwargs_np, to_mutable=False)
-    ivy.set_nest_at_indices(
-        kwargs, kwargs_idxs, _apply_flags(kwarg_np_vals, len(arg_np_vals))
-    )
-    return args, kwargs
-
-
 def create_args_kwargs(
     *,
     args_np,
@@ -1805,28 +1759,20 @@ def create_args_kwargs(
     Arguments, Keyword-arguments, number of arguments, and indexes on arguments and
     keyword-arguments.
     """
-
-    def _apply_flags(args_to_iterate, offset):
-        ret = []
-        for i, entry in enumerate(args_to_iterate, start=offset):
-            x = ivy.array(entry, dtype=input_dtypes[i])
-            if test_flags.as_variable[i]:
-                x = _variable(x)
-            if test_flags.native_arrays[i]:
-                x = ivy.to_native(x)
-            if test_flags.container[i]:
-                x = as_cont(x=x)
-            ret.append(x)
-        return ret
-
     # create args
     args = ivy.copy_nest(args_np, to_mutable=False)
-    ivy.set_nest_at_indices(args, args_idxs, _apply_flags(arg_np_vals, 0))
+    ivy.set_nest_at_indices(
+        args, args_idxs, test_flags.apply_flags(arg_np_vals, input_dtypes, on_device, 0)
+    )
 
     # create kwargs
     kwargs = ivy.copy_nest(kwargs_np, to_mutable=False)
     ivy.set_nest_at_indices(
-        kwargs, kwargs_idxs, _apply_flags(kwarg_np_vals, len(arg_np_vals))
+        kwargs,
+        kwargs_idxs,
+        test_flags.apply_flags(
+            kwarg_np_vals, input_dtypes, on_device, len(arg_np_vals)
+        ),
     )
     return args, kwargs, len(arg_np_vals), args_idxs, kwargs_idxs
 
@@ -1940,11 +1886,6 @@ def as_lists(*args):
     return (a if isinstance(a, list) else [a] for a in args)
 
 
-def as_cont(*, x):
-    """Returns x as an Ivy Container, containing x at all its leaves."""
-    return ivy.Container({"a": x, "b": {"c": x, "d": x}})
-
-
 def var_fn(x, *, dtype=None, device=None):
     """Returns x as a variable wrapping an Ivy Array with given dtype and device"""
     return _variable(ivy.array(x, dtype=dtype, device=device))
@@ -1993,12 +1934,7 @@ def _is_frontend_array(x):
 
 
 def _frontend_array_to_ivy(x):
-    if (
-        isinstance(x, ndarray)
-        or isinstance(x, torch_tensor)
-        or isinstance(x, tf_tensor)
-        or isinstance(x, DeviceArray)
-    ):
+    if _is_frontend_array(x):
         return x.ivy_array
     else:
         return x
