@@ -354,10 +354,9 @@ def split(value, num_or_size_splits, axis=0, num=None, name=None):
 
 
 def repeat(
-        input,
-        repeats,
-        axis=None,
-        name=None,
+    input,
+    repeats,
+    axis=None,
+    name=None,
 ):
     return ivy.repeat(input, repeats, axis=axis)
-

@@ -265,7 +265,7 @@ def take_along_axis(
     axis: int,
     /,
     *,
-    mode: str = 'fill',
+    mode: str = "fill",
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if arr.ndim != indices.ndim and axis is not None:

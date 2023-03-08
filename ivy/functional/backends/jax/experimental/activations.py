@@ -63,7 +63,8 @@ def batch_norm(
     if scale is not None:
         inv *= scale
 
-    ret = x * inv.astype(x.dtype) + \
-        (offset - mean * inv if offset is not None else -mean * inv).astype(x.dtype)
+    ret = x * inv.astype(x.dtype) + (
+        offset - mean * inv if offset is not None else -mean * inv
+    ).astype(x.dtype)
 
     return jnp.transpose(ret, (0, ndims - 1, *range(1, ndims - 1)))

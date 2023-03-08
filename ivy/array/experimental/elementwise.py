@@ -890,7 +890,6 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
             self._data, n=n, axis=axis, prepend=prepend, append=append, out=out
         )
 
-
     def fix(
         self: ivy.Array,
         /,
@@ -1228,12 +1227,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         return ivy.ldexp(self._data, x2, out=out)
 
     def frexp(
-        self: ivy.Array,
-        /,
-        *,
-
-        out: Optional[Tuple[ivy.Array, ivy.Array]] = None
-
+        self: ivy.Array, /, *, out: Optional[Tuple[ivy.Array, ivy.Array]] = None
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.frexp. This method simply wraps

@@ -454,10 +454,9 @@ def frexp(
     x: np.ndarray,
     /,
     *,
-
-    out: Optional[
-        Union[Tuple[np.ndarray, np.ndarray], Tuple[None, None]]
-    ] = (None, None)
-
+    out: Optional[Union[Tuple[np.ndarray, np.ndarray], Tuple[None, None]]] = (
+        None,
+        None,
+    ),
 ) -> Tuple[np.ndarray, np.ndarray]:
     return np.frexp(x, out=out)
