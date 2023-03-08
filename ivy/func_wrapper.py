@@ -892,3 +892,12 @@ with_unsupported_device_and_dtypes = _dtype_device_wrapper_creator(
 with_supported_device_and_dtypes = _dtype_device_wrapper_creator(
     "supported_device_and_dtype", dict
 )
+
+
+def notImplemented(fn):
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        raise NotImplementedError("Not Implemented")
+
+    new_fn._ivy_not_implemented = True
+    return new_fn
