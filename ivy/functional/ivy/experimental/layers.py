@@ -1182,9 +1182,9 @@ def interpolate(
     def u(s, a=-0.5):
         abs_s = abs(s)
         if (abs_s >= 0) & (abs_s <= 1):
-            return (a + 2) * (abs_s ** 3) - (a + 3) * (abs_s ** 2) + 1
+            return (a + 2) * (abs_s**3) - (a + 3) * (abs_s**2) + 1
         elif (abs_s > 1) & (abs_s <= 2):
-            return a * (abs_s ** 3) - (5 * a) * (abs_s ** 2) + (8 * a) * abs_s - 4 * a
+            return a * (abs_s**3) - (5 * a) * (abs_s**2) + (8 * a) * abs_s - 4 * a
         return 0
 
     dims = len(x.shape) - 2
@@ -1295,7 +1295,7 @@ def interpolate(
     elif mode == "bicubic":
         scale_factor_h = size[0] / x.shape[2]
         scale_factor_w = size[1] / x.shape[3]
-        x = ivy.pad(x, ((0, 0), (0, 0), (2, 2), (2, 2)), mode='edge')
+        x = ivy.pad(x, ((0, 0), (0, 0), (2, 2), (2, 2)), mode="edge")
         ret = ivy.zeros((*x.shape[:2], size[0], size[1]))
         for n in range(ret.shape[0]):
             for c in range(ret.shape[1]):
@@ -1309,9 +1309,13 @@ def interpolate(
                             [
                                 [x[n, c, int(x0 + x_i), int(y0 + y_i)] for y_i in y_s]
                                 for x_i in x_s
-                            ], dtype=ivy.float32)
+                            ],
+                            dtype=ivy.float32,
+                        )
                         mat_r = ivy.array([[u(y_i)] for y_i in y_s])
-                        ret[n, c, i, j] = ivy.multi_dot((mat_l, mat_m, mat_r)).squeeze(0)
+                        ret[n, c, i, j] = ivy.multi_dot((mat_l, mat_m, mat_r)).squeeze(
+                            0
+                        )
     elif mode == "tf_area":
         ret = _tf_area_interpolate(x, size, dims)
     return ivy.astype(ret, ivy.dtype(x), out=out)
@@ -1322,7 +1326,7 @@ def _get_size(scale_factor, size, dims, x_shape):
         if isinstance(scale_factor, (float, int)):
             scale_factor = [scale_factor] * dims
         size = tuple(
-            [int(math.floor(x_shape[2+i] * scale_factor[i])) for i in range(dims)]
+            [int(math.floor(x_shape[2 + i] * scale_factor[i])) for i in range(dims)]
         )
     else:
         size = (size,) * dims if isinstance(size, int) else tuple(size)

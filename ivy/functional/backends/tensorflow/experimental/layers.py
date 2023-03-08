@@ -430,7 +430,11 @@ def interpolate(
     size = _get_size(scale_factor, size, dims, x.shape)
     if align_corners or dims > 2 or mode in ["nearest", "area"]:
         return ivy.functional.experimental.interpolate(
-            x, size, mode=mode, align_corners=align_corners, antialias=antialias,
+            x,
+            size,
+            mode=mode,
+            align_corners=align_corners,
+            antialias=antialias,
         )
     remove_dim = False
     if mode in ["linear", "tf_area"]:
