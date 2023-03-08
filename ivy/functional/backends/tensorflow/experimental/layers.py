@@ -419,6 +419,10 @@ def interpolate(
             "nearest_exact",
             "tf_area",
             "bicubic",
+            "mitchellcubic",
+            "lanczos3",
+            "lanczos5",
+            "gaussian",
         ]
     ] = "linear",
     scale_factor: Optional[Union[Sequence[int], int]] = None,
@@ -437,13 +441,13 @@ def interpolate(
             antialias=antialias,
         )
     remove_dim = False
-    if mode in ["linear", "tf_area"]:
+    if mode in ["linear", "tf_area", "lanczos3", "lanczos5"]:
         if dims == 1:
             size = (1,) + tuple(size)
             x = tf.expand_dims(x, axis=-2)
             dims = 2
             remove_dim = True
-        mode = "bilinear" if mode == "linear" else "area"
+        mode = "bilinear" if mode == "linear" else "area" if mode == "tf_area" else mode
     x = tf.transpose(x, (0, *range(2, dims + 2), 1))
     ret = tf.transpose(
         tf.cast(

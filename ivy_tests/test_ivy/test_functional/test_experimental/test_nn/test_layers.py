@@ -261,7 +261,19 @@ def _interp_args(draw, mode=None, mode_list=None):
     if not mode and not mode_list:
         mode = draw(
             st.sampled_from(
-                ["linear", "bilinear", "trilinear", "nearest", "area", "tf_area", "bicubic"]
+                [
+                    "linear",
+                    "bilinear",
+                    "trilinear",
+                    "nearest",
+                    "area",
+                    "tf_area",
+                    "bicubic",
+                    "lanczos3",
+                    "lanczos5",
+                    "mitchellcubic",
+                    "gaussian",
+                ]
             )
         )
     elif mode_list:
@@ -269,11 +281,11 @@ def _interp_args(draw, mode=None, mode_list=None):
     align_corners = draw(st.one_of(st.booleans(), st.none()))
     if mode == "linear":
         num_dims = 3
-    elif mode == "bilinear" or mode == "bicubic":
+    elif mode in ["bilinear", "bicubic", "mitchellcubic", "gaussian"]:
         num_dims = 4
     elif mode == "trilinear":
         num_dims = 5
-    elif mode in ["nearest", "area", "tf_area"]:
+    elif mode in ["nearest", "area", "tf_area", "lanczos3", "lanczos5"]:
         dim = draw(helpers.ints(min_value=1, max_value=3))
         num_dims = dim + 2
         align_corners = None
@@ -326,7 +338,7 @@ def _interp_args(draw, mode=None, mode_list=None):
 @handle_test(
     fn_tree="functional.ivy.experimental.interpolate",
     dtype_x_mode=_interp_args(),
-    antialias=st.just(False),
+    antialias=st.booleans(),
     test_gradients=st.just(False),
     number_positional_args=st.just(2),
 )
@@ -358,9 +370,11 @@ def test_interpolate(
             scale_factor=scale_factor,
         )
     except Exception as e:
-        if hasattr(e, 'message'):
-            if "output dimensions must be positive" in e.message or\
-                    "Input and output sizes should be greater than 0" in e.message:
+        if hasattr(e, "message"):
+            if (
+                "output dimensions must be positive" in e.message
+                or "Input and output sizes should be greater than 0" in e.message
+            ):
                 assume(False)
 
 

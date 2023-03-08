@@ -568,6 +568,10 @@ def interpolate(
             "nearest_exact",
             "tf_area",
             "bicubic",
+            "mitchellcubic",
+            "lanczos3",
+            "lanczos5",
+            "gaussian",
         ]
     ] = "linear",
     scale_factor: Optional[Union[Sequence[int], int]] = None,
@@ -575,9 +579,9 @@ def interpolate(
     antialias: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
 ):
-    if mode == "tf_area":
+    if mode in ["tf_area", "mitchellcubic", "lanczos3", "lanczos5", "gaussian"]:
         return ivy.functional.experimental.interpolate(
-            x, size, mode=mode, align_corners=align_corners, antialias=antialias
+            x, size, mode=mode, align_corners=align_corners, antialias=antialias, scale_factor=scale_factor
         )
     return torch.nn.functional.interpolate(
         x,
