@@ -176,13 +176,13 @@ def _get_dtype_input_and_mat_vec(draw, *, with_input=False):
     ),
 )
 def test_torch_addbmm(
-        dtype_and_matrices,
-        beta,
-        alpha,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    dtype_and_matrices,
+    beta,
+    alpha,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     dtype, input, mat1, mat2 = dtype_and_matrices
     helpers.test_frontend_function(
@@ -220,13 +220,13 @@ def test_torch_addbmm(
     ),
 )
 def test_torch_addmm(
-        dtype_and_matrices,
-        beta,
-        alpha,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    dtype_and_matrices,
+    beta,
+    alpha,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     dtype, input, mat1, mat2 = dtype_and_matrices
     helpers.test_frontend_function(
@@ -264,13 +264,13 @@ def test_torch_addmm(
     ),
 )
 def test_torch_addmv(
-        dtype_and_matrices,
-        beta,
-        alpha,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    dtype_and_matrices,
+    beta,
+    alpha,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     dtype, input, mat, vec = dtype_and_matrices
     helpers.test_frontend_function(
@@ -308,13 +308,13 @@ def test_torch_addmv(
     ),
 )
 def test_torch_addr(
-        dtype_and_vecs,
-        beta,
-        alpha,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    dtype_and_vecs,
+    beta,
+    alpha,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     dtype, input, vec1, vec2 = dtype_and_vecs
 
@@ -353,13 +353,13 @@ def test_torch_addr(
     ),
 )
 def test_torch_baddbmm(
-        dtype_and_matrices,
-        beta,
-        alpha,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    dtype_and_matrices,
+    beta,
+    alpha,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     dtype, input, batch1, batch2 = dtype_and_matrices
 
@@ -384,11 +384,11 @@ def test_torch_baddbmm(
     dtype_and_matrices=_get_dtype_and_3dbatch_matrices(),
 )
 def test_torch_bmm(
-        dtype_and_matrices,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    dtype_and_matrices,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     dtype, mat1, mat2 = dtype_and_matrices
     helpers.test_frontend_function(
@@ -413,22 +413,22 @@ def test_torch_bmm(
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
     ).filter(
         lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon
-                  and np.linalg.det(np.asarray(x[1])) != 0
+        and np.linalg.det(np.asarray(x[1])) != 0
     ),
     upper=st.booleans(),
 )
 def test_torch_cholesky(
-        dtype_and_x,
-        upper,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    dtype_and_x,
+    upper,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     dtype, x = dtype_and_x
     x = x[0]
     x = (
-            np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
+        np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
     )  # make symmetric positive-definite
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -448,11 +448,11 @@ def test_torch_cholesky(
     dtype_and_vecs=_get_dtype_input_and_vectors(),
 )
 def test_torch_ger(
-        dtype_and_vecs,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    dtype_and_vecs,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     dtype, vec1, vec2 = dtype_and_vecs
     helpers.test_frontend_function(
@@ -472,11 +472,11 @@ def test_torch_ger(
     dtype_and_matrices=_get_dtype_input_and_matrices(with_input=True),
 )
 def test_torch_inner(
-        dtype_and_matrices,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    dtype_and_matrices,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     dtype, input_mat, mat1, mat2 = dtype_and_matrices
     helpers.test_frontend_function(
@@ -497,11 +497,11 @@ def test_torch_inner(
     dtype_and_x=_get_dtype_and_square_matrix(),
 )
 def test_torch_logdet(
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -520,11 +520,11 @@ def test_torch_logdet(
     dtype_xy=_get_dtype_and_3dbatch_matrices(),
 )
 def test_torch_matmul(
-        dtype_xy,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    dtype_xy,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     dtype, x, y = dtype_xy
     helpers.test_frontend_function(
@@ -548,13 +548,13 @@ def test_torch_matmul(
     sym=st.booleans(),
 )
 def test_torch_matrix_rank(
-        dtype_and_x,
-        rtol,
-        sym,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    dtype_and_x,
+    rtol,
+    sym,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -576,11 +576,11 @@ def test_torch_matrix_rank(
     dtype_xy=_get_dtype_input_and_matrices(),
 )
 def test_torch_mm(
-        dtype_xy,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    dtype_xy,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     dtype, x, y = dtype_xy
     helpers.test_frontend_function(
@@ -602,11 +602,11 @@ def test_torch_mm(
     dtype_mat_vec=_get_dtype_input_and_mat_vec(),
 )
 def test_torch_mv(
-        dtype_mat_vec,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    dtype_mat_vec,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     dtype, mat, vec = dtype_mat_vec
     helpers.test_frontend_function(
@@ -628,11 +628,11 @@ def test_torch_mv(
     dtype_and_vecs=_get_dtype_input_and_vectors(),
 )
 def test_torch_outer(
-        dtype_and_vecs,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    dtype_and_vecs,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     dtype, vec1, vec2 = dtype_and_vecs
     helpers.test_frontend_function(
@@ -659,12 +659,12 @@ def test_torch_outer(
     rtol=st.floats(1e-5, 1e-3),
 )
 def test_torch_pinverse(
-        dtype_and_x,
-        rtol,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    dtype_and_x,
+    rtol,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -694,12 +694,12 @@ def test_torch_pinverse(
     some=st.booleans(),
 )
 def test_torch_qr(
-        dtype_and_x,
-        some,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    dtype_and_x,
+    some,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -728,13 +728,13 @@ def test_torch_qr(
     compute=st.booleans(),
 )
 def test_torch_svd(
-        dtype_and_x,
-        some,
-        compute,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    dtype_and_x,
+    some,
+    compute,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -755,11 +755,11 @@ def test_torch_svd(
     dtype_and_vecs=_get_dtype_input_and_vectors(same_size=True),
 )
 def test_torch_vdot(
-        dtype_and_vecs,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    dtype_and_vecs,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     dtype, vec1, vec2 = dtype_and_vecs
     helpers.test_frontend_function(
