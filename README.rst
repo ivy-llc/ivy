@@ -460,18 +460,6 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 .. code-block:: python
 
     import ivy
-
-    # ToDo: Write code
-
-.. raw:: html
-
-               </details>
-               <details>
-                  <summary>Any function</summary>
-                  
-.. code-block:: python
-
-    import ivy
     import torch
     import tensorflow as tf
 
@@ -484,7 +472,6 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
     noise = tf.random.normal(shape=(1, 224, 224, 3))
     torch_eff_encoder = ivy.transpile(eff_encoder, to="torch", args=(noise,))
 
-
     # Build a classifier using the transpiled encoder
     class Classifier(torch.nn.Module):
         def __init__(self, num_classes=20):
@@ -496,10 +483,21 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
             x = self.encoder(x)
             return self.fc(x)
 
-
     # Initialize a trainable, customizable, torch.nn.Module
     classifier = Classifier()
     ret = classifier(torch.rand((1, 244, 244, 3)))
+
+.. raw:: html
+
+               </details>
+               <details>
+                  <summary>Any function</summary>
+                  
+.. code-block:: python
+
+    import ivy
+
+    # ToDo: Write code
 
 .. raw:: html
 
@@ -822,8 +820,42 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 .. code-block:: python
 
     import ivy
+    import timm
+    import torch
+    import jax
+    import haiku as hk
 
-    # ToDo: Write code
+    # Get a pretrained pytorch model
+    mlp_encoder = timm.create_model("mixer_b16_224", pretrained=True, num_classes=0)
+
+    # Transpile it into a hk.Module with the corresponding parameters
+    noise = torch.randn(1, 3, 224, 224)
+    mlp_encoder = ivy.transpile(mlp_encoder, source="torch", to="jax", args=(noise,))
+
+    # Build a classifier using the transpiled encoder
+    class Classifier(hk.Module):
+        def __init__(self, num_classes=1000):
+            super(Classifier, self).__init__()
+            self.encoder = mlp_encoder()
+            self.fc = hk.Linear(output_size=num_classes, with_bias=True)
+
+        def __call__(self, x):
+            x = self.encoder(x)
+            x = self.fc(x)
+            return x
+
+    def _forward_classifier(x):
+        module = Classifier()
+        return module(x)
+
+    # Transform the classifier and use it as a standard hk.Module
+    rng_key = jax.random.PRNGKey(42)
+    x = jax.random.uniform(key=rng_key, shape=(1, 3, 224, 224), dtype=jax.numpy.float32)
+    forward_classifier = hk.transform(_forward_classifier)
+    params = forward_classifier.init(rng=rng_key, x=x)
+
+    ret = forward_classifier.apply(params, None, x)
+
 
 .. raw:: html
 
@@ -889,7 +921,6 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
     noise = tf.random.normal(shape=(1, 224, 224, 3))
     hk_eff_encoder = ivy.transpile(eff_encoder, to="jax", args=(noise,))
 
-
     # Build a classifier using the transpiled encoder
     class Classifier(hk.Module):
         def __init__(self, num_classes=1000):
@@ -902,11 +933,9 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
             x = self.fc(x)
             return x
 
-
     def _forward_classifier(x):
         module = Classifier()
         return module(x)
-
 
     # Transform the classifier and use it as a standard hk.Module
     rng_key = jax.random.PRNGKey(42)
