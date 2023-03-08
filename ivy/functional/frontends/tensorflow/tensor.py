@@ -75,8 +75,11 @@ class EagerTensor:
     def __add__(self, y, name="add"):
         return self.__radd__(y)
 
-    def __div__(self, x, name="div"):
-        return tf_frontend.math.divide(self._ivy_array, x, name=name)
+    def __div__(self, y, name="div"):
+        if "int" in self._ivy_array.dtype:
+            return tf_frontend.raw_ops.FloorDiv(x=self._ivy_array, y=y, name=name)
+        ret = tf_frontend.math.divide(self._ivy_array, y, name=name)
+        return tf_frontend.cast(ret, self.dtype)
 
     def __and__(self, y, name="and"):
         return self.__rand__(y)
@@ -129,11 +132,11 @@ class EagerTensor:
     def __matmul__(self, y, name="matmul"):
         return self.__rmatmul__(y)
 
-    def __mul__(self, x, name="mul"):
-        return tf_frontend.math.multiply(self._ivy_array, x, name=name)
+    def __mul__(self, y, name="mul"):
+        return tf_frontend.math.multiply(self._ivy_array, y, name=name)
 
-    def __mod__(self, x, name="mod"):
-        return ivy.remainder(self._ivy_array, x, name=name)
+    def __mod__(self, y, name="mod"):
+        return tf_frontend.floormod(self._ivy_array, y, name=name)
 
     def __ne__(self, other):
         return tf_frontend.raw_ops.NotEqual(

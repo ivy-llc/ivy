@@ -484,12 +484,22 @@ def interpolate(
     size: Union[Sequence[int], int],
     /,
     *,
-    mode: Union[Literal["linear", "bilinear"]] = "linear",
+    mode: Union[
+        Literal[
+            "linear",
+            "bilinear",
+            "trilinear",
+            "nearest",
+            "area",
+            "nearest_exact",
+            "tf_area",
+        ]
+    ] = "linear",
     align_corners: Optional[bool] = None,
     antialias: Optional[bool] = False,
     out: Optional[JaxArray] = None,
 ):
-    if align_corners or mode in ["area", "nearest"]:
+    if align_corners or mode in ["area", "nearest", "tf_area"]:
         return ivy.functional.experimental.interpolate(
             x, size, mode=mode, align_corners=align_corners, antialias=antialias
         )
