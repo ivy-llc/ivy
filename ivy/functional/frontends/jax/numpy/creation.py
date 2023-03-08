@@ -119,3 +119,22 @@ def empty_like(a, dtype=None, shape=None):
 @to_ivy_arrays_and_back
 def full(shape, fill_value, dtype=None):
     return ivy.full(shape, fill_value, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def array_str(a, max_line_width=None, precision=None, suppress_small=None):
+    def round_suppress(ele, precision_):
+        count_after_decimal = str(ele)[::-1].find('.')
+        if count_after_decimal > precision_:
+            # supress to zero
+            return 0
+        else:
+            return round(ele, precision_)
+    
+    a = list(map(round_suppress, a, precision))
+    a = str(a)
+    if len(a)>max_line_width:
+        for line in range(len(a)/max_line_width):
+            a = a[:max_line_width] + '\n' + a[max_line_width:]
+    return a
+
