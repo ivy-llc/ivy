@@ -1,4 +1,3 @@
-import ivy
 from ivy.functional.frontends.mxnet.numpy.ndarray import ndarray
 
 from ivy.functional.frontends.mxnet.func_wrapper import (
