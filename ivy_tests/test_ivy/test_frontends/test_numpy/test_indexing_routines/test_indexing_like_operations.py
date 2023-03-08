@@ -135,33 +135,32 @@ def test_numpy_take_along_axis(
 
 @handle_frontend_test(
     fn_tree="numpy.take",
-    dtype_x_indices_axis=helpers.array_indices_axis(
+        dtype_indices_axis=helpers.array_indices_axis(
         array_dtypes=helpers.get_dtypes("numeric"),
-        indices_dtypes=["int32", "int64"],
+        indices_dtypes=helpers.get_dtypes("integer"),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=10,
         indices_same_dims=True,
     ),
-    test_with_out=st.just(False),
 )
 def test_numpy_take(
     *,
-    dtype_x_indices_axis,
+    dtype_indices_axis,
     test_flags,
     frontend,
     fn_tree,
     on_device,
 ):
-    dtypes, x, indices, axis, _ = dtype_x_indices_axis
+    input_dtypes, value, indices, axis, _ = dtype_indices_axis
     helpers.test_frontend_function(
-        input_dtypes=dtypes,
-        test_flags=test_flags,
+        input_dtypes=input_dtypes,
         frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        arr=x,
+        a=value,
         indices=indices,
         axis=axis,
     )
