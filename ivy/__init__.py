@@ -683,11 +683,11 @@ promotion_table = {**array_api_promotion_table, **extra_promotion_table}
 
 
 from .func_wrapper import *
-from .array_classes.array import Array, add_ivy_array_instance_methods
-from .array_classes.array.conversions import *
-from .array_classes.array import conversions as arr_conversions
-from .array_classes.container import conversions as cont_conversions
-from .array_classes.container import (
+from .data_classes.array import Array, add_ivy_array_instance_methods
+from .data_classes.array.conversions import *
+from .data_classes.array import conversions as arr_conversions
+from .data_classes.container import conversions as cont_conversions
+from .data_classes.container import (
     ContainerBase,
     Container,
     add_ivy_container_instance_methods,

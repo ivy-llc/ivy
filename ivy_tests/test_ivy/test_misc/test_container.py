@@ -10,7 +10,7 @@ import pickle
 # local
 import ivy
 from ivy.functional.ivy.gradients import _variable
-from ivy.array_classes.container import Container
+from ivy.data_classes.container import Container
 from ivy.utils.exceptions import IvyException
 
 
