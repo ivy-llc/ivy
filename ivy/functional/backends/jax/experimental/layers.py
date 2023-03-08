@@ -22,7 +22,15 @@ def _from_int_to_tuple(arg, dim):
 
 
 def general_pool(
-    inputs, init, reduce_fn, window_shape, strides, padding, dim, dilation=1, ceil_mode=False,
+    inputs,
+    init,
+    reduce_fn,
+    window_shape,
+    strides,
+    padding,
+    dim,
+    dilation=1,
+    ceil_mode=False,
 ):
     window_shape = _from_int_to_tuple(window_shape, dim)
     strides = _from_int_to_tuple(strides, dim)
@@ -476,12 +484,22 @@ def interpolate(
     size: Union[Sequence[int], int],
     /,
     *,
-    mode: Union[Literal["linear", "bilinear"]] = "linear",
+    mode: Union[
+        Literal[
+            "linear",
+            "bilinear",
+            "trilinear",
+            "nearest",
+            "area",
+            "nearest_exact",
+            "tf_area",
+        ]
+    ] = "linear",
     align_corners: Optional[bool] = None,
     antialias: Optional[bool] = False,
     out: Optional[JaxArray] = None,
 ):
-    if align_corners or mode in ["area", "nearest"]:
+    if align_corners or mode in ["area", "nearest", "tf_area"]:
         return ivy.functional.experimental.interpolate(
             x, size, mode=mode, align_corners=align_corners, antialias=antialias
         )

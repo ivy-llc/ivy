@@ -38,6 +38,12 @@ ArgMax = to_ivy_arrays_and_back(
 
 
 @to_ivy_arrays_and_back
+def AddV2(*, x, y, name="AddV2"):
+    check_tensorflow_casting(x, y)
+    return ivy.addv2(tf_frontend.to_tensor(x), tf_frontend.to_tensor(y))
+
+
+@to_ivy_arrays_and_back
 def ArgMin(*, input, dimension, output_type=None, name=None):
     output_type = to_ivy_dtype(output_type)
     if output_type in ["int32", "int64"]:
@@ -613,3 +619,5 @@ Elu.supported_dtypes = {
 @to_ivy_arrays_and_back
 def LinSpace(*, start, stop, num, name=None):
     return ivy.linspace(start, stop, num)
+
+Roll = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.roll))

@@ -63,4 +63,4 @@ def batch_norm(
         inv *= scale
     ret = x * inv.astype(x.dtype, copy=False) + \
         (offset - mean * inv if offset is not None else -mean * inv).astype(x.dtype)
-    return np.transpose(ret, (0, ndims-1, *range(1, ndims-1)))
+    return np.transpose(ret, (0, ndims - 1, *range(1, ndims - 1)))

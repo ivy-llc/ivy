@@ -563,6 +563,10 @@ def interpolate(
     antialias: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
 ):
+    if mode == "tf_area":
+        return ivy.functional.experimental.interpolate(
+            x, size, mode=mode, align_corners=align_corners, antialias=antialias
+        )
     return torch.nn.functional.interpolate(
         x,
         size,

@@ -2002,12 +2002,7 @@ def _is_frontend_array(x):
 
 
 def _frontend_array_to_ivy(x):
-    if (
-        isinstance(x, ndarray)
-        or isinstance(x, torch_tensor)
-        or isinstance(x, tf_tensor)
-        or isinstance(x, DeviceArray)
-    ):
+    if _is_frontend_array(x):
         return x.ivy_array
     else:
         return x

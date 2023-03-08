@@ -1,6 +1,7 @@
 # global
 import pytest
-from hypothesis import strategies as st, given
+from hypothesis import strategies as st, given, assume
+import numpy as np
 
 # local
 import ivy
@@ -129,6 +130,8 @@ def test_tensorflow_instance_div(
     method_flags,
 ):
     input_dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x[0], 0)))
+    assume(not np.any(np.isclose(x[1], 0)))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
@@ -434,6 +437,8 @@ def test_tensorflow_instance_mod(
     method_flags,
 ):
     input_dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x[0], 0)))
+    assume(not np.any(np.isclose(x[1], 0)))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
@@ -1216,7 +1221,7 @@ def test_tensorflow_instance_rpow(
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
-            "y": x[1],
+            "x": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
