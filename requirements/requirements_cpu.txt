@@ -1,7 +1,0 @@
-numpy # unpinned we test with the latest version now
-einops==0.4.1
-psutil==5.9.1
-termcolor==1.1.0
-colorama==0.4.5
-packaging==21.3
-cython==0.29.33
