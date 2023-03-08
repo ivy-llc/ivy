@@ -136,15 +136,14 @@ native_inplace_support = True
 supports_gradients = True
 
 
-def closest_valid_dtype(type, /):
+def closest_valid_dtype(type=None, /, as_native=False):
     if type is None:
-        return ivy.default_dtype()
-    type_str = ivy.as_ivy_dtype(type)
-    if type_str in invalid_dtypes:
-        return {"uint16": native_uint8, "uint32": native_uint8, "uint64": native_uint8}[
-            type_str
-        ]
-    return type
+        type = ivy.default_dtype()
+    elif isinstance(type, str) and type in invalid_dtypes:
+        type = ivy.as_ivy_dtype(
+            {"uint16": ivy.uint8, "uint32": ivy.uint8, "uint64": ivy.uint8}[type]
+        )
+    return ivy.as_ivy_dtype(type) if not as_native else ivy.as_native_dtype(type)
 
 
 backend = "torch"
@@ -172,10 +171,10 @@ from . import device
 from .device import *
 from . import elementwise
 from .elementwise import *
-from . import general
-from .general import *
 from . import gradients
 from .gradients import *
+from . import general
+from .general import *
 from . import layers
 from .layers import *
 from . import linear_algebra as linalg

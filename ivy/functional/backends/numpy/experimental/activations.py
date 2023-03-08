@@ -61,7 +61,7 @@ def batch_norm(
     inv = 1.0 / np.sqrt(variance + eps)
     if scale is not None:
         inv *= scale
-    ret = x * inv.astype(x.dtype, copy=False) + (
-        offset - mean * inv if offset is not None else -mean * inv
-    ).astype(x.dtype)
+
+    ret = x * inv.astype(x.dtype, copy=False) + \
+
     return np.transpose(ret, (0, ndims - 1, *range(1, ndims - 1)))

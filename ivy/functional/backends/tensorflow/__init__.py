@@ -1,7 +1,15 @@
 # global
 import sys
-
+import logging
 import tensorflow as tf
+
+for device in tf.config.experimental.list_physical_devices("GPU"):
+    try:
+        tf.config.experimental.set_memory_growth(device, True)
+    except RuntimeError as e:
+        logging.warn(f"can not set {device} to dynamically allocate memory. {e}")
+
+
 from tensorflow.python.framework.dtypes import DType
 from tensorflow.python.framework.tensor_shape import TensorShape
 from tensorflow.python.types.core import Tensor
@@ -152,10 +160,10 @@ native_inplace_support = False
 supports_gradients = True
 
 
-def closest_valid_dtype(type, /):
+def closest_valid_dtype(type=None, /, as_native=False):
     if type is None:
-        return ivy.default_dtype()
-    return type
+        type = ivy.default_dtype()
+    return ivy.as_ivy_dtype(type) if not as_native else ivy.as_native_dtype(type)
 
 
 backend = "tensorflow"
