@@ -69,8 +69,7 @@ def randint(
 
 
 def seed(*, seed_value: int = 0) -> None:
-    raise IvyNotImplementedException()
-
+	_=paddle.seed(seed_value)
 
 def shuffle(
     x: paddle.Tensor,

@@ -138,7 +138,15 @@ def squeeze(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if isinstance(axis, list):
+        axis = tuple(axis)
+    if x.shape == ():
+        if axis is None or axis == 0 or axis == -1:
+            return x
+        raise ivy.utils.exceptions.IvyException(
+            "tried to squeeze a zero-dimensional input by axis {}".format(axis)
+        )
+    return paddle.squeeze(x, axis=axis)
 
 
 @with_unsupported_dtypes(
@@ -205,7 +213,7 @@ def repeat(
     axis: int = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.repeat_interleave(x, repeats)
 
 
 def tile(
