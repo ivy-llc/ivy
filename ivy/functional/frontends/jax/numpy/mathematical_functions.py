@@ -497,3 +497,17 @@ def reciprocal(x, /):
 @to_ivy_arrays_and_back
 def conj(x, /):
     return ivy.conj(x)
+
+
+@to_ivy_arrays_and_back
+def nanprod(a, axis=None, dtype=None, out=None, keepdims=False, initial=None, where=None):
+    fill_values = ivy.ones_like(a)
+    a = ivy.where(ivy.isnan(a), fill_values, a)
+    if ivy.is_array(where):
+        a = ivy.where(where, a, ivy.default(out, fill_values), out=out)
+    if initial is not None:
+        s = ivy.shape(a, as_array=True)
+        s[axis] = 1
+        header = ivy.full(ivy.Shape(tuple(s)), initial)
+        a = ivy.concat([header, a], axis=axis)
+    return ivy.prod(a, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
