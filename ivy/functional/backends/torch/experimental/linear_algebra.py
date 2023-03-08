@@ -155,9 +155,9 @@ def adjoint(
 
 
 def multi_dot(
-    x: Sequence[torch.Tensor], 
-    /, 
-    *, 
+    x: Sequence[torch.Tensor],
+    /,
+    *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.linalg.multi_dot(x, out=out)

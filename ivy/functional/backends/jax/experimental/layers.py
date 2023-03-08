@@ -505,7 +505,11 @@ def interpolate(
     size = _get_size(scale_factor, size, dims, x.shape)
     if align_corners or mode in ["area", "nearest", "tf_area"]:
         return ivy.functional.experimental.interpolate(
-            x, size, mode=mode, align_corners=align_corners, antialias=antialias,
+            x,
+            size,
+            mode=mode,
+            align_corners=align_corners,
+            antialias=antialias,
         )
     size = [x.shape[0], *size, x.shape[1]]
     x = jnp.transpose(x, (0, *range(2, dims + 2), 1))
