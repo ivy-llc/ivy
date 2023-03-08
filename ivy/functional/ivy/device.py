@@ -663,11 +663,12 @@ def default_device(
     as_native: bool = None,
 ) -> Union[ivy.Device, ivy.NativeDevice]:
     """Returns the input device or the default device.
-    If the as_native flag is set, the device will be converted to a native device.
-    If the item is provided, the item's device is returned.
-    If the device is not provided, the last default device is returned.
-    If a default device has not been set, the first gpu is returned if available,
-    otherwise the cpu is returned.
+
+    - If the ``as_native`` flag is set, the device will be converted to a native device.
+    - If the ``item`` is provided, the item's device is returned.
+    - If the ``device`` is not provided, the last default device is returned.
+    - If a default device has not been set, the first ``gpu`` is returned if available,
+      otherwise the ``cpu`` is returned.
 
 
     Parameters
@@ -705,7 +706,6 @@ def default_device(
     >>> x = ivy.to_device(x, 'gpu:0')
     >>> ivy.default_device(item=x, as_native=True)
     device(type='gpu', id=0)
-
     """
     if ivy.exists(device):
         if as_native is True:
