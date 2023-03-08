@@ -16,7 +16,10 @@ def median(
     keepdims: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if out is None:
+        return paddle.median(x=input, axis=axis, keepdim=keepdims)
+
+    out[:] = paddle.median(x=input, axis=axis, keepdim=keepdims)
 
 
 def nanmean(
@@ -28,7 +31,10 @@ def nanmean(
     dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if out is None:
+        return (paddle.nanmean(x=a, axis=axis, keepdim=keepdims)).cast(dtype)
+    
+    out[:] = (paddle.nanmean(x=a, axis=axis, keepdim=keepdims)).cast(dtype)
 
 
 def quantile(
