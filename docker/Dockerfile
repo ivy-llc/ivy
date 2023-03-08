@@ -17,7 +17,7 @@ RUN pip3 install torch==1.13.1 torchvision==0.14.1 torchaudio==0.13.1 -f https:/
 RUN pip3 install --upgrade torch-scatter -f https://pytorch-geometric.com/whl
 
 # Install Ivy Upstream
-RUN git clone --progress --recurse-submodules https://github.com/unifyai/ivy --depth 1 && \
+RUN git clone --progress --recurse-submodules https://github.com/unifyai/ivy && \
     cd ivy && \
     cat requirements/requirements.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
     cat requirements/optional.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
