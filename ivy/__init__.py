@@ -1157,5 +1157,6 @@ def dynamic_backend_as(value):
     return DynamicBackendContext(value)
 
 
-if ivy.backend != "numpy":
-    warnings.warn(f"{module} module detected,only Numpy should be imported")
+for module in ivy.backend_stack:
+    if module != "numpy":
+        warnings.warn(f"{module} module detected,only Numpy should be imported")
