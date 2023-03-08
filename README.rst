@@ -653,8 +653,32 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 .. code-block:: python
 
     import ivy
+    import torch
+    import timm
+    import tensorflow as tf
 
-    # ToDo: Write code
+    # Get a pretrained pytorch model
+    mlp_encoder = timm.create_model("mixer_b16_224", pretrained=True, num_classes=0)
+
+    # Transpile it into a keras.Model with the corresponding parameters
+    noise = torch.randn(1, 3, 224, 224)
+    mlp_encoder = ivy.transpile(mlp_encoder, source="torch", to="tensorflow", args=(noise,))
+
+    # Build a classifier using the transpiled encoder
+    class Classifier(tf.keras.Model):
+        def __init__(self):
+            super(Classifier, self).__init__()
+            self.encoder = mlp_encoder
+            self.output_dense = tf.keras.layers.Dense(units=1000, activation="softmax")
+
+        def call(self, x):
+            x = self.encoder(x)
+            return self.output_dense(x)
+
+    # Transform the classifier and use it as a standard keras.Model
+    x = tf.random.normal(shape=(1, 3, 224, 224))
+    model = Classifier()
+    ret = model(x)
 
 .. raw:: html
 
