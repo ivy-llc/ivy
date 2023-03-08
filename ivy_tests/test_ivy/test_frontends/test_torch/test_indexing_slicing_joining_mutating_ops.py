@@ -1180,3 +1180,30 @@ def test_torch_where(
             input=xs[0],
             other=xs[1],
         )
+
+
+# column_stack
+@handle_frontend_test(
+    fn_tree="torch.column_stack",
+    dtype_value_shape=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=st.integers(1, 5),
+    ),
+)
+def test_torch_column_stack(
+    *,
+    dtype_value_shape,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, value = dtype_value_shape
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensors=value,
+    )
