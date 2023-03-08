@@ -13,6 +13,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
+    handle_mixed_functions,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -24,6 +25,7 @@ from ivy.utils.exceptions import handle_exceptions
 # Linear #
 
 
+@handle_mixed_functions({'torch': ('pos', 1, lambda x: x.ndim == 2)})
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
@@ -131,13 +133,6 @@ def linear(
     }
     
     """
-    if ivy.current_backend(x).backend == 'torch':
-        return ivy.current_backend(x).linear(
-            x,
-            weight,
-            bias,
-            out
-        )
     outer_batch_shape = list(weight.shape[:-2])
     num_outer_batch_dims = len(outer_batch_shape)
     inner_batch_shape = list(x.shape[num_outer_batch_dims:-1])
