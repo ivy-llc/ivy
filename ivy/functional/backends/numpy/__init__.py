@@ -118,7 +118,7 @@ valid_complex_dtypes = _dtype_from_version(valid_complex_dtypes_dict, backend_ve
 invalid_dtypes_dict = {"1.23.0 and below": (ivy.bfloat16,)}
 invalid_dtypes = _dtype_from_version(invalid_dtypes_dict, backend_version)
 invalid_numeric_dtypes_dict = {"1.23.0 and below": (ivy.bfloat16,)}
-invalid_numeric_dtypes = _dtype_from_version("1.23.0 and below")
+invalid_numeric_dtypes = _dtype_from_version(invalid_numeric_dtypes_dict,backend_version)
 invalid_int_dtypes_dict = {"1.23.0 and below": ()}
 invalid_int_dtypes = _dtype_from_version(invalid_int_dtypes_dict, backend_version)
 
