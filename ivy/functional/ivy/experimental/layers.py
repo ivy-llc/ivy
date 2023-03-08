@@ -1137,8 +1137,10 @@ def interpolate(
             "nearest_exact",
             "tf_area",
             "bicubic",
+            "mitchellcubic",
             "lanczos3",
             "lanczos5",
+            "gaussian",
         ]
     ] = "linear",
     scale_factor: Optional[Union[Sequence[int], int]] = None,
@@ -1166,6 +1168,10 @@ def interpolate(
         - area
         - tf_area
         - bicubic
+        - mitchellcubic
+        - lanczos3
+        - lanczos5
+        - gaussian
     scale_factor
         Multiplier for spatial size that defines the output size (overwriting `size`).
     align_corners
@@ -1188,14 +1194,30 @@ def interpolate(
 
     """
 
-    # bicubic kernel
-    def u(s, a=-0.5):
+    def bicubic_kernel(s, a=-0.5):
         abs_s = abs(s)
         if (abs_s >= 0) & (abs_s <= 1):
             return (a + 2) * (abs_s**3) - (a + 3) * (abs_s**2) + 1
         elif (abs_s > 1) & (abs_s <= 2):
             return a * (abs_s**3) - (5 * a) * (abs_s**2) + (8 * a) * abs_s - 4 * a
         return 0
+
+    def mitchellcubic_kernel(s, b=1/3, c=1/3):
+        abs_s = abs(s)
+        abs_s_2 = abs_s ** 2
+        abs_s_3 = abs_s ** 3
+        return ivy.where(
+            abs_s <= 1,
+            ((12 - 9 * b - 6 * c) * abs_s_3 +
+             (-18 + 12 * b + 6 * c) * abs_s_2 +
+             (6 - 2 * b)) / 6,
+            ivy.where(
+                abs_s <= 2,
+                ((-1 * b - 6 * c) * abs_s_3 +
+                 (6 * b + 30 * c) * abs_s_2 +
+                 (-12 * b - 48 * c) * abs_s +
+                 (8 * b + 24 * c)) / 6,
+                ivy.zeros_like(s)))
 
     dims = len(x.shape) - 2
     size = _get_size(scale_factor, size, dims, x.shape)
@@ -1320,18 +1342,45 @@ def interpolate(
                         x0, y0 = i / scale_factor_h + 2, j / scale_factor_w + 2
                         x_s = [math.floor(x0) + i - x0 for i in range(-1, 3, 1)]
                         y_s = [math.floor(y0) + i - y0 for i in range(-1, 3, 1)]
-                        mat_l = ivy.array([[u(x_i) for x_i in x_s]])
+                        mat_l = ivy.array([[bicubic_kernel(x_i) for x_i in x_s]])
                         mat_m = ivy.array(
                             [
                                 [x[n, c, int(x0 + x_i), int(y0 + y_i)] for y_i in y_s]
                                 for x_i in x_s
-                            ],
-                            dtype=ivy.float32,
-                        )
-                        mat_r = ivy.array([[u(y_i)] for y_i in y_s])
-                        ret[n, c, i, j] = ivy.multi_dot((mat_l, mat_m, mat_r)).squeeze(
+                            ], dtype=ivy.float32)
+                        mat_r = ivy.array([[bicubic_kernel(y_i)] for y_i in y_s])
+                        ret[n, c, i, j] = ivy.squeeze(
+                            ivy.multi_dot((mat_l, mat_m, mat_r)),
                             0
                         )
+    elif mode in ["mitchellcubic", "gaussian"]:
+        if mode == "mitchellcubic":
+            kernel_size_h = 3 * size[0]
+            kernel_size_w = 3 * size[1]
+            kernel_h = mitchellcubic_kernel(ivy.linspace(-1, 1, kernel_size_h))
+            kernel_w = mitchellcubic_kernel(ivy.linspace(-1, 1, kernel_size_w))
+            kernel = ivy.outer(kernel_h, kernel_w)
+        else:
+            kernel_size_h = size[0] // 10 * 2 + 1
+            kernel_size_w = size[1] // 10 * 2 + 1
+            sigma_h = 0.3 * ((kernel_size_h - 1) * 0.5 - 1) + 0.8
+            sigma_w = 0.3 * ((kernel_size_w - 1) * 0.5 - 1) + 0.8
+            kernel = ivy.array(
+                [[math.exp(-(i ** 2 + j ** 2) / (sigma_h ** 2 + sigma_w ** 2))
+                  for i in range(-(kernel_size_h // 2), kernel_size_h // 2 + 1)]
+                 for j in range(-(kernel_size_w // 2), kernel_size_w // 2 + 1)]
+            )
+        kernel = kernel / kernel.sum()
+        padding = (kernel_size_h // 2, kernel_size_w // 2)
+        x = ivy.pad(x, ((0, 0), (0, 0), padding, padding), mode='reflect')
+        x = ivy.conv2d(
+            x,
+            kernel.unsqueeze(-1).unsqueeze(-1),
+            1,
+            ((0, 0), (0, 0)),
+            data_format="NCHW",
+        )
+        return interpolate(x, size=size, mode='bicubic', align_corners=True)
     elif mode == "tf_area":
         ret = _tf_area_interpolate(x, size, dims)
     return ivy.astype(ret, ivy.dtype(x), out=out)
