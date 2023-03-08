@@ -12,7 +12,7 @@ RUN apt-get update && \
     apt-get install -y libglib2.0-0 && \
     pip3 install --upgrade pip && \
     pip3 install setuptools==58.5.3
-    
+
 RUN pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cpu
 RUN pip3 install --upgrade torch-scatter -f https://pytorch-geometric.com/whl
 
