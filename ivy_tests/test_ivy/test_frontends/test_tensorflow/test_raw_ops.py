@@ -66,6 +66,36 @@ def test_tensorflow_Acosh(  # NOQA
     )
 
 
+# AddV2
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.AddV2",
+    dtype_and_x=helpers.dtype_and_shape(
+        available_dtypes=helpers.get_dtypes("float"),
+        shapes=((2,), (2,)),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_AddV2(  # NOQA
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, (x, y) = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x,
+        y=y,
+    )
+
+
+
 # Add
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Add",

@@ -258,13 +258,36 @@ def take_along_axis(
     axis: int,
     /,
     *,
+    mode: str = "fill",
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if arr.ndim != indices.ndim and axis is not None:
+    if arr.ndim != indices.ndim:
         raise ivy.utils.exceptions.IvyException(
             "arr and indices must have the same number of dimensions;"
             + f" got {arr.ndim} vs {indices.ndim}"
         )
+    if mode not in ["clip", "fill", "drop"]:
+        raise ValueError(
+            f"Invalid mode '{mode}'. Valid modes are 'clip', 'fill', 'drop'."
+        )
+    arr_shape = arr.shape
+    if axis < 0:
+        axis += arr.ndim
+    if mode == "clip":
+        max_index = arr.shape[axis] - 1
+        indices = np.clip(indices, 0, max_index)
+    elif mode == "fill" or mode == "drop":
+        if "float" in str(arr.dtype):
+            fill_value = np.NAN
+        elif "uint" in str(arr.dtype):
+            fill_value = np.iinfo(arr.dtype).max
+        else:
+            fill_value = -np.iinfo(arr.dtype).max - 1
+        indices = np.where((indices < 0) | (indices >= arr.shape[axis]), -1, indices)
+        arr_shape = list(arr_shape)
+        arr_shape[axis] = 1
+        fill_arr = np.full(arr_shape, fill_value, dtype=arr.dtype)
+        arr = np.concatenate([arr, fill_arr], axis=axis)
     return np.take_along_axis(arr, indices, axis)
 
 
