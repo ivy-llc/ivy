@@ -1080,8 +1080,16 @@ def _tf_area_interpolate(x, size, dims):
     return ret
 
 
-def _fill_triangle_kernel(x):
+def _triangle_kernel(x):
     return ivy.maximum(0, 1 - ivy.abs(x))
+
+
+def _lanczos_kernel(radius, x):
+    y = radius * ivy.sin(ivy.pi * x) * ivy.sin(ivy.pi * x / radius)
+    out = ivy.where(
+        x > 1e-3, ivy.divide(y, ivy.where(x != 0, ivy.pi**2 * x**2, 1)), 1
+    )
+    return ivy.where(x > radius, 0.0, out)
 
 
 def compute_weight_mat(
@@ -1129,6 +1137,8 @@ def interpolate(
             "nearest_exact",
             "tf_area",
             "bicubic",
+            "lanczos3",
+            "lanczos5",
         ]
     ] = "linear",
     scale_factor: Optional[Union[Sequence[int], int]] = None,
@@ -1192,20 +1202,26 @@ def interpolate(
     spatial_dims = [2 + i for i in range(dims)]
     input_shape = ivy.shape(x)
     scale = [ivy.divide(size[i], input_shape[spatial_dims[i]]) for i in range(dims)]
-    if mode == "bilinear" or mode == "linear" or mode == "trilinear":
-        if mode == "linear":
+    if mode in ["linear", "bilinear", "trilinear", "lanczos3", "lanczos5"]:
+        kernel_func = _triangle_kernel
+        if mode == "linear" or dims == 1:
             equation = "ijk,km->ijm"
-        elif mode == "bilinear":
+        elif mode == "bilinear" or dims == 2:
             equation = "ijkl,km,ln->ijmn"
-        elif mode == "trilinear":
+        elif mode == "trilinear" or dims == 3:
             equation = "ijklm,kn,lo,mp->ijnop"
+
+        if mode == "lanczos3":
+            kernel_func = lambda inputs: _lanczos_kernel(3, inputs)
+        elif mode == "lanczos5":
+            kernel_func = lambda inputs: _lanczos_kernel(5, inputs)
         output_shape = tuple(input_shape[:2]) + size
         operands = []
         for i, d in enumerate(spatial_dims):
             m = input_shape[d]
             n = output_shape[d]
             w = compute_weight_mat(
-                m, n, scale[i], align_corners, _fill_triangle_kernel, antialias
+                m, n, scale[i], align_corners, kernel_func, antialias
             ).astype(x.dtype)
             operands.append(w)
         ret = ivy.einsum(equation, x, *operands)
