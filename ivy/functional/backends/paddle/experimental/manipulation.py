@@ -4,8 +4,6 @@ from .. import backend_version
 from ivy.func_wrapper import with_unsupported_dtypes
 import paddle
 from ivy.utils.exceptions import IvyNotImplementedException
-import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
 
 
 @with_unsupported_dtypes(
@@ -105,7 +103,7 @@ def fliplr(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle.flip(m, axis=[-1])
+    return paddle.flip(m, axis=1)
 
 
 def i0(
