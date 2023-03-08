@@ -81,6 +81,8 @@ def reshape(
     if len(shape) == 0:
         out_scalar = True
         out_dtype = x.dtype
+        if x.dtype in [paddle.int16, paddle.float16]:
+            x = x.astype(paddle.float32)
         shape = [1]
     else:
         out_scalar = False
@@ -96,24 +98,24 @@ def reshape(
         if order == "F":
             ret = _reshape_fortran_paddle(newarr, shape)
             if out_scalar:
-                return ret.cast(out_dtype).squeeze()
+                return ret.squeeze().cast(out_dtype)
 
             return ret
         ret = paddle.reshape(newarr, shape)
         if out_scalar:
 
-            return ret.cast(out_dtype).squeeze()
+            return ret.squeeze().cast(out_dtype)
 
         return ret
     if order == "F":
         ret = _reshape_fortran_paddle(x, shape)
         if out_scalar:
-            return ret.cast(out_dtype).squeeze()
+            return ret.squeeze().cast(out_dtype)
 
         return ret
     ret = paddle.reshape(x, shape)
     if out_scalar:
-        return ret.cast(out_dtype).squeeze()
+        return ret.squeeze().cast(out_dtype)
 
     return ret
 
