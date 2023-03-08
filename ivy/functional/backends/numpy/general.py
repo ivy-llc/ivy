@@ -39,8 +39,6 @@ def to_numpy(x: np.ndarray, /, *, copy: bool = True) -> np.ndarray:
         return x
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
-@_scalar_output_to_0d_array
 def to_scalar(x: np.ndarray, /) -> Number:
     if isinstance(x, (float, int)):
         return x
