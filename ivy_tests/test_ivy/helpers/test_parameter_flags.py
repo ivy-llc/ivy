@@ -1,22 +1,22 @@
 from hypothesis import strategies as st  # NOQA
-from . import globals
+from . import globals as test_globals
 
 
 @st.composite
 def _as_varaible_strategy(draw):
     if (
-        globals.CURRENT_BACKEND is not globals._Notsetval
-        and globals.CURRENT_BACKEND().backend == "numpy"
+        test_globals.CURRENT_BACKEND is not test_globals._Notsetval
+        and test_globals.CURRENT_BACKEND().backend == "numpy"
     ):
         return draw(st.just([False]))
-    if not globals.CURRENT_FRONTEND_STR:
+    if not test_globals.CURRENT_FRONTEND_STR:
         # non multiversion changes go here
         if (
-            globals.CURRENT_FRONTEND is not globals._Notsetval
-            and globals.CURRENT_FRONTEND().backend == "numpy"
+            test_globals.CURRENT_FRONTEND is not test_globals._Notsetval
+            and test_globals.CURRENT_FRONTEND().backend == "numpy"
         ):
             return draw(st.just([False]))
-    elif globals.CURRENT_FRONTEND_STR[0].split("/")[0] == "numpy":
+    elif test_globals.CURRENT_FRONTEND_STR[0].split("/")[0] == "numpy":
         # multiversion changes go here
         return draw(st.just([False]))
     return draw(st.lists(st.booleans(), min_size=1, max_size=1))
