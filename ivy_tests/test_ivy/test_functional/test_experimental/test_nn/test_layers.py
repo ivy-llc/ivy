@@ -338,7 +338,7 @@ def _interp_args(draw, mode=None, mode_list=None):
 @handle_test(
     fn_tree="functional.ivy.experimental.interpolate",
     dtype_x_mode=_interp_args(),
-    antialias=st.just(False),
+    antialias=st.booleans(),
     test_gradients=st.just(False),
     number_positional_args=st.just(2),
 )
