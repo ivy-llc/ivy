@@ -7,7 +7,8 @@ import abc
 import math
 import psutil
 import pynvml
-from typing import Optional, Tuple
+import types
+from typing import Type, Optional, Tuple
 
 # noinspection PyUnresolvedReferences
 try:
@@ -80,19 +81,30 @@ class DefaultDevice:
         ivy.set_default_device(self._dev)
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb) -> Union[ivy.Device, str]:
+    def __exit__(self,
+                 exc_type: Optional[Type[BaseException]],
+                 exc_val: Optional[Type[BaseException]],
+                 exc_tb: Optional[types.TracebackType]) -> Union[ivy.Device, str]:
         """
         Exit the runtime context related to the specified device.
+
+        Parameters
+        ----------
+        exc_type
+            The type of the exception that was raised.
+        exc_val
+            The exception that was raised.
+        exc_tb
+            The traceback of the exception that was raised.
 
         Returns
         -------
         ret
-            Self, an instance of the same class.
+            If no exception was raised, returns an instance of the same class.
 
         Examples
         --------
         A "gpu" as device:
-
         >>> with ivy.DefaultDevice("gpu") as device:
         >>>     pass
         >>> # after with block device.__exit__() is called
