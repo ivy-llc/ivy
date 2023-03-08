@@ -5,5 +5,5 @@ from ivy.container.base import ContainerBase
 
 
 # noinspection PyMissingConstructor
-class ContainerWithImage(ContainerBase):
+class _ContainerWithImage(ContainerBase):
     pass

@@ -6,7 +6,7 @@ from ivy.container.base import ContainerBase
 import ivy
 
 
-class ContainerWithLinearAlgebraExperimental(ContainerBase):
+class _ContainerWithLinearAlgebraExperimental(ContainerBase):
     @staticmethod
     def static_eigh_tridiagonal(
         alpha: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -195,11 +195,11 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        offset: Optional[int] = 0,
-        padding_value: Optional[float] = 0,
-        align: Optional[str] = "RIGHT_LEFT",
-        num_rows: Optional[int] = -1,
-        num_cols: Optional[int] = -1,
+        offset: int = 0,
+        padding_value: float = 0,
+        align: str = "RIGHT_LEFT",
+        num_rows: int = -1,
+        num_cols: int = -1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -225,11 +225,11 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        offset: Optional[int] = 0,
-        padding_value: Optional[float] = 0,
-        align: Optional[str] = "RIGHT_LEFT",
-        num_rows: Optional[int] = -1,
-        num_cols: Optional[int] = -1,
+        offset: int = 0,
+        padding_value: float = 0,
+        align: str = "RIGHT_LEFT",
+        num_rows: int = -1,
+        num_cols: int = -1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
