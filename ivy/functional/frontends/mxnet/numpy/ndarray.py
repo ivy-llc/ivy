@@ -7,6 +7,7 @@ from ivy.functional.frontends.numpy import dtype
 
 
 class ndarray:
+    # TODO Add dtype support
     def __init__(self, array):
         self._ivy_array = (
             ivy.array(array) if not isinstance(array, ivy.Array) else array
@@ -14,7 +15,7 @@ class ndarray:
 
     def __repr__(self):
         return str(self._ivy_array.__repr__()).replace(
-            "ivy.array", "ivy.frontends.numpy.array"
+            "ivy.array", "ivy.frontends.mxnet.numpy.array"
         )
 
     # Properties #
