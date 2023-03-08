@@ -714,18 +714,18 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
         Examples
         --------
         With :class:`ivy.Container` input:
-        
-        >>> a = ivy.Container(x=ivy.arange(2 * 3).reshape((2, 3)), 
+
+        >>> a = ivy.Container(x=ivy.arange(2 * 3).reshape((2, 3)),
         ...                   y=ivy.arange(2 * 3).reshape((2, 3)))
-        >>> b = ivy.Container(x=ivy.arange(3 * 2).reshape((3, 2)), 
+        >>> b = ivy.Container(x=ivy.arange(3 * 2).reshape((3, 2)),
         ...                   y=ivy.arange(3 * 2).reshape((3, 2)))
-        >>> c = ivy.Container(x=ivy.arange(2 * 2).reshape((2, 2)), 
+        >>> c = ivy.Container(x=ivy.arange(2 * 2).reshape((2, 2)),
         ...                   y=ivy.arange(2 * 2).reshape((2, 2)))
         >>> ivy.Container.static_multi_dot((a, b, c))
         {
-            x: ivy.array([[26, 49], 
+            x: ivy.array([[26, 49],
                           [80, 148]]),
-            y: ivy.array([[26, 49], 
+            y: ivy.array([[26, 49],
                           [80, 148]])
         }
         """
@@ -757,17 +757,17 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
 
         Examples
         --------
-        >>> a = ivy.Container(x=ivy.arange(2 * 3).reshape((2, 3)), 
+        >>> a = ivy.Container(x=ivy.arange(2 * 3).reshape((2, 3)),
         ...                   y=ivy.arange(2 * 3).reshape((2, 3)))
-        >>> b = ivy.Container(x=ivy.arange(3 * 2).reshape((3, 2)), 
+        >>> b = ivy.Container(x=ivy.arange(3 * 2).reshape((3, 2)),
         ...                   y=ivy.arange(3 * 2).reshape((3, 2)))
-        >>> c = ivy.Container(x=ivy.arange(2 * 2).reshape((2, 2)), 
+        >>> c = ivy.Container(x=ivy.arange(2 * 2).reshape((2, 2)),
         ...                   y=ivy.arange(2 * 2).reshape((2, 2)))
         >>> a.multi_dot((b, c))
         {
-            x: ivy.array([[26, 49], 
+            x: ivy.array([[26, 49],
                           [80, 148]]),
-            y: ivy.array([[26, 49], 
+            y: ivy.array([[26, 49],
                           [80, 148]])
         }
         """
