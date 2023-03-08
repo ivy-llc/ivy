@@ -106,13 +106,22 @@ def corrcoef(
     cor = cov2_t @ cov_t @ cov2_t
     return cor
 
-
+@with_supported_dtypes(
+    {
+        "2.11.0 and below": (
+            "int32",
+            "int64",
+        )
+    },
+    backend_version,
+)
 def nanmedian(
     input: Union[tf.Tensor, tf.Variable],
     /,
     *,
     axis: Optional[Union[Tuple[int], int]] = None,
     keepdims: Optional[bool] = False,
+    overwrite_input: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tfp.stats.percentile(
