@@ -1,4 +1,5 @@
 import ivy
+from ivy.functional.frontends.mxnet.numpy.ndarray import ndarray
 
 from ivy.functional.frontends.mxnet.func_wrapper import (
     to_ivy_arrays_and_back,
@@ -7,4 +8,4 @@ from ivy.functional.frontends.mxnet.func_wrapper import (
 
 @to_ivy_arrays_and_back
 def array(object, dtype=None, ctx=None):
-    return ivy.array(object, dtype=dtype)
+    return ndarray(object)
