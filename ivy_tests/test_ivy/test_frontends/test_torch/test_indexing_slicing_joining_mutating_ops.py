@@ -2,7 +2,6 @@
 from hypothesis import strategies as st, assume
 import math
 
-
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
@@ -81,12 +80,12 @@ def _array_idxes_n_dtype(draw, **kwargs):
     ),
 )
 def test_torch_adjoint(
-    *,
-    dtype_and_values,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_and_values,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
@@ -105,12 +104,12 @@ def test_torch_adjoint(
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
 )
 def test_torch_cat(
-    *,
-    xs_n_input_dtypes_n_unique_idx,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        xs_n_input_dtypes_n_unique_idx,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
     helpers.test_frontend_function(
@@ -130,12 +129,12 @@ def test_torch_cat(
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
 )
 def test_torch_concat(
-    *,
-    xs_n_input_dtypes_n_unique_idx,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        xs_n_input_dtypes_n_unique_idx,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
     helpers.test_frontend_function(
@@ -163,12 +162,12 @@ def test_torch_concat(
     ),
 )
 def test_torch_gather(
-    *,
-    params_indices_others,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        params_indices_others,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtypes, input, indices, axis, batch_dims = params_indices_others
     helpers.test_frontend_function(
@@ -192,13 +191,13 @@ def test_torch_gather(
     as_tuple=st.booleans(),
 )
 def test_torch_nonzero(
-    *,
-    dtype_and_values,
-    as_tuple,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_and_values,
+        as_tuple,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     dtype, input = dtype_and_values
     helpers.test_frontend_function(
@@ -220,12 +219,12 @@ def test_torch_nonzero(
     ),
 )
 def test_torch_permute(
-    *,
-    dtype_values_axis,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_values_axis,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     x, idxes, dtype = dtype_values_axis
     helpers.test_frontend_function(
@@ -256,14 +255,14 @@ def test_torch_permute(
     ),
 )
 def test_torch_swapdims(
-    *,
-    dtype_and_values,
-    dim0,
-    dim1,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_and_values,
+        dim0,
+        dim1,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
@@ -301,12 +300,12 @@ def dtypes_x_reshape(draw):
     dtypes_x_reshape=dtypes_x_reshape(),
 )
 def test_torch_reshape(
-    *,
-    dtypes_x_reshape,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtypes_x_reshape,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, x, shape = dtypes_x_reshape
     helpers.test_frontend_function(
@@ -354,12 +353,12 @@ def _as_strided_helper(draw):
     dtype_x_and_other=_as_strided_helper(),
 )
 def test_torch_as_strided(
-    *,
-    dtype_x_and_other,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_x_and_other,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     x_dtype, x, size, stride, offset = dtype_x_and_other
     try:
@@ -393,13 +392,13 @@ def test_torch_as_strided(
     ).filter(lambda axis: isinstance(axis, int)),
 )
 def test_torch_stack(
-    *,
-    dtype_value_shape,
-    dim,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_value_shape,
+        dim,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, value = dtype_value_shape
     helpers.test_frontend_function(
@@ -430,14 +429,14 @@ def test_torch_stack(
     ),
 )
 def test_torch_transpose(
-    *,
-    dtype_and_values,
-    dim0,
-    dim1,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_and_values,
+        dim0,
+        dim1,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
@@ -461,12 +460,12 @@ def test_torch_transpose(
     ),
 )
 def test_torch_t(
-    *,
-    dtype_and_values,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_and_values,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
@@ -492,13 +491,13 @@ def test_torch_t(
     ).filter(lambda axis: isinstance(axis, int)),
 )
 def test_torch_squeeze(
-    *,
-    dtype_and_values,
-    dim,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_and_values,
+        dim,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
@@ -529,14 +528,14 @@ def test_torch_squeeze(
     ),
 )
 def test_torch_swapaxes(
-    *,
-    dtype_and_values,
-    axis0,
-    axis1,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_and_values,
+        axis0,
+        axis1,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
@@ -579,12 +578,12 @@ def _chunk_helper(draw):
     test_with_out=st.just(False),
 )
 def test_torch_chunk(
-    *,
-    x_dim_chunks,
-    fn_tree,
-    on_device,
-    frontend,
-    test_flags,
+        *,
+        x_dim_chunks,
+        fn_tree,
+        on_device,
+        frontend,
+        test_flags,
 ):
     dtype, x, axis, chunks = x_dim_chunks
     helpers.test_frontend_function(
@@ -613,13 +612,13 @@ def test_torch_chunk(
     ),
 )
 def test_torch_tile(
-    *,
-    dtype_value,
-    dim,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_value,
+        dim,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, value = dtype_value
     helpers.test_frontend_function(
@@ -647,13 +646,13 @@ def test_torch_tile(
     ),
 )
 def test_torch_unsqueeze(
-    *,
-    dtype_value,
-    dim,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_value,
+        dim,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, value = dtype_value
     helpers.test_frontend_function(
@@ -674,12 +673,12 @@ def test_torch_unsqueeze(
     ),
 )
 def test_torch_argwhere(
-    *,
-    dtype_and_values,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_and_values,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     dtype, input = dtype_and_values
     helpers.test_frontend_function(
@@ -742,14 +741,14 @@ def test_torch_argwhere(
     test_with_out=st.just(False),
 )
 def test_torch_movedim(
-    *,
-    dtype_and_input,
-    source,
-    destination,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_and_input,
+        source,
+        destination,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, value = dtype_and_input
     helpers.test_frontend_function(
@@ -772,12 +771,12 @@ def test_torch_movedim(
     ),
 )
 def test_torch_hstack(
-    *,
-    dtype_value_shape,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_value_shape,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, value = dtype_value_shape
     helpers.test_frontend_function(
@@ -798,12 +797,12 @@ def test_torch_hstack(
     ),
 )
 def test_torch_dstack(
-    *,
-    dtype_value_shape,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_value_shape,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, value = dtype_value_shape
     helpers.test_frontend_function(
@@ -827,12 +826,12 @@ def test_torch_dstack(
     ),
 )
 def test_torch_index_select(
-    *,
-    params_indices_others,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        params_indices_others,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtypes, input, indices, axis, batch_dims = params_indices_others
     helpers.test_frontend_function(
@@ -861,12 +860,12 @@ def test_torch_index_select(
     ),
 )
 def test_torch_take_along_dim(
-    *,
-    dtype_indices_axis,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_indices_axis,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtypes, value, indices, axis, _ = dtype_indices_axis
     helpers.test_frontend_function(
@@ -889,12 +888,12 @@ def test_torch_take_along_dim(
     ),
 )
 def test_torch_vstack(
-    *,
-    dtype_value_shape,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_value_shape,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, value = dtype_value_shape
     helpers.test_frontend_function(
@@ -924,14 +923,14 @@ def test_torch_vstack(
     ),
 )
 def test_torch_split(
-    *,
-    dtype_value,
-    split_size_or_sections,
-    dim,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_value,
+        split_size_or_sections,
+        dim,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, value = dtype_value
     helpers.test_frontend_function(
@@ -965,14 +964,14 @@ def test_torch_split(
     test_with_out=st.just(False),
 )
 def test_torch_tensor_split(
-    *,
-    dtype_value,
-    indices_or_sections,
-    axis,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_value,
+        indices_or_sections,
+        axis,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, value = dtype_value
     helpers.test_frontend_function(
@@ -998,12 +997,12 @@ def test_torch_tensor_split(
     ),
 )
 def test_torch_unbind(
-    *,
-    dtype_value_axis,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_value_axis,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtypes, value, axis = dtype_value_axis
     helpers.test_frontend_function(
@@ -1027,13 +1026,13 @@ def test_torch_unbind(
     indices_or_sections=_get_split_locations(min_num_dims=3, axis=2),
 )
 def test_torch_dsplit(
-    *,
-    dtype_value,
-    indices_or_sections,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_value,
+        indices_or_sections,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, value = dtype_value
     helpers.test_frontend_function(
@@ -1057,13 +1056,13 @@ def test_torch_dsplit(
     indices_or_sections=_get_split_locations(min_num_dims=1, axis=1),
 )
 def test_torch_hsplit(
-    *,
-    dtype_value,
-    indices_or_sections,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_value,
+        indices_or_sections,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, value = dtype_value
     # TODO: remove the assumption when these bugfixes are merged and version-pinned
@@ -1071,8 +1070,8 @@ def test_torch_hsplit(
     # https://github.com/google/jax/pull/14275
     assume(
         not (
-            len(value[0].shape) == 1
-            and ivy.current_backend_str() in ("tensorflow", "jax")
+                len(value[0].shape) == 1
+                and ivy.current_backend_str() in ("tensorflow", "jax")
         )
     )
     helpers.test_frontend_function(
@@ -1096,13 +1095,13 @@ def test_torch_hsplit(
     indices_or_sections=_get_split_locations(min_num_dims=2, axis=0),
 )
 def test_torch_vsplit(
-    *,
-    dtype_value,
-    indices_or_sections,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_value,
+        indices_or_sections,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, value = dtype_value
     helpers.test_frontend_function(
@@ -1125,12 +1124,12 @@ def test_torch_vsplit(
     ),
 )
 def test_torch_row_stack(
-    *,
-    dtype_value_shape,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_value_shape,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, value = dtype_value_shape
     helpers.test_frontend_function(
@@ -1149,13 +1148,13 @@ def test_torch_row_stack(
     only_cond=st.booleans(),
 )
 def test_torch_where(
-    *,
-    broadcastables,
-    only_cond,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        broadcastables,
+        only_cond,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     cond, xs, dtypes = broadcastables
 
@@ -1180,3 +1179,28 @@ def test_torch_where(
             input=xs[0],
             other=xs[1],
         )
+
+
+@handle_frontend_test(
+    fn_tree="torch.conj",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+    ),
+)
+def test_torch_conj(
+        on_device,
+        frontend,
+        *,
+        dtype_and_x,
+        fn_tree,
+        test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+    )
