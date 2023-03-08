@@ -115,11 +115,11 @@ def asarray(
     if isinstance(obj, paddle.Tensor) and dtype is None:
         if copy is True:
             ret = obj.clone().detach()
-            ret.stop_gradient = False
+            ret.stop_gradient = obj.stop_gradient
             return ret
         else:
             ret = obj.detach()
-            ret.stop_gradient = False
+            ret.stop_gradient = obj.stop_gradient
             return ret
 
     elif isinstance(obj, (list, tuple, dict)) and len(obj) != 0:
@@ -152,7 +152,7 @@ def asarray(
 
     elif isinstance(obj, (Number, bool)):
         ret = paddle.full(shape=(), fill_value=obj).cast(dtype)
-        ret.stop_gradient = obj.stop_gradient
+        ret.stop_gradient = False
         return ret
 
     else:

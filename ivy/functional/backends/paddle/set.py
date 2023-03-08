@@ -3,10 +3,12 @@ import paddle
 from typing import Tuple, Optional
 from collections import namedtuple
 from ivy.func_wrapper import with_unsupported_dtypes
+
 # local
 
 from . import backend_version
 from ivy.utils.exceptions import IvyNotImplementedException
+
 
 @with_unsupported_dtypes(
     {"2.4.2 and below": ("int8", "int16", "uint8", "uint16", "bfloat16",
@@ -14,6 +16,7 @@ from ivy.utils.exceptions import IvyNotImplementedException
     backend_version,
 )
 def unique_all(x: paddle.Tensor, /,) -> Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor, paddle.Tensor]:
+    # Flatten the tensor to 1D
     flat_x = paddle.flatten(x)
     sorted_x, indices = paddle.sort(flat_x)
     unique_indices = paddle.concat([paddle.to_tensor([0]), paddle.nonzero(sorted_x[1:] != sorted_x[:-1])[:, 0] + 1,
@@ -55,8 +58,23 @@ def unique_counts(x: paddle.Tensor, /) -> Tuple[paddle.Tensor, paddle.Tensor]:
     return Results(unique, counts)
 
 
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ("int8", "int16", "uint8", "uint16", "bfloat16",
+                         "float16", "complex64", "complex128", "bool")},
+    backend_version,
+)
 def unique_inverse(x: paddle.Tensor, /) -> Tuple[paddle.Tensor, paddle.Tensor]:
-    raise IvyNotImplementedException()
+    unique, inverse_val = paddle.unique(x, return_inverse=True)
+    nan_idx = paddle.where(paddle.isnan(x) > 0)
+    nan_count = paddle.count_nonzero(nan_idx).numpy()[0]
+
+    if nan_count > 0:
+        inverse_val[nan_idx] = len(unique)
+        unique_nan = paddle.full(shape=[1, nan_count], fill_value=float('nan')).cast(x.dtype)
+        unique = paddle.concat(input=[unique.astype(x.dtype), paddle.reshape(unique_nan, [nan_count])], axis=-1)
+    inverse_val = paddle.reshape(inverse_val, shape=x.shape)
+    Results = namedtuple("Results", ["values", "inverse_indices"])
+    return Results(unique, inverse_val)
 
     
 @with_unsupported_dtypes(

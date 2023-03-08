@@ -71,7 +71,21 @@ def max(
 
 
 @with_unsupported_dtypes(
-    {"2.4.2 and below": ("int8", "int16", "int32", "int64", "uint8", "uint16", "bfloat16", "float16", "complex64", "complex128")},
+    {
+        "2.4.2 and below": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "uint8",
+            "uint16",
+            "bfloat16",
+            "float16",
+            "complex64",
+            "complex128",
+            "bool",
+        )
+    },
     backend_version,
 )
 def mean(
@@ -82,6 +96,9 @@ def mean(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if x.dtype not in (paddle.float32, paddle.float64):
+        x, x_dtype = x.astype("float64"), x.dtype
+        return paddle.mean(x, axis=axis, keepdim=keepdims).astype(x_dtype)
     return paddle.mean(x, axis=axis, keepdim=keepdims)
 
 

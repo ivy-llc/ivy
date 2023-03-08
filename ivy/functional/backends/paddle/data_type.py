@@ -129,7 +129,16 @@ def astype(
     backend_version,
 )
 def broadcast_arrays(*arrays: paddle.Tensor) -> List[paddle.Tensor]:
-    return list(paddle.broadcast_tensors(arrays))
+    new_arrays = []
+    for array in arrays:
+        if isinstance(array, paddle.Tensor):
+            if array.rank().item() == 0:
+                new_arrays.append(array.unsqueeze(0))
+            else:
+                new_arrays.append(array)
+        else:
+            new_arrays.append(paddle.to_tensor(array))
+    return list(paddle.broadcast_tensors(new_arrays))
 
 
 def broadcast_to(
