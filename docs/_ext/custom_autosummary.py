@@ -74,8 +74,9 @@ class CustomAutosummary(Autosummary):
             rst = ViewList()
 
             for entry in entries:
+                relative_entry = Path(entry).relative_to(Path(self.env.docname).parent)
                 rst.append("", "fake.rst", offset=0)
-                rst.append(f".. include:: {entry}", "fake.rst", offset=1)
+                rst.append(f".. include:: {relative_entry}", "fake.rst", offset=1)
                 rst.append("   :start-after: REMOVE_BEFORE_HERE", "fake.rst", offset=2)
                 rst.append("", "fake.rst", offset=3)
 

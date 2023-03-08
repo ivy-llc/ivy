@@ -42,6 +42,7 @@ extensions = [
     "sphinx_autodoc_typehints",
     "docs._ext.custom_autosummary",
     "docs._ext.discussion_linker",
+    "docs._ext.custom_builder",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
