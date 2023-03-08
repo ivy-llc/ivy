@@ -1224,16 +1224,3 @@ class override(contextlib.ContextDecorator):
                 if isinstance(globals_getter_func()[item], FunctionType):
                     # we need to add the decorator
                     globals_getter_func([item, "override"])
-
-
-# Decorators to allow for versioned attributes
-# with_unsupported_dtypes = _dtype_device_wrapper_creator("unsupported_dtypes", tuple)
-# with_supported_dtypes = _dtype_device_wrapper_creator("supported_dtypes", tuple)
-# with_unsupported_devices = _dtype_device_wrapper_creator("unsupported_devices", tuple)
-# with_supported_devices = _dtype_device_wrapper_creator("supported_devices", tuple)
-# with_unsupported_device_and_dtypes = _dtype_device_wrapper_creator(
-#     "unsupported_device_and_dtype", dict
-# )
-# with_supported_device_and_dtypes = _dtype_device_wrapper_creator(
-#     "supported_device_and_dtype", dict
-# )
