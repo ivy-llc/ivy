@@ -70,7 +70,7 @@ def current_backend_str() -> str:
 
 # tensorflow does not support uint indexing
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
+    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64", "complex")}, backend_version
 )
 def get_item(x: tf.Tensor, /, query: tf.Tensor) -> tf.Tensor:
     if not ivy.is_array(query) and not isinstance(query, np.ndarray):
@@ -102,7 +102,8 @@ def to_numpy(x: Union[tf.Tensor, tf.Variable], /, *, copy: bool = True) -> np.nd
     else:
         return np.asarray(tf.convert_to_tensor(x))
 
-
+    
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def to_scalar(x: Union[tf.Tensor, tf.Variable], /) -> Number:
     ret = to_numpy(x).item()
     if x.dtype == tf.bfloat16:
