@@ -1225,6 +1225,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         ivy.array([8.0, 8.0, 6.0])
         """
 
+
         return ivy.ldexp(self._data, x2, out=out, **kwargs)
 
     def frexp(self: ivy.Array, /, *, out: Optional[Tuple[ivy.Array, ivy.Array]] = None, **kwargs) -> ivy.Array:
@@ -1232,6 +1233,13 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         return ivy.ldexp(self._data, x2, out=out)
 
     def frexp(self: ivy.Array, /, *, out: Optional[Tuple[ivy.Array, ivy.Array]] = None) -> ivy.Array:
+
+
+        return ivy.ldexp(self._data, x2, out=out)
+
+    def frexp(
+        self: ivy.Array, /, *, out: Optional[Tuple[ivy.Array, ivy.Array]] = None
+    ) -> ivy.Array:
 
         """
         ivy.Array instance method variant of ivy.frexp. This method simply wraps
@@ -1255,7 +1263,10 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         ivy.array([[0.5, 0.5, 0.75], [1, 2, 2]])
         """
 
+
         return ivy.frexp(self._data, out=out, **kwargs)
 
         return ivy.frexp(self._data, out=out)
 
+
+        return ivy.frexp(self._data, out=out)

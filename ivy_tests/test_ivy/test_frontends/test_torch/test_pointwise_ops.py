@@ -2193,7 +2193,11 @@ def test_torch_arctan(
         on_device=on_device,
         input=x[0],
 
+
     )    
+
+    )
+
 
     )
 

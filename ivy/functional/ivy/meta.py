@@ -466,7 +466,7 @@ def fomaml_step(
         Default is ``True``.
     outer_v
         Nested variable keys to be optimized during the inner loop, with same keys and
-        boolean values. 
+        boolean values.
         (Default value = None)
     keep_outer_v
         If True, the key chains in inner_v will be kept, otherwise they will be removed.
@@ -474,13 +474,13 @@ def fomaml_step(
     return_inner_v
         Either 'first', 'all', or False. 'first' means the variables for the first task
         inner loop will also be returned. variables for all tasks will be returned with
-        'all'. 
+        'all'.
         Default is ``False``.
     num_tasks
         Number of unique tasks to inner-loop optimize for the meta step. Determined from
         batch by default.
     stop_gradients
-        Whether to stop the gradients of the cost. 
+        Whether to stop the gradients of the cost.
         Default is ``True``.
 
     Returns

@@ -68,7 +68,11 @@ def _get_required_native_variables(xs, xs_grad_idxs):
     xs = ivy.nested_map(xs, ivy.to_ivy, include_derived=True, shallow=False)
     if xs_grad_idxs is not None:
 
+
         xs = ivy.map_nest_at_indices(xs, xs_grad_idxs, ivy.to_native, shallow = False)
+
+        xs = ivy.map_nest_at_indices(xs, xs_grad_idxs, ivy.to_native, shallow=False)
+
 
         xs = ivy.map_nest_at_indices(xs, xs_grad_idxs, ivy.to_native, shallow=False)
 

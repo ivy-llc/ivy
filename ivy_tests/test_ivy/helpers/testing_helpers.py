@@ -481,7 +481,6 @@ def handle_method(
     init_num_positional_args=None,
     init_native_arrays=BuiltNativeArrayStrategy,
     init_as_variable_flags=BuiltAsVariableStrategy,
-    init_container_flags=BuiltContainerStrategy,
     method_num_positional_args=None,
     method_native_arrays=BuiltNativeArrayStrategy,
     method_as_variable_flags=BuiltAsVariableStrategy,
@@ -520,11 +519,10 @@ def handle_method(
                 fn_name=class_name + ".__init__"
             )
 
-        possible_arguments["init_flags"] = pf.method_flags(
+        possible_arguments["init_flags"] = pf.init_method_flags(
             num_positional_args=init_num_positional_args,
             as_variable=init_as_variable_flags,
             native_arrays=init_native_arrays,
-            container_flags=init_container_flags,
         )
 
         if method_num_positional_args is None:

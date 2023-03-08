@@ -150,7 +150,11 @@ def test_torch_roll(
         shared_dtype=True,
     ),
 
+
     indexing=st.sampled_from(['ij', 'xy']),
+
+    indexing=st.sampled_from(["ij", "xy"]),
+
 
     indexing=st.sampled_from(["ij", "xy"]),
 
@@ -170,7 +174,11 @@ def test_torch_meshgrid(
         for i, tensor in enumerate(tensors)
     }
 
+
     kwargs['indexing'] = indexing
+
+    kwargs["indexing"] = indexing
+
 
     kwargs["indexing"] = indexing
 

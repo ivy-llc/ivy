@@ -731,6 +731,10 @@ class Tensor:
     def __mod__(self, other):
         return torch_frontend.remainder(self._ivy_array, other)
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
+    def __pow__(self, exponent):
+        return torch_frontend.pow(self._ivy_array, exponent)
+
     def __long__(self, memory_format=None):
         cast_tensor = self.clone()
         cast_tensor.ivy_array = ivy.astype(self._ivy_array, ivy.int64)
@@ -769,23 +773,38 @@ class Tensor:
         return torch_frontend.div(self._ivy_array, other)
 
     def __iadd__(self, other):
-        torch_frontend.add(self._ivy_array, other, out=self)
+        ret = torch_frontend.add(self._ivy_array, other)
+        self.ivy_array = ivy.inplace_update(
+            self._ivy_array, ivy.astype(ret.ivy_array, self.dtype)
+        )
         return self
 
     def __imod__(self, other):
-        torch_frontend.remainder(self._ivy_array, other, out=self)
+        ret = torch_frontend.remainder(self._ivy_array, other)
+        self.ivy_array = ivy.inplace_update(
+            self._ivy_array, ivy.astype(ret.ivy_array, self.dtype)
+        )
         return self
 
     def __imul__(self, other):
-        torch_frontend.mul(self._ivy_array, other, out=self)
+        ret = torch_frontend.mul(self._ivy_array, other)
+        self.ivy_array = ivy.inplace_update(
+            self._ivy_array, ivy.astype(ret.ivy_array, self.dtype)
+        )
         return self
 
     def __isub__(self, other):
-        torch_frontend.subtract(self._ivy_array, other, out=self)
+        ret = torch_frontend.subtract(self._ivy_array, other)
+        self.ivy_array = ivy.inplace_update(
+            self._ivy_array, ivy.astype(ret.ivy_array, self.dtype)
+        )
         return self
 
     def __itruediv__(self, other):
-        torch_frontend.div(self._ivy_array, other, out=self)
+        ret = torch_frontend.div(self._ivy_array, other)
+        self.ivy_array = ivy.inplace_update(
+            self._ivy_array, ivy.astype(ret.ivy_array, self.dtype)
+        )
         return self
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")

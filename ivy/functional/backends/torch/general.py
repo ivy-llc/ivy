@@ -16,7 +16,7 @@ import torch
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.general import _parse_ellipsis
-from . import backend_version
+from . import backend_version, is_variable
 
 torch_scatter = None
 
@@ -289,7 +289,10 @@ def inplace_update(
     ivy.utils.assertions.check_inplace_sizes_valid(x, val)
     if ivy.is_array(x) and ivy.is_array(val):
         (x_native, val_native), _ = ivy.args_to_native(x, val)
-        x_native.data = val_native
+        if is_variable(x_native):
+            x_native.data = val_native
+        else:
+            x_native[()] = val_native
         if ivy.is_ivy_array(x):
             x.data = x_native
 
