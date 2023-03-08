@@ -558,7 +558,18 @@ def interpolate(
     size: Union[Sequence[int], int],
     /,
     *,
-    mode: Optional[Literal["linear", "bilinear", "trilinear"]] = "linear",
+    mode: Union[
+        Literal[
+            "linear",
+            "bilinear",
+            "trilinear",
+            "nearest",
+            "area",
+            "nearest_exact",
+            "tf_area",
+            "bicubic",
+        ]
+    ] = "linear",
     scale_factor: Optional[Union[Sequence[int], int]] = None,
     align_corners: Optional[bool] = None,
     antialias: Optional[bool] = False,
