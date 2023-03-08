@@ -826,3 +826,38 @@ def test_jax_numpy_isreal(
         on_device=on_device,
         x=x[0],
     )
+
+
+# setxor1d
+@handle_frontend_test(
+    fn_tree="jax.numpy.setxor1d",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("int"),
+        min_value=-np.inf,
+        max_value=np.inf,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+        allow_inf=True,
+    ),
+)
+def test_jax_numpy_setxor1d(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
