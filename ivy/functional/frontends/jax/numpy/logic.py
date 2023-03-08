@@ -188,3 +188,13 @@ def left_shift(x1, x2):
 @to_ivy_arrays_and_back
 def isreal(x, out=None):
     return ivy.isreal(x, out=out)
+
+
+@to_ivy_arrays_and_back
+def setdiff1d(ar1, ar2, assume_unique=False, *, size=None, fill_value=None):
+    if assume_unique:
+        ret = ar1
+    else:
+        ret = set(ar1).difference(set(ar2))
+    return ret
+
