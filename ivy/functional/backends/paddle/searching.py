@@ -64,7 +64,12 @@ def where(
     
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     x1, x2 = ivy.broadcast_arrays(x1, x2)
+    if condition.rank().item()==0:
+        condition= condition.unsqueeze(0)
+        return paddle.where(condition, x1.data, x2.data).squeeze(0)
+    
     return paddle.where(condition, x1.data, x2.data)
+    
 
 
 # Extra #
