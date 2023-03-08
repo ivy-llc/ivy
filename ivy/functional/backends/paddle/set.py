@@ -8,34 +8,29 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 from ivy.utils.exceptions import IvyNotImplementedException
 
-
-def unique_all(x: paddle.Tensor, /,) -> Tuple[paddle.Tensor, paddle.Tensor, int ,paddle.Tensor]:
-    # Flatten the tensor to 1D
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ("int8", "int16", "uint8", "uint16", "bfloat16",
+                         "float16", "complex64", "complex128", "complex")},
+    backend_version,
+)
+def unique_all(x: paddle.Tensor, /,) -> Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor, paddle.Tensor]:
     flat_x = paddle.flatten(x)
-    sorted_x = paddle.sort(flat_x)[0]
-    indices = paddle.where(sorted_x[1:] != sorted_x[:-1])[0] + 1
-    indices = paddle.concat([paddle.to_tensor([0]), indices, paddle.to_tensor([len(flat_x)])])
+    sorted_x, indices = paddle.sort(flat_x)
+    unique_indices = paddle.concat([paddle.to_tensor([0]), paddle.nonzero(sorted_x[1:] != sorted_x[:-1])[:, 0] + 1,
+                                    paddle.to_tensor([len(sorted_x)])])
+    unique_x = paddle.gather(sorted_x, unique_indices[:-1])
+    counts = unique_indices[1:] - unique_indices[:-1]
+    inverse_indices = paddle.argsort(indices)
     nan_indices = paddle.where(paddle.isnan(sorted_x))[0]
     nan_count = len(nan_indices)
-    counts = None
     if nan_count > 0:
         nan_values = paddle.full([nan_count], float('nan'), dtype=x.dtype)
-        sorted_x = paddle.concat([sorted_x, nan_values], axis=0)
+        unique_x = paddle.concat([unique_x, nan_values], axis=0)
         nan_counts = paddle.to_tensor([paddle.count_nonzero(paddle.isnan(flat_x)).numpy()])
-        counts = nan_counts
-    if len(indices) == 2:
-        unique_x = sorted_x[indices[:-1]]
-        if counts is None:
-            counts = paddle.to_tensor([len(flat_x)])
-    else:
-        unique_x = sorted_x[indices[:-1]]
-        if counts is None:
-            counts = paddle.to_tensor([len(flat_x)])
-        else:
-            counts = indices[1:] - indices[:-1]
+        counts = paddle.concat([counts, nan_counts], axis=0)
 
-    ret = namedtuple("Results", ["values", "counts", "nan_count", "nan_indices"])
-    return ret(unique_x, counts, nan_count, nan_indices)
+    Results = namedtuple("Results", ["values", "indices", "inverse_indices", "counts"])
+    return Results(unique_x, unique_indices[:-1], inverse_indices, counts)
 
 
 @with_unsupported_dtypes(
