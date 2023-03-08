@@ -573,8 +573,7 @@ def scatter_nd(
 scatter_nd.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
-@_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
 def shape(
     x: torch.Tensor,
     /,
