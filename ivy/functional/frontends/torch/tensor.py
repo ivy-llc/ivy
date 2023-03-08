@@ -445,6 +445,9 @@ class Tensor:
     def split(self, split_size, dim=0):
         return torch_frontend.split(self, split_size, dim)
 
+    def tensor_split(self, indices_or_sections, dim=0):
+        return torch_frontend.tensor_split(self.ivy_array, indices_or_sections, dim)
+
     def vsplit(self, indices_or_sections=None, /, *, indices=None, sections=None):
         return torch_frontend.vsplit(
             self.ivy_array, indices_or_sections, indices=indices, sections=sections
