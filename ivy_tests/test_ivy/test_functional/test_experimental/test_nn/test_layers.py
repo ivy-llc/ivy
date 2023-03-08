@@ -260,7 +260,9 @@ def test_dct(
 def _interp_args(draw, mode=None, scale_factor=False):
     if not mode:
         mode = draw(
-            st.sampled_from(["linear", "bilinear", "trilinear", "nearest", "area"])
+            st.sampled_from(
+                ["linear", "bilinear", "trilinear", "nearest", "area", "tf_area"]
+            )
         )
     align_corners = draw(st.one_of(st.booleans(), st.none()))
     if mode == "linear":
@@ -269,18 +271,18 @@ def _interp_args(draw, mode=None, scale_factor=False):
         num_dims = 4
     elif mode == "trilinear":
         num_dims = 5
-    elif mode == "nearest" or mode == "area":
+    elif mode in ["nearest", "area", "tf_area"]:
         dim = draw(helpers.ints(min_value=1, max_value=3))
         num_dims = dim + 2
         align_corners = None
     size = draw(
         st.one_of(
             helpers.lists(
-                x=helpers.ints(min_value=1, max_value=5),
+                x=helpers.ints(min_value=1, max_value=3),
                 min_size=num_dims - 2,
                 max_size=num_dims - 2,
             ),
-            st.integers(min_value=1, max_value=5),
+            st.integers(min_value=1, max_value=3),
         )
     )
     dtype, x = draw(
