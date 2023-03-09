@@ -733,10 +733,11 @@ class _ArrayWithGeneral(abc.ABC):
         max_norm
             float, the maximum value of the array norm.
         p
-            optional float, the p-value for computing the p-norm. Default is 2.
+            optional float, the p-value for computing the p-norm. 
+            Default is 2.
         out
-            optional output array, for writing the result to. It must have a shape
-            that the inputs broadcast to.
+            optional output array, for writing the result to. 
+            It must have a shape that the inputs broadcast to.
 
         Returns
         -------
