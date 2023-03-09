@@ -2,7 +2,7 @@
 from typing import Union, Optional
 
 import paddle
-
+from ivy.func_wrapper import with_unsupported_dtypes
 # local
 import ivy
 from . import backend_version
@@ -42,7 +42,21 @@ def bitwise_invert(
 ) -> paddle.Tensor:
     return paddle.bitwise_not(x)
 
-
+@with_unsupported_dtypes(
+    {
+        "2.4.2 and below": (
+            "int8",
+            "int16",
+            "uint8",
+            "uint16",
+            "bfloat16",
+            "complex64",
+            "complex128",
+            "bool",
+        )
+    },
+    backend_version,
+)
 def isfinite(
         x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
@@ -297,7 +311,8 @@ def pow(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1,x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = ivy.broadcast_arrays(x1, x2)
     return paddle.pow(x1, x2)
 
 

@@ -28,6 +28,7 @@ from ivy.functional.backends.paddle.device import to_device
 # Array API Standard #
 # -------------------#
 
+
 @with_unsupported_dtypes(
     {"2.4.2 and below": ("uint16", "bfloat16")},
     backend_version,
@@ -74,7 +75,7 @@ def arange(
 
 def _stack_tensors(x, dtype):
 
-    #TODO: change paddle.stack to ivy.stack
+    # TODO: change paddle.stack to ivy.stack
     if isinstance(x, (list, tuple)) and len(x) != 0 and isinstance(x[0], (list, tuple)):
         for i, item in enumerate(x):
             x[i] = _stack_tensors(item, dtype)
@@ -85,6 +86,7 @@ def _stack_tensors(x, dtype):
                 x = ivy.stack([i for i in x])
             else:
                 x = paddle.to_tensor(x, dtype=dtype)
+    x.stop_gradient = False
     return x
 
 
@@ -112,9 +114,13 @@ def asarray(
 
     if isinstance(obj, paddle.Tensor) and dtype is None:
         if copy is True:
-            return obj.clone().detach()
+            ret = obj.clone().detach()
+            ret.stop_gradient = obj.stop_gradient
+            return ret
         else:
-            return obj.detach()
+            ret = obj.detach()
+            ret.stop_gradient = obj.stop_gradient
+            return ret
 
     elif isinstance(obj, (list, tuple, dict)) and len(obj) != 0:
         contain_tensor = False
@@ -130,35 +136,45 @@ def asarray(
         # a multidimensional list which contains a tensor
         if isinstance(obj[0], paddle.Tensor) or contain_tensor:
             if copy is True:
-                return (
+                ret = (
                     ivy.stack([i for i in obj])
                     .cast(dtype)
                     .clone()
                     .detach()
                 )
+                ret.stop_gradient = obj[0].stop_gradient
+                return ret
             else:
                 return _stack_tensors(obj, dtype)
 
     elif isinstance(obj, np.ndarray) and dtype is None:
         dtype = ivy.as_native_dtype(ivy.as_ivy_dtype(obj.dtype.name))
 
-    elif isinstance(obj, (Number,bool)):
-        return paddle.full(shape=(), fill_value=obj).cast(dtype)
+    elif isinstance(obj, (Number, bool)):
+        ret = paddle.full(shape=(), fill_value=obj).cast(dtype)
+        ret.stop_gradient = False
+        return ret
 
     else:
         dtype = ivy.as_native_dtype((ivy.default_dtype(dtype=dtype, item=obj)))
 
     if dtype == paddle.bfloat16 and isinstance(obj, np.ndarray):
         if copy is True:
-            return paddle.to_tensor(obj.tolist(), dtype=dtype).clone().detach()
+            ret = paddle.to_tensor(obj.tolist(), dtype=dtype).clone().detach()
+            ret.stop_gradient = False
+            return ret
         else:
-            return paddle.to_tensor(obj.tolist(), dtype=dtype)
+            ret = paddle.to_tensor(obj.tolist(), dtype=dtype)
+            ret.stop_gradient = False
+            return ret
 
     if copy is True:
-        ret = paddle.to_tensor(obj, dtype=dtype).clone().detach()
+        ret = paddle.to_tensor(obj, dtype=dtype, stop_gradient=False).clone().detach()
+        ret.stop_gradient = False
         return ret
     else:
-        ret = paddle.to_tensor(obj, dtype=dtype)
+        ret = paddle.to_tensor(obj, dtype=dtype, stop_gradient=False)
+        ret.stop_gradient = False
         return ret
 
 
