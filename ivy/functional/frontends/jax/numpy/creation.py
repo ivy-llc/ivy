@@ -1,4 +1,5 @@
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.jax.devicearray import DeviceArray
 
 from ivy.functional.frontends.jax.func_wrapper import (
@@ -119,3 +120,13 @@ def empty_like(a, dtype=None, shape=None):
 @to_ivy_arrays_and_back
 def full(shape, fill_value, dtype=None):
     return ivy.full(shape, fill_value, dtype=dtype)
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16", )}, 'jax')
+def logspace(start, stop, num=50, endpoint=True, base=10.0, dtype=None, axis=0):
+    if not endpoint:
+        interval = (stop - start) / num
+        stop -= interval
+    return ivy.logspace(start, stop, num, base=base, axis=axis, dtype=dtype)
