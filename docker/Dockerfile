@@ -1,5 +1,15 @@
 FROM ubuntu:20.04
 WORKDIR /ivy
+ARG CLI
+
+# Install Docker CE CLI
+RUN if [ "$CLI" = "True" ]; then apt-get update \
+    && apt-get install -y apt-transport-https ca-certificates curl gnupg2 lsb-release \
+    && curl -fsSL https://download.docker.com/linux/$(lsb_release -is | tr '[:upper:]' '[:lower:]')/gpg | apt-key add - 2>/dev/null \
+    && echo "deb [arch=amd64] https://download.docker.com/linux/$(lsb_release -is | tr '[:upper:]' '[:lower:]') $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list \
+    && apt-get update \
+    && apt-get install -y docker-ce-cli; \
+    fi
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
@@ -13,11 +23,11 @@ RUN apt-get update && \
     pip3 install --upgrade pip && \
     pip3 install setuptools==58.5.3
 
-RUN pip3 install torch==1.11.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
-RUN pip3 install --upgrade torch-scatter -f https://pytorch-geometric.com/whl/torch-1.11.0+cpu.html
+RUN pip3 install --no-cache-dir torch -f https://download.pytorch.org/whl/torch_stable.html
+RUN pip3 install --no-cache-dir --upgrade torch-scatter -f https://pytorch-geometric.com/whl
 
 # Install Ivy Upstream
-RUN git clone --recurse-submodules https://github.com/unifyai/ivy && \
+RUN git clone --progress --recurse-submodules https://github.com/unifyai/ivy --depth 1 && \
     cd ivy && \
     cat requirements/requirements.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
     cat requirements/optional.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \

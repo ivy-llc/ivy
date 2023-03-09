@@ -416,9 +416,13 @@ def promote_types_of_jax_inputs(
     type1 = ivy.default_dtype(item=x1).strip("u123456789")
     type2 = ivy.default_dtype(item=x2).strip("u123456789")
     if hasattr(x1, "dtype") and not hasattr(x2, "dtype") and type1 == type2:
-        x2 = ivy.asarray(x2, dtype=x1.dtype)
+        x2 = ivy.asarray(
+            x2, dtype=x1.dtype, device=ivy.default_device(item=x1, as_native=False)
+        )
     elif not hasattr(x1, "dtype") and hasattr(x2, "dtype") and type1 == type2:
-        x1 = ivy.asarray(x1, dtype=x2.dtype)
+        x1 = ivy.asarray(
+            x1, dtype=x2.dtype, device=ivy.default_device(item=x2, as_native=False)
+        )
     else:
         x1 = ivy.asarray(x1)
         x2 = ivy.asarray(x2)

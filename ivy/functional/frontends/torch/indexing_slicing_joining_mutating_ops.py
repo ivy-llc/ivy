@@ -216,6 +216,19 @@ def split(tensor, split_size_or_sections, dim=0):
 
 
 @to_ivy_arrays_and_back
+def tensor_split(input, indices_or_sections, dim=0):
+    if isinstance(indices_or_sections, (list, tuple)):
+        indices_or_sections = (
+            ivy.diff(indices_or_sections, prepend=[0], append=[input.shape[dim]])
+            .astype(ivy.int8)
+            .to_list()
+        )
+    return ivy.split(
+        input, num_or_size_splits=indices_or_sections, axis=dim, with_remainder=False
+    )
+
+
+@to_ivy_arrays_and_back
 def unbind(input, dim=0):
     shape = list(input.shape)
     shape.pop(dim)
@@ -262,3 +275,10 @@ def vsplit(input, indices_or_sections=None, /, *, indices=None, sections=None):
 @to_ivy_arrays_and_back
 def row_stack(tensors, *, out=None):
     return ivy.vstack(tensors, out=out)
+
+
+@to_ivy_arrays_and_back
+def where(condition, input=None, other=None):
+    if not ivy.exists(input) and not ivy.exists(other):
+        return nonzero(condition, as_tuple=True)
+    return ivy.where(condition, input, other)

@@ -8,7 +8,7 @@ except ImportError:
     torch = SimpleNamespace()
 
 import ivy
-from hypothesis import strategies as st, given
+from hypothesis import strategies as st, given, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -21,6 +21,9 @@ from ivy_tests.test_ivy.helpers import handle_frontend_method
 from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_splits
 from ivy_tests.test_ivy.test_functional.test_core.test_searching import (
     _broadcastable_trio,
+)
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa
+    _get_split_locations,
 )
 
 CLASS_TREE = "ivy.functional.frontends.torch.Tensor"
@@ -136,6 +139,7 @@ def test_torch_instance_chunk(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x, dim = dtype_x_dim
     helpers.test_frontend_method(
@@ -152,6 +156,7 @@ def test_torch_instance_chunk(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -177,6 +182,7 @@ def test_torch_instance_any(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_method(
@@ -193,6 +199,7 @@ def test_torch_instance_any(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -218,6 +225,7 @@ def test_torch_instance_all(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_method(
@@ -234,6 +242,7 @@ def test_torch_instance_all(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -258,6 +267,7 @@ def test_torch_instance_add(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -275,6 +285,7 @@ def test_torch_instance_add(
         method_flags=method_flags,
         frontend=frontend,
         atol_=1e-02,
+        on_device=on_device,
     )
 
 
@@ -322,6 +333,7 @@ def test_torch_instance_new_ones(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -369,6 +381,7 @@ def test_torch_instance_new_zeros(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -393,6 +406,7 @@ def test_torch_instance_reshape(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_x
     shape = {
@@ -415,6 +429,7 @@ def test_torch_instance_reshape(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -433,6 +448,7 @@ def test_torch_instance_reshape_as(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
@@ -448,6 +464,7 @@ def test_torch_instance_reshape_as(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -467,6 +484,7 @@ def test_torch_instance_sin(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -480,6 +498,7 @@ def test_torch_instance_sin(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -499,6 +518,7 @@ def test_torch_instance_arcsin(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -512,6 +532,7 @@ def test_torch_instance_arcsin(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -532,6 +553,7 @@ def test_torch_instance_sum(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -545,6 +567,7 @@ def test_torch_instance_sum(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -564,6 +587,7 @@ def test_torch_instance_atan(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -577,6 +601,7 @@ def test_torch_instance_atan(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -596,6 +621,7 @@ def test_torch_instance_atan2(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -611,6 +637,7 @@ def test_torch_instance_atan2(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -630,6 +657,7 @@ def test_torch_instance_sin_(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -643,6 +671,7 @@ def test_torch_instance_sin_(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -662,6 +691,7 @@ def test_torch_instance_cos(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -675,6 +705,7 @@ def test_torch_instance_cos(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -694,6 +725,7 @@ def test_torch_instance_cos_(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -707,6 +739,7 @@ def test_torch_instance_cos_(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -726,6 +759,7 @@ def test_torch_instance_sinh(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -739,6 +773,7 @@ def test_torch_instance_sinh(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -758,6 +793,7 @@ def test_torch_instance_sinh_(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -771,6 +807,7 @@ def test_torch_instance_sinh_(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -790,6 +827,7 @@ def test_torch_instance_cosh(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -803,6 +841,7 @@ def test_torch_instance_cosh(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -822,6 +861,7 @@ def test_torch_instance_cosh_(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -835,6 +875,7 @@ def test_torch_instance_cosh_(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -858,6 +899,7 @@ def test_torch_instance_view(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
@@ -873,6 +915,7 @@ def test_torch_instance_view(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -890,6 +933,7 @@ def test_torch_instance_float(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
@@ -903,6 +947,7 @@ def test_torch_instance_float(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -922,6 +967,7 @@ def test_torch_instance_asinh(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -937,6 +983,7 @@ def test_torch_instance_asinh(
         frontend=frontend,
         rtol_=1e-2,
         atol_=1e-2,
+        on_device=on_device,
     )
 
 
@@ -956,6 +1003,7 @@ def test_torch_instance_asinh_(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -971,6 +1019,7 @@ def test_torch_instance_asinh_(
         frontend=frontend,
         rtol_=1e-2,
         atol_=1e-2,
+        on_device=on_device,
     )
 
 
@@ -990,6 +1039,7 @@ def test_torch_instance_tan(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1003,6 +1053,7 @@ def test_torch_instance_tan(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -1022,6 +1073,7 @@ def test_torch_instance_tanh(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1035,6 +1087,7 @@ def test_torch_instance_tanh(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -1054,6 +1107,7 @@ def test_torch_instance_tanh_(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1067,6 +1121,7 @@ def test_torch_instance_tanh_(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -1086,6 +1141,7 @@ def test_torch_instance_asin(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1099,6 +1155,7 @@ def test_torch_instance_asin(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -1117,6 +1174,7 @@ def test_torch_instance_amax(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
@@ -1130,6 +1188,7 @@ def test_torch_instance_amax(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -1148,6 +1207,7 @@ def test_torch_instance_abs(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1161,6 +1221,7 @@ def test_torch_instance_abs(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -1179,6 +1240,7 @@ def test_torch_instance_abs_(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1192,6 +1254,7 @@ def test_torch_instance_abs_(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -1210,6 +1273,7 @@ def test_torch_instance_amin(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
@@ -1223,6 +1287,7 @@ def test_torch_instance_amin(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -1243,6 +1308,7 @@ def test_torch_instance_aminmax(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
@@ -1258,6 +1324,7 @@ def test_torch_instance_aminmax(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -1277,6 +1344,7 @@ def test_torch_instance_contiguous(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1290,6 +1358,7 @@ def test_torch_instance_contiguous(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -1309,6 +1378,7 @@ def test_torch_instance_log(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1322,6 +1392,7 @@ def test_torch_instance_log(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -1341,6 +1412,7 @@ def test_torch_instance_log_(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1354,6 +1426,7 @@ def test_torch_instance_log_(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -1376,6 +1449,7 @@ def test_torch_special_add(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1391,6 +1465,7 @@ def test_torch_special_add(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -1412,6 +1487,7 @@ def test_torch_special_long(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1425,6 +1501,7 @@ def test_torch_special_long(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -1447,6 +1524,7 @@ def test_torch_special_radd(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1462,6 +1540,7 @@ def test_torch_special_radd(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -1484,6 +1563,7 @@ def test_torch_special_sub(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1499,6 +1579,7 @@ def test_torch_special_sub(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -1521,6 +1602,7 @@ def test_torch_special_mul(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1536,6 +1618,7 @@ def test_torch_special_mul(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -1555,6 +1638,7 @@ def test_torch_special_rsub(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1570,6 +1654,7 @@ def test_torch_special_rsub(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -1592,6 +1677,7 @@ def test_torch_special_rmul(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1607,6 +1693,7 @@ def test_torch_special_rmul(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -1630,6 +1717,7 @@ def test_torch_special_truediv(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1645,6 +1733,7 @@ def test_torch_special_truediv(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -1654,6 +1743,7 @@ def _to_helper(draw):
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("valid"),
             num_arrays=2,
+            large_abs_safety_factor=2,
         )
     )
     input_dtype, x = dtype_x
@@ -1663,12 +1753,12 @@ def _to_helper(draw):
         method_all_as_kwargs_np = {"other": x[1]}
     elif arg == "dtype":
         method_num_positional_args = 1
-        dtype = draw(helpers.get_dtypes("valid", full=False))
+        dtype = draw(helpers.get_dtypes("valid", full=False))[0]
         method_all_as_kwargs_np = {"dtype": dtype}
     else:
         method_num_positional_args = 0
-        device = draw(st.sampled_from([torch.device("cuda"), torch.device("cpu")]))
-        dtype = draw(helpers.get_dtypes("valid", full=False, none=True))
+        device = draw(st.just("cpu"))
+        dtype = draw(helpers.get_dtypes("valid", full=False, none=True))[0]
         method_all_as_kwargs_np = {"dtype": dtype, "device": device}
     return input_dtype, x, method_num_positional_args, method_all_as_kwargs_np
 
@@ -1686,8 +1776,10 @@ def test_torch_instance_to(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x, method_num_positional_args, method_all_as_kwargs_np = args_kwargs
+    method_flags.num_positional_args = method_num_positional_args
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
@@ -1699,6 +1791,7 @@ def test_torch_instance_to(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -1718,6 +1811,7 @@ def test_torch_instance_arctan(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1731,6 +1825,7 @@ def test_torch_instance_arctan(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -1750,6 +1845,7 @@ def test_torch_instance_arctan_(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1763,6 +1859,7 @@ def test_torch_instance_arctan_(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -1782,6 +1879,7 @@ def test_torch_instance_arctan2(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1797,6 +1895,7 @@ def test_torch_instance_arctan2(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -1816,6 +1915,7 @@ def test_torch_instance_arctan2_(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1831,6 +1931,7 @@ def test_torch_instance_arctan2_(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -1850,6 +1951,7 @@ def test_torch_instance_acos(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1863,6 +1965,7 @@ def test_torch_instance_acos(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -1882,6 +1985,7 @@ def test_torch_instance_new_tensor(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1898,6 +2002,7 @@ def test_torch_instance_new_tensor(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -1969,6 +2074,7 @@ def test_torch_instance_getitem(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     data = x[0]
@@ -1982,6 +2088,7 @@ def test_torch_instance_getitem(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -2002,6 +2109,7 @@ def test_torch_instance_view_as(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
@@ -2017,6 +2125,7 @@ def test_torch_instance_view_as(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -2042,6 +2151,7 @@ def test_torch_instance_unsqueeze(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_value
     helpers.test_frontend_method(
@@ -2057,6 +2167,7 @@ def test_torch_instance_unsqueeze(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -2082,6 +2193,7 @@ def test_torch_instance_unsqueeze_(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_value
     helpers.test_frontend_method(
@@ -2097,6 +2209,7 @@ def test_torch_instance_unsqueeze_(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -2126,6 +2239,7 @@ def test_torch_instance_split(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_value
     helpers.test_frontend_method(
@@ -2142,6 +2256,169 @@ def test_torch_instance_split(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# tensor_split
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="tensor_split",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+    ),
+    indices_or_sections=_get_split_locations(min_num_dims=1),
+    dim=st.shared(
+        helpers.get_axis(
+            shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+            force_int=True,
+        ),
+        key="target_axis",
+    ),
+    method_num_positional_args=st.just(1),
+)
+def test_torch_instance_tensor_split(
+    dtype_value,
+    indices_or_sections,
+    dim,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+):
+    input_dtype, x = dtype_value
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=[],
+        method_all_as_kwargs_np={
+            "indices_or_sections": indices_or_sections,
+            "dim": dim,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+    )
+
+
+# vsplit
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="vsplit",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="value_shape"),
+    ),
+    indices_or_sections=_get_split_locations(min_num_dims=2, axis=0),
+)
+def test_torch_instance_vsplit(
+    dtype_value,
+    indices_or_sections,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_value
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=[],
+        method_all_as_kwargs_np={"indices_or_sections": indices_or_sections},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# hsplit
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="hsplit",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+    ),
+    indices_or_sections=_get_split_locations(min_num_dims=1, axis=1),
+)
+def test_torch_instance_hsplit(
+    dtype_value,
+    indices_or_sections,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_value
+    # TODO: remove the assumption when these bugfixes are merged and version-pinned
+    # https://github.com/tensorflow/tensorflow/pull/59523
+    # https://github.com/google/jax/pull/14275
+    assume(
+        not (
+            len(x[0].shape) == 1 and ivy.current_backend_str() in ("tensorflow", "jax")
+        )
+    )
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=[],
+        method_all_as_kwargs_np={"indices_or_sections": indices_or_sections},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# dsplit
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="dsplit",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(min_num_dims=3), key="value_shape"),
+    ),
+    indices_or_sections=_get_split_locations(min_num_dims=3, axis=2),
+)
+def test_torch_instance_dsplit(
+    dtype_value,
+    indices_or_sections,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_value
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=[],
+        method_all_as_kwargs_np={"indices_or_sections": indices_or_sections},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -2160,6 +2437,7 @@ def test_torch_instance_detach(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -2173,6 +2451,7 @@ def test_torch_instance_detach(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -2191,6 +2470,7 @@ def test_torch_instance_dim(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -2204,6 +2484,7 @@ def test_torch_instance_dim(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -2222,6 +2503,7 @@ def test_torch_instance_ndimension(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -2235,6 +2517,7 @@ def test_torch_instance_ndimension(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -2295,6 +2578,7 @@ def test_torch_instance_new_full(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -2311,6 +2595,7 @@ def test_torch_instance_new_full(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -2334,6 +2619,7 @@ def test_torch_instance_new_empty(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -2349,6 +2635,7 @@ def test_torch_instance_new_empty(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -2388,6 +2675,7 @@ def test_torch_instance_expand(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x, shape = dtype_x_shape
     if unpack_shape:
@@ -2412,6 +2700,7 @@ def test_torch_instance_expand(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -2430,6 +2719,7 @@ def test_torch_instance_expand_as(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
@@ -2445,6 +2735,7 @@ def test_torch_instance_expand_as(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -2492,6 +2783,7 @@ def test_torch_instance_unfold(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x, axis, size, step = dtype_values_args
     print(axis, size, step)
@@ -2510,6 +2802,7 @@ def test_torch_instance_unfold(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -2529,6 +2822,7 @@ def test_torch_special_mod(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -2544,6 +2838,7 @@ def test_torch_special_mod(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -2562,6 +2857,7 @@ def test_torch_instance_long(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -2575,6 +2871,7 @@ def test_torch_instance_long(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -2593,6 +2890,7 @@ def test_torch_instance_max(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
@@ -2606,6 +2904,7 @@ def test_torch_instance_max(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -2638,6 +2937,7 @@ def test_torch_instance_is_cuda(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     device = "cpu" if device is False else "gpu:0"
@@ -2656,6 +2956,7 @@ def test_torch_instance_is_cuda(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -2675,6 +2976,7 @@ def test_torch_instance_bitwise_not(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -2688,6 +2990,7 @@ def test_torch_instance_bitwise_not(
         method_flags=method_flags,
         method_all_as_kwargs_np={},
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -2707,6 +3010,7 @@ def test_torch_instance_bitwise_and(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -2722,6 +3026,7 @@ def test_torch_instance_bitwise_and(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -2741,6 +3046,7 @@ def test_torch_instance_bitwise_or(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -2756,6 +3062,7 @@ def test_torch_instance_bitwise_or(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -2775,6 +3082,7 @@ def test_torch_instance_add_(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -2790,6 +3098,7 @@ def test_torch_instance_add_(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -2810,6 +3119,7 @@ def test_torch_instance_arccos_(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -2823,6 +3133,7 @@ def test_torch_instance_arccos_(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -2843,6 +3154,7 @@ def test_torch_instance_arccos(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -2856,6 +3168,7 @@ def test_torch_instance_arccos(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -2876,6 +3189,7 @@ def test_torch_instance_acos_(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -2889,6 +3203,7 @@ def test_torch_instance_acos_(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -2909,6 +3224,7 @@ def test_torch_instance_asin_(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -2922,6 +3238,7 @@ def test_torch_instance_asin_(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -2942,6 +3259,7 @@ def test_torch_instance_arcsin_(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -2955,6 +3273,7 @@ def test_torch_instance_arcsin_(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -2974,6 +3293,7 @@ def test_torch_instance_atan_(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -2987,6 +3307,7 @@ def test_torch_instance_atan_(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -3006,6 +3327,7 @@ def test_torch_instance_tan_(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -3019,6 +3341,7 @@ def test_torch_instance_tan_(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -3039,6 +3362,7 @@ def test_torch_instance_atanh(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -3052,6 +3376,7 @@ def test_torch_instance_atanh(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -3072,6 +3397,7 @@ def test_torch_instance_atanh_(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -3085,6 +3411,7 @@ def test_torch_instance_atanh_(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -3105,6 +3432,7 @@ def test_torch_instance_arctanh(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -3138,6 +3466,7 @@ def test_torch_instance_arctanh_(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -3151,6 +3480,7 @@ def test_torch_instance_arctanh_(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -3173,6 +3503,7 @@ def test_torch_instance_pow(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     dtype = input_dtype[0]
@@ -3191,6 +3522,7 @@ def test_torch_instance_pow(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -3205,6 +3537,45 @@ def test_torch_instance_pow(
     ),
 )
 def test_torch_instance_pow_(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    dtype = input_dtype[0]
+    if "int" in dtype:
+        x[1] = ivy.abs(x[1])
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "exponent": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# __pow__
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="__pow__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+    ),
+)
+def test_torch_special_pow(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -3257,6 +3628,7 @@ def test_torch_instance_argmax(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_method(
@@ -3273,6 +3645,7 @@ def test_torch_instance_argmax(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -3302,6 +3675,7 @@ def test_torch_instance_argmin(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_method(
@@ -3318,6 +3692,7 @@ def test_torch_instance_argmin(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -3344,6 +3719,7 @@ def test_torch_instance_argsort(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_method(
@@ -3360,6 +3736,7 @@ def test_torch_instance_argsort(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -3378,6 +3755,7 @@ def test_torch_instance_ceil(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -3391,6 +3769,7 @@ def test_torch_instance_ceil(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -3409,6 +3788,7 @@ def test_torch_instance_argwhere(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -3422,6 +3802,7 @@ def test_torch_instance_argwhere(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -3446,6 +3827,7 @@ def test_torch_instance_size(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -3461,6 +3843,7 @@ def test_torch_instance_size(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -3479,6 +3862,7 @@ def test_torch_instance_min(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
@@ -3492,6 +3876,7 @@ def test_torch_instance_min(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -3518,6 +3903,7 @@ def test_torch_instance_matmul(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     dtype, tensor1, tensor2 = dtype_tensor1_tensor2
     helpers.test_frontend_method(
@@ -3531,6 +3917,7 @@ def test_torch_instance_matmul(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -3569,6 +3956,7 @@ def test_torch_instance_permute(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     x, idxes, dtype = dtype_values_axis
     unpack_dims = True
@@ -3594,6 +3982,7 @@ def test_torch_instance_permute(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -3614,6 +4003,7 @@ def test_torch_instance_mean(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
@@ -3627,6 +4017,7 @@ def test_torch_instance_mean(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -3658,6 +4049,7 @@ def test_torch_instance_transpose(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_value
     helpers.test_frontend_method(
@@ -3671,6 +4063,7 @@ def test_torch_instance_transpose(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -3702,6 +4095,7 @@ def test_torch_instance_transpose_(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_value
     helpers.test_frontend_method(
@@ -3718,6 +4112,7 @@ def test_torch_instance_transpose_(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -3749,6 +4144,7 @@ def test_torch_instance_flatten(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     if start_dim > end_dim:
         temp = start_dim
@@ -3769,6 +4165,7 @@ def test_torch_instance_flatten(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -3796,6 +4193,7 @@ def test_torch_instance_cumsum(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_value
     helpers.test_frontend_method(
@@ -3812,6 +4210,7 @@ def test_torch_instance_cumsum(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -3837,6 +4236,7 @@ def test_torch_instance_cumsum_(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_value
     helpers.test_frontend_method(
@@ -3853,6 +4253,7 @@ def test_torch_instance_cumsum_(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -3880,6 +4281,7 @@ def test_torch_instance_sort(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_value
     helpers.test_frontend_method(
@@ -3896,6 +4298,7 @@ def test_torch_instance_sort(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -3914,6 +4317,7 @@ def test_torch_instance_sigmoid(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
@@ -3927,6 +4331,7 @@ def test_torch_instance_sigmoid(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -3951,6 +4356,7 @@ def test_torch_instance_softmax(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x, axis = dtype_x_and_axis
     helpers.test_frontend_method(
@@ -3967,6 +4373,7 @@ def test_torch_instance_softmax(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -4004,6 +4411,7 @@ def test_torch_instance_repeat(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x, repeats = dtype_x_repeats
     repeat = {
@@ -4024,6 +4432,7 @@ def test_torch_instance_repeat(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -4045,6 +4454,7 @@ def test_torch_instance_unbind(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, x, axis = dtype_value_axis
     helpers.test_frontend_method(
@@ -4060,6 +4470,7 @@ def test_torch_instance_unbind(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -4082,6 +4493,7 @@ def test_torch_special_eq(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -4097,6 +4509,7 @@ def test_torch_special_eq(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -4116,6 +4529,7 @@ def test_torch_instance_inverse(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -4129,6 +4543,7 @@ def test_torch_instance_inverse(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -4150,6 +4565,7 @@ def test_torch_instance_neg(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -4163,6 +4579,7 @@ def test_torch_instance_neg(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -4181,6 +4598,7 @@ def test_torch_instance_int(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -4194,6 +4612,7 @@ def test_torch_instance_int(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -4212,6 +4631,7 @@ def test_torch_instance_bool(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -4225,6 +4645,7 @@ def test_torch_instance_bool(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -4245,6 +4666,7 @@ def test_torch_instance_type(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -4260,6 +4682,7 @@ def test_torch_instance_type(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -4279,6 +4702,7 @@ def test_torch_instance_type_as(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -4294,6 +4718,7 @@ def test_torch_instance_type_as(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -4312,6 +4737,7 @@ def test_torch_instance_byte(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -4325,6 +4751,7 @@ def test_torch_instance_byte(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -4347,6 +4774,7 @@ def test_torch_instance_ne(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -4362,6 +4790,7 @@ def test_torch_instance_ne(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -4383,6 +4812,7 @@ def test_torch_instance_squeeze(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_value
     helpers.test_frontend_method(
@@ -4398,6 +4828,7 @@ def test_torch_instance_squeeze(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -4416,6 +4847,7 @@ def test_torch_instance_flip(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     x, idxes, dtype = dtype_values_axis
     helpers.test_frontend_method(
@@ -4431,6 +4863,7 @@ def test_torch_instance_flip(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -4452,6 +4885,7 @@ def test_torch_instance_tril(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_values
     helpers.test_frontend_method(
@@ -4467,6 +4901,7 @@ def test_torch_instance_tril(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -4485,6 +4920,7 @@ def test_torch_instance_sqrt(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
@@ -4496,6 +4932,7 @@ def test_torch_instance_sqrt(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -4517,6 +4954,7 @@ def test_torch_instance_index_select(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, input, indices, axis, batch_dims = params_indices_others
     helpers.test_frontend_method(
@@ -4533,6 +4971,7 @@ def test_torch_instance_index_select(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -4589,6 +5028,7 @@ def test_torch_instance_clamp(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x, min, max = dtype_and_x_min_max
     helpers.test_frontend_method(
@@ -4602,6 +5042,7 @@ def test_torch_instance_clamp(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -4618,6 +5059,7 @@ def test_torch_instance_clamp_(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x, min, max = dtype_and_x_min_max
     helpers.test_frontend_method(
@@ -4631,6 +5073,7 @@ def test_torch_instance_clamp_(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -4653,6 +5096,7 @@ def test_torch_special_gt(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -4668,6 +5112,7 @@ def test_torch_special_gt(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -4690,6 +5135,7 @@ def test_torch_special_ne(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -4705,6 +5151,7 @@ def test_torch_special_ne(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -4727,6 +5174,7 @@ def test_torch_special_lt(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -4742,6 +5190,7 @@ def test_torch_special_lt(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -4764,6 +5213,7 @@ def test_torch_special_or(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -4779,6 +5229,7 @@ def test_torch_special_or(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -4795,6 +5246,7 @@ def test_torch_instance_where(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     cond, xs, dtypes = broadcastables
     helpers.test_frontend_method(
@@ -4811,6 +5263,7 @@ def test_torch_instance_where(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -4830,6 +5283,7 @@ def test_torch_instance_clone(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -4843,6 +5297,7 @@ def test_torch_instance_clone(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -4862,6 +5317,7 @@ def test_torch_special_invert(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -4875,6 +5331,7 @@ def test_torch_special_invert(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -4894,6 +5351,7 @@ def test_torch_instance_acosh(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -4907,6 +5365,7 @@ def test_torch_instance_acosh(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -4926,6 +5385,7 @@ def test_torch_instance_real(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -4939,6 +5399,7 @@ def test_torch_instance_real(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -4967,6 +5428,7 @@ def test_torch_instance_masked_fill(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     dtype, x, mask, val = x_mask_val
     helpers.test_frontend_method(
@@ -4983,6 +5445,7 @@ def test_torch_instance_masked_fill(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -5002,6 +5465,7 @@ def test_torch_instance_acosh_(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -5015,6 +5479,7 @@ def test_torch_instance_acosh_(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -5033,6 +5498,7 @@ def test_torch_instance_numpy(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -5046,4 +5512,5 @@ def test_torch_instance_numpy(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )

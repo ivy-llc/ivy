@@ -10,6 +10,7 @@ import ivy
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.random import RNG
 from ivy.functional.ivy.layers import _handle_padding
+from ivy.functional.ivy.experimental.layers import _padding_ceil_mode, _get_size
 
 
 def _from_int_to_tuple(arg, dim):
@@ -21,7 +22,15 @@ def _from_int_to_tuple(arg, dim):
 
 
 def general_pool(
-    inputs, init, reduce_fn, window_shape, strides, padding, dim, dilation, ceil_mode
+    inputs,
+    init,
+    reduce_fn,
+    window_shape,
+    strides,
+    padding,
+    dim,
+    dilation=1,
+    ceil_mode=False,
 ):
     window_shape = _from_int_to_tuple(window_shape, dim)
     strides = _from_int_to_tuple(strides, dim)
@@ -78,7 +87,7 @@ def general_pool(
 
     if ceil_mode:
         for i in range(len(dims) - 2):
-            pad_list[i + 1] = ivy.padding_ceil_mode(
+            pad_list[i + 1] = _padding_ceil_mode(
                 inputs.shape[i + 1],
                 new_window_shape[i],
                 pad_list[i + 1],
@@ -199,10 +208,10 @@ def avg_pool1d(
     if len(div_shape) - 2 == len(kernel):
         div_shape = (1,) + div_shape[1:]
     res = res / general_pool(
-        jnp.ones(div_shape, dtype=res.dtype), 0.0, jlax.add, kernel, strides, padding
+        jnp.ones(div_shape, dtype=res.dtype), 0.0, jlax.add, kernel, strides, padding, 1
     )
     if data_format == "NCW":
-        res = jnp.transpose(x, (0, 2, 1))
+        res = jnp.transpose(res, (0, 2, 1))
     return res
 
 
@@ -235,7 +244,7 @@ def avg_pool2d(
     if len(div_shape) - 2 == len(kernel):
         div_shape = (1,) + div_shape[1:]
     res = res / general_pool(
-        jnp.ones(div_shape, dtype=res.dtype), 0.0, jlax.add, kernel, strides, padding
+        jnp.ones(div_shape, dtype=res.dtype), 0.0, jlax.add, kernel, strides, padding, 2
     )
     if data_format == "NCHW":
         return jnp.transpose(res, (0, 3, 1, 2))
@@ -269,7 +278,7 @@ def avg_pool3d(
     res = general_pool(x, 0.0, jlax.add, kernel, strides, padding, 3)
 
     res = res / general_pool(
-        jnp.ones_like(x, dtype=res.dtype), 0.0, jlax.add, kernel, strides, padding
+        jnp.ones_like(x, dtype=res.dtype), 0.0, jlax.add, kernel, strides, padding, 3
     )
 
     if data_format == "NCDHW":
@@ -475,18 +484,37 @@ def interpolate(
     size: Union[Sequence[int], int],
     /,
     *,
-    mode: Union[Literal["linear", "bilinear"]] = "linear",
+    mode: Union[
+        Literal[
+            "linear",
+            "bilinear",
+            "trilinear",
+            "nearest",
+            "area",
+            "nearest_exact",
+            "tf_area",
+            "bicubic",
+            "mitchellcubic",
+            "lanczos3",
+            "lanczos5",
+            "gaussian",
+        ]
+    ] = "linear",
+    scale_factor: Optional[Union[Sequence[int], int]] = None,
     align_corners: Optional[bool] = None,
     antialias: Optional[bool] = False,
     out: Optional[JaxArray] = None,
 ):
-    if align_corners or mode in ["area", "nearest"]:
-        return ivy.functional.experimental.interpolate(
-            x, size, mode=mode, align_corners=align_corners, antialias=antialias
-        )
-
     dims = len(x.shape) - 2
-    size = (size,) * dims if isinstance(size, int) else size
+    size = _get_size(scale_factor, size, dims, x.shape)
+    if align_corners or mode in ["area", "nearest", "tf_area", "mitchellcubic", "gaussian"]:
+        return ivy.functional.experimental.interpolate(
+            x,
+            size,
+            mode=mode,
+            align_corners=align_corners,
+            antialias=antialias,
+        )
     size = [x.shape[0], *size, x.shape[1]]
     x = jnp.transpose(x, (0, *range(2, dims + 2), 1))
     return jnp.transpose(
