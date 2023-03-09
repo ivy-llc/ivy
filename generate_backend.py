@@ -1,6 +1,7 @@
 import sys
 import subprocess
 import pprint
+import inspect
 from colorama import Fore, Style, init
 from importlib import import_module
 from importlib.util import find_spec
@@ -39,29 +40,27 @@ def _get_user_input(fn, *args, **kwargs):
             exit()
 
 
-def _query_input(key):
-    while True:
+def _update_native_config_value(key):
+    ret = input(
+        "\nPress ENTER to skip\n"
+        f"Enter a value for {Style.BRIGHT + key + Style.NORMAL} "
+        "(case sensistive) "
+        f"default: '{Style.BRIGHT}{config[key]}{Style.NORMAL}': "
+    )
+    ret = ret.strip(" ")
+    if ret != "" and _imported_backend is not None:
         try:
-            ret = input(
-                "\nPress ENTER to skip\n"
-                f"Enter a value for {Style.BRIGHT + key + Style.NORMAL} "
-                "(case sensistive) "
-                f"default: '{Style.BRIGHT}{config[key]}{Style.NORMAL}': "
-            )
-            ret = ret.strip(" ")
-            if ret == "":
-                return
-            if _imported_backend is not None:
-                try:
-                    cls = _imported_backend.__dict__[ret]
-                    print(Fore.GREEN + f"Found class: {cls}")
-                    config[key] = cls
-                    return
-                except KeyError:
-                    print(Fore.RED + f"Couldn't find {backend['name']}.{ret}")
-        except KeyboardInterrupt:
-            print("Aborted.")
-            exit()
+            obj = _imported_backend.__dict__[ret]
+            if not inspect.isclass(obj):
+                print(Fore.RED + f"{obj} is not a class.")
+                return False
+            print(Fore.GREEN + f"Found class: {obj}")
+            config[key] = obj
+            return True
+        except KeyError:
+            print(Fore.RED + f"Couldn't find {backend['name']}.{ret}")
+            return False
+    return True
 
 
 def _should_install_backend(package_name):
@@ -136,8 +135,9 @@ if __name__ == "__main__":
     init(autoreset=True)
 
     _get_user_input(_get_backend)
+
     for key in config:
-        _query_input(key)
+        _get_user_input(_update_native_config_value, key)
 
     print("\n:: Backend\n")
     pprint.pprint(backend, sort_dicts=False)
