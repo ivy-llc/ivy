@@ -74,8 +74,8 @@ def test_tensorflow_Acosh(  # NOQA
         num_arrays=2,
         shared_dtype=True,
     ),
-    test_with_out=st.just(False),
     tol=st.floats(1e-05, 1e-03),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_ApproximateEqual(  # NOQA
     *,
