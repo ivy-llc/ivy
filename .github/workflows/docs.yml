@@ -36,3 +36,8 @@ jobs:
           CLEAN: false
           GIT_CONFIG_NAME: ivy-seed
           GIT_CONFIG_EMAIL: ivydl.team@gmail.com
+      
+      - name: Test for git log
+        run: |
+          echo pwd
+          git log -10
