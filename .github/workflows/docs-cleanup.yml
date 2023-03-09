@@ -28,4 +28,4 @@ jobs:
           echo "COMMITS"
           git log -5
           echo "TAGS"
-          git describe --tags
+          git describe --tags --always
