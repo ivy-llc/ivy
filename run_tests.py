@@ -56,8 +56,10 @@ def get_submodule(test_path):
 def update_individual_test_results(collection, id, submod, backend, test, result, backend_version=None, frontend_version=None):
     key = submod + "." + backend + "." + test
     if backend_version is not None:
+        backend_version = backend_version.replace(".", "_")
         key += "." + backend_version
     if frontend_version is not None:
+        frontend_version = frontend_version.replace(".", "_")
         key += "." + frontend_version
     collection.update_one(
         {"_id": id},
@@ -80,7 +82,7 @@ def run_multiversion_testing():
     cluster = MongoClient(
         f"mongodb+srv://deep-ivy:{mongo_key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa
     )
-    db = cluster["Ivy_tests_copy"]
+    db = cluster["Ivy_tests_multi"]
     with open("tests_to_run", "r") as f:
         for line in f:
             test, backend = line.split(",")
@@ -103,7 +105,7 @@ def run_multiversion_testing():
             else:
                 res = make_clickable(run_id, result_config["success"])
             backend_list = backend.split("/")
-            backend_name = backend_list[0]
+            backend_name = backend_list[0] + "\n"
             backend_version = '/'.join(backend_list[1:])
             update_individual_test_results(
                 db[coll[0]], coll[1], submod, backend_name, test_fn, res, backend_version, frontend_version
