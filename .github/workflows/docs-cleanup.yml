@@ -21,6 +21,7 @@ jobs:
         run: |
           cd ivy
           git branch
+          git remote -v
           git switch gh-pages
           echo pwd
           echo "COMMITS"
