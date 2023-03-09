@@ -57,3 +57,9 @@ def isscalar(element):
 @to_ivy_arrays_and_back
 def isfortran(a: np.ndarray):
     return a.flags.fnc
+
+@to_ivy_arrays_and_back
+def isreal(a: np.ndarray):
+    return ivy.isreal(a)
+
+
