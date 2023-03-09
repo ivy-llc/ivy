@@ -44,6 +44,13 @@ def AddV2(*, x, y, name="AddV2"):
 
 
 @to_ivy_arrays_and_back
+def ApproximateEqual(*, x, y, tolerance=1e-05, name="ApproximateEqual"):
+    x, y = check_tensorflow_casting(x, y)
+    ret = ivy.abs(x-y)
+    return ret < tolerance
+
+
+@to_ivy_arrays_and_back
 def ArgMin(*, input, dimension, output_type=None, name=None):
     output_type = to_ivy_dtype(output_type)
     if output_type in ["int32", "int64"]:
