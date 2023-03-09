@@ -1129,7 +1129,6 @@ Or you can use Ivy as a framework, breaking yourself (and your code) free from d
             h_w=(32, 32),
             input_channels=3,
             output_channels=512,
-            kernel_size=[3, 3],
             num_classes=2,
             data_format="NCHW",
             device="cpu",
@@ -1144,7 +1143,8 @@ Or you can use Ivy as a framework, breaking yourself (and your code) free from d
             )
 
             self.classifier = ivy.Sequential(
-                ivy.Linear(h_w[0] * h_w[1] * output_channels, 512), # since padding is "SAME", this would be image_height x image_width x output_channels
+                # since padding is "SAME", this would be image_height x image_width x output_channels
+                ivy.Linear(h_w[0] * h_w[1] * output_channels, 512),
                 ivy.GELU(),
                 ivy.Linear(512, num_classes),
             )
@@ -1152,21 +1152,44 @@ Or you can use Ivy as a framework, breaking yourself (and your code) free from d
 
         def _forward(self, x):
             x = self.extractor(x)
-            x = ivy.flatten(x, start_dim=1, end_dim=-1)  # flatten all dims except batch dim
+            # flatten all dims except batch dim
+            x = ivy.flatten(x, start_dim=1, end_dim=-1)
             logits = self.classifier(x)
             probs = ivy.softmax(logits)
             return logits, probs
 
 
-If we put it all toghether, we'll have something like this. This example uses Tensorflow as a backend framework,
-but the backend can easily be changed to your favorite frameworks, such as PyTorch, or JAX.
+After building your model in Ivy, you can set your favourite framework as the backend to use its operations under the hood!
 
 .. code-block:: python
 
-    ivy.set_backend('tensorflow')  # change to any backend!
+    ivy.set_backend("torch")
+    model = IvyNet()
+    x = torch.randn(1, 3, 32, 32)
+    logits, probs = model(x)
 
+.. code-block:: python
 
-At last, we build the training pipeline in pure ivy.
+    ivy.set_backend("tensorflow")
+    model = IvyNet()
+    x = tf.random.uniform(shape=(1, 3, 32, 32))
+    logits, probs = model(x)
+
+.. code-block:: python
+
+    ivy.set_backend("jax")
+    model = IvyNet()
+    x = jax.random.uniform(key, shape=(1, 3, 32, 32))
+    logits, probs = model(x)
+
+.. code-block:: python
+
+    ivy.set_backend("numpy")
+    model = IvyNet()
+    x = np.random.uniform(size=(1, 3, 32, 32))
+    logits, probs = model(x)
+
+Last but not least, we can also build the training pipeline in pure ivy.
 
 .. raw:: html
 
