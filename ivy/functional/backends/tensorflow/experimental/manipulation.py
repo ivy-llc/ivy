@@ -164,7 +164,7 @@ def atleast_3d(
 def take_along_axis(
     arr: Union[tf.Tensor, tf.Variable],
     indices: Union[tf.Tensor, tf.Variable],
-    axis: int,
+    axis: int = None,
     /,
     *,
     mode: str = "fill",
@@ -199,6 +199,17 @@ def take_along_axis(
         fill_arr = tf.fill(arr_shape, fill_value)
         arr = tf.concat([arr, fill_arr], axis=axis)
     return tf.experimental.numpy.take_along_axis(arr, indices, axis)
+
+
+def take(
+    arr: Union[tf.Tensor, tf.Variable],
+    indices: Union[tf.Tensor, tf.Variable],
+    axis: int = None,
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.take(arr, indices, axis, mode="clip")
 
 
 def hsplit(
