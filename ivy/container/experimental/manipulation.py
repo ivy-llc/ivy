@@ -2145,9 +2145,9 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.take_along_axis.
+        """ivy.Container instance method variant of ivy.take.
         This method simply wraps the function, and so the docstring for
-        ivy.take_along_axis also applies to this method with minimal changes.
+        ivy.take also applies to this method with minimal changes.
 
         Parameters
         ----------
