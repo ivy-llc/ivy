@@ -140,9 +140,6 @@ def bincount(
         ret = tf.cast(ret, x.dtype)
     return ret
 
-import tensorflow as tf
-from typing import Union
-
 def tensorflow_histogram(
     x: Union[tf.Tensor, tf.Variable],
     edges: Union[tf.Tensor, tf.Variable],
