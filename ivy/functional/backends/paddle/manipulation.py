@@ -27,7 +27,10 @@ def concat(
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()
 
-
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ("uint16", "float16")},
+    backend_version,
+)
 def expand_dims(
     x: paddle.Tensor,
     /,
@@ -35,7 +38,7 @@ def expand_dims(
     axis: Union[int, Sequence[int]] = 0,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle.expand(x, axis)
+    return paddle.unsqueeze(x, axis)
 
 
 def flip(
@@ -130,7 +133,10 @@ def roll(
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()
 
-
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ("int16", "uint16", "float16")},
+    backend_version,
+)
 def squeeze(
     x: paddle.Tensor,
     /,
@@ -140,7 +146,7 @@ def squeeze(
 ) -> paddle.Tensor:
     if isinstance(axis, list):
         axis = tuple(axis)
-    if x.shape == ():
+    if len(x.shape)==0:
         if axis is None or axis == 0 or axis == -1:
             return x
         raise ivy.utils.exceptions.IvyException(
