@@ -718,7 +718,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
     def take_along_axis(
         self: ivy.Array,
         indices: ivy.Array,
-        axis: int,
+        axis: int = None,
         /,
         *,
         mode: str = "fill",
@@ -758,6 +758,45 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         """
         return ivy.take_along_axis(self._data, indices, axis, mode=mode, out=out)
 
+    def take(
+        self: ivy.Array,
+        indices: ivy.Array,
+        axis: int = None,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.take. This method simply
+        wraps the function, and so the docstring for ivy.take also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The source array.
+        indices
+            The indices of the values to extract.
+        axis
+            The axis over which to select values.
+        out
+            Optional output, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The returned array has the same shape as indices.
+
+        Examples
+        --------
+        >>> arr = ivy.array([[4, 3, 5], [1, 2, 1]])
+        >>> indices = ivy.array([[0, 1, 1], [2, 0, 0]])
+        >>> y = arr.take(indices, 1)
+        >>> print(y)
+        ivy.array([[4, 3, 3], [1, 1, 1]])
+        """
+        return ivy.take(self._data, indices, axis, out=out)
+    
     @handle_view
     def hsplit(
         self: ivy.Array,
