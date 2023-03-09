@@ -120,6 +120,10 @@ def matmul(input, other, *, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.matmul(input, other, out=out)
 
+@to_ivy_arrays_and_back
+def multi_dot(input, other, *, out=None):
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
+    return ivy.multi_dot(input, other, out=out)
 
 @to_ivy_arrays_and_back
 def matrix_power(input, n, *, out=None):
