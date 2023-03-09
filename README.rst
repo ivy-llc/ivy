@@ -146,15 +146,18 @@ These functions can be used eagerly and lazily. If you pass the neccesary argume
     
     # Arguments are available -> transpilation happens eagerly
     eager_graph = ivy.transpile(test_fn, to="torch", args=(x1,))
+    
     # eager_graph is now torch code and runs efficiently
     ret = eager_graph(x1)
 
 .. code-block:: python
     
     # Arguments are not available -> transpilation happens lazily
-    lazy_graph = ivy.transpile(test_fn, to="torch") # nothing is transpiled here
+    lazy_graph = ivy.transpile(test_fn, to="torch")
+    
     # The transpiled graph is initialized, transpilation will happen here
     ret = lazy_graph(x1)
+    
     # lazy_graph is now torch code and runs efficiently
     ret = lazy_graph(x1)
 
@@ -1189,12 +1192,12 @@ After building your model in Ivy, you can set your favourite framework as the ba
     x = np.random.uniform(size=(1, 3, 32, 32))
     logits, probs = model(x)
 
-Last but not least, we can also build the training pipeline in pure ivy.
+Last but not least, we can also build the training pipeline in pure ivy ⬇️
 
 .. raw:: html
 
    <details>
-   <summary><a>Defining some helper functions</a></summary>
+   <summary><a>Let's define some helper functions first</a></summary>
 
 .. code-block:: python
 
@@ -1209,12 +1212,13 @@ Last but not least, we can also build the training pipeline in pure ivy.
                 y_train[idx : min(idx + batch_size, dataset_size)]
             )
 
-    # get the number of current predictions
+
+    # helper function to get the number of current predictions
     def num_correct(preds, labels):
         return (preds.argmax() == labels).sum().to_numpy().item()
 
 
-    # this is passed as an argument to ivy's function for computing gradients
+    # define a loss function
     def loss_fn(params):
         v, model, x, y = params
         y_pred, probs = model(x)
@@ -1228,25 +1232,24 @@ Last but not least, we can also build the training pipeline in pure ivy.
 .. raw:: html
 
    <details>
-   <summary><a>Train this model</a></summary>
+   <summary><a>And train this model!</a></summary>
 
 .. code-block:: python
 
-   # train the model on gpu if it's available
+    # train the model on gpu if it's available
     device = "cuda:0" if ivy.gpu_is_available() else "cpu"
 
     model = IvyNet(
         h_w=(28, 28),
         input_channels=1,
         output_channels=120,
-        kernel_size=[5, 5],
         num_classes=num_classes,
         device=device,
     )
     model_name = type(model).__name__.lower()
     
     
-    # defining some training params
+    # training hyperparams
     optimizer= ivy.Adam(1e-4)
     batch_size = 64 
     num_epochs = 20
@@ -1285,6 +1288,7 @@ Last but not least, we can also build the training pipeline in pure ivy.
                     ret_grad_idxs=[[0]],
                     xs_grad_idxs=[[0]],
                 )
+                
                 model.v = optimizer.step(model.v, grads["0"])
 
                 batch_loss = ivy.to_numpy(loss_probs[0]).mean().item()  # batch mean loss
@@ -1296,6 +1300,7 @@ Last but not least, we can also build the training pipeline in pure ivy.
                     running_loss=batch_loss,
                     accuracy_percentage=(train_correct / dataset_size) * 100,
                 )
+            
             epoch_loss = epoch_loss / dataset_size
             training_accuracy = train_correct / dataset_size
 
@@ -1313,8 +1318,8 @@ Last but not least, we can also build the training pipeline in pure ivy.
             f.writerows(metrics)
             
             
-  # assuming the dataset(images and classes) are already prepared in a folder      
-  train(images, classes, num_epochs, model, device, num_classes = num_classes, batch_size = batch_size)
+    # assuming the dataset(images and classes) are already prepared in a folder      
+    train(images, classes, num_epochs, model, device, num_classes = num_classes, batch_size = batch_size)
 
 
 .. raw:: html
