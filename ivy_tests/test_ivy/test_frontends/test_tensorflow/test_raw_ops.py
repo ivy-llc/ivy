@@ -3143,6 +3143,7 @@ def test_tensorflow_LinSpace(
         on_device=on_device,
     )
 
+
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Roll",
     dtype_and_values=helpers.dtype_and_values(
@@ -3186,3 +3187,95 @@ def test_tensorflow_roll(
         shift=shift,
         axis=axis,
     )
+
+
+# CumulativeLogsumexp
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.CumulativeLogsumexp",
+    dtype_values_axis=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_CumulativeLogsumexp(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    axis, 
+    exclusive, 
+    reverse,
+):
+    dtype, values = dtype_values_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0], 
+        axis=axis, 
+        exclusive=exclusive, 
+        reverse=reverse,
+    )    
+
+
+# Complex
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Complex",
+    dtype_values_axis=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Complex(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    real,
+    imag,
+    Tout,
+):
+    dtype, values = dtype_values_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        real=x[0],
+        imag=x[1],
+        Tout=Tout,
+    )    
+
+  
+# AccumulateNV2
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.AccumulateNV2",
+    dtype_values_axis=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_AccumulateNV2(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    inputs, 
+    shape,
+):
+    dtype, values = dtype_values_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        inputs=x[0],
+        shape=shape,
+    )        
