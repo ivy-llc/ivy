@@ -324,3 +324,13 @@ def unstack(
     if keepdims:
         return [r.unsqueeze(axis) for r in ret]
     return ret
+
+def torch_cumprod
+    (
+    input: Tensor
+    dim: int
+    Keyword:Arguments
+    dtype: torch.dtype, optional
+    out: Tensor, optional
+    )
+    return return torch.cumprod(input, dim=dim, dtype=dtype, out=out)

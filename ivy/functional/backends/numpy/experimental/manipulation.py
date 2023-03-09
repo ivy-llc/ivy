@@ -260,13 +260,36 @@ def take_along_axis(
     axis: int,
     /,
     *,
+    mode: str = "fill",
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if arr.ndim != indices.ndim and axis is not None:
+    if arr.ndim != indices.ndim:
         raise ivy.utils.exceptions.IvyException(
             "arr and indices must have the same number of dimensions;"
             + f" got {arr.ndim} vs {indices.ndim}"
         )
+    if mode not in ["clip", "fill", "drop"]:
+        raise ValueError(
+            f"Invalid mode '{mode}'. Valid modes are 'clip', 'fill', 'drop'."
+        )
+    arr_shape = arr.shape
+    if axis < 0:
+        axis += arr.ndim
+    if mode == "clip":
+        max_index = arr.shape[axis] - 1
+        indices = np.clip(indices, 0, max_index)
+    elif mode == "fill" or mode == "drop":
+        if "float" in str(arr.dtype):
+            fill_value = np.NAN
+        elif "uint" in str(arr.dtype):
+            fill_value = np.iinfo(arr.dtype).max
+        else:
+            fill_value = -np.iinfo(arr.dtype).max - 1
+        indices = np.where((indices < 0) | (indices >= arr.shape[axis]), -1, indices)
+        arr_shape = list(arr_shape)
+        arr_shape[axis] = 1
+        fill_arr = np.full(arr_shape, fill_value, dtype=arr.dtype)
+        arr = np.concatenate([arr, fill_arr], axis=axis)
     return np.take_along_axis(arr, indices, axis)
 
 
@@ -302,66 +325,15 @@ def expand(
 expand.support_native_out = False
 
 
-def histogram(data: np.ndarray, 
-              input: Optional[Union[int, str, np.ndarray]] = None,
-              name: Optional[np.ndarray[int]] = None, 
-              weight: Union[bool, np.ndarray] = True,
-              normed: Optional[bool] = None,
-              step: Optional[float] = None,
-              buckets: Optional[np.ndarray] = None,
-              description: Optional[Union[np.ndarray[str], np.ndarray[float]]] = None
-              ) -> tuple[np.ndarray, np.ndarray]:
-    """
-    Compute the histogram of a dataset using NumPy.
-
-    Parameters
-    ----------
-    data : np.ndarray
-        The input data array.
-    input : {None, int, str, np.ndarray}, optional
-        This parameter controls the type of input data. If None (default), assumes that the input is already a 1D array. If an integer is given, assumes that the input is a 2D array with the specified number of columns. If a string is given, assumes that the input is a CSV file with the specified filename. If an array is given, assumes that it is a list of bins for the histogram.
-    name : np.ndarray[int], optional
-        An array of bin labels.
-    weight : {bool, np.ndarray}, optional
-        Whether to weight the input data. If True (default), each data point is weighted by 1.0. If a 1D array of weights is given, each data point is weighted by the corresponding weight.
-    normed : bool, optional
-        Whether to normalize the histogram. If True, the histogram will be normalized such that the integral over all bins is 1.0.
-    step : float, optional
-        The width of each bin in the histogram. If None (default), the bin width is automatically computed based on the data range and the number of bins.
-    buckets : np.ndarray, optional
-        An array of bin edges for the histogram. If None (default), the bin edges are automatically computed based on the data range and the number of bins.
-    description : {np.ndarray[str], np.ndarray[float]}, optional
-        A description of the histogram or a list of bin labels.
-
-    Returns
-    -------
-    hist : np.ndarray
-        The values of the histogram bins.
-    bin_edges : np.ndarray
-        The edges of the histogram bins, including the rightmost edge of the last bin.
-
-    """
-    # Determine the type of input data
-    if input is None:
-        x = data
-    elif isinstance(input, int):
-        x = data[:, input]
-    elif isinstance(input, str):
-        x = np.loadtxt(input, delimiter=',')
-    elif isinstance(input, np.ndarray):
-        x = data
-    else:
-        raise ValueError("Invalid value for parameter 'input'.")
-    
-    # Determine the bin edges
-    if buckets is None:
-        if step is None:
-            step = (x.max() - x.min()) / 10.0
-        bins = np.arange(x.min(), x.max() + step, step)
-    else:
-        bins = buckets
-    
-    # Compute the histogram
-    hist, bin_edges = np.histogram(x, bins=bins, weights=weight, density=normed)
-    
-    return hist, bin_edges
+def numpy_cumprod(
+    a: np.ndarray,
+    axis: Optional[int] = None,
+    exclude_first: bool = False,
+    dtype: Optional[np.dtype] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if exclude_first:
+        a = np.swapaxes(a, axis, -1)
+        a = np.concatenate((np.ones_like(a[..., :1]), a[..., 1:]), axis=-1)
+        a = np.swapaxes(a, axis, -1)
+    return np.cumprod(a, axis=axis, dtype=dtype, out=out)

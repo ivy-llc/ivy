@@ -76,7 +76,11 @@ def quantile(
     axis = tuple(axis) if isinstance(axis, list) else axis
 
     result = tfp.stats.percentile(
-        a, tf.math.multiply(q, 100), axis=axis, interpolation=interpolation, keepdims=keepdims
+        a,
+        tf.math.multiply(q, 100),
+        axis=axis,
+        interpolation=interpolation,
+        keepdims=keepdims,
     )
     return result
 
@@ -140,20 +144,15 @@ def bincount(
         ret = tf.cast(ret, x.dtype)
     return ret
 
-def tensorflow_histogram(
-    x: Union[tf.Tensor, tf.Variable],
-    edges: Union[tf.Tensor, tf.Variable],
-    axis: int = None,
-    weights: Union[None, tf.Tensor] = None,
-    extend_lower_interval: bool = False,
-    extend_upper_interval: bool = False,
-    dtype: Union[tf.DType, None] = None,
-    name: str = "histogram"
+def tf_cumprod(
+    x: tf.Tensor,
+    axis: Optional[int] = None,
+    exclusive: bool = False,
+    reverse: bool = False,
+    name: Optional[str] = None
 ) -> tf.Tensor:
-    # Compute the histogram using tf.histogram_fixed_width or tf.histogram_fixed_width_bins
-    hist = tf.histogram_fixed_width(x, edges, weights=weights, 
-                                     axis=axis, 
-                                     expand_binnumbers=extend_lower_interval or extend_upper_interval,
-                                     dtype=dtype,
-                                     name=name)
-    return hist
+    return tf.math.cumprod(x, axis=axis, exclusive=exclusive, reverse=reverse, name=name)
+
+    x = tf.constant([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+
+cum_prod = tf_cumprod(x, axis=1)

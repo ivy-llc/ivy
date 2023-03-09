@@ -57,7 +57,10 @@ def quantile(
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
     temp = a.to(torch.float64)
-    qt = q.to(torch.float64)
+    if isinstance(q, torch.tensor):
+        qt = q.to(torch.float64)
+    else:
+        qt = q
     if isinstance(axis, list) or isinstance(axis, tuple):
         dimension = len(a.size())
         for x in axis:
@@ -148,15 +151,3 @@ def bincount(
 
 
 bincount.support_native_out = False
-
-def pytorch_histogram(
-    x: torch.Tensor,
-    /,
-    *,
-    weights: Optional[torch.Tensor] = None,
-    range: Optional[int] = None,
-    density: Optional[bool] = False,
-) -> torch.Tensor:
-    # Compute the histogram with the given arguments
-    hist = torch.histc(x, bins=range, weights=weights, density=density)
-    return hist

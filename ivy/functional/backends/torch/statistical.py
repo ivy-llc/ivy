@@ -312,3 +312,44 @@ def einsum(
         for operand in operands
     )
     return ivy.astype(torch.einsum(equation, *operands), dtype, copy=False)
+
+def torch_cumprod(input, dim, *, dtype=None, out=None) -> torch.Tensor:
+    if dtype is not None:
+        input = input.to(dtype)
+    if out is not None:
+        out = out.to(input.device)
+    cumprod = torch.cumprod(input, dim=dim)
+    if out is not None:
+        out.copy_(cumprod)
+        return out
+    return cumprod
+
+def torch_cumprod
+    (
+    input: Tensor
+    dim: int
+    Keyword:Arguments
+    dtype: torch.dtype, optional
+    out: Tensor, optional
+    )
+    return return torch.cumprod(input, dim=dim, dtype=dtype, out=out)
+
+    if dtype is not None:
+        input = input.to(dtype)
+    if out is not None:
+        out = out.to(input.device)
+    cumprod = torch.cumprod(input, dim=dim)
+    if out is not None:
+        out.copy_(cumprod)
+        return out
+    return cumprod
+
+    # create a 2D tensor
+    t = torch.tensor([[1, 2, 3], [4, 5, 6]])
+
+    # compute the cumulative product along the second dimension (columns)
+    cp = torch_cumprod(t, dim=1)
+
+
+    tensor([[  1,   2,   6],
+            [  4,  20, 120]])
