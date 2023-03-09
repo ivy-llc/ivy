@@ -919,9 +919,6 @@ def handle_nans(fn: Callable) -> Callable:
 def handle_mixed_functions(conditions:dict) -> Callable:
     def inner_function(fn):
         def new_fn(*args, **kwargs):
-            #loop over the conditions dict containing key = backend
-            # and value as tuple ( pos/kward, index/argname, lambda function)
-            # and run the primary implementation if the condition evaluates to True
             compos = fn
             if hasattr(new_fn, 'compos'):
                 compos = getattr(new_fn, 'compos')
