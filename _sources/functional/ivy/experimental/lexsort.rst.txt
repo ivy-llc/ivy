@@ -5,9 +5,9 @@ lexsort
 
 .. autofunction:: ivy.array.array_methods.lexsort
 
-.. autofunction:: ivy.container.container_methods.lexsort
-
 .. autofunction:: ivy.container.container_methods.static_lexsort
+
+.. autofunction:: ivy.container.container_methods.lexsort
 |
 | **Supported Frameworks:**
 

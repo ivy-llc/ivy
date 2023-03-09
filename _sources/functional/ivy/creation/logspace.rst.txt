@@ -5,9 +5,9 @@ logspace
 
 .. autofunction:: ivy.array.array_methods.logspace
 
-.. autofunction:: ivy.container.container_methods.static_logspace
-
 .. autofunction:: ivy.container.container_methods.logspace
+
+.. autofunction:: ivy.container.container_methods.static_logspace
 |
 | **Supported Frameworks:**
 

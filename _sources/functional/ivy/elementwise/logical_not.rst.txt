@@ -5,9 +5,9 @@ logical_not
 
 .. autofunction:: ivy.array.array_methods.logical_not
 
-.. autofunction:: ivy.container.container_methods.static_logical_not
-
 .. autofunction:: ivy.container.container_methods.logical_not
+
+.. autofunction:: ivy.container.container_methods.static_logical_not
 |
 | **Supported Frameworks:**
 

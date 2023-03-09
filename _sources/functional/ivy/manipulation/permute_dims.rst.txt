@@ -5,9 +5,9 @@ permute_dims
 
 .. autofunction:: ivy.array.array_methods.permute_dims
 
-.. autofunction:: ivy.container.container_methods.static_permute_dims
-
 .. autofunction:: ivy.container.container_methods.permute_dims
+
+.. autofunction:: ivy.container.container_methods.static_permute_dims
 |
 | **Supported Frameworks:**
 

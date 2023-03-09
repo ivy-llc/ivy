@@ -5,9 +5,9 @@ flipud
 
 .. autofunction:: ivy.array.array_methods.flipud
 
-.. autofunction:: ivy.container.container_methods.static_flipud
-
 .. autofunction:: ivy.container.container_methods.flipud
+
+.. autofunction:: ivy.container.container_methods.static_flipud
 |
 | **Supported Frameworks:**
 

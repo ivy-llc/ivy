@@ -5,9 +5,9 @@ binarizer
 
 .. autofunction:: ivy.array.array_methods.binarizer
 
-.. autofunction:: ivy.container.container_methods.binarizer
-
 .. autofunction:: ivy.container.container_methods.static_binarizer
+
+.. autofunction:: ivy.container.container_methods.binarizer
 |
 | **Supported Frameworks:**
 

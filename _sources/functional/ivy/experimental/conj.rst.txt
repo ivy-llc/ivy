@@ -5,9 +5,9 @@ conj
 
 .. autofunction:: ivy.array.array_methods.conj
 
-.. autofunction:: ivy.container.container_methods.static_conj
-
 .. autofunction:: ivy.container.container_methods.conj
+
+.. autofunction:: ivy.container.container_methods.static_conj
 |
 | **Supported Frameworks:**
 

@@ -5,9 +5,9 @@ interpolate
 
 .. autofunction:: ivy.array.array_methods.interpolate
 
-.. autofunction:: ivy.container.container_methods.interpolate
-
 .. autofunction:: ivy.container.container_methods.static_interpolate
+
+.. autofunction:: ivy.container.container_methods.interpolate
 |
 | **Supported Frameworks:**
 

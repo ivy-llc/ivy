@@ -5,9 +5,9 @@ gather_nd
 
 .. autofunction:: ivy.array.array_methods.gather_nd
 
-.. autofunction:: ivy.container.container_methods.gather_nd
-
 .. autofunction:: ivy.container.container_methods.static_gather_nd
+
+.. autofunction:: ivy.container.container_methods.gather_nd
 |
 | **Supported Frameworks:**
 

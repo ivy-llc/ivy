@@ -5,9 +5,9 @@ lp_normalize
 
 .. autofunction:: ivy.array.array_methods.lp_normalize
 
-.. autofunction:: ivy.container.container_methods.static_lp_normalize
-
 .. autofunction:: ivy.container.container_methods.lp_normalize
+
+.. autofunction:: ivy.container.container_methods.static_lp_normalize
 |
 | **Supported Frameworks:**
 

@@ -5,9 +5,9 @@ logical_xor
 
 .. autofunction:: ivy.array.array_methods.logical_xor
 
-.. autofunction:: ivy.container.container_methods.static_logical_xor
-
 .. autofunction:: ivy.container.container_methods.logical_xor
+
+.. autofunction:: ivy.container.container_methods.static_logical_xor
 |
 | **Supported Frameworks:**
 

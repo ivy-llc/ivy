@@ -5,9 +5,9 @@ bernoulli
 
 .. autofunction:: ivy.array.array_methods.bernoulli
 
-.. autofunction:: ivy.container.container_methods.static_bernoulli
-
 .. autofunction:: ivy.container.container_methods.bernoulli
+
+.. autofunction:: ivy.container.container_methods.static_bernoulli
 |
 | **Supported Frameworks:**
 
