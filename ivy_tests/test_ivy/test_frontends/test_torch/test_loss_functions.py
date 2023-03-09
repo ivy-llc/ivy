@@ -595,6 +595,7 @@ def test_torch_nll_loss(
         min_dim_size=1,
         max_dim_size=5,
     ),
+    full=st.booleans(),
     eps=st.floats(
         min_value=0.0,
         max_value=1.0,
@@ -608,6 +609,7 @@ def test_torch_gaussian_nll_loss(
     dtype_and_input,
     dtype_and_target,
     dtype_and_var,
+    full,
     eps,
     reduction,
     on_device,
@@ -627,6 +629,7 @@ def test_torch_gaussian_nll_loss(
         input=input[0],
         target=target[0],
         var=var[0],
+        full=full,
         eps=eps,
         reduction=reduction,
     )
