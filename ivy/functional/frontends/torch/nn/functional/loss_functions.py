@@ -333,10 +333,7 @@ def gaussian_nll_loss(
             "var has negative entry/entries"
         )
 
-    var = torch_frontend.tensor(ivy.array(var, copy=True))
-    ivy.set_with_grads(False)
-    var = torch_frontend.clamp(var, min=eps)
-    ivy.unset_with_grads()
+    var = ivy.maximum(var, eps)
 
     loss = 0.5 * (ivy.log(var) + (input - target)**2 / var)
 
