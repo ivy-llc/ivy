@@ -66,15 +66,15 @@ def test_tensorflow_Acosh(  # NOQA
     )
 
 
-# ApproximateEqual
+# AvgPool3D
 @handle_frontend_test(
-    fn_tree="tensorflow.raw_ops.ApproximateEqual",
+    fn_tree="tensorflow.raw_ops.AvgPool3D",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     test_with_out=st.just(False),
 )
-def test_tensorflow_ApproximateEqual(  # NOQA
+def test_tensorflow_AvgPool3D(  # NOQA
     *,
     dtype_and_x,
     frontend,
