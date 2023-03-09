@@ -23,7 +23,7 @@ RUN git clone --progress --recurse-submodules https://github.com/unifyai/ivy --d
     cd ivy && \
     sed -i '/nvidia/d' requirements/requirements.txt && \
     cat requirements/requirements.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
-    cat requirements/optional_cpu.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
+    cat requirements/optional.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
     python3 -m pip install --user -e . && \
     cd ivy_tests/test_array_api && \
     pip3 install --no-cache-dir -r requirements.txt
@@ -33,9 +33,8 @@ RUN cp ivy/requirements/requirements.txt .
 RUN pip3 install --no-cache-dir -r requirements.txt
 
 # Install local optional
-COPY requirements/optional_cpu.txt .
 COPY requirements/optional.txt .
-RUN pip3 install --no-cache-dir -r optional_cpu.txt
+RUN pip3 install --no-cache-dir -r optional.txt
 
 COPY run_tests_CLI/test_dependencies.py .
 RUN python3 test_dependencies.py -fp requirements.txt,optional.txt && \
