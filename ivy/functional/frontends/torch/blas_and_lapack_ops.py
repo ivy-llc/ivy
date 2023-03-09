@@ -197,7 +197,7 @@ def vdot(input, other, *, out=None):
 
 @to_ivy_arrays_and_back
 def dot(input, other, *, out=None):
-    if len(ivy.shape(input)) == 1 or len(ivy.shape(other)) == 1:
+    if len(ivy.shape(input)) == 1 and len(ivy.shape(other)) == 1:
         input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
         return ivy.dot(input, other, out=out)
     else:
