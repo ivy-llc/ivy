@@ -262,7 +262,7 @@ def atleast_3d(*arys: Union[JaxArray, bool, Number]) -> List[JaxArray]:
 def take_along_axis(
     arr: JaxArray,
     indices: JaxArray,
-    axis: int,
+    axis: int = None,
     /,
     *,
     mode: str = "fill",
@@ -274,6 +274,17 @@ def take_along_axis(
             + f" got {arr.ndim} vs {indices.ndim}"
         )
     return jnp.take_along_axis(arr, indices, axis, mode=mode)
+
+
+def take(
+    arr: JaxArray,
+    indices: JaxArray,
+    axis: int = None,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.take(arr, indices, axis, mode="clip")
 
 
 def hsplit(
