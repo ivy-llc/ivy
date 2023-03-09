@@ -6,7 +6,7 @@ from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
 
 @to_ivy_arrays_and_back
 def unique(
-    array, /, return_index=False, return_inverse=False, return_counts=False, axis=None
+        array, /, return_index=False, return_inverse=False, return_counts=False, axis=None
 ):
     results = ivy.unique_all(array)
 
@@ -35,8 +35,10 @@ def unique(
         values.append(results.counts)
 
     return Results(*values)
+
+
 @to_ivy_arrays_and_back
-def trim_zeros(filt,trim='fb'):
+def trim_zeros(filt, trim='fb'):
     first = 0
     trim = trim.upper()
     if 'F' in trim:
