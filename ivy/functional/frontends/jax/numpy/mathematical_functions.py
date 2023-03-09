@@ -509,3 +509,9 @@ def reciprocal(x, /):
 def conj(x, /):
     return ivy.conj(x)
 
+
+@to_ivy_arrays_and_back
+def subtract(x1, x2):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
+    return ivy.subtract(x1, x2)
+
