@@ -29,7 +29,7 @@ FN_DECORATORS = [
     "with_unsupported_dtypes",
     "handle_nans",
     "handle_array_like_without_promotion",
-    "handle_mixed_functions",
+    "handle_mixed_function",
 ]
 
 
@@ -697,16 +697,17 @@ def _wrap_function(
                     "inputs_to_native_arrays",
                 ],
             }
+            # if the backend has a primary implementation
+            # we'll store the compositional fn's reference
+            # for the handle_mixed_function decorator
+            if to_wrap != original:
+                to_wrap.compos = original
             for attr in to_replace[compositional]:
                 setattr(original, attr, True)
 
         for attr in FN_DECORATORS:
             if hasattr(original, attr) and not hasattr(to_wrap, attr):
-                if attr == 'handle_mixed_functions':
-                    to_wrap = getattr(ivy, attr)(original.__closure__[0].cell_contents)(to_wrap)
-                    to_wrap.compos = original.__closure__[1].cell_contents
-                else:
-                    to_wrap = getattr(ivy, attr)(to_wrap)
+                to_wrap = getattr(ivy, attr)(to_wrap)
     return to_wrap
 
 
@@ -916,16 +917,14 @@ def handle_nans(fn: Callable) -> Callable:
 
     new_fn.handle_nans = True
     return new_fn
-def handle_mixed_functions(conditions:dict) -> Callable:
+def handle_mixed_function(condition) -> Callable:
     def inner_function(fn):
+        @functools.wraps(fn)
         def new_fn(*args, **kwargs):
-            compos = fn
-            if hasattr(new_fn, 'compos'):
-                compos = getattr(new_fn, 'compos')
-            for backend, condition in conditions.items():
-                if ivy.current_backend_str() == backend:
-                    if condition(*args, **kwargs):
-                        return fn(*args, **kwargs)
+            compos = getattr(new_fn, 'compos')
+            if condition(*args, **kwargs):
+                return fn(*args, **kwargs)
+
             return compos(*args, **kwargs)
         new_fn.handle_mixed_functions = True
         return new_fn

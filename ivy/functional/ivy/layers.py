@@ -13,7 +13,6 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
-    handle_mixed_functions,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -25,7 +24,6 @@ from ivy.utils.exceptions import handle_exceptions
 # Linear #
 
 
-@handle_mixed_functions({'torch': lambda x, weight, **kwargs: weight.ndim == 2})
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
