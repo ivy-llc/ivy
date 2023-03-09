@@ -44,10 +44,9 @@ def AddV2(*, x, y, name="AddV2"):
 
 
 @to_ivy_arrays_and_back
-def ApproximateEqual(*, x, y, tolerance=1e-05, name="ApproximateEqual"):
+def Atan2(*, y, x, name="Atan2"):
     x, y = check_tensorflow_casting(x, y)
-    ret = ivy.abs(x-y)
-    return ret < tolerance
+    return ivy.atan2(x1=y, x2=x)
 
 
 @to_ivy_arrays_and_back
