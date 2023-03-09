@@ -42,13 +42,23 @@ def _get_user_input(fn, *args, **kwargs):
 def _query_input(key):
     while True:
         try:
-            val = input(
-                f"Enter a value for {Style.BRIGHT + key + Style.NORMAL},"
-                f"default: '{Style.BRIGHT}{config[key]}{Style.NORMAL}'. "
-                "Press ENTER to skip: "
+            ret = input(
+                "\nPress ENTER to skip\n"
+                f"Enter a value for {Style.BRIGHT + key + Style.NORMAL} "
+                "(case sensistive) "
+                f"default: '{Style.BRIGHT}{config[key]}{Style.NORMAL}': "
             )
-            if val.strip(" ") == "":
+            ret = ret.strip(" ")
+            if ret == "":
                 return
+            if _imported_backend is not None:
+                try:
+                    cls = _imported_backend.__dict__[ret]
+                    print(Fore.GREEN + f"Found class: {cls}")
+                    config[key] = cls
+                    return
+                except KeyError:
+                    print(Fore.RED + f"Couldn't find {backend['name']}.{ret}")
         except KeyboardInterrupt:
             print("Aborted.")
             exit()
@@ -57,7 +67,7 @@ def _query_input(key):
 def _should_install_backend(package_name):
     ret = input(
         f"Backend {package_name} isn't installed locally, "
-        "would you like to install it? [y/N]\n"
+        "would you like to install it? [Y/n]\n"
     )
     if ret.lower() == "y":
         try:
@@ -129,11 +139,11 @@ if __name__ == "__main__":
     for key in config:
         _query_input(key)
 
-    print("\n==== Backend ====")
+    print("\n:: Backend\n")
     pprint.pprint(backend, sort_dicts=False)
-    print("==== Config  ====\n")
+    print("\n:: Config\n")
     pprint.pprint(config, sort_dicts=False)
     pprint.pprint(config_lists, sort_dicts=False)
     pprint.pprint(config_flags, sort_dicts=False)
 
-    print("\nConfirm generation? [y/N]\n")
+    print("\n:: Procced with generation? [Y/n]\n")
