@@ -1,4 +1,5 @@
 # flake8: noqa
+import ivy
 from . import random
 from . import ndarray
 from . import linalg
