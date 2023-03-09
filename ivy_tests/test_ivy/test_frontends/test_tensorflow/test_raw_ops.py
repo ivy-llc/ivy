@@ -66,9 +66,9 @@ def test_tensorflow_Acosh(  # NOQA
     )
 
 
-# ApproximateEqual
+# Angle
 @handle_frontend_test(
-    fn_tree="tensorflow.raw_ops.ApproximateEqual",
+    fn_tree="tensorflow.raw_ops.Angle",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
