@@ -891,6 +891,42 @@ def test_take_along_axis(
     )
 
 
+# take
+@handle_test(
+    fn_tree="functional.ivy.experimental.take",
+    dtype_x_indices_axis=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("numeric"),
+        indices_dtypes=["int32", "int64"],
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+        valid_bounds=False,
+    ),
+    test_gradients=st.just(False),
+)
+def test_take_along_axis(
+    *,
+    dtype_x_indices_axis,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtypes, x, indices, axis, _ = dtype_x_indices_axis
+    helpers.test_function(
+        ground_truth_backend="numpy",
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        arr=x,
+        indices=indices,
+        axis=axis,
+    )
+    
+    
 # hsplit
 @handle_test(
     fn_tree="functional.ivy.experimental.hsplit",
