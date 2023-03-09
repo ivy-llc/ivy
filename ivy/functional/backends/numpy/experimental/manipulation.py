@@ -257,7 +257,7 @@ def atleast_3d(*arys: Union[np.ndarray, bool, Number]) -> List[np.ndarray]:
 def take_along_axis(
     arr: np.ndarray,
     indices: np.ndarray,
-    axis: int,
+    axis: int = None,
     /,
     *,
     mode: str = "fill",
@@ -293,15 +293,26 @@ def take_along_axis(
     return np.take_along_axis(arr, indices, axis)
 
 
+take_along_axis.support_native_out = False
+
+
+@_scalar_output_to_0d_array
+def take(
+    arr: np.ndarray,
+    indices: np.ndarray,
+    axis: int = None,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.take(arr, indices, axis, mode="clip", out=out)
+
 def hsplit(
     ary: np.ndarray,
     indices_or_sections: Union[int, Tuple[int, ...]],
     /,
 ) -> List[np.ndarray]:
     return np.hsplit(ary, indices_or_sections)
-
-
-take_along_axis.support_native_out = False
 
 
 def broadcast_shapes(shapes: Union[List[int], List[Tuple]]) -> List[int]:
