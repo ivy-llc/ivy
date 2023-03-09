@@ -217,10 +217,10 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         )
 
     def multi_dot(
-        self: ivy.Array, 
-        x: Sequence[Union[ivy.Array, ivy.NativeArray]], 
-        /, 
-        *, 
+        self: ivy.Array,
+        x: Sequence[Union[ivy.Array, ivy.NativeArray]],
+        /,
+        *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """

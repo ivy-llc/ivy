@@ -37,6 +37,9 @@ ArgMax = to_ivy_arrays_and_back(
 )
 
 
+AddV2 = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add))
+
+
 @to_ivy_arrays_and_back
 def ArgMin(*, input, dimension, output_type=None, name=None):
     output_type = to_ivy_dtype(output_type)
@@ -613,3 +616,6 @@ Elu.supported_dtypes = {
 @to_ivy_arrays_and_back
 def LinSpace(*, start, stop, num, name=None):
     return ivy.linspace(start, stop, num)
+
+
+Roll = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.roll))
