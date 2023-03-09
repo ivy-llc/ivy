@@ -21,9 +21,11 @@ jobs:
         run: |
           cd ivy
           git branch
-          # git checkout gh-pages
+          git remote -v
+          git fetch origin gh-pages --tags
+          git checkout gh-pages
           echo pwd
           echo "COMMITS"
           git log -5
           echo "TAGS"
-          git describe --tags $(git rev-list --tags) --always
+          git describe --tags $(git rev-list --tags --max-count=100)
