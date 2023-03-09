@@ -2,11 +2,11 @@
 from typing import Union, Optional
 
 import paddle
-from ivy.func_wrapper import with_unsupported_dtypes
 # local
 import ivy
 from . import backend_version
 from ivy.utils.exceptions import IvyNotImplementedException
+from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
 
 
 def add(
@@ -18,6 +18,8 @@ def add(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = ivy.broadcast_arrays(x1, x2)
+    x1, x2 = x1.data, x2.data
     if alpha not in (1, None):
         x2 = multiply(x2, alpha)
     return paddle.add(x1, x2)
@@ -41,6 +43,7 @@ def bitwise_invert(
     x: Union[int, bool, paddle.Tensor], /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     return paddle.bitwise_not(x)
+
 
 @with_unsupported_dtypes(
     {
@@ -175,6 +178,10 @@ def multiply(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = ivy.broadcast_arrays(x1, x2)
+    x1, x2 = x1.data, x2.data
+
     return paddle.multiply(x1, x2)
 
 
@@ -195,6 +202,10 @@ def divide(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = ivy.broadcast_arrays(x1, x2)
+    x1, x2 = x1.data, x2.data
+
     return paddle.divide(x1, x2)
 
 
@@ -304,6 +315,10 @@ def square(
     return paddle.square(x)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("int8", "int16", "int32", "int64", "uint8", "uint16",
+                                 "bfloat16", "float16", "complex64", "complex128", "bool")}}, backend_version
+)
 def pow(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],
@@ -368,6 +383,9 @@ def subtract(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = ivy.broadcast_arrays(x1, x2)
+    x1, x2 = x1.data, x2.data
+    
     if alpha not in (1, None):
         x2 = multiply(x2, alpha)
     return paddle.subtract(x1, x2)
