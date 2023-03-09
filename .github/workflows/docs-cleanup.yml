@@ -21,7 +21,7 @@ jobs:
         run: |
           cd ivy
           git branch
-          git checkout gh-pages
+          # git checkout gh-pages
           echo pwd
           echo "COMMITS"
           git log -5
