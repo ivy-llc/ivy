@@ -44,7 +44,7 @@ def _query_input(key):
         try:
             val = input(
                 f"Enter a value for {Style.BRIGHT + key + Style.NORMAL},"
-                "default: '{Style.BRIGHT}{config[key]}{Style.NORMAL}'. "
+                f"default: '{Style.BRIGHT}{config[key]}{Style.NORMAL}'. "
                 "Press ENTER to skip: "
             )
             if val.strip(" ") == "":
