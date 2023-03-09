@@ -1462,7 +1462,7 @@ def atleast_3d(
 def take_along_axis(
     arr: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
-    axis: int,
+    axis: Optional[int] = None,
     /,
     *,
     mode: str = "fill",
@@ -1500,6 +1500,55 @@ def take_along_axis(
     """
     return ivy.current_backend(arr).take_along_axis(
         arr, indices, axis, mode=mode, out=out
+    )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+def take(
+    arr: Union[ivy.Array, ivy.NativeArray],
+    indices: Union[ivy.Array, ivy.NativeArray],
+    axis: Optional[int] = None,
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Take elements from an array along an axis.
+    
+    All indices that are too large are replaced by the last index along that axis;
+    This function does not support indexing with negative numbers.
+    TODO: add support for other possible modes of dealing with oob indexes
+
+    Parameters
+    ----------
+    arr
+        The source array.
+    indices
+        The indices of the values to extract.
+    axis
+        The axis over which to select values.
+        If axis is None, arr is treated as a flattened 1D array.
+    out
+        The output array.
+
+    Returns
+    -------
+    ret
+        The returned array has the same shape as `indices`.
+
+    Examples
+    --------
+    >>> arr = ivy.array([4, 3, 5])
+    >>> indices = ivy.array([[0, 1, 1], [2, 0, 0]])
+    >>> y = ivy.take(arr, indices)
+    >>> print(y)
+    ivy.array([[4, 3, 3], [5, 4, 4]])
+    """
+    return ivy.current_backend(arr).take(
+        arr, indices, axis, out=out
     )
 
 
