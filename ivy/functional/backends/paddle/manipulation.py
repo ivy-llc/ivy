@@ -8,7 +8,7 @@ import paddle
 # local
 import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes , with_unsupported_device_and_dtypes
 # noinspection PyProtectedMember
 from ivy.functional.ivy.manipulation import _calculate_out_shape
 from . import backend_version
@@ -27,9 +27,8 @@ def concat(
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("uint16", "float16")},
-    backend_version,
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16")}}, backend_version
 )
 def expand_dims(
     x: paddle.Tensor,
@@ -38,6 +37,8 @@ def expand_dims(
     axis: Union[int, Sequence[int]] = 0,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if x.dtype == paddle.float16:
+        return paddle.unsqueeze(x.cast('float32'), axis).cast('float16')
     return paddle.unsqueeze(x, axis)
 
 
@@ -67,9 +68,8 @@ def _reshape_fortran_paddle(x, shape):
     return paddle.transpose(paddle.reshape(x, shape[::-1]), list(range(len(shape)))[::-1])
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("uint8", "bfloat16")},
-    backend_version,
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def reshape(
     x: paddle.Tensor,
@@ -155,9 +155,8 @@ def squeeze(
     return paddle.squeeze(x, axis=axis)
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("uint16", "bfloat16")},
-    backend_version,
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def stack(
     arrays: Union[Tuple[paddle.Tensor], List[paddle.Tensor]],
