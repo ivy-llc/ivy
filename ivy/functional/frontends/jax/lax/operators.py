@@ -526,3 +526,38 @@ def atanh(x):
 @to_ivy_arrays_and_back
 def select(pred, on_true, on_false):
     return ivy.where(pred, on_true, on_false)
+
+
+@to_ivy_arrays_and_back
+def reduce_window(
+        operand,
+        init_value,
+        computation,
+        window_dimensions,
+        window_strides,
+        padding,
+        base_dilation=None,
+        window_dilation=None
+):
+    ndim = len(window_dimensions)
+    dilations = base_dilation or (1,) * ndim
+    window_dilations = window_dilation or (1,) * ndim
+
+    pads = [(0, 0)] + [(p, p) for p in padding] + [(0, 0)]
+    operand = ivy.pad(operand, pads, mode='constant')
+
+    out_shape = tuple([operand.shape[0]] + [int((s - w) / s) + 1 for s, w in
+                                            zip(window_strides, window_dimensions)] + [
+                          operand.shape[-1]])
+    output = ivy.full(out_shape, init_value, dtype=operand.dtype)
+    for window_idx in ivy.ndindex(*out_shape[:-1]):
+        window_slice = tuple(
+            slice(window_idx[i] * window_strides[i] * dilations[i],
+                  window_idx[i] * window_strides[i] * dilations[i] + window_dimensions[i] * window_dilations[i],
+                  window_dilations[i])
+            for i in range(ndim)
+        ) + (slice(None),)
+        window = operand[window_slice]
+        output[window_idx] = computation(output[window_idx], window)
+
+    return output
