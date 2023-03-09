@@ -76,20 +76,21 @@ def test_tensorflow_Acosh(  # NOQA
 )
 def test_tensorflow_Angle(  # NOQA
     *,
-    dtype_and_x,
+    dtype_and_xs,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, xs = dtype_and_xs
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0],
+        input=xs[0],
+        Tout=xs[1]
     )
     
     
