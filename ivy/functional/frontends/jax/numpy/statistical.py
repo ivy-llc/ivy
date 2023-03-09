@@ -324,3 +324,16 @@ def nanmin(
     if where_mask is not None and ivy.any(where_mask):
         res = ivy.where(ivy.logical_not(where_mask), res, ivy.nan, out=out)
     return res
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+def nanmean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    if dtype is None:
+        dtype = "float32" if ivy.is_int_dtype(a) else a.dtype
+    ret = ivy.nanmean(a, axis=axis, keepdims=keepdims, out=out)
+    if ivy.is_array(where):
+        where = ivy.array(where, dtype=ivy.bool)
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ivy.astype(ret, ivy.as_ivy_dtype(dtype), copy=False)
