@@ -1,20 +1,16 @@
-from typing import Optional, Union, Sequence, Tuple, List
+from typing import NamedTuple, Optional, Union, Sequence, Tuple, List
 from numbers import Number
-
-
 import paddle
 from ivy.utils.exceptions import IvyNotImplementedException
-
 from .. import backend_version
 from ivy.func_wrapper import with_unsupported_dtypes
-import paddle
-from ivy.utils.exceptions import IvyNotImplementedException
+
+
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
 
 
 @with_unsupported_dtypes(
-    {"2.4.2 and below": ('int8', 'int16', 'uint8', 'uint16')},
+    {"2.4.2 and below": ("int8", "int16", "uint8", "uint16")},
     backend_version,
 )
 def moveaxis(
@@ -29,8 +25,19 @@ def moveaxis(
 
 
 @with_unsupported_dtypes(
-    {"2.4.2 and below": ('int8', 'int16', 'uint8', 'uint16', 'bfloat16',
-                         'float16', 'complex64', 'complex128', 'bool')},
+    {
+        "2.4.2 and below": (
+            "int8",
+            "int16",
+            "uint8",
+            "uint16",
+            "bfloat16",
+            "float16",
+            "complex64",
+            "complex128",
+            "bool",
+        )
+    },
     backend_version,
 )
 def heaviside(
@@ -67,7 +74,22 @@ def hstack(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle.concat(arrays, axis=-1)
+    dtypes = set(map(lambda x: x.dtype, arrays))
+    if len(dtypes) == 1:
+        dtype = dtypes.pop()
+    elif len(dtypes) == 2:
+        if "bfloat16" in dtypes:
+            dtypes.remove("bfloat16")
+            dtype = dtypes.pop()
+        else:
+            dtype = ivy.promote_types(*dtypes)
+    else:
+        raise ValueError("Cannot promote more than 2 dtypes per stack.")
+
+    if arrays[0].dim() > 2:
+        return paddle.concat(arrays, axis=1).astype(dtype)
+    else:
+        return paddle.concat(arrays, axis=-1).astype(dtype)
 
 
 def rot90(
@@ -94,11 +116,12 @@ def top_k(
     largest: Optional[bool] = True,
     out: Optional[Tuple[paddle.Tensor, paddle.Tensor]] = None,
 ) -> Tuple[paddle.Tensor, paddle.Tensor]:
-    topk_res = NamedTuple("top_k", [("values", paddle.Tensor), 
-                                    ("indices", paddle.Tensor)])
+    topk_res = NamedTuple(
+        "top_k", [("values", paddle.Tensor), ("indices", paddle.Tensor)]
+    )
     val, indices = paddle.topk(x, k, axis=axis, largest=largest)
     return topk_res(val, indices)
-    
+
 
 def fliplr(
     m: paddle.Tensor,
