@@ -44,7 +44,13 @@ def AddV2(*, x, y, name="AddV2"):
 
 
 @to_ivy_arrays_and_back
-def ApproximateEqual(*, x, y, tolerance=1e-05, name="ApproximateEqual"):
+def ApproximateEqual(
+    *,
+    x,
+    y,
+    tolerance=1e-05,
+    name="ApproximateEqual",
+):
     x, y = check_tensorflow_casting(x, y)
     ret = ivy.abs(x-y)
     return ret < tolerance
