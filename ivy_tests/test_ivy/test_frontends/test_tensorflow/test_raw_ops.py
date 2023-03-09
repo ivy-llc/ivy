@@ -74,7 +74,7 @@ def test_tensorflow_Acosh(  # NOQA
     ),
     test_with_out=st.just(False),
 )
-def test_tensorflow_ApproximateEqual(  # NOQA
+def test_tensorflow_Angle(  # NOQA
     *,
     dtype_and_x,
     frontend,
