@@ -23,6 +23,7 @@ jobs:
           git branch
           git remote -v
           git fetch origin gh-pages
+          git checkout gh-pages
           echo pwd
           echo "COMMITS"
           git log -5
