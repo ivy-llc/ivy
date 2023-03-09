@@ -29,3 +29,4 @@ jobs:
           git log -5
           echo "TAGS"
           git describe --tags $(git rev-list --tags --max-count=1)
+          git rev-list --tags --max-count=1
