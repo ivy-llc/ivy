@@ -44,7 +44,12 @@ def AddV2(*, x, y, name="AddV2"):
 
 
 @to_ivy_arrays_and_back
-def Angle(*, input, Tout=ivy.float32, name="Angle"):
+def Angle(
+    *,
+    input,
+    Tout=ivy.float32,
+    name="Angle",
+):
     return ivy.astype(x=ivy.angle(z=input), dtype=Tout)
 
 
