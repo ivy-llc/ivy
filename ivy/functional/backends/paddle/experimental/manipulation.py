@@ -1,9 +1,8 @@
-from typing import Optional, Union, Sequence, Tuple, NamedTuple, List
+from typing import Optional, Union, Sequence, Tuple, List
 from numbers import Number
-from .. import backend_version
+
 import paddle
 from ivy.utils.exceptions import IvyNotImplementedException
-import ivy
 
 
 def moveaxis(
@@ -51,7 +50,7 @@ def hstack(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.concat(arrays, axis=-1)
 
 
 def rot90(
