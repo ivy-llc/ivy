@@ -44,7 +44,12 @@ def AddV2(*, x, y, name="AddV2"):
 
 
 @to_ivy_arrays_and_back
-def Atan2(*, y, x, name="Atan2"):
+def Atan2(
+    *,
+    y,
+    x,
+    name="Atan2",
+):
     x, y = check_tensorflow_casting(x, y)
     return ivy.atan2(x1=y, x2=x)
 
