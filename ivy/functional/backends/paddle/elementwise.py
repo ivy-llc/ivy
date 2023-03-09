@@ -313,7 +313,7 @@ def pow(
 ) -> paddle.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     x1, x2 = ivy.broadcast_arrays(x1, x2)
-    return paddle.pow(x1, x2)
+    return paddle.pow(x1.data, x2.data)
 
 
 def round(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
