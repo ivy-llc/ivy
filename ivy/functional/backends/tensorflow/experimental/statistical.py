@@ -139,3 +139,39 @@ def bincount(
         ret = tf.math.bincount(x, minlength=minlength)
         ret = tf.cast(ret, x.dtype)
     return ret
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+import tensorflow as tf
+from typing import Union
+
+=======
+>>>>>>> parent of 29a1b0302 (cumprod #10878 functions)
+def tensorflow_histogram(
+    x: Union[tf.Tensor, tf.Variable],
+    edges: Union[tf.Tensor, tf.Variable],
+    axis: int = None,
+    weights: Union[None, tf.Tensor] = None,
+    extend_lower_interval: bool = False,
+    extend_upper_interval: bool = False,
+    dtype: Union[tf.DType, None] = None,
+    name: str = "histogram"
+<<<<<<< HEAD
+=======
+def tf_cumprod(
+    x: tf.Tensor,
+    axis: Optional[int] = None,
+    exclusive: bool = False,
+    reverse: bool = False,
+    name: Optional[str] = None
+>>>>>>> 29a1b0302 (cumprod #10878 functions)
+=======
+>>>>>>> parent of 29a1b0302 (cumprod #10878 functions)
+) -> tf.Tensor:
+    # Compute the histogram using tf.histogram_fixed_width or tf.histogram_fixed_width_bins
+    hist = tf.histogram_fixed_width(x, edges, weights=weights, 
+                                     axis=axis, 
+                                     expand_binnumbers=extend_lower_interval or extend_upper_interval,
+                                     dtype=dtype,
+                                     name=name)
+    return hist
