@@ -1,5 +1,6 @@
 # global
 import ivy
+from ivy.functional.frontends.numpy import promote_types_of_numpy_inputs
 
 # local
 from ivy.functional.frontends.numpy.func_wrapper import (
@@ -160,10 +161,12 @@ def _hypot(
     dtype=None,
     subok=True,
 ):
-    ret = ivy.sqrt(x1*x1 + x2*x2, out=out)
+    x1, x2 = promote_types_of_numpy_inputs(x1, x2)
+    ret = ivy.sqrt(ivy.add(ivy.square(x1), ivy.square(x2)), out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
+
 
 
 @handle_numpy_out

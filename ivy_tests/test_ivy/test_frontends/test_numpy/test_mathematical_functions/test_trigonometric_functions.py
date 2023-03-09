@@ -245,17 +245,12 @@ def test_numpy_arctan(
         arr_func=[
             lambda: helpers.dtype_and_values(
                 available_dtypes=helpers.get_dtypes("float"),
-            ),
-            lambda: helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("float"),
             )
         ],
         get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
-    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
-        fn_name="hypot"
-    ),
+    number_positional_args=2,
 )
 def test_numpy_hypot(
     dtypes_values_casting,
@@ -265,7 +260,7 @@ def test_numpy_hypot(
     fn_tree,
     on_device,
 ):
-    input_dtypes, (x, y), casting, dtype = dtypes_values_casting
+    input_dtypes, x, casting, dtype = dtypes_values_casting
     where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
@@ -277,10 +272,8 @@ def test_numpy_hypot(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-2,
-        atol=1e-2,
-        x=x,
-        y=y,
+        x1=x[0],
+        x2=x[1],
         out=None,
         where=where,
         casting=casting,
