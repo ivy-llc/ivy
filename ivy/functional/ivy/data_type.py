@@ -2320,30 +2320,32 @@ def promote_types_of_inputs(
         return isinstance(a1, float) and "int" in str(a2.dtype)
 
     if hasattr(x1, "dtype") and not hasattr(x2, "dtype"):
+        device = ivy.default_device(item=x1, as_native=True)
         if x1.dtype == bool and not isinstance(x2, bool):
             x2 = (
-                ivy.asarray(x2)
+                ivy.asarray(x2, device=device)
                 if not _special_case(x2, x1)
-                else ivy.asarray(x2, dtype="float64")
+                else ivy.asarray(x2, dtype="float64", device=device)
             )
         else:
             x2 = (
-                ivy.asarray(x2, dtype=x1.dtype)
+                ivy.asarray(x2, dtype=x1.dtype, device=device)
                 if not _special_case(x2, x1)
-                else ivy.asarray(x2, dtype="float64")
+                else ivy.asarray(x2, dtype="float64", device=device)
             )
     elif hasattr(x2, "dtype") and not hasattr(x1, "dtype"):
+        device = ivy.default_device(item=x2, as_native=True)
         if x2.dtype == bool and not isinstance(x1, bool):
             x1 = (
-                ivy.asarray(x1)
+                ivy.asarray(x1, device=device)
                 if not _special_case(x1, x2)
-                else ivy.asarray(x1, dtype="float64")
+                else ivy.asarray(x1, dtype="float64", device=device)
             )
         else:
             x1 = (
-                ivy.asarray(x1, dtype=x2.dtype)
+                ivy.asarray(x1, dtype=x2.dtype, device=device)
                 if not _special_case(x1, x2)
-                else ivy.asarray(x1, dtype="float64")
+                else ivy.asarray(x1, dtype="float64", device=device)
             )
     elif not (hasattr(x1, "dtype") or hasattr(x2, "dtype")):
         x1 = ivy.asarray(x1)
