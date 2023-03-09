@@ -909,8 +909,7 @@ def handle_mixed_functions(conditions:dict) -> Callable:
                 compos = getattr(new_fn, 'compos')
             for backend, condition in conditions.items():
                 if ivy.current_backend_str() == backend:
-                    argtype, key, func = condition
-                    if (argtype == 'pos' and func(args[key])) or (argtype == 'kward' and func(kwargs[key])):
+                    if condition(*args, **kwargs):
                         return fn(*args, **kwargs)
             return compos(*args, **kwargs)
         new_fn.handle_mixed_functions = True

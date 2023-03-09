@@ -25,7 +25,7 @@ from ivy.utils.exceptions import handle_exceptions
 # Linear #
 
 
-@handle_mixed_functions({'torch': ('pos', 1, lambda x: x.ndim == 2)})
+@handle_mixed_functions({'torch': lambda x, weight, **kwargs: weight.ndim == 2})
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
