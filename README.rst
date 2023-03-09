@@ -277,21 +277,6 @@ or alternatively:
 
     python3 -m pip install ivy-core
 
-..
-
-    Keep in mind that this won't install any of the underlying frameworks (you will need at least one to run Ivy!). We will (very) soon offer support for multiple versions, but for now we have pinned Ivy to specific versions, so you'll need to have one of these installed:
-
-+------------+-----------------+
-| Framework  | Pinned version  |
-+============+=================+
-| PyTorch    | 1.11.0          |
-+------------+-----------------+
-| TensorFlow | 2.9.1           |
-+------------+-----------------+
-| JAX        | 0.3.14          |
-+------------+-----------------+
-| NumPy      | 1.23.0          |
-+------------+-----------------+
 
 Docker
 ######
