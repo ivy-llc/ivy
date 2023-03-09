@@ -14,7 +14,7 @@ def scaled_dot_product_attention(
     out=None,
 ):
 
-    if isinstance(mask, torch.tensor):
+    if isinstance(mask, torch.Tensor):
         mask = torch.where(mask == 0, -torch.inf, 0)
-    return xops.memory_efficient_attention(q, k, v, scale, attn_bias=mask)
+    return xops.memory_efficient_attention(q, k, v, scale=scale, attn_bias=mask)
 
