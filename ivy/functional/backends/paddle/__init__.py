@@ -66,7 +66,6 @@ valid_numeric_dtypes = (
     ivy.int32,
     ivy.int64,
     ivy.uint8,
-    ivy.bfloat16,
     ivy.float16,
     ivy.float32,
     ivy.float64,
@@ -78,14 +77,14 @@ valid_int_dtypes = (
     ivy.int64,
     ivy.uint8,
 )
-valid_float_dtypes = (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64)
+valid_float_dtypes = (ivy.float16, ivy.float32, ivy.float64)
 valid_uint_dtypes = (ivy.uint8,)
 valid_complex_dtypes = (ivy.complex64, ivy.complex128)
 
-invalid_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
-invalid_numeric_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
+invalid_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64, ivy.bfloat16,)
+invalid_numeric_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64, ivy.bfloat16,)
 invalid_int_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
-invalid_float_dtypes = ()
+invalid_float_dtypes = (ivy.bfloat16,)
 invalid_uint_dtypes = (ivy.uint16, ivy.uint32, ivy.uint64)
 invalid_complex_dtypes = ()
 
@@ -98,7 +97,7 @@ def closest_valid_dtype(type, /):
         return ivy.default_dtype()
     type_str = ivy.as_ivy_dtype(type)
     if type_str in invalid_dtypes:
-        return {"uint16": native_uint8, "uint32": native_uint8, "uint64": native_uint8}[
+        return {"uint16": native_uint8, "uint32": native_uint8, "uint64": native_uint8, "bfloat16": native_float32}[
             type_str
         ]
     return type
