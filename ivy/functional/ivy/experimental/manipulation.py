@@ -1462,7 +1462,7 @@ def atleast_3d(
 def take_along_axis(
     arr: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
-    axis: Optional[int] = None,
+    axis: int = None,
     /,
     *,
     mode: str = "fill",
@@ -1511,7 +1511,7 @@ def take_along_axis(
 def take(
     arr: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
-    axis: Optional[int] = None,
+    axis: int = None,
     /,
     *,
     out: Optional[ivy.Array] = None,
