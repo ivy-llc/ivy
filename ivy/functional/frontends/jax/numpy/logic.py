@@ -188,3 +188,13 @@ def left_shift(x1, x2):
 @to_ivy_arrays_and_back
 def isreal(x, out=None):
     return ivy.isreal(x, out=out)
+
+
+@to_ivy_arrays_and_back
+def fromfunction(function, shape, *, dtype=float, like=None, **kwargs):
+    arr = ivy.zeros(shape)
+    for idx, x in ivy.ndenumerate(arr):
+        # TODO: how to flatten idx to pass in function? 
+        arr[idx] = function(idx)
+    return arr
+        
