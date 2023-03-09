@@ -164,6 +164,12 @@ def FloorDiv(*, x, y, name="FloorDiv"):
 
 
 @to_ivy_arrays_and_back
+def FloorMod(*, x, y, name="FloorMod"):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.remainder(x, y)
+
+
+@to_ivy_arrays_and_back
 def Gather(*, params, indices, validate_indices=None, name="Gather"):
     return ivy.gather(params, indices, axis=0, batch_dims=0)
 
