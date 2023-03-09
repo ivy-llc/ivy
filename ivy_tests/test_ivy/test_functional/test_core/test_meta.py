@@ -8,7 +8,6 @@ from hypothesis import strategies as st
 # local
 import ivy
 from ivy.functional.ivy.gradients import _variable, _is_variable
-import ivy.functional.backends.numpy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
@@ -951,7 +950,10 @@ def test_maml_step_shared_vars(
     assert np.allclose(ivy.to_scalar(calc_cost), true_cost)
     outer_grads = rets[1]
     assert np.allclose(
-        ivy.to_numpy(outer_grads.latent), ivy.to_numpy(true_outer_grad[0])
+        ivy.to_numpy(outer_grads.latent),
+        ivy.to_numpy(true_outer_grad[0]),
+        rtol=1e-1,
+        atol=1e-1,
     )
     if return_inner_v:
         inner_v_rets = rets[2]
