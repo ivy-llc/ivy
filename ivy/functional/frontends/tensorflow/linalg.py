@@ -231,3 +231,4 @@ def cross(a, b, name=None):
 @to_ivy_arrays_and_back
 def svd(a, /, *, full_matrices=False, compute_uv=True, name=None):
     return ivy.svd(a, compute_uv=compute_uv, full_matrices=full_matrices)
+

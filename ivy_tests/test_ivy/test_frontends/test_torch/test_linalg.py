@@ -1043,7 +1043,7 @@ def test_torch_matmul(
         available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
 )
-def lu_factor_ex(
+def test_lu_factor_ex(
         *,
         dtype_and_input,
         frontend,
