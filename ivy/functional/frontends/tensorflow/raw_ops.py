@@ -51,7 +51,7 @@ def Atan2(
     name="Atan2",
 ):
     x, y = check_tensorflow_casting(x, y)
-    return ivy.atan2(x1=y, x2=x)
+    return ivy.atan2(y, x)
 
 
 @to_ivy_arrays_and_back
