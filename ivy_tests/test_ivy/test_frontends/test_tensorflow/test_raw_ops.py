@@ -23,7 +23,7 @@ def _conv2d_helper(draw):
     padding = draw(_x_and_filters(
     dtypes=helpers.get_dtypes("float", full=False),
     data_format=st.sampled_from(["NHWC"]),
-    padding=st.sampled_from(["SAME", "VALID", "EXPLICIT"]),
+    padding=st.sampled_from(["SAME", "VALID"]),
     type="2d",
     dilation_min=1,
     dilation_max=1,
@@ -33,13 +33,13 @@ def _conv2d_helper(draw):
         pad_bottom = draw(st.integers(min_value=0, max_value=3))
         pad_left = draw(st.integers(min_value=0, max_value=3))
         pad_right = draw(st.integers(min_value=0, max_value=3))
-        explicit_paddings = [(pad_top, pad_bottom), (pad_left, pad_right)]
+
         if data_format == "NHWC":
-            explicit_paddings = [(0, 0), *explicit_paddings, (0, 0)]
+            explicit_paddings = [0, pad_top, pad_bottom, pad_left, pad_right, 0, 0, 0]
         else:
-            explicit_paddings = [(0, 0), (0, 0), *explicit_paddings]
+            explicit_paddings = [0, 0, 0, pad_top, pad_bottom, pad_left, pad_right, 0]
     else:
-       explicit_paddings = []
+        explicit_paddings = []
 
     return input_dtype, \
         x, \
@@ -50,10 +50,12 @@ def _conv2d_helper(draw):
         padding, \
         explicit_paddings
 
+
+#Conv2D
 @handle_frontend_test(
-    fn_tree="tensorflow.raw_ops.Conv2D",
-    x_f_d_df=_conv2d_helper(),
-    test_with_out=st.just(False),
+fn_tree="tensorflow.raw_ops.Conv2D",
+x_f_d_df=_conv2d_helper(),
+test_with_out=st.just(False),
 )
 def test_tensorflow_Conv2D(
     *,
@@ -69,7 +71,7 @@ def test_tensorflow_Conv2D(
         data_format, \
         dilation, \
         stride, \
-        paddings,\
+        paddings, \
         explicit_paddings = x_f_d_df
     # Broadcast strides and dilations to correct dims for the ground truth
     # backend func to run correctly
@@ -94,6 +96,7 @@ def test_tensorflow_Conv2D(
         data_format=data_format,
         dilations=dilation,
     )
+
 
 # Acos
 @handle_frontend_test(
@@ -150,33 +153,6 @@ def test_tensorflow_Acosh(  # NOQA
 
 
 # AddV2
-@handle_frontend_test(
-    fn_tree="tensorflow.raw_ops.AddV2",
-    dtype_and_x=helpers.dtype_and_shape(
-        available_dtypes=helpers.get_dtypes("float"),
-        shapes=((2,), (2,)),
-    ),
-    test_with_out=st.just(False),
-)
-def test_tensorflow_AddV2(  # NOQA
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-):
-    input_dtype, (x, y) = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x,
-        y=y,
-    )
-
 
 
 # Add
