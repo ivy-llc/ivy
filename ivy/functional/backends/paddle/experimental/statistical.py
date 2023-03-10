@@ -4,10 +4,13 @@ import paddle
 from ivy.utils.exceptions import IvyNotImplementedException
 
 # local
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
 from . import backend_version
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("int8", "int16", "uint8", "uint16", "bfloat16", "float16", "complex64", "complex128", "bool")}}, backend_version
+)
 def median(
     input: paddle.Tensor,
     /,
@@ -16,10 +19,13 @@ def median(
     keepdims: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if out is None:
-        return paddle.median(x=input, axis=axis, keepdim=keepdims)
-
-    out[:] = paddle.median(x=input, axis=axis, keepdim=keepdims)
+     if input.ndim==0:
+        input = input.unsqueeze(0)
+        return paddle.median(x=input, axis=axis).squeeze()
+     elif input.ndim == 1:
+         return paddle.median(x=input) if keepdims else paddle.median(x=input).squeeze()
+        
+     return paddle.median(x=input, axis=axis, keepdim=keepdims)
 
 
 def nanmean(
