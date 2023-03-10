@@ -348,9 +348,9 @@ def einsum(
     *operands: paddle.Tensor,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    dtype = paddle.promote_types_of_inputs(operands)
+    dtype = _get_promoted_type_of_operands(operands)
     operands = (
-        paddle.astype(operand, paddle.float32, copy=False).to_native()
+        ivy.astype(operand, paddle.float32, copy=False).to_native()
         for operand in operands
     )
-    return paddle.astype(paddle.einsum(equation, *operands), dtype, copy=False)
+    return ivy.astype(paddle.einsum(equation, *operands), dtype, copy=False)
