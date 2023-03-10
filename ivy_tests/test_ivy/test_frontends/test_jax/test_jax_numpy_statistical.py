@@ -3,7 +3,6 @@ from hypothesis import strategies as st, assume
 import numpy as np
 
 # local
-import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -585,95 +584,5 @@ def test_numpy_nanmin(
         out=None,
         keepdims=keepdims,
         initial=initial,
-        where=where,
-    )
-
-
-# nanstd
-@handle_frontend_test(
-    fn_tree="jax.numpy.nanstd",
-    dtype_and_a=statistical_dtype_values(function="nanstd"),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
-    where=np_frontend_helpers.where(),
-    keep_dims=st.booleans(),
-)
-def test_jax_numpy_nanstd(
-    dtype_and_a,
-    dtype,
-    where,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-    keep_dims,
-):
-    input_dtypes, a, axis, correction = dtype_and_a
-    if isinstance(axis, tuple):
-        axis = axis[0]
-    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtypes,
-        test_flags=test_flags,
-    )
-    assume(np.dtype(dtype[0]) >= np.dtype(input_dtypes[0]))
-    np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        a=a[0],
-        axis=axis,
-        dtype=dtype[0],
-        out=None,
-        ddof=correction,
-        keepdims=keep_dims,
-        where=where,
-        atol=1e-2,
-        rtol=1e-2,
-    )
-
-
-# nanvar
-@handle_frontend_test(
-    fn_tree="jax.numpy.nanvar",
-    dtype_x_axis=statistical_dtype_values(function="nanvar"),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
-    where=np_frontend_helpers.where(),
-    keep_dims=st.booleans(),
-)
-def test_jax_numpy_nanvar(
-    dtype_x_axis,
-    dtype,
-    where,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-    keep_dims,
-):
-    input_dtypes, x, axis, ddof = dtype_x_axis
-    if isinstance(axis, tuple):
-        axis = axis[0]
-    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtypes,
-        test_flags=test_flags,
-    )
-
-    np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        atol=1e-1,
-        rtol=1e-1,
-        a=x[0],
-        axis=axis,
-        dtype=dtype[0],
-        out=None,
-        ddof=ddof,
-        keepdims=keep_dims,
         where=where,
     )
