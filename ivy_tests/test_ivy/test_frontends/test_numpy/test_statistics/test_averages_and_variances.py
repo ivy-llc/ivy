@@ -345,7 +345,7 @@ def test_numpy_nanpercentile(
 
     np_frontend_helpers.test_frontend_function(
         a=a[0],
-        q=q,
+        q=q[0],
         axis=axis,
         out=None,
         overwrite_input=None,
