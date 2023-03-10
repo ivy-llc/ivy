@@ -14,18 +14,13 @@ from typing import Type, Optional, Tuple
 try:
     import pynvml
 
-    pynvml_installed = True
-except ImportError:
-    # nvidia-ml-py (pynvml) is not installed in CPU Dockerfile.
-    pynvml_installed = False
-    pass
-
-if pynvml_installed:
     try:
         pynvml.nvmlInit()
     except pynvml.NVMLError:
         pass
-
+except ImportError:
+    # nvidia-ml-py (pynvml) is not installed in CPU Dockerfile.
+    pass
 from typing import Union, Callable, Iterable, Any
 
 # local
