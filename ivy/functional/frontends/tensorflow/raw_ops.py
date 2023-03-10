@@ -52,7 +52,7 @@ def ApproximateEqual(
     name="ApproximateEqual",
 ):
     x, y = check_tensorflow_casting(x, y)
-    ret = ivy.abs(x-y)
+    ret = ivy.abs(x - y)
     return ret < tolerance
 
 
