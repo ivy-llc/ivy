@@ -13,13 +13,19 @@ from typing import Type, Optional, Tuple
 # noinspection PyUnresolvedReferences
 try:
     import pynvml
+
+    pynvml_installed = True
 except ImportError:
     # nvidia-ml-py (pynvml) is not installed in CPU Dockerfile.
+    pynvml_installed = False
     pass
-try:
-    pynvml.nvmlInit()
-except pynvml.NVMLError:
-    pass
+
+if pynvml_installed:
+    try:
+        pynvml.nvmlInit()
+    except pynvml.NVMLError:
+        pass
+
 from typing import Union, Callable, Iterable, Any
 
 # local
