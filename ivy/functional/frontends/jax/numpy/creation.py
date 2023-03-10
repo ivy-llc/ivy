@@ -65,6 +65,11 @@ def asarray(a, dtype=None, order=None):
     return array(a, dtype=dtype, order=order)
 
 
+@to_ivy_arrays_and_back
+def copy(a, order=None):
+    return array(a, order=order)
+
+
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def hstack(tup, dtype=None):
