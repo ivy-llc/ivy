@@ -279,6 +279,9 @@ def tanh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     return paddle.tanh(x)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "float16", "complex64", "complex128")}}, backend_version
+)
 def floor_divide(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],
@@ -286,7 +289,7 @@ def floor_divide(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle.floor_divide(x1, x2)
+    return paddle.floor(x1 / x2)
 
 
 def bitwise_or(
