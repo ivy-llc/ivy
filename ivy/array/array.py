@@ -152,7 +152,8 @@ class Array(
         self._size = (
             functools.reduce(mul, self._data.shape) if len(self._data.shape) > 0 else 0
         )
-        self._dtype = ivy.dtype(self._data)
+        #self._dtype = ivy.dtype(self._data)
+        self._dtype = ivy.as_ivy_dtype(self._data.dtype, specific_dtype=True)
         self._device = ivy.dev(self._data)
         self._dev_str = ivy.as_ivy_dev(self._device)
         self._pre_repr = "ivy.array"
