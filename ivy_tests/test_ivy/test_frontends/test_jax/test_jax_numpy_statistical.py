@@ -589,6 +589,7 @@ def test_numpy_nanmin(
     )
 
 
+# nanstd
 @handle_frontend_test(
     fn_tree="jax.numpy.nanstd",
     dtype_and_a=statistical_dtype_values(function="nanstd"),
@@ -596,7 +597,7 @@ def test_numpy_nanmin(
     where=np_frontend_helpers.where(),
     keep_dims=st.booleans(),
 )
-def test_numpy_nanstd(
+def test_jax_numpy_nanstd(
     dtype_and_a,
     dtype,
     where,
@@ -633,6 +634,7 @@ def test_numpy_nanstd(
     )
 
 
+# nanvar
 @handle_frontend_test(
     fn_tree="jax.numpy.nanvar",
     dtype_x_axis=statistical_dtype_values(function="nanvar"),
@@ -640,7 +642,7 @@ def test_numpy_nanstd(
     where=np_frontend_helpers.where(),
     keep_dims=st.booleans(),
 )
-def test_numpy_nanvar(
+def test_jax_numpy_nanvar(
     dtype_x_axis,
     dtype,
     where,
