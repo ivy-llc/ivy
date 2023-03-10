@@ -493,7 +493,7 @@ def interpolate(
             "area",
             "nearest_exact",
             "tf_area",
-            "bicubic",
+            "bicubic_tensorflow",
             "mitchellcubic",
             "lanczos3",
             "lanczos5",
@@ -515,6 +515,11 @@ def interpolate(
             align_corners=align_corners,
             antialias=antialias,
         )
+    if mode=="bicubic_tensorflow":
+        mode = "bicubic"
+        x = jnp.transpose(x, (0, 2, 3, 1))
+        return jnp.transpose(jax.image.resize(x, size, method=mode, antialias=False),
+                             (0, 3, 1, 2))
     size = [x.shape[0], *size, x.shape[1]]
     x = jnp.transpose(x, (0, *range(2, dims + 2), 1))
     return jnp.transpose(

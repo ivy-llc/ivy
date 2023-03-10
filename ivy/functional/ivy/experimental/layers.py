@@ -1083,6 +1083,10 @@ def _tf_area_interpolate(x, size, dims):
 def _triangle_kernel(x):
     return ivy.maximum(0, 1 - ivy.abs(x))
 
+def _cubic_kernel(x):
+  out = ((1.5 * x - 2.5) * x) * x + 1.
+  out = ivy.where(x >= 1., ((-0.5 * x + 2.5) * x - 4.) * x + 2., out)
+  return ivy.where(x >= 2., 0.0, out)
 
 def _lanczos_kernel(radius, x):
     y = radius * ivy.sin(ivy.pi * x) * ivy.sin(ivy.pi * x / radius)
@@ -1136,7 +1140,7 @@ def interpolate(
             "area",
             "nearest_exact",
             "tf_area",
-            "bicubic",
+            "bicubic_tensorflow",
             "mitchellcubic",
             "lanczos3",
             "lanczos5",
@@ -1224,7 +1228,7 @@ def interpolate(
     spatial_dims = [2 + i for i in range(dims)]
     input_shape = ivy.shape(x)
     scale = [ivy.divide(size[i], input_shape[spatial_dims[i]]) for i in range(dims)]
-    if mode in ["linear", "bilinear", "trilinear", "lanczos3", "lanczos5"]:
+    if mode in ["linear", "bilinear", "bicubic_tensorflow", "trilinear", "lanczos3", "lanczos5"]:
         kernel_func = _triangle_kernel
         if mode == "linear" or dims == 1:
             equation = "ijk,km->ijm"
@@ -1232,6 +1236,9 @@ def interpolate(
             equation = "ijkl,km,ln->ijmn"
         elif mode == "trilinear" or dims == 3:
             equation = "ijklm,kn,lo,mp->ijnop"
+
+        if mode == "bicubic_tensorflow":
+            kernel_func = lambda inputs: _cubic_kernel(inputs)
 
         if mode == "lanczos3":
             kernel_func = lambda inputs: _lanczos_kernel(3, inputs)
