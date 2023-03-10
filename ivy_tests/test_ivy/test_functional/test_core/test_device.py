@@ -9,9 +9,14 @@ import shutil
 import sys
 
 import numpy as np
-import pynvml
 import psutil
 from hypothesis import strategies as st, assume
+
+try:
+    import pynvml
+except ImportError:
+    # nvidia-ml-py (pynvml) is not installed in CPU Dockerfile.
+    pass
 
 # local
 import ivy
