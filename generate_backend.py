@@ -204,7 +204,20 @@ if __name__ == "__main__":
     pprint.pprint(backend, sort_dicts=False)
     print("\n:: Config\n")
     pprint.pprint(config_natives, sort_dicts=False)
-    pprint.pprint(config_valids, sort_dicts=False)
-    pprint.pprint(config_flags, sort_dicts=False)
 
-    print("\n:: Procced with generation? [Y/n]\n")
+    # Print valids
+    for key in config_valids.keys():
+        if key.startswith("in"):
+            continue
+        valid_items = config_valids[key]
+        invalid_items = config_valids["in" + key]
+        print("\n:: " + key.partition("_")[-1])
+        print(Fore.GREEN + "valid > " + valid_items.__str__())
+        print(Fore.RED + "invalid > " + invalid_items.__str__())
+
+    # Print flags
+    for key, value in config_flags.items():
+        flag_color = Fore.GREEN if value else Fore.RED
+        print(f"\n:: {key}: {flag_color}{value}")
+
+    print(Style.BRIGHT + "\n:: Procced with generation? [Y/n]\n")
