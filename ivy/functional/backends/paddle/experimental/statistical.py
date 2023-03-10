@@ -28,6 +28,9 @@ def median(
      return paddle.median(x=input, axis=axis, keepdim=keepdims)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "float16", "complex64", "complex128")}}, backend_version
+)
 def nanmean(
     a: paddle.Tensor,
     /,
@@ -37,10 +40,12 @@ def nanmean(
     dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if out is None:
-        return (paddle.nanmean(x=a, axis=axis, keepdim=keepdims)).cast(dtype)
-    
-    out[:] = (paddle.nanmean(x=a, axis=axis, keepdim=keepdims)).cast(dtype)
+    if a.dtype not in [paddle.int64, paddle.float32, paddle.float64]:
+        if dtype is None:
+            dtype = a.dtype
+        a = a.cast('float32')
+        paddle.nanmean(x=a, axis=axis, keepdim=keepdims).cast(dtype)
+    return paddle.nanmean(x=a, axis=axis, keepdim=keepdims).cast(dtype)
 
 
 def quantile(
