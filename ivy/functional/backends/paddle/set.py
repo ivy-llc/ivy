@@ -15,25 +15,33 @@ from ivy.utils.exceptions import IvyNotImplementedException
                          "float16", "complex64", "complex128", "complex")},
     backend_version,
 )
-def unique_all(x: paddle.Tensor, /,) -> Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor, paddle.Tensor]:
-    # Flatten the tensor to 1D
-    flat_x = paddle.flatten(x)
-    sorted_x, indices = paddle.sort(flat_x)
-    unique_indices = paddle.concat([paddle.to_tensor([0]), paddle.nonzero(sorted_x[1:] != sorted_x[:-1])[:, 0] + 1,
-                                    paddle.to_tensor([len(sorted_x)])])
-    unique_x = paddle.gather(sorted_x, unique_indices[:-1])
-    counts = unique_indices[1:] - unique_indices[:-1]
-    inverse_indices = paddle.argsort(indices)
-    nan_indices = paddle.where(paddle.isnan(sorted_x))[0]
-    nan_count = len(nan_indices)
-    if nan_count > 0:
-        nan_values = paddle.full([nan_count], float('nan'), dtype=x.dtype)
-        unique_x = paddle.concat([unique_x, nan_values], axis=0)
-        nan_counts = paddle.to_tensor([paddle.count_nonzero(paddle.isnan(flat_x)).numpy()])
-        counts = paddle.concat([counts, nan_counts], axis=0)
+def unique_all(x: paddle.Tensor, /, ) -> Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor, paddle.Tensor]:
+    Results = namedtuple(
+        "Results",
+        ["values", "indices", "inverse_indices", "counts"],
+    )
 
-    Results = namedtuple("Results", ["values", "indices", "inverse_indices", "counts"])
-    return Results(unique_x, unique_indices[:-1], inverse_indices, counts)
+    values, indices, inverse_indices, counts = paddle.unique(
+        x, return_index=True, return_counts=True, return_inverse=True
+    )
+    nan_count = paddle.sum(paddle.isnan(x))
+
+    if (nan_count.item() > 0):
+        nan = paddle.to_tensor([float('nan')] * nan_count.item() , dtype=values.dtype)
+        values = paddle.concat((values, nan))
+        nan_idx = paddle.nonzero(paddle.isnan(x).astype(float).flatten()).flatten()
+        indices = paddle.concat((indices, nan_idx))
+        inverse_indices = paddle.put_along_axis(
+            arr=inverse_indices, indices=nan_idx, values=values.shape, axis=0)
+        counts = paddle.concat(
+            (counts, paddle.ones(shape=nan_count, dtype=counts.dtype)))
+        
+    return Results(
+        values.astype(x.dtype),
+        indices,
+        paddle.reshape(inverse_indices, x.shape),
+        counts,
+    )
 
 
 @with_unsupported_dtypes(
