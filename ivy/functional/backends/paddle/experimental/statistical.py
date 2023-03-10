@@ -4,10 +4,13 @@ import paddle
 from ivy.utils.exceptions import IvyNotImplementedException
 
 # local
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
 from . import backend_version
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("int8", "int16", "uint8", "uint16", "bfloat16", "float16", "complex64", "complex128", "bool")}}, backend_version
+)
 def median(
     input: paddle.Tensor,
     /,
@@ -16,9 +19,18 @@ def median(
     keepdims: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+     if input.ndim==0:
+        input = input.unsqueeze(0)
+        return paddle.median(x=input, axis=axis).squeeze()
+     elif input.ndim == 1:
+         return paddle.median(x=input) if keepdims else paddle.median(x=input).squeeze()
+        
+     return paddle.median(x=input, axis=axis, keepdim=keepdims)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "float16", "complex64", "complex128")}}, backend_version
+)
 def nanmean(
     a: paddle.Tensor,
     /,
@@ -28,7 +40,12 @@ def nanmean(
     dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if a.dtype not in [paddle.int64, paddle.float32, paddle.float64]:
+        if dtype is None:
+            dtype = a.dtype
+        a = a.cast('float32')
+        paddle.nanmean(x=a, axis=axis, keepdim=keepdims).cast(dtype)
+    return paddle.nanmean(x=a, axis=axis, keepdim=keepdims).cast(dtype)
 
 
 def quantile(
