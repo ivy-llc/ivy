@@ -491,7 +491,7 @@ def interpolate(
             "trilinear",
             "nearest",
             "area",
-            "nearest_exact",
+            "nearest-exact",
             "tf_area",
             "bicubic_tensorflow",
             "mitchellcubic",
@@ -507,7 +507,13 @@ def interpolate(
 ):
     dims = len(x.shape) - 2
     size = _get_size(scale_factor, size, dims, x.shape)
-    if align_corners or mode in ["area", "nearest", "tf_area", "mitchellcubic", "gaussian"]:
+    if align_corners or mode in [
+        "area",
+        "nearest",
+        "tf_area",
+        "mitchellcubic",
+        "gaussian",
+    ]:
         return ivy.functional.experimental.interpolate(
             x,
             size,
@@ -515,11 +521,13 @@ def interpolate(
             align_corners=align_corners,
             antialias=antialias,
         )
-    if mode=="bicubic_tensorflow":
-        mode = "bicubic"
-        x = jnp.transpose(x, (0, 2, 3, 1))
-        return jnp.transpose(jax.image.resize(x, size, method=mode, antialias=False),
-                             (0, 3, 1, 2))
+    mode = (
+        "nearest"
+        if mode == "nearest-exact"
+        else "bicubic"
+        if mode == "bicubic_tensorflow"
+        else mode
+    )
     size = [x.shape[0], *size, x.shape[1]]
     x = jnp.transpose(x, (0, *range(2, dims + 2), 1))
     return jnp.transpose(
