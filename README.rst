@@ -161,7 +161,7 @@ These functions can be used eagerly and lazily. If you pass the neccesary argume
     # lazy_graph is now torch code and runs efficiently
     ret = lazy_graph(x1)
 
-If you want to learn more, you can find more information in the `Ivy as a transpiler <https://lets-unify.ai/ivy/design/ivy_as_a_transpiler.html>`_ section of the docs!
+If you want to learn more, you can find more information in the `Ivy as a transpiler section of the docs!<https://lets-unify.ai/ivy/design/ivy_as_a_transpiler.html>`_
 
 When should I use Ivy as a transpiler?
 ######################################
