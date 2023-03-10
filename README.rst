@@ -461,8 +461,36 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 .. code-block:: python
 
     import ivy
+    import jax
+    import torch
 
-    # ToDo: Write JAX to torch model
+    # Get a pretrained haiku model
+    from deepmind_perceiver_io import key, perceiver_backbone
+
+    # Transpile it into a torch.nn.Module with the corresponding parameters
+    dummy_input = jax.random.uniform(key, shape=(1, 3, 224, 224))
+    params = perceiver_backbone.init(rng=key, images=dummy_input)
+    torch_preprocessor = ivy.transpile(
+        perceiver_backbone, to="torch", params_v=params, kwargs={"images": dummy_input}
+    )
+
+    # Build a classifier using the transpiled backbone
+    class PerceiverIOClassifier(torch.nn.Module):
+        def __init__(self, num_classes=20):
+            super(PerceiverIOClassifier, self).__init__()
+            self.backbone = torch_preprocessor
+            self.max_pool = torch.nn.MaxPool2d((512, 1))
+            self.flatten = torch.nn.Flatten()
+            self.fc = torch.nn.Linear(1024, num_classes)
+
+        def forward(self, x):
+            x = self.backbone(images=x)
+            x = self.flatten(self.max_pool(x))
+            return self.fc(x)
+
+    # Initialize a trainable, customizable, torch.nn.Module
+    classifier = PerceiverIOClassifier()
+    ret = classifier(torch.rand((1, 3, 224, 224)))
 
 .. raw:: html
 
