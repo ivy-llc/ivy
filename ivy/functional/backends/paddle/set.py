@@ -10,11 +10,38 @@ from . import backend_version
 from ivy.utils.exceptions import IvyNotImplementedException
 
 
-def unique_all(
-    x: paddle.Tensor,
-    /,
-) -> Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor, paddle.Tensor]:
-    raise IvyNotImplementedException()
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ("int8", "int16", "uint8", "uint16", "bfloat16",
+                         "float16", "complex64", "complex128", "complex")},
+    backend_version,
+)
+def unique_all(x: paddle.Tensor, /, ) -> Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor, paddle.Tensor]:
+    Results = namedtuple(
+        "Results",
+        ["values", "indices", "inverse_indices", "counts"],
+    )
+
+    values, indices, inverse_indices, counts = paddle.unique(
+        x, return_index=True, return_counts=True, return_inverse=True
+    )
+    nan_count = paddle.sum(paddle.isnan(x))
+
+    if (nan_count.item() > 0):
+        nan = paddle.to_tensor([float('nan')] * nan_count.item() , dtype=values.dtype)
+        values = paddle.concat((values, nan))
+        nan_idx = paddle.nonzero(paddle.isnan(x).astype(float).flatten()).flatten()
+        indices = paddle.concat((indices, nan_idx))
+        inverse_indices = paddle.put_along_axis(
+            arr=inverse_indices, indices=nan_idx, values=values.shape, axis=0)
+        counts = paddle.concat(
+            (counts, paddle.ones(shape=nan_count, dtype=counts.dtype)))
+        
+    return Results(
+        values.astype(x.dtype),
+        indices,
+        paddle.reshape(inverse_indices, x.shape),
+        counts,
+    )
 
 
 @with_unsupported_dtypes(
