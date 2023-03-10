@@ -264,7 +264,7 @@ def clip(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.clip(x, min=x_min, max=x_max)
 
 
 def unstack(
