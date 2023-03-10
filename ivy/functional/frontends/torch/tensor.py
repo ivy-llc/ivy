@@ -445,6 +445,9 @@ class Tensor:
     def split(self, split_size, dim=0):
         return torch_frontend.split(self, split_size, dim)
 
+    def tensor_split(self, indices_or_sections, dim=0):
+        return torch_frontend.tensor_split(self.ivy_array, indices_or_sections, dim)
+
     def vsplit(self, indices_or_sections=None, /, *, indices=None, sections=None):
         return torch_frontend.vsplit(
             self.ivy_array, indices_or_sections, indices=indices, sections=sections
@@ -730,6 +733,10 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def __mod__(self, other):
         return torch_frontend.remainder(self._ivy_array, other)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
+    def __pow__(self, exponent):
+        return torch_frontend.pow(self._ivy_array, exponent)
 
     def __long__(self, memory_format=None):
         cast_tensor = self.clone()

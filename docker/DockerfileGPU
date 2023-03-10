@@ -98,14 +98,14 @@ RUN apt-get install -y python-opengl
 # Ivy #
 # ----#
 
-# Make sure torch installed before torch-scatter (in optional.txt)
+# Make sure torch installed before torch-scatter (in optional_gpu.txt)
 RUN pip install --no-cache-dir torch==1.11.0+cu113 --extra-index-url https://download.pytorch.org/whl/cu113
 
 # Install Ivy Upstream
 RUN git clone --recurse-submodules https://github.com/unifyai/ivy --depth 1 && \
     cd ivy && \
     cat requirements/requirements.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
-    cat requirements/optional.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
+    cat requirements/optional_gpu.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
     python3 -m pip install --user -e . && \
     cd ivy_tests/test_array_api && \
     pip3 install --no-cache-dir -r requirements.txt
@@ -115,14 +115,14 @@ COPY requirements/requirements.txt .
 RUN pip3 install --no-cache-dir -r requirements.txt
 
 # Install local optional
-COPY requirements/optional.txt .
-RUN pip3 install --no-cache-dir -r optional.txt
+COPY requirements/optional_gpu.txt .
+RUN pip3 install --no-cache-dir -r optional_gpu.txt
 
-# Install jax cuda after optional.txt, otherwise cpu version will override
+# Install jax cuda after optional_gpu.txt, otherwise cpu version will override
 RUN pip install --no-cache-dir jaxlib==0.3.14+cuda11.cudnn82 -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
 
 COPY run_tests_CLI/test_dependencies.py .
-RUN python3 test_dependencies.py -fp requirements.txt,optional.txt && \
+RUN python3 test_dependencies.py -fp requirements.txt,optional_gpu.txt && \
     rm -rf requirements.txt && \
-    rm -rf optional.txt && \
+    rm -rf optional_gpu.txt && \
     rm -rf test_dependencies.py

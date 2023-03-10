@@ -8,7 +8,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 import ivy
 from ivy.functional.ivy.layers import _handle_padding
-from ivy.functional.ivy.experimental.layers import _padding_ceil_mode
+from ivy.functional.ivy.experimental.layers import _padding_ceil_mode, _get_size
 
 
 def _from_int_to_tuple(arg, dim):
@@ -410,26 +410,49 @@ def interpolate(
     /,
     *,
     mode: Union[
-        Literal["linear", "bilinear", "trilinear", "nearest", "area"]
+        Literal[
+            "linear",
+            "bilinear",
+            "trilinear",
+            "nearest",
+            "area",
+            "nearest_exact",
+            "tf_area",
+            "bicubic_tensorflow",
+            "mitchellcubic",
+            "lanczos3",
+            "lanczos5",
+            "gaussian",
+        ]
     ] = "linear",
+    scale_factor: Optional[Union[Sequence[int], int]] = None,
     align_corners: Optional[bool] = None,
     antialias: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
     dims = len(x.shape) - 2
+    size = _get_size(scale_factor, size, dims, x.shape)
     if align_corners or dims > 2 or mode in ["nearest", "area"]:
         return ivy.functional.experimental.interpolate(
-            x, size, mode=mode, align_corners=align_corners, antialias=antialias
+            x,
+            size,
+            mode=mode,
+            align_corners=align_corners,
+            antialias=antialias,
         )
-    size = (size,) * dims if isinstance(size, int) else size
     remove_dim = False
-    if mode in ["linear", "tf_area"]:
+    if mode in ["linear", "tf_area", "lanczos3", "lanczos5"]:
         if dims == 1:
             size = (1,) + tuple(size)
             x = tf.expand_dims(x, axis=-2)
             dims = 2
             remove_dim = True
-        mode = "bilinear" if mode == "linear" else "area"
+        mode = "bilinear" if mode == "linear" else "area" if mode == "tf_area" else mode
+    if mode=="bicubic_tensorflow":
+        mode = "bicubic"
+        x = tf.transpose(x, (0, 2, 3, 1))
+        return tf.transpose(tf.image.resize(x, size, method=mode, antialias=False),
+                            (0, 3, 1, 2))
     x = tf.transpose(x, (0, *range(2, dims + 2), 1))
     ret = tf.transpose(
         tf.cast(
