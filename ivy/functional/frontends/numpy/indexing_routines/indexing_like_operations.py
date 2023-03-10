@@ -26,14 +26,5 @@ def take_along_axis(arr, indices, axis):
     return ivy.take_along_axis(arr, indices, axis)
 
 @to_ivy_arrays_and_back
-def take(
-    a,
-    indices,
-    axis=None,
-    out=None,
-    mode=None,
-    unique_indices=False,
-    indices_are_sorted=False,
-    fill_value=None,
-):
-    return ivy.take(a, indices, axis, out=out, mode=mode, unique_indices=unique_indices, indices_are_sorted=indices_are_sorted, fill_value=fill_value)
+def take(arr, indices, axis,/, *, mode, unique_indices, indices_are_sorted,fill_value):
+    return ivy.take(arr, indices, axis, mode=mode, unique_indices=unique_indices, indices_are_sorted=indices_are_sorted, fill_value=fill_value)
