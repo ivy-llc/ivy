@@ -4,7 +4,7 @@ import paddle
 from ivy.utils.exceptions import IvyNotImplementedException
 
 # local
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
 from . import backend_version
 
 
@@ -68,15 +68,28 @@ def nanmedian(
     raise IvyNotImplementedException()
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("int8", "int16", "uint8", "uint16", "bfloat16", "float16", "complex64", "complex128", "bool")}}, backend_version
+)
 def unravel_index(
     indices: paddle.Tensor,
-    shape: paddle.Tensor,
+    shape: Tuple[int],
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if indices.ndim==0:
+        indices = indices.unsqueeze(0)
+        out_scalar = True
+    else:
+        out_scalar = False
     coord = []
+    indices = indices
     for dim in reversed(shape):
-        coord.append(indices % dim)
-        indices = indices // dim
+        coord.append((indices % dim).astype('int32'))
+        indices = paddle.floor(indices / dim)
 
     coord = paddle.stack(coord[::-1], axis=-1)
-
-    return coord
+    if out_scalar:
+        return (coord.squeeze(),)
+    return tuple(coord)
