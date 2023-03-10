@@ -3192,7 +3192,7 @@ def test_tensorflow_roll(
 # CumulativeLogsumexp
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.CumulativeLogsumexp",
-    dtype_values_axis=helpers.dtype_and_values(
+    dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     test_with_out=st.just(False),
@@ -3207,7 +3207,7 @@ def test_tensorflow_CumulativeLogsumexp(
     exclusive, 
     reverse,
 ):
-    input_dtypes, values = dtype_and_x
+    input_dtypes, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
@@ -3224,7 +3224,7 @@ def test_tensorflow_CumulativeLogsumexp(
 # Complex
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Complex",
-    dtype_values_axis=helpers.dtype_and_values(
+    dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     test_with_out=st.just(False),
@@ -3239,7 +3239,7 @@ def test_tensorflow_Complex(
     imag,
     Tout,
 ):
-    input_dtypes, values = dtype_and_x
+    input_dtypes, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
@@ -3255,7 +3255,7 @@ def test_tensorflow_Complex(
 # AccumulateNV2
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.AccumulateNV2",
-    dtype_values_axis=helpers.dtype_and_values(
+    dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     test_with_out=st.just(False),
@@ -3269,7 +3269,7 @@ def test_tensorflow_AccumulateNV2(
     inputs, 
     shape,
 ):
-    input_dtypes, values = dtype_and_x
+    input_dtypes, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
