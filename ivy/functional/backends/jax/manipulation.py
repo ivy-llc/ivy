@@ -262,3 +262,24 @@ def swapaxes(
     x: JaxArray, axis0: int, axis1: int, /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.swapaxes(x, axis0, axis1)
+
+
+def take(
+    arr: jnp.ndarray,
+    indices: jnp.ndarray,
+    axis: int,
+    /,
+    *,
+    mode : str,
+    fill_value : Union[bool, int],
+    unique_indices : bool = False,
+    indices_are_sorted : bool = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+
+    
+    if mode == 'raise':
+        if jnp.any(jnp.logical_or(indices >= arr.size)):
+            raise IndexError("Index out of bounds")
+
+    return jnp.take(arr, indices, axis, mode = mode, unique_indices=unique_indices, indices_are_sorted=indices_are_sorted)

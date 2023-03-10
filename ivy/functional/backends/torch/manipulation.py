@@ -324,3 +324,19 @@ def unstack(
     if keepdims:
         return [r.unsqueeze(axis) for r in ret]
     return ret
+
+
+def take(
+    arr: torch.Tensor,
+    indices: torch.Tensor,
+    axis: int,
+    /,
+    mode : str,
+    fill_value : Union[bool, int],
+    unique_indices : bool = False,
+    indices_are_sorted : bool = False,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+
+    return torch.take(arr, indices)
