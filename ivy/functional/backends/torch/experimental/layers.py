@@ -579,7 +579,7 @@ def interpolate(
     antialias: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
 ):
-    if mode in ["tf_area", "mitchellcubic", "lanczos3", "lanczos5", "gaussian"]:
+    if mode in ["tf_area", "bicubic_tensorflow", "mitchellcubic", "lanczos3", "lanczos5", "gaussian"]:
         return ivy.functional.experimental.interpolate(
             x, size, mode=mode, align_corners=align_corners, antialias=antialias, scale_factor=scale_factor
         )
