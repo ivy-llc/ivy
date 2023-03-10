@@ -43,6 +43,21 @@ def AddV2(*, x, y, name="AddV2"):
     return ivy.addv2(tf_frontend.to_tensor(x), tf_frontend.to_tensor(y))
 
 
+@with_unsupported_dtypes(
+    {
+        "2.10.0 and below": (
+            "float16"
+            "bool",
+            "double",
+            "string",
+            "qint16",
+            "quint16",
+            "resource",
+            "variant",
+        )
+    },
+    "tensorflow",
+)
 @to_ivy_arrays_and_back
 def ApproximateEqual(
     *,
