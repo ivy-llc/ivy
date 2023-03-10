@@ -1,5 +1,6 @@
 # global
 import sys
+from types import SimpleNamespace
 import numpy as np
 
 # local
@@ -152,3 +153,14 @@ from . import experimental
 from .experimental import *
 from . import control_flow_ops
 from .control_flow_ops import *
+
+
+# sub-backends
+try:
+    from . import sub_backends
+    from .sub_backends import *
+
+except ImportError:
+    sub_backends = SimpleNamespace()
+    available_sub_backends = []
+    sub_backend_attrs = []

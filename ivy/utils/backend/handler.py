@@ -14,6 +14,7 @@ from ivy.utils.backend import ast_helpers
 
 # local
 from ivy.func_wrapper import _wrap_function
+from ivy.utils.backend.sub_backend_handler import add_sub_backend_attributes
 
 backend_stack = []
 compiled_backends = {}
@@ -447,6 +448,9 @@ def set_backend(backend: str, dynamic: bool = False):
     backend_stack.append(backend)
     set_backend_to_specific_version(backend)
     _set_backend_as_ivy(ivy_original_dict, ivy, backend)
+    
+    add_sub_backend_attributes(ivy)
+
 
     if dynamic:
         convert_from_numpy_to_target_backend(variable_ids, numpy_objs)

@@ -1,5 +1,6 @@
 # global
 import sys
+from types import SimpleNamespace
 import torch as torch
 
 # local
@@ -146,4 +147,11 @@ from .control_flow_ops import *
 
 
 # sub-backends
-from . import sub_backends
+try:
+    from . import sub_backends
+    from .sub_backends import *
+
+except ImportError:
+    sub_backends = SimpleNamespace()
+    available_sub_backends = []
+    sub_backend_attrs = []
