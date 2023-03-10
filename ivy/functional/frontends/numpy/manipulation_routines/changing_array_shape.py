@@ -12,7 +12,19 @@ def reshape(x, /, newshape, order="C"):
 
 @to_ivy_arrays_and_back
 def resize(x, /, newshape, refcheck=True):
-    return ivy.resize(x, newshape=newshape, refcheck=refcheck)
+    x = ravel(x)
+
+    total_size = 1
+    for diff_size in newshape:
+        total_size *= diff_size
+    
+    if x.size == 0 or newshape.size ==0:
+        return ivy.zeros_like(x)   
+    
+    repetition = -(-total_size//x.size)
+    x = ivy.concat((x,) * repetition)[:total_size]
+    return ivy.reshape(x,newshape=newshape,order="C")
+    # return ivy.resize(x, newshape=newshape, refcheck=refcheck)
 
 
 @to_ivy_arrays_and_back
