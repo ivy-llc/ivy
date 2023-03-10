@@ -340,7 +340,7 @@ def cumsum(
         if paddle.exists(out):
             return paddle.inplace_update(out, res)
         return res
-    return torch.cumsum(x, dim=dim, dtype=dtype, out=out)
+    return paddle.cumsum(x, dim=dim, dtype=dtype, out=out)
 
 
 def einsum(
