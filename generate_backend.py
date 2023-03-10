@@ -180,6 +180,26 @@ if __name__ == "__main__":
     for key in config_valids:
         _get_user_input(_update_valid_config_value, key)
 
+    # Add uint dtypes
+    int_dtypes = set(ivy.all_int_dtypes).difference(ivy.all_uint_dtypes)
+    config_valids["valid_uint_dtypes"] = (
+        set(config_valids["valid_int_dtypes"]) - int_dtypes
+    )
+
+    # Add numeric dtypes and valid dtypes
+    config_valids["valid_numeric_dtypes"] = (
+        config_valids["valid_int_dtypes"]
+        + config_valids["valid_float_dtypes"]
+        + config_valids["valid_complex_dtypes"]
+    )
+    config_valids["valid_dtypes"] = config_valids["valid_numeric_dtypes"] + ["bool"]
+
+    # Create Invalid dict
+    for key, value in config_valids.copy().items():
+        all_items = ivy.__dict__[key]
+        invalid_items = list(set(all_items).difference(value))
+        config_valids["in" + key] = invalid_items
+
     print("\n:: Backend\n")
     pprint.pprint(backend, sort_dicts=False)
     print("\n:: Config\n")
