@@ -324,13 +324,14 @@ def cpercentile(N, percent, key=lambda x: x):
 # https://numpy.org/doc/stable/reference/generated/numpy.nanpercentile.html
 def nanpercentile(
     a,
+    /,
+    *,
     q,
     axis=None,
     out=None,
     overwrite_input=False,
     method="linear",
     keepdims=False,
-    *,
     interpolation=None,
 ):
     a = ivy.array(a)
