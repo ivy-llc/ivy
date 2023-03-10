@@ -4,7 +4,7 @@ import paddle
 from ivy.utils.exceptions import IvyNotImplementedException
 
 # local
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_supported_dtypes
 from . import backend_version
 
 
@@ -166,6 +166,19 @@ def _compute_quantile(x, q, axis=None, keepdim=False, ignore_nan=False, interpol
 
     return outputs
 
+@with_supported_dtypes(
+    {
+        "2.4.2 and above": (
+                            "bool",
+                            "float16",
+                            "float32",
+                            "float64",
+                            "int32",
+                            "int64",
+        )
+    },
+    backend_version,
+)
 def quantile(
     a: paddle.Tensor,
     q: Union[paddle.Tensor, float],
