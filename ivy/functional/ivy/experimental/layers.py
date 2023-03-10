@@ -1083,7 +1083,7 @@ def _tf_area_interpolate(x, size, dims):
 def _triangle_kernel(x):
     return ivy.maximum(0, 1 - ivy.abs(x))
 
-def _fill_keys_cubic_kernel(x):
+def _cubic_kernel(x):
   out = ((1.5 * x - 2.5) * x) * x + 1.
   out = ivy.where(x >= 1., ((-0.5 * x + 2.5) * x - 4.) * x + 2., out)
   return ivy.where(x >= 2., 0.0, out)
@@ -1238,7 +1238,7 @@ def interpolate(
             equation = "ijklm,kn,lo,mp->ijnop"
 
         if mode == "bicubic_tensorflow":
-            kernel_func = lambda inputs: _fill_keys_cubic_kernel(inputs)
+            kernel_func = lambda inputs: _cubic_kernel(inputs)
 
         if mode == "lanczos3":
             kernel_func = lambda inputs: _lanczos_kernel(3, inputs)
