@@ -165,7 +165,6 @@ def test_numpy_take(
         arr=x,
         indices=indices,
         axis=0,
-        out=None,
         mode='clip',
         fill_value = None,
         unique_indices = False,
