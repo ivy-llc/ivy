@@ -35,3 +35,11 @@ def unique(
         values.append(results.counts)
 
     return Results(*values)
+
+
+@to_ivy_arrays_and_back
+def append(arr, values, axis=None):
+    if axis is None:
+        return ivy.concat((ivy.flatten(arr), ivy.flatten(values)), axis=0)
+    else:
+        return ivy.concat((arr, values), axis=axis)
