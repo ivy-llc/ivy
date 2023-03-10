@@ -905,7 +905,7 @@ def test_take_along_axis(
     ),
     test_gradients=st.just(False),
 )
-def test_take_along_axis(
+def test_take(
     *,
     dtype_x_indices_axis,
     test_flags,
