@@ -270,4 +270,9 @@ def clip(
 def unstack(
     x: paddle.Tensor, /, *, axis: int = 0, keepdims: bool = False
 ) -> List[paddle.Tensor]:
-    raise IvyNotImplementedException()
+    if x.shape == ():
+        return [x]
+    ret = list(paddle.unbind(x, axis))
+    if keepdims:
+        return [r.unsqueeze(axis) for r in ret]
+    return ret
