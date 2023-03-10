@@ -1,11 +1,10 @@
 from typing import Optional, Union, Sequence, Tuple, NamedTuple, List
 from numbers import Number
 from .. import backend_version
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
 import paddle
 from ivy.utils.exceptions import IvyNotImplementedException
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
 
 
 @with_unsupported_dtypes(
@@ -95,13 +94,16 @@ def top_k(
     return topk_res(val, indices)
     
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("int8", "int16", "uint8", "uint16", "bfloat16", "float16")}}, backend_version
+)
 def fliplr(
     m: paddle.Tensor,
     /,
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.flip(m, axis=1)
 
 
 def i0(
