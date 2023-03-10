@@ -630,11 +630,11 @@ def CumulativeLogsumexp(x, axis, exclusive=False, reverse=False, name="Cumulativ
 
 
 @to_ivy_arrays_and_back
-def Complex(real, imag, Tout=tf.dtypes.complex64, name="Complex"):
+def Complex(real, imag, Tout=ivy.dtypes.complex64, name="Complex"):
     return ivy.Complex(real, imag, Tout=Tout)   
 
 
 @to_ivy_arrays_and_back
-def AccumulateNV2(inputs, shape=tf.TensorShape, name="AccumulateNV2"):
+def AccumulateNV2(inputs, shape=ivy.TensorShape, name="AccumulateNV2"):
     return ivy.AccumulateNV2(inputs, shape=shape) 
     
