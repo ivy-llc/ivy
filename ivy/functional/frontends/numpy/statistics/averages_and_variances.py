@@ -300,9 +300,6 @@ def _quantile_is_valid(q):
     return True
 
 
-import math
-
-
 def cpercentile(N, percent, key=lambda x: x):
     """
     Find the percentile   of a list of values.
@@ -315,8 +312,8 @@ def cpercentile(N, percent, key=lambda x: x):
     """
     N.sort()
     k = (len(N) - 1) * percent
-    f = math.floor(k)
-    c = math.ceil(k)
+    f = ivy.math.floor(k)
+    c = ivy.math.ceil(k)
     if f == c:
         return key(N[int(k)])
     d0 = key(N[int(f)]) * (c - k)
@@ -348,7 +345,7 @@ def nanpercentile(
 
             # eeen=0
             for i in wi:
-                if not ivy.is_nan(i):
+                if not ivy.isnan(i):
                     eee.append(i)
                     # eeen=eeen+1
         for i in q:
@@ -360,7 +357,7 @@ def nanpercentile(
         for i in a:
             rrr = []
             for t in i:
-                if not ivy.is_nan(t):
+                if not ivy.isnan(t):
                     rrr.append(t)
             na.append(rrr)
         for i in q:
@@ -376,7 +373,7 @@ def nanpercentile(
         for i in a:
             rrr = []
             for t in i:
-                if not ivy.is_nan(t):
+                if not ivy.isnan(t):
                     rrr.append(t)
             na.append(rrr)
         for i in q:
