@@ -3207,7 +3207,7 @@ def test_tensorflow_CumulativeLogsumexp(
     exclusive, 
     reverse,
 ):
-    input_dtypes, x = dtype_and_x
+    input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
@@ -3239,7 +3239,7 @@ def test_tensorflow_Complex(
     imag,
     Tout,
 ):
-    input_dtypes, x = dtype_and_x
+    input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
@@ -3269,7 +3269,7 @@ def test_tensorflow_AccumulateNV2(
     inputs, 
     shape,
 ):
-    input_dtypes, x = dtype_and_x
+    input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
