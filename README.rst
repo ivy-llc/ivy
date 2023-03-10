@@ -470,7 +470,7 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
     # Transpile it into a torch.nn.Module with the corresponding parameters
     dummy_input = jax.random.uniform(key, shape=(1, 3, 224, 224))
     params = perceiver_backbone.init(rng=key, images=dummy_input)
-    torch_preprocessor = ivy.transpile(
+    backbone = ivy.transpile(
         perceiver_backbone, to="torch", params_v=params, kwargs={"images": dummy_input}
     )
 
@@ -478,7 +478,7 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
     class PerceiverIOClassifier(torch.nn.Module):
         def __init__(self, num_classes=20):
             super(PerceiverIOClassifier, self).__init__()
-            self.backbone = torch_preprocessor
+            self.backbone = backbone
             self.max_pool = torch.nn.MaxPool2d((512, 1))
             self.flatten = torch.nn.Flatten()
             self.fc = torch.nn.Linear(1024, num_classes)
@@ -635,7 +635,7 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 
     # Transpile it into a keras.Model with the corresponding parameters
     noise = torch.randn(1, 3, 224, 224)
-    mlp_encoder = ivy.transpile(mlp_encoder, source="torch", to="tensorflow", args=(noise,))
+    mlp_encoder = ivy.transpile(mlp_encoder, to="tensorflow", args=(noise,))
 
     # Build a classifier using the transpiled encoder
     class Classifier(tf.keras.Model):
@@ -817,7 +817,7 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 
     # Transpile it into a hk.Module with the corresponding parameters
     noise = torch.randn(1, 3, 224, 224)
-    mlp_encoder = ivy.transpile(mlp_encoder, source="torch", to="jax", args=(noise,))
+    mlp_encoder = ivy.transpile(mlp_encoder, to="jax", args=(noise,))
 
     # Build a classifier using the transpiled encoder
     class Classifier(hk.Module):
