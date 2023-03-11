@@ -6,7 +6,7 @@ import gc
 import abc
 import math
 import psutil
-
+import warnings
 import types
 from typing import Type, Optional, Tuple
 
@@ -19,8 +19,11 @@ try:
     except pynvml.NVMLError:
         pass
 except ImportError:
+    warnings.warn(
+        "Unable to import pynvml, please install if you are using GPU with Ivy."
+    )
     # nvidia-ml-py (pynvml) is not installed in CPU Dockerfile.
-    pass
+
 from typing import Union, Callable, Iterable, Any
 
 # local
