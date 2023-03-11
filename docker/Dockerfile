@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:20.04
 WORKDIR /ivy
 ARG CLI
 
@@ -13,9 +13,9 @@ RUN if [ "$CLI" = "True" ]; then apt-get update \
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
-    apt-get install -y python3 python3-pip python3-tk && \
+    apt-get install -y python3.10 python3-pip python3-tk && \
     apt-get install -y libsm6 libxext6 libxrender-dev libgl1-mesa-glx && \
-    pip3 install PyOpenGL PyOpenGL_accelerate && \
+    apt-get install -y python-opengl && \
     apt-get install -y git && \
     apt-get install -y rsync && \
     apt-get install -y libusb-1.0-0 && \

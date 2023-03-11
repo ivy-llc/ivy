@@ -1,8 +1,8 @@
 # BASE CUDA IMAGE #
 # ----------------#
 
-ARG UBUNTU_VERSION=22.04
-ARG CUDA=11.7
+ARG UBUNTU_VERSION=20.04
+ARG CUDA=11.2
 FROM nvidia/cuda:${CUDA}.1-base-ubuntu${UBUNTU_VERSION} as base
 
 # For TensorFlow #
@@ -81,7 +81,7 @@ RUN ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/cuda/lib64/stubs/lib
 ENV LANG C.UTF-8
 
 RUN apt-get update && apt-get install -y \
-    python3 \
+    python3.10 \
     python3-pip
 RUN pip3 install --upgrade pip
 
@@ -93,7 +93,7 @@ RUN python3 -m pip --no-cache-dir install --upgrade \
 RUN ln -s $(which python3) /usr/local/bin/python
 
 RUN apt-get install -y git
-RUN pip3 install PyOpenGL PyOpenGL_accelerate
+RUN apt-get install -y python-opengl
 
 # Ivy #
 # ----#
