@@ -931,7 +931,7 @@ def test_hsplit(
     )
 
 
-# dstack
+# broadcast_shapes
 @handle_test(
     fn_tree="functional.ivy.experimental.broadcast_shapes",
     shapes=nph.mutually_broadcastable_shapes(
