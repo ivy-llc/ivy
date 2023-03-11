@@ -864,7 +864,7 @@ def test_atleast_3d(
         indices_same_dims=True,
         valid_bounds=False,
     ),
-    mode=st.sampled_from(['clip', 'fill', 'drop']),
+    mode=st.sampled_from(["clip", "fill", "drop"]),
     test_gradients=st.just(False),
 )
 def test_take_along_axis(
@@ -950,7 +950,9 @@ def test_broadcast_shapes(
     on_device,
     ground_truth_backend,
 ):
-    shapes, _ = shapes
+    shape, _ = shapes
+    shapes = {f"shape{i}": shape[i] for i in range(len(shape))}
+    test_flags.num_positional_args = len(shapes)
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=["int64"],
@@ -958,7 +960,7 @@ def test_broadcast_shapes(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        shapes=shapes,
+        **shapes,
     )
 
 
