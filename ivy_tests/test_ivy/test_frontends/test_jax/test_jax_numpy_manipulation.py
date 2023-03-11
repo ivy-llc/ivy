@@ -523,7 +523,8 @@ def test_jax_numpy_broadcast_arrays(
 @handle_frontend_test(
     fn_tree="jax.numpy.broadcast_shapes",
     shapes=nph.mutually_broadcastable_shapes(
-        num_shapes=4, min_dims=1, max_dims=5, min_side=1, max_side=5),
+        num_shapes=4, min_dims=1, max_dims=5, min_side=1, max_side=5
+    ),
     test_with_out=st.just(False),
 )
 def test_jax_numpy_broadcast_shapes(
@@ -537,7 +538,7 @@ def test_jax_numpy_broadcast_shapes(
     shape, _ = shapes
     shapes = {f"shape{i}": shape[i] for i in range(len(shape))}
     test_flags.num_positional_args = len(shapes)
-    helpers.test_frontend_function(
+    ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=["int64"],
         frontend=frontend,
         test_flags=test_flags,
@@ -546,6 +547,7 @@ def test_jax_numpy_broadcast_shapes(
         **shapes,
         test_values=False,
     )
+    assert ret == frontend_ret
 
 
 # broadcast_to
