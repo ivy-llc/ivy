@@ -187,3 +187,8 @@ def vsplit(ary, indices_or_sections):
 @to_ivy_arrays_and_back
 def hsplit(ary, indices_or_sections):
     return ivy.hsplit(ary, indices_or_sections)
+
+
+@to_ivy_arrays_and_back
+def roll(a, shift, axis=None):
+    return ivy.roll(a, shift, axis)
