@@ -138,7 +138,10 @@ def result_type(*arrays_and_dtypes: Union[torch.tensor, torch.dtype]) -> ivy.Dty
 # ------#
 
 
-def as_ivy_dtype(dtype_in: Union[torch.dtype, str, int, float, complex, bool], /) -> ivy.Dtype:
+def as_ivy_dtype(
+    dtype_in: Union[torch.dtype, str, int, float, complex, bool],
+    /,
+) -> ivy.Dtype:
     if dtype_in is int:
         return ivy.default_int_dtype()
     if dtype_in is float:

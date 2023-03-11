@@ -148,7 +148,10 @@ def result_type(*arrays_and_dtypes: Union[np.ndarray, np.dtype]) -> ivy.Dtype:
 # ------#
 
 
-def as_ivy_dtype(dtype_in: Union[np.dtype, str, bool, int, float], /) -> ivy.Dtype:
+def as_ivy_dtype(
+    dtype_in: Union[np.dtype, str, int, float, complex, bool],
+    /,
+) -> ivy.Dtype:
     if dtype_in is int:
         return ivy.default_int_dtype()
     if dtype_in is float:
@@ -183,6 +186,7 @@ def as_ivy_dtype(dtype_in: Union[np.dtype, str, bool, int, float], /) -> ivy.Dty
         raise ivy.utils.exceptions.IvyException(
             f"Cannot recognize {dtype_str} as a valid Dtype."
         )
+
 
 @with_unsupported_dtypes({"1.23.0 and below": ("bfloat16",)}, backend_version)
 def as_native_dtype(dtype_in: Union[np.dtype, str, bool, int, float], /) -> np.dtype:

@@ -175,7 +175,10 @@ def result_type(
 # ------#
 
 
-def as_ivy_dtype(dtype_in: Union[tf.DType, str, bool, int, float], /) -> ivy.Dtype:
+def as_ivy_dtype(
+    dtype_in: Union[tf.DType, str, int, float, complex, bool],
+    /,
+) -> ivy.Dtype:
     if dtype_in is int:
         return ivy.default_int_dtype()
     if dtype_in is float:
