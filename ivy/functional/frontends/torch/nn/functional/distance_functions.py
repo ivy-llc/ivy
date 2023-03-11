@@ -40,3 +40,8 @@ def pairwise_distance(x1, x2, *, p=2.0, eps=1e-06, keepdim=False):
         output_dim = x2_dim
 
     return ivy.vector_norm(x1 - x2 + eps, ord=p, axis=output_dim - 1, keepdims=keepdim)
+#Loaa
+def distance_loss(x1, x2):
+    cos_sim = cosine_similarity(x1, x2)
+    dist = pairwise_distance(x1, x2)
+    return cos_sim + dist
