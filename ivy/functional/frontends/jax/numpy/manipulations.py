@@ -101,6 +101,16 @@ def take(
 
 
 @to_ivy_arrays_and_back
+def broadcast_arrays(*args):
+    return ivy.broadcast_arrays(*args)
+
+
+@to_ivy_arrays_and_back
+def broadcast_shapes(*shapes):
+    return ivy.broadcast_shapes(*shapes)
+
+
+@to_ivy_arrays_and_back
 def broadcast_to(arr, shape):
     return ivy.broadcast_to(arr, shape)
 
