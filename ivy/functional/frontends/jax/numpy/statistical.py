@@ -329,6 +329,7 @@ def nanmin(
     return res
 
 
+@handle_jax_dtype
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def nanstd(
