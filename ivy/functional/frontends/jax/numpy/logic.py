@@ -194,7 +194,9 @@ def isreal(x, out=None):
 def fromfunction(function, shape, *, dtype=float, like=None, **kwargs):
     arr = ivy.zeros(shape)
     for idx, x in ivy.ndenumerate(arr):
-        # TODO: how to flatten idx to pass in function? 
-        arr[idx] = function(idx)
+        dtype_idx = list(map(dtype, idx))
+        arr[idx] = function(*dtype_idx)
     return arr
+
+
         
