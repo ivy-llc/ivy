@@ -7,6 +7,7 @@ import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
+from ivy_tests.test_ivy.test_functional.test_core.test_dtype import dtypes_shared
 from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa
     _get_split_locations,
 )
@@ -491,55 +492,66 @@ def test_jax_numpy_take(
 
 
 # broadcast_arrays
+@st.composite
+def broadcastable_arrays(draw, dtypes):
+    num_arrays = st.shared(helpers.ints(min_value=2, max_value=5), key="num_arrays")
+    shapes = draw(num_arrays.flatmap(helpers.mutually_broadcastable_shapes))
+    dtypes = draw(dtypes)
+    arrays = []
+    for c, (shape, dtype) in enumerate(zip(shapes, dtypes), 1):
+        x = draw(helpers.array_values(dtype=dtype, shape=shape), label=f"x{c}").tolist()
+        arrays.append(x)
+    return arrays
+
+
 @handle_frontend_test(
     fn_tree="jax.numpy.broadcast_arrays",
-    dtype_value=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=helpers.ints(min_value=1, max_value=10),
-    ),
+    arrays=broadcastable_arrays(dtypes_shared("num_arrays")),
+    input_dtypes=dtypes_shared("num_arrays"),
     test_with_out=st.just(False),
 )
 def test_jax_numpy_broadcast_arrays(
     *,
-    dtype_value,
+    arrays,
+    input_dtypes,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
-    input_dtype, value = dtype_value
+    kw = {}
+    for i, (array, dtype) in enumerate(zip(arrays, input_dtypes)):
+        kw["x{}".format(i)] = np.asarray(array, dtype=dtype)
+    test_flags.num_positional_args = len(kw)
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        arrays=value,
+        **kw,
     )
 
 
 # broadcast_shapes
 @handle_frontend_test(
     fn_tree="jax.numpy.broadcast_shapes",
-    dtype_value=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        shapes=helpers.get_shape(
-            num_shapes=4, min_dims=1, max_dims=5, min_side=1, max_side=5
-        ),
+    shapes=helpers.mutually_broadcastable_shapes(
+        num_shapes=4, min_dims=1, max_dims=5, min_side=1, max_side=5
     ),
     test_with_out=st.just(False),
 )
 def test_jax_numpy_broadcast_shapes(
     *,
-    dtype_value,
+    shapes,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
-    input_dtype, shapes = dtype_value
+    shapes, _ = shapes
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=["int64"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
