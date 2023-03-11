@@ -267,12 +267,16 @@ def clip(
     raise IvyNotImplementedException()
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ('int8', 'int16', 'uint8', "uint16", "bfloat16",
+                                 'float16', 'complex64', 'complex128', 'bool')}}, backend_version
+)
 def unstack(
     x: paddle.Tensor, /, *, axis: int = 0, keepdims: bool = False
 ) -> List[paddle.Tensor]:
-    if x.shape == ():
+    if x.ndim == 0:
         return [x]
-    ret = list(paddle.unbind(x, axis))
+    ret = paddle.unbind(x, axis)
     if keepdims:
         return [r.unsqueeze(axis) for r in ret]
     return ret
