@@ -315,26 +315,6 @@ def jax_histogram(data: np.ndarray,
                   ) -> tuple[np.ndarray, np.ndarray]:
     """
     Compute the histogram of a dataset using JAX.
-
-    Parameters
-    ----------
-    data : np.ndarray
-        The input data array.
-    input : {None, int, str, np.ndarray}, optional
-        This parameter controls the type of input data. If None (default), assumes that the input is already a 1D array. If an integer is given, assumes that the input is a 2D array with the specified number of columns. If a string is given, assumes that the input is a CSV file with the specified filename. If an array is given, assumes that it is a list of bins for the histogram.
-    name : str, optional
-        The name of the histogram. This parameter is ignored in this function.
-    weight : {bool, np.ndarray}, optional
-        Whether to weight the input data. If True (default), each data point is weighted by 1.0. If a 1D array of weights is given, each data point is weighted by the corresponding weight.
-    normed : bool, optional
-        Whether to normalize the histogram. If True, the histogram will be normalized such that the integral over all bins is 1.0.
-    step : {float, int}, optional
-        The width of each bin in the histogram. If None (default), the bin width is automatically computed based on the data range and the number of bins.
-    buckets : np.ndarray, optional
-        An array of bin edges for the histogram. If None (default), the bin edges are automatically computed based on the data range and the number of bins.
-    description : {str, np.ndarray}, optional
-        A description of the histogram or a list of bin labels.
-
     Returns
     -------
     hist : np.ndarray
