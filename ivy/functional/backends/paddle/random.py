@@ -1,4 +1,4 @@
-"""Collection of PyTorch random functions, wrapped to fit Ivy syntax and signature."""
+"""Collection of Paddle random functions, wrapped to fit Ivy syntax and signature."""
 
 # global
 import paddle
@@ -6,13 +6,27 @@ from typing import Optional, Union, Sequence
 
 # local
 import ivy
-from ivy.utils.exceptions import IvyNotImplementedException
-from . import backend_version
 from paddle.fluid.libpaddle import Place
+from ivy.utils.exceptions import IvyNotImplementedException
+from ivy.functional.backends.paddle.device import to_device
+from ivy.functional.ivy.random import (
+    _check_bounds_and_get_shape,
+    _randint_check_dtype_and_bound,
+)
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 # Extra #
 # ------#
 
 
+@with_unsupported_dtypes(
+    {
+        "2.4.2 and below": (
+            "int8"
+        )
+    },
+    backend_version,
+)
 def random_uniform(
     *,
     low: Union[float, paddle.Tensor] = 0.0,
@@ -23,7 +37,23 @@ def random_uniform(
     seed=None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if not dtype:
+        dtype = ivy.default_int_dtype()
+    dtype = ivy.as_native_dtype(dtype)
+    low = paddle.cast(low, "float32") if isinstance(low, paddle.Tensor) else low
+    high = paddle.cast(high, "float32") if isinstance(high, paddle.Tensor) else high
+    shape = _check_bounds_and_get_shape(low, high, shape)
+    # Set range and seed
+    range = high - low
+    if seed:
+        _ = paddle.seed(seed)
+    _retval = to_device(
+        paddle.cast(
+            paddle.uniform(shape or [1], min=0.0, max=1.0) * range + low,
+            dtype),
+        device
+    )
+    return _retval if shape else _retval.squeeze(axis=0)
 
 
 def random_normal(
@@ -54,6 +84,14 @@ def multinomial(
     raise IvyNotImplementedException()
 
 
+@with_unsupported_dtypes(
+    {
+        "2.4.2 and below": (
+            "int8",
+        )
+    },
+    backend_version,
+)
 def randint(
     low: Union[int, paddle.Tensor],
     high: Union[int, paddle.Tensor],
@@ -65,11 +103,28 @@ def randint(
     seed: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if not dtype:
+        dtype = ivy.default_int_dtype()
+    dtype = ivy.as_native_dtype(dtype)
+    _randint_check_dtype_and_bound(low, high, dtype)
+    low = paddle.cast(low, "float32") if isinstance(low, paddle.Tensor) else low
+    high = paddle.cast(high, "float32") if isinstance(high, paddle.Tensor) else high
+    shape = _check_bounds_and_get_shape(low, high, shape)
+    range = high - low
+    if seed:
+        _ = paddle.seed(seed)
+    _retval = to_device(
+        paddle.cast(
+            paddle.uniform(shape or [1], min=0.0, max=1.0) * range + low,
+            dtype),
+        device
+    )
+    return _retval if shape else _retval.squeeze(axis=0)
 
 
 def seed(*, seed_value: int = 0) -> None:
-	_=paddle.seed(seed_value)
+    _ = paddle.seed(seed_value)
+
 
 def shuffle(
     x: paddle.Tensor,
