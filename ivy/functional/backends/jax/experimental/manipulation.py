@@ -265,6 +265,7 @@ def take_along_axis(
     axis: int,
     /,
     *,
+    mode: str = "fill",
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if arr.ndim != indices.ndim and axis is not None:
@@ -272,8 +273,7 @@ def take_along_axis(
             "arr and indices must have the same number of dimensions;"
             + f" got {arr.ndim} vs {indices.ndim}"
         )
-
-    return jnp.take_along_axis(arr, indices, axis)
+    return jnp.take_along_axis(arr, indices, axis, mode=mode)
 
 
 def hsplit(

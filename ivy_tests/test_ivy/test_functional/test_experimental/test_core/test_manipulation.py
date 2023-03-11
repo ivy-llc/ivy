@@ -862,21 +862,23 @@ def test_atleast_3d(
         min_dim_size=1,
         max_dim_size=10,
         indices_same_dims=True,
+        valid_bounds=False,
     ),
+    mode=st.sampled_from(['clip', 'fill', 'drop']),
     test_gradients=st.just(False),
 )
 def test_take_along_axis(
     *,
     dtype_x_indices_axis,
+    mode,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     dtypes, x, indices, axis, _ = dtype_x_indices_axis
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
+        ground_truth_backend="jax",
         input_dtypes=dtypes,
         test_flags=test_flags,
         fw=backend_fw,
@@ -885,6 +887,7 @@ def test_take_along_axis(
         arr=x,
         indices=indices,
         axis=axis,
+        mode=mode,
     )
 
 
@@ -928,7 +931,7 @@ def test_hsplit(
     )
 
 
-# dstack
+# broadcast_shapes
 @handle_test(
     fn_tree="functional.ivy.experimental.broadcast_shapes",
     shapes=nph.mutually_broadcastable_shapes(
