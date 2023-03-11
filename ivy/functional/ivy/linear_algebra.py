@@ -2726,7 +2726,6 @@ def lu_factor(
     """
     return current_backend(A).lu_factor(A, pivot=pivot, out=out)
 
-
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -2736,33 +2735,43 @@ def norm(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    ord: Union[int, float, str] = 2,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    ord: Optional[Union[int, float, str]] = None,
     keepdims: bool = False,
-    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """Computes the norm of a tensor.
-
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """
     Parameters
     ----------
     x
-        Input tensor.
+        tensor of shape (*, m, n) where * is zero or more batch dimensions.
+
     ord
-        Order of the norm.
-    dim
-        Dimension along which to compute the norm. If None, the norm of the entire tensor is
-        computed.
+        Order of the norm. Supported values are 'fro', 'nuc', 'inf', -inf, 1, -1, 2, -2,
+        and any other positive integer. Default: 2.
+
+    axis
+        Axis or axes along which to compute the norm. If None, compute the norm over the
+        entire tensor. Default: None.
+
     keepdims
-        Whether to keep the dimensions of the input tensor.
+        If this is set to True, the axes which are normed over are left in the result as
+        dimensions with size one. With this option, the result will broadcast correctly
+        against the original x. Default: False.
+
     out
-        optional output array, for writing the result to.
+        tensor to write the output to. Ignored if None. Default: None.
 
     Returns
     -------
     ret
-        Norm of the tensor.
+        tensor of shape (*, m, n) where * is zero or more batch dimensions.
     """
-
-
-    return current_backend(x).norm(x, axis=axis, ord=ord, keepdims=keepdims, out=out, dtype=dtype)
+    if isinstance(axis, int):
+        return current_backend(x).vector_norm(x, ord=ord, axis=axis, keepdims=keepdims, out=out)
+    elif isinstance(axis, tuple):
+        return current_backend(x).matrix_norm(x, ord=ord, axis=axis, keepdims=keepdims, out=out)
+    elif axis is None and ord is not None:
+        return current_backend(x).vector_norm(x, ord=ord, axis=axis, keepdims=keepdims, out=out)
+    else:
+        raise ValueError("Invalid axis or ord value.")

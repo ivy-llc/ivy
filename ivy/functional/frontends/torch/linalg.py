@@ -195,13 +195,3 @@ def lu_factor(A, *, pivot=True, out=None):
 
 def matmul(input, other, *, out=None):
     return ivy.matmul(input, other, out=out)
-
-
-@to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16", "complex64", "complex128")}, "torch")
-def norm(input, ord=None, dim=None, keepdim=False, *, out=None, dtype=None):
-    if "complex" in ivy.as_ivy_dtype(input.dtype):
-        input = ivy.abs(input)
-    if dtype:
-        input = ivy.astype(input, dtype)
-    return ivy.norm(input, ord=ord, axis=dim, keepdims=keepdim, out=out)
