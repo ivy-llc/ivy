@@ -7,7 +7,7 @@ from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
-    from_zero_dim_arrays_to_scalar,
+    from_zero_dim_arrays_to_scalar
 )
 
 
