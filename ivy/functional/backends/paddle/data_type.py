@@ -197,19 +197,7 @@ def iinfo(type: Union[paddle.dtype, str, paddle.Tensor], /) -> Iinfo:
 
 
 def result_type(*arrays_and_dtypes: Union[paddle.Tensor, paddle.dtype]) -> ivy.Dtype:
-    input = []
-    for val in arrays_and_dtypes:
-        paddle_val = as_native_dtype(val)
-        if isinstance(paddle_val, paddle.dtype):
-            paddle_val = paddle.to_tensor(1, dtype=paddle_val)
-        input.append(paddle_val)
-    temp_dtype = paddle.add(input[0], input[1]).dtype
-    result = paddle.to_tensor(1, dtype=temp_dtype)
-
-    for i in range(2, len(input)):
-        temp_dtype = paddle.add(result, input[i]).dtype
-        result = paddle.to_tensor(1, dtype=temp_dtype)
-    return as_ivy_dtype(result.dtype)
+    return ivy.promote_types(arrays_and_dtypes[0].dtype,arrays_and_dtypes[1].dtype)
 
 
 # Extra #
