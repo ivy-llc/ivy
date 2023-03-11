@@ -55,13 +55,28 @@ def vstack(
     raise IvyNotImplementedException()
 
 
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ("uint16", "bfloat16")},
+    backend_version,
+)
 def hstack(
     arrays: Sequence[paddle.Tensor],
     /,
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    dtypes = set(map(lambda x: x.dtype, arrays))
+    if len(dtypes) == 1:
+        dtype = dtypes.pop()
+    elif len(dtypes) == 2:
+        dtype = ivy.promote_types(*dtypes)
+    else:
+        raise ValueError("Cannot promote more than 2 dtypes per stack.")
+
+    if arrays[0].dim() > 2:
+        return paddle.concat(arrays, axis=1).astype(dtype)
+    else:
+        return paddle.concat(arrays, axis=-1).astype(dtype)
 
 
 def rot90(

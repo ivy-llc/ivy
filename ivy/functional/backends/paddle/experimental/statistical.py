@@ -85,6 +85,24 @@ def nanmedian(
     raise IvyNotImplementedException()
 
 
+@with_unsupported_device_and_dtypes(
+    {
+        "2.4.2 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "uint8",
+                "uint16",
+                "bfloat16",
+                "float16",
+                "complex64",
+                "complex128",
+                "bool",
+            )
+        }
+    },
+    backend_version,
+)
 def unravel_index(
     indices: paddle.Tensor,
     shape: Tuple[int],
@@ -92,4 +110,12 @@ def unravel_index(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if indices.ndim == 0:
+        indices = indices.unsqueeze(0)
+    coord = []
+    indices = indices
+    for dim in reversed(shape):
+        coord.append((indices % dim).astype("int32"))
+        indices = paddle.floor(indices / dim)
+
+    return tuple(reversed(coord))
