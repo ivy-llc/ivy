@@ -1,10 +1,14 @@
 # local
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import (
-    to_ivy_arrays_and_back,
     handle_jax_dtype,
 )
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
+from ivy.functional.frontends.numpy.func_wrapper import (
+    to_ivy_arrays_and_back,
+    from_zero_dim_arrays_to_scalar,
+
+)
 
 
 @to_ivy_arrays_and_back
@@ -328,12 +332,3 @@ def nanmin(
 
 @handle_jax_dtype
 @to_ivy_arrays_and_back
-def nanmean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
-    axis = tuple(axis) if isinstance(axis, list) else axis
-    if dtype is None:
-        dtype = "float32" if ivy.is_int_dtype(a) else a.dtype
-    ret = ivy.nanmean(a, axis=axis, keepdims=keepdims, out=out)
-    if ivy.is_array(where):
-        where = ivy.array(where, dtype=ivy.bool)
-        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-    return ivy.astype(ret, ivy.as_ivy_dtype(dtype), copy=False)

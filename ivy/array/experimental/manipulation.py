@@ -721,7 +721,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         axis: int,
         /,
         *,
-        mode: str = 'fill',
+        mode: str = "fill",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """

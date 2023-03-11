@@ -167,7 +167,7 @@ def take_along_axis(
     axis: int,
     /,
     *,
-    mode: str = 'fill',
+    mode: str = "fill",
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if len(arr.shape) != len(indices.shape):
@@ -176,25 +176,24 @@ def take_along_axis(
             + f" got {len(arr.shape)} vs {len(indices.shape)}"
         )
     indices = tf.dtypes.cast(indices, tf.int32)
-    if mode not in ['clip', 'fill', 'drop']:
+    if mode not in ["clip", "fill", "drop"]:
         raise ValueError(
-            f"Invalid mode '{mode}'. Valid modes are 'clip', 'fill', 'drop'.")
+            f"Invalid mode '{mode}'. Valid modes are 'clip', 'fill', 'drop'."
+        )
     arr_shape = arr.shape
     if axis < 0:
         axis += len(arr.shape)
-    if mode == 'clip':
+    if mode == "clip":
         max_index = arr.shape[axis] - 1
         indices = tf.clip_by_value(indices, 0, max_index)
-    elif mode == 'fill' or mode == 'drop':
-        if 'float' in str(arr.dtype):
-            fill_value = tf.constant(float('nan'), dtype=arr.dtype)
-        elif 'uint' in str(arr.dtype):
+    elif mode == "fill" or mode == "drop":
+        if "float" in str(arr.dtype):
+            fill_value = tf.constant(float("nan"), dtype=arr.dtype)
+        elif "uint" in str(arr.dtype):
             fill_value = tf.constant(arr.dtype.max, dtype=arr.dtype)
         else:
             fill_value = tf.constant(-arr.dtype.max - 1, dtype=arr.dtype)
-        indices = tf.where(
-            (indices < 0) | (indices >= arr.shape[axis]), -1,
-            indices)
+        indices = tf.where((indices < 0) | (indices >= arr.shape[axis]), -1, indices)
         arr_shape = list(arr_shape)
         arr_shape[axis] = 1
         fill_arr = tf.fill(arr_shape, fill_value)
@@ -211,7 +210,7 @@ def hsplit(
 
 
 def broadcast_shapes(
-    shapes: Union[List[int], List[Tuple]],
+    *shapes: Union[List[int], List[Tuple]],
 ) -> Tuple[int, ...]:
     if len(shapes) > 1:
         desired_shape = tf.broadcast_dynamic_shape(shapes[0], shapes[1])
