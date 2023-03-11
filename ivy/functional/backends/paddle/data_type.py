@@ -5,7 +5,7 @@ import paddle
 import numpy as np
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
 from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
 from . import backend_version
 from ivy.utils.exceptions import IvyNotImplementedException
@@ -121,28 +121,30 @@ def astype(
     return x.cast(dtype)
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("int8", "int16", "uint8", "uint16",
-                         "bfloat16", "float16", "complex64", "complex128")},
-    backend_version,
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def broadcast_arrays(*arrays: paddle.Tensor) -> List[paddle.Tensor]:
-    new_arrays = []
-    for array in arrays:
-        if isinstance(array, paddle.Tensor):
-            if array.rank().item() == 0:
-                if array.dtype in [paddle.int16, paddle.float16]:
-                    array, array_dtype = array.astype('float32'), array.dtype
-                    new_arrays.append(array.unsqueeze(0).astype(array_dtype))
-                else:
-                    new_arrays.append(array.unsqueeze(0))
-            else:
-                new_arrays.append(array)
-        else:
-            new_arrays.append(paddle.to_tensor(array))
-    return list(paddle.broadcast_tensors(new_arrays))
+        
+    if len(arrays) > 1:
+        desired_shape = ivy.broadcast_shapes([arrays[0].shape, arrays[1].shape])
+        if len(arrays) > 2:
+            for i in range(2, len(arrays)):
+                desired_shape = ivy.broadcast_shapes(
+                    [desired_shape, arrays[i].shape]
+                )
+    else:
+        return [arrays[0]]
+    result = []
+    for tensor in arrays:
+        result.append(broadcast_to(tensor, desired_shape))
+
+    return result
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def broadcast_to(
     x: paddle.Tensor,
     /,
@@ -150,9 +152,25 @@ def broadcast_to(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    for i, dim in enumerate(shape):
+        if dim < 0:
+            shape[i] = x.shape[i]
+    if x.ndim == 0:
+        if len(shape) == 0:
+            return x
+        else:
+            x = ivy.expand_dims(x, 0)
     if x.ndim > len(shape):
-        return paddle.broadcast_to(x.reshape([-1]), shape)
-    return paddle.broadcast_to(x, shape)
+        x = x.reshape([-1])
+
+    if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16,]:
+        return paddle.broadcast_to(x.cast('float32'), shape).cast(x.dtype)
+    elif x.dtype in [paddle.complex64, paddle.complex128]:
+        x_real = paddle.broadcast_to(ivy.real(x).data, shape)
+        x_imag = paddle.broadcast_to(ivy.imag(x).data, shape)
+        return x_real + 1j * x_imag
+    else:
+        return paddle.broadcast_to(x, shape)
 
 
 @_handle_nestable_dtype_info
@@ -179,19 +197,7 @@ def iinfo(type: Union[paddle.dtype, str, paddle.Tensor], /) -> Iinfo:
 
 
 def result_type(*arrays_and_dtypes: Union[paddle.Tensor, paddle.dtype]) -> ivy.Dtype:
-    input = []
-    for val in arrays_and_dtypes:
-        paddle_val = as_native_dtype(val)
-        if isinstance(paddle_val, paddle.dtype):
-            paddle_val = paddle.to_tensor(1, dtype=paddle_val)
-        input.append(paddle_val)
-    temp_dtype = paddle.add(input[0], input[1]).dtype
-    result = paddle.to_tensor(1, dtype=temp_dtype)
-
-    for i in range(2, len(input)):
-        temp_dtype = paddle.add(result, input[i]).dtype
-        result = paddle.to_tensor(1, dtype=temp_dtype)
-    return as_ivy_dtype(result.dtype)
+    return ivy.promote_types(arrays_and_dtypes[0].dtype,arrays_and_dtypes[1].dtype)
 
 
 # Extra #
