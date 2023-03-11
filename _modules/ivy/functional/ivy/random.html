@@ -616,8 +616,8 @@
         <span class="n">ivy</span><span class="o">.</span><span class="n">get_backend</span><span class="p">(</span><span class="s2">&quot;jax&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">get_backend</span><span class="p">(</span><span class="s2">&quot;numpy&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">get_backend</span><span class="p">(</span><span class="s2">&quot;tensorflow&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">get_backend</span><span class="p">(</span><span class="s2">&quot;paddle&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span>
     <span class="p">)</span>
-
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">backend_stack</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">valid_types</span> <span class="o">+=</span> <span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,)</span>
     <span class="k">else</span><span class="p">:</span>
