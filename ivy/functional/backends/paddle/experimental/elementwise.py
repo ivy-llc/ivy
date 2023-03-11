@@ -31,19 +31,6 @@ def fmod(
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()
 
-def nextafter(
-    x1: paddle.Tensor,
-    x2: paddle.Tensor,
-    /,
-    where: Optional[bool] = True,
-    casting: Optional[str] = 'same_kind',
-    order: Optional[str] = 'K',
-    dtype: Optional[paddle.dtype] = None,
-    subok: Optional[bool] = True,
-    out: Optional[paddle.Tensor] = None
-) -> paddle.Tensor:
-    raise IvyNotImplementedException()
-
 def fmax(
     x1: paddle.Tensor,
     x2: paddle.Tensor,
@@ -274,10 +261,14 @@ def nextafter(
     x1: paddle.Tensor,
     x2: paddle.Tensor,
     /,
-    *,
-    out: Optional[paddle.Tensor] = None,
+    where: Optional[bool] = True,
+    casting: Optional[str] = 'same_kind',
+    order: Optional[str] = 'K',
+    dtype: Optional[paddle.dtype] = None,
+    subok: Optional[bool] = True,
+    out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.nextafter(x1, x2, where=where, casting=casting, order=order, dtype=dtype, subok=subok)
 
 
 def zeta(
