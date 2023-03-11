@@ -6,7 +6,7 @@ import ivy
 from ivy.container.base import ContainerBase
 
 
-class ContainerWithElementwise(ContainerBase):
+class _ContainerWithElementwise(ContainerBase):
     @staticmethod
     def static_abs(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
@@ -8747,9 +8747,9 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        x: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
-        dx: Optional[float] = 1.0,
-        axis: Optional[int] = -1,
+        x: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        dx: float = 1.0,
+        axis: int = -1,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -8805,9 +8805,9 @@ class ContainerWithElementwise(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        x: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
-        dx: Optional[float] = 1.0,
-        axis: Optional[int] = -1,
+        x: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        dx: float = 1.0,
+        axis: int = -1,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.trapz. This method simply

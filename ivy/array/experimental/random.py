@@ -6,8 +6,7 @@ from typing import Optional, Union
 import ivy
 
 
-class ArrayWithRandomExperimental(abc.ABC):
-    # dirichlet
+class _ArrayWithRandomExperimental(abc.ABC):
     def dirichlet(
         self: ivy.Array,
         /,
@@ -23,7 +22,7 @@ class ArrayWithRandomExperimental(abc.ABC):
 
         Parameters
         ----------
-        alpha
+        self
             Sequence of floats of length k
         size
             optional int or tuple of ints, Output shape. If the given shape is,

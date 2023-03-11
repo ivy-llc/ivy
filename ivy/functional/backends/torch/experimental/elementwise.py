@@ -456,3 +456,12 @@ def ldexp(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.ldexp(x1, x2, out=out)
+
+
+def frexp(
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[Tuple[torch.Tensor, torch.Tensor]] = None,
+) -> Tuple[torch.Tensor, torch.Tensor]:
+    return torch.frexp(x, out=out)

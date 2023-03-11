@@ -233,6 +233,7 @@ def boolean_mask(tensor, mask, axis=None, name=None):
         return ivy.get_item(tensor, mask)
 
 
+@to_ivy_arrays_and_back
 def pad(tensor, paddings, mode="CONSTANT", constant_values=0, name=None):
     paddings = paddings.to_list() if ivy.is_array(paddings) else paddings
     return ivy.pad(tensor, paddings, mode=mode.lower(), constant_values=constant_values)
@@ -343,3 +344,25 @@ def where(condition: ivy.array, x=None, y=None, name=None):
 
 def roll(input, shift, axis, name=None):
     return ivy.roll(input, shift, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def split(value, num_or_size_splits, axis=0, num=None, name=None):
+    return ivy.split(
+        value, num_or_size_splits=num_or_size_splits, axis=axis, with_remainder=False
+    )
+
+
+def repeat(
+    input,
+    repeats,
+    axis=None,
+    name=None,
+):
+    return ivy.repeat(input, repeats, axis=axis)
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@to_ivy_arrays_and_back
+def unstack(value: ivy.array, axis=0, num=None, name=None):
+    return ivy.unstack(value, axis=axis)

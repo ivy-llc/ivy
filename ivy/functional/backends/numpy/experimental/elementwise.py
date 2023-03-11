@@ -228,7 +228,7 @@ def isclose(
 ) -> np.ndarray:
     ret = np.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
     if np.isscalar(ret):
-        return np.array(ret, dtype=np.bool)
+        return np.array(ret, dtype="bool")
     return ret
 
 
@@ -432,7 +432,7 @@ def real(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 
 def conj(
-    x: Union[np.ndarray],
+    x: np.ndarray,
     /,
     *,
     out: Optional[np.ndarray] = None,
@@ -448,3 +448,15 @@ def ldexp(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.ldexp(x1, x2, out=out)
+
+
+def frexp(
+    x: np.ndarray,
+    /,
+    *,
+    out: Optional[Union[Tuple[np.ndarray, np.ndarray], Tuple[None, None]]] = (
+        None,
+        None,
+    ),
+) -> Tuple[np.ndarray, np.ndarray]:
+    return np.frexp(x, out=out)

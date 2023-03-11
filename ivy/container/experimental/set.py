@@ -1,5 +1,5 @@
 from ivy.container.base import ContainerBase
 
 
-class ContainerWithSetExperimental(ContainerBase):
+class _ContainerWithSetExperimental(ContainerBase):
     pass
