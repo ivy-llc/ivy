@@ -69,7 +69,22 @@ def nanmedian(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int8", "int16", "uint8", "uint16", "bfloat16", "float16", "complex64", "complex128", "bool")}}, backend_version
+    {
+        "2.4.2 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "uint8",
+                "uint16",
+                "bfloat16",
+                "float16",
+                "complex64",
+                "complex128",
+                "bool",
+            )
+        }
+    },
+    backend_version,
 )
 def unravel_index(
     indices: paddle.Tensor,
@@ -78,18 +93,12 @@ def unravel_index(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if indices.ndim==0:
+    if indices.ndim == 0:
         indices = indices.unsqueeze(0)
-        out_scalar = True
-    else:
-        out_scalar = False
     coord = []
     indices = indices
     for dim in reversed(shape):
-        coord.append((indices % dim).astype('int32'))
+        coord.append((indices % dim).astype("int32"))
         indices = paddle.floor(indices / dim)
 
-    coord = paddle.stack(coord[::-1], axis=-1)
-    if out_scalar:
-        return (coord.squeeze(),)
-    return tuple(coord)
+    return tuple(reversed(coord))
