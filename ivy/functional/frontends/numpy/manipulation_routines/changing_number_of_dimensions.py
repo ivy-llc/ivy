@@ -27,3 +27,11 @@ def atleast_1d(
     *arys,
 ):
     return ivy.atleast_1d(*arys)
+
+
+def atleast_2d(*arys):
+    return ivy.atleast_2d(*arys)
+
+
+def atleast_3d(*arys):
+    return ivy.atleast_3d(*arys)

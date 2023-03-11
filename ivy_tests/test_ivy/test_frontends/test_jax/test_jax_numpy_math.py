@@ -119,6 +119,46 @@ def test_jax_numpy_diff(
     )
 
 
+# ediff1d
+@handle_frontend_test(
+    fn_tree="jax.numpy.ediff1d",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=1
+    ),
+    to_end=helpers.ints(
+        min_value=-1,
+        max_value=10,
+    ),
+    to_begin=helpers.ints(
+        min_value=-1,
+        max_value=10,
+    ),
+)
+def test_jax_numpy_ediff1d(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    to_end,
+    to_begin,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_flags=test_flags,
+        ary=x[0],
+        to_end=to_end,
+        to_begin=to_begin,
+    )
+
+
 # arctan
 @handle_frontend_test(
     fn_tree="jax.numpy.arctan",
@@ -2389,3 +2429,33 @@ def test_jax_numpy_conj(
         on_device=on_device,
         x=x[0],
     )
+
+
+# subtract
+@handle_frontend_test(
+    fn_tree="jax.numpy.subtract",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_subtract(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=x[0],
+        x2=x[0],
+    )
+

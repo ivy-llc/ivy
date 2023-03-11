@@ -651,9 +651,11 @@ def frexp(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    out: Optional[Union[Tuple[tf.Tensor, tf.Tensor], Tuple[tf.Variable, tf.Variable]]] = None,
+    out: Optional[
+        Union[Tuple[tf.Tensor, tf.Tensor], Tuple[tf.Variable, tf.Variable]]
+    ] = None,
 ) -> Union[Tuple[tf.Tensor, tf.Tensor], Tuple[tf.Variable, tf.Variable]]:
-    e = tf.math.floor(tf.math.log(tf.math.abs(x)) / tf.cast(tf.math.log(2.), x.dtype))
+    e = tf.math.floor(tf.math.log(tf.math.abs(x)) / tf.cast(tf.math.log(2.0), x.dtype))
     e = tf.cast(e, x.dtype)
     while tf.reduce_any(tf.abs(x / tf.math.pow(2, e)) >= 1):
         e += tf.cast(tf.abs(x / tf.math.pow(2, e)) >= 1, e.dtype)
