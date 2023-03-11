@@ -6,6 +6,8 @@ from ivy.functional.frontends.jax.func_wrapper import (
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
+    from_zero_dim_arrays_to_scalar,
+
 )
 
 
@@ -326,3 +328,22 @@ def nanmin(
     if where_mask is not None and ivy.any(where_mask):
         res = ivy.where(ivy.logical_not(where_mask), res, ivy.nan, out=out)
     return res
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def nanstd(
+    a, /, *, axis=None, dtype=None, out=None, ddof=0, keepdims=False, where=True
+):
+    a = ivy.nan_to_num(a)
+    axis = tuple(axis) if isinstance(axis, list) else axis
+
+    if dtype:
+        a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
+
+    ret = ivy.std(a, axis=axis, correction=ddof, keepdims=keepdims, out=out)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+
+    return ret
