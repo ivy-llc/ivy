@@ -1,6 +1,7 @@
 # global
 from hypothesis import strategies as st, assume
 import numpy as np
+import hypothesis.extra.numpy as nph
 
 # local
 import ivy
@@ -496,6 +497,7 @@ def test_jax_numpy_take(
     dtype_value=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=helpers.ints(min_value=1, max_value=10),
+        shared_dtype=True,
     ),
     test_with_out=st.just(False),
 )
@@ -508,44 +510,49 @@ def test_jax_numpy_broadcast_arrays(
     test_flags,
 ):
     input_dtype, value = dtype_value
+    arrys = {}
+    for i, v in enumerate(value):
+        arrys[f"array{i}"] = v
+    test_flags.num_positional_args = len(arrys)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        arrays=value,
+        **arrys,
     )
 
 
 # broadcast_shapes
 @handle_frontend_test(
     fn_tree="jax.numpy.broadcast_shapes",
-    dtype_value=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        shapes=helpers.get_shape(
-            num_shapes=4, min_dims=1, max_dims=5, min_side=1, max_side=5
-        ),
+    shapes=nph.mutually_broadcastable_shapes(
+        num_shapes=4, min_dims=1, max_dims=5, min_side=1, max_side=5
     ),
     test_with_out=st.just(False),
 )
 def test_jax_numpy_broadcast_shapes(
     *,
-    dtype_value,
+    shapes,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
-    input_dtype, shapes = dtype_value
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+    shape, _ = shapes
+    shapes = {f"shape{i}": shape[i] for i in range(len(shape))}
+    test_flags.num_positional_args = len(shapes)
+    ret, frontend_ret = helpers.test_frontend_function(
+        input_dtypes=["int64"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        shapes=shapes,
+        **shapes,
+        test_values=False,
     )
+    assert ret == frontend_ret
 
 
 # broadcast_to
