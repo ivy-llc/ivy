@@ -4,7 +4,7 @@ import paddle
 from ivy.utils.exceptions import IvyNotImplementedException
 
 # local
-from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_supported_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
 from . import backend_version
 
 
@@ -52,7 +52,7 @@ def _compute_quantile(x, q, axis=None, keepdim=False, ignore_nan=False, interpol
     # Validate x
     if not isinstance(x, paddle.Tensor):
         raise TypeError("input x should be a Tensor.")
-
+    ret_dtype = x.dtype
     # Validate q
     if isinstance(q, (int, float)):
         q = [q]
@@ -127,7 +127,8 @@ def _compute_quantile(x, q, axis=None, keepdim=False, ignore_nan=False, interpol
 
     for index in indices:
         if interpolation not in ['linear', 'lower', 'higher', 'midpoint', 'nearest']:
-            raise ValueError("interpolation must be 'linear', 'lower', 'higher', 'midpoint', or 'nearest'")
+            raise ValueError(
+                "interpolation must be 'linear', 'lower', 'higher', 'midpoint', or 'nearest'")
         if interpolation == 'lower':
             index = paddle.floor(index)
         elif interpolation == 'higher':
@@ -164,20 +165,12 @@ def _compute_quantile(x, q, axis=None, keepdim=False, ignore_nan=False, interpol
     else:
         outputs = outputs[0]
 
-    return outputs
+    return outputs.astype(ret_dtype)
 
-@with_supported_dtypes(
-    {
-        "2.4.2 and above": (
-                            "bool",
-                            "float16",
-                            "float32",
-                            "float64",
-                            "int32",
-                            "int64",
-        )
-    },
-    backend_version,
+
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("int8", "int16", "uint8", "uint16",
+                                 "bfloat16", "float16", "complex64", "complex128")}}, backend_version
 )
 def quantile(
     a: paddle.Tensor,
