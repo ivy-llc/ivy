@@ -1,7 +1,7 @@
 # BASE CUDA IMAGE #
 # ----------------#
 
-ARG UBUNTU_VERSION=20.04
+ARG UBUNTU_VERSION=22.04
 ARG CUDA=11.2
 FROM nvidia/cuda:${CUDA}.1-base-ubuntu${UBUNTU_VERSION} as base
 
@@ -93,7 +93,7 @@ RUN python3 -m pip --no-cache-dir install --upgrade \
 RUN ln -s $(which python3) /usr/local/bin/python
 
 RUN apt-get install -y git
-RUN apt-get install -y python-opengl
+RUN pip3 install PyOpenGL PyOpenGL_accelerate
 
 # Ivy #
 # ----#
