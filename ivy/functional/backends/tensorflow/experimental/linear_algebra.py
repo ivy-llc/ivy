@@ -137,9 +137,9 @@ def adjoint(
     backend_version,
 )
 def multi_dot(
-    x: Sequence[Union[tf.Tensor, tf.Variable]], 
-    /, 
-    *, 
+    x: Sequence[Union[tf.Tensor, tf.Variable]],
+    /,
+    *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> tf.Tensor:
     # This implementation simply chains tf.tensordot multiple times
