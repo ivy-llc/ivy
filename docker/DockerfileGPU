@@ -2,7 +2,7 @@
 # ----------------#
 
 ARG UBUNTU_VERSION=22.04
-ARG CUDA=11.2
+ARG CUDA=11.7
 FROM nvidia/cuda:${CUDA}.1-base-ubuntu${UBUNTU_VERSION} as base
 
 # For TensorFlow #
