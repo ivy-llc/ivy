@@ -138,11 +138,7 @@ def result_type(*arrays_and_dtypes: Union[torch.tensor, torch.dtype]) -> ivy.Dty
 # ------#
 
 
-def as_ivy_dtype(
-    dtype_in: Union[torch.dtype, str, bool, int, float, complex], 
-    /, 
-    specific_dtype=False,
-) -> ivy.Dtype:
+def as_ivy_dtype(dtype_in: Union[torch.dtype, str, int, float, complex, bool], /) -> ivy.Dtype:
     if dtype_in is int:
         return ivy.default_int_dtype()
     if dtype_in is float:
@@ -151,11 +147,9 @@ def as_ivy_dtype(
         return ivy.default_complex_dtype()
     if dtype_in is bool:
         return ivy.Dtype("bool")
-    
+
     if isinstance(dtype_in, str):
         if dtype_in in native_dtype_dict:
-            if not specific_dtype:
-                return ivy.Dtype(dtype_in)
             dtype_str = dtype_in
         else:
             raise ivy.utils.exceptions.IvyException(
@@ -164,24 +158,21 @@ def as_ivy_dtype(
             )
     else:
         dtype_str = ivy_dtype_dict[dtype_in]
-    
-    if specific_dtype:
-        if "uint" in dtype_str:
-            return ivy.UintDtype(dtype_str)
-        elif "int" in dtype_str:
-            return ivy.IntDtype(dtype_str)
-        elif "float" in dtype_str:
-            return ivy.FloatDtype(dtype_str)
-        elif "complex" in dtype_str:
-            return ivy.ComplexDtype(dtype_str)
-        elif "bool" in dtype_str:
-            return ivy.Dtype("bool")
-        else:
-            raise ivy.utils.exceptions.IvyException(
-                f"Cannot recognize {dtype_str} as a valid Dtype."
-            )
 
-    return ivy.Dtype(dtype_str)
+    if "uint" in dtype_str:
+        return ivy.UintDtype(dtype_str)
+    elif "int" in dtype_str:
+        return ivy.IntDtype(dtype_str)
+    elif "float" in dtype_str:
+        return ivy.FloatDtype(dtype_str)
+    elif "complex" in dtype_str:
+        return ivy.ComplexDtype(dtype_str)
+    elif "bool" in dtype_str:
+        return ivy.Dtype("bool")
+    else:
+        raise ivy.utils.exceptions.IvyException(
+            f"Cannot recognize {dtype_str} as a valid Dtype."
+        )
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("uint16",)}, backend_version)
