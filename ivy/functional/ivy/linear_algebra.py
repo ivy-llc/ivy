@@ -2726,6 +2726,7 @@ def lu_factor(
     """
     return current_backend(A).lu_factor(A, pivot=pivot, out=out)
 
+
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -2768,10 +2769,13 @@ def norm(
         tensor of shape (*, m, n) where * is zero or more batch dimensions.
     """
     if isinstance(axis, int):
-        return current_backend(x).vector_norm(x, ord=ord, axis=axis, keepdims=keepdims, out=out)
+        return current_backend(x).vector_norm(
+            x, ord=ord, axis=axis, keepdims=keepdims, out=out)
     elif isinstance(axis, tuple):
-        return current_backend(x).matrix_norm(x, ord=ord, axis=axis, keepdims=keepdims, out=out)
+        return current_backend(x).matrix_norm(
+            x, ord=ord, axis=axis, keepdims=keepdims, out=out)
     elif axis is None and ord is not None:
-        return current_backend(x).vector_norm(x, ord=ord, axis=axis, keepdims=keepdims, out=out)
+        return current_backend(x).vector_norm(
+            x, ord=ord, axis=axis, keepdims=keepdims, out=out)
     else:
         raise ValueError("Invalid axis or ord value.")
