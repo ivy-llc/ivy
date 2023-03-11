@@ -519,6 +519,13 @@ def interpolate(
             align_corners=align_corners,
             antialias=antialias,
         )
+    mode = (
+        "nearest"
+        if mode == "nearest-exact"
+        else "bicubic"
+        if mode == "bicubic_tensorflow"
+        else mode
+    )
     size = [x.shape[0], *size, x.shape[1]]
     x = jnp.transpose(x, (0, *range(2, dims + 2), 1))
     return jnp.transpose(
