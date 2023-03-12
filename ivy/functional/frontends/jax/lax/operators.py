@@ -526,3 +526,7 @@ def atanh(x):
 @to_ivy_arrays_and_back
 def select(pred, on_true, on_false):
     return ivy.where(pred, on_true, on_false)
+
+@to_ivy_arrays_and_back
+def erf(x):
+    return erf(x)
