@@ -103,7 +103,6 @@ def get_dtypes(
     ret
         dtype string
     """
-
     if prune_function:
         retrieval_fn = _get_fn_dtypes
         if test_globals.CURRENT_RUNNING_TEST is not test_globals._Notsetval:

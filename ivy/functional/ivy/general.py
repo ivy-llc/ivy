@@ -2273,6 +2273,7 @@ def num_arrays_in_memory() -> int:
     -------
     ret
         Number of all arrays which are alive.
+
     Examples
     --------
     >>> ivy.num_arrays_in_memory()
@@ -2900,7 +2901,6 @@ def scatter_flat(
 
     Examples
     --------
-
     With :class:`ivy.Array` input:
     >>> indices = ivy.array([0, 0, 1, 0, 2, 2, 3, 3])
     >>> updates = ivy.array([5, 1, 7, 2, 3, 2, 1, 3])
