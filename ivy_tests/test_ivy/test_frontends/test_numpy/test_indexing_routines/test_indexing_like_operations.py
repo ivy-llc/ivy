@@ -136,14 +136,15 @@ def test_numpy_take_along_axis(
 
 @handle_frontend_test(
     fn_tree="numpy.tril_indices",
-    n_rows=helpers.ints(min_value=1, max_value=10),
-    n_cols=helpers.ints(min_value=1, max_value=10),
+    n=helpers.ints(min_value=1, max_value=10),
+    m=helpers.ints(min_value=1, max_value=10),
     k=st.integers(min_value=-10, max_value=10),
+    test_with_out=st.just(False),
 )
 def test_tril_indices(
     *,
-    n_rows,
-    n_cols,
+    n,
+    m,
     k,
     test_flags,
     frontend,
@@ -156,7 +157,7 @@ def test_tril_indices(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        n_rows=n_rows,
-        n_cols=n_cols,
+        n=n,
         k=k,
+        m=m,
     )

@@ -27,5 +27,5 @@ def take_along_axis(arr, indices, axis):
 
 
 @to_ivy_arrays_and_back
-def tril_indices(n_rows, n_cols, k=0, /):
-    return ivy.tril_indices(n_rows, k, n_cols)
+def tril_indices(n, k=0, m=None):
+    return ivy.tril_indices(n, m, k)
