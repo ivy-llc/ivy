@@ -2459,6 +2459,7 @@ def test_jax_numpy_subtract(
         x2=x[0],
     )
 
+
 # around
 @handle_frontend_test(
     fn_tree="jax.numpy.around",
@@ -2466,7 +2467,7 @@ def test_jax_numpy_subtract(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_jax_numpy_add(
+def test_jax_numpy_around(
     *,
     dtype_and_x,
     on_device,
