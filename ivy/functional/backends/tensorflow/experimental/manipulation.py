@@ -210,7 +210,7 @@ def hsplit(
 
 
 def broadcast_shapes(
-    shapes: Union[List[int], List[Tuple]],
+    *shapes: Union[List[int], List[Tuple]],
 ) -> Tuple[int, ...]:
     if len(shapes) > 1:
         desired_shape = tf.broadcast_dynamic_shape(shapes[0], shapes[1])
