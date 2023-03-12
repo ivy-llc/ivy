@@ -771,3 +771,51 @@ def test_torch_vdot(
         input=vec1,
         other=vec2,
     )
+
+
+@handle_frontend_test(
+    fn_tree="torch.trapz",
+    dtype_and_a=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+        min_num_dims=1
+    ),
+    t=st.floats(),
+    f=st.integers()
+)
+def test_torch_trapz(
+        dtype_and_a,
+        on_device,
+        frontend,
+        *,
+        t,
+        f,
+        fn_tree,
+        test_flags,
+):
+    dtype, a = dtype_and_a
+    if f not in range(-a[0].ndim, a[0].ndim):
+        f = -1
+    if (a[1] is not None and t is not None) or (a[1] is not None and t is None):
+        helpers.test_frontend_function(
+            input_dtypes=dtype,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            y=a[0],
+            x=a[1],
+            dim=f,
+        )
+    elif a[1] is None and t is not None:
+        helpers.test_frontend_function(
+            input_dtypes=dtype,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            y=a[0],
+            dim=f,
+            dx=t
+        )
