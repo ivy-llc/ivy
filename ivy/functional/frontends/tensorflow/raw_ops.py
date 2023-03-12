@@ -50,7 +50,7 @@ def Angle(
     Tout=ivy.float32,
     name="Angle",
 ):
-    return ivy.astype(x=ivy.angle(z=input), dtype=Tout)
+    return ivy.astype(ivy.angle(input), Tout)
 
 
 @to_ivy_arrays_and_back

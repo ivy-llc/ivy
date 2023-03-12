@@ -72,11 +72,13 @@ def test_tensorflow_Acosh(  # NOQA
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("complex"),
     ),
+    Tout=st.sampled_from([ivy.float32]),
     test_with_out=st.just(False),
 )
 def test_tensorflow_Angle(  # NOQA
     *,
     dtype_and_xs,
+    Tout,
     frontend,
     test_flags,
     fn_tree,
@@ -90,10 +92,10 @@ def test_tensorflow_Angle(  # NOQA
         fn_tree=fn_tree,
         on_device=on_device,
         input=xs[0],
-        Tout=xs[1]
+        Tout=Tout,
     )
-    
-    
+
+
 # AddV2
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.AddV2",
@@ -121,7 +123,6 @@ def test_tensorflow_AddV2(  # NOQA
         x=x,
         y=y,
     )
-
 
 
 # Add
@@ -3170,6 +3171,7 @@ def test_tensorflow_LinSpace(
         num=num,
         on_device=on_device,
     )
+
 
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Roll",
