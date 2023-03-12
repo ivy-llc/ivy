@@ -1,10 +1,11 @@
 # local
+
 import ivy
+from ivy import with_unsupported_dtypes
 from ivy.functional.frontends.jax.func_wrapper import (
     handle_jax_dtype,
 )
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
-from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     from_zero_dim_arrays_to_scalar,
@@ -349,9 +350,8 @@ def nanstd(
     return ret
 
 
-@to_ivy_arrays_and_back
-@to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@handle_jax_dtype
+@with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "jax")
 def nanvar(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=True):
     is_nan = ivy.isnan(a)
     axis = tuple(axis) if isinstance(axis, list) else axis
