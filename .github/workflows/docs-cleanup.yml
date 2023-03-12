@@ -31,4 +31,4 @@ jobs:
           git tag
           echo "HASH"
           git describe --tags $(git rev-list --tags --max-count=1)
-          git describe --tags --abbrev=0
+          git describe --tags --abbrev=0 --always
