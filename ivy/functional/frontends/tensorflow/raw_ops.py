@@ -44,7 +44,8 @@ AddV2 = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add))
 @with_unsupported_dtypes(
     {
         "2.10.0 and below": (
-            "float16" "bool",
+            "float16",
+            "bool",
             "bfloat16",
         )
     },
