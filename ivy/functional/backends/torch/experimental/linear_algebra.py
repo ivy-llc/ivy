@@ -172,8 +172,7 @@ def solve_triangular(
     /,
     *,
     lower: bool = True,
-    adjoint: bool = False,
-    unit_diagonal: bool = False,
+    adjoint: bool = False,    unit_diagonal: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.linalg.solve_triangular(

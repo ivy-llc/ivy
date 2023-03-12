@@ -1,6 +1,7 @@
 import math
 from typing import Optional, Tuple, Sequence
 import jax.numpy as jnp
+import jax.scipy.linalg as jla
 from ivy.functional.backends.jax import JaxArray
 
 import ivy
@@ -149,6 +150,6 @@ def solve_triangular(
     unit_diagonal: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.linalg.solve_triangular(
+    return jla.solve_triangular(
         a, b, lower=lower, adjoint=adjoint, unit_diagonal=unit_diagonal
     )

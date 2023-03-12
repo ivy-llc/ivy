@@ -161,13 +161,7 @@ def solve_triangular(
     unit_diagonal: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.linalg.solve_triangular(
-        a,
-        b, 
-        lower=lower, 
-        adjoint=adjoint, 
-        unit_diagonal=unit_diagonal\
-        )
+    return np.linalg.solve(a, b, out=out)
 
 
 solve_triangular.support_native_out = True
