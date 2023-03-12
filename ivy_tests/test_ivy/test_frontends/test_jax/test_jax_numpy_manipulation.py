@@ -801,7 +801,10 @@ def _squeeze_helper(draw):
 @st.composite
 def _get_input_and_block(draw):
     shapes = draw(st.lists(
-        helpers.get_shape(min_num_dims=1, max_num_dims=5, min_dim_size=2, max_dim_size=10),
+        helpers.get_shape(min_num_dims=1,
+                          max_num_dims=5,
+                          min_dim_size=2,
+                          max_dim_size=10),
         min_size=2, max_size=10))
     x_dtypes, xs = zip(*[draw(helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
