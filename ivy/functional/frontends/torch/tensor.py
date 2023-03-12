@@ -723,6 +723,10 @@ class Tensor:
     def unbind(self, dim=0):
         return torch_frontend.unbind(self._ivy_array, dim=dim)
 
+    def bitwise_and_(self, other):
+        self.ivy_array = self.bitwise_and(other).ivy_array
+        return self
+
     # Special Methods #
     # -------------------#
 
