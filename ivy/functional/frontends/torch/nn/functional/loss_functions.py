@@ -473,3 +473,32 @@ def triplet_margin_loss(
 
     loss = reduction(loss).astype(anchor.dtype)
     return loss
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+def multilabel_soft_margin_loss(
+    input,
+    target,
+    weight=None,
+    size_average=None,
+    reduce=None,
+    reduction="mean",
+):
+    loss = -(
+        target * ivy.log(ivy.sigmoid(input))
+        + (1 - target) * ivy.log(1 - ivy.sigmoid(input))
+    )
+
+    if weight is not None:
+        loss = ivy.multiply(weight, loss)
+
+    class_dim = ivy.get_num_dims(input) - 1
+    C = ivy.shape(input)[class_dim]
+
+    loss = ivy.sum(loss, axis=class_dim) / C
+
+    reduction = _get_reduction(reduction, size_average, reduce)
+    ret = reduction(loss)
+
+    return ret
