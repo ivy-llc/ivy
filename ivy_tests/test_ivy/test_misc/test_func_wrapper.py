@@ -91,21 +91,6 @@ def test_integer_arrays_to_float(x, expected):
 
     assert ivy.array_equal(ivy.func_wrapper.integer_arrays_to_float(_fn1)(x), expected)
 
-def get_last_function_call(func):
-    """Analyze the abstract syntax tree of a function and return the name of the last function called"""
-
-    # Parse the source code of the function
-    source = inspect.getsource(func)
-    tree = ast.parse(source)
-
-    # Walk the abstract syntax tree to find the last function call
-    last_call = None
-
-    for node in ast.walk(tree):
-        if isinstance(node, ast.Call):
-            last_call = node.func.id
-
-    return last_call
 
 @pytest.mark.parametrize(
     ("x", "weight", "expected"),
