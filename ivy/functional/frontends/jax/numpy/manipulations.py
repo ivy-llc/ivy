@@ -132,6 +132,10 @@ def atleast_1d(*arys):
 def atleast_2d(*arys):
     return ivy.atleast_2d(*arys)
 
+@to_ivy_arrays_and_back
+def block(arrays):
+    return ivy.block(arrays)
+
 
 @to_ivy_arrays_and_back
 def squeeze(a, axis=None):
