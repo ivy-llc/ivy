@@ -748,6 +748,7 @@ def _get_input_and_block(draw):
     )) for shape in shapes])
     return x_dtypes, xs
 
+
 @handle_frontend_test(
     fn_tree="block",
     input_x_shape=_get_input_and_block(),
