@@ -30,7 +30,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
           source ./ivy/clone_mapping.sh master1
-          pip install pydriller pymongo
+          pip install pydriller pymongo pynvml
           cp Mapping/tests.pbz2 ivy/
           cd ivy
           python determine_tests.py extra
@@ -48,7 +48,7 @@ jobs:
           cd ivy
           mkdir .ivy
           touch .ivy/key.pem
-          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -79,7 +79,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
           source ./ivy/clone_mapping.sh master2
-          pip install pydriller pymongo
+          pip install pydriller pymongo pynvml
           cp Mapping/tests.pbz2 ivy/
           cd ivy
           python determine_tests.py 
@@ -97,7 +97,7 @@ jobs:
           cd ivy
           mkdir .ivy
           touch .ivy/key.pem
-          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -128,7 +128,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
           source ./ivy/clone_mapping.sh master3
-          pip install pydriller pymongo
+          pip install pydriller pymongo pynvml
           cp Mapping/tests.pbz2 ivy/
           cd ivy
           python determine_tests.py 
@@ -146,7 +146,7 @@ jobs:
           cd ivy
           mkdir .ivy
           touch .ivy/key.pem
-          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -178,7 +178,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
           source ./ivy/clone_mapping.sh master4
-          pip install pydriller pymongo
+          pip install pydriller pymongo pynvml
           cp Mapping/tests.pbz2 ivy/
           cd ivy
           python determine_tests.py 
@@ -196,7 +196,7 @@ jobs:
           cd ivy
           mkdir .ivy
           touch .ivy/key.pem
-          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -227,7 +227,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
           source ./ivy/clone_mapping.sh master5
-          pip install pydriller pymongo
+          pip install pydriller pymongo pynvml
           cp Mapping/tests.pbz2 ivy/
           cd ivy
           python determine_tests.py 
@@ -245,7 +245,7 @@ jobs:
           cd ivy
           mkdir .ivy
           touch .ivy/key.pem
-          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -276,7 +276,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
           source ./ivy/clone_mapping.sh master6
-          pip install pydriller pymongo
+          pip install pydriller pymongo pynvml
           cp Mapping/tests.pbz2 ivy/
           cd ivy
           python determine_tests.py 
@@ -294,7 +294,7 @@ jobs:
           cd ivy
           mkdir .ivy
           touch .ivy/key.pem
-          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -325,7 +325,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
           source ./ivy/clone_mapping.sh master7
-          pip install pydriller pymongo
+          pip install pydriller pymongo pynvml
           cp Mapping/tests.pbz2 ivy/
           cd ivy
           python determine_tests.py 
@@ -343,7 +343,7 @@ jobs:
           cd ivy
           mkdir .ivy
           touch .ivy/key.pem
-          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -374,7 +374,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
           source ./ivy/clone_mapping.sh master8
-          pip install pydriller pymongo
+          pip install pydriller pymongo pynvml
           cp Mapping/tests.pbz2 ivy/
           cd ivy
           python determine_tests.py 
@@ -392,7 +392,7 @@ jobs:
           cd ivy
           mkdir .ivy
           touch .ivy/key.pem
-          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -423,7 +423,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
           source ./ivy/clone_mapping.sh master9
-          pip install pydriller pymongo
+          pip install pydriller pymongo pynvml
           cp Mapping/tests.pbz2 ivy/
           cd ivy
           python determine_tests.py 
@@ -441,7 +441,7 @@ jobs:
           cd ivy
           mkdir .ivy
           touch .ivy/key.pem
-          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -472,7 +472,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
           source ./ivy/clone_mapping.sh master10
-          pip install pydriller pymongo
+          pip install pydriller pymongo pynvml
           cp Mapping/tests.pbz2 ivy/
           cd ivy
           python determine_tests.py 
@@ -490,7 +490,7 @@ jobs:
           cd ivy
           mkdir .ivy
           touch .ivy/key.pem
-          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -521,7 +521,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
           source ./ivy/clone_mapping.sh master11
-          pip install pydriller pymongo
+          pip install pydriller pymongo pynvml
           cp Mapping/tests.pbz2 ivy/
           cd ivy
           python determine_tests.py 
@@ -539,7 +539,7 @@ jobs:
           cd ivy
           mkdir .ivy
           touch .ivy/key.pem
-          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -570,7 +570,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
           source ./ivy/clone_mapping.sh master12
-          pip install pydriller pymongo
+          pip install pydriller pymongo pynvml
           cp Mapping/tests.pbz2 ivy/
           cd ivy
           python determine_tests.py 
@@ -588,7 +588,7 @@ jobs:
           cd ivy
           mkdir .ivy
           touch .ivy/key.pem
-          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -619,7 +619,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
           source ./ivy/clone_mapping.sh master13
-          pip install pydriller pymongo
+          pip install pydriller pymongo pynvml
           cp Mapping/tests.pbz2 ivy/
           cd ivy
           python determine_tests.py 
@@ -637,7 +637,7 @@ jobs:
           cd ivy
           mkdir .ivy
           touch .ivy/key.pem
-          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -668,7 +668,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
           source ./ivy/clone_mapping.sh master14
-          pip install pydriller pymongo
+          pip install pydriller pymongo pynvml
           cp Mapping/tests.pbz2 ivy/
           cd ivy
           python determine_tests.py 
@@ -686,7 +686,7 @@ jobs:
           cd ivy
           mkdir .ivy
           touch .ivy/key.pem
-          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -717,7 +717,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
           source ./ivy/clone_mapping.sh master15
-          pip install pydriller pymongo
+          pip install pydriller pymongo pynvml
           cp Mapping/tests.pbz2 ivy/
           cd ivy
           python determine_tests.py 
@@ -735,7 +735,7 @@ jobs:
           cd ivy
           mkdir .ivy
           touch .ivy/key.pem
-          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -766,7 +766,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
           source ./ivy/clone_mapping.sh master16
-          pip install pydriller pymongo
+          pip install pydriller pymongo pynvml
           cp Mapping/tests.pbz2 ivy/
           cd ivy
           python determine_tests.py 
@@ -784,7 +784,7 @@ jobs:
           cd ivy
           mkdir .ivy
           touch .ivy/key.pem
-          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -815,7 +815,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
           source ./ivy/clone_mapping.sh master17
-          pip install pydriller pymongo
+          pip install pydriller pymongo pynvml
           cp Mapping/tests.pbz2 ivy/
           cd ivy
           python determine_tests.py 
@@ -833,7 +833,7 @@ jobs:
           cd ivy
           mkdir .ivy
           touch .ivy/key.pem
-          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -864,7 +864,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
           source ./ivy/clone_mapping.sh master18
-          pip install pydriller pymongo
+          pip install pydriller pymongo pynvml
           cp Mapping/tests.pbz2 ivy/
           cd ivy
           python determine_tests.py 
@@ -882,7 +882,7 @@ jobs:
           cd ivy
           mkdir .ivy
           touch .ivy/key.pem
-          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -913,7 +913,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
           source ./ivy/clone_mapping.sh master19
-          pip install pydriller pymongo
+          pip install pydriller pymongo pynvml
           cp Mapping/tests.pbz2 ivy/
           cd ivy
           python determine_tests.py 
@@ -931,7 +931,7 @@ jobs:
           cd ivy
           mkdir .ivy
           touch .ivy/key.pem
-          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -962,7 +962,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
           source ./ivy/clone_mapping.sh master20
-          pip install pydriller pymongo
+          pip install pydriller pymongo pynvml
           cp Mapping/tests.pbz2 ivy/
           cd ivy
           python determine_tests.py 
@@ -980,7 +980,7 @@ jobs:
           cd ivy
           mkdir .ivy
           touch .ivy/key.pem
-          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -1011,7 +1011,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
           source ./ivy/clone_mapping.sh master21
-          pip install pydriller pymongo
+          pip install pydriller pymongo pynvml
           cp Mapping/tests.pbz2 ivy/
           cd ivy
           python determine_tests.py 
@@ -1029,7 +1029,7 @@ jobs:
           cd ivy
           mkdir .ivy
           touch .ivy/key.pem
-          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -1060,7 +1060,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
           source ./ivy/clone_mapping.sh master22
-          pip install pydriller pymongo
+          pip install pydriller pymongo pynvml
           cp Mapping/tests.pbz2 ivy/
           cd ivy
           python determine_tests.py 
@@ -1078,7 +1078,7 @@ jobs:
           cd ivy
           mkdir .ivy
           touch .ivy/key.pem
-          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -1109,7 +1109,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
           source ./ivy/clone_mapping.sh master23
-          pip install pydriller pymongo
+          pip install pydriller pymongo pynvml
           cp Mapping/tests.pbz2 ivy/
           cd ivy
           python determine_tests.py 
@@ -1127,7 +1127,7 @@ jobs:
           cd ivy
           mkdir .ivy
           touch .ivy/key.pem
-          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -1158,7 +1158,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
           source ./ivy/clone_mapping.sh master24
-          pip install pydriller pymongo
+          pip install pydriller pymongo pynvml
           cp Mapping/tests.pbz2 ivy/
           cd ivy
           python determine_tests.py 
@@ -1176,7 +1176,7 @@ jobs:
           cd ivy
           mkdir .ivy
           touch .ivy/key.pem
-          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -1207,7 +1207,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
           source ./ivy/clone_mapping.sh master25
-          pip install pydriller pymongo
+          pip install pydriller pymongo pynvml
           cp Mapping/tests.pbz2 ivy/
           cd ivy
           python determine_tests.py 
@@ -1225,7 +1225,7 @@ jobs:
           cd ivy
           mkdir .ivy
           touch .ivy/key.pem
-          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -1256,7 +1256,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
           source ./ivy/clone_mapping.sh master26
-          pip install pydriller pymongo
+          pip install pydriller pymongo pynvml
           cp Mapping/tests.pbz2 ivy/
           cd ivy
           python determine_tests.py 
@@ -1274,7 +1274,7 @@ jobs:
           cd ivy
           mkdir .ivy
           touch .ivy/key.pem
-          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -1305,7 +1305,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
           source ./ivy/clone_mapping.sh master27
-          pip install pydriller pymongo
+          pip install pydriller pymongo pynvml
           cp Mapping/tests.pbz2 ivy/
           cd ivy
           python determine_tests.py 
@@ -1323,7 +1323,7 @@ jobs:
           cd ivy
           mkdir .ivy
           touch .ivy/key.pem
-          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -1354,7 +1354,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
           source ./ivy/clone_mapping.sh master28
-          pip install pydriller pymongo
+          pip install pydriller pymongo pynvml
           cp Mapping/tests.pbz2 ivy/
           cd ivy
           python determine_tests.py 
@@ -1372,7 +1372,7 @@ jobs:
           cd ivy
           mkdir .ivy
           touch .ivy/key.pem
-          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -1403,7 +1403,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
           source ./ivy/clone_mapping.sh master29
-          pip install pydriller pymongo
+          pip install pydriller pymongo pynvml
           cp Mapping/tests.pbz2 ivy/
           cd ivy
           python determine_tests.py 
@@ -1421,7 +1421,7 @@ jobs:
           cd ivy
           mkdir .ivy
           touch .ivy/key.pem
-          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -1452,7 +1452,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
           source ./ivy/clone_mapping.sh master30
-          pip install pydriller pymongo
+          pip install pydriller pymongo pynvml
           cp Mapping/tests.pbz2 ivy/
           cd ivy
           python determine_tests.py 
@@ -1470,7 +1470,7 @@ jobs:
           cd ivy
           mkdir .ivy
           touch .ivy/key.pem
-          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -1501,7 +1501,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
           source ./ivy/clone_mapping.sh master31
-          pip install pydriller pymongo
+          pip install pydriller pymongo pynvml
           cp Mapping/tests.pbz2 ivy/
           cd ivy
           python determine_tests.py 
@@ -1519,7 +1519,7 @@ jobs:
           cd ivy
           mkdir .ivy
           touch .ivy/key.pem
-          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
@@ -1550,7 +1550,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
           source ./ivy/clone_mapping.sh master32
-          pip install pydriller pymongo
+          pip install pydriller pymongo pynvml
           cp Mapping/tests.pbz2 ivy/
           cd ivy
           python determine_tests.py 
@@ -1568,7 +1568,7 @@ jobs:
           cd ivy
           mkdir .ivy
           touch .ivy/key.pem
-          echo ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 

@@ -10,12 +10,12 @@ import ivy
 from ivy.container.base import ContainerBase
 
 
-class ContainerWithConversions(ContainerBase):
+class _ContainerWithConversions(ContainerBase):
     @staticmethod
     def static_to_native(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         nested: bool = False,
-        include_derived: Dict[type, bool] = None,
+        include_derived: Optional[Dict[type, bool]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -75,7 +75,7 @@ class ContainerWithConversions(ContainerBase):
     def to_native(
         self: ivy.Container,
         nested: bool = False,
-        include_derived: Dict[type, bool] = None,
+        include_derived: Optional[Dict[type, bool]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -135,7 +135,7 @@ class ContainerWithConversions(ContainerBase):
     def static_to_ivy(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         nested: bool = False,
-        include_derived: Dict[type, bool] = None,
+        include_derived: Optional[Dict[type, bool]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -196,7 +196,7 @@ class ContainerWithConversions(ContainerBase):
     def to_ivy(
         self: ivy.Container,
         nested: bool = False,
-        include_derived: Dict[type, bool] = None,
+        include_derived: Optional[Dict[type, bool]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,

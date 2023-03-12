@@ -490,6 +490,64 @@ def test_jax_numpy_take(
     )
 
 
+# broadcast_arrays
+@handle_frontend_test(
+    fn_tree="jax.numpy.broadcast_arrays",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=helpers.ints(min_value=1, max_value=10),
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_broadcast_arrays(
+    *,
+    dtype_value,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, value = dtype_value
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        arrays=value,
+    )
+
+
+# broadcast_shapes
+@handle_frontend_test(
+    fn_tree="jax.numpy.broadcast_shapes",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shapes=helpers.get_shape(
+            num_shapes=4, min_dims=1, max_dims=5, min_side=1, max_side=5
+        ),
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_broadcast_shapes(
+    *,
+    dtype_value,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, shapes = dtype_value
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        shapes=shapes,
+    )
+
+
 # broadcast_to
 @st.composite
 def _get_input_and_broadcast_shape(draw):
@@ -759,6 +817,86 @@ def test_jax_numpy_squeeze(
         fn_tree=fn_tree,
         on_device=on_device,
         a=values[0],
+        axis=axis,
+    )
+
+
+# split
+@handle_frontend_test(
+    fn_tree="jax.numpy.split",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+    ),
+    indices_or_sections=_get_split_locations(min_num_dims=1),
+    axis=st.shared(
+        helpers.get_axis(
+            shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+            force_int=True,
+        ),
+        key="target_axis",
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_split(
+    *,
+    dtype_value,
+    indices_or_sections,
+    axis,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, value = dtype_value
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        ary=value[0],
+        indices_or_sections=indices_or_sections,
+        axis=axis,
+    )
+
+
+# array_split
+@handle_frontend_test(
+    fn_tree="jax.numpy.array_split",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+    ),
+    indices_or_sections=_get_split_locations(min_num_dims=1),
+    axis=st.shared(
+        helpers.get_axis(
+            shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+            force_int=True,
+        ),
+        key="target_axis",
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_array_split(
+    *,
+    dtype_value,
+    indices_or_sections,
+    axis,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, value = dtype_value
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        ary=value[0],
+        indices_or_sections=indices_or_sections,
         axis=axis,
     )
 

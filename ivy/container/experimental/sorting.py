@@ -6,7 +6,7 @@ from ivy.container.base import ContainerBase
 import ivy
 
 
-class ContainerWithSortingExperimental(ContainerBase):
+class _ContainerWithSortingExperimental(ContainerBase):
     @staticmethod
     def static_msort(
         a: Union[ivy.Array, ivy.NativeArray, ivy.Container, list, tuple],
