@@ -733,9 +733,6 @@ def _squeeze_helper(draw):
 
 
 # block
-import hypothesis.strategies as st
-import hypothesis_helpers as helpers
-
 @st.composite
 def _get_input_and_block(draw):
     shapes = draw(st.lists(
