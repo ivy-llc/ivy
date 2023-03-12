@@ -190,6 +190,37 @@ def test_jax_numpy_reshape(
     )
 
 
+# resize
+@st.composite
+def _input_arrays(draw):
+    shape = draw(st.lists(st.integers(1, 10), min_size=1, max_size=5))
+    arr = draw(st.lists(st.floats(-10, 10), min_size=1, max_size=10))
+    return ivy.to_ivy_array(jnp.array(arr, shape=shape))
+
+@handle_frontend_test(
+    fn_tree="resize",
+    shape=_input_arrays(),
+    new_shape=st.lists(st.integers(1, 10), min_size=1, max_size=5),
+    order=st.sampled_from(['linear', 'nearest', 'reflect', 'wrap']),
+)
+def test_ivy_resize(
+    *,
+    shape,
+    new_shape,
+    order,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    a_ivy = Container({"array": shape}, 'ivy')
+    resized_ivy = resize(a_ivy, new_shape, order=order)['array']
+    resized_jax = ivy.to_jax_array(resized_ivy)
+    resized_jnp = jnp.array(resize(ivy.to_jax_array(shape), new_shape, order=order))
+    assert ivy.array_equal(resized_ivy, resized_jax)
+    assert jnp.array_equal(resized_jnp, resized_jax)
+
+
 # moveaxis
 @handle_frontend_test(
     fn_tree="jax.numpy.moveaxis",
