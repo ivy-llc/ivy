@@ -1233,6 +1233,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         ivy.Array instance method variant of ivy.frexp. This method simply wraps
         the function, and so the docstring for ivy.frexp also applies to this
         method with minimal changes.
+
         Parameters
         ----------
         self
@@ -1240,10 +1241,12 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         out
             Alternate output array in which to place the result.
             The default is None.
+
         Returns
         -------
         ret
             The next representable values of x1 in the direction of x2.
+
         Examples
         --------
         >>> x = ivy.array([1.0, 2.0, 3.0])
