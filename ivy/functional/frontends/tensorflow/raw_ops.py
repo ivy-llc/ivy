@@ -46,14 +46,9 @@ def AddV2(*, x, y, name="AddV2"):
 @with_unsupported_dtypes(
     {
         "2.10.0 and below": (
-            "float16"
+            "float16",
             "bool",
-            "double",
-            "string",
-            "qint16",
-            "quint16",
-            "resource",
-            "variant",
+            "bfloat16",
         )
     },
     "tensorflow",
