@@ -4,7 +4,7 @@ from typing import Union, Optional, Tuple, Literal, Sequence
 import tensorflow as tf
 
 # local
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, handle_mixed_function
 from .. import backend_version
 import ivy
 from ivy.functional.ivy.layers import _handle_padding
@@ -404,6 +404,8 @@ def embedding(
     return tf.nn.embedding_lookup(weights, indices, max_norm=max_norm)
 
 
+@handle_mixed_function(lambda x, *args, mode, scale_factor, align_corners, **kwargs:
+                       (align_corners and (len(x.shape) - 2) < 2) and mode not in ["nearest", "area"])
 def interpolate(
     x: Union[tf.Tensor, tf.Variable],
     size: Union[Sequence[int], int],
@@ -432,14 +434,6 @@ def interpolate(
 ):
     dims = len(x.shape) - 2
     size = _get_size(scale_factor, size, dims, x.shape)
-    if align_corners or dims > 2 or mode in ["nearest", "area"]:
-        return ivy.functional.experimental.interpolate(
-            x,
-            size,
-            mode=mode,
-            align_corners=align_corners,
-            antialias=antialias,
-        )
     remove_dim = False
     if mode in ["linear", "tf_area", "lanczos3", "lanczos5"]:
         if dims == 1:
