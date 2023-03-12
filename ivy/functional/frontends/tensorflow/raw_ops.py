@@ -37,6 +37,9 @@ ArgMax = to_ivy_arrays_and_back(
 )
 
 
+AddV2 = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add))
+
+
 @to_ivy_arrays_and_back
 def ArgMin(*, input, dimension, output_type=None, name=None):
     output_type = to_ivy_dtype(output_type)
@@ -155,6 +158,12 @@ def Floor(*, x, name="Floor"):
 def FloorDiv(*, x, y, name="FloorDiv"):
     x, y = check_tensorflow_casting(x, y)
     return ivy.floor_divide(x, y)
+
+
+@to_ivy_arrays_and_back
+def FloorMod(*, x, y, name="FloorMod"):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.remainder(x, y)
 
 
 @to_ivy_arrays_and_back
@@ -613,3 +622,6 @@ Elu.supported_dtypes = {
 @to_ivy_arrays_and_back
 def LinSpace(*, start, stop, num, name=None):
     return ivy.linspace(start, stop, num)
+
+
+Roll = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.roll))

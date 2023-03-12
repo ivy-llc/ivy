@@ -1,6 +1,7 @@
 # global
 from hypothesis import strategies as st, assume
 import numpy as np
+import hypothesis.extra.numpy as nph
 
 # local
 import ivy
@@ -490,6 +491,70 @@ def test_jax_numpy_take(
     )
 
 
+# broadcast_arrays
+@handle_frontend_test(
+    fn_tree="jax.numpy.broadcast_arrays",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=helpers.ints(min_value=1, max_value=10),
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_broadcast_arrays(
+    *,
+    dtype_value,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, value = dtype_value
+    arrys = {}
+    for i, v in enumerate(value):
+        arrys[f"array{i}"] = v
+    test_flags.num_positional_args = len(arrys)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        **arrys,
+    )
+
+
+# broadcast_shapes
+@handle_frontend_test(
+    fn_tree="jax.numpy.broadcast_shapes",
+    shapes=nph.mutually_broadcastable_shapes(
+        num_shapes=4, min_dims=1, max_dims=5, min_side=1, max_side=5
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_broadcast_shapes(
+    *,
+    shapes,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    shape, _ = shapes
+    shapes = {f"shape{i}": shape[i] for i in range(len(shape))}
+    test_flags.num_positional_args = len(shapes)
+    ret, frontend_ret = helpers.test_frontend_function(
+        input_dtypes=["int64"],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        **shapes,
+        test_values=False,
+    )
+    assert ret == frontend_ret
+
+
 # broadcast_to
 @st.composite
 def _get_input_and_broadcast_shape(draw):
@@ -942,4 +1007,73 @@ def test_jax_numpy_hsplit(
         on_device=on_device,
         ary=value[0],
         indices_or_sections=indices_or_sections,
+    )
+
+
+# roll
+@handle_frontend_test(
+    fn_tree="jax.numpy.roll",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
+    ),
+    shift=helpers.dtype_and_values(
+        available_dtypes=[ivy.int32],
+        max_num_dims=1,
+        min_dim_size=st.shared(
+            helpers.ints(min_value=1, max_value=10),
+            key="shift_len",
+        ),
+        max_dim_size=st.shared(
+            helpers.ints(min_value=1, max_value=10),
+            key="shift_len",
+        ),
+    ),
+    axis=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+        force_tuple=True,
+        unique=False,
+        min_size=st.shared(
+            helpers.ints(min_value=1, max_value=10),
+            key="shift_len",
+        ),
+        max_size=st.shared(
+            helpers.ints(min_value=1, max_value=10),
+            key="shift_len",
+        ),
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_roll(
+    *,
+    dtype_value,
+    shift,
+    axis,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    value_dtype, value = dtype_value
+    shift_dtype, shift_val = shift
+
+    if shift_val[0].ndim == 0:  # If shift is an int
+        shift_val = shift_val[0]  # Drop shift's dtype (always int32)
+        axis = axis[0]  # Extract an axis value from the tuple
+    else:
+        # Drop shift's dtype (always int32) and convert list to tuple
+        shift_val = tuple(shift_val[0].tolist())
+
+    helpers.test_frontend_function(
+        input_dtypes=value_dtype + shift_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=value[0],
+        shift=shift_val,
+        axis=axis,
     )
