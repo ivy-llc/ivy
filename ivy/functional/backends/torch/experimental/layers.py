@@ -554,7 +554,7 @@ embedding.support_native_out = False
 
 
 @handle_mixed_function(lambda *args, mode, **kwargs:
-                       mode not in ["tf_area", "mitchellcubic", "lanczos3", "lanczos5", "gaussian"])
+                       mode not in ["tf_area","bicubic_tensorflow", "mitchellcubic", "lanczos3", "lanczos5", "gaussian"])
 def interpolate(
     x: torch.Tensor,
     size: Union[Sequence[int], int],
@@ -567,7 +567,7 @@ def interpolate(
             "trilinear",
             "nearest",
             "area",
-            "nearest_exact",
+            "nearest-exact",
             "tf_area",
             "bicubic",
             "mitchellcubic",
