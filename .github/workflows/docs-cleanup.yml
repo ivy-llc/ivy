@@ -1,5 +1,5 @@
 name: docs-cleanup
-on: [push]
+on: [push,pull_request]
 jobs:
   update-docs:
     runs-on: ubuntu-latest
