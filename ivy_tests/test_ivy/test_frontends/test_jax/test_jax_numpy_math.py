@@ -2429,3 +2429,33 @@ def test_jax_numpy_conj(
         on_device=on_device,
         x=x[0],
     )
+
+
+# subtract
+@handle_frontend_test(
+    fn_tree="jax.numpy.subtract",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_subtract(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=x[0],
+        x2=x[0],
+    )
+
