@@ -26,8 +26,9 @@ jobs:
           git checkout gh-pages
           echo pwd
           echo "COMMITS"
-          git log -5
+          git log -5 --oneline
           echo "TAGS"
+          git tag
           # git rev-list --tags --max-count=1
           echo "HASH"
           git describe --tags $(git rev-list --tags --max-count=1)
