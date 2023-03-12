@@ -178,3 +178,4 @@ def solve_triangular(
     return torch.linalg.solve_triangular(
         a, b, lower=lower, adjoint=adjoint, unit_diagonal=unit_diagonal, out=out
     )
+    

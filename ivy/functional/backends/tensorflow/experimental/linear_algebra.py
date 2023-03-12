@@ -164,4 +164,4 @@ def solve_traingular(
         b,
         lower=lower,
         adjoint=adjoint,
-    )
+    
