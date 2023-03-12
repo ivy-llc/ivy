@@ -1920,3 +1920,91 @@ def logspace(
         device=device,
         out=out,
     )
+
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_array_function
+def array(
+    obj: Union[
+        ivy.Array,
+        ivy.NativeArray,
+        bool,
+        int,
+        float,
+        NestedSequence,
+        SupportsBufferProtocol,
+    ],
+    /,
+    *,
+    copy: Optional[bool] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Converts the input to an array.
+
+    Parameters
+    ----------
+    obj
+        input data, in any form that can be converted to an array. This includes lists,
+        lists of tuples, tuples, tuples of tuples, tuples of lists and ndarrays.
+    copy
+        boolean, indicating whether or not to copy the input. Default: ``None``.
+    dtype
+       output array data type. If ``dtype`` is ``None``, the output array data type must
+       be the default floating-point data type. Default  ``None``.
+    device
+       device on which to place the created array. Default: ``None``.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        An array interpretation of x.
+
+    Functional Examples
+    -------------------
+    With list of lists as input:
+    >>> ivy.array([[1,2],[3,4]])
+    ivy.array([[1, 2],
+           [3, 4]])
+
+    With tuple of lists as input:
+    >>> ivy.array(([1.4,5.6,5.5],[3.1,9.1,7.5]))
+    ivy.array([[1.39999998, 5.5999999 , 5.5       ],
+           [3.0999999 , 9.10000038, 7.5       ]])
+
+    With ndarray as input:
+    >>> x = ivy.np.ndarray(shape=(2,2), order='C')
+    >>> x
+    array([[6.90786433e-310, 6.90786433e-310],
+           [6.90786433e-310, 6.90786433e-310]])
+    >>> ivy.array(x)
+    ivy.array([[6.90786433e-310, 6.90786433e-310],
+           [6.90786433e-310, 6.90786433e-310]])
+
+    With :class:`ivy.Container` as input:
+    >>> x = ivy.Container(a = [(1,2),(3,4),(5,6)], b = ((1,2,3),(4,5,6)))
+    >>> ivy.array(x)
+    {
+        a: ivy.array([[1, 2],
+                      [3, 4],
+                      [5, 6]]),
+        b: ivy.array([[1, 2, 3],
+                      [4, 5, 6]])
+    }
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.array.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+    """
+    return current_backend(obj).array(
+        obj, copy=copy, dtype=dtype, device=device, out=out
+    )
