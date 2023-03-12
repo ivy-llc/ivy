@@ -8,7 +8,10 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
     to_ivy_dtype,
 )
 
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    with_supported_dtypes,
+)
 
 
 @to_ivy_arrays_and_back
@@ -43,6 +46,17 @@ def AddV2(*, x, y, name="AddV2"):
     return ivy.addv2(tf_frontend.to_tensor(x), tf_frontend.to_tensor(y))
 
 
+@with_supported_dtypes(
+    {
+        "2.10.0 and below": (
+            "bfloat16",
+            "half",
+            "float32",
+            "float64",
+        )
+    },
+    "tensorflow",
+)
 @to_ivy_arrays_and_back
 def Atan2(
     *,
