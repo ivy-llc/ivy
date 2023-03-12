@@ -1502,6 +1502,63 @@ def take_along_axis(
         arr, indices, axis, mode=mode, out=out
     )
 
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+def take(
+    a: Union[ivy.Array, ivy.NativeArray],
+    indices: Union[ivy.Array, ivy.NativeArray],
+    axis: int,
+    /,
+    *,
+    mode : Optional[str],
+    fill_value : Optional[Union[bool, int]],
+    unique_indices : Optional[bool] = False,
+    indices_are_sorted : Optional[bool] = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Take elements from an array along an axis.
+
+    Parameters
+    ----------
+    arr
+        The source array.
+    indices
+        The indices of the values to extract.
+    axis
+        The axis over which to select values.
+        By default, the flattened input array is used.
+    mode 
+        Specifies how out-of-bounds indices will behave.
+    fill_value
+        The fill value to return for out-of-bounds slices when mode is ‘fill’
+
+    unique_indices  -> only required in jax.numpy backend for more efficient execution
+        If True, the implementation will assume that the indices are unique
+
+    indices_are_sorted   -> only required in jax.numpy backend for more efficient execution
+        If True, the implementation will assume that the indices are sorted in ascending order
+
+    out
+        If provided, the result will be placed in this array.
+
+    Returns
+    -------
+    ret
+        The returned array has the same shape as `indices`.
+
+    Examples
+    --------
+    >>> arr = ivy.array([[4, 3, 5], [1, 2, 1]])
+    >>> indices = ivy.array([[0, 1, 1], [2, 0, 0]])
+    >>> y = ivy.take(arr, indices, 1)
+    >>> print(y)
+    ivy.array([[4, 3, 3], [1, 1, 1]])
+    """
+    print("ivy experimental")
+    return ivy.current_backend(a).take(a, indices, axis, mode=mode, unique_indices=unique_indices, indices_are_sorted=indices_are_sorted, fill_value=fill_value)
 
 @handle_view
 @to_native_arrays_and_back

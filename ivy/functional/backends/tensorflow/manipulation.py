@@ -349,3 +349,19 @@ def unstack(
     if keepdims:
         return [tf.expand_dims(r, axis) for r in ret]
     return ret
+
+
+def take(
+    arr: Union[tf.Tensor, tf.Variable],
+    indices: Union[tf.Tensor, tf.Variable],
+    axis: int,
+    /,
+    mode : str,
+    fill_value : Union[bool, int],
+    unique_indices : bool = False,
+    indices_are_sorted : bool = False,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+
+    return tf.experimental.numpy.take(arr, indices, axis, mode = mode)

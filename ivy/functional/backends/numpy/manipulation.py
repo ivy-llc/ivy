@@ -228,6 +228,35 @@ def unstack(
         return x_split
     return [np.squeeze(item, axis) for item in x_split]
 
+def take(
+    arr: np.ndarray,
+    indices: np.ndarray,
+    axis: int,
+    /,
+    *,
+    mode : str,
+    fill_value : Union[bool, int],
+    unique_indices : bool = False,
+    indices_are_sorted : bool = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    
+    if mode == 'fill':
+        if fill_value is None:
+            # handling fill value
+
+            if np.issubdtype(arr.dtype, np.floating):
+                fill_value = np.nan
+            else:
+                fill_value = -2147483648
+
+        out_of_bounds = np.logical_or(indices < 0, indices >= arr.size)
+        indices[out_of_bounds] = fill_value
+
+        result = np.take(np.ravel(arr), indices)
+        return result.reshape(arr.shape)
+    
+    return np.take(arr, indices, axis, mode = mode)
 
 def clip(
     x: np.ndarray,
