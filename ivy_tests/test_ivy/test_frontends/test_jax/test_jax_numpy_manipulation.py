@@ -192,33 +192,58 @@ def test_jax_numpy_reshape(
 
 # resize
 @st.composite
-def _input_arrays(draw):
-    shape = draw(st.lists(st.integers(1, 10), min_size=1, max_size=5))
-    arr = draw(st.lists(st.floats(-10, 10), min_size=1, max_size=10))
-    return ivy.to_ivy_array(jnp.array(arr, shape=shape))
+def _get_input_and_new_shape(draw):
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=2, max_num_dims=5, min_dim_size=2, max_dim_size=10
+        )
+    )
+    new_shape = draw(
+        helpers.get_shape(
+            min_num_dims=2, max_num_dims=5, min_dim_size=2, max_dim_size=10
+        )
+    )
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("all"),
+            min_num_dims=2,
+            max_num_dims=5,
+            min_dim_size=2,
+            max_dim_size=10,
+            shape=shape,
+        )
+    )
+    return x_dtype, x, new_shape
+
 
 @handle_frontend_test(
     fn_tree="resize",
-    shape=_input_arrays(),
-    new_shape=st.lists(st.integers(1, 10), min_size=1, max_size=5),
-    order=st.sampled_from(['linear', 'nearest', 'reflect', 'wrap']),
+    input_x_shape=_get_input_and_new_shape(),
+    test_with_out=st.just(True),
 )
-def test_ivy_resize(
+def test_resize(
     *,
-    shape,
-    new_shape,
-    order,
+    input_x_shape,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
-    a_ivy = Container({"array": shape}, 'ivy')
-    resized_ivy = resize(a_ivy, new_shape, order=order)['array']
-    resized_jax = ivy.to_jax_array(resized_ivy)
-    resized_jnp = jnp.array(resize(ivy.to_jax_array(shape), new_shape, order=order))
-    assert ivy.array_equal(resized_ivy, resized_jax)
-    assert jnp.array_equal(resized_jnp, resized_jax)
+    x_dtype, x, new_shape = input_x_shape
+    expected_shape = tuple(new_shape)
+
+    ivy_resized = ivy.reshape(x, expected_shape)
+
+    out = helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x,
+        new_shape=new_shape,
+    )
+    assert np.array_equal(out, ivy.to_numpy(ivy_resized))
 
 
 # moveaxis
