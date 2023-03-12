@@ -101,6 +101,16 @@ def take(
 
 
 @to_ivy_arrays_and_back
+def broadcast_arrays(*args):
+    return ivy.broadcast_arrays(*args)
+
+
+@to_ivy_arrays_and_back
+def broadcast_shapes(*shapes):
+    return ivy.broadcast_shapes(*shapes)
+
+
+@to_ivy_arrays_and_back
 def broadcast_to(arr, shape):
     return ivy.broadcast_to(arr, shape)
 
@@ -139,6 +149,32 @@ def squeeze(a, axis=None):
 
 
 @to_ivy_arrays_and_back
+def split(ary, indices_or_sections, axis=0):
+    if isinstance(indices_or_sections, (list, tuple)):
+        indices_or_sections = (
+            ivy.diff(indices_or_sections, prepend=[0], append=[ary.shape[axis]])
+            .astype(ivy.int8)
+            .to_list()
+        )
+    return ivy.split(
+        ary, num_or_size_splits=indices_or_sections, axis=axis, with_remainder=False
+    )
+
+
+@to_ivy_arrays_and_back
+def array_split(ary, indices_or_sections, axis=0):
+    if isinstance(indices_or_sections, (list, tuple)):
+        indices_or_sections = (
+            ivy.diff(indices_or_sections, prepend=[0], append=[ary.shape[axis]])
+            .astype(ivy.int8)
+            .to_list()
+        )
+    return ivy.split(
+        ary, num_or_size_splits=indices_or_sections, axis=axis, with_remainder=True
+    )
+
+
+@to_ivy_arrays_and_back
 def dsplit(ary, indices_or_sections):
     return ivy.dsplit(ary, indices_or_sections)
 
@@ -151,3 +187,8 @@ def vsplit(ary, indices_or_sections):
 @to_ivy_arrays_and_back
 def hsplit(ary, indices_or_sections):
     return ivy.hsplit(ary, indices_or_sections)
+
+
+@to_ivy_arrays_and_back
+def roll(a, shift, axis=None):
+    return ivy.roll(a, shift, axis=axis)
