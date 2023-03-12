@@ -1227,7 +1227,13 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         """
         return ivy.ldexp(self._data, x2, out=out, **kwargs)
 
-    def frexp(self: ivy.Array, /, *, out: Optional[Tuple[ivy.Array, ivy.Array]] = None, **kwargs) -> ivy.Array:
+    def frexp(
+        self: ivy.Array,
+        /,
+        *,
+        out: Optional[Tuple[ivy.Array, ivy.Array]] = None,
+        **kwargs,
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.frexp. This method simply wraps
         the function, and so the docstring for ivy.frexp also applies to this

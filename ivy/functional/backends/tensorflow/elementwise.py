@@ -433,6 +433,7 @@ def logaddexp(
     x1 = tf.cast(x1, tf.float64)
     x2 = tf.cast(x2, tf.float64)
     return ivy.log(ivy.add(ivy.exp(x1), ivy.exp(x2))).astype(dtype)
+    # return tf.experimental.numpy.logaddexp(x1,x2)
 
 
 def logical_and(

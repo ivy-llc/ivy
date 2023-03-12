@@ -5,6 +5,7 @@ from math import pi
 import paddle
 from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.func_wrapper import with_unsupported_dtypes
+
 # local
 import ivy
 from ivy import promote_types_of_inputs
@@ -53,11 +54,7 @@ def fmin(
 
 
 def sinc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    return paddle.where(
-        x == 0,
-        1,
-        paddle.divide(paddle.sin(x), x)
-    )
+    return paddle.where(x == 0, 1, paddle.divide(paddle.sin(x), x))
 
 
 def trapz(
@@ -163,8 +160,21 @@ def angle(
 
 
 @with_unsupported_dtypes(
-    {"2.4.2 and below": ("int8", "int16", "int32", "int64", "uint8",
-                         "uint16", "bfloat16", "float16", "float32", "float64", "bool")},
+    {
+        "2.4.2 and below": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "uint8",
+            "uint16",
+            "bfloat16",
+            "float16",
+            "float32",
+            "float64",
+            "bool",
+        )
+    },
     backend_version,
 )
 def imag(
@@ -176,15 +186,16 @@ def imag(
     return paddle.imag(val)
 
 
-def nan_to_num(x: paddle.Tensor,
-               /,
-               *,
-               copy: Optional[bool] = True,
-               nan: Optional[Union[float, int]] = 0.0,
-               posinf: Optional[Union[float, int]] = None,
-               neginf: Optional[Union[float, int]] = None,
-               out: Optional[paddle.Tensor] = None,
-               ) -> paddle.Tensor:
+def nan_to_num(
+    x: paddle.Tensor,
+    /,
+    *,
+    copy: Optional[bool] = True,
+    nan: Optional[Union[float, int]] = 0.0,
+    posinf: Optional[Union[float, int]] = None,
+    neginf: Optional[Union[float, int]] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
     raise IvyNotImplementedException()
 
 
@@ -232,8 +243,21 @@ def hypot(
 
 
 @with_unsupported_dtypes(
-    {"2.4.2 and below": ("int8", "int16", "int32", "int64", "uint8",
-                         "uint16", "bfloat16", "float16", "complex64", "complex128", "bool")},
+    {
+        "2.4.2 and below": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "uint8",
+            "uint16",
+            "bfloat16",
+            "float16",
+            "complex64",
+            "complex128",
+            "bool",
+        )
+    },
     backend_version,
 )
 def allclose(
@@ -296,8 +320,21 @@ def xlogy(
 
 
 @with_unsupported_dtypes(
-    {"2.4.2 and below": ("int8", "int16", "int32", "int64", "uint8",
-                         "uint16", "bfloat16", "float16", "float32", "float64", "bool")},
+    {
+        "2.4.2 and below": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "uint8",
+            "uint16",
+            "bfloat16",
+            "float16",
+            "float32",
+            "float64",
+            "bool",
+        )
+    },
     backend_version,
 )
 def real(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:

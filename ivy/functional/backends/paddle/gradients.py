@@ -4,6 +4,7 @@
 
 from typing import Optional, Callable
 import paddle
+
 # local
 import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
@@ -14,6 +15,7 @@ from ivy.functional.ivy.gradients import (
     _set_duplicates,
     _process_func_ret_and_grads,
 )
+
 
 def variable(x, /):
     if ivy.is_int_dtype(x.dtype):

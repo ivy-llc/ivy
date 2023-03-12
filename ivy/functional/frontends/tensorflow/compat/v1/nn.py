@@ -98,7 +98,15 @@ def depthwise_conv2d(
     )
 
 
-@with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16",)}, "tensorflow")
+@with_unsupported_dtypes(
+    {
+        "2.9.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "tensorflow",
+)
 def separable_conv2d(
     input,
     depthwise_filter,
@@ -108,7 +116,7 @@ def separable_conv2d(
     rate=None,
     name=None,
     data_format=None,
-    dilations=None
+    dilations=None,
 ):
     if rate:
         dilations = rate

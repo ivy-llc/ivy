@@ -3,6 +3,7 @@ from typing import Optional, Union, Sequence, List
 
 import paddle
 import numpy as np
+
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
@@ -122,8 +123,18 @@ def astype(
 
 
 @with_unsupported_dtypes(
-    {"2.4.2 and below": ("int8", "int16", "uint8", "uint16",
-                         "bfloat16", "float16", "complex64", "complex128")},
+    {
+        "2.4.2 and below": (
+            "int8",
+            "int16",
+            "uint8",
+            "uint16",
+            "bfloat16",
+            "float16",
+            "complex64",
+            "complex128",
+        )
+    },
     backend_version,
 )
 def broadcast_arrays(*arrays: paddle.Tensor) -> List[paddle.Tensor]:
@@ -132,7 +143,7 @@ def broadcast_arrays(*arrays: paddle.Tensor) -> List[paddle.Tensor]:
         if isinstance(array, paddle.Tensor):
             if array.rank().item() == 0:
                 if array.dtype in [paddle.int16, paddle.float16]:
-                    array, array_dtype = array.astype('float32'), array.dtype
+                    array, array_dtype = array.astype("float32"), array.dtype
                     new_arrays.append(array.unsqueeze(0).astype(array_dtype))
                 else:
                     new_arrays.append(array.unsqueeze(0))

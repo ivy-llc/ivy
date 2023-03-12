@@ -118,8 +118,8 @@ def test_tensorflow_exp(
         on_device=on_device,
         x=x[0],
     )
-    
-    
+
+
 # sqrt
 @handle_frontend_test(
     fn_tree="tensorflow.math.sqrt",
@@ -143,8 +143,8 @@ def test_tensorflow_sqrt(
         on_device=on_device,
         x=x[0],
     )
-    
-    
+
+
 # negative
 @handle_frontend_test(
     fn_tree="tensorflow.math.negative",
@@ -1633,7 +1633,7 @@ def test_tensorflow_asin(
     )
 
 
-#acos 
+# acos
 @handle_frontend_test(
     fn_tree="tensorflow.math.acos",
     dtype_and_x=helpers.dtype_and_values(
@@ -1654,14 +1654,14 @@ def test_tensorflow_acos(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        frontend = frontend,
+        frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
     )
 
-    
+
 # is_nan
 @handle_frontend_test(
     fn_tree="tensorflow.math.is_nan",
@@ -1686,4 +1686,4 @@ def test_tensorflow_is_nan(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
-    )    
+    )

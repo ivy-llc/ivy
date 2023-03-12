@@ -9,6 +9,7 @@ import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
 from . import backend_version
 from paddle.fluid.libpaddle import Place
+
 # Extra #
 # ------#
 
@@ -69,7 +70,8 @@ def randint(
 
 
 def seed(*, seed_value: int = 0) -> None:
-	_=paddle.seed(seed_value)
+    _ = paddle.seed(seed_value)
+
 
 def shuffle(
     x: paddle.Tensor,

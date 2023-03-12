@@ -184,13 +184,19 @@ def separable_conv2d(
     padding,
     data_format=None,
     dilations=None,
-    name=None
+    name=None,
 ):
     dilations = 1 if dilations is None else dilations
     strides, dilations = _reduce_strides_dilations(2, strides, dilations)
-    ret = depthwise_conv2d(input, depthwise_filter, strides=strides, padding=padding,
-                           dilations=dilations, data_format=data_format)
-    return conv2d(ret, pointwise_filter, 1, 'SAME', data_format=data_format)
+    ret = depthwise_conv2d(
+        input,
+        depthwise_filter,
+        strides=strides,
+        padding=padding,
+        dilations=dilations,
+        data_format=data_format,
+    )
+    return conv2d(ret, pointwise_filter, 1, "SAME", data_format=data_format)
 
 
 @to_ivy_arrays_and_back
@@ -205,7 +211,7 @@ def batch_normalization(x, mean, variance, offset, scale, variance_epsilon, name
         scale=scale,
         eps=variance_epsilon,
     )
-    return ivy.permute_dims(ret, axes=(0, ndims-1, *range(1, ndims-1)))
+    return ivy.permute_dims(ret, axes=(0, ndims - 1, *range(1, ndims - 1)))
 
 
 @to_ivy_arrays_and_back

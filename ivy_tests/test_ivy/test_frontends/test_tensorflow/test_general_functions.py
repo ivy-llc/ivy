@@ -1545,7 +1545,7 @@ def test_tensorflow_split(
         valid_axis=True,
         force_int_axis=True,
     ),
-    repeats=helpers.ints(min_value=1, max_value=5)
+    repeats=helpers.ints(min_value=1, max_value=5),
 )
 def test_tensorflow_repeat(
     *,
@@ -1566,5 +1566,5 @@ def test_tensorflow_repeat(
         on_device=on_device,
         input=x[0],
         repeats=repeats,
-        axis=axis
+        axis=axis,
     )

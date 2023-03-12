@@ -46,9 +46,3 @@ def any(
     for i, a in enumerate(axis):
         x = paddle.any(x, axis=a if keepdims else a - i, keepdim=keepdims)
     return x
-
-
-
-
-
-

@@ -140,11 +140,11 @@ def adjoint(
 
 
 def multi_dot(
-    x: Sequence[np.ndarray], 
+    x: Sequence[np.ndarray],
     /,
-    *, 
+    *,
     out: Optional[np.array] = None,
-) -> np.ndarray: 
+) -> np.ndarray:
     return np.linalg.multi_dot(x, out=out)
 
 

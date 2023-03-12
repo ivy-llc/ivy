@@ -17,9 +17,7 @@ from ivy.utils.exceptions import IvyNotImplementedException
 # ----#
 
 
-def dev(
-    x: paddle.Tensor, /, *, as_native: bool = False
-) -> Union[ivy.Device, Place]:
+def dev(x: paddle.Tensor, /, *, as_native: bool = False) -> Union[ivy.Device, Place]:
     dv = x.place
     if as_native:
         if isinstance(dv, Place):
@@ -38,28 +36,28 @@ def to_device(
 ) -> paddle.Tensor:
     if device is None:
         return x
-    #TODO: check memory leak because ret is copying the original tensor
-    ret = paddle.to_tensor(x, place=as_native_dev(device), stop_gradient = x.stop_gradient)
+    # TODO: check memory leak because ret is copying the original tensor
+    ret = paddle.to_tensor(
+        x, place=as_native_dev(device), stop_gradient=x.stop_gradient
+    )
     return ret
 
 
 def as_ivy_dev(device: Place, /):
     if isinstance(device, str):
         return ivy.Device(device)
-    
+
     if device.is_cpu_place():
         dev_type = "cpu"
         dev_idx = 0
     elif device.is_gpu_place():
         dev_type = "gpu"
         dev_idx = device.gpu_device_id()
-     
+
     if dev_type == "cpu":
         return ivy.Device(dev_type)
-    
-    return ivy.Device(
-        dev_type + (":" + (str(dev_idx) if dev_idx is not None else "0"))
-    )
+
+    return ivy.Device(dev_type + (":" + (str(dev_idx) if dev_idx is not None else "0")))
 
 
 def as_native_dev(

@@ -486,16 +486,14 @@ def test_adjoint(
 # multi_dot
 @st.composite
 def _generate_multi_dot_dtype_and_arrays(draw):
-    input_dtype = [draw(
-        st.sampled_from(draw(helpers.get_dtypes("numeric")))
-    )]
+    input_dtype = [draw(st.sampled_from(draw(helpers.get_dtypes("numeric"))))]
     matrices_dims = draw(
         st.lists(st.integers(min_value=2, max_value=10), min_size=4, max_size=4)
     )
     shape_1 = (matrices_dims[0], matrices_dims[1])
     shape_2 = (matrices_dims[1], matrices_dims[2])
     shape_3 = (matrices_dims[2], matrices_dims[3])
-    
+
     matrix_1 = draw(
         helpers.dtype_and_values(
             shape=shape_1,

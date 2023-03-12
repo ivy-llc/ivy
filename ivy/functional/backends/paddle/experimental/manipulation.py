@@ -8,7 +8,7 @@ import ivy
 
 
 @with_unsupported_dtypes(
-    {"2.4.2 and below": ('int8', 'int16', 'uint8', 'uint16')},
+    {"2.4.2 and below": ("int8", "int16", "uint8", "uint16")},
     backend_version,
 )
 def moveaxis(
@@ -23,8 +23,19 @@ def moveaxis(
 
 
 @with_unsupported_dtypes(
-    {"2.4.2 and below": ('int8', 'int16', 'uint8', 'uint16', 'bfloat16',
-                         'float16', 'complex64', 'complex128', 'bool')},
+    {
+        "2.4.2 and below": (
+            "int8",
+            "int16",
+            "uint8",
+            "uint16",
+            "bfloat16",
+            "float16",
+            "complex64",
+            "complex128",
+            "bool",
+        )
+    },
     backend_version,
 )
 def heaviside(
@@ -88,14 +99,20 @@ def top_k(
     largest: Optional[bool] = True,
     out: Optional[Tuple[paddle.Tensor, paddle.Tensor]] = None,
 ) -> Tuple[paddle.Tensor, paddle.Tensor]:
-    topk_res = NamedTuple("top_k", [("values", paddle.Tensor), 
-                                    ("indices", paddle.Tensor)])
+    topk_res = NamedTuple(
+        "top_k", [("values", paddle.Tensor), ("indices", paddle.Tensor)]
+    )
     val, indices = paddle.topk(x, k, axis=axis, largest=largest)
     return topk_res(val, indices)
-    
+
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int8", "int16", "uint8", "uint16", "bfloat16", "float16")}}, backend_version
+    {
+        "2.4.2 and below": {
+            "cpu": ("int8", "int16", "uint8", "uint16", "bfloat16", "float16")
+        }
+    },
+    backend_version,
 )
 def fliplr(
     m: paddle.Tensor,

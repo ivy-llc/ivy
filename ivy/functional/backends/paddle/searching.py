@@ -49,8 +49,21 @@ def nonzero(
 ) -> Union[paddle.Tensor, Tuple[paddle.Tensor]]:
     raise IvyNotImplementedException()
 
+
 @with_unsupported_dtypes(
-    {"2.4.2 and below": ("int8", "int16", "uint8", "uint16", "bfloat16", "float16", "complex64", "complex128", "bool")},
+    {
+        "2.4.2 and below": (
+            "int8",
+            "int16",
+            "uint8",
+            "uint16",
+            "bfloat16",
+            "float16",
+            "complex64",
+            "complex128",
+            "bool",
+        )
+    },
     backend_version,
 )
 def where(
@@ -61,20 +74,21 @@ def where(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    
+
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     x1, x2 = ivy.broadcast_arrays(x1, x2)
-    if condition.rank().item()==0:
-        condition= condition.unsqueeze(0)
+    if condition.rank().item() == 0:
+        condition = condition.unsqueeze(0)
         return paddle.where(condition, x1.data, x2.data).squeeze(0)
-    
+
     return paddle.where(condition, x1.data, x2.data)
-    
 
 
 # Extra #
 # ----- #
 
 
-def argwhere(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+def argwhere(
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
     raise IvyNotImplementedException()

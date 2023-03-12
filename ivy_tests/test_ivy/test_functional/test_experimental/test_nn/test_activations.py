@@ -162,7 +162,7 @@ def _batch_norm_helper(draw):
     )
     _, others = draw(
         helpers.dtype_and_values(
-            dtype=x_dtype*3,
+            dtype=x_dtype * 3,
             shape=(shape[1],),
             max_value=1000,
             min_value=-1000,

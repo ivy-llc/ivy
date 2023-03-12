@@ -2,6 +2,7 @@
 from typing import Union, Optional
 
 import paddle
+
 # local
 import ivy
 from . import backend_version
@@ -61,7 +62,7 @@ def bitwise_invert(
     backend_version,
 )
 def isfinite(
-        x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     return paddle.isfinite(x)
 
@@ -78,10 +79,10 @@ def isinf(
         return paddle.isinf(x)
 
     if detect_negative:
-        return paddle.equal(x, paddle.to_tensor([float('-inf')]))
+        return paddle.equal(x, paddle.to_tensor([float("-inf")]))
 
     if detect_positive:
-        return paddle.equal(x, paddle.to_tensor([float('inf')]))
+        return paddle.equal(x, paddle.to_tensor([float("inf")]))
 
     # TODO: What should happen if both detect positive and detect negative are False?
     raise IvyNotImplementedException()
@@ -280,7 +281,12 @@ def tanh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "float16", "complex64", "complex128")}}, backend_version
+    {
+        "2.4.2 and below": {
+            "cpu": ("uint16", "bfloat16", "float16", "complex64", "complex128")
+        }
+    },
+    backend_version,
 )
 def floor_divide(
     x1: Union[float, paddle.Tensor],
@@ -313,14 +319,30 @@ def positive(
 
 
 def square(
-        x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     return paddle.square(x)
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int8", "int16", "int32", "int64", "uint8", "uint16",
-                                 "bfloat16", "float16", "complex64", "complex128", "bool")}}, backend_version
+    {
+        "2.4.2 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "uint8",
+                "uint16",
+                "bfloat16",
+                "float16",
+                "complex64",
+                "complex128",
+                "bool",
+            )
+        }
+    },
+    backend_version,
 )
 def pow(
     x1: Union[float, paddle.Tensor],
@@ -352,7 +374,10 @@ def abs(
 def logaddexp(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1 = paddle.to_tensor(x1)
+    x2 = paddle.to_tensor(x2)
+    return paddle.log(paddle.add(paddle.exp(x1), paddle.exp(x2)))
 
 
 def tan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -388,7 +413,7 @@ def subtract(
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     x1, x2 = ivy.broadcast_arrays(x1, x2)
     x1, x2 = x1.data, x2.data
-    
+
     if alpha not in (1, None):
         x2 = multiply(x2, alpha)
     return paddle.subtract(x1, x2)
@@ -428,8 +453,9 @@ def bitwise_right_shift(
 
     data_type = x1.numpy().dtype
     num_bytes = data_type.itemsize
-    mask = paddle.bitwise_not(paddle.bitwise_and(
-        x1, paddle.to_tensor(-1 << num_bytes, dtype=x1.dtype)))
+    mask = paddle.bitwise_not(
+        paddle.bitwise_and(x1, paddle.to_tensor(-1 << num_bytes, dtype=x1.dtype))
+    )
     c = [int(a) >> int(b) for a, b in zip(x1, x2)]
     result = paddle.bitwise_and(paddle.to_tensor(c, dtype=mask.dtype), mask)
     return result
@@ -447,8 +473,9 @@ def bitwise_left_shift(
 
     data_type = x1.numpy().dtype
     num_bytes = data_type.itemsize
-    mask = paddle.bitwise_not(paddle.bitwise_and(
-        x1, paddle.to_tensor(-1 << num_bytes, dtype=x1.dtype)))
+    mask = paddle.bitwise_not(
+        paddle.bitwise_and(x1, paddle.to_tensor(-1 << num_bytes, dtype=x1.dtype))
+    )
     c = [int(a) << int(b) for a, b in zip(x1, x2)]
     result = paddle.bitwise_and(paddle.to_tensor(c, dtype=mask.dtype), mask)
     return result
@@ -495,13 +522,13 @@ def reciprocal(
 
 
 def deg2rad(
-        x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     return paddle.deg2rad(x)
 
 
 def rad2deg(
-        x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     return paddle.rad2deg(x)
 
@@ -517,9 +544,9 @@ def trunc_divide(
 
 
 def isreal(
-        x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     if paddle.is_complex(x):
         return paddle.equal(paddle.imag(x), paddle.zeros_like(paddle.imag(x)))
     else:
-        return paddle.ones_like(x, dtype='bool')
+        return paddle.ones_like(x, dtype="bool")

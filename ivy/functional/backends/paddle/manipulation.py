@@ -8,7 +8,8 @@ import paddle
 # local
 import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
-from ivy.func_wrapper import with_unsupported_dtypes , with_unsupported_device_and_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
+
 # noinspection PyProtectedMember
 from ivy.functional.ivy.manipulation import _calculate_out_shape
 from . import backend_version
@@ -27,6 +28,7 @@ def concat(
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()
 
+
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16")}}, backend_version
 )
@@ -38,7 +40,7 @@ def expand_dims(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if x.dtype == paddle.float16:
-        return paddle.unsqueeze(x.cast('float32'), axis).cast('float16')
+        return paddle.unsqueeze(x.cast("float32"), axis).cast("float16")
     return paddle.unsqueeze(x, axis)
 
 
@@ -65,7 +67,9 @@ def permute_dims(
 def _reshape_fortran_paddle(x, shape):
     if len(x.shape) > 0:
         x = paddle.transpose(x, list(reversed(range(len(x.shape)))))
-    return paddle.transpose(paddle.reshape(x, shape[::-1]), list(range(len(shape)))[::-1])
+    return paddle.transpose(
+        paddle.reshape(x, shape[::-1]), list(range(len(shape)))[::-1]
+    )
 
 
 @with_unsupported_device_and_dtypes(
@@ -133,6 +137,7 @@ def roll(
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()
 
+
 @with_unsupported_dtypes(
     {"2.4.2 and below": ("int16", "uint16", "float16")},
     backend_version,
@@ -146,7 +151,7 @@ def squeeze(
 ) -> paddle.Tensor:
     if isinstance(axis, list):
         axis = tuple(axis)
-    if len(x.shape)==0:
+    if len(x.shape) == 0:
         if axis is None or axis == 0 or axis == -1:
             return x
         raise ivy.utils.exceptions.IvyException(
@@ -179,7 +184,7 @@ def stack(
     arrays = paddle.to_tensor(arrays, dtype=dtype)
     if len(arrays.shape) == 1:  # handles scalar tensors
         return arrays
-    if 'complex' in str(dtype):
+    if "complex" in str(dtype):
         real_list = []
         imag_list = []
         for array in arrays:
@@ -190,7 +195,7 @@ def stack(
         return re_stacked + imag_stacked * 1j
     else:
         arrays_list = []
-        for array in arrays.cast('float64'):
+        for array in arrays.cast("float64"):
             arrays_list.append(array)
         return paddle.stack(arrays_list, axis=axis).cast(dtype)
 

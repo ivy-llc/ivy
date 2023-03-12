@@ -131,9 +131,9 @@ def adjoint(
 
 
 def multi_dot(
-    x: Sequence[JaxArray], 
-    /, 
-    *, 
+    x: Sequence[JaxArray],
+    /,
+    *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.linalg.multi_dot(x)

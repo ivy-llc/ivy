@@ -801,7 +801,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         ivy.Container static method variant of ivy.bincount. This method simply wraps
         the function, and so the docstring for ivy.bincount also applies to this method
         with minimal changes.
-        
+
         Parameters
         ----------
         x
@@ -850,7 +850,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         """ivy.Array instance method variant of ivy.bincount. This method simply
         wraps the function, and so the docstring for ivy.bincount also applies to
         this method with minimal changes.
-        
+
         Parameters
         ----------
         self

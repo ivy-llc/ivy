@@ -299,11 +299,11 @@ def _get_symmetrix_matrix(draw):
     fn_tree="torch.linalg.eigvals",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=(
-                ivy.float32,
-                ivy.float64,
-                ivy.double,
-                ivy.complex64,
-                ivy.complex128,
+            ivy.float32,
+            ivy.float64,
+            ivy.double,
+            ivy.complex64,
+            ivy.complex128,
         ),
         min_num_dims=2,
         max_num_dims=2,
@@ -316,12 +316,12 @@ def _get_symmetrix_matrix(draw):
     test_with_out=st.just(False),
 )
 def test_torch_eigvals(
-        *,
-        dtype_x,
-        frontend,
-        test_flags,
-        fn_tree,
-        on_device,
+    *,
+    dtype_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_x
 
@@ -358,7 +358,9 @@ def test_torch_eigvals(
     frontend_ret = np.sort(frontend_ret)
     frontend_ret_modulus = np.zeros(len(frontend_ret), dtype=np.float64)
     for i in range(len(frontend_ret)):
-        frontend_ret_modulus[i] = math.sqrt(math.pow(frontend_ret[i].real, 2) + math.pow(frontend_ret[i].imag, 2))
+        frontend_ret_modulus[i] = math.sqrt(
+            math.pow(frontend_ret[i].real, 2) + math.pow(frontend_ret[i].imag, 2)
+        )
 
     ret = ivy.to_numpy(ret).astype(str(frontend_ret.dtype))
     ret = np.sort(ret)
@@ -936,9 +938,7 @@ def test_torch_tensorsolve(
 def _lu_factor_helper(draw):
     # generate input matrix of shape (*, m, n) and where '*' is one or more
     # batch dimensions
-    input_dtype = draw(
-        helpers.get_dtypes("float")
-    )
+    input_dtype = draw(helpers.get_dtypes("float"))
 
     dim1 = draw(helpers.ints(min_value=2, max_value=3))
     dim2 = draw(helpers.ints(min_value=2, max_value=3))
@@ -1000,8 +1000,9 @@ def test_torch_lu_factor(
     assert_all_close(
         ret_np=[LU, pivot],
         ret_from_gt_np=[frontend_LU, frontend_pivot],
-        ground_truth_backend=frontend
+        ground_truth_backend=frontend,
     )
+
 
 @handle_frontend_test(
     fn_tree="torch.linalg.matmul",

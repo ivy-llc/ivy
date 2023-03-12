@@ -194,13 +194,13 @@ class EagerTensor:
             return tf_frontend.math.truediv(
                 tf_frontend.cast(self, ivy.float32),
                 tf_frontend.cast(y, ivy.float32),
-                name=name
+                name=name,
             )
         if str(dtype) in ["uint32", "int32", "uint64", "int64"]:
             return tf_frontend.math.truediv(
                 tf_frontend.cast(self, ivy.float64),
                 tf_frontend.cast(y, ivy.float64),
-                name=name
+                name=name,
             )
         return tf_frontend.math.truediv(self._ivy_array, y, name=name)
 

@@ -125,8 +125,7 @@ def matrix_norm(
     x: paddle.Tensor,
     /,
     *,
-    ord: Optional[Union[int, float,
-                        Literal[inf, -inf, "fro", "nuc"]]] = "fro",
+    ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
     axis: Optional[Tuple[int, int]] = (-2, -1),
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
@@ -146,15 +145,13 @@ def matrix_norm(
             paddle.sum(paddle.abs(x), axis=axis[0], keepdim=True), axis=axis
         )
     elif ord == -2:
-        ret = paddle.min(
-            paddle.linalg.svd(x)[1], axis=axis, keepdim=keepdims
-        )
+        ret = paddle.min(paddle.linalg.svd(x)[1], axis=axis, keepdim=keepdims)
     elif ord == "nuc":
         if paddle.shape(x).numpy() == 0:
             ret = x
         else:
             ret = paddle.sum(paddle.linalg.svd(x)[0], axis=-1)
-    elif ord == 'fro':
+    elif ord == "fro":
         ret = paddle.linalg.norm(x, p=ord, axis=axis, keepdim=keepdims)
     elif ord == float("inf"):
         ret = paddle.max(
@@ -166,9 +163,7 @@ def matrix_norm(
             paddle.sum(paddle.abs(x), axis=axis[0], keepdim=True), axis=axis
         )
     elif ord == 2:
-        ret = paddle.max(
-            paddle.linalg.svd(x)[1], axis=axis, keepdim=keepdims
-        )
+        ret = paddle.max(paddle.linalg.svd(x)[1], axis=axis, keepdim=keepdims)
     if keepdims:
         ret = paddle.reshape(ret, x.shape[:-2] + [1, 1])
     else:
@@ -191,7 +186,8 @@ def eig(
 def matrix_power(
     x: paddle.Tensor, n: int, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-     return paddle.linalg.matrix_power(x, n)
+    return paddle.linalg.matrix_power(x, n)
+
 
 def matrix_rank(
     x: paddle.Tensor,
@@ -266,10 +262,11 @@ def matrix_rank(
 
 def matrix_transpose(
     x: paddle.Tensor,
-    /, 
+    /,
     *,
     perm: Union[Tuple[List[int], List[int]]] = None,
-    conjugate: bool = False, out: Optional[paddle.Tensor] = None
+    conjugate: bool = False,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     ndim = len(x.shape)
     perm = list(range(ndim))
