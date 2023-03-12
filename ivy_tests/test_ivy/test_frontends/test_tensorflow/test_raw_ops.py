@@ -66,33 +66,44 @@ def test_tensorflow_Acosh(  # NOQA
     )
 
 
+@st.composite
+def df(draw, data_format):
+    data_format = draw(data_format)
+    return data_format
+
+
 # AvgPool3D
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.AvgPool3D",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-    ),
+    data_format=df(data_format=st.sampled_from(["NDHWC"])),
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
     test_with_out=st.just(False),
 )
 def test_tensorflow_AvgPool3D(  # NOQA
     *,
-    dtype_and_x,
+    x_k_s_p,
+    data_format,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, kernel, strides, pad = x_k_s_p
+    data_format = data_format
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0],
+        input=x[0],
+        ksize=kernel,
+        strides=strides,
+        padding=pad,
+        data_format=data_format,
     )
-    
-    
+
+
 # AddV2
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.AddV2",
@@ -120,7 +131,6 @@ def test_tensorflow_AddV2(  # NOQA
         x=x,
         y=y,
     )
-
 
 
 # Add
@@ -3169,6 +3179,7 @@ def test_tensorflow_LinSpace(
         num=num,
         on_device=on_device,
     )
+
 
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Roll",

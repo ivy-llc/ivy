@@ -45,14 +45,14 @@ def AddV2(*, x, y, name="AddV2"):
 
 @to_ivy_arrays_and_back
 def AvgPool3D(
-    input, 
+    input,
     ksize,
     strides,
     padding,
-    data_format='NDHWC',
+    data_format="NDHWC",
     name="AvgPool3D",
 ):
-    return ivy.avg_pool3d(x=input, kernel=ksize, strides=strides, padding=padding, data_format=data_format)
+    return ivy.avg_pool3d(input, ksize, strides, padding, data_format=data_format)
 
 
 @to_ivy_arrays_and_back
