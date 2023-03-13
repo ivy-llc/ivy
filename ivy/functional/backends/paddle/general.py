@@ -211,4 +211,6 @@ def vmap(
     in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
     out_axes: Optional[int] = 0,
 ) -> Callable:
-    raise IvyNotImplementedException()
+    return ivy.to_native_arrays_and_back(
+        paddle.vmap(func, in_axes=in_axes, out_axes=out_axes)
+    )
