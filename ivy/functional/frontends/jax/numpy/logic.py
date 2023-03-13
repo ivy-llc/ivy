@@ -192,9 +192,7 @@ def isreal(x, out=None):
 
 @to_ivy_arrays_and_back
 def setdiff1d(ar1, ar2, assume_unique=False, *, size=None, fill_value=None):
-    if assume_unique:
-        ret = ar1
-    else:
-        ret = set(ar1).difference(set(ar2))
+    ret = ivy.array(set(ar1).difference(set(ar2)))
+    if not assume_unique:
+        ret = ivy.sort(ret)
     return ret
-
