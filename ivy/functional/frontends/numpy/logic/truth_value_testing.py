@@ -62,3 +62,8 @@ def isfortran(a: np.ndarray):
 @to_ivy_arrays_and_back
 def isreal(x):
     return ivy.isreal(x)
+
+
+@to_ivy_arrays_and_back
+def iscomplex(x: np.ndarray):
+    return ivy.bitwise_invert(ivy.isreal(x))
