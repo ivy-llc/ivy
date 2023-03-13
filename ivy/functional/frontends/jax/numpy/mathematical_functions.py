@@ -507,4 +507,4 @@ def subtract(x1, x2):
 
 @to_ivy_arrays_and_back
 def around(a, decimals=0, out=None):
-    return ivy.around(a, decimals, out)
+    return ivy.round(a, decimals=decimals, out=out)
