@@ -1,6 +1,5 @@
 ..
     ToDo:
-    [ ] Review typos
     [ ] Maybe add some images
 
 .. _`Backend Handler`: https://lets-unify.ai/ivy/design/building_blocks.html#backend-handler
@@ -90,10 +89,10 @@
 
 ------------------------------------------------------
 
-Ivy is both a ML transpiler and a framework, currently supporting JAX, TensorFlow, PyTorch and Numpy.
+Ivy is both an ML transpiler and a framework, currently supporting JAX, TensorFlow, PyTorch and Numpy.
 
 Ivy unifies all ML frameworks 💥 enabling you not only to **write code that can be used with any of these frameworks as the backend**, 
-but also to **convert 🔄 any function written in any of them to code in your preferred framework!**
+but also to **convert 🔄 any function, model or library written in any of them to your preferred framework!**
 
 You can check out `Ivy as a transpiler`_ and `Ivy as a framework`_ to learn more about this, try out Ivy
 straight away going through the `Setting up Ivy`_ section, or dive deep into Ivy's `Documentation`_ and `Examples`_!
@@ -119,17 +118,17 @@ Contents
 Ivy as a transpiler
 -------------------
 
-Ivy's transpiler allow you to use code from any other framework (and soon, from any other version of the same framework!) in your own code with just one line of code. To do so, Ivy traces a computational graph and leverages Ivy's frontends and backends to link one framework to the other. 
+Ivy's transpiler allows you to use code from any other framework (or from any other version of the same framework!) in your own code, by just adding one line of code. Under the hood, Ivy traces a computational graph and leverages the frontends and backends to link one framework to another. 
 
-This way, Ivy makes all ML-related projects available for you, independently of the framework you want to use to research, develop, or deploy systems. Feel free to head over to the docs for the full API reference, but the main functions that you'd use probably are:
+This way, Ivy makes all ML-related projects available for you, independently of the framework you want to use to research, develop, or deploy systems. Feel free to head over to the docs for the full API reference, but the functions you'd most likely wanto to use are:
 
 .. code-block:: python
 
-    ivy.compile()     # Compiles a function into an efficient graph, removing Ivy's wrapping and redundant code
-    ivy.transpile()   # Converts framework specific code to a different framework
-    ivy.unify()       # Converts framework specific code to Ivy
+    ivy.compile()     # Compiles a function into an efficient fully-functional graph, removing all wrapping and redundant code
+    ivy.transpile()   # Converts framework-specific code to a different framework
+    ivy.unify()       # Converts framework-specific code to Ivy
 
-These functions can be used eagerly and lazily. If you pass the neccesary arguments, the function will be called instantly, otherwise, compilation/transpilation will happen the first time you invoke the function with the proper arguments.
+These functions can be used eagerly or lazily. If you pass the neccesary arguments for function tracing, the compilation/transpilation step will happen instantly (eagerly). Otherwise, the compilation/transpilation will happen only when the returned function is first invoked.
 
 .. code-block:: python
     
@@ -166,12 +165,12 @@ If you want to learn more, you can find more information in the `Ivy as a transp
 When should I use Ivy as a transpiler?
 ######################################
 
-If you want to use building blocks published in other frameworks (neural networks, layers, array computing libraries, training pipelines...), you want to integrate code developed in various frameworks, or maybe straight up move code from one framework to another, the transpiler is definitely the tool 🔧 for the job! As the output of transpilation is native code in the target framework, you can use the converted code just as if it was code originally developed in that framework, appliying framework-specific optimizations or tools, making a whole new level of code available to you.
+If you want to use building blocks published in other frameworks (neural networks, layers, array computing libraries, training pipelines...), you want to integrate code developed in various frameworks, or maybe straight up move code from one framework to another, the transpiler is definitely the tool 🔧 for the job! As the output of transpilation is native code in the target framework, you can use the converted code just as if it was code originally developed in that framework, appliying framework-specific optimizations or tools, instantly exposing your project to all of the unique perks of a different framework.
 
 Ivy as a framework
 -------------------
 
-The Ivy framework is built on top of various essential components, mainly the `Backend Handler`_, which manages what framework is being used behind the scenes and the `Backend Functional APIs`_, which provide framework-specific implementations of the Ivy functions. Likewise, classes like the :code:`ivy.Container` and :code:`ivy.Array` are also available, facilitating the use of structured data and array-like objects (learn more about them `here! <https://lets-unify.ai/ivy/design/ivy_as_a_framework.html>`_). 
+The Ivy framework is built on top of various essential components, mainly the `Backend Handler`_, which manages what framework is being used behind the scenes and the `Backend Functional APIs`_, which provide framework-specific implementations of the Ivy functions. Likewise, classes such as the :code:`ivy.Container` or :code:`ivy.Array` are also available, facilitating the use of structured data and array-like objects (learn more about them `here! <https://lets-unify.ai/ivy/design/ivy_as_a_framework.html>`_). 
 
 All of the functionalities in Ivy are exposed through the :code:`Ivy functional API` and the :code:`Ivy stateful API`. All functions in the `Functional API <https://lets-unify.ai/ivy/design/building_blocks.html#ivy-functional-api>`_ are **Framework Agnostic Functions**, which mean that we can use them like this:
 
@@ -191,7 +190,7 @@ All of the functionalities in Ivy are exposed through the :code:`Ivy functional 
     np_mse    = mse_loss(np.ones((5,)), np.ones((5,)))
     torch_mse = mse_loss(torch.ones((5,)), torch.ones((5,)))
 
-In the example below we show how Ivy's functions are compatible with tensors from different frameworks.
+In the example above we show how Ivy's functions are compatible with tensors from different frameworks.
 This is the same for ALL Ivy functions. They can accept tensors from any framework and return the correct result.
 
 The `Ivy Stateful API <https://lets-unify.ai/ivy/design/ivy_as_a_framework/ivy_stateful_api.html>`_, on the other hand, allows you to define trainable modules and layers, which you can use alone or as a part of any other framework code!
@@ -246,7 +245,7 @@ but the backend can easily be changed to your favorite frameworks, such as Tenso
     print('Finished training!')
 
 
-Last but no least, we are also working on specific extension totally written in Ivy and therefore usable within any framework, 
+Last but not least, we are also working on specific extension totally written in Ivy and therefore usable within any framework, 
 covering topics like `Mechanics`_, `Computer Vision`_, `Robotics`_, a `Reinforcement Learning Gym`_, `Memory`_ and implementation of various `Models`_ or `Builder tools`_ with trainers, data loaders and more.
 
 TODO: Maybe add small logos in a row?
@@ -314,36 +313,6 @@ or alternatively, for the last step:
     python3 -m pip install --user -e .
 
 If you want to set up testing and various frameworks it's probably best to check out the `Contributing - Setting Up <https://lets-unify.ai/ivy/contributing/setting_up.html#setting-up>`_ page, where OS-specific and IDE-specific instructions and video tutorials to do so are available!
-
-
-Access to the Transpiler API
-############################
-
-If you only want to use Ivy as a framework you can ignore this entirely, but if you want to try out Ivy's transpiler you'll have to sign up and get an API key following the steps below. Fear not! This is entirely free, but keep in mind that the transpiler is currently in alpha, so expect some rough edges and please share with us any bug 🐛 you encounter! 
-
-.. raw:: html
-
-   <details>
-   <summary><h3>API key instructions</h3></summary>
-
-To get an API key you have to go to `Ivy's console page <https://console.lets-unify.ai>`_ and sign in with your preferred authentication method. Once you have logged in, you should see the following page.
-
-.. image:: https://raw.githubusercontent.com/guillesanbri/ivy/readme-revamp/screenshot-1b.png
-
-If you now click on "My Account", you'll find a "Generate API key" button. Once you click it, you'll be asked to complete a brief form with basic information if this is your first time logging into the console, otherwise, your API key will be displayed on the screen as shown below.
-
-.. image:: https://raw.githubusercontent.com/guillesanbri/ivy/readme-revamp/screenshot-2b.png
-
-Now that you have an API key, **you'll have to store it in a `key.pem` file located inside a `.ivy` directory**. Once those have been created, you must define an environment variable :code:`IVY_ROOT` that specifies the location of said directory, you can do this as you normally would in your preferred OS, or you can set it directly within your python script using `os`.
-
-.. code-block:: python
-
-    import os
-    os.environ["IVY_ROOT"] = ".ivy"
-
-.. raw:: html
-
-   </details>
 
 
 Using Ivy
