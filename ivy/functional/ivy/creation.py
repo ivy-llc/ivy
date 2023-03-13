@@ -156,6 +156,7 @@ class NestedSequence(Protocol[_T_co]):
 
 @outputs_to_ivy_arrays
 @handle_out_argument
+@infer_dtype
 @infer_device
 @handle_nestable
 @handle_array_like_without_promotion

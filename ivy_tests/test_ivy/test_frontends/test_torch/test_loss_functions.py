@@ -859,3 +859,45 @@ def test_torch_triplet_margin_loss(
         reduce=reduce,
         reduction=reduction,
     )
+
+
+# multilabel soft margin loss
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.multilabel_soft_margin_loss",
+    dtype_and_inputs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        allow_inf=False,
+        shared_dtype=True,
+    ),
+    size_average=st.booleans(),
+    reduce=st.booleans(),
+    reduction=st.sampled_from(["none", "mean", "sum"]),
+    test_with_out=st.just(False),
+)
+def test_torch_multilabel_soft_margin_loss(
+    *,
+    dtype_and_inputs,
+    size_average,
+    reduce,
+    reduction,
+    test_flags,
+    fn_tree,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_inputs
+    input_dtype, input = input_dtype[0], x[0]
+    target_dtype, target = input_dtype[1], x[1]
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype, target_dtype],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input,
+        target=target,
+        size_average=size_average,
+        reduce=reduce,
+        reduction=reduction,
+    )
