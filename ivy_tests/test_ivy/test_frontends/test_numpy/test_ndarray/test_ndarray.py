@@ -2591,6 +2591,7 @@ def test_numpy_instance_view(
         frontend_method_data=frontend_method_data,
         on_device=on_device,
     )
+    
 
 # mod
 @handle_frontend_method(
@@ -2610,6 +2611,7 @@ def test_numpy_instance_mod__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, xs = dtype_and_x
     helpers.test_frontend_method(
@@ -2625,4 +2627,5 @@ def test_numpy_instance_mod__(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
