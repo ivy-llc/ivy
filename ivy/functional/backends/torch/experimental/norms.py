@@ -7,7 +7,11 @@ from .. import backend_version
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
 def l2_normalize(
-    x: torch.Tensor, /, *, axis: int = None, out: torch.Tensor = None
+    x: torch.Tensor,
+    /,
+    *,
+    axis: Optional[int] = None,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
 
     return torch.nn.functional.normalize(x, p=2, dim=axis, out=out)
@@ -21,15 +25,15 @@ def instance_norm(
     x: torch.Tensor,
     /,
     *,
-    scale: Optional[torch.Tensor],
-    bias: Optional[torch.Tensor],
+    scale: Optional[torch.Tensor] = None,
+    bias: Optional[torch.Tensor] = None,
     eps: float = 1e-05,
-    momentum: Optional[float] = 0.1,
+    momentum: float = 0.1,
     data_format: str = "NCHW",
     running_mean: Optional[torch.Tensor] = None,
     running_stddev: Optional[torch.Tensor] = None,
-    affine: Optional[bool] = True,
-    track_running_stats: Optional[bool] = False,
+    affine: bool = True,
+    track_running_stats: bool = False,
     out: Optional[torch.Tensor] = None,
 ):
     if scale is not None:
@@ -79,7 +83,12 @@ instance_norm.support_native_out = False
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
 def lp_normalize(
-    x: torch.Tensor, /, *, p: float = 2, axis: int = None, out: torch.Tensor = None
+    x: torch.Tensor,
+    /,
+    *,
+    p: float = 2,
+    axis: Optional[int] = None,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
 
     return torch.nn.functional.normalize(x, p=p, dim=axis, out=out)

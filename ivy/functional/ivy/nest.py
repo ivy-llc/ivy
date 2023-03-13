@@ -92,7 +92,7 @@ def index_nest(
 
 
 @handle_exceptions
-def prune_nest_at_index(nest: Iterable, index: Tuple, /):
+def prune_nest_at_index(nest: Iterable, index: Tuple, /) -> None:
     """Prune a nested object at a specified index.
 
     Parameters
@@ -216,7 +216,7 @@ def set_nest_at_index(
 
 
 @handle_exceptions
-def insert_into_nest_at_index(nest: Iterable, index: Tuple, value, /):
+def insert_into_nest_at_index(nest: Iterable, index: Tuple, value, /) -> None:
     if len(index) == 1:
         idx = index[0]
         if isinstance(nest, list):
@@ -406,7 +406,7 @@ def multi_index_nest(
 
 
 @handle_exceptions
-def prune_nest_at_indices(nest: Iterable, indices: Tuple, /):
+def prune_nest_at_indices(nest: Iterable, indices: Tuple, /) -> None:
     """Prune a nested object at specified indices.
 
     Parameters
@@ -504,7 +504,7 @@ def set_nest_at_indices(
 
 
 @handle_exceptions
-def insert_into_nest_at_indices(nest: Iterable, indices: Tuple, values, /):
+def insert_into_nest_at_indices(nest: Iterable, indices: Tuple, values, /) -> None:
     """Insert a value into the nested item at specified indices with specified values.
 
     Parameters
@@ -612,8 +612,8 @@ def nested_argwhere(
     nest: Iterable,
     fn: Callable,
     check_nests: bool = False,
-    to_ignore: Union[type, Tuple[type]] = None,
-    _index: List = None,
+    to_ignore: Optional[Union[type, Tuple[type]]] = None,
+    _index: Optional[List] = None,
     _base: bool = True,
     stop_after_n_found: Optional[int] = None,
     extra_nest_types: Optional[Union[type, Tuple[type]]] = None,
@@ -790,7 +790,7 @@ def nested_argwhere(
 def all_nested_indices(
     nest: Iterable,
     include_nests: bool = False,
-    _index: List = None,
+    _index: Optional[List] = None,
     _base: bool = True,
     extra_nest_types: Optional[Union[type, Tuple[type]]] = None,
 ) -> Union[Iterable, bool]:
@@ -856,8 +856,8 @@ def all_nested_indices(
 @handle_exceptions
 def map(
     fn: Callable,
-    constant: Dict[str, Any] = None,
-    unique: Dict[str, Iterable[Any]] = None,
+    constant: Optional[Dict[str, Any]] = None,
+    unique: Optional[Dict[str, Iterable[Any]]] = None,
     mean: bool = False,
 ) -> List:
     """Applies a function on each item of an iterable x.
@@ -963,9 +963,9 @@ def nested_map(
     /,
     fn: Callable,
     include_derived: Optional[Union[Dict[type, bool], bool]] = None,
-    to_ignore: Union[type, Tuple[type]] = None,
+    to_ignore: Optional[Union[type, Tuple[type]]] = None,
     to_mutable: bool = False,
-    max_depth: int = None,
+    max_depth: Optional[int] = None,
     _depth: int = 0,
     _tuple_check_fn: Optional[Callable] = None,
     _list_check_fn: Optional[Callable] = None,

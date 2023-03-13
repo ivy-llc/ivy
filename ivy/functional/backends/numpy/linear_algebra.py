@@ -40,7 +40,7 @@ def cross(
     axisa: int = -1,
     axisb: int = -1,
     axisc: int = -1,
-    axis: int = None,
+    axis: Optional[int] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.cross(a=x1, b=x2, axisa=axisa, axisb=axisb, axisc=axisc, axis=axis)
@@ -66,7 +66,7 @@ def diagonal(
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def eigh(
-    x: np.ndarray, /, *, UPLO: Optional[str] = "L", out: Optional[np.ndarray] = None
+    x: np.ndarray, /, *, UPLO: str = "L", out: Optional[np.ndarray] = None
 ) -> Tuple[np.ndarray]:
     result_tuple = NamedTuple(
         "eigh", [("eigenvalues", np.ndarray), ("eigenvectors", np.ndarray)]
@@ -77,7 +77,7 @@ def eigh(
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def eigvalsh(
-    x: np.ndarray, /, *, UPLO: Optional[str] = "L", out: Optional[np.ndarray] = None
+    x: np.ndarray, /, *, UPLO: str = "L", out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.linalg.eigvalsh(x, UPLO=UPLO)
 
@@ -148,8 +148,8 @@ def matrix_norm(
     x: np.ndarray,
     /,
     *,
-    ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-    axis: Optional[Tuple[int, int]] = (-2, -1),
+    ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",
+    axis: Tuple[int, int] = (-2, -1),
     keepdims: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
@@ -349,7 +349,7 @@ def tensorsolve(
     x2: np.ndarray,
     /,
     *,
-    axes: Union[int, Tuple[List[int], List[int]]] = None,
+    axes: Optional[Union[int, Tuple[List[int], List[int]]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.linalg.tensorsolve(x1, x2, axes=axes)
@@ -410,8 +410,8 @@ def vector_norm(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: Optional[bool] = False,
-    ord: Optional[Union[int, float, Literal[inf, -inf]]] = 2,
+    keepdims: bool = False,
+    ord: Union[int, float, Literal[inf, -inf]] = 2,
     dtype: Optional[np.dtype] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:

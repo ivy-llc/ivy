@@ -7,11 +7,19 @@ import os
 import re
 import shutil
 import sys
+import warnings
 
 import numpy as np
-import pynvml
 import psutil
 from hypothesis import strategies as st, assume
+
+try:
+    import pynvml
+except ImportError:
+    warnings.warn(
+        "Unable to import pynvml, please install if you are using GPU with Ivy."
+    )
+    # nvidia-ml-py (pynvml) is not installed in CPU Dockerfile.
 
 # local
 import ivy
