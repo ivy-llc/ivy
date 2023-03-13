@@ -12,6 +12,5 @@ def eigvalsh(a, /, UPLO="L"):
     return ivy.eigvalsh(a, UPLO=UPLO)
 
 @to_ivy_arrays_and_back
-# @from_zero_dim_arrays_to_scalar
 def eig(a):
     return ivy.eig(a)
