@@ -26,6 +26,10 @@ import types
 __all__ = [
     name
     for name, thing in globals().items()
-    if not (name.startswith("_") or isinstance(thing, types.ModuleType))
+    if not (
+        name.startswith("_")
+        or name == "ivy"
+        or (isinstance(thing, types.ModuleType) and "ivy" not in thing.__name__)
+    )
 ]
 del types
