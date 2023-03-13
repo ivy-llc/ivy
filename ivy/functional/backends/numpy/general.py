@@ -11,6 +11,7 @@ from numbers import Number
 # local
 import ivy
 from ivy.functional.backends.numpy.device import _to_device
+from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 
 
 def array_equal(x0: np.ndarray, x1: np.ndarray, /) -> bool:
@@ -25,6 +26,7 @@ def current_backend_str() -> str:
     return "numpy"
 
 
+@_scalar_output_to_0d_array
 def get_item(x: np.ndarray, /, query: np.ndarray) -> np.ndarray:
     return x.__getitem__(query)
 
