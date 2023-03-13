@@ -576,7 +576,7 @@ def test_jax_numpy_double(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
-=======
+    )
 @st.composite
 def _get_dtype_and_range(draw):
     dim = draw(helpers.ints(min_value=2, max_value=5))
