@@ -53,8 +53,6 @@ NativeArray = (
 )
 
 if version.parse(jax.__version__) >= version.parse("0.4.1"):
-    # jax.Array is a feature that need to be enabled by the following line
-    jax.config.update("jax_array", True)
     JaxArray = Union[JaxArray, jax.Array]
     NativeArray += (jax.Array,)
 

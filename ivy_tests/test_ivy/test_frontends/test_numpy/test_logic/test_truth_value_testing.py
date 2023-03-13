@@ -144,13 +144,12 @@ def test_numpy_isfortran(
 
 
 @handle_frontend_test(
-    fn_tree="numpy.iscomplexobj",
+    fn_tree="numpy.isreal",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("real_and_complex"), min_num_dims=1
-    ),
-    test_with_out=st.just(False),
+        available_dtypes=helpers.get_dtypes("float_and_complex")
+    )
 )
-def test_numpy_iscomplexobj(
+def test_numpy_isreal(
     dtype_and_x,
     frontend,
     on_device,
@@ -165,7 +164,5 @@ def test_numpy_iscomplexobj(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        a=x[0],
+        x=x[0],
     )
-
-
