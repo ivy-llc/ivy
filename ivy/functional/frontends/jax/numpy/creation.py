@@ -130,3 +130,13 @@ def logspace(start, stop, num=50, endpoint=True, base=10.0, dtype=None, axis=0):
         interval = (stop - start) / num
         stop -= interval
     return ivy.logspace(start, stop, num, base=base, axis=axis, dtype=dtype)
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16", )}, 'jax')
+def geomspace(start, stop, num=50, endpoint=True, dtype=None, axis=0):
+    if not endpoint:
+        interval = (stop - start) / num
+        stop -= interval
+    return ivy.geomspace(start, stop, num, axis=axis, dtype=dtype)
