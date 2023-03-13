@@ -242,15 +242,30 @@ def take_along_axis(
     return torch.take_along_dim(arr, indices, axis, out=out)
 
 
+take_along_axis.support_native_out = True
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
+def take(
+    arr: torch.Tensor,
+    indices: torch.Tensor,
+    axis: int,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.take_along_dim(arr, indices, axis, out=out)
+
+
+take.support_native_out = True
+
+
 def hsplit(
     ary: torch.Tensor,
     indices_or_sections: Union[int, Tuple[int, ...]],
     /,
 ) -> List[torch.Tensor]:
     return list(torch.hsplit(ary, indices_or_sections))
-
-
-take_along_axis.support_native_out = True
 
 
 def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
