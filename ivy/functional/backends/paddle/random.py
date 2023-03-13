@@ -133,4 +133,11 @@ def shuffle(
     seed: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if seed:
+        _ = paddle.seed(seed)
+    # Use numpy's permutation function to shuffle indices
+    indices = paddle.to_tensor(np.random.permutation(x.shape[0]), dtype='int64')
+    shuffled_x = paddle.index_select(x, indices)
+    return shuffled_x
+
+shuffle.support_native_out = True
