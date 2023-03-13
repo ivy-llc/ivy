@@ -29,7 +29,7 @@ def add(
     x2: Union[float, JaxArray],
     /,
     *,
-    alpha: Optional[Union[int, float]] = 1,
+    alpha: Union[int, float] = 1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)

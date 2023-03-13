@@ -1,7 +1,7 @@
 """Collection of gradient Ivy functions."""
 
 # global
-from typing import Sequence, Union, Optional, Tuple
+from typing import Sequence, Union, Optional, Tuple, Callable
 import numpy as np
 import itertools
 
@@ -323,7 +323,7 @@ class GradientTracking:
 # noinspection PyShadowingNames
 @handle_exceptions
 @handle_array_function
-def with_grads(*, with_grads: bool = None) -> bool:
+def with_grads(*, with_grads: Optional[bool] = None) -> bool:
     """
     Enter a nested code space where gradients are computed. This method
     adds the with_grads component to the global list with_grads_stack
@@ -374,27 +374,15 @@ def with_grads(*, with_grads: bool = None) -> bool:
 # noinspection PyShadowingNames
 @handle_exceptions
 @handle_array_function
-def set_with_grads(with_grads: bool):
+def set_with_grads(with_grads: bool) -> None:
     """
-    Enter a nested code space where gradients are computed. This method
-    adds the with_grads component to the global list with_grads_stack
+    This method adds the with_grads component to the global list with_grads_stack
 
     Parameters
     ----------
     with_grads
-        Boolean value denoting whether the current code block has gradient
-        computation enabled or not.
-        'True' or 'False' or 'None' (Default value = None)
-
-    Returns
-    -------
-    ret
-        If with_grads is boolean, it returns the boolean value representing
-        if gradient computation is enabled or not.
-        If with_grads is None, it returns the last element in the with_grads_stack
-        representing the parent of the current nested code block. If with_grads_stack
-        is empty, it returns True by default.
-        If with_grads is neither None nor boolean, it will raise an IvyException
+        Boolean value denoting whether to compute gradients or not.
+        'True' or 'False'
 
     Examples
     --------
@@ -420,15 +408,15 @@ def set_with_grads(with_grads: bool):
 
 @handle_exceptions
 @handle_array_function
-def unset_with_grads():
+def unset_with_grads() -> None:
     """
-    Enter a nested code space where gradients are computed. This method
-    deletes the with_grads component from the global list with_grads_stack
+    This method deletes the last with_grads component from the global list
+    with_grads_stack
 
     Returns
     -------
     ret
-        Remove and return item at index (default last).
+        Remove and return last item in with_grads_stack (if possible).
 
     Examples
     --------
@@ -440,11 +428,6 @@ def unset_with_grads():
     >>> ivy.set_with_grads(True)
     >>> ivy.unset_with_grads()
     Returns last deleted value
-
-    >>> ivy.set_with_grads(False)
-    >>> ivy.unset_with_grads()
-    Raises IndexError if list is empty or index is out of range.
-
     """
     global with_grads_stack
     if with_grads_stack:
@@ -613,7 +596,7 @@ execute_with_gradients.computes_gradients = True
 
 
 @handle_exceptions
-def value_and_grad(func):
+def value_and_grad(func: Callable) -> Callable:
     """
     Create a function that evaluates both func and the gradient of func.
 
@@ -647,7 +630,7 @@ value_and_grad.computes_gradients = True
 
 
 @handle_exceptions
-def jac(func):
+def jac(func: Callable) -> Callable:
     """Call function func, and return func's Jacobian partial derivatives.
 
     Parameters
@@ -681,7 +664,7 @@ jac.computes_gradients = True
 
 
 @handle_exceptions
-def grad(func):
+def grad(func: Callable) -> Callable:
     """Call function func, and return func's gradients.
 
     Parameters

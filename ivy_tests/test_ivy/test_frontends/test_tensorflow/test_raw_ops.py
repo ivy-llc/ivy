@@ -66,6 +66,36 @@ def test_tensorflow_Acosh(  # NOQA
     )
 
 
+# Angle
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Angle",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("complex"),
+    ),
+    Tout=helpers.get_dtypes("float", full=False),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Angle(  # NOQA
+    *,
+    dtype_and_xs,
+    Tout,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, xs = dtype_and_xs
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=xs[0],
+        Tout=Tout,
+    )
+
+
 # ApproximateEqual
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.ApproximateEqual",
@@ -97,8 +127,8 @@ def test_tensorflow_ApproximateEqual(  # NOQA
         y=xs[1],
         tolerance=tol,
     )
-    
-    
+
+
 # AddV2
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.AddV2",
