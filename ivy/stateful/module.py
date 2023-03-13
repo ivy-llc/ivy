@@ -8,7 +8,7 @@ from typing import Optional, List, Tuple, Dict
 
 # local
 import ivy
-from ivy.container import Container
+from ivy.data_classes.container import Container
 from ivy.func_wrapper import _get_first_array
 from ivy.stateful.helpers import ModuleHelpers
 from ivy.stateful.converters import ModuleConverters
@@ -733,13 +733,14 @@ class Module(ModuleConverters, ModuleHelpers):
         Compile the `ivy.Module`'s `_unified_ivy_graph` or `_call` method to the
         target backend.
 
-        Args:
-            compile_kwargs:
-                keyword arguments passed to the compile function.
-            args:
-                arguments used to compile. Defaults to None.
-            kwargs:
-                keyword arguments used to compile. Defaults to None.
+        Parameters
+        ----------
+        args:
+            arguments used to compile. Defaults to None.
+        kwargs:
+            keyword arguments used to compile. Defaults to None.
+        compile_kwargs:
+            keyword arguments passed to the compile function.
         """
         # no arguments given to compile, so delay the compilation
         if not (args or kwargs):

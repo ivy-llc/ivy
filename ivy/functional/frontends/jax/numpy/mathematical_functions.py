@@ -503,4 +503,3 @@ def conj(x, /):
 def subtract(x1, x2):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.subtract(x1, x2)
-

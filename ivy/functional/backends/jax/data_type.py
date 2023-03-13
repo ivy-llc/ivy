@@ -102,6 +102,7 @@ def astype(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     dtype = ivy.as_native_dtype(dtype)
+    ivy.utils.assertions._check_jax_x64_flag(dtype)
     if x.dtype == dtype:
         return jnp.copy(x) if copy else x
     return x.astype(dtype)
