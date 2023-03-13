@@ -291,6 +291,31 @@ def positive(
 
 
 @to_ivy_arrays_and_back
+def prod(
+    x,
+    /,
+    *,
+    axis=None,
+    dtype=None,
+    out=None,
+    keepdims=False,
+    initial=None,
+    where=True,
+    promote_integers=True
+):
+    if ivy.is_array(where):
+        x = ivy.where(where, x, ivy.default(out, ivy.ones_like(x)), out=out)
+    if initial is not None:
+        s = ivy.shape(x, as_array=True)
+        s[axis] = 1
+        header = ivy.full(ivy.Shape(tuple(s)), initial)
+        x = ivy.concat([header, x], axis=axis)
+    if promote_integers==True and dtype==None:
+        dtype = ivy.int64
+    return ivy.prod(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
+
+
+@to_ivy_arrays_and_back
 def rad2deg(
     x,
     /,
