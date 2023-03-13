@@ -11,6 +11,7 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 def eigvalsh(a, /, UPLO="L"):
     return ivy.eigvalsh(a, UPLO=UPLO)
 
+
 @to_ivy_arrays_and_back
 def eig(a):
     return ivy.eig(a)
