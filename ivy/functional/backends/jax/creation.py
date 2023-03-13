@@ -8,6 +8,7 @@ import jaxlib.xla_extension
 
 # local
 import ivy
+from ivy import as_native_dtype
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.device import _to_device
 from ivy.functional.ivy.creation import (
@@ -33,6 +34,9 @@ def arange(
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if dtype:
+        dtype = as_native_dtype(dtype)
+        ivy.utils.assertions._check_jax_x64_flag(dtype.name)
     res = _to_device(jnp.arange(start, stop, step, dtype=dtype), device=device)
     if not dtype:
         if res.dtype == jnp.float64:
