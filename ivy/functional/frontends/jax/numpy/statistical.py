@@ -347,3 +347,24 @@ def nanstd(
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
 
     return ret
+
+
+@to_ivy_arrays_and_back
+def percentile(
+    a, 
+    q, 
+    /, 
+    *, 
+    axis=None,
+    out=None,
+    interpolation="linear",
+    keepdims=False,
+):
+    axis = tuple(axis) if isinstance(axis, list) else axis
+
+    a = ivy.array(a)
+
+    ret = ivy.percentile(a, q, axis=axis, keep_dims=keepdims, 
+                         interpolation=interpolation, out=out)
+
+    return ret
