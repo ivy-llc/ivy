@@ -579,7 +579,7 @@
 <span></span><span class="sd">&quot;&quot;&quot;Collection of gradient Ivy functions.&quot;&quot;&quot;</span>
 
 <span class="c1"># global</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Callable</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
 
@@ -901,7 +901,7 @@
 <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="with_grads"><a class="viewcode-back" href="../../../../functional/ivy/gradients/with_grads.html#ivy.functional.ivy.gradients.with_grads">[docs]</a><span class="nd">@handle_exceptions</span>
 <span class="nd">@handle_array_function</span>
-<span class="k">def</span> <span class="nf">with_grads</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">with_grads</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">with_grads</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">with_grads</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Enter a nested code space where gradients are computed. This method</span>
 <span class="sd">    adds the with_grads component to the global list with_grads_stack</span>
@@ -952,27 +952,15 @@
 <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="set_with_grads"><a class="viewcode-back" href="../../../../functional/ivy/gradients/set_with_grads.html#ivy.functional.ivy.gradients.set_with_grads">[docs]</a><span class="nd">@handle_exceptions</span>
 <span class="nd">@handle_array_function</span>
-<span class="k">def</span> <span class="nf">set_with_grads</span><span class="p">(</span><span class="n">with_grads</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">set_with_grads</span><span class="p">(</span><span class="n">with_grads</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Enter a nested code space where gradients are computed. This method</span>
-<span class="sd">    adds the with_grads component to the global list with_grads_stack</span>
+<span class="sd">    This method adds the with_grads component to the global list with_grads_stack</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    with_grads</span>
-<span class="sd">        Boolean value denoting whether the current code block has gradient</span>
-<span class="sd">        computation enabled or not.</span>
-<span class="sd">        &#39;True&#39; or &#39;False&#39; or &#39;None&#39; (Default value = None)</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        If with_grads is boolean, it returns the boolean value representing</span>
-<span class="sd">        if gradient computation is enabled or not.</span>
-<span class="sd">        If with_grads is None, it returns the last element in the with_grads_stack</span>
-<span class="sd">        representing the parent of the current nested code block. If with_grads_stack</span>
-<span class="sd">        is empty, it returns True by default.</span>
-<span class="sd">        If with_grads is neither None nor boolean, it will raise an IvyException</span>
+<span class="sd">        Boolean value denoting whether to compute gradients or not.</span>
+<span class="sd">        &#39;True&#39; or &#39;False&#39;</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -998,15 +986,15 @@
 
 <div class="viewcode-block" id="unset_with_grads"><a class="viewcode-back" href="../../../../functional/ivy/gradients/unset_with_grads.html#ivy.functional.ivy.gradients.unset_with_grads">[docs]</a><span class="nd">@handle_exceptions</span>
 <span class="nd">@handle_array_function</span>
-<span class="k">def</span> <span class="nf">unset_with_grads</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">unset_with_grads</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Enter a nested code space where gradients are computed. This method</span>
-<span class="sd">    deletes the with_grads component from the global list with_grads_stack</span>
+<span class="sd">    This method deletes the last with_grads component from the global list</span>
+<span class="sd">    with_grads_stack</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        Remove and return item at index (default last).</span>
+<span class="sd">        Remove and return last item in with_grads_stack (if possible).</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -1018,11 +1006,6 @@
 <span class="sd">    &gt;&gt;&gt; ivy.set_with_grads(True)</span>
 <span class="sd">    &gt;&gt;&gt; ivy.unset_with_grads()</span>
 <span class="sd">    Returns last deleted value</span>
-
-<span class="sd">    &gt;&gt;&gt; ivy.set_with_grads(False)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.unset_with_grads()</span>
-<span class="sd">    Raises IndexError if list is empty or index is out of range.</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">with_grads_stack</span>
     <span class="k">if</span> <span class="n">with_grads_stack</span><span class="p">:</span>
@@ -1191,7 +1174,7 @@
 
 
 <div class="viewcode-block" id="value_and_grad"><a class="viewcode-back" href="../../../../functional/ivy/gradients/value_and_grad.html#ivy.functional.ivy.gradients.value_and_grad">[docs]</a><span class="nd">@handle_exceptions</span>
-<span class="k">def</span> <span class="nf">value_and_grad</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">value_and_grad</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a function that evaluates both func and the gradient of func.</span>
 
@@ -1225,7 +1208,7 @@
 
 
 <div class="viewcode-block" id="jac"><a class="viewcode-back" href="../../../../functional/ivy/gradients/jac.html#ivy.functional.ivy.gradients.jac">[docs]</a><span class="nd">@handle_exceptions</span>
-<span class="k">def</span> <span class="nf">jac</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">jac</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Call function func, and return func&#39;s Jacobian partial derivatives.</span>
 
 <span class="sd">    Parameters</span>
@@ -1259,7 +1242,7 @@
 
 
 <div class="viewcode-block" id="grad"><a class="viewcode-back" href="../../../../functional/ivy/gradients/grad.html#ivy.functional.ivy.gradients.grad">[docs]</a><span class="nd">@handle_exceptions</span>
-<span class="k">def</span> <span class="nf">grad</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">grad</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Call function func, and return func&#39;s gradients.</span>
 
 <span class="sd">    Parameters</span>

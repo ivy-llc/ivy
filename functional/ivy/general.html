@@ -1432,7 +1432,7 @@ of the current backend’s function.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – The function to check for the supported device and dtype attribute</p></li>
-<li><p><strong>recurse</strong> – Whether to recurse into used ivy functions.
+<li><p><strong>recurse</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to recurse into used ivy functions. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
 Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
 </dd>
@@ -1454,7 +1454,7 @@ of the current backend’s function.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – The function to check for the unsupported device and dtype attribute</p></li>
-<li><p><strong>recurse</strong> – Whether to recurse into used ivy functions.
+<li><p><strong>recurse</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to recurse into used ivy functions. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
 Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
 </dd>
@@ -1477,9 +1477,9 @@ Default is <code class="docutils literal notranslate"><span class="pre">True</sp
 <li><p><strong>params</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – The array from which to gather values.</p></li>
 <li><p><strong>indices</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – The array which indicates the indices that will be gathered along
 the specified axis.</p></li>
-<li><p><strong>axis</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – optional int, the axis from which to gather from. (default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>)
+<li><p><strong>axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – optional int, the axis from which to gather from. (default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>)
 Default is <code class="docutils literal notranslate"><span class="pre">-1</span></code>.</p></li>
-<li><p><strong>batch_dims</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – optional int, lets you gather different items from each element of a batch. (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)</p></li>
+<li><p><strong>batch_dims</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – optional int, lets you gather different items from each element of a batch. (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]]) – optional array, for writing the result to. It must have a shape (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
 that the inputs broadcast to.</p></li>
 </ul>
@@ -1957,11 +1957,11 @@ instances in place of any of the arguments.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.general.inplace_arrays_supported">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">inplace_arrays_supported</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#inplace_arrays_supported"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.general.inplace_arrays_supported" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">inplace_arrays_supported</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#inplace_arrays_supported"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.general.inplace_arrays_supported" title="Permalink to this definition">#</a></dt>
 <dd><p>Determine whether inplace arrays are supported for the current backend framework.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>f</strong> – (Default value = None)</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><em>ret</em> – Boolean, whether or not inplace arrays are supported.</p>
@@ -2135,9 +2135,8 @@ updates will raise an exception.</p></li>
 <span class="go">}</span>
 </pre></div>
 </div>
-<p>With mix of <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> and :class:
-<cite>ivy.Container</cite> instances:,
-and backend set as <cite>torch</cite>:</p>
+<p>With mix of <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances:, and backend
+set as <cite>torch</cite>:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]),</span> <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">inplace_update</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
@@ -2152,12 +2151,12 @@ and backend set as <cite>torch</cite>:</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.general.inplace_variables_supported">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">inplace_variables_supported</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#inplace_variables_supported"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.general.inplace_variables_supported" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">inplace_variables_supported</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#inplace_variables_supported"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.general.inplace_variables_supported" title="Permalink to this definition">#</a></dt>
 <dd><p>Determine whether inplace variables are supported for the current backend
 framework.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>f</strong> – (Default value = None)</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><em>ret</em> – Boolean, whether or not inplace variables are supported.</p>
@@ -3399,7 +3398,7 @@ wrapping traces</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code>]) – The input to check Input array.</p></li>
-<li><p><strong>include_infs</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]) – Whether to include infs and -infs in the check. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
+<li><p><strong>include_infs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to include infs and -infs in the check. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
 Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 </ul>
 </dd>
@@ -3464,7 +3463,7 @@ corresponding positional argument. Axis integers must
 be in the range [-ndim, ndim) for each array,
 where ndim is the number of dimensions (axes) of the
 corresponding input array.</p></li>
-<li><p><strong>out_axes</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – An integer indicating where the mapped axis should appear in the output. (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)</p></li>
+<li><p><strong>out_axes</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – An integer indicating where the mapped axis should appear in the output. (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>

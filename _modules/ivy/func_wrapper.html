@@ -607,6 +607,7 @@
     <span class="s2">&quot;with_unsupported_dtypes&quot;</span><span class="p">,</span>
     <span class="s2">&quot;handle_nans&quot;</span><span class="p">,</span>
     <span class="s2">&quot;handle_array_like_without_promotion&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;handle_mixed_function&quot;</span><span class="p">,</span>
 <span class="p">]</span>
 
 
@@ -1275,6 +1276,11 @@
                     <span class="s2">&quot;inputs_to_native_arrays&quot;</span><span class="p">,</span>
                 <span class="p">],</span>
             <span class="p">}</span>
+            <span class="c1"># if the backend has a primary implementation</span>
+            <span class="c1"># we&#39;ll store the compositional fn&#39;s reference</span>
+            <span class="c1"># for the handle_mixed_function decorator</span>
+            <span class="k">if</span> <span class="n">to_wrap</span> <span class="o">!=</span> <span class="n">original</span><span class="p">:</span>
+                <span class="n">to_wrap</span><span class="o">.</span><span class="n">compos</span> <span class="o">=</span> <span class="n">original</span>
             <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">to_replace</span><span class="p">[</span><span class="n">compositional</span><span class="p">]:</span>
                 <span class="nb">setattr</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
@@ -1490,6 +1496,20 @@
 
     <span class="n">new_fn</span><span class="o">.</span><span class="n">handle_nans</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">return</span> <span class="n">new_fn</span></div>
+    
+
+<div class="viewcode-block" id="handle_mixed_function"><a class="viewcode-back" href="../../func_wrapper/handle_mixed_function.html#ivy.func_wrapper.handle_mixed_function">[docs]</a><span class="k">def</span> <span class="nf">handle_mixed_function</span><span class="p">(</span><span class="n">condition</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">inner_function</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+        <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="n">compos</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">new_fn</span><span class="p">,</span> <span class="s1">&#39;compos&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">condition</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">compos</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">new_fn</span><span class="o">.</span><span class="n">handle_mixed_functions</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="n">new_fn</span>
+    <span class="k">return</span> <span class="n">inner_function</span></div>
 
 
 <span class="n">attribute_dict</span> <span class="o">=</span> <span class="p">{</span>

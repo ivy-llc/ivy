@@ -906,11 +906,14 @@ variable w.r.t each input variable.</p>
 <dd><p>Call function func, and return func’s gradients.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>func</strong> – Function for which we compute the gradients of the output with respect to xs
+<dd class="field-odd"><p><strong>func</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – Function for which we compute the gradients of the output with respect to xs
 input.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>ret</em> – the grad function</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>ret</em> – the grad function</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -1010,11 +1013,14 @@ inputs broadcast to.</p></li>
 <dd><p>Call function func, and return func’s Jacobian partial derivatives.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>func</strong> – Function for which we compute the gradients of the output with respect to xs
+<dd class="field-odd"><p><strong>func</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – Function for which we compute the gradients of the output with respect to xs
 input.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>ret</em> – the Jacobian function</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>ret</em> – the Jacobian function</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -1296,21 +1302,11 @@ inputs broadcast to.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.gradients.set_with_grads">
 <span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">set_with_grads</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">with_grads</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/gradients.html#set_with_grads"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.gradients.set_with_grads" title="Permalink to this definition">#</a></dt>
-<dd><p>Enter a nested code space where gradients are computed. This method
-adds the with_grads component to the global list with_grads_stack</p>
+<dd><p>This method adds the with_grads component to the global list with_grads_stack</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>with_grads</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Boolean value denoting whether the current code block has gradient
-computation enabled or not.
-‘True’ or ‘False’ or ‘None’ (Default value = None)</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>ret</em> – If with_grads is boolean, it returns the boolean value representing
-if gradient computation is enabled or not.
-If with_grads is None, it returns the last element in the with_grads_stack
-representing the parent of the current nested code block. If with_grads_stack
-is empty, it returns True by default.
-If with_grads is neither None nor boolean, it will raise an IvyException</p>
+<dd class="field-odd"><p><strong>with_grads</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Boolean value denoting whether to compute gradients or not.
+‘True’ or ‘False’</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -1332,6 +1328,11 @@ If with_grads is neither None nor boolean, it will raise an IvyException</p>
 <span class="go">False</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -1403,11 +1404,14 @@ inputs broadcast to.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.gradients.unset_with_grads">
 <span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">unset_with_grads</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/gradients.html#unset_with_grads"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.gradients.unset_with_grads" title="Permalink to this definition">#</a></dt>
-<dd><p>Enter a nested code space where gradients are computed. This method
-deletes the with_grads component from the global list with_grads_stack</p>
+<dd><p>This method deletes the last with_grads component from the global list
+with_grads_stack</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><em>ret</em> – Remove and return item at index (default last).</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>ret</em> – Remove and return last item in with_grads_stack (if possible).</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -1422,11 +1426,6 @@ deletes the with_grads component from the global list with_grads_stack</p>
 <span class="go">Returns last deleted value</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_with_grads</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">unset_with_grads</span><span class="p">()</span>
-<span class="go">Raises IndexError if list is empty or index is out of range.</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py function">
@@ -1435,11 +1434,14 @@ deletes the with_grads component from the global list with_grads_stack</p>
 <dd><p>Create a function that evaluates both func and the gradient of func.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>func</strong> – Function for which we compute the gradients of the output with respect to xs
+<dd class="field-odd"><p><strong>func</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – Function for which we compute the gradients of the output with respect to xs
 input.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>ret</em> – A function that returns both func and the gradient of func.</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>ret</em> – A function that returns both func and the gradient of func.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>

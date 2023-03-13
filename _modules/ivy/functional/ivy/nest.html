@@ -670,7 +670,7 @@
 
 
 <div class="viewcode-block" id="prune_nest_at_index"><a class="viewcode-back" href="../../../../functional/ivy/nest/prune_nest_at_index.html#ivy.functional.ivy.nest.prune_nest_at_index">[docs]</a><span class="nd">@handle_exceptions</span>
-<span class="k">def</span> <span class="nf">prune_nest_at_index</span><span class="p">(</span><span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">prune_nest_at_index</span><span class="p">(</span><span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Prune a nested object at a specified index.</span>
 
 <span class="sd">    Parameters</span>
@@ -794,7 +794,7 @@
 
 
 <div class="viewcode-block" id="insert_into_nest_at_index"><a class="viewcode-back" href="../../../../functional/ivy/nest/insert_into_nest_at_index.html#ivy.functional.ivy.nest.insert_into_nest_at_index">[docs]</a><span class="nd">@handle_exceptions</span>
-<span class="k">def</span> <span class="nf">insert_into_nest_at_index</span><span class="p">(</span><span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">insert_into_nest_at_index</span><span class="p">(</span><span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
@@ -984,7 +984,7 @@
 
 
 <div class="viewcode-block" id="prune_nest_at_indices"><a class="viewcode-back" href="../../../../functional/ivy/nest/prune_nest_at_indices.html#ivy.functional.ivy.nest.prune_nest_at_indices">[docs]</a><span class="nd">@handle_exceptions</span>
-<span class="k">def</span> <span class="nf">prune_nest_at_indices</span><span class="p">(</span><span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">indices</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">prune_nest_at_indices</span><span class="p">(</span><span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">indices</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Prune a nested object at specified indices.</span>
 
 <span class="sd">    Parameters</span>
@@ -1082,7 +1082,7 @@
 
 
 <div class="viewcode-block" id="insert_into_nest_at_indices"><a class="viewcode-back" href="../../../../functional/ivy/nest/insert_into_nest_at_indices.html#ivy.functional.ivy.nest.insert_into_nest_at_indices">[docs]</a><span class="nd">@handle_exceptions</span>
-<span class="k">def</span> <span class="nf">insert_into_nest_at_indices</span><span class="p">(</span><span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">indices</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">insert_into_nest_at_indices</span><span class="p">(</span><span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">indices</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Insert a value into the nested item at specified indices with specified values.</span>
 
 <span class="sd">    Parameters</span>
@@ -1190,8 +1190,8 @@
     <span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span>
     <span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
     <span class="n">check_nests</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">to_ignore</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">_index</span><span class="p">:</span> <span class="n">List</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">to_ignore</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">_index</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">_base</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">stop_after_n_found</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">extra_nest_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1368,7 +1368,7 @@
 <span class="k">def</span> <span class="nf">all_nested_indices</span><span class="p">(</span>
     <span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span>
     <span class="n">include_nests</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">_index</span><span class="p">:</span> <span class="n">List</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">_index</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">_base</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">extra_nest_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
@@ -1434,8 +1434,8 @@
 <div class="viewcode-block" id="map"><a class="viewcode-back" href="../../../../functional/ivy/nest/map.html#ivy.functional.ivy.nest.map">[docs]</a><span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">map</span><span class="p">(</span>
     <span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
-    <span class="n">constant</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">unique</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">constant</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">unique</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">mean</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Applies a function on each item of an iterable x.</span>
@@ -1541,9 +1541,9 @@
     <span class="o">/</span><span class="p">,</span>
     <span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
     <span class="n">include_derived</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="nb">bool</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">to_ignore</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">to_ignore</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">to_mutable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">max_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">max_depth</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="n">_tuple_check_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">_list_check_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>

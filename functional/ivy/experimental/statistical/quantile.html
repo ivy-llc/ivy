@@ -590,10 +590,10 @@
 between 0 and 1 inclusive.</p></li>
 <li><p><strong>axis</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]) – Axis or axes along which the quantiles are computed. The default (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
 is to compute the quantile(s) along a flattened version of the array.</p></li>
-<li><p><strong>keepdims</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]) – If this is set to True, the axes which are reduced are left in the result (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
+<li><p><strong>keepdims</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If this is set to True, the axes which are reduced are left in the result (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
 as dimensions with size one. With this option, the result will broadcast
 correctly against the original array a.</p></li>
-<li><p><strong>interpolation</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – {‘nearest’, ‘linear’, ‘lower’, ‘higher’, ‘midpoint’}. Default value: ‘linear’. (default: <code class="docutils literal notranslate"><span class="pre">'linear'</span></code>)
+<li><p><strong>interpolation</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – {‘nearest’, ‘linear’, ‘lower’, ‘higher’, ‘midpoint’}. Default value: ‘linear’. (default: <code class="docutils literal notranslate"><span class="pre">'linear'</span></code>)
 This specifies the interpolation method to use when the desired quantile lies
 between two data points i &lt; j:
 - linear: i + (j - i) * fraction, where fraction is the fractional part of the

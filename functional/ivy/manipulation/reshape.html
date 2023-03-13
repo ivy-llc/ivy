@@ -597,7 +597,7 @@ If False, the function must never copy and must
 raise a ValueError in case a copy would be necessary.
 If None, the function must reuse existing memory buffer if possible
 and copy otherwise. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
-<li><p><strong>order</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Read the elements of x using this index order, and place the elements into (default: <code class="docutils literal notranslate"><span class="pre">'C'</span></code>)
+<li><p><strong>order</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Read the elements of x using this index order, and place the elements into (default: <code class="docutils literal notranslate"><span class="pre">'C'</span></code>)
 the reshaped array using this index order.
 ‘C’ means to read / write the elements using C-like index order,
 with the last axis index changing fastest, back to the first axis index
