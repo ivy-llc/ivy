@@ -122,11 +122,11 @@ def full(shape, fill_value, dtype=None):
     return ivy.full(shape, fill_value, dtype=dtype)
 
 
-<<<<<<< HEAD
+
 @to_ivy_arrays_and_back
 def double(x):
     return ivy.astype(x, ivy.double, copy=False)
-=======
+
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16", )}, 'jax')

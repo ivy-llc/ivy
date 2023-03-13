@@ -551,7 +551,7 @@ def test_jax_numpy_full(
     )
 
 
-<<<<<<< HEAD
+
 
 @handle_frontend_test(
     fn_tree="jax.numpy.double",
