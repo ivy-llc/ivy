@@ -110,8 +110,11 @@ ivy_toctree_caption_map = {
 }
 
 discussion_channel_map = {
-    "ivy.array_classes.array": ["1000042910831620176", "1028296936203235359"],
-    "ivy.array_classes.container": ["1000042831928381591", "1028297229980668015"],
+    "ivy.data_classes.array.array": ["1000042910831620176", "1028296936203235359"],
+    "ivy.data_classes.container.container": [
+        "1000042831928381591",
+        "1028297229980668015",
+    ],
     "ivy.functional.ivy.activations": ["1000043490329251890", "1028298682614947850"],
     "ivy.functional.ivy.compilation": ["1000043526849056808", "1028298745726648371"],
     "ivy.functional.ivy.constants": ["1000043690254946374", "1028298780715536454"],

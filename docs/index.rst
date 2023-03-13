@@ -69,14 +69,15 @@ Check out our Google Colabs_ for some interactive demos!
   ivy.functional.ivy.utility
 
 
-.. .. autosummary
-..   :toctree: docs/data_classes
-..   :caption: Data classes
-..   :template: top_level_module.rst
-..   :recursive:
-..   :hide-table:
+.. autosummary::
+  :toctree: docs/data_classes
+  :caption: Data classes
+  :template: top_level_module.rst
+  :recursive:
+  :hide-table:
 
-..   ivy.array.array
+  ivy.data_classes.array.array
+  ivy.data_classes.container.container
 
 .. autosummary::
   :toctree: docs/framework
