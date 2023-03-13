@@ -10,9 +10,6 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test, assert_all_close
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_dtype_and_matrix,
 )
-from ivy_tests.test_ivy.test_frontends.test_torch.test_linalg import (
-    _get_dtype_and_square_matrix,
-)
 
 
 # eigvalsh
@@ -41,6 +38,7 @@ def test_numpy_eigvalsh(
         a=xs,
         UPLO=UPLO,
     )
+
 
 # eig
 @handle_frontend_test(
