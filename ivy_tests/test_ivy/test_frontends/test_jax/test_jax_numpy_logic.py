@@ -853,3 +853,30 @@ def test_jax_numpy_logical_xor(
         x1=x[0],
         x2=x[1],
     )
+
+
+# setdiff1d
+@handle_frontend_test(
+    fn_tree="jax.numpy.setdiff1d",
+    dtypes_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("int"),
+        num_arrays=2,
+    ),
+)
+def test_jax_numpy_setdiff1d(
+    dtypes_values,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    x_dtypes, x = dtypes_values
+    np_helpers.test_frontend_function(
+        input_dtypes=x_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=x[0],
+        x2=x[1],
+    )
