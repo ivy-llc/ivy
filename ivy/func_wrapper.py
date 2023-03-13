@@ -917,6 +917,8 @@ def handle_nans(fn: Callable) -> Callable:
 
     new_fn.handle_nans = True
     return new_fn
+    
+
 def handle_mixed_function(condition) -> Callable:
     def inner_function(fn):
         @functools.wraps(fn)
