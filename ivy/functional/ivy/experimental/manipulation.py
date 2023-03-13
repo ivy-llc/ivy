@@ -1551,7 +1551,7 @@ def hsplit(
 
 
 @handle_exceptions
-def broadcast_shapes(shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
+def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     """Broadcasts shapes.
 
     Parameters
@@ -1573,7 +1573,7 @@ def broadcast_shapes(shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     >>> print(ivy.broadcast_shapes([(3, 3),(3, 1),(1, 3)]))
     (3, 3)
     """
-    return ivy.current_backend().broadcast_shapes(shapes)
+    return ivy.current_backend().broadcast_shapes(*shapes)
 
 
 @handle_view

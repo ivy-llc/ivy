@@ -64,11 +64,7 @@ def _parse_ellipsis(so, ndims):
 
 
 def get_referrers_recursive(
-    item, 
-    depth=0, 
-    max_depth=None, 
-    seen_set=None, 
-    local_set=None
+    item, depth=0, max_depth=None, seen_set=None, local_set=None
 ):
     """
     Summary.
@@ -688,7 +684,7 @@ def to_numpy(
     x
         input array
     copy
-        whether to copy the array to a new address or not. 
+        whether to copy the array to a new address or not.
         Default is ``True``.
 
     Returns
@@ -895,10 +891,10 @@ def clip_vector_norm(
     max_norm
         The maximum value of the array norm.
     p
-        The p-value for computing the p-norm. 
+        The p-value for computing the p-norm.
         Default is 2.
     out
-        optional output array, for writing the result to. 
+        optional output array, for writing the result to.
         It must have a shape that the inputs broadcast to.
 
     Returns
@@ -984,7 +980,7 @@ def clip_matrix_norm(
     max_norm
         The maximum value of the array norm.
     p
-        The p-value for computing the p-norm. 
+        The p-value for computing the p-norm.
         Default is 2.
     out
         optional output array, for writing the result to. It must have a shape that the
@@ -1069,7 +1065,7 @@ def fourier_encode(
     max_freq
         The maximum frequency of the encoding.
     num_bands
-        The number of frequency bands for the encoding. 
+        The number of frequency bands for the encoding.
         Default is 4.
     linear
         Whether to space the frequency bands linearly as opposed to geometrically.
@@ -1078,7 +1074,7 @@ def fourier_encode(
         Whether to concatenate the position, sin and cos values, or return seperately.
         Default is ``True``.
     flatten
-        Whether to flatten the position dimension into the batch dimension. 
+        Whether to flatten the position dimension into the batch dimension.
         Default is False.
 
     Returns
@@ -1169,7 +1165,7 @@ def value_is_nan(
     x
         The input to check Input array.
     include_infs
-        Whether to include infs and -infs in the check. 
+        Whether to include infs and -infs in the check.
         Default is ``True``.
 
     Returns
@@ -1376,10 +1372,10 @@ def default(
     default_val
         The default value.
     catch_exceptions
-        Whether to catch exceptions from callable x. 
+        Whether to catch exceptions from callable x.
         Default is ``False``.
     rev
-        Whether to reverse the input x and default_val. 
+        Whether to reverse the input x and default_val.
         Default is ``False``.
     with_callable
         Whether either of the arguments might be callable functions.
@@ -2277,6 +2273,7 @@ def num_arrays_in_memory() -> int:
     -------
     ret
         Number of all arrays which are alive.
+
     Examples
     --------
     >>> ivy.num_arrays_in_memory()
@@ -2724,7 +2721,9 @@ def inplace_update(
     }
 
     """
-    return current_backend(x).inplace_update(x, val, ensure_in_backend)
+    return current_backend(x).inplace_update(
+        x, val, ensure_in_backend=ensure_in_backend
+    )
 
 
 inplace_update.unsupported_dtypes = {"torch": ("bfloat16",)}
@@ -2902,7 +2901,6 @@ def scatter_flat(
 
     Examples
     --------
-
     With :class:`ivy.Array` input:
     >>> indices = ivy.array([0, 0, 1, 0, 2, 2, 3, 3])
     >>> updates = ivy.array([5, 1, 7, 2, 3, 2, 1, 3])
@@ -3057,7 +3055,7 @@ def gather(
         The array which indicates the indices that will be gathered along
         the specified axis.
     axis
-        optional int, the axis from which to gather from. 
+        optional int, the axis from which to gather from.
         Default is ``-1``.
     batch_dims
         optional int, lets you gather different items from each element of a batch.
@@ -3577,7 +3575,7 @@ def function_supported_devices_and_dtypes(fn: Callable, recurse=True) -> Dict:
     fn
         The function to check for the supported device and dtype attribute
     recurse
-        Whether to recurse into used ivy functions. 
+        Whether to recurse into used ivy functions.
         Default is ``True``.
 
     Returns
@@ -3616,7 +3614,7 @@ def function_unsupported_devices_and_dtypes(fn: Callable, recurse=True) -> Dict:
     fn
         The function to check for the unsupported device and dtype attribute
     recurse
-        Whether to recurse into used ivy functions. 
+        Whether to recurse into used ivy functions.
         Default is ``True``.
 
     Returns

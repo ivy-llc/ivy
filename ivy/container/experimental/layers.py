@@ -1498,7 +1498,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
             - lanczos5
             - gaussian
         scale_factor
-            Multiplier for spatial size that defines the output size (overwriting `size`).
+            Multiplier for spatial size that defines the output
+            size (overwriting `size`).
         align_corners
             If True, the corner pixels of the input and output tensors are aligned,
             and thus preserving the values at the corner pixels. If False, the corner
