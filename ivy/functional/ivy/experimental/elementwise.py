@@ -1340,6 +1340,7 @@ def binarizer(
     Maps the values of the input tensor to either 0 or 1,
     element-wise, based on the outcome of a comparison
     against a threshold value.
+
     Parameters
     ----------
     x
@@ -1350,6 +1351,7 @@ def binarizer(
     out
         optional output array, for writing the result to.
         It must have a shape that the inputs broadcast to.
+
     Returns
     -------
     ret
@@ -1430,6 +1432,7 @@ def ldexp(
 ) -> ivy.Array:
     """
     Returns x1 * (2**x2), element-wise.
+
     Parameters
     ----------
     x1
@@ -1439,10 +1442,12 @@ def ldexp(
     out
         optional output array, for writing the result to.
         It must have a shape that the inputs broadcast to.
+
     Returns
     -------
     ret
         The next representable values of x1 in the direction of x2.
+
     Examples
     --------
     >>> x1 = ivy.array([1, 2, 3])
@@ -1466,6 +1471,7 @@ def frexp(
 ) -> Tuple[ivy.Array, ivy.Array]:
     """
     Decompose the elements of x into mantissa and twos exponent.
+
     Parameters
     ----------
     x
@@ -1473,10 +1479,12 @@ def frexp(
     out
         optional output array, for writing the result to.
         It must have a shape that the inputs broadcast to.
+
     Returns
     -------
     ret
         A tuple of two arrays, the mantissa and the twos exponent.
+
     Examples
     --------
     >>> x = ivy.array([1, 2, 3])
