@@ -45,7 +45,7 @@ def reshape(a, newshape, order="C"):
 def resize(a, new_shape):
     a = ivy.array(a)
     resized_a = ivy.reshape(a, new_shape)
-    return ivy.to_numpy(resized_a)
+    return resized_a
 
 
 @to_ivy_arrays_and_back

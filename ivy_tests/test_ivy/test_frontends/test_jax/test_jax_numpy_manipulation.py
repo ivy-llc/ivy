@@ -217,7 +217,7 @@ def _get_input_and_new_shape(draw):
 
 
 @handle_frontend_test(
-    fn_tree="resize",
+    fn_tree="jax.numpy.resize",
     input_x_shape=_get_input_and_new_shape(),
     test_with_out=st.just(True),
 )
