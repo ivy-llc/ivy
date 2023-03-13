@@ -6,7 +6,18 @@ import inspect
 import math
 from functools import wraps
 from numbers import Number
-from typing import Callable, Any, Union, List, Tuple, Dict, Iterable, Optional, Sequence
+from typing import (
+    Callable,
+    Any,
+    Union,
+    List,
+    Tuple,
+    Dict,
+    Iterable,
+    Optional,
+    Sequence,
+    Literal,
+)
 import einops
 import numpy as np
 
@@ -394,7 +405,7 @@ def get_nestable_mode() -> bool:
 
 
 @handle_exceptions
-def set_exception_trace_mode(mode: str) -> None:
+def set_exception_trace_mode(mode: Literal["ivy", "full", "frontend"]) -> None:
     """
     Set the mode of whether to show frontend-truncated exception stack traces,
     ivy-truncated exception stack traces or full exception stack traces
@@ -1155,7 +1166,7 @@ def value_is_nan(
     x: Union[ivy.Array, ivy.NativeArray, Number],
     /,
     *,
-    include_infs: Optional[bool] = True,
+    include_infs: bool = True,
 ) -> bool:
     """
     Determines whether the single valued array or scalar is of nan type.
@@ -2434,14 +2445,9 @@ def container_types():
 
 
 @handle_exceptions
-def inplace_arrays_supported(f=None):
+def inplace_arrays_supported() -> bool:
     """
     Determine whether inplace arrays are supported for the current backend framework.
-
-    Parameters
-    ----------
-    f
-         (Default value = None)
 
     Returns
     -------
@@ -2453,15 +2459,10 @@ def inplace_arrays_supported(f=None):
 
 
 @handle_exceptions
-def inplace_variables_supported(f=None):
+def inplace_variables_supported() -> bool:
     """
     Determine whether inplace variables are supported for the current backend
     framework.
-
-    Parameters
-    ----------
-    f
-         (Default value = None)
 
     Returns
     -------
@@ -2707,9 +2708,8 @@ def inplace_update(
         b: ivy.array([2])
     }
 
-    With mix of :class:`ivy.Array` and :class:
-    `ivy.Container` instances:,
-    and backend set as `torch`:
+    With mix of :class:`ivy.Array` and :class:`ivy.Container` instances:, and backend
+    set as `torch`:
 
     >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))
     >>> y = ivy.array([1, 2])
@@ -3040,8 +3040,8 @@ def gather(
     indices: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    axis: Optional[int] = -1,
-    batch_dims: Optional[int] = 0,
+    axis: int = -1,
+    batch_dims: int = 0,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """
@@ -3149,7 +3149,7 @@ def gather_nd(
     indices: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    batch_dims: Optional[int] = 0,
+    batch_dims: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -3217,7 +3217,7 @@ def gather_nd(
 @handle_nestable
 @handle_exceptions
 @handle_array_function
-def multiprocessing(context: str = None):
+def multiprocessing(context: Optional[str] = None):
     """
     Return backend-specific multiprocessing module.
 
@@ -3394,7 +3394,7 @@ def get_num_dims(
 
 
 @handle_exceptions
-def arg_info(fn: Callable, *, name: str = None, idx: int = None):
+def arg_info(fn: Callable, *, name: Optional[str] = None, idx: Optional[int] = None):
     """
     Return the index and `inspect.Parameter` representation of the specified argument.
     In the form of a dict with keys "idx" and "param".
@@ -3565,7 +3565,7 @@ def _get_devices_and_dtypes(fn, complement=True):
 
 @handle_nestable
 @handle_exceptions
-def function_supported_devices_and_dtypes(fn: Callable, recurse=True) -> Dict:
+def function_supported_devices_and_dtypes(fn: Callable, recurse: bool = True) -> Dict:
     """
     Returns the supported combination of devices and dtypes
     of the current backend's function.
@@ -3604,7 +3604,7 @@ def function_supported_devices_and_dtypes(fn: Callable, recurse=True) -> Dict:
 
 @handle_nestable
 @handle_exceptions
-def function_unsupported_devices_and_dtypes(fn: Callable, recurse=True) -> Dict:
+def function_unsupported_devices_and_dtypes(fn: Callable, recurse: bool = True) -> Dict:
     """
     Returns the unsupported combination of devices and dtypes
     of the current backend's function.
@@ -3645,7 +3645,7 @@ def function_unsupported_devices_and_dtypes(fn: Callable, recurse=True) -> Dict:
 def vmap(
     func: Callable,
     in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
-    out_axes: Optional[int] = 0,
+    out_axes: int = 0,
 ) -> Callable:
     """
     Vectorizing map. Creates a function which maps func over argument axes.

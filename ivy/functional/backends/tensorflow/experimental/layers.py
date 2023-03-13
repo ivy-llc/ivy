@@ -179,9 +179,9 @@ def dct(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    type: Optional[Literal[1, 2, 3, 4]] = 2,
+    type: Literal[1, 2, 3, 4] = 2,
     n: Optional[int] = None,
-    axis: Optional[int] = -1,
+    axis: int = -1,
     norm: Optional[Literal["ortho"]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> tf.Tensor:
@@ -238,7 +238,7 @@ def fft(
     dim: int,
     /,
     *,
-    norm: Optional[str] = "backward",
+    norm: str = "backward",
     n: Union[int, Tuple[int]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -342,7 +342,7 @@ def ifft(
     x: Union[tf.Tensor, tf.Variable],
     dim: int,
     *,
-    norm: Optional[str] = "backward",
+    norm: str = "backward",
     n: Union[int, Tuple[int]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -429,7 +429,7 @@ def interpolate(
     ] = "linear",
     scale_factor: Optional[Union[Sequence[int], int]] = None,
     align_corners: Optional[bool] = None,
-    antialias: Optional[bool] = False,
+    antialias: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
     dims = len(x.shape) - 2

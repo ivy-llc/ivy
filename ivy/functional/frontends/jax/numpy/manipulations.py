@@ -42,6 +42,13 @@ def reshape(a, newshape, order="C"):
 
 
 @to_ivy_arrays_and_back
+def resize(a, new_shape):
+    a = ivy.array(a)
+    resized_a = ivy.reshape(a, new_shape)
+    return resized_a
+
+
+@to_ivy_arrays_and_back
 def moveaxis(a, source, destination):
     return ivy.moveaxis(a, source, destination)
 
