@@ -1080,16 +1080,31 @@ def _tf_area_interpolate(x, size, dims):
     return ret
 
 
+def _nearest_exact_interpolate(x, dims, size, input_shape, exact):
+    off = 0.5 if exact else 0
+    for d in range(dims):
+        m = input_shape[d + 2]
+        n = size[d]
+        offsets = (ivy.arange(n, dtype="float32") + off) * m / n
+        offsets = ivy.astype(ivy.floor(ivy.astype(offsets, "float32")), "int32")
+        x = ivy.gather(x, offsets, axis=d + 2)
+    return x
+
+
 def _triangle_kernel(x):
     return ivy.maximum(0, 1 - ivy.abs(x))
 
 
+def _cubic_kernel(x):
+    out = ((1.5 * x - 2.5) * x) * x + 1.0
+    out = ivy.where(x >= 1.0, ((-0.5 * x + 2.5) * x - 4.0) * x + 2.0, out)
+    return ivy.where(x >= 2.0, 0.0, out)
+
+
 def _lanczos_kernel(radius, x):
     y = radius * ivy.sin(ivy.pi * x) * ivy.sin(ivy.pi * x / radius)
-    out = ivy.where(
-        x > 1e-3, ivy.divide(y, ivy.where(x != 0, ivy.pi**2 * x**2, 1)), 1
-    )
-    return ivy.where(x > radius, 0.0, out)
+    out = ivy.where(x != 0, ivy.divide(y, ivy.pi**2 * x**2), 1)
+    return ivy.where(ivy.bitwise_and(x >= radius, x < -radius), 0.0, out)
 
 
 def compute_weight_mat(
@@ -1134,11 +1149,13 @@ def interpolate(
             "trilinear",
             "nearest",
             "area",
-            "nearest_exact",
+            "nearest-exact",
             "tf_area",
-            "bicubic",
+            "bicubic_tensorflow",
+            "mitchellcubic",
             "lanczos3",
             "lanczos5",
+            "gaussian",
         ]
     ] = "linear",
     scale_factor: Optional[Union[Sequence[int], int]] = None,
@@ -1163,9 +1180,14 @@ def interpolate(
         - bilinear
         - trilinear
         - nearest
+        - nearest-exact
         - area
         - tf_area
         - bicubic
+        - mitchellcubic
+        - lanczos3
+        - lanczos5
+        - gaussian
     scale_factor
         Multiplier for spatial size that defines the output size (overwriting `size`).
     align_corners
@@ -1188,8 +1210,7 @@ def interpolate(
 
     """
 
-    # bicubic kernel
-    def u(s, a=-0.5):
+    def bicubic_kernel(s, a=-0.5):
         abs_s = abs(s)
         if (abs_s >= 0) & (abs_s <= 1):
             return (a + 2) * (abs_s**3) - (a + 3) * (abs_s**2) + 1
@@ -1197,12 +1218,44 @@ def interpolate(
             return a * (abs_s**3) - (5 * a) * (abs_s**2) + (8 * a) * abs_s - 4 * a
         return 0
 
-    dims = len(x.shape) - 2
+    def mitchellcubic_kernel(s, b=1 / 3, c=1 / 3):
+        abs_s = abs(s)
+        abs_s_2 = abs_s**2
+        abs_s_3 = abs_s**3
+        return ivy.where(
+            abs_s <= 1,
+            (
+                (12 - 9 * b - 6 * c) * abs_s_3
+                + (-18 + 12 * b + 6 * c) * abs_s_2
+                + (6 - 2 * b)
+            )
+            / 6,
+            ivy.where(
+                abs_s <= 2,
+                (
+                    (-1 * b - 6 * c) * abs_s_3
+                    + (6 * b + 30 * c) * abs_s_2
+                    + (-12 * b - 48 * c) * abs_s
+                    + (8 * b + 24 * c)
+                )
+                / 6,
+                ivy.zeros_like(s),
+            ),
+        )
+
+    input_shape = ivy.shape(x)
+    dims = len(input_shape) - 2
     size = _get_size(scale_factor, size, dims, x.shape)
     spatial_dims = [2 + i for i in range(dims)]
-    input_shape = ivy.shape(x)
     scale = [ivy.divide(size[i], input_shape[spatial_dims[i]]) for i in range(dims)]
-    if mode in ["linear", "bilinear", "trilinear", "lanczos3", "lanczos5"]:
+    if mode in [
+        "linear",
+        "bilinear",
+        "bicubic_tensorflow",
+        "trilinear",
+        "lanczos3",
+        "lanczos5",
+    ]:
         kernel_func = _triangle_kernel
         if mode == "linear" or dims == 1:
             equation = "ijk,km->ijm"
@@ -1210,6 +1263,9 @@ def interpolate(
             equation = "ijkl,km,ln->ijmn"
         elif mode == "trilinear" or dims == 3:
             equation = "ijklm,kn,lo,mp->ijnop"
+
+        if mode == "bicubic_tensorflow":
+            kernel_func = lambda inputs: _cubic_kernel(inputs)
 
         if mode == "lanczos3":
             kernel_func = lambda inputs: _lanczos_kernel(3, inputs)
@@ -1225,33 +1281,13 @@ def interpolate(
             ).astype(x.dtype)
             operands.append(w)
         ret = ivy.einsum(equation, x, *operands)
-    elif mode == "nearest" or mode == "nearest_exact":
-        ret = ivy.zeros((x.shape[:2] + tuple(size)))
-        for i, ba in enumerate(x):
-            for j, ch in enumerate(ba):
-                w_scale = size[-1] / x.shape[-1]
-                if dims == 3:
-                    h_scale = size[-2] / x.shape[-2]
-                    d_scale = size[-3] / x.shape[-3]
-                    for d_dim in range(size[0]):
-                        for h_dim in range(size[1]):
-                            for w_dim in range(size[2]):
-                                ret[i, j, d_dim, h_dim, w_dim] = x[i][j][
-                                    round(d_dim // d_scale)
-                                ][round(h_dim // h_scale)][round(w_dim // w_scale)]
-                elif dims == 2:
-                    h_scale = size[-2] / x.shape[-2]
-                    for h_dim in range(size[0]):
-                        for w_dim in range(size[1]):
-                            ret[i, j, h_dim, w_dim] = x[i][j][round(h_dim // h_scale)][
-                                round(w_dim // w_scale)
-                            ]
-                elif dims == 1:
-                    for w_dim in range(size[0]):
-                        ret[i, j, w_dim] = x[i][j][round(w_dim // w_scale)]
+    elif mode in ["nearest-exact", "nearest"]:
+        ret = _nearest_exact_interpolate(
+            x, dims, size, input_shape, mode == "nearest-exact"
+        )
     elif mode == "area":
         ret = ivy.zeros((x.shape[:2] + size))
-        scale = ivy.divide(ivy.shape(x)[2:], size)
+        inv_scale = ivy.divide(1.0, scale)
         for i, ba in enumerate(x):
             for j, ch in enumerate(ba):
                 if dims == 3:
@@ -1259,16 +1295,16 @@ def interpolate(
                         for h_dim in range(size[1]):
                             for w_dim in range(size[2]):
                                 d_index = (
-                                    int(d_dim * scale[0]),
-                                    math.ceil((d_dim + 1) * scale[0]),
+                                    int(d_dim * inv_scale[0]),
+                                    math.ceil((d_dim + 1) * inv_scale[0]),
                                 )
                                 h_index = (
-                                    int(h_dim * scale[1]),
-                                    math.ceil((h_dim + 1) * scale[1]),
+                                    int(h_dim * inv_scale[1]),
+                                    math.ceil((h_dim + 1) * inv_scale[1]),
                                 )
                                 w_index = (
                                     int(w_dim * scale[2]),
-                                    math.ceil((w_dim + 1) * scale[2]),
+                                    math.ceil((w_dim + 1) * inv_scale[2]),
                                 )
                                 scale_z = d_index[1] - d_index[0]
                                 scale_y = h_index[1] - h_index[0]
@@ -1285,12 +1321,12 @@ def interpolate(
                     for h_dim in range(size[0]):
                         for w_dim in range(size[1]):
                             h_index = (
-                                int(h_dim * scale[0]),
-                                math.ceil((h_dim + 1) * scale[0]),
+                                int(h_dim * inv_scale[0]),
+                                math.ceil((h_dim + 1) * inv_scale[0]),
                             )
                             w_index = (
-                                int(w_dim * scale[1]),
-                                math.ceil((w_dim + 1) * scale[1]),
+                                int(w_dim * inv_scale[1]),
+                                math.ceil((w_dim + 1) * inv_scale[1]),
                             )
                             scale_y = h_index[1] - h_index[0]
                             scale_x = w_index[1] - w_index[0]
@@ -1301,8 +1337,8 @@ def interpolate(
                 else:
                     for w_dim in range(size[0]):
                         w_index = (
-                            int(w_dim * scale[0]),
-                            math.ceil((w_dim + 1) * scale[0]),
+                            int(w_dim * inv_scale[0]),
+                            math.ceil((w_dim + 1) * inv_scale[0]),
                         )
                         scale_x = w_index[1] - w_index[0]
                         ret[i, j, w_dim] = ivy.sum(ch[w_index[0] : w_index[1]]) * (
@@ -1320,7 +1356,7 @@ def interpolate(
                         x0, y0 = i / scale_factor_h + 2, j / scale_factor_w + 2
                         x_s = [math.floor(x0) + i - x0 for i in range(-1, 3, 1)]
                         y_s = [math.floor(y0) + i - y0 for i in range(-1, 3, 1)]
-                        mat_l = ivy.array([[u(x_i) for x_i in x_s]])
+                        mat_l = ivy.array([[bicubic_kernel(x_i) for x_i in x_s]])
                         mat_m = ivy.array(
                             [
                                 [x[n, c, int(x0 + x_i), int(y0 + y_i)] for y_i in y_s]
@@ -1328,10 +1364,42 @@ def interpolate(
                             ],
                             dtype=ivy.float32,
                         )
-                        mat_r = ivy.array([[u(y_i)] for y_i in y_s])
-                        ret[n, c, i, j] = ivy.multi_dot((mat_l, mat_m, mat_r)).squeeze(
-                            0
+                        mat_r = ivy.array([[bicubic_kernel(y_i)] for y_i in y_s])
+                        ret[n, c, i, j] = ivy.squeeze(
+                            ivy.multi_dot((mat_l, mat_m, mat_r)), 0
                         )
+    elif mode in ["mitchellcubic", "gaussian"]:
+        if mode == "mitchellcubic":
+            kernel_size_h = 3 * size[0]
+            kernel_size_w = 3 * size[1]
+            kernel_h = mitchellcubic_kernel(ivy.linspace(-1, 1, kernel_size_h))
+            kernel_w = mitchellcubic_kernel(ivy.linspace(-1, 1, kernel_size_w))
+            kernel = ivy.outer(kernel_h, kernel_w)
+        else:
+            kernel_size_h = size[0] // 10 * 2 + 1
+            kernel_size_w = size[1] // 10 * 2 + 1
+            sigma_h = 0.3 * ((kernel_size_h - 1) * 0.5 - 1) + 0.8
+            sigma_w = 0.3 * ((kernel_size_w - 1) * 0.5 - 1) + 0.8
+            kernel = ivy.array(
+                [
+                    [
+                        math.exp(-(i**2 + j**2) / (sigma_h**2 + sigma_w**2))
+                        for i in range(-(kernel_size_h // 2), kernel_size_h // 2 + 1)
+                    ]
+                    for j in range(-(kernel_size_w // 2), kernel_size_w // 2 + 1)
+                ]
+            )
+        kernel = kernel / kernel.sum()
+        padding = (kernel_size_h // 2, kernel_size_w // 2)
+        x = ivy.pad(x, ((0, 0), (0, 0), padding, padding), mode="reflect")
+        x = ivy.conv2d(
+            x,
+            kernel.unsqueeze(-1).unsqueeze(-1),
+            1,
+            ((0, 0), (0, 0)),
+            data_format="NCHW",
+        )
+        return interpolate(x, size=size, mode="bicubic", align_corners=True)
     elif mode == "tf_area":
         ret = _tf_area_interpolate(x, size, dims)
     return ivy.astype(ret, ivy.dtype(x), out=out)

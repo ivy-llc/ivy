@@ -266,11 +266,14 @@ def _interp_args(draw, mode=None, mode_list=None):
                     "bilinear",
                     "trilinear",
                     "nearest",
+                    "nearest-exact",
                     "area",
                     "tf_area",
-                    "bicubic",
+                    "bicubic_tensorflow",
                     "lanczos3",
                     "lanczos5",
+                    "mitchellcubic",
+                    "gaussian",
                 ]
             )
         )
@@ -279,13 +282,19 @@ def _interp_args(draw, mode=None, mode_list=None):
     align_corners = draw(st.one_of(st.booleans(), st.none()))
     if mode == "linear":
         num_dims = 3
-    elif mode == "bilinear" or mode == "bicubic":
+    elif mode in ["bilinear", "bicubic_tensorflow", "mitchellcubic", "gaussian"]:
         num_dims = 4
     elif mode == "trilinear":
         num_dims = 5
-    elif mode in ["nearest", "area", "tf_area", "lanczos3", "lanczos5"]:
-        dim = draw(helpers.ints(min_value=1, max_value=3))
-        num_dims = dim + 2
+    elif mode in [
+        "nearest",
+        "area",
+        "tf_area",
+        "lanczos3",
+        "lanczos5",
+        "nearest-exact",
+    ]:
+        num_dims = draw(helpers.ints(min_value=1, max_value=3)) + 2
         align_corners = None
     dtype, x = draw(
         helpers.dtype_and_values(
@@ -293,7 +302,7 @@ def _interp_args(draw, mode=None, mode_list=None):
             min_num_dims=num_dims,
             max_num_dims=num_dims,
             min_dim_size=1,
-            max_dim_size=3,
+            max_dim_size=5,
             large_abs_safety_factor=50,
             small_abs_safety_factor=50,
             safety_factor_scale="log",
@@ -374,6 +383,7 @@ def test_interpolate(
                 or "Input and output sizes should be greater than 0" in e.message
             ):
                 assume(False)
+        raise e
 
 
 @st.composite

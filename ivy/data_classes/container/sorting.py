@@ -340,7 +340,9 @@ class _ContainerWithSorting(ContainerBase):
         /,
         *,
         side="left",
-        sorter: Optional = None,
+        sorter: Optional[
+            Union[ivy.Array, ivy.NativeArray, ivy.Container, List[int]]
+        ] = None,
         ret_dtype=ivy.int64,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
