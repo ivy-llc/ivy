@@ -101,6 +101,16 @@ def take(
 
 
 @to_ivy_arrays_and_back
+def broadcast_arrays(*args):
+    return ivy.broadcast_arrays(*args)
+
+
+@to_ivy_arrays_and_back
+def broadcast_shapes(*shapes):
+    return ivy.broadcast_shapes(*shapes)
+
+
+@to_ivy_arrays_and_back
 def broadcast_to(arr, shape):
     return ivy.broadcast_to(arr, shape)
 
@@ -131,6 +141,14 @@ def atleast_1d(*arys):
 @to_ivy_arrays_and_back
 def atleast_2d(*arys):
     return ivy.atleast_2d(*arys)
+
+
+@to_ivy_arrays_and_back
+def block(arr, block_size):
+    if isinstance(arr, ivy.Array):
+        arr_blocks = ivy.reshape(arr,
+                                 ivy.concat([ivy.shape(arr)[:-1], [-1, block_size]], 0))
+        return arr_blocks
 
 
 @to_ivy_arrays_and_back
@@ -177,3 +195,8 @@ def vsplit(ary, indices_or_sections):
 @to_ivy_arrays_and_back
 def hsplit(ary, indices_or_sections):
     return ivy.hsplit(ary, indices_or_sections)
+
+
+@to_ivy_arrays_and_back
+def roll(a, shift, axis=None):
+    return ivy.roll(a, shift, axis=axis)

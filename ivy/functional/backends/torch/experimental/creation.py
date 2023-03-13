@@ -17,7 +17,7 @@ import ivy
 def triu_indices(
     n_rows: int,
     n_cols: Optional[int] = None,
-    k: Optional[int] = 0,
+    k: int = 0,
     /,
     *,
     device: torch.device,
@@ -53,9 +53,9 @@ def hamming_window(
     window_length: int,
     /,
     *,
-    periodic: Optional[bool] = True,
-    alpha: Optional[float] = 0.54,
-    beta: Optional[float] = 0.46,
+    periodic: bool = True,
+    alpha: float = 0.54,
+    beta: float = 0.46,
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -74,7 +74,7 @@ def hamming_window(
 def vorbis_window(
     window_length: torch.tensor,
     *,
-    dtype: Optional[torch.dtype] = torch.float32,
+    dtype: torch.dtype = torch.float32,
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
     return torch.tensor(
@@ -98,7 +98,7 @@ def hann_window(
     size: int,
     /,
     *,
-    periodic: Optional[bool] = True,
+    periodic: bool = True,
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
@@ -118,7 +118,7 @@ hann_window.support_native_out = False
 def tril_indices(
     n_rows: int,
     n_cols: Optional[int] = None,
-    k: Optional[int] = 0,
+    k: int = 0,
     /,
     *,
     device: torch.device,

@@ -80,7 +80,7 @@ def asarray(
     /,
     *,
     copy: Optional[bool] = None,
-    dtype: tf.DType = None,
+    dtype: Optional[tf.DType] = None,
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -384,7 +384,7 @@ array = asarray
 def copy_array(
     x: Union[tf.Tensor, tf.Variable],
     *,
-    to_ivy_array: Optional[bool] = True,
+    to_ivy_array: bool = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if to_ivy_array:

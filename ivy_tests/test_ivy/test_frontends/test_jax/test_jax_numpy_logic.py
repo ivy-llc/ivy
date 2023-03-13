@@ -828,15 +828,15 @@ def test_jax_numpy_isreal(
     )
 
 
-# setdiff1d
+# logical_xor
 @handle_frontend_test(
-    fn_tree="jax.numpy.setdiff1d",
+    fn_tree="jax.numpy.logical_xor",
     dtypes_values=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("int"),
+        available_dtypes=helpers.get_dtypes("bool"),
         num_arrays=2,
     ),
 )
-def test_jax_numpy_setdiff1d(
+def test_jax_numpy_logical_xor(
     dtypes_values,
     on_device,
     fn_tree,
@@ -853,5 +853,3 @@ def test_jax_numpy_setdiff1d(
         x1=x[0],
         x2=x[1],
     )
-
-

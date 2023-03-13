@@ -191,8 +191,6 @@ def isreal(x, out=None):
 
 
 @to_ivy_arrays_and_back
-def setdiff1d(ar1, ar2, assume_unique=False, *, size=None, fill_value=None):
-    ret = ivy.array(set(ar1).difference(set(ar2)))
-    if not assume_unique:
-        ret = ivy.sort(ret)
-    return ret
+def logical_xor(x1, x2, /):
+    x1, x2 = promote_jax_arrays(x1, x2)
+    return ivy.logical_xor(x1, x2)

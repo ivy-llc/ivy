@@ -12,11 +12,11 @@ def diagflat(
     x: JaxArray,
     /,
     *,
-    offset: Optional[int] = 0,
-    padding_value: Optional[float] = 0,
-    align: Optional[str] = "RIGHT_LEFT",
-    num_rows: Optional[int] = -1,
-    num_cols: Optional[int] = -1,
+    offset: int = 0,
+    padding_value: float = 0,
+    align: str = "RIGHT_LEFT",
+    num_rows: int = -1,
+    num_cols: int = -1,
     out: Optional[JaxArray] = None,
 ):
     if len(x.shape) > 1:
