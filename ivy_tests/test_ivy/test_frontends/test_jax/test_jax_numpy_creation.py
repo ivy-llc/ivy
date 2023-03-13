@@ -551,6 +551,7 @@ def test_jax_numpy_full(
     )
 
 
+<<<<<<< HEAD
 
 @handle_frontend_test(
     fn_tree="jax.numpy.double",
@@ -575,4 +576,53 @@ def test_jax_numpy_double(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+=======
+@st.composite
+def _get_dtype_and_range(draw):
+    dim = draw(helpers.ints(min_value=2, max_value=5))
+    dtype = draw(helpers.get_dtypes("float", index=1, full=False))
+    start = draw(
+        helpers.array_values(dtype=dtype[0], shape=(dim,), min_value=-50, max_value=0)
+    )
+    stop = draw(
+        helpers.array_values(dtype=dtype[0], shape=(dim,), min_value=1, max_value=50)
+    )
+    return dtype * 2, start, stop
+
+
+# logspace
+@handle_frontend_test(
+    fn_tree="jax.numpy.logspace",
+    dtype_start_stop=_get_dtype_and_range(),
+    num=helpers.ints(min_value=5, max_value=50),
+    base=helpers.ints(min_value=2, max_value=10),
+    axis=helpers.ints(min_value=-1, max_value=0),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_logspace(
+    dtype_start_stop,
+    num,
+    base,
+    axis,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, start, stop = dtype_start_stop
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-01,
+        start=start,
+        stop=stop,
+        num=num,
+        endpoint=True,
+        base=base,
+        dtype=input_dtypes[0],
+        axis=axis,
+>>>>>>> 6d710a6c59bca37c98b5914e33a556bfa53e2e25
     )
