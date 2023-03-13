@@ -128,6 +128,44 @@ def test_tensorflow_ApproximateEqual(  # NOQA
         tolerance=tol,
     )
 
+    
+@st.composite
+def df(draw, data_format):
+    data_format = draw(data_format)
+    return data_format
+
+
+# AvgPool
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.AvgPool",
+    data_format=df(data_format=st.sampled_from(["NHWC"])),
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_AvgPool(  # NOQA
+    *,
+    x_k_s_p,
+    data_format,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, kernel, strides, pad = x_k_s_p
+    data_format = data_format
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        value=x[0],
+        ksize=kernel,
+        strides=strides,
+        padding=pad,
+        data_format=data_format,
+    )
+    
 
 # AddV2
 @handle_frontend_test(
