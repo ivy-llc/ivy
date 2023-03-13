@@ -686,7 +686,7 @@
     <span class="n">fn</span><span class="p">,</span>
     <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
     <span class="n">limit</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-    <span class="n">message</span><span class="o">=</span><span class="s2">&quot;args must exist according to type and limit given&quot;</span>
+    <span class="n">message</span><span class="o">=</span><span class="s2">&quot;args must exist according to type and limit given&quot;</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
         <span class="n">check_all</span><span class="p">([</span><span class="n">fn</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">],</span> <span class="n">message</span><span class="p">)</span>
@@ -844,6 +844,25 @@
                     <span class="n">kernel_size</span><span class="p">,</span> <span class="n">padding_size</span>
                 <span class="p">)</span>
             <span class="p">)</span></div>
+
+
+<span class="c1"># Jax Specific #</span>
+<span class="c1"># ------- #</span>
+
+
+<span class="k">def</span> <span class="nf">_check_jax_x64_flag</span><span class="p">(</span><span class="n">dtype</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;jax&quot;</span>
+        <span class="ow">and</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">jax</span><span class="o">.</span><span class="n">jax</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">jax_enable_x64</span>
+    <span class="p">):</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_elem_in_list</span><span class="p">(</span>
+            <span class="n">dtype</span><span class="p">,</span>
+            <span class="p">[</span><span class="s2">&quot;float64&quot;</span><span class="p">,</span> <span class="s2">&quot;int64&quot;</span><span class="p">,</span> <span class="s2">&quot;uint64&quot;</span><span class="p">,</span> <span class="s2">&quot;complex128&quot;</span><span class="p">],</span>
+            <span class="n">inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dtype</span><span class="si">}</span><span class="s2"> output not supported while jax_enable_x64&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot; is set to False, please import jax and enable the flag using &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;jax.config.update(&#39;jax_enable_x64&#39;, True)&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
 </pre></div>
 
             </article>

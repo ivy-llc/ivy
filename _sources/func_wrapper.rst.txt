@@ -30,4 +30,12 @@ Func wrapper
    func_wrapper/handle_out_argument.rst
    func_wrapper/handle_nestable.rst
    func_wrapper/handle_nans.rst
+   func_wrapper/globals_getter_func.rst
+   func_wrapper/with_unsupported_dtypes.rst
+   func_wrapper/with_supported_dtypes.rst
+   func_wrapper/with_unsupported_devices.rst
+   func_wrapper/with_supported_devices.rst
+   func_wrapper/with_unsupported_device_and_dtypes.rst
+   func_wrapper/with_supported_device_and_dtypes.rst
+   func_wrapper/override.rst
 

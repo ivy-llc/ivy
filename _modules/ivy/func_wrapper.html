@@ -576,7 +576,9 @@
             <article class="bd-article" role="main">
               
   <h1>Source code for ivy.func_wrapper</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">ivy</span>
+<span></span><span class="kn">import</span> <span class="nn">contextlib</span>
+
+<span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">weakref</span>
@@ -1018,6 +1020,7 @@
         <span class="n">arr</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span> <span class="k">else</span> <span class="n">_get_first_array</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="c1"># infer the correct data type</span>
         <span class="n">dtype</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">item</span><span class="o">=</span><span class="n">arr</span><span class="p">,</span> <span class="n">as_native</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">_check_jax_x64_flag</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
         <span class="c1"># call the function with dtype provided explicitly</span>
         <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -1283,6 +1286,7 @@
 
 <span class="c1"># Gets dtype from a version dictionary</span>
 <span class="k">def</span> <span class="nf">_dtype_from_version</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="n">version</span><span class="p">):</span>
+
     <span class="c1"># if version is a string, it&#39;s a frontend function</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">version</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">version</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">frontends</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;versions&quot;</span><span class="p">][</span><span class="n">version</span><span class="p">]</span>
@@ -1308,7 +1312,6 @@
     <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">dic</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
         <span class="n">kl</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
         <span class="n">k1</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">kl</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)))</span>
-
         <span class="k">if</span> <span class="s2">&quot;above&quot;</span> <span class="ow">in</span> <span class="n">key</span> <span class="ow">and</span> <span class="n">k1</span> <span class="o">&lt;=</span> <span class="n">version_tuple</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">dic</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
         <span class="k">if</span> <span class="s2">&quot;below&quot;</span> <span class="ow">in</span> <span class="n">key</span> <span class="ow">and</span> <span class="n">k1</span> <span class="o">&gt;=</span> <span class="n">version_tuple</span><span class="p">:</span>
@@ -1363,7 +1366,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">_wrapper_outer</span><span class="p">(</span><span class="n">version_dict</span><span class="p">,</span> <span class="n">version</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_wrapper_outer</span><span class="p">(</span><span class="n">version_dict</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 
         <span class="n">typesets</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;valid&quot;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">valid_dtypes</span><span class="p">,</span>
@@ -1384,8 +1387,38 @@
             <span class="n">val</span> <span class="o">=</span> <span class="n">_versioned_attribute_factory</span><span class="p">(</span>
                 <span class="k">lambda</span><span class="p">:</span> <span class="n">_dtype_from_version</span><span class="p">(</span><span class="n">version_dict</span><span class="p">,</span> <span class="n">version</span><span class="p">),</span> <span class="n">t</span>
             <span class="p">)</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="s2">&quot;override&quot;</span><span class="p">):</span>
+                <span class="c1"># we do nothing</span>
+                <span class="k">return</span> <span class="n">func</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">exclusive</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="s2">&quot;exclusive&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
             <span class="c1"># set the attribute on the function and return the function as is</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">attrib</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+
+            <span class="n">has_attrib</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">attribute</span> <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">attribute_dict</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span>
+            <span class="p">]</span> <span class="ow">or</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="n">has_attrib</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">attribs</span> <span class="ow">in</span> <span class="n">has_attrib</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
+                        <span class="n">attrib</span> <span class="o">==</span> <span class="n">attribs</span> <span class="ow">or</span> <span class="p">(</span><span class="n">attrib</span><span class="p">,</span> <span class="n">attribs</span><span class="p">)</span> <span class="ow">in</span> <span class="n">attribute_conflict</span>
+                    <span class="p">):</span>
+                        <span class="nb">setattr</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">attrib</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+                        <span class="nb">setattr</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="s2">&quot;dictionary_info&quot;</span><span class="p">,</span> <span class="n">version_dict</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="s2">&quot;exclusive&quot;</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">attrib</span> <span class="o">==</span> <span class="n">attribs</span><span class="p">:</span>
+                            <span class="n">old_version_dict</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="s2">&quot;dictionary_info&quot;</span><span class="p">)</span>
+                            <span class="n">old_version_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">version_dict</span><span class="p">)</span>
+                            <span class="n">val</span> <span class="o">=</span> <span class="n">_versioned_attribute_factory</span><span class="p">(</span>
+                                <span class="k">lambda</span><span class="p">:</span> <span class="n">_dtype_from_version</span><span class="p">(</span><span class="n">version_dict</span><span class="p">,</span> <span class="n">version</span><span class="p">),</span> <span class="n">t</span>
+                            <span class="p">)</span>
+                            <span class="nb">setattr</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">attrib</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="c1"># for conflicting ones we do nothing</span>
+                            <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">attrib</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="s2">&quot;dictionary_info&quot;</span><span class="p">,</span> <span class="n">version_dict</span><span class="p">)</span>
+
             <span class="k">return</span> <span class="n">func</span>
 
         <span class="k">return</span> <span class="n">_wrapped</span>
@@ -1459,17 +1492,317 @@
     <span class="k">return</span> <span class="n">new_fn</span></div>
 
 
-<span class="c1"># Decorators to allow for versioned attributes</span>
-<span class="n">with_unsupported_dtypes</span> <span class="o">=</span> <span class="n">_dtype_device_wrapper_creator</span><span class="p">(</span><span class="s2">&quot;unsupported_dtypes&quot;</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
-<span class="n">with_supported_dtypes</span> <span class="o">=</span> <span class="n">_dtype_device_wrapper_creator</span><span class="p">(</span><span class="s2">&quot;supported_dtypes&quot;</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
-<span class="n">with_unsupported_devices</span> <span class="o">=</span> <span class="n">_dtype_device_wrapper_creator</span><span class="p">(</span><span class="s2">&quot;unsupported_devices&quot;</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
-<span class="n">with_supported_devices</span> <span class="o">=</span> <span class="n">_dtype_device_wrapper_creator</span><span class="p">(</span><span class="s2">&quot;supported_devices&quot;</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
-<span class="n">with_unsupported_device_and_dtypes</span> <span class="o">=</span> <span class="n">_dtype_device_wrapper_creator</span><span class="p">(</span>
-    <span class="s2">&quot;unsupported_device_and_dtype&quot;</span><span class="p">,</span> <span class="nb">dict</span>
-<span class="p">)</span>
-<span class="n">with_supported_device_and_dtypes</span> <span class="o">=</span> <span class="n">_dtype_device_wrapper_creator</span><span class="p">(</span>
-    <span class="s2">&quot;supported_device_and_dtype&quot;</span><span class="p">,</span> <span class="nb">dict</span>
-<span class="p">)</span>
+<span class="n">attribute_dict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;unsupported_dtypes&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;supported_dtypes&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;unsupported_devices&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;supported_devices&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;unsupported_device_and_dtype&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;supported_device_and_dtype&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<span class="n">attribute_conflict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">(</span><span class="s2">&quot;unsupported_devices&quot;</span><span class="p">,</span> <span class="s2">&quot;supported_devices&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;supported_devices&quot;</span><span class="p">,</span> <span class="s2">&quot;unsupported_devices&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;unsupported_device_and_dtype&quot;</span><span class="p">,</span> <span class="s2">&quot;supported_device_and_dtype&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;supported_device_and_dtype&quot;</span><span class="p">,</span> <span class="s2">&quot;unsupported_device_and_dtype&quot;</span><span class="p">),</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="globals_getter_func"><a class="viewcode-back" href="../../func_wrapper/globals_getter_func.html#ivy.func_wrapper.globals_getter_func">[docs]</a><span class="k">def</span> <span class="nf">globals_getter_func</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="c1"># define and assign this function to</span>
+    <span class="c1"># ivy.func_wrapper.globals_getter_func in the module</span>
+    <span class="c1"># where you want to use the decorators as a context</span>
+    <span class="c1"># manager</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">x</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">globals</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">globals</span><span class="p">()[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="with_unsupported_dtypes"><a class="viewcode-back" href="../../func_wrapper/with_unsupported_dtypes.html#ivy.func_wrapper.with_unsupported_dtypes">[docs]</a><span class="k">class</span> <span class="nc">with_unsupported_dtypes</span><span class="p">(</span><span class="n">contextlib</span><span class="o">.</span><span class="n">ContextDecorator</span><span class="p">):</span>
+<div class="viewcode-block" id="with_unsupported_dtypes.__init__"><a class="viewcode-back" href="../../func_wrapper/with_unsupported_dtypes.html#ivy.func_wrapper.with_unsupported_dtypes.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">globals</span> <span class="o">=</span> <span class="p">{}</span></div>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">func</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="n">_dtype_device_wrapper_creator</span><span class="p">(</span><span class="s2">&quot;unsupported_dtypes&quot;</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)(</span>
+                    <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span>
+                <span class="p">)</span>
+            <span class="p">)(</span><span class="n">func</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">globals</span> <span class="o">=</span> <span class="n">globals_getter_func</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>  <span class="c1"># global snapshot baby</span>
+
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">exec</span><span class="p">):</span>
+        <span class="n">new_globals</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">globals_getter_func</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">new_globals</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">globals</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">diff</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">globals_getter_func</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">globals_getter_func</span><span class="p">()[</span><span class="n">item</span><span class="p">],</span> <span class="n">FunctionType</span><span class="p">):</span>
+                    <span class="c1"># we need to add the decorator</span>
+                    <span class="n">globals_getter_func</span><span class="p">(</span>
+                        <span class="p">[</span>
+                            <span class="n">item</span><span class="p">,</span>
+                            <span class="p">(</span>
+                                <span class="n">_dtype_device_wrapper_creator</span><span class="p">(</span>
+                                    <span class="s2">&quot;unsupported_dtypes&quot;</span><span class="p">,</span> <span class="nb">tuple</span>
+                                <span class="p">)(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
+                            <span class="p">)(</span><span class="n">globals_getter_func</span><span class="p">()[</span><span class="n">item</span><span class="p">]),</span>
+                        <span class="p">]</span>
+                    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="with_supported_dtypes"><a class="viewcode-back" href="../../func_wrapper/with_supported_dtypes.html#ivy.func_wrapper.with_supported_dtypes">[docs]</a><span class="k">class</span> <span class="nc">with_supported_dtypes</span><span class="p">(</span><span class="n">contextlib</span><span class="o">.</span><span class="n">ContextDecorator</span><span class="p">):</span>
+<div class="viewcode-block" id="with_supported_dtypes.__init__"><a class="viewcode-back" href="../../func_wrapper/with_supported_dtypes.html#ivy.func_wrapper.with_supported_dtypes.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">globals</span> <span class="o">=</span> <span class="p">{}</span></div>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">func</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="n">_dtype_device_wrapper_creator</span><span class="p">(</span><span class="s2">&quot;supported_dtypes&quot;</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)(</span>
+                    <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span>
+                <span class="p">)</span>
+            <span class="p">)(</span><span class="n">func</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">globals</span> <span class="o">=</span> <span class="n">globals_getter_func</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>  <span class="c1"># global snapshot baby</span>
+
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">exec</span><span class="p">):</span>
+        <span class="n">new_globals</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">globals_getter_func</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">new_globals</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">globals</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">diff</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">globals_getter_func</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">globals_getter_func</span><span class="p">()[</span><span class="n">item</span><span class="p">],</span> <span class="n">FunctionType</span><span class="p">):</span>
+                    <span class="c1"># we need to add the decorator</span>
+                    <span class="n">globals_getter_func</span><span class="p">(</span>
+                        <span class="p">[</span>
+                            <span class="n">item</span><span class="p">,</span>
+                            <span class="p">(</span>
+                                <span class="n">_dtype_device_wrapper_creator</span><span class="p">(</span>
+                                    <span class="s2">&quot;supported_dtypes&quot;</span><span class="p">,</span> <span class="nb">tuple</span>
+                                <span class="p">)(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
+                            <span class="p">)(</span><span class="n">globals_getter_func</span><span class="p">()[</span><span class="n">item</span><span class="p">]),</span>
+                        <span class="p">]</span>
+                    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="with_unsupported_devices"><a class="viewcode-back" href="../../func_wrapper/with_unsupported_devices.html#ivy.func_wrapper.with_unsupported_devices">[docs]</a><span class="k">class</span> <span class="nc">with_unsupported_devices</span><span class="p">(</span><span class="n">contextlib</span><span class="o">.</span><span class="n">ContextDecorator</span><span class="p">):</span>
+<div class="viewcode-block" id="with_unsupported_devices.__init__"><a class="viewcode-back" href="../../func_wrapper/with_unsupported_devices.html#ivy.func_wrapper.with_unsupported_devices.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">globals</span> <span class="o">=</span> <span class="p">{}</span></div>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">func</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="n">_dtype_device_wrapper_creator</span><span class="p">(</span><span class="s2">&quot;unsupported_devices&quot;</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)(</span>
+                    <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span>
+                <span class="p">)</span>
+            <span class="p">)(</span><span class="n">func</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">globals</span> <span class="o">=</span> <span class="n">globals_getter_func</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>  <span class="c1"># global snapshot baby</span>
+
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">exec</span><span class="p">):</span>
+        <span class="n">new_globals</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">globals_getter_func</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">new_globals</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">globals</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">diff</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">globals_getter_func</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">globals_getter_func</span><span class="p">()[</span><span class="n">item</span><span class="p">],</span> <span class="n">FunctionType</span><span class="p">):</span>
+                    <span class="c1"># we need to add the decorator</span>
+                    <span class="n">globals_getter_func</span><span class="p">(</span>
+                        <span class="p">[</span>
+                            <span class="n">item</span><span class="p">,</span>
+                            <span class="p">(</span>
+                                <span class="n">_dtype_device_wrapper_creator</span><span class="p">(</span>
+                                    <span class="s2">&quot;unsupported_devices&quot;</span><span class="p">,</span> <span class="nb">tuple</span>
+                                <span class="p">)(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
+                            <span class="p">)(</span><span class="n">globals_getter_func</span><span class="p">()[</span><span class="n">item</span><span class="p">]),</span>
+                        <span class="p">]</span>
+                    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="with_supported_devices"><a class="viewcode-back" href="../../func_wrapper/with_supported_devices.html#ivy.func_wrapper.with_supported_devices">[docs]</a><span class="k">class</span> <span class="nc">with_supported_devices</span><span class="p">(</span><span class="n">contextlib</span><span class="o">.</span><span class="n">ContextDecorator</span><span class="p">):</span>
+<div class="viewcode-block" id="with_supported_devices.__init__"><a class="viewcode-back" href="../../func_wrapper/with_supported_devices.html#ivy.func_wrapper.with_supported_devices.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">globals</span> <span class="o">=</span> <span class="p">{}</span></div>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">func</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="n">_dtype_device_wrapper_creator</span><span class="p">(</span><span class="s2">&quot;supported_devices&quot;</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)(</span>
+                    <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span>
+                <span class="p">)</span>
+            <span class="p">)(</span><span class="n">func</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">globals</span> <span class="o">=</span> <span class="n">globals_getter_func</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>  <span class="c1"># global snapshot baby</span>
+
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">exec</span><span class="p">):</span>
+        <span class="n">new_globals</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">globals_getter_func</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">new_globals</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">globals</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">diff</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">globals_getter_func</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">globals_getter_func</span><span class="p">()[</span><span class="n">item</span><span class="p">],</span> <span class="n">FunctionType</span><span class="p">):</span>
+                    <span class="c1"># we need to add the decorator</span>
+                    <span class="n">globals_getter_func</span><span class="p">(</span>
+                        <span class="p">[</span>
+                            <span class="n">item</span><span class="p">,</span>
+                            <span class="p">(</span>
+                                <span class="n">_dtype_device_wrapper_creator</span><span class="p">(</span>
+                                    <span class="s2">&quot;supported_devices&quot;</span><span class="p">,</span> <span class="nb">tuple</span>
+                                <span class="p">)(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
+                            <span class="p">)(</span><span class="n">globals_getter_func</span><span class="p">()[</span><span class="n">item</span><span class="p">]),</span>
+                        <span class="p">]</span>
+                    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="with_unsupported_device_and_dtypes"><a class="viewcode-back" href="../../func_wrapper/with_unsupported_device_and_dtypes.html#ivy.func_wrapper.with_unsupported_device_and_dtypes">[docs]</a><span class="k">class</span> <span class="nc">with_unsupported_device_and_dtypes</span><span class="p">(</span><span class="n">contextlib</span><span class="o">.</span><span class="n">ContextDecorator</span><span class="p">):</span>
+<div class="viewcode-block" id="with_unsupported_device_and_dtypes.__init__"><a class="viewcode-back" href="../../func_wrapper/with_unsupported_device_and_dtypes.html#ivy.func_wrapper.with_unsupported_device_and_dtypes.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># arg inspection</span>
+        <span class="n">dicti</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+        <span class="c1"># iterate through the keys</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">dicti</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="c1"># maintain a dictionary for nested dictionary</span>
+            <span class="n">nested_dic</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">nested_key</span> <span class="ow">in</span> <span class="n">dicti</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">nested_key</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+                    <span class="n">nested_dic</span><span class="p">[</span><span class="s2">&quot;cpu&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dicti</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="p">())</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span>
+                        <span class="n">dicti</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;all&quot;</span><span class="p">]</span>
+                    <span class="p">)</span>
+                    <span class="n">nested_dic</span><span class="p">[</span><span class="s2">&quot;tpu&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dicti</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tpu&quot;</span><span class="p">,</span> <span class="p">())</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span>
+                        <span class="n">dicti</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;all&quot;</span><span class="p">]</span>
+                    <span class="p">)</span>
+                    <span class="n">nested_dic</span><span class="p">[</span><span class="s2">&quot;gpu&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dicti</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;gpu&quot;</span><span class="p">,</span> <span class="p">())</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span>
+                        <span class="n">dicti</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;all&quot;</span><span class="p">]</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">nested_dic</span><span class="p">[</span><span class="n">nested_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">dicti</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">nested_key</span><span class="p">,</span> <span class="p">())</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span>
+                        <span class="n">dicti</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">nested_key</span><span class="p">]</span>
+                    <span class="p">)</span>
+            <span class="n">dicti</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">nested_dic</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">dicti</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">globals</span> <span class="o">=</span> <span class="p">{}</span></div>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">func</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="n">_dtype_device_wrapper_creator</span><span class="p">(</span><span class="s2">&quot;unsupported_device_and_dtype&quot;</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)(</span>
+                    <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span>
+                <span class="p">)</span>
+            <span class="p">)(</span><span class="n">func</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">globals</span> <span class="o">=</span> <span class="n">globals_getter_func</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>  <span class="c1"># global snapshot baby</span>
+
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">exec</span><span class="p">):</span>
+        <span class="n">new_globals</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">globals_getter_func</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">new_globals</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">globals</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">diff</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">globals_getter_func</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">globals_getter_func</span><span class="p">()[</span><span class="n">item</span><span class="p">],</span> <span class="n">FunctionType</span><span class="p">):</span>
+                    <span class="c1"># we need to add the decorator</span>
+                    <span class="n">globals_getter_func</span><span class="p">(</span>
+                        <span class="p">[</span>
+                            <span class="n">item</span><span class="p">,</span>
+                            <span class="p">(</span>
+                                <span class="n">_dtype_device_wrapper_creator</span><span class="p">(</span>
+                                    <span class="s2">&quot;unsupported_device_and_dtype&quot;</span><span class="p">,</span> <span class="nb">tuple</span>
+                                <span class="p">)(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
+                            <span class="p">)(</span><span class="n">globals_getter_func</span><span class="p">()[</span><span class="n">item</span><span class="p">]),</span>
+                        <span class="p">]</span>
+                    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="with_supported_device_and_dtypes"><a class="viewcode-back" href="../../func_wrapper/with_supported_device_and_dtypes.html#ivy.func_wrapper.with_supported_device_and_dtypes">[docs]</a><span class="k">class</span> <span class="nc">with_supported_device_and_dtypes</span><span class="p">(</span><span class="n">contextlib</span><span class="o">.</span><span class="n">ContextDecorator</span><span class="p">):</span>
+<div class="viewcode-block" id="with_supported_device_and_dtypes.__init__"><a class="viewcode-back" href="../../func_wrapper/with_supported_device_and_dtypes.html#ivy.func_wrapper.with_supported_device_and_dtypes.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># arg inspection</span>
+        <span class="n">dicti</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+        <span class="c1"># iterate through the keys</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">dicti</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="c1"># maintain a dictionary for nested dictionary</span>
+            <span class="n">nested_dic</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">nested_key</span> <span class="ow">in</span> <span class="n">dicti</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">nested_key</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+                    <span class="n">nested_dic</span><span class="p">[</span><span class="s2">&quot;cpu&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dicti</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="p">())</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span>
+                        <span class="n">dicti</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;all&quot;</span><span class="p">]</span>
+                    <span class="p">)</span>
+                    <span class="n">nested_dic</span><span class="p">[</span><span class="s2">&quot;tpu&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dicti</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tpu&quot;</span><span class="p">,</span> <span class="p">())</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span>
+                        <span class="n">dicti</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;all&quot;</span><span class="p">]</span>
+                    <span class="p">)</span>
+                    <span class="n">nested_dic</span><span class="p">[</span><span class="s2">&quot;gpu&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dicti</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;gpu&quot;</span><span class="p">,</span> <span class="p">())</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span>
+                        <span class="n">dicti</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;all&quot;</span><span class="p">]</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">nested_dic</span><span class="p">[</span><span class="n">nested_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">dicti</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">nested_key</span><span class="p">,</span> <span class="p">())</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span>
+                        <span class="n">dicti</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">nested_key</span><span class="p">]</span>
+                    <span class="p">)</span>
+            <span class="n">dicti</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">nested_dic</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">dicti</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">globals</span> <span class="o">=</span> <span class="p">{}</span></div>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">func</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="n">_dtype_device_wrapper_creator</span><span class="p">(</span><span class="s2">&quot;supported_device_and_dtype&quot;</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)(</span>
+                    <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span>
+                <span class="p">)</span>
+            <span class="p">)(</span><span class="n">func</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">globals</span> <span class="o">=</span> <span class="n">globals_getter_func</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>  <span class="c1"># global snapshot baby</span>
+
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">exec</span><span class="p">):</span>
+        <span class="n">new_globals</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">globals_getter_func</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">new_globals</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">globals</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">diff</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">globals_getter_func</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">globals_getter_func</span><span class="p">()[</span><span class="n">item</span><span class="p">],</span> <span class="n">FunctionType</span><span class="p">):</span>
+                    <span class="c1"># we need to add the decorator</span>
+                    <span class="n">globals_getter_func</span><span class="p">(</span>
+                        <span class="p">[</span>
+                            <span class="n">item</span><span class="p">,</span>
+                            <span class="p">(</span>
+                                <span class="n">_dtype_device_wrapper_creator</span><span class="p">(</span>
+                                    <span class="s2">&quot;supported_device_and_dtype&quot;</span><span class="p">,</span> <span class="nb">tuple</span>
+                                <span class="p">)(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
+                            <span class="p">)(</span><span class="n">globals_getter_func</span><span class="p">()[</span><span class="n">item</span><span class="p">]),</span>
+                        <span class="p">]</span>
+                    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="override"><a class="viewcode-back" href="../../func_wrapper/override.html#ivy.func_wrapper.override">[docs]</a><span class="k">class</span> <span class="nc">override</span><span class="p">(</span><span class="n">contextlib</span><span class="o">.</span><span class="n">ContextDecorator</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">func</span><span class="p">:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="s2">&quot;override&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">func</span>
+
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">globals</span> <span class="o">=</span> <span class="n">globals_getter_func</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>  <span class="c1"># global snapshot baby</span>
+
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">exec</span><span class="p">):</span>
+        <span class="n">new_globals</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">globals</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">new_globals</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">globals</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">diff</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">globals_getter_func</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">globals_getter_func</span><span class="p">()[</span><span class="n">item</span><span class="p">],</span> <span class="n">FunctionType</span><span class="p">):</span>
+                    <span class="c1"># we need to add the decorator</span>
+                    <span class="n">globals_getter_func</span><span class="p">([</span><span class="n">item</span><span class="p">,</span> <span class="s2">&quot;override&quot;</span><span class="p">])</span></div>
 </pre></div>
 
             </article>

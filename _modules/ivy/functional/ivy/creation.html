@@ -734,6 +734,7 @@
 
 <div class="viewcode-block" id="arange"><a class="viewcode-back" href="../../../../functional/ivy/creation/arange/arange_functional.html#ivy.functional.ivy.creation.arange">[docs]</a><span class="nd">@outputs_to_ivy_arrays</span>
 <span class="nd">@handle_out_argument</span>
+<span class="nd">@infer_dtype</span>
 <span class="nd">@infer_device</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_array_like_without_promotion</span>
@@ -876,6 +877,37 @@
 <span class="sd">    ret</span>
 <span class="sd">        An array interpretation of x.</span>
 
+<span class="sd">    Functional Examples</span>
+<span class="sd">    -------------------</span>
+<span class="sd">    With list of lists as input:</span>
+<span class="sd">    &gt;&gt;&gt; ivy.asarray([[1,2],[3,4]])</span>
+<span class="sd">    ivy.array([[1, 2],</span>
+<span class="sd">           [3, 4]])</span>
+
+<span class="sd">    With tuple of lists as input:</span>
+<span class="sd">    &gt;&gt;&gt; ivy.asarray(([1.4,5.6,5.5],[3.1,9.1,7.5]))</span>
+<span class="sd">    ivy.array([[1.39999998, 5.5999999 , 5.5       ],</span>
+<span class="sd">           [3.0999999 , 9.10000038, 7.5       ]])</span>
+
+<span class="sd">    With ndarray as input:</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.np.ndarray(shape=(2,2), order=&#39;C&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; x</span>
+<span class="sd">    array([[6.90786433e-310, 6.90786433e-310],</span>
+<span class="sd">           [6.90786433e-310, 6.90786433e-310]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.asarray(x)</span>
+<span class="sd">    ivy.array([[6.90786433e-310, 6.90786433e-310],</span>
+<span class="sd">           [6.90786433e-310, 6.90786433e-310]])</span>
+
+<span class="sd">    With :class:`ivy.Container` as input:</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a = [(1,2),(3,4),(5,6)], b = ((1,2,3),(4,5,6)))</span>
+<span class="sd">    &gt;&gt;&gt; ivy.asarray(x)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([[1, 2],</span>
+<span class="sd">                      [3, 4],</span>
+<span class="sd">                      [5, 6]]),</span>
+<span class="sd">        b: ivy.array([[1, 2, 3],</span>
+<span class="sd">                      [4, 5, 6]])</span>
+<span class="sd">    }</span>
 
 <span class="sd">    This function conforms to the `Array API Standard</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
