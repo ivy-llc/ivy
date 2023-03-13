@@ -167,5 +167,3 @@ def test_numpy_iscomplex(
         on_device=on_device,
         a=x[0],
     )
-
-
