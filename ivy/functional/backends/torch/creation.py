@@ -565,7 +565,7 @@ array = asarray
 def copy_array(
     x: torch.Tensor,
     *,
-    to_ivy_array: Optional[bool] = True,
+    to_ivy_array: bool = True,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if to_ivy_array:
