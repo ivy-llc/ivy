@@ -31,6 +31,7 @@ def fmod(
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()
 
+    
 def fmax(
     x1: paddle.Tensor,
     x2: paddle.Tensor,
