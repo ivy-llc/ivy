@@ -1,6 +1,6 @@
 # global
 import torch
-from typing import Optional
+from typing import Optional, Literal, Union, List
 
 # local
 import ivy
@@ -56,9 +56,9 @@ def searchsorted(
     v: torch.Tensor,
     /,
     *,
-    side="left",
-    sorter=None,
-    ret_dtype=torch.int64,
+    side: Literal["left", "right"] = "left",
+    sorter: Optional[Union[torch.Tensor, List[int]]] = None,
+    ret_dtype: torch.dtype = torch.int64,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     assert ivy.is_int_dtype(ret_dtype), ValueError(

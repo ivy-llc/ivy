@@ -616,7 +616,6 @@ class _ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-
         With :class:`ivy.Container` input and default backend set as `numpy`:
 
         >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))

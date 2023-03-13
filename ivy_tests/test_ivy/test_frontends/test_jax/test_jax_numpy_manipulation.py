@@ -191,6 +191,62 @@ def test_jax_numpy_reshape(
     )
 
 
+# resize
+@st.composite
+def _get_input_and_new_shape(draw):
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=2, max_num_dims=5, min_dim_size=2, max_dim_size=10
+        )
+    )
+    new_shape = draw(
+        helpers.get_shape(
+            min_num_dims=2, max_num_dims=5, min_dim_size=2, max_dim_size=10
+        )
+    )
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("all"),
+            min_num_dims=2,
+            max_num_dims=5,
+            min_dim_size=2,
+            max_dim_size=10,
+            shape=shape,
+        )
+    )
+    return x_dtype, x, new_shape
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.resize",
+    input_x_shape=_get_input_and_new_shape(),
+    test_with_out=st.just(True),
+)
+def test_resize(
+    *,
+    input_x_shape,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    x_dtype, x, new_shape = input_x_shape
+    expected_shape = tuple(new_shape)
+
+    ivy_resized = ivy.reshape(x, expected_shape)
+
+    out = helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x,
+        new_shape=new_shape,
+    )
+    assert np.array_equal(out, ivy.to_numpy(ivy_resized))
+
+
 # moveaxis
 @handle_frontend_test(
     fn_tree="jax.numpy.moveaxis",
@@ -801,7 +857,10 @@ def _squeeze_helper(draw):
 @st.composite
 def _get_input_and_block(draw):
     shapes = draw(st.lists(
-        helpers.get_shape(min_num_dims=1, max_num_dims=5, min_dim_size=2, max_dim_size=10),
+        helpers.get_shape(min_num_dims=1,
+                          max_num_dims=5,
+                          min_dim_size=2,
+                          max_dim_size=10),
         min_size=2, max_size=10))
     x_dtypes, xs = zip(*[draw(helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
