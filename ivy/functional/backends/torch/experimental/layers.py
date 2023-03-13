@@ -558,17 +558,50 @@ def interpolate(
     size: Union[Sequence[int], int],
     /,
     *,
-    mode: Optional[Literal["linear", "bilinear", "trilinear"]] = "linear",
+    mode: Union[
+        Literal[
+            "linear",
+            "bilinear",
+            "trilinear",
+            "nearest",
+            "area",
+            "nearest-exact",
+            "tf_area",
+            "bicubic",
+            "mitchellcubic",
+            "lanczos3",
+            "lanczos5",
+            "gaussian",
+        ]
+    ] = "linear",
+    scale_factor: Optional[Union[Sequence[int], int]] = None,
     align_corners: Optional[bool] = None,
     antialias: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
 ):
+    if mode in [
+        "tf_area",
+        "bicubic_tensorflow",
+        "mitchellcubic",
+        "lanczos3",
+        "lanczos5",
+        "gaussian",
+    ]:
+        return ivy.functional.experimental.interpolate(
+            x,
+            size,
+            mode=mode,
+            align_corners=align_corners,
+            antialias=antialias,
+            scale_factor=scale_factor,
+        )
     return torch.nn.functional.interpolate(
         x,
-        size,
+        size=size,
         mode=mode,
         align_corners=align_corners,
         antialias=antialias,
+        scale_factor=scale_factor,
     )
 
 

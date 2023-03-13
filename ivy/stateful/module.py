@@ -8,7 +8,7 @@ from typing import Optional, List, Tuple, Dict
 
 # local
 import ivy
-from ivy.container import Container
+from ivy.data_classes.container import Container
 from ivy.func_wrapper import _get_first_array
 from ivy.stateful.helpers import ModuleHelpers
 from ivy.stateful.converters import ModuleConverters
@@ -109,11 +109,9 @@ class Module(ModuleConverters, ModuleHelpers):
         self._track_submod_call_order = False
         self.expected_submod_rets = None
         self.submod_dict = dict()
-        with ivy.utils.backend.ContextManager("numpy") as backend:
-            self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=backend)
-            self.submod_call_order = ivy.Container(
-                alphabetical_keys=False, ivyh=backend
-            )
+        backend = ivy.with_backend("numpy")
+        self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=backend)
+        self.submod_call_order = ivy.Container(alphabetical_keys=False, ivyh=backend)
         self._sub_mods = set()
         self._dtype = dtype
         self._args = args
@@ -514,12 +512,9 @@ class Module(ModuleConverters, ModuleHelpers):
             return self._module_graph(*args, v=v, **kwargs)
 
         with_grads = ivy.with_grads(with_grads=with_grads)
-        self.submod_rets = ivy.Container(
-            alphabetical_keys=False, ivyh=ivy.get_backend(backend="numpy")
-        )
-        self.submod_call_order = ivy.Container(
-            alphabetical_keys=False, ivyh=ivy.get_backend(backend="numpy")
-        )
+        backend = ivy.with_backend("numpy")
+        self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=backend)
+        self.submod_call_order = ivy.Container(alphabetical_keys=False, ivyh=backend)
         self._set_submod_flags(
             track_submod_rets,
             submod_depth,
@@ -738,13 +733,14 @@ class Module(ModuleConverters, ModuleHelpers):
         Compile the `ivy.Module`'s `_unified_ivy_graph` or `_call` method to the
         target backend.
 
-        Args:
-            compile_kwargs:
-                keyword arguments passed to the compile function.
-            args:
-                arguments used to compile. Defaults to None.
-            kwargs:
-                keyword arguments used to compile. Defaults to None.
+        Parameters
+        ----------
+        args:
+            arguments used to compile. Defaults to None.
+        kwargs:
+            keyword arguments used to compile. Defaults to None.
+        compile_kwargs:
+            keyword arguments passed to the compile function.
         """
         # no arguments given to compile, so delay the compilation
         if not (args or kwargs):
