@@ -631,8 +631,37 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 .. code-block:: python
 
     import ivy
+    import jax
+    import tensorflow as tf
 
-    # ToDo: Write JAX to tf model
+    # Get a pretrained haiku model
+    from deepmind_perceiver_io import key, perceiver_backbone
+
+    # Transpile it into a tf.keras.Model with the corresponding parameters
+    dummy_input = jax.random.uniform(key, shape=(1, 3, 224, 224), dtype=jax.numpy.float32)
+    params = perceiver_backbone.init(rng=key, images=dummy_input)
+    backbone = ivy.transpile(
+        perceiver_backbone, to="tensorflow", params_v=params, args=(dummy_input,)
+    )
+
+    # Build a classifier using the transpiled backbone
+    class PerceiverIOClassifier(tf.keras.Model):
+        def __init__(self, num_classes=20):
+            super(PerceiverIOClassifier, self).__init__()
+            self.backbone = backbone
+            self.max_pool = tf.keras.layers.MaxPooling1D(pool_size=512)
+            self.flatten = tf.keras.layers.Flatten()
+            self.fc = tf.keras.layers.Dense(num_classes)
+
+        def call(self, x):
+            x = self.backbone(x)
+            x = self.flatten(self.max_pool(x))
+            return self.fc(x)
+
+    # Initialize a trainable, customizable, tf.keras.Model
+    x = tf.random.normal(shape=(1, 3, 224, 224))
+    classifier = PerceiverIOClassifier()
+    ret = classifier(x)
 
 .. raw:: html
 
