@@ -442,6 +442,7 @@ def infer_dtype(fn: Callable) -> Callable:
         arr = None if ivy.exists(dtype) else _get_first_array(*args, **kwargs)
         # infer the correct data type
         dtype = ivy.default_dtype(dtype=dtype, item=arr, as_native=True)
+        ivy.utils.assertions._check_jax_x64_flag(dtype)
         # call the function with dtype provided explicitly
         return fn(*args, dtype=dtype, **kwargs)
 
