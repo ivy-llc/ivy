@@ -65,6 +65,16 @@ def ApproximateEqual(
 
 
 @to_ivy_arrays_and_back
+def Angle(
+    *,
+    input,
+    Tout=ivy.float32,
+    name="Angle",
+):
+    return ivy.astype(ivy.angle(input), Tout)
+
+
+@to_ivy_arrays_and_back
 def ArgMin(*, input, dimension, output_type=None, name=None):
     output_type = to_ivy_dtype(output_type)
     if output_type in ["int32", "int64"]:
