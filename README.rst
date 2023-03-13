@@ -170,7 +170,7 @@ If you want to use building blocks published in other frameworks (neural network
 Ivy as a framework
 -------------------
 
-The Ivy framework is built on top of various essential components, mainly the `Backend Handler`_, which manages what framework is being used behind the scenes and the `Backend Functional APIs`_, which provide framework-specific implementations of the Ivy functions. Likewise, classes such as the :code:`ivy.Container` or :code:`ivy.Array` are also available, facilitating the use of structured data and array-like objects (learn more about them `here! <https://lets-unify.ai/ivy/design/ivy_as_a_framework.html>`_). 
+The Ivy framework is built on top of various essential components, mainly the `Backend Handler`_, which manages what framework is being used behind the scenes and the `Backend Functional APIs`_, which provide framework-specific implementations of the Ivy functions. Likewise, classes such as :code:`ivy.Container` or :code:`ivy.Array` are also available, facilitating the use of structured data and array-like objects (learn more about them `here! <https://lets-unify.ai/ivy/design/ivy_as_a_framework.html>`_). 
 
 All of the functionalities in Ivy are exposed through the :code:`Ivy functional API` and the :code:`Ivy stateful API`. All functions in the `Functional API <https://lets-unify.ai/ivy/design/building_blocks.html#ivy-functional-api>`_ are **Framework Agnostic Functions**, which mean that we can use them like this:
 
