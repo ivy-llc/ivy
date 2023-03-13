@@ -1465,7 +1465,7 @@ def take_along_axis(
     axis: int,
     /,
     *,
-    mode: str = 'fill',
+    mode: str = "fill",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Take values from the input array by matching 1d index and data slices.
@@ -1498,7 +1498,9 @@ def take_along_axis(
     >>> print(y)
     ivy.array([[4, 3, 3], [1, 1, 1]])
     """
-    return ivy.current_backend(arr).take_along_axis(arr, indices, axis, mode=mode, out=out)
+    return ivy.current_backend(arr).take_along_axis(
+        arr, indices, axis, mode=mode, out=out
+    )
 
 
 @handle_view
@@ -1549,7 +1551,7 @@ def hsplit(
 
 
 @handle_exceptions
-def broadcast_shapes(shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
+def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     """Broadcasts shapes.
 
     Parameters
@@ -1571,7 +1573,7 @@ def broadcast_shapes(shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     >>> print(ivy.broadcast_shapes([(3, 3),(3, 1),(1, 3)]))
     (3, 3)
     """
-    return ivy.current_backend().broadcast_shapes(shapes)
+    return ivy.current_backend().broadcast_shapes(*shapes)
 
 
 @handle_view

@@ -683,11 +683,11 @@ promotion_table = {**array_api_promotion_table, **extra_promotion_table}
 
 
 from .func_wrapper import *
-from .array import Array, add_ivy_array_instance_methods
-from .array.conversions import *
-from .array import conversions as arr_conversions
-from .container import conversions as cont_conversions
-from .container import (
+from .data_classes.array import Array, add_ivy_array_instance_methods
+from .data_classes.array.conversions import *
+from .data_classes.array import conversions as arr_conversions
+from .data_classes.container import conversions as cont_conversions
+from .data_classes.container import (
     ContainerBase,
     Container,
     add_ivy_container_instance_methods,
@@ -1155,3 +1155,12 @@ class DynamicBackendContext:
 
 def dynamic_backend_as(value):
     return DynamicBackendContext(value)
+
+
+modules = ivy.utils.backend.handler._backend_dict.keys()
+for module in modules:
+    if module != "numpy" and module in sys.modules:
+        warnings.warn(
+            f"{module} module has been imported while ivy doesn't import it without "
+            "setting a backend, ignore if that's intended"
+        )

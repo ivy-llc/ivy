@@ -5,7 +5,7 @@ import math
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, handle_mixed_function
 from . import backend_version
 from ivy.functional.ivy.layers import _handle_padding
 
@@ -553,6 +553,8 @@ def embedding(
 embedding.support_native_out = False
 
 
+@handle_mixed_function(lambda *args, mode, **kwargs:
+                       mode not in ["tf_area","bicubic_tensorflow", "mitchellcubic", "lanczos3", "lanczos5", "gaussian"])
 def interpolate(
     x: torch.Tensor,
     size: Union[Sequence[int], int],
@@ -565,9 +567,13 @@ def interpolate(
             "trilinear",
             "nearest",
             "area",
-            "nearest_exact",
+            "nearest-exact",
             "tf_area",
             "bicubic",
+            "mitchellcubic",
+            "lanczos3",
+            "lanczos5",
+            "gaussian",
         ]
     ] = "linear",
     scale_factor: Optional[Union[Sequence[int], int]] = None,
@@ -575,10 +581,6 @@ def interpolate(
     antialias: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
 ):
-    if mode == "tf_area":
-        return ivy.functional.experimental.interpolate(
-            x, size, mode=mode, align_corners=align_corners, antialias=antialias
-        )
     return torch.nn.functional.interpolate(
         x,
         size=size,

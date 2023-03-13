@@ -826,3 +826,30 @@ def test_jax_numpy_isreal(
         on_device=on_device,
         x=x[0],
     )
+
+
+# logical_xor
+@handle_frontend_test(
+    fn_tree="jax.numpy.logical_xor",
+    dtypes_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("bool"),
+        num_arrays=2,
+    ),
+)
+def test_jax_numpy_logical_xor(
+    dtypes_values,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    x_dtypes, x = dtypes_values
+    np_helpers.test_frontend_function(
+        input_dtypes=x_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=x[0],
+        x2=x[1],
+    )

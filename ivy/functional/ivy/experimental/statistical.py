@@ -252,7 +252,7 @@ def nanmedian(
     overwrite_input: Optional[bool] = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """ivy.Array instance method variant of ivy.nanmedian. This method simply 
+    """ivy.Array instance method variant of ivy.nanmedian. This method simply
     wraps the function, and so the docstring for ivy.nanmedian also applies to
     this method with minimal changes.
 
@@ -293,7 +293,6 @@ def nanmedian(
     >>> a.nanmedian(a, axis=0)
         array([6.5, 2. , 2.5])
     """
-
     return ivy.current_backend().nanmedian(
         input, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out
     )
