@@ -986,12 +986,11 @@ def test_array__rdivmod__(
 @handle_method(
     method_tree="Array.__truediv__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("real_and_complex"),
         num_arrays=2,
         large_abs_safety_factor=2.5,
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
-        shared_dtype=True,
     ),
 )
 def test_array__truediv__(
@@ -1004,6 +1003,10 @@ def test_array__truediv__(
     on_device,
 ):
     dtype, x = dtype_and_x
+
+    # bfloat16 is not supported by numpy
+    assume(not ("bfloat16" in dtype))
+
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
@@ -1021,12 +1024,11 @@ def test_array__truediv__(
 @handle_method(
     method_tree="Array.__rtruediv__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("real_and_complex"),
         num_arrays=2,
         large_abs_safety_factor=2.5,
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
-        shared_dtype=True,
     ),
 )
 def test_array__rtruediv__(
@@ -1039,6 +1041,10 @@ def test_array__rtruediv__(
     on_device,
 ):
     dtype, x = dtype_and_x
+
+    # bfloat16 is not supported by numpy
+    assume(not ("bfloat16" in dtype))
+
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
@@ -1056,12 +1062,11 @@ def test_array__rtruediv__(
 @handle_method(
     method_tree="Array.__itruediv__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         num_arrays=2,
         large_abs_safety_factor=2.5,
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
-        shared_dtype=True,
     ),
     init_as_variable_flags=st.just([False]),
     method_container_flags=st.just([False]),
@@ -1077,6 +1082,10 @@ def test_array__itruediv__(
     on_device,
 ):
     dtype, x = dtype_and_x
+
+    # bfloat16 is not supported by numpy
+    assume(not ("bfloat16" in dtype))
+
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
