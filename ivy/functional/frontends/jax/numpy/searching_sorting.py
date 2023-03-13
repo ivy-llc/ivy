@@ -131,3 +131,8 @@ def sort(
     if out == x:
         x = ivy.sort(x, out=x)
     return x
+
+
+@to_ivy_arrays_and_back
+def count_nonzero(a, axis=None, keepdims=False):
+    return ivy.count_nonzero(a, axis=axis, keepdims=keepdims)
