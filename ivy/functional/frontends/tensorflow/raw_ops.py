@@ -40,6 +40,29 @@ ArgMax = to_ivy_arrays_and_back(
 AddV2 = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add))
 
 
+@with_unsupported_dtypes(
+    {
+        "2.10.0 and below": (
+            "float16",
+            "bool",
+            "bfloat16",
+        )
+    },
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def ApproximateEqual(
+    *,
+    x,
+    y,
+    tolerance=1e-05,
+    name="ApproximateEqual",
+):
+    x, y = check_tensorflow_casting(x, y)
+    ret = ivy.abs(x - y)
+    return ret < tolerance
+
+
 @to_ivy_arrays_and_back
 def ArgMin(*, input, dimension, output_type=None, name=None):
     output_type = to_ivy_dtype(output_type)
@@ -158,6 +181,12 @@ def Floor(*, x, name="Floor"):
 def FloorDiv(*, x, y, name="FloorDiv"):
     x, y = check_tensorflow_casting(x, y)
     return ivy.floor_divide(x, y)
+
+
+@to_ivy_arrays_and_back
+def FloorMod(*, x, y, name="FloorMod"):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.remainder(x, y)
 
 
 @to_ivy_arrays_and_back

@@ -442,7 +442,7 @@ def handle_frontend_test(
             }
             filtered_args = set(param_names).intersection(possible_arguments.keys())
             for key in filtered_args:
-                # extend Hypothesis given kwargs with our stratigies
+                # extend Hypothesis given kwargs with our strategies
                 _given_kwargs[key] = possible_arguments[key]
             # Wrap the test with the @given decorator
             wrapped_test = given(**_given_kwargs)(test_fn)

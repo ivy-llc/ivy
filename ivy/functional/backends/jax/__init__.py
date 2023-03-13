@@ -20,8 +20,6 @@ from ivy.func_wrapper import _dtype_from_version
 
 backend_version = {"version": jax.__version__}
 
-config.update("jax_enable_x64", True)
-
 # To avoid trying to add ivy.Container multiple times when with_backend is called
 if not ivy.is_local():
     register_pytree_node(
@@ -53,8 +51,6 @@ NativeArray = (
 )
 
 if version.parse(jax.__version__) >= version.parse("0.4.1"):
-    # jax.Array is a feature that need to be enabled by the following line
-    jax.config.update("jax_array", True)
     JaxArray = Union[JaxArray, jax.Array]
     NativeArray += (jax.Array,)
 
