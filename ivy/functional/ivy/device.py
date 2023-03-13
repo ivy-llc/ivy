@@ -6,15 +6,24 @@ import gc
 import abc
 import math
 import psutil
-import pynvml
+import warnings
 import types
 from typing import Type, Optional, Tuple
 
 # noinspection PyUnresolvedReferences
 try:
-    pynvml.nvmlInit()
-except pynvml.NVMLError:
-    pass
+    import pynvml
+
+    try:
+        pynvml.nvmlInit()
+    except pynvml.NVMLError:
+        pass
+except ImportError:
+    warnings.warn(
+        "Unable to import pynvml, please install if you are using GPU with Ivy."
+    )
+    # nvidia-ml-py (pynvml) is not installed in CPU Dockerfile.
+
 from typing import Union, Callable, Iterable, Any
 
 # local
@@ -81,10 +90,12 @@ class DefaultDevice:
         ivy.set_default_device(self._dev)
         return self
 
-    def __exit__(self,
-                 exc_type: Optional[Type[BaseException]],
-                 exc_val: Optional[Type[BaseException]],
-                 exc_tb: Optional[types.TracebackType]) -> Union[ivy.Device, str]:
+    def __exit__(
+        self,
+        exc_type: Optional[Type[BaseException]],
+        exc_val: Optional[Type[BaseException]],
+        exc_tb: Optional[types.TracebackType],
+    ) -> Union[ivy.Device, str]:
         """
         Exit the runtime context related to the specified device.
 
