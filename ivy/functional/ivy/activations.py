@@ -403,7 +403,6 @@ def relu(
 def sigmoid(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-
     """
     Applies the sigmoid function element-wise.
 
@@ -429,8 +428,6 @@ def sigmoid(
     >>> y = ivy.sigmoid(x)
     >>> print(y)
     ivy.array([0.269, 0.731, 0.881])
-
-    or
 
     >>> x = ivy.array([-1.0, 1.0, 2.0])
     >>> y = x.sigmoid()

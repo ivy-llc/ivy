@@ -416,9 +416,9 @@ def interpolate(
             "trilinear",
             "nearest",
             "area",
-            "nearest_exact",
+            "nearest-exact",
             "tf_area",
-            "bicubic",
+            "bicubic_tensorflow",
             "mitchellcubic",
             "lanczos3",
             "lanczos5",
@@ -441,13 +441,23 @@ def interpolate(
             antialias=antialias,
         )
     remove_dim = False
-    if mode in ["linear", "tf_area", "lanczos3", "lanczos5"]:
+    if mode in ["linear", "tf_area", "lanczos3", "lanczos5", "nearest-exact"]:
         if dims == 1:
             size = (1,) + tuple(size)
             x = tf.expand_dims(x, axis=-2)
             dims = 2
             remove_dim = True
-        mode = "bilinear" if mode == "linear" else "area" if mode == "tf_area" else mode
+        mode = (
+            "bilinear"
+            if mode == "linear"
+            else "area"
+            if mode == "tf_area"
+            else "nearest"
+            if mode == "nearest-exact"
+            else mode
+        )
+    if mode == "bicubic_tensorflow":
+        mode = "bicubic"
     x = tf.transpose(x, (0, *range(2, dims + 2), 1))
     ret = tf.transpose(
         tf.cast(
