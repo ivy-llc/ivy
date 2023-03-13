@@ -2065,7 +2065,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             out=out,
         )
 
-        @staticmethod
+    @staticmethod
     def static_take(
         arr: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
