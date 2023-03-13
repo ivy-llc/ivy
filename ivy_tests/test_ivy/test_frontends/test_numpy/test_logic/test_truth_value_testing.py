@@ -195,13 +195,13 @@ def test_numpy_iscomplexobj(
 
 
 @handle_frontend_test(
-    fn_tree="numpy.isrealobj",
+    fn_tree="numpy.iscomplex",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("real_and_complex"), min_num_dims=1
     ),
     test_with_out=st.just(False),
 )
-def test_numpy_isrealobj(
+def test_numpy_iscomplex(
     dtype_and_x,
     frontend,
     on_device,
