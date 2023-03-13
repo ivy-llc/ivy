@@ -17,11 +17,16 @@ def resize(x, /, newshape, refcheck=True):
     total_size = 1
     for diff_size in newshape:
         total_size *= diff_size
+        if diff_size < 0:
+            raise ValueError('values must not be negative')
     
-    if x.size == 0 or newshape.size ==0:
+    if x.size == 0 or total_size == 0:
         return ivy.zeros_like(x)   
     
     repetition = -(-total_size//x.size)
+    # or
+    # zeros = ivy.zeros((repetition * repetition),dtype=int)
+    # x = ivy.concat((x,zeros))[:total_size]
     x = ivy.concat((x,) * repetition)[:total_size]
     return ivy.reshape(x,newshape=newshape,order="C")
     # return ivy.resize(x, newshape=newshape, refcheck=refcheck)
