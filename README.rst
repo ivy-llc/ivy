@@ -67,7 +67,7 @@
 .. _`contributor guide`: https://lets-unify.ai/ivy/contributing.html
 .. _`open tasks`: https://lets-unify.ai/ivy/contributing/open_tasks.html
 
-Contents
+Contentss
 --------
 
 * `Overview`_
