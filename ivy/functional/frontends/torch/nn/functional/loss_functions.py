@@ -304,6 +304,49 @@ def nll_loss(
 
 
 @to_ivy_arrays_and_back
+def gaussian_nll_loss(
+    input,
+    target,
+    var,
+    full=False,
+    eps=1e-6,
+    reduction="mean"
+):
+
+    if var.shape != input.shape:
+        if input.shape[:-1] == var.shape:
+            var = torch_frontend.unsqueeze(var, dim=2)
+        elif input.shape[:-1] == var.shape[:-1] and var.shape[-1] == 1:
+            pass
+        else:
+            raise ivy.utils.exceptions.IvyError(
+                "var is of incorrect size"
+            )
+
+    if reduction is not None and reduction != "mean" and reduction != "sum":
+        raise ivy.utils.exceptions.IvyError(
+            f"{reduction} is not valid"
+        )
+
+    if ivy.any(var < 0):
+        raise ivy.utils.exceptions.IvyError(
+            "var has negative entry/entries"
+        )
+
+    var = ivy.maximum(var, eps)
+
+    loss = 0.5 * (ivy.log(var) + (input - target)**2 / var)
+
+    if full:
+        loss += 0.5 * ivy.log(2 * ivy.pi)
+
+    reduction = _get_reduction_func(reduction)
+    ret = reduction(loss)
+
+    return ret
+
+
+@to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
 def soft_margin_loss(
     input,
@@ -418,3 +461,87 @@ def hinge_embedding_loss(
     ret = reduction(loss)
 
     return ivy.astype(ret, input.dtype)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+def triplet_margin_loss(
+    anchor,
+    positive,
+    negative,
+    margin=1.0,
+    p=2.0,
+    eps=1e-06,
+    swap=False,
+    size_average=None,
+    reduce=None,
+    reduction="mean",
+):
+    def pairwise_distance(x1, x2, *, p=2.0, eps=1e-06, keepdim=False):
+        x1, x2 = torch_frontend.promote_types_of_torch_inputs(x1, x2)
+        x1_dim = len(x1.shape)
+        x2_dim = len(x2.shape)
+        if x1_dim > x2_dim:
+            output_dim = x1_dim
+        else:
+            output_dim = x2_dim
+
+        return ivy.vector_norm(
+            x1 - x2 + eps, ord=p, axis=output_dim - 1, keepdims=keepdim
+        )
+
+    reduction = _get_reduction(reduction, size_average, reduce)
+
+    a_dim = anchor.ndim
+    p_dim = positive.ndim
+    n_dim = negative.ndim
+
+    ivy.assertions.check_true(
+        a_dim == p_dim and p_dim == n_dim,
+        lambda: (
+            f"The anchor, positive, and negative tensors are expected to have "
+            f"the same number of dimensions, but got: anchor {a_dim}D, "
+            f"positive {p_dim}D, and negative {n_dim}D inputs"
+        ),
+    )
+
+    dist_positive = pairwise_distance(anchor, positive, p=p, eps=eps)
+    dist_negative = pairwise_distance(anchor, negative, p=p, eps=eps)
+    if swap:
+        dist_swap = pairwise_distance(positive, negative, p=p, eps=eps)
+        dist_negative = ivy.minimum(dist_negative, dist_swap)
+    loss = ivy.maximum(
+        dist_positive - dist_negative + ivy.array(margin), ivy.array(0.0)
+    )
+
+    loss = reduction(loss).astype(anchor.dtype)
+    return loss
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+def multilabel_soft_margin_loss(
+    input,
+    target,
+    weight=None,
+    size_average=None,
+    reduce=None,
+    reduction="mean",
+):
+    loss = -(
+        target * ivy.log(ivy.sigmoid(input))
+        + (1 - target) * ivy.log(1 - ivy.sigmoid(input))
+    )
+
+    if weight is not None:
+        loss = ivy.multiply(weight, loss)
+
+    class_dim = ivy.get_num_dims(input) - 1
+    C = ivy.shape(input)[class_dim]
+
+    loss = ivy.sum(loss, axis=class_dim) / C
+
+    reduction = _get_reduction(reduction, size_average, reduce)
+    ret = reduction(loss)
+
+    return ret

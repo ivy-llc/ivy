@@ -38,8 +38,8 @@ def beta(
     /,
     *,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: str = None,
-    dtype: np.dtype = None,
+    device: Optional[str] = None,
+    dtype: Optional[np.dtype] = None,
     seed: Optional[int] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
@@ -55,8 +55,8 @@ def gamma(
     /,
     *,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: str = None,
-    dtype: np.dtype = None,
+    device: Optional[str] = None,
+    dtype: Optional[np.dtype] = None,
     seed: Optional[int] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
@@ -71,8 +71,8 @@ def poisson(
     lam: Union[float, np.ndarray],
     *,
     shape: Optional[Union[ivy.NativeArray, Sequence[int]]] = None,
-    device: str,
-    dtype: np.dtype,
+    device: Optional[str] = None,
+    dtype: Optional[np.dtype] = None,
     seed: Optional[int] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
@@ -88,8 +88,8 @@ def bernoulli(
     *,
     logits: Optional[Union[float, np.ndarray]] = None,
     shape: Optional[Union[ivy.NativeArray, Sequence[int]]] = None,
-    device: str = None,
-    dtype: np.dtype = None,
+    device: Optional[str] = None,
+    dtype: Optional[np.dtype] = None,
     seed: Optional[int] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:

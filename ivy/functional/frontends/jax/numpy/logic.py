@@ -188,3 +188,9 @@ def left_shift(x1, x2):
 @to_ivy_arrays_and_back
 def isreal(x, out=None):
     return ivy.isreal(x, out=out)
+
+
+@to_ivy_arrays_and_back
+def logical_xor(x1, x2, /):
+    x1, x2 = promote_jax_arrays(x1, x2)
+    return ivy.logical_xor(x1, x2)
