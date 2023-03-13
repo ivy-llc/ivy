@@ -65,6 +65,25 @@ def ApproximateEqual(
 
 
 @to_ivy_arrays_and_back
+def AvgPool(
+    *,
+    value,
+    ksize,
+    strides,
+    padding,
+    data_format="NHWC",
+    name="AvgPool",
+):
+    return ivy.avg_pool1d(
+        value,
+        ksize,
+        strides,
+        padding,
+        data_format=data_format,
+    )
+
+
+@to_ivy_arrays_and_back
 def Angle(
     *,
     input,
