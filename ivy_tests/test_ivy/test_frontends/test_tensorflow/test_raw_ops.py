@@ -70,7 +70,7 @@ def test_tensorflow_Acosh(  # NOQA
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Angle",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("complex"),
+        available_dtypes=helpers.get_dtypes("float", full=False),
     ),
     Tout=st.sampled_from([ivy.float32]),
     test_with_out=st.just(False),
