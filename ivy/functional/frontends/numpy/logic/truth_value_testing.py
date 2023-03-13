@@ -81,4 +81,4 @@ def iscomplexobj(a: np.ndarray):
 
 @to_ivy_arrays_and_back
 def isrealobj(x: any):
-    return not ivy.is_complex_dtype(x)
+    return not ivy.is_complex_dtype(ivy.dtype(x))
