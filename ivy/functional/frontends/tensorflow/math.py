@@ -497,3 +497,10 @@ def atan(x, name=None):
 def log(x, name=None):
     return ivy.log(x)
 
+@to_ivy_arrays_and_back
+def add_n(x, name=None):
+    return ivy.add_n(x)
+
+@to_ivy_arrays_and_back
+def floormod(x, y, name=None):
+    return ivy.remainder(x, y)

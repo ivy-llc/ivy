@@ -60,12 +60,12 @@ def instance_norm(
     scale: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     eps: float = 1e-05,
-    momentum: Optional[float] = 0.1,
+    momentum: float = 0.1,
     data_format: str = "NCHW",
     running_mean: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     running_stddev: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    affine: Optional[bool] = True,
-    track_running_stats: Optional[bool] = False,
+    affine: bool = True,
+    track_running_stats: bool = False,
     out: Optional[ivy.Array] = None,
 ):
     """Applies Instance Normalization over a 4D input along C dimension.

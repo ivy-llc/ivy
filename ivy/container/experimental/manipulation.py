@@ -1923,6 +1923,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         arr: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         axis: int,
+        mode: str = "fill",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1943,6 +1944,9 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         axis
             The axis over which to select values. If axis is None, then arr and indices
             must be 1-D sequences of the same length.
+        mode
+            One of: 'clip', 'fill', 'drop'. Parameter controlling how out-of-bounds
+            indices will be handled.
         key_chains
             The keychains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -1981,6 +1985,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             arr,
             indices,
             axis,
+            mode=mode,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1992,6 +1997,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         axis: int,
+        mode: str = "fill",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2011,6 +2017,9 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         axis
             The axis over which to select values. If axis is None, then arr and indices
             must be 1-D sequences of the same length.
+        mode
+            One of: 'clip', 'fill', 'drop'. Parameter controlling how out-of-bounds
+            indices will be handled.
         key_chains
             The keychains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -2048,6 +2057,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             self,
             indices,
             axis,
+            mode=mode,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
