@@ -305,6 +305,10 @@ def take(
 ) -> np.ndarray:
     return np.take(arr, indices, axis, mode="clip", out=out)
 
+
+take.support_native_out = True
+
+
 def hsplit(
     ary: np.ndarray,
     indices_or_sections: Union[int, Tuple[int, ...]],
