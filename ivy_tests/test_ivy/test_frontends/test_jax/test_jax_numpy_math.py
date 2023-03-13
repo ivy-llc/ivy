@@ -2458,3 +2458,29 @@ def test_jax_numpy_subtract(
         x1=x[0],
         x2=x[0],
     )
+
+
+# around
+@handle_frontend_test(
+    fn_tree="jax.numpy.around",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_jax_numpy_around(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0]
+    )
