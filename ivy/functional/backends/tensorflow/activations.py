@@ -75,7 +75,7 @@ def log_softmax(
 
 
 def deserialize(
-    name: Union[str, None], /, *, custom_objects=Union[ivy.Dict, None]
+    name: Union[str, None], /, *, custom_objects: Optional[ivy.Dict] = None
 ) -> Union[ivy.Callable, None]:
     return tf.keras.activations.deserialize(name, custom_objects)
 
@@ -84,7 +84,7 @@ def get(
     identifier: Union[str, ivy.Callable, None],
     /,
     *,
-    custom_objects=Union[ivy.Dict, None],
+    custom_objects: Optional[ivy.Dict] = None,
 ) -> Union[ivy.Callable, None]:
 
     if identifier is None:

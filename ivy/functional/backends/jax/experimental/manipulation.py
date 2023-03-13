@@ -70,8 +70,8 @@ def rot90(
     m: JaxArray,
     /,
     *,
-    k: Optional[int] = 1,
-    axes: Optional[Tuple[int, int]] = (0, 1),
+    k: int = 1,
+    axes: Tuple[int, int] = (0, 1),
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if isinstance(axes, list):
@@ -84,8 +84,8 @@ def top_k(
     k: int,
     /,
     *,
-    axis: Optional[int] = -1,
-    largest: Optional[bool] = True,
+    axis: int = -1,
+    largest: bool = True,
     out: Optional[Tuple[JaxArray, JaxArray]] = None,
 ) -> Tuple[JaxArray, JaxArray]:
     if not largest:
@@ -141,28 +141,26 @@ def pad(
     pad_width: Union[Sequence[Sequence[int]], JaxArray, int],
     /,
     *,
-    mode: Optional[
-        Union[
-            Literal[
-                "constant",
-                "edge",
-                "linear_ramp",
-                "maximum",
-                "mean",
-                "median",
-                "minimum",
-                "reflect",
-                "symmetric",
-                "wrap",
-                "empty",
-            ],
-            Callable,
-        ]
+    mode: Union[
+        Literal[
+            "constant",
+            "edge",
+            "linear_ramp",
+            "maximum",
+            "mean",
+            "median",
+            "minimum",
+            "reflect",
+            "symmetric",
+            "wrap",
+            "empty",
+        ],
+        Callable,
     ] = "constant",
     stat_length: Optional[Union[Sequence[Sequence[int]], int]] = None,
-    constant_values: Optional[Union[Sequence[Sequence[Number]], Number]] = 0,
-    end_values: Optional[Union[Sequence[Sequence[Number]], Number]] = 0,
-    reflect_type: Optional[Literal["even", "odd"]] = "even",
+    constant_values: Union[Sequence[Sequence[Number]], Number] = 0,
+    end_values: Union[Sequence[Sequence[Number]], Number] = 0,
+    reflect_type: Literal["even", "odd"] = "even",
     **kwargs: Optional[Any],
 ) -> JaxArray:
     pad_width = _to_nested_tuple(pad_width)
@@ -295,7 +293,7 @@ def hsplit(
     return jnp.hsplit(ary, indices_or_sections)
 
 
-def broadcast_shapes(shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
+def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     return jnp.broadcast_shapes(*shapes)
 
 

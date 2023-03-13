@@ -102,6 +102,12 @@ def full_like(a, fill_value, dtype=None, shape=None):
     return ivy.full_like(a, fill_value, dtype=dtype)
 
 
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+def identity(n, dtype=None):
+    return ivy.eye(n, dtype=dtype)
+
+
 @to_ivy_arrays_and_back
 def ndim(a):
     return ivy.astype(ivy.array(a.ndim), ivy.int64)

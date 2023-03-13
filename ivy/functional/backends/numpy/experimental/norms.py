@@ -5,7 +5,13 @@ from .. import backend_version
 
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
-def l2_normalize(x: np.ndarray, /, *, axis: int = None, out=None) -> np.ndarray:
+def l2_normalize(
+    x: np.ndarray,
+    /,
+    *,
+    axis: Optional[int] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
     if axis is None:
         denorm = np.linalg.norm(x.flatten(), 2, axis)
     else:
@@ -21,12 +27,12 @@ def instance_norm(
     scale: Optional[np.ndarray] = None,
     bias: Optional[np.ndarray] = None,
     eps: float = 1e-05,
-    momentum: Optional[float] = 0.1,
+    momentum: float = 0.1,
     data_format: str = "NCHW",
     running_mean: Optional[np.ndarray] = None,
     running_stddev: Optional[np.ndarray] = None,
-    affine: Optional[bool] = True,
-    track_running_stats: Optional[bool] = False,
+    affine: bool = True,
+    track_running_stats: bool = False,
     out: Optional[np.ndarray] = None,
 ):
     if scale is not None:
@@ -68,7 +74,12 @@ def instance_norm(
 
 
 def lp_normalize(
-    x: np.ndarray, /, *, p: float = 2, axis: int = None, out=None
+    x: np.ndarray,
+    /,
+    *,
+    p: float = 2,
+    axis: Optional[int] = None,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if axis is None:
         denorm = np.linalg.norm(x.flatten(), axis=axis, ord=p)

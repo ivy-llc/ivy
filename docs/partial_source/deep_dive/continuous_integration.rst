@@ -355,3 +355,11 @@ This should have hopefully given you a good feel for how function wrapping is ap
 
 If you have any questions, please feel free to reach out on `discord`_ in the `continuous integration channel`_
 or in the `continuous integration forum`_!
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/eO268nc8WH4" class="video">
+    </iframe>
