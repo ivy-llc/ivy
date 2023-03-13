@@ -517,7 +517,7 @@ def dtype_values_axis(
         a list of arrays, and an axis.
 
     Examples
-    -------
+    --------
     >>> dtype_values_axis()
     (['int16'], [array(29788, dtype=int16)])
     (['complex128'], [array(1.62222885e+156-2.68281172e-257j)])
