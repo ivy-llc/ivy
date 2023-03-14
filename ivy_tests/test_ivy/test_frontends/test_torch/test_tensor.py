@@ -4897,7 +4897,7 @@ def test_torch_instance_numpy(
     frontend,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_frontend_method(
+    ret, frontend_ret = helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
             "data": x[0],
@@ -4908,4 +4908,11 @@ def test_torch_instance_numpy(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        test_values=False,
+    )
+    # manual testing required as function return is numpy frontend
+    helpers.value_test(
+        ret_np_flat=helpers.flatten_and_to_np(ret=ret),
+        ret_np_from_gt_flat=frontend_ret[0],
+        ground_truth_backend="torch",
     )
