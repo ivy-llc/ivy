@@ -927,30 +927,15 @@ def _check_arguments(
         message="the pad_widths must be greater or equal to zero",
     )
     if mode in ["maximum", "mean", "median", "minimum"]:
-        if stat_length is None:
-            raise ivy.utils.exceptions.IvyException(
-                "stat_length is required for mode: " + mode
-            )
-        else:
-            _check_tuple_arg(stat_length, "stat_length")
-            ivy.utils.assertions.check_true(
-                all(element[1] > 0 for element in ivy.ndenumerate(stat_length)),
-                message="the stat lengths must be greater than zero",
-            )
+        _check_tuple_arg(stat_length, "stat_length")
+        ivy.utils.assertions.check_true(
+            all(element[1] > 0 for element in ivy.ndenumerate(stat_length)),
+            message="the stat lengths must be greater than zero",
+        )
     elif mode == "constant":
-        if constant_values is None:
-            raise ivy.utils.exceptions.IvyException(
-                "constant_values is required for mode: " + mode
-            )
-        else:
-            _check_tuple_arg(constant_values, "constant_values", b_float=True)
+        _check_tuple_arg(constant_values, "constant_values", b_float=True)
     elif mode == "linear_ramp":
-        if end_values is None:
-            raise ivy.utils.exceptions.IvyException(
-                "end_values is required for mode: " + mode
-            )
-        else:
-            _check_tuple_arg(end_values, "end_values", b_float=True)
+        _check_tuple_arg(end_values, "end_values", b_float=True)
     ivy.utils.assertions.check_true(
         reflect_type in ["even", "odd"],
         message="the provided reflect_type is not supported",
@@ -983,9 +968,9 @@ def pad(
         ],
         Callable,
     ] = "constant",
-    stat_length: Optional[Union[Iterable[Tuple[int]], int]] = None,
-    constant_values: Optional[Union[Iterable[Tuple[Number]], Number]] = None,
-    end_values: Optional[Union[Iterable[Tuple[Number]], Number]] = None,
+    stat_length: Union[Iterable[Tuple[int]], int] = 1,
+    constant_values: Union[Iterable[Tuple[Number]], Number] = 0,
+    end_values: Union[Iterable[Tuple[Number]], Number] = 0,
     reflect_type: Literal["even", "odd"] = "even",
     **kwargs: Optional[Any],
 ) -> ivy.Array:
