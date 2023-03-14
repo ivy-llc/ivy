@@ -639,7 +639,7 @@ def CumulativeLogsumexp(
 
 
 @to_ivy_arrays_and_back
-def Complex(real, imag, Tout=ivy.dtypes.complex64, name="Complex"):
+def Complex(real, imag, Tout=ivy.complex64, name="Complex"):
     return ivy.Complex(real, imag, Tout=Tout)   
 
 
