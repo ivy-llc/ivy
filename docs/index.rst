@@ -72,12 +72,12 @@ Check out our Google Colabs_ for some interactive demos!
 .. autosummary::
   :toctree: docs/data_classes
   :caption: Data classes
-  :template: top_level_module.rst
+  :template: data_module.rst
   :recursive:
   :hide-table:
 
-  ivy.data_classes.array.array
-  ivy.data_classes.container.container
+  ivy.data_classes.array
+  ivy.data_classes.container
 
 .. autosummary::
   :toctree: docs/framework

@@ -1,9 +1,11 @@
 {{ name | replace("_", " ") | capitalize | escape | underline }}
 
-.. automodule:: {{fullname}}
+{% block toctree %}{% endblock %}
+
+.. automodule:: {% block module_name %}{{fullname}}{% endblock %}
     :members:
     :special-members: __init__
     :undoc-members:
     :show-inheritance:
 
-.. discussion-links:: {{fullname}}
+.. discussion-links:: {% block discussion_module_name %}{{fullname}}{% endblock %}

@@ -9,6 +9,6 @@
    :substitute-caption:
    :hide-table:
    :fix-directory:
-
-{% for submodule in modules %}   {{ submodule }}
-{% endfor %}
+{% for submodule in modules %}
+   {{ submodule }}
+{%- endfor %}
