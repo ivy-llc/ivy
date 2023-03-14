@@ -22,7 +22,7 @@ def concat(
     xs: Union[Tuple[np.ndarray, ...], List[np.ndarray]],
     /,
     *,
-    axis: Optional[int] = 0,
+    axis: int = 0,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     is_tuple = type(xs) is tuple
@@ -84,8 +84,8 @@ def reshape(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     copy: Optional[bool] = None,
-    order: Optional[str] = "C",
-    allowzero: Optional[bool] = True,
+    order: str = "C",
+    allowzero: bool = True,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ivy.utils.assertions.check_elem_in_list(order, ["C", "F"])
@@ -183,7 +183,7 @@ def repeat(
     /,
     repeats: Union[int, List[int]],
     *,
-    axis: int = None,
+    axis: Optional[int] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.repeat(x, repeats, axis)

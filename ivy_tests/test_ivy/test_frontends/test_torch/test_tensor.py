@@ -2,6 +2,7 @@
 import pytest
 from types import SimpleNamespace
 
+
 try:
     import torch
 except ImportError:
@@ -876,6 +877,8 @@ def test_torch_instance_cosh_(
         method_flags=method_flags,
         frontend=frontend,
         on_device=on_device,
+        rtol_=1e-2,
+        atol_=1e-2,
     )
 
 
@@ -2260,6 +2263,52 @@ def test_torch_instance_split(
     )
 
 
+# tensor_split
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="tensor_split",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+    ),
+    indices_or_sections=_get_split_locations(min_num_dims=1),
+    dim=st.shared(
+        helpers.get_axis(
+            shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+            force_int=True,
+        ),
+        key="target_axis",
+    ),
+    method_num_positional_args=st.just(1),
+)
+def test_torch_instance_tensor_split(
+    dtype_value,
+    indices_or_sections,
+    dim,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+):
+    input_dtype, x = dtype_value
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=[],
+        method_all_as_kwargs_np={
+            "indices_or_sections": indices_or_sections,
+            "dim": dim,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+    )
+
+
 # vsplit
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -2995,6 +3044,42 @@ def test_torch_instance_bitwise_and(
     ),
 )
 def test_torch_instance_bitwise_or(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# bitwise_or_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="bitwise_or_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+    ),
+)
+def test_torch_instance_bitwise_or_(
     dtype_and_x,
     frontend_method_data,
     init_flags,

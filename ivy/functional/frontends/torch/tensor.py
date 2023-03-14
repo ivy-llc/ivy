@@ -4,6 +4,8 @@
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
 from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_supported_dtypes
+
 
 
 class Tensor:
@@ -281,6 +283,11 @@ class Tensor:
     def bitwise_or(self, other, *, out=None):
         return torch_frontend.bitwise_or(self._ivy_array, other)
 
+    @with_supported_dtypes({"1.11.0 and below": ("integer",)}, "torch")
+    def bitwise_or_(self, other, *, out=None):
+        self._ivy_array = self.bitwise_or(other, out=out).ivy_array
+        return self
+
     def contiguous(self, memory_format=None):
         return torch_frontend.tensor(self.ivy_array)
 
@@ -444,6 +451,9 @@ class Tensor:
 
     def split(self, split_size, dim=0):
         return torch_frontend.split(self, split_size, dim)
+
+    def tensor_split(self, indices_or_sections, dim=0):
+        return torch_frontend.tensor_split(self.ivy_array, indices_or_sections, dim)
 
     def vsplit(self, indices_or_sections=None, /, *, indices=None, sections=None):
         return torch_frontend.vsplit(
@@ -837,3 +847,5 @@ class Tensor:
     # Method aliases
     absolute, absolute_ = abs, abs_
     ndimension = dim
+
+
