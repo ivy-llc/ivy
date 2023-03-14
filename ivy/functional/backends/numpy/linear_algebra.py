@@ -247,9 +247,13 @@ def matrix_transpose(
         np.conjugate(x)
     return np.swapaxes(x, -1, -2)
 
-
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def outer(
-    x1: np.ndarray, x2: np.ndarray, /, *, out: Optional[np.ndarray] = None
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.outer(x1, x2, out=out)

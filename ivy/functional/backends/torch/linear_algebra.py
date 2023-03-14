@@ -255,8 +255,13 @@ def matrix_transpose(
     return torch.swapaxes(x, -1, -2)
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def outer(
-    x1: torch.Tensor, x2: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return torch.outer(x1, x2, out=out)
