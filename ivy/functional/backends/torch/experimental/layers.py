@@ -554,7 +554,7 @@ embedding.support_native_out = False
 
 
 def interpolate(
-    x: torch.Tensor, 
+    x: torch.Tensor,
     size: Union[Sequence[int], int],
     /,
     *,
