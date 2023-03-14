@@ -58,7 +58,23 @@ def conv1d(
     dilations: Union[int, Tuple[int]] = 1,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if data_format == "NWC":
+        x = paddle.transpose(x, perm=(0, 2, 1))
+    x = _pad_before_conv(x, filters, strides, padding, 1, dilations, data_format)
+    filters = paddle.transpose(filters, perm=(2, 1, 0))
+    if not isinstance(padding, str):
+        padding = "VALID"
+    res = paddle.nn.functional.conv3d(
+        x,
+        filters,
+        data_format="NCL",
+        stride=strides,
+        padding=padding,
+        dilation=dilations,
+    )
+    if data_format == "NWC":
+        res = paddle.transpose(res, perm=[0, 2, 1])
+    return res
 
 
 # noinspection PyUnresolvedReferences
