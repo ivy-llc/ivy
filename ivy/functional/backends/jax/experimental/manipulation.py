@@ -157,7 +157,7 @@ def pad(
         ],
         Callable,
     ] = "constant",
-    stat_length: Optional[Union[Sequence[Sequence[int]], int]] = None,
+    stat_length: Union[Sequence[Sequence[int]], int] = 1,
     constant_values: Union[Sequence[Sequence[Number]], Number] = 0,
     end_values: Union[Sequence[Sequence[Number]], Number] = 0,
     reflect_type: Literal["even", "odd"] = "even",
