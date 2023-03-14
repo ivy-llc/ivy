@@ -439,9 +439,9 @@ def dct(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    type: Optional[Literal[1, 2, 3, 4]] = 2,
+    type: Literal[1, 2, 3, 4] = 2,
     n: Optional[int] = None,
-    axis: Optional[int] = -1,
+    axis: int = -1,
     norm: Optional[Literal["ortho"]] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
@@ -537,7 +537,7 @@ def fft(
     dim: int,
     /,
     *,
-    norm: Optional[str] = "backward",
+    norm: str = "backward",
     n: Optional[Union[int, Tuple[int]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -724,7 +724,7 @@ def ifft(
     x: Union[ivy.Array, ivy.NativeArray],
     dim: int,
     *,
-    norm: Optional[str] = "backward",
+    norm: str = "backward",
     n: Optional[Union[int, Tuple[int]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -851,7 +851,7 @@ def dft(
     inverse: bool = False,
     onesided: bool = False,
     dft_length: Optional[Union[int, Tuple[int]]] = None,
-    norm: Optional[str] = "backward",
+    norm: str = "backward",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -1142,25 +1142,23 @@ def interpolate(
     size: Union[Sequence[int], int],
     /,
     *,
-    mode: Union[
-        Literal[
-            "linear",
-            "bilinear",
-            "trilinear",
-            "nearest",
-            "area",
-            "nearest-exact",
-            "tf_area",
-            "bicubic_tensorflow",
-            "mitchellcubic",
-            "lanczos3",
-            "lanczos5",
-            "gaussian",
-        ]
+    mode: Literal[
+        "linear",
+        "bilinear",
+        "trilinear",
+        "nearest",
+        "area",
+        "nearest_exact",
+        "tf_area",
+        "bicubic",
+        "mitchellcubic",
+        "lanczos3",
+        "lanczos5",
+        "gaussian",
     ] = "linear",
     scale_factor: Optional[Union[Sequence[int], int]] = None,
     align_corners: Optional[bool] = None,
-    antialias: Optional[bool] = False,
+    antialias: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """

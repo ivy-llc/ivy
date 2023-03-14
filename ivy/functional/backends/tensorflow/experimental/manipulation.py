@@ -59,8 +59,8 @@ def rot90(
     m: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    k: Optional[int] = 1,
-    axes: Optional[Tuple[int, int]] = (0, 1),
+    k: int = 1,
+    axes: Tuple[int, int] = (0, 1),
     out: Union[tf.Tensor, tf.Variable] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.rot90(m, k, axes)
@@ -71,8 +71,8 @@ def top_k(
     k: int,
     /,
     *,
-    axis: Optional[int] = -1,
-    largest: Optional[bool] = True,
+    axis: int = -1,
+    largest: bool = True,
     out: Optional[Tuple[tf.Tensor, tf.Tensor]] = None,
 ) -> Tuple[tf.Tensor, tf.Tensor]:
     if not largest:
@@ -210,7 +210,7 @@ def hsplit(
 
 
 def broadcast_shapes(
-    shapes: Union[List[int], List[Tuple]],
+    *shapes: Union[List[int], List[Tuple]],
 ) -> Tuple[int, ...]:
     if len(shapes) > 1:
         desired_shape = tf.broadcast_dynamic_shape(shapes[0], shapes[1])

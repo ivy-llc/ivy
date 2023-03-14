@@ -1,0 +1,9 @@
+# Ivy Framework
+ivy/func_wrapper.py @VedPatwardhan
+**/gradients.py @VedPatwardhan
+ivy/utils/backend @VedPatwardhan @CatB1t
+ivy/utils/backend/ast_helpers.py @CatB1t
+
+
+# Ivy Testing
+ivy_tests/test_ivy/helpers/ @CatB1t
