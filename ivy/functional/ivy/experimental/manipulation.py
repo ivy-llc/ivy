@@ -751,14 +751,14 @@ def _get_stats(padded, axis, width_pair, length_pair, stat_func):
         right_length = max_length
     left_slice = _slice_at_axis(slice(left_index, left_index + left_length), axis)
     left_chunk = ivy.array(padded[left_slice])
-    left_stat = stat_func(left_chunk, axis=axis, keepdims=True).astype(left_chunk.dtype)
+    left_stat = stat_func(left_chunk, axis=axis, keepdims=True)
+    left_stat = ivy.round(left_stat) if 'int' in left_chunk.dtype else left_stat
     if left_length == right_length == max_length:
         return left_stat, left_stat
     right_slice = _slice_at_axis(slice(right_index - right_length, right_index), axis)
     right_chunk = ivy.array(padded[right_slice])
-    right_stat = stat_func(right_chunk, axis=axis, keepdims=True).astype(
-        right_chunk.dtype
-    )
+    right_stat = stat_func(right_chunk, axis=axis, keepdims=True)
+    right_stat = ivy.round(right_stat) if 'int' in right_chunk.dtype else right_stat
     return left_stat, right_stat
 
 

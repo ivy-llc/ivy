@@ -167,9 +167,10 @@ def pad(
     stat_length = _to_nested_tuple(stat_length)
     constant_values = _to_nested_tuple(constant_values)
     end_values = _to_nested_tuple(end_values)
-    input_dtype = input.dtype
-    if jnp.issubdtype(input_dtype, jnp.integer):
+    float_cast = False
+    if jnp.issubdtype(input.dtype, jnp.integer) and mode in ["mean", "median"]:
         input = input.astype(jnp.float64)
+        float_cast = True
     if callable(mode):
         ret = jnp.pad(
             _flat_array_to_1_dim_array(input),
@@ -211,8 +212,8 @@ def pad(
             pad_width,
             mode=mode,
         )
-    if jnp.issubdtype(input_dtype, jnp.integer):
-        ret = jnp.floor(ret).astype(input_dtype)
+    if float_cast:
+        ret = jnp.round(ret).astype(input.dtype)
     return ret
 
 
