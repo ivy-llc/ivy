@@ -8,7 +8,6 @@ from importlib import import_module
 from importlib.util import find_spec
 
 
-_backend_generation_path = "/ivy/functional/backends/"
 _imported_backend = None
 _backend_is_installed = False
 
@@ -34,6 +33,7 @@ config_flags = {
 
 
 def _get_user_input(fn, *args, **kwargs):
+    # A basic loop to get user input and handle keyboard interrupt
     while True:
         try:
             ret = fn(*args, **kwargs)
@@ -45,6 +45,7 @@ def _get_user_input(fn, *args, **kwargs):
 
 
 def _update_native_config_value(key):
+    # Handle the logic for updating native config
     ret = input(
         "\nPress ENTER to skip\n"
         f"Enter a value for {Style.BRIGHT + key + Style.NORMAL} "
@@ -54,6 +55,8 @@ def _update_native_config_value(key):
     ret = ret.strip(" ")
     if ret != "" and _imported_backend is not None:
         try:
+            # TODO handle nested classes
+            # Check if it's in the backend dict
             obj = _imported_backend.__dict__[ret]
             if not inspect.isclass(obj):
                 print(Fore.RED + f"{obj} is not a class.")
@@ -68,12 +71,15 @@ def _update_native_config_value(key):
 
 
 def _should_install_backend(package_name):
+    # Check if backend is installed, otherwise install it locally for type hints
     ret = input(
         f"Backend {package_name} isn't installed locally, "
         "would you like to install it? [Y/n]\n"
     )
     if ret.lower() == "y":
         try:
+            # TODO add it to Dockerfile/requirements
+            # Install backend
             subprocess.check_call(
                 [sys.executable, "-m", "pip", "install", package_name]
             )
@@ -95,6 +101,7 @@ def _should_install_backend(package_name):
 
 
 def _get_backend():
+    # Main function to query backend
     package_name = input(
         "Enter backend name (same as Python package name, case sensitive): "
     )
@@ -127,6 +134,7 @@ def _get_backend():
 
 
 def _add_alias_for_backend():
+    # Handle adding an alias for backend import
     ret = input("Enter alias for Python import (Press ENTER to skip): ")
     ret = ret.strip(" ")
     if ret == "":
@@ -136,6 +144,7 @@ def _add_alias_for_backend():
 
 
 def _update_flag_config_value(key):
+    # Handle flag input and update it's value
     ret = input(
         f"\nToggle flag {Style.BRIGHT}{key}{Style.NORMAL} [Y/n]? "
         f"default: {Fore.RED}'{config_flags[key]}'"
@@ -152,6 +161,7 @@ def _update_flag_config_value(key):
 
 
 def _update_valid_config_value(key):
+    # Handle valids selection
     print(f"Select items to remove from list {Style.BRIGHT}{key}:\n")
     for i, item in enumerate(config_valids[key]):
         print(f"{i}. {item}")
