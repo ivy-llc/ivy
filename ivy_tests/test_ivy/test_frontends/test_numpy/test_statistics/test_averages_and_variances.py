@@ -318,7 +318,7 @@ def test_numpy_nanvar(
 @handle_frontend_test(
     fn_tree="numpy.nanpercentile",
     dtype_values_axis=statistical_dtype_values(function="nanpercentile"),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
+    # dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     keep_dims=st.booleans(),
 )
@@ -331,7 +331,7 @@ def test_numpy_nanpercentile(
     on_device,
     keep_dims,
 ):
-    input_dtypes, a, q, axis = dtype_values_axis
+    input_dtypes, values, axis = dtype_values_axis
     if isinstance(axis, tuple):
         axis = axis[0]
 
@@ -344,12 +344,16 @@ def test_numpy_nanpercentile(
     # https://lets-unify.ai/ivy/deep_dive/ivy_frontends_tests.html
 
     np_frontend_helpers.test_frontend_function(
-        a=a,
-        q=q,
+        a=values[0][0],
+        q=values[0][1],
         axis=axis,
         out=None,
         overwrite_input=None,
         method=None,
         keepdims=keep_dims,
         interpolation=None,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        test_flags=test_flags,
+        input_dtypes=input_dtypes,
     )
