@@ -7,6 +7,8 @@ from ivy.functional.frontends.numpy.creation_routines.from_existing_data import 
     array as np_frontend_array,
 )
 from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_supported_dtypes
+
 
 
 class Tensor:
@@ -284,6 +286,11 @@ class Tensor:
     def bitwise_or(self, other, *, out=None):
         return torch_frontend.bitwise_or(self._ivy_array, other)
 
+    @with_supported_dtypes({"1.11.0 and below": ("integer",)}, "torch")
+    def bitwise_or_(self, other, *, out=None):
+        self._ivy_array = self.bitwise_or(other, out=out).ivy_array
+        return self
+
     def contiguous(self, memory_format=None):
         return torch_frontend.tensor(self.ivy_array)
 
@@ -299,15 +306,44 @@ class Tensor:
 
     def to(self, *args, **kwargs):
         if len(args) > 0:
-            if isinstance(args[0], ivy.Dtype):
+            if isinstance(args[0], (ivy.Dtype, ivy.NativeDtype)):
                 if self.dtype == args[0]:
                     return self
                 else:
                     cast_tensor = self.clone()
                     cast_tensor.ivy_array = ivy.asarray(self._ivy_array, dtype=args[0])
                     return cast_tensor
+            if isinstance(args[0], (ivy.Device, ivy.NativeDevice, str)):
+                if isinstance(args[0], str):
+                    ivy.utils.assertions.check_elem_in_list(
+                        args[0],
+                        [
+                            "cpu",
+                            "cuda",
+                            "xpu",
+                            "mkldnn",
+                            "opengl",
+                            "opencl",
+                            "ideep",
+                            "hip",
+                            "ve",
+                            "ort",
+                            "mlc",
+                            "xla",
+                            "lazy",
+                            "vulkan",
+                            "meta",
+                            "hpu",
+                        ],
+                    )
+                if self.device == args[0]:
+                    return self
+                else:
+                    cast_tensor = self.clone()
+                    cast_tensor.ivy_array = ivy.asarray(self._ivy_array, device=args[0])
+                    return cast_tensor
             else:
-                if self.dtype == args[0].dtype and self.device == args[0].device:
+                if self.dtype == args[0].dtype and self.device == ivy.dev(args[0]):
                     return self
                 else:
                     cast_tensor = self.clone()
@@ -418,6 +454,24 @@ class Tensor:
 
     def split(self, split_size, dim=0):
         return torch_frontend.split(self, split_size, dim)
+
+    def tensor_split(self, indices_or_sections, dim=0):
+        return torch_frontend.tensor_split(self.ivy_array, indices_or_sections, dim)
+
+    def vsplit(self, indices_or_sections=None, /, *, indices=None, sections=None):
+        return torch_frontend.vsplit(
+            self.ivy_array, indices_or_sections, indices=indices, sections=sections
+        )
+
+    def hsplit(self, indices_or_sections=None, /, *, indices=None, sections=None):
+        return torch_frontend.hsplit(
+            self.ivy_array, indices_or_sections, indices=indices, sections=sections
+        )
+
+    def dsplit(self, indices_or_sections=None, /, *, indices=None, sections=None):
+        return torch_frontend.dsplit(
+            self.ivy_array, indices_or_sections, indices=indices, sections=sections
+        )
 
     def dim(self):
         return self._ivy_array.ndim
@@ -653,6 +707,32 @@ class Tensor:
     def sigmoid(self):
         return torch_frontend.sigmoid(self.ivy_array)
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def softmax(self, dim=None, dtype=None):
+        return torch_frontend.nn.functional.softmax(
+            self._ivy_array, dim=dim, dtype=dtype
+        )
+
+    def repeat(self, *args, repeats=None):
+        if args and repeats:
+            raise ivy.utils.exceptions.IvyException(
+                "repeat() got multiple values for argument 'repeats'"
+            )
+        if args:
+            if isinstance(args[0], (tuple, list)):
+                repeats = args[0]
+            else:
+                repeats = args
+        elif not isinstance(repeats, (tuple, list)):
+            raise ivy.utils.exceptions.IvyException(
+                "repeat(): argument 'repeats' must be tuple of ints"
+            )
+
+        return torch_frontend.tile(self._ivy_array, repeats)
+
+    def unbind(self, dim=0):
+        return torch_frontend.unbind(self._ivy_array, dim=dim)
+
     # Special Methods #
     # -------------------#
 
@@ -663,6 +743,10 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def __mod__(self, other):
         return torch_frontend.remainder(self._ivy_array, other)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
+    def __pow__(self, exponent):
+        return torch_frontend.pow(self._ivy_array, exponent)
 
     def __long__(self, memory_format=None):
         cast_tensor = self.clone()
@@ -702,23 +786,38 @@ class Tensor:
         return torch_frontend.div(self._ivy_array, other)
 
     def __iadd__(self, other):
-        torch_frontend.add(self._ivy_array, other, out=self)
+        ret = torch_frontend.add(self._ivy_array, other)
+        self.ivy_array = ivy.inplace_update(
+            self._ivy_array, ivy.astype(ret.ivy_array, self.dtype)
+        )
         return self
 
     def __imod__(self, other):
-        torch_frontend.remainder(self._ivy_array, other, out=self)
+        ret = torch_frontend.remainder(self._ivy_array, other)
+        self.ivy_array = ivy.inplace_update(
+            self._ivy_array, ivy.astype(ret.ivy_array, self.dtype)
+        )
         return self
 
     def __imul__(self, other):
-        torch_frontend.mul(self._ivy_array, other, out=self)
+        ret = torch_frontend.mul(self._ivy_array, other)
+        self.ivy_array = ivy.inplace_update(
+            self._ivy_array, ivy.astype(ret.ivy_array, self.dtype)
+        )
         return self
 
     def __isub__(self, other):
-        torch_frontend.subtract(self._ivy_array, other, out=self)
+        ret = torch_frontend.subtract(self._ivy_array, other)
+        self.ivy_array = ivy.inplace_update(
+            self._ivy_array, ivy.astype(ret.ivy_array, self.dtype)
+        )
         return self
 
     def __itruediv__(self, other):
-        torch_frontend.div(self._ivy_array, other, out=self)
+        ret = torch_frontend.div(self._ivy_array, other)
+        self.ivy_array = ivy.inplace_update(
+            self._ivy_array, ivy.astype(ret.ivy_array, self.dtype)
+        )
         return self
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
@@ -751,3 +850,5 @@ class Tensor:
     # Method aliases
     absolute, absolute_ = abs, abs_
     ndimension = dim
+
+

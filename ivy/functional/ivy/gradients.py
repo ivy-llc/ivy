@@ -1,7 +1,7 @@
 """Collection of gradient Ivy functions."""
 
 # global
-from typing import Union, Optional, Tuple
+from typing import Sequence, Union, Optional, Tuple, Callable
 import numpy as np
 import itertools
 
@@ -67,7 +67,7 @@ def _get_required_native_variables(xs, xs_grad_idxs):
     # To make sure that only the required arrays are converted to native arrays
     xs = ivy.nested_map(xs, ivy.to_ivy, include_derived=True, shallow=False)
     if xs_grad_idxs is not None:
-        ivy.map_nest_at_indices(xs, xs_grad_idxs, ivy.to_native)
+        xs = ivy.map_nest_at_indices(xs, xs_grad_idxs, ivy.to_native, shallow=False)
     else:
         xs = ivy.nested_map(xs, ivy.to_native, include_derived=True, shallow=False)
 
@@ -323,7 +323,7 @@ class GradientTracking:
 # noinspection PyShadowingNames
 @handle_exceptions
 @handle_array_function
-def with_grads(*, with_grads: bool = None) -> bool:
+def with_grads(*, with_grads: Optional[bool] = None) -> bool:
     """
     Enter a nested code space where gradients are computed. This method
     adds the with_grads component to the global list with_grads_stack
@@ -374,27 +374,15 @@ def with_grads(*, with_grads: bool = None) -> bool:
 # noinspection PyShadowingNames
 @handle_exceptions
 @handle_array_function
-def set_with_grads(with_grads: bool):
+def set_with_grads(with_grads: bool) -> None:
     """
-    Enter a nested code space where gradients are computed. This method
-    adds the with_grads component to the global list with_grads_stack
+    This method adds the with_grads component to the global list with_grads_stack
 
     Parameters
     ----------
     with_grads
-        Boolean value denoting whether the current code block has gradient
-        computation enabled or not.
-        'True' or 'False' or 'None' (Default value = None)
-
-    Returns
-    -------
-    ret
-        If with_grads is boolean, it returns the boolean value representing
-        if gradient computation is enabled or not.
-        If with_grads is None, it returns the last element in the with_grads_stack
-        representing the parent of the current nested code block. If with_grads_stack
-        is empty, it returns True by default.
-        If with_grads is neither None nor boolean, it will raise an IvyException
+        Boolean value denoting whether to compute gradients or not.
+        'True' or 'False'
 
     Examples
     --------
@@ -420,15 +408,15 @@ def set_with_grads(with_grads: bool):
 
 @handle_exceptions
 @handle_array_function
-def unset_with_grads():
+def unset_with_grads() -> None:
     """
-    Enter a nested code space where gradients are computed. This method
-    deletes the with_grads component from the global list with_grads_stack
+    This method deletes the last with_grads component from the global list
+    with_grads_stack
 
     Returns
     -------
     ret
-        Remove and return item at index (default last).
+        Remove and return last item in with_grads_stack (if possible).
 
     Examples
     --------
@@ -440,11 +428,6 @@ def unset_with_grads():
     >>> ivy.set_with_grads(True)
     >>> ivy.unset_with_grads()
     Returns last deleted value
-
-    >>> ivy.set_with_grads(False)
-    >>> ivy.unset_with_grads()
-    Raises IndexError if list is empty or index is out of range.
-
     """
     global with_grads_stack
     if with_grads_stack:
@@ -531,11 +514,15 @@ def stop_gradient(
 
 
 @handle_exceptions
-@handle_array_like_without_promotion
-@handle_array_function
 def execute_with_gradients(
-    func, xs, /, *, retain_grads=False, xs_grad_idxs=None, ret_grad_idxs=None
-):
+    func,
+    xs: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    retain_grads: bool = False,
+    xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
+    ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
+) -> Tuple[ivy.Array, ivy.Array]:
     """Call function func with input of xs variables, and return the function result
     func_ret and the gradients of each output variable w.r.t each input variable,
 
@@ -562,6 +549,39 @@ def execute_with_gradients(
         the function result func_ret and a dictionary of gradients of each output
         variable w.r.t each input variable.
 
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([[1, 4, 6], [2, 6, 9]])
+    >>> func = lambda x: ivy.mean(ivy.square(x))
+    >>> func_ret = ivy.execute_with_gradients(func, x, retain_grads=True)
+    >>> print(func_ret)
+    (ivy.array(29.), ivy.array([[0.33333334, 1.33333337, 2.        ],
+       [0.66666669, 2.        , 3.        ]]))
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a = ivy.array([1, 4, 6]),
+    ...                   b = ivy.array([2, 6, 9]))
+    >>> func = lambda x: ivy.mean(ivy.square(x))
+    >>> func_ret = ivy.execute_with_gradients(func, x, retain_grads=True)
+    >>> print(func_ret)
+    ({
+    a: ivy.array(17.666666),
+    b: ivy.array(40.333332)
+    },
+    {
+    a: {
+        a: ivy.array([0.66666669, 2.66666675, 4.]),
+        b: ivy.array([0., 0., 0.])
+    },
+    b: {
+        a: ivy.array([0., 0., 0.]),
+        b: ivy.array([1.33333337, 4., 6.])
+    }
+    })
+
     """
     return current_backend(None).execute_with_gradients(
         func,
@@ -575,10 +595,8 @@ def execute_with_gradients(
 execute_with_gradients.computes_gradients = True
 
 
-@to_native_arrays_and_back
 @handle_exceptions
-@handle_array_function
-def value_and_grad(func):
+def value_and_grad(func: Callable) -> Callable:
     """
     Create a function that evaluates both func and the gradient of func.
 
@@ -611,10 +629,8 @@ def value_and_grad(func):
 value_and_grad.computes_gradients = True
 
 
-@to_native_arrays_and_back
 @handle_exceptions
-@handle_array_function
-def jac(func):
+def jac(func: Callable) -> Callable:
     """Call function func, and return func's Jacobian partial derivatives.
 
     Parameters
@@ -647,10 +663,8 @@ def jac(func):
 jac.computes_gradients = True
 
 
-@to_native_arrays_and_back
 @handle_exceptions
-@handle_array_function
-def grad(func):
+def grad(func: Callable) -> Callable:
     """Call function func, and return func's gradients.
 
     Parameters

@@ -1,11 +1,17 @@
 # global
 import abc
+from typing import Optional, Union
 
+# local
 import ivy
 
 
-class ArrayWithNormsExperimental(abc.ABC):
-    def l2_normalize(self, axis=None, out=None):
+class _ArrayWithNormsExperimental(abc.ABC):
+    def l2_normalize(
+        self: ivy.Array,
+        axis: Optional[int] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """Normalizes the array to have unit L2 norm.
 
         Parameters
@@ -34,25 +40,25 @@ class ArrayWithNormsExperimental(abc.ABC):
         return ivy.l2_normalize(self, axis=axis, out=out)
 
     def instance_norm(
-        self,
+        self: ivy.Array,
         /,
         *,
-        scale=None,
-        bias=None,
-        eps=1e-05,
-        momentum=0.1,
-        data_format="NCHW",
-        running_mean=None,
-        running_stddev=None,
-        affine=True,
-        track_running_stats=False,
-        out=None,
+        scale: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        eps: float = 1e-05,
+        momentum: float = 0.1,
+        data_format: str = "NCHW",
+        running_mean: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        running_stddev: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        affine: bool = True,
+        track_running_stats: bool = False,
+        out: Optional[ivy.Array] = None,
     ):
         """Applies Instance Normalization over a 4D input along C dimension.
 
         Parameters
         ----------
-        x
+        self
             Input array.
         scale
             Scale parameter for the normalization.
@@ -123,7 +129,14 @@ class ArrayWithNormsExperimental(abc.ABC):
             out=out,
         )
 
-    def lp_normalize(self, /, *, p: float = 2, axis=None, out=None):
+    def lp_normalize(
+        self: ivy.Array,
+        /,
+        *,
+        p: float = 2,
+        axis: Optional[int] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """Normalizes the array to have Lp norm.
 
         Parameters

@@ -59,8 +59,8 @@ def rot90(
     m: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    k: Optional[int] = 1,
-    axes: Optional[Tuple[int, int]] = (0, 1),
+    k: int = 1,
+    axes: Tuple[int, int] = (0, 1),
     out: Union[tf.Tensor, tf.Variable] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.rot90(m, k, axes)
@@ -71,8 +71,8 @@ def top_k(
     k: int,
     /,
     *,
-    axis: Optional[int] = -1,
-    largest: Optional[bool] = True,
+    axis: int = -1,
+    largest: bool = True,
     out: Optional[Tuple[tf.Tensor, tf.Tensor]] = None,
 ) -> Tuple[tf.Tensor, tf.Tensor]:
     if not largest:
@@ -167,14 +167,37 @@ def take_along_axis(
     axis: int,
     /,
     *,
+    mode: str = "fill",
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if arr.shape != indices.shape:
+    if len(arr.shape) != len(indices.shape):
         raise ivy.utils.exceptions.IvyException(
-            "arr and indices must have the same shape;"
-            + f" got {arr.shape} vs {indices.shape}"
+            "arr and indices must have the same number of dimensions;"
+            + f" got {len(arr.shape)} vs {len(indices.shape)}"
         )
     indices = tf.dtypes.cast(indices, tf.int32)
+    if mode not in ["clip", "fill", "drop"]:
+        raise ValueError(
+            f"Invalid mode '{mode}'. Valid modes are 'clip', 'fill', 'drop'."
+        )
+    arr_shape = arr.shape
+    if axis < 0:
+        axis += len(arr.shape)
+    if mode == "clip":
+        max_index = arr.shape[axis] - 1
+        indices = tf.clip_by_value(indices, 0, max_index)
+    elif mode == "fill" or mode == "drop":
+        if "float" in str(arr.dtype):
+            fill_value = tf.constant(float("nan"), dtype=arr.dtype)
+        elif "uint" in str(arr.dtype):
+            fill_value = tf.constant(arr.dtype.max, dtype=arr.dtype)
+        else:
+            fill_value = tf.constant(-arr.dtype.max - 1, dtype=arr.dtype)
+        indices = tf.where((indices < 0) | (indices >= arr.shape[axis]), -1, indices)
+        arr_shape = list(arr_shape)
+        arr_shape[axis] = 1
+        fill_arr = tf.fill(arr_shape, fill_value)
+        arr = tf.concat([arr, fill_arr], axis=axis)
     return tf.experimental.numpy.take_along_axis(arr, indices, axis)
 
 
@@ -187,7 +210,7 @@ def hsplit(
 
 
 def broadcast_shapes(
-    shapes: Union[List[int], List[Tuple]],
+    *shapes: Union[List[int], List[Tuple]],
 ) -> Tuple[int, ...]:
     if len(shapes) > 1:
         desired_shape = tf.broadcast_dynamic_shape(shapes[0], shapes[1])

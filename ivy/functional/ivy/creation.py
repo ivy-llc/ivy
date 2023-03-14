@@ -164,7 +164,7 @@ def arange(
     start: Number,
     /,
     stop: Optional[Number] = None,
-    step: Optional[Number] = 1,
+    step: Number = 1,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -220,6 +220,35 @@ def arange(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
+    Examples
+    --------
+    >>> start = 5
+    >>> x = ivy.arange(start)
+    >>> print(x)
+    ivy.array([0, 1, 2, 3, 4])
+
+    >>> start = 1
+    >>> stop = 5
+    >>> x = ivy.arange(start, stop)
+    >>> print(x)
+    ivy.array([1, 2, 3, 4])
+
+    >>> start = 1
+    >>> stop = 10
+    >>> step = 2
+    >>> x = ivy.arange(start, stop, step)
+    >>> print(x)
+    ivy.array([1, 3, 5, 7, 9])
+
+    >>> start = 1
+    >>> stop = 10
+    >>> step = 2
+    >>> dtype = "float64"
+    >>> device = "cpu"
+    >>> x = ivy.arange(start, stop, step, dtype=dtype, device=device)
+    >>> print(x, x.dtype, x.device)
+    ivy.array([1., 3., 5., 7., 9.]) float64 cpu
+
     """
     return current_backend().arange(
         start, stop, step, dtype=dtype, device=device, out=out
@@ -269,6 +298,37 @@ def asarray(
     ret
         An array interpretation of x.
 
+    Functional Examples
+    -------------------
+    With list of lists as input:
+    >>> ivy.asarray([[1,2],[3,4]])
+    ivy.array([[1, 2],
+           [3, 4]])
+
+    With tuple of lists as input:
+    >>> ivy.asarray(([1.4,5.6,5.5],[3.1,9.1,7.5]))
+    ivy.array([[1.39999998, 5.5999999 , 5.5       ],
+           [3.0999999 , 9.10000038, 7.5       ]])
+
+    With ndarray as input:
+    >>> x = ivy.np.ndarray(shape=(2,2), order='C')
+    >>> x
+    array([[6.90786433e-310, 6.90786433e-310],
+           [6.90786433e-310, 6.90786433e-310]])
+    >>> ivy.asarray(x)
+    ivy.array([[6.90786433e-310, 6.90786433e-310],
+           [6.90786433e-310, 6.90786433e-310]])
+
+    With :class:`ivy.Container` as input:
+    >>> x = ivy.Container(a = [(1,2),(3,4),(5,6)], b = ((1,2,3),(4,5,6)))
+    >>> ivy.asarray(x)
+    {
+        a: ivy.array([[1, 2],
+                      [3, 4],
+                      [5, 6]]),
+        b: ivy.array([[1, 2, 3],
+                      [4, 5, 6]])
+    }
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -1502,7 +1562,7 @@ array = asarray
 def copy_array(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
-    to_ivy_array: Optional[bool] = True,
+    to_ivy_array: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Copy an array.
@@ -1763,10 +1823,10 @@ def logspace(
     num: int,
     *,
     base: float = 10.0,
-    axis: Optional[int] = 0,
+    axis: int = 0,
     endpoint: bool = True,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-    device: Union[ivy.Device, ivy.NativeDevice] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Generates a certain number of evenly-spaced values in log space, in an interval

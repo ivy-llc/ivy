@@ -18,7 +18,7 @@ import ivy
 from ivy.container.base import ContainerBase
 
 
-class ContainerWithManipulationExperimental(ContainerBase):
+class _ContainerWithManipulationExperimental(ContainerBase):
     @staticmethod
     def static_moveaxis(
         a: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -476,8 +476,8 @@ class ContainerWithManipulationExperimental(ContainerBase):
         m: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        k: Optional[int] = 1,
-        axes: Optional[Tuple[int, int]] = (0, 1),
+        k: int = 1,
+        axes: Tuple[int, int] = (0, 1),
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -549,8 +549,8 @@ class ContainerWithManipulationExperimental(ContainerBase):
         self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        k: Optional[int] = 1,
-        axes: Optional[Tuple[int, int]] = (0, 1),
+        k: int = 1,
+        axes: Tuple[int, int] = (0, 1),
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -622,8 +622,8 @@ class ContainerWithManipulationExperimental(ContainerBase):
         k: int,
         /,
         *,
-        axis: Optional[int] = -1,
-        largest: Optional[bool] = True,
+        axis: int = -1,
+        largest: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -700,8 +700,8 @@ class ContainerWithManipulationExperimental(ContainerBase):
         k: int,
         /,
         *,
-        axis: Optional[int] = -1,
-        largest: Optional[bool] = True,
+        axis: int = -1,
+        largest: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -971,9 +971,9 @@ class ContainerWithManipulationExperimental(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        start_dim: Optional[int] = 0,
-        end_dim: Optional[int] = -1,
-        order: Optional[str] = "C",
+        start_dim: int = 0,
+        end_dim: int = -1,
+        order: str = "C",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1042,9 +1042,9 @@ class ContainerWithManipulationExperimental(ContainerBase):
     def flatten(
         self: ivy.Container,
         *,
-        start_dim: Optional[int] = 0,
-        end_dim: Optional[int] = -1,
-        order: Optional[str] = "C",
+        start_dim: int = 0,
+        end_dim: int = -1,
+        order: str = "C",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.flatten. This method simply
@@ -1106,28 +1106,26 @@ class ContainerWithManipulationExperimental(ContainerBase):
         pad_width: Union[Iterable[Tuple[int]], int],
         /,
         *,
-        mode: Optional[
-            Union[
-                Literal[
-                    "constant",
-                    "edge",
-                    "linear_ramp",
-                    "maximum",
-                    "mean",
-                    "median",
-                    "minimum",
-                    "reflect",
-                    "symmetric",
-                    "wrap",
-                    "empty",
-                ],
-                Callable,
-            ]
+        mode: Union[
+            Literal[
+                "constant",
+                "edge",
+                "linear_ramp",
+                "maximum",
+                "mean",
+                "median",
+                "minimum",
+                "reflect",
+                "symmetric",
+                "wrap",
+                "empty",
+            ],
+            Callable,
         ] = "constant",
-        stat_length: Optional[Union[Iterable[Tuple[int]], int]] = None,
-        constant_values: Optional[Union[Iterable[Tuple[Number]], Number]] = 0,
-        end_values: Optional[Union[Iterable[Tuple[Number]], Number]] = 0,
-        reflect_type: Optional[Literal["even", "odd"]] = "even",
+        stat_length: Union[Iterable[Tuple[int]], int] = 1,
+        constant_values: Union[Iterable[Tuple[Number]], Number] = 0,
+        end_values: Union[Iterable[Tuple[Number]], Number] = 0,
+        reflect_type: Literal["even", "odd"] = "even",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1162,28 +1160,26 @@ class ContainerWithManipulationExperimental(ContainerBase):
         pad_width: Union[Iterable[Tuple[int]], int],
         /,
         *,
-        mode: Optional[
-            Union[
-                Literal[
-                    "constant",
-                    "edge",
-                    "linear_ramp",
-                    "maximum",
-                    "mean",
-                    "median",
-                    "minimum",
-                    "reflect",
-                    "symmetric",
-                    "wrap",
-                    "empty",
-                ],
-                Callable,
-            ]
+        mode: Union[
+            Literal[
+                "constant",
+                "edge",
+                "linear_ramp",
+                "maximum",
+                "mean",
+                "median",
+                "minimum",
+                "reflect",
+                "symmetric",
+                "wrap",
+                "empty",
+            ],
+            Callable,
         ] = "constant",
-        stat_length: Optional[Union[Iterable[Tuple[int]], int]] = None,
-        constant_values: Optional[Union[Iterable[Tuple[Number]], Number]] = 0,
-        end_values: Optional[Union[Iterable[Tuple[Number]], Number]] = 0,
-        reflect_type: Optional[Literal["even", "odd"]] = "even",
+        stat_length: Union[Iterable[Tuple[int]], int] = 1,
+        constant_values: Union[Iterable[Tuple[Number]], Number] = 0,
+        end_values: Union[Iterable[Tuple[Number]], Number] = 0,
+        reflect_type: Literal["even", "odd"] = "even",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1927,6 +1923,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
         arr: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         axis: int,
+        mode: str = "fill",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1947,6 +1944,9 @@ class ContainerWithManipulationExperimental(ContainerBase):
         axis
             The axis over which to select values. If axis is None, then arr and indices
             must be 1-D sequences of the same length.
+        mode
+            One of: 'clip', 'fill', 'drop'. Parameter controlling how out-of-bounds
+            indices will be handled.
         key_chains
             The keychains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -1985,6 +1985,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             arr,
             indices,
             axis,
+            mode=mode,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1996,6 +1997,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
         self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         axis: int,
+        mode: str = "fill",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2015,6 +2017,9 @@ class ContainerWithManipulationExperimental(ContainerBase):
         axis
             The axis over which to select values. If axis is None, then arr and indices
             must be 1-D sequences of the same length.
+        mode
+            One of: 'clip', 'fill', 'drop'. Parameter controlling how out-of-bounds
+            indices will be handled.
         key_chains
             The keychains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -2052,6 +2057,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             self,
             indices,
             axis,
+            mode=mode,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

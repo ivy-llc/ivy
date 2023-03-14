@@ -11,6 +11,7 @@ from numbers import Number
 # local
 import ivy
 from ivy.functional.backends.numpy.device import _to_device
+from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 
 
 def array_equal(x0: np.ndarray, x1: np.ndarray, /) -> bool:
@@ -25,6 +26,7 @@ def current_backend_str() -> str:
     return "numpy"
 
 
+@_scalar_output_to_0d_array
 def get_item(x: np.ndarray, /, query: np.ndarray) -> np.ndarray:
     return x.__getitem__(query)
 
@@ -51,8 +53,8 @@ def gather(
     indices: np.ndarray,
     /,
     *,
-    axis: Optional[int] = -1,
-    batch_dims: Optional[int] = 0,
+    axis: int = -1,
+    batch_dims: int = 0,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     axis = axis % len(params.shape)
@@ -114,7 +116,7 @@ def gather_nd(
     indices: np.ndarray,
     /,
     *,
-    batch_dims: Optional[int] = 0,
+    batch_dims: int = 0,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ivy.utils.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
@@ -174,6 +176,8 @@ def inplace_increment(
 def inplace_update(
     x: Union[ivy.Array, np.ndarray],
     val: Union[ivy.Array, np.ndarray],
+    /,
+    *,
     ensure_in_backend: bool = False,
 ) -> ivy.Array:
     ivy.utils.assertions.check_inplace_sizes_valid(x, val)
@@ -211,7 +215,7 @@ def is_native_array(x, /, *, exclusive=False):
     return False
 
 
-def multiprocessing(context=None):
+def multiprocessing(context: Optional[str] = None):
     return (
         _multiprocessing if context is None else _multiprocessing.get_context(context)
     )
@@ -356,7 +360,7 @@ def shape(
 def vmap(
     func: Callable,
     in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
-    out_axes: Optional[int] = 0,
+    out_axes: int = 0,
 ) -> Callable:
     @ivy.to_native_arrays_and_back
     def _vmap(*args):

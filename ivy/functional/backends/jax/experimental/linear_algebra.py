@@ -1,5 +1,5 @@
 import math
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Sequence
 import jax.numpy as jnp
 from ivy.functional.backends.jax import JaxArray
 
@@ -12,11 +12,11 @@ def diagflat(
     x: JaxArray,
     /,
     *,
-    offset: Optional[int] = 0,
-    padding_value: Optional[float] = 0,
-    align: Optional[str] = "RIGHT_LEFT",
-    num_rows: Optional[int] = -1,
-    num_cols: Optional[int] = -1,
+    offset: int = 0,
+    padding_value: float = 0,
+    align: str = "RIGHT_LEFT",
+    num_rows: int = -1,
+    num_cols: int = -1,
     out: Optional[JaxArray] = None,
 ):
     if len(x.shape) > 1:
@@ -128,3 +128,12 @@ def adjoint(
     axes = list(range(len(x.shape)))
     axes[-1], axes[-2] = axes[-2], axes[-1]
     return jnp.conjugate(jnp.transpose(x, axes=axes))
+
+
+def multi_dot(
+    x: Sequence[JaxArray],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.linalg.multi_dot(x)

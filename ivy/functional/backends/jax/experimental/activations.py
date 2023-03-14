@@ -8,7 +8,13 @@ from jax import lax
 import ivy
 
 
-def logit(x: JaxArray, /, *, eps: Optional[float] = None, out=None):
+def logit(
+    x: JaxArray,
+    /,
+    *,
+    eps: Optional[float] = None,
+    out: Optional[JaxArray] = None,
+):
     if eps is None:
         x = jnp.where(jnp.logical_or(x > 1, x < 0), jnp.nan, x)
     else:
@@ -36,7 +42,35 @@ def thresholded_relu(
     x: JaxArray,
     /,
     *,
-    threshold: Optional[Union[int, float]] = 0,
+    threshold: Union[int, float] = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.where(x > threshold, x, 0).astype(x.dtype)
+
+
+def batch_norm(
+    x: JaxArray,
+    mean: JaxArray,
+    variance: JaxArray,
+    /,
+    *,
+    scale: Optional[JaxArray] = None,
+    offset: Optional[JaxArray] = None,
+    training: bool = False,
+    eps: float = 1e-5,
+):
+    ndims = len(x.shape)
+    if training:
+        dims = (0, *range(2, ndims))
+        mean = jnp.mean(x, axis=dims)
+        variance = jnp.var(x, axis=dims)
+    x = jnp.transpose(x, (0, *range(2, ndims), 1))
+    inv = 1.0 / jnp.sqrt(variance + eps)
+    if scale is not None:
+        inv *= scale
+
+    ret = x * inv.astype(x.dtype) + (
+        offset - mean * inv if offset is not None else -mean * inv
+    ).astype(x.dtype)
+
+    return jnp.transpose(ret, (0, ndims - 1, *range(1, ndims - 1)))

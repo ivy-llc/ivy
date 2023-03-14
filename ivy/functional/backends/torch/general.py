@@ -16,7 +16,7 @@ import torch
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.general import _parse_ellipsis
-from . import backend_version
+from . import backend_version, is_variable
 
 torch_scatter = None
 
@@ -73,7 +73,26 @@ def get_item(
 ) -> torch.Tensor:
     if ivy.is_array(query) and ivy.dtype(query, as_native=True) is not torch.bool:
         return x.__getitem__(query.to(torch.int64))
-    return x.__getitem__(query)
+    if isinstance(query, slice) and query.step is not None and query.step < 0:
+        start = query.start if query.start is not None else x.shape[0] - 1
+        stop = query.stop if query.stop is not None else -1
+        step = query.step if query.step is not None else -1
+        return gather(x, torch.arange(start, stop, step, device=x.device), axis=0)
+    try:
+        return x.__getitem__(query)
+    except ValueError:
+        new_query = []
+        shape_idx = 0
+        for q in query:
+            if isinstance(q, slice) and q.step is not None and q.step < 0:
+                start = q.start if q.start is not None else x.shape[shape_idx] - 1
+                stop = q.stop if q.stop is not None else -1
+                step = q.step
+                new_query.append(torch.arange(start, stop, step, device=x.device))
+            else:
+                new_query.append(q)
+            shape_idx += 1
+        return x.__getitem__(new_query)
 
 
 def to_numpy(
@@ -133,8 +152,8 @@ def gather(
     indices: torch.Tensor,
     /,
     *,
-    axis: Optional[int] = -1,
-    batch_dims: Optional[int] = 0,
+    axis: int = -1,
+    batch_dims: int = 0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     axis = axis % len(params.shape)
@@ -199,7 +218,7 @@ def gather_nd(
     indices: torch.Tensor,
     /,
     *,
-    batch_dims: Optional[int] = 0,
+    batch_dims: int = 0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     ivy.utils.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
@@ -263,12 +282,17 @@ def inplace_increment(
 def inplace_update(
     x: Union[ivy.Array, torch.Tensor],
     val: Union[ivy.Array, torch.Tensor],
+    /,
+    *,
     ensure_in_backend: bool = False,
 ) -> ivy.Array:
     ivy.utils.assertions.check_inplace_sizes_valid(x, val)
     if ivy.is_array(x) and ivy.is_array(val):
         (x_native, val_native), _ = ivy.args_to_native(x, val)
-        x_native.data = val_native
+        if is_variable(x_native):
+            x_native.data = val_native
+        else:
+            x_native[()] = val_native
         if ivy.is_ivy_array(x):
             x.data = x_native
 
@@ -285,7 +309,7 @@ def inplace_variables_supported():
     return True
 
 
-def multiprocessing(context=None):
+def multiprocessing(context: Optional[str] = None):
     import torch.multiprocessing
 
     if context is None:
@@ -565,7 +589,7 @@ def shape(
 def vmap(
     func: Callable,
     in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
-    out_axes: Optional[int] = 0,
+    out_axes: int = 0,
 ) -> Callable:
     def _vmap(*args):
         new_fun = lambda *args: ivy.to_native(func(*args))

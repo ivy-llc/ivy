@@ -84,8 +84,8 @@ def trapz(
     /,
     *,
     x: Optional[Union[tf.Tensor, tf.Variable]] = None,
-    dx: Optional[float] = 1.0,
-    axis: Optional[int] = -1,
+    dx: float = 1.0,
+    axis: int = -1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tfp.math.trapz(y, x=x, dx=dx, axis=axis, name=None)
@@ -142,7 +142,7 @@ def count_nonzero(
     /,
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     dtype: Optional[tf.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -159,7 +159,7 @@ def nansum(
     *,
     axis: Optional[Union[Tuple[int, ...], int]] = None,
     dtype: Optional[tf.DType] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     np_math_ops.enable_numpy_methods_on_tensor()
@@ -185,9 +185,9 @@ def isclose(
     b: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    rtol: Optional[float] = 1e-05,
-    atol: Optional[float] = 1e-08,
-    equal_nan: Optional[bool] = False,
+    rtol: float = 1e-05,
+    atol: float = 1e-08,
+    equal_nan: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.isclose(
@@ -199,8 +199,8 @@ def nan_to_num(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    copy: Optional[bool] = True,
-    nan: Optional[Union[float, int]] = 0.0,
+    copy: bool = True,
+    nan: Union[float, int] = 0.0,
     posinf: Optional[Union[float, int]] = None,
     neginf: Optional[Union[float, int]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
@@ -270,9 +270,9 @@ def allclose(
     x2: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    rtol: Optional[float] = 1e-05,
-    atol: Optional[float] = 1e-08,
-    equal_nan: Optional[bool] = False,
+    rtol: float = 1e-05,
+    atol: float = 1e-08,
+    equal_nan: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> bool:
     return tf.experimental.numpy.allclose(
@@ -412,9 +412,9 @@ def gradient(
     x: tf.Tensor,
     /,
     *,
-    spacing: Optional[Union[int, list, tuple]] = 1,
+    spacing: Union[int, list, tuple] = 1,
     axis: Optional[Union[int, list, tuple]] = None,
-    edge_order: Optional[int] = 1,
+    edge_order: int = 1,
 ) -> Union[tf.Tensor, List[tf.Tensor]]:
     """https://github.com/numpy/numpy/blob/v1.23.0/numpy/lib/
     function_base.py#L969-L1312
@@ -644,3 +644,21 @@ def ldexp(
         x2 = tf.cast(x2, x1.dtype)
         ret = x1 * tf.math.pow(2, x2)
     return ret
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("unsigned")}, backend_version)
+def frexp(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[
+        Union[Tuple[tf.Tensor, tf.Tensor], Tuple[tf.Variable, tf.Variable]]
+    ] = None,
+) -> Union[Tuple[tf.Tensor, tf.Tensor], Tuple[tf.Variable, tf.Variable]]:
+    e = tf.math.floor(tf.math.log(tf.math.abs(x)) / tf.cast(tf.math.log(2.0), x.dtype))
+    e = tf.cast(e, x.dtype)
+    while tf.reduce_any(tf.abs(x / tf.math.pow(2, e)) >= 1):
+        e += tf.cast(tf.abs(x / tf.math.pow(2, e)) >= 1, e.dtype)
+    m = x / tf.math.pow(2, e)
+    e = tf.cast(e, tf.int32)
+    return m, e

@@ -70,6 +70,44 @@ def test_jax_numpy_add(
     )
 
 
+# angle
+@handle_frontend_test(
+    fn_tree="jax.numpy.angle",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float64"],
+        min_value=-5,
+        max_value=5,
+        max_dim_size=5,
+        max_num_dims=5,
+        min_dim_size=1,
+        min_num_dims=1,
+        allow_inf=False,
+        allow_nan=False,
+    ),
+    deg=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_angle(
+    *,
+    dtype_and_x,
+    deg,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, z = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        z=z[0],
+        deg=deg,
+    )
+
+
 # diff
 @st.composite
 def _get_dtype_input_and_vector(draw):
@@ -116,6 +154,44 @@ def test_jax_numpy_diff(
         axis=axis,
         prepend=None,
         append=None,
+    )
+
+
+# ediff1d
+@handle_frontend_test(
+    fn_tree="jax.numpy.ediff1d",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"), min_num_dims=1, max_num_dims=1
+    ),
+    to_end=helpers.ints(
+        min_value=-1,
+        max_value=10,
+    ),
+    to_begin=helpers.ints(
+        min_value=-1,
+        max_value=10,
+    ),
+)
+def test_jax_numpy_ediff1d(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    to_end,
+    to_begin,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_flags=test_flags,
+        ary=x[0],
+        to_end=to_end,
+        to_begin=to_begin,
     )
 
 
@@ -2299,4 +2375,148 @@ def test_jax_numpy_inner(
         on_device=on_device,
         a=xs[0],
         b=xs[1],
+    )
+
+
+# outer
+@handle_frontend_test(
+    fn_tree="jax.numpy.outer",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        min_value=-10,
+        max_value=10,
+        min_num_dims=1,
+        max_num_dims=1,
+        shared_dtype=True,
+    ),
+)
+def test_jax_numpy_outer(
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtypes, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=xs[0],
+        b=xs[1],
+    )
+
+
+# reciprocal
+@handle_frontend_test(
+    fn_tree="jax.numpy.reciprocal",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        small_abs_safety_factor=4,
+        large_abs_safety_factor=4,
+        safety_factor_scale="log",
+        num_arrays=1,
+    ),
+)
+def test_jax_numpy_reciprocal(
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# conj
+@handle_frontend_test(
+    fn_tree="jax.numpy.conj",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_jax_numpy_conj(
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# subtract
+@handle_frontend_test(
+    fn_tree="jax.numpy.subtract",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_subtract(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=x[0],
+        x2=x[0],
+    )
+
+
+# around
+@handle_frontend_test(
+    fn_tree="jax.numpy.around",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_jax_numpy_around(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0]
     )

@@ -8,7 +8,7 @@ def median(
     /,
     *,
     axis: Optional[Union[Tuple[int], int]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if isinstance(axis, list):
@@ -26,7 +26,7 @@ def nanmean(
     /,
     *,
     axis: Optional[Union[int, Tuple[int]]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
@@ -42,7 +42,7 @@ def unravel_index(
     *,
     out: Optional[JaxArray] = None,
 ) -> Tuple:
-    return jnp.unravel_index(indices, shape)
+    return jnp.unravel_index(indices.astype(jnp.int32), shape)
 
 
 def quantile(
@@ -51,8 +51,8 @@ def quantile(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    interpolation: Optional[str] = "linear",
-    keepdims: Optional[bool] = False,
+    interpolation: str = "linear",
+    keepdims: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
 
@@ -69,7 +69,7 @@ def corrcoef(
     /,
     *,
     y: Optional[JaxArray] = None,
-    rowvar: Optional[bool] = True,
+    rowvar: bool = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.corrcoef(x, y=y, rowvar=rowvar)
@@ -80,8 +80,8 @@ def nanmedian(
     /,
     *,
     axis: Optional[Union[Tuple[int], int]] = None,
-    keepdims: Optional[bool] = False,
-    overwrite_input: Optional[bool] = False,
+    keepdims: bool = False,
+    overwrite_input: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.nanmedian(
@@ -94,7 +94,7 @@ def bincount(
     /,
     *,
     weights: Optional[JaxArray] = None,
-    minlength: Optional[int] = 0,
+    minlength: int = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if weights is not None:

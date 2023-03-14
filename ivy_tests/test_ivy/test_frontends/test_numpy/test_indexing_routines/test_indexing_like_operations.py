@@ -98,3 +98,66 @@ def test_numpy_diag_indices(
         n=n,
         ndim=ndim,
     )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.take_along_axis",
+    dtype_x_indices_axis=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("numeric"),
+        indices_dtypes=["int32", "int64"],
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+        indices_same_dims=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_numpy_take_along_axis(
+    *,
+    dtype_x_indices_axis,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtypes, x, indices, axis, _ = dtype_x_indices_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        arr=x,
+        indices=indices,
+        axis=axis,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.tril_indices",
+    n=helpers.ints(min_value=1, max_value=10),
+    m=helpers.ints(min_value=1, max_value=10),
+    k=st.integers(min_value=-10, max_value=10),
+    test_with_out=st.just(False),
+)
+def test_tril_indices(
+    *,
+    n,
+    m,
+    k,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=["int32"],
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        n=n,
+        k=k,
+        m=m,
+    )

@@ -3,7 +3,6 @@ import os
 import sys
 from pymongo import MongoClient
 
-
 submodules = (
     "test_functional",
     "test_experimental",
@@ -54,10 +53,26 @@ def get_submodule(test_path):
     return coll, submod, test_fn
 
 
-def update_individual_test_results(collection, id, submod, backend, test, result):
+def update_individual_test_results(
+    collection,
+    id,
+    submod,
+    backend,
+    test,
+    result,
+    backend_version=None,
+    frontend_version=None,
+):
+    key = submod + "." + backend + "." + test
+    if backend_version is not None:
+        backend_version = backend_version.replace(".", "_")
+        key += "." + backend_version
+    if frontend_version is not None:
+        frontend_version = frontend_version.replace(".", "_")
+        key += "." + frontend_version
     collection.update_one(
         {"_id": id},
-        {"$set": {submod + "." + backend + "." + test: result}},
+        {"$set": {key: result}},
         upsert=True,
     )
     return
@@ -71,21 +86,49 @@ def remove_from_db(collection, id, submod, backend, test):
     return
 
 
-def run_multiversion_testing(failed):
+def run_multiversion_testing():
+    failed = False
+    cluster = MongoClient(
+        f"mongodb+srv://deep-ivy:{mongo_key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa
+    )
+    db = cluster["Ivy_tests_multi"]
     with open("tests_to_run", "r") as f:
         for line in f:
-            test, frontend, backend = line.split(",")
-            frontend, backend = frontend.split("=")[1], backend.split("=")[1].replace(
-                ":", ","
+            test, backend = line.split(",")
+            coll, submod, test_fn = get_submodule(test)
+            print(coll, submod, test_fn)
+            frontend_version = None
+            if ";" in backend:
+                # This is a frontend test
+                backend, frontend = backend.split(";")
+                frontend_version = "/".join(frontend.split("/")[1:])
+                command = f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:latest /opt/miniconda/envs/multienv/bin/python -m pytest --tb=short {test} --backend={backend} --frontend={frontend}'
+                ret = os.system(command)
+            else:
+                ret = os.system(
+                    f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:latest /opt/miniconda/envs/multienv/bin/python -m pytest --tb=short {test} --backend={backend}'
+                )
+            if ret != 0:
+                res = make_clickable(run_id, result_config["failure"])
+                failed = True
+            else:
+                res = make_clickable(run_id, result_config["success"])
+            backend_list = backend.split("/")
+            backend_name = backend_list[0] + "\n"
+            backend_version = "/".join(backend_list[1:])
+            update_individual_test_results(
+                db[coll[0]],
+                coll[1],
+                submod,
+                backend_name,
+                test_fn,
+                res,
+                backend_version,
+                frontend_version,
             )
-            print(test, frontend, backend)
-        ret = os.system(
-            f'docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion /opt/miniconda/envs/multienv/bin/python -m pytest --tb=short {test} --frontend={frontend} --backend={backend}'  # noqa
-        )
-        if ret != 0:
-            exit(1)
-        else:
-            exit(0)
+    if failed:
+        exit(1)
+    exit(0)
 
 
 if __name__ == "__main__":
@@ -93,16 +136,21 @@ if __name__ == "__main__":
     redis_pass = sys.argv[2]
     mongo_key = sys.argv[3]
     version_flag = sys.argv[4]
-    workflow_id = sys.argv[5]
-    if len(sys.argv) > 6:
+    gpu_flag = sys.argv[5]
+    workflow_id = sys.argv[6]
+    if len(sys.argv) > 7:
         print(f"Job URL available -: {sys.argv}")
-        run_id = sys.argv[6]
+        run_id = sys.argv[7]
     else:
         run_id = "https://github.com/unifyai/ivy/actions/runs/" + workflow_id
     failed = False
+    # Gpu based testing
+    with_gpu = False
+    if gpu_flag == "true":
+        with_gpu = True
     # multiversion testing
     if version_flag == "true":
-        run_multiversion_testing(failed)
+        run_multiversion_testing()
     cluster = MongoClient(
         f"mongodb+srv://deep-ivy:{mongo_key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa
     )
@@ -112,13 +160,15 @@ if __name__ == "__main__":
             test, backend = line.split(",")
             coll, submod, test_fn = get_submodule(test)
             print(coll, submod, test_fn)
-            if len(sys.argv) > 2:
+            if with_gpu:
                 ret = os.system(
-                    f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --tb=short {test} --backend {backend}'  # noqa
+                    f'docker run --rm --gpus all --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest-gpu python3 -m pytest --tb=short --device=gpu:0 -B={backend} {test}'  # noqa
+                    # noqa
                 )
             else:
                 ret = os.system(
-                    f'docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --tb=short {test} --backend {backend}'  # noqa
+                    f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --tb=short {test} --backend {backend}'  # noqa
+                    # noqa
                 )
             if ret != 0:
                 res = make_clickable(run_id, result_config["failure"])

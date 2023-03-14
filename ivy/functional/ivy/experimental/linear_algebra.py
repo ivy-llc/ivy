@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional, Tuple, List
+from typing import Union, Optional, Tuple, List, Sequence
 
 # local
 import ivy
@@ -182,11 +182,11 @@ def diagflat(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    offset: Optional[int] = 0,
-    padding_value: Optional[float] = 0,
-    align: Optional[str] = "RIGHT_LEFT",
-    num_rows: Optional[int] = -1,
-    num_cols: Optional[int] = -1,
+    offset: int = 0,
+    padding_value: float = 0,
+    align: str = "RIGHT_LEFT",
+    num_rows: int = -1,
+    num_cols: int = -1,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns a two-dimensional array with the flattened input as a diagonal.
@@ -457,3 +457,53 @@ def adjoint(
                    [2.-2.j, 4.+4.j]])
     """
     return current_backend(x).adjoint(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def multi_dot(
+    x: Sequence[Union[ivy.Array, ivy.NativeArray]],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Compute the dot product of two or more matrices in a single function call,
+    while selecting the fastest evaluation order.
+
+    Parameters
+    ----------
+    x
+        sequence of matrices to multiply.
+    out
+        optional output array, for writing the result to. It must have a valid
+        shape, i.e. the resulting shape after applying regular matrix multiplication
+        to the inputs.
+
+    Returns
+    -------
+    ret
+        dot product of the arrays.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> A = ivy.arange(2 * 3).reshape((2, 3))
+    >>> B = ivy.arange(3 * 2).reshape((3, 2))
+    >>> C = ivy.arange(2 * 2).reshape((2, 2))
+    >>> ivy.multi_dot((A, B, C))
+    ivy.array([[ 26,  49],
+               [ 80, 148]])
+
+    >>> A = ivy.arange(2 * 3).reshape((2, 3))
+    >>> B = ivy.arange(3 * 2).reshape((3, 2))
+    >>> C = ivy.arange(2 * 2).reshape((2, 2))
+    >>> D = ivy.zeros((2, 2))
+    >>> ivy.multi_dot((A, B, C), out=D)
+    >>> print(D)
+    ivy.array([[ 26,  49],
+               [ 80, 148]])
+    """
+    return current_backend(x).multi_dot(x, out=out)

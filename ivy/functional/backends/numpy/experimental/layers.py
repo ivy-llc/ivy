@@ -8,6 +8,7 @@ from typing import Optional, Union, Tuple, Literal
 import ivy
 from ivy.functional.ivy.layers import _handle_padding
 from ivy.functional.backends.numpy.layers import _add_dilations
+from ivy.functional.ivy.experimental.layers import _padding_ceil_mode
 
 
 def max_pool1d(
@@ -121,7 +122,7 @@ def max_pool2d(
     pad_list = list(pad_list)
     if ceil_mode:
         for i in range(2):
-            pad_list[i] = ivy.padding_ceil_mode(
+            pad_list[i] = _padding_ceil_mode(
                 x_shape[i], kernel[i], pad_list[i], strides[i]
             )
 
@@ -423,8 +424,8 @@ def fft(
     dim: int,
     /,
     *,
-    norm: Optional[str] = "backward",
-    n: Union[int, Tuple[int]] = None,
+    norm: str = "backward",
+    n: Optional[Union[int, Tuple[int]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if not isinstance(dim, int):
@@ -455,9 +456,9 @@ def dct(
     x: np.ndarray,
     /,
     *,
-    type: Optional[Literal[1, 2, 3, 4]] = 2,
+    type: Literal[1, 2, 3, 4] = 2,
     n: Optional[int] = None,
-    axis: Optional[int] = -1,
+    axis: int = -1,
     norm: Optional[Literal["ortho"]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
@@ -601,7 +602,7 @@ def ifft(
     x: np.ndarray,
     dim: int,
     *,
-    norm: Optional[str] = "backward",
+    norm: str = "backward",
     n: Optional[Union[int, Tuple[int]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:

@@ -2,7 +2,7 @@
 import math
 
 import torch
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Sequence
 
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
@@ -16,11 +16,11 @@ def diagflat(
     x: torch.Tensor,
     /,
     *,
-    offset: Optional[int] = 0,
-    padding_value: Optional[float] = 0,
-    align: Optional[str] = "RIGHT_LEFT",
-    num_rows: Optional[int] = -1,
-    num_cols: Optional[int] = -1,
+    offset: int = 0,
+    padding_value: float = 0,
+    align: str = "RIGHT_LEFT",
+    num_rows: int = -1,
+    num_cols: int = -1,
     out: Optional[torch.Tensor] = None,
 ):
     if len(x.shape) > 1:
@@ -152,3 +152,15 @@ def adjoint(
 ) -> torch.Tensor:
     _check_valid_dimension_size(x)
     return torch.adjoint(x).resolve_conj()
+
+
+def multi_dot(
+    x: Sequence[torch.Tensor],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.linalg.multi_dot(x, out=out)
+
+
+multi_dot.support_native_out = True

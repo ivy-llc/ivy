@@ -1,13 +1,12 @@
 # global
 import pytest
-from hypothesis import strategies as st, given
+from hypothesis import strategies as st, given, assume
+import numpy as np
 
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 
-import ivy.functional.backends.numpy as ivy_np
-import ivy.functional.backends.tensorflow as ivy_tf
 from ivy_tests.test_ivy.helpers import handle_frontend_method
 from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_raw_ops import (
     _pow_helper_shared_dtype,
@@ -95,6 +94,7 @@ def test_tensorflow_instance_add(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -110,6 +110,7 @@ def test_tensorflow_instance_add(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -129,8 +130,11 @@ def test_tensorflow_instance_div(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x[0], 0)))
+    assume(not np.any(np.isclose(x[1], 0)))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
@@ -144,6 +148,7 @@ def test_tensorflow_instance_div(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -163,6 +168,7 @@ def test_tensorflow_instance_get_shape(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -176,6 +182,7 @@ def test_tensorflow_instance_get_shape(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -194,6 +201,7 @@ def test_tensorflow_instance_eq(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -209,6 +217,7 @@ def test_tensorflow_instance_eq(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -229,6 +238,7 @@ def test_tensorflow_instance_floordiv(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -244,6 +254,7 @@ def test_tensorflow_instance_floordiv(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -263,6 +274,7 @@ def test_tensorflow_instance_ge(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -278,6 +290,7 @@ def test_tensorflow_instance_ge(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -297,6 +310,7 @@ def test_tensorflow_instance_gt(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -312,6 +326,7 @@ def test_tensorflow_instance_gt(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -331,6 +346,7 @@ def test_tensorflow_instance_le(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -346,6 +362,7 @@ def test_tensorflow_instance_le(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -365,6 +382,7 @@ def test_tensorflow_instance_lt(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -380,6 +398,7 @@ def test_tensorflow_instance_lt(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -399,6 +418,7 @@ def test_tensorflow_instance_mul(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -414,6 +434,7 @@ def test_tensorflow_instance_mul(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -434,8 +455,11 @@ def test_tensorflow_instance_mod(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x[0], 0)))
+    assume(not np.any(np.isclose(x[1], 0)))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
@@ -449,6 +473,7 @@ def test_tensorflow_instance_mod(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -458,9 +483,7 @@ def test_tensorflow_instance_mod(
     init_tree="tensorflow.constant",
     method_name="__sub__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple(
-            set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
-        ),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -471,6 +494,7 @@ def test_tensorflow_instance_sub(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -486,6 +510,7 @@ def test_tensorflow_instance_sub(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -506,6 +531,7 @@ def test_tensorflow_instance_ne(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -521,6 +547,7 @@ def test_tensorflow_instance_ne(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -541,6 +568,7 @@ def test_tensorflow_instance_radd(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -556,6 +584,7 @@ def test_tensorflow_instance_radd(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -576,6 +605,7 @@ def test_tensorflow_instance_rfloordiv(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -591,6 +621,7 @@ def test_tensorflow_instance_rfloordiv(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -611,6 +642,7 @@ def test_tensorflow_instance_rsub(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -626,6 +658,7 @@ def test_tensorflow_instance_rsub(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -646,6 +679,7 @@ def test_tensorflow_instance_and(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -661,6 +695,7 @@ def test_tensorflow_instance_and(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -681,6 +716,7 @@ def test_tensorflow_instance_rand(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -696,6 +732,7 @@ def test_tensorflow_instance_rand(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -716,6 +753,7 @@ def test_tensorflow_instance_or(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -731,6 +769,7 @@ def test_tensorflow_instance_or(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -751,6 +790,7 @@ def test_tensorflow_instance_ror(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -766,6 +806,7 @@ def test_tensorflow_instance_ror(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -786,6 +827,7 @@ def test_tensorflow_instance_truediv(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -801,6 +843,7 @@ def test_tensorflow_instance_truediv(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -821,6 +864,7 @@ def test_tensorflow_instance_rtruediv(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -836,6 +880,7 @@ def test_tensorflow_instance_rtruediv(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -855,6 +900,7 @@ def test_tensorflow_instance_bool(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -868,6 +914,7 @@ def test_tensorflow_instance_bool(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -887,6 +934,7 @@ def test_tensorflow_instance_nonzero(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -900,6 +948,7 @@ def test_tensorflow_instance_nonzero(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -925,6 +974,7 @@ def test_tensorflow_instance_neg(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -938,6 +988,7 @@ def test_tensorflow_instance_neg(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -958,6 +1009,7 @@ def test_tensorflow_instance_rxor(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -973,6 +1025,7 @@ def test_tensorflow_instance_rxor(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -993,6 +1046,7 @@ def test_tensorflow_instance_xor(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1008,6 +1062,7 @@ def test_tensorflow_instance_xor(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1035,6 +1090,7 @@ def test_tensorflow_instance_matmul(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1050,6 +1106,7 @@ def test_tensorflow_instance_matmul(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1077,6 +1134,7 @@ def test_tensorflow_instance_rmatmul(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1092,6 +1150,7 @@ def test_tensorflow_instance_rmatmul(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1112,6 +1171,7 @@ def test_tensorflow_instance_array(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1127,6 +1187,7 @@ def test_tensorflow_instance_array(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1145,6 +1206,7 @@ def test_tensorflow_instance_invert(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1158,6 +1220,7 @@ def test_tensorflow_instance_invert(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1180,6 +1243,7 @@ def test_tensorflow_instance_rmul(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1195,6 +1259,7 @@ def test_tensorflow_instance_rmul(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1211,6 +1276,7 @@ def test_tensorflow_instance_rpow(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1220,12 +1286,13 @@ def test_tensorflow_instance_rpow(
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
-            "y": x[1],
+            "x": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1252,6 +1319,7 @@ def test_tensorflow_instance_pow(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     if x[1].dtype == "int32" or x[1].dtype == "int64":
@@ -1274,6 +1342,7 @@ def test_tensorflow_instance_pow(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1345,6 +1414,7 @@ def test_tensorflow_instance_getitem(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     data = x[0]
@@ -1358,6 +1428,7 @@ def test_tensorflow_instance_getitem(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1420,6 +1491,7 @@ def test_tensorflow_instance_set_shape(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1431,6 +1503,7 @@ def test_tensorflow_instance_set_shape(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1450,6 +1523,7 @@ def test_tensorflow_instance_len(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1463,4 +1537,5 @@ def test_tensorflow_instance_len(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )

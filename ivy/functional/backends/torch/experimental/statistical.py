@@ -9,20 +9,20 @@ from . import backend_version
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
 def median(
-    input: torch.tensor,
+    input: torch.Tensor,
     /,
     *,
     axis: Optional[Union[Tuple[int], int]] = None,
-    keepdims: Optional[bool] = False,
-    out: Optional[torch.tensor] = None,
-) -> torch.tensor:
+    keepdims: bool = False,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
     return quantile(
         input,
         0.5,
         axis=axis,
-        keepdim=keepdims,
+        keepdims=keepdims,
         interpolation="midpoint",
-    )[0]
+    ).type_as(input)
 
 
 median.support_native_out = False
@@ -33,7 +33,7 @@ def nanmean(
     /,
     *,
     axis: Optional[Union[int, Tuple[int]]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -47,17 +47,21 @@ nanmean.support_native_out = True
     {"1.11.0 and below": ("bfloat16", "bfloat32", "float16")}, backend_version
 )
 def quantile(
-    a: torch.tensor,
-    q: Union[torch.tensor, float],
+    a: torch.Tensor,
+    q: Union[torch.Tensor, float],
     /,
     *,
     axis: Optional[Union[Sequence[int], int]] = None,
-    keepdims: Optional[bool] = False,
-    interpolation: Optional[str] = "linear",
-    out: Optional[torch.tensor] = None,
-) -> torch.tensor:
+    keepdims: bool = False,
+    interpolation: str = "linear",
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    temp = a.to(torch.float64)
+    if isinstance(q, torch.Tensor):
+        qt = q.to(torch.float64)
+    else:
+        qt = q
     if isinstance(axis, list) or isinstance(axis, tuple):
-        temp = a.detach()
         dimension = len(a.size())
         for x in axis:
             axis1 = x
@@ -66,10 +70,10 @@ def quantile(
                 axis1 = axis2
         temp = torch.flatten(temp, start_dim=dimension - len(axis))
         return torch.quantile(
-            temp, q, dim=-1, keepdim=keepdims, interpolation=interpolation, out=out
+            temp, qt, dim=-1, keepdim=keepdims, interpolation=interpolation, out=out
         )
     return torch.quantile(
-        a, q, dim=axis, keepdim=keepdims, interpolation=interpolation, out=out
+        temp, qt, dim=axis, keepdim=keepdims, interpolation=interpolation, out=out
     )
 
 
@@ -81,8 +85,8 @@ def corrcoef(
     /,
     *,
     y: Optional[torch.Tensor] = None,
-    rowvar: Optional[bool] = True,
-    out: Optional[torch.tensor] = None,
+    rowvar: bool = True,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if y is None:
         xarr = x
@@ -95,14 +99,14 @@ def corrcoef(
 
 
 def nanmedian(
-    input: torch.tensor,
+    input: torch.Tensor,
     /,
     *,
     axis: Optional[Union[Tuple[int], int]] = None,
-    keepdims: Optional[bool] = False,
-    overwrite_input: Optional[bool] = False,
-    out: Optional[torch.tensor] = None,
-) -> torch.tensor:
+    keepdims: bool = False,
+    overwrite_input: bool = False,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
     return torch.nanmedian(
         input, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out
     )
@@ -134,7 +138,7 @@ def bincount(
     /,
     *,
     weights: Optional[torch.Tensor] = None,
-    minlength: Optional[int] = 0,
+    minlength: int = 0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if weights is None:

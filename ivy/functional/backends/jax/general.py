@@ -4,13 +4,12 @@
 import jax
 import numpy as np
 import jax.numpy as jnp
-import jaxlib
 from numbers import Number
 from operator import mul
 from functools import reduce
-from jaxlib.xla_extension import Buffer
 from typing import Iterable, Optional, Union, Sequence, Callable
 import multiprocessing as _multiprocessing
+
 
 # necessary import, because stateful imports jax as soon as you import ivy, however,
 # during multiversion # jax is not there, and therefore a later import results in some
@@ -23,7 +22,7 @@ from haiku._src.data_structures import FlatMapping
 # local
 import ivy
 from ivy.functional.backends.jax.device import _to_device, _to_array
-from ivy.functional.backends.jax import JaxArray
+from ivy.functional.backends.jax import JaxArray, NativeArray
 
 
 def container_types():
@@ -36,20 +35,11 @@ def current_backend_str() -> str:
 
 def is_native_array(x, /, *, exclusive=False):
     if exclusive:
-        return isinstance(
-            x,
-            (
-                jax.interpreters.xla._DeviceArray,
-                jaxlib.xla_extension.DeviceArray,
-                Buffer,
-            ),
-        )
+        return isinstance(x, NativeArray)
     return isinstance(
         x,
         (
-            jax.interpreters.xla._DeviceArray,
-            jaxlib.xla_extension.DeviceArray,
-            Buffer,
+            NativeArray,
             jax.interpreters.ad.JVPTracer,
             jax.core.ShapedArray,
             jax.interpreters.partial_eval.DynamicJaxprTracer,
@@ -88,8 +78,8 @@ def gather(
     indices: JaxArray,
     /,
     *,
-    axis: Optional[int] = -1,
-    batch_dims: Optional[int] = 0,
+    axis: int = -1,
+    batch_dims: int = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     axis = axis % len(params.shape)
@@ -151,7 +141,7 @@ def gather_nd(
     indices: JaxArray,
     /,
     *,
-    batch_dims: Optional[int] = 0,
+    batch_dims: int = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     ivy.utils.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
@@ -209,6 +199,8 @@ def inplace_increment(
 def inplace_update(
     x: Union[ivy.Array, JaxArray],
     val: Union[ivy.Array, JaxArray],
+    /,
+    *,
     ensure_in_backend: bool = False,
 ) -> ivy.Array:
     if ivy.is_array(x) and ivy.is_array(val):
@@ -263,7 +255,7 @@ def inplace_variables_supported():
     return False
 
 
-def multiprocessing(context=None):
+def multiprocessing(context: Optional[str] = None):
     return (
         _multiprocessing if context is None else _multiprocessing.get_context(context)
     )
@@ -321,10 +313,9 @@ def scatter_nd(
     /,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
-    reduction="sum",
+    reduction: str = "sum",
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-
     # parse numeric inputs
     if (
         indices not in [Ellipsis, ()]
@@ -425,7 +416,7 @@ def shape(
 def vmap(
     func: Callable,
     in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
-    out_axes: Optional[int] = 0,
+    out_axes: int = 0,
 ) -> Callable:
     return ivy.to_native_arrays_and_back(
         jax.vmap(func, in_axes=in_axes, out_axes=out_axes)

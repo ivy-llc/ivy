@@ -206,11 +206,6 @@ def multiply_no_nan(x, y, name="multiply_no_nan"):
 
 
 @to_ivy_arrays_and_back
-def negative(x, name=None):
-    return ivy.negative(x)
-
-
-@to_ivy_arrays_and_back
 def polyval(coeffs, x, name=None):
     ivy.utils.assertions.check_isinstance(coeffs, list)
     x = ivy.array(x)
@@ -471,3 +466,41 @@ def asin(x, name=None):
 @to_ivy_arrays_and_back
 def acos(x, name="acos"):
     return ivy.acos(x)
+
+
+@to_ivy_arrays_and_back
+def square(x, name=None):
+    return ivy.square(x)
+
+
+@to_ivy_arrays_and_back
+def is_nan(x, name=None):
+    return ivy.isnan(x)
+
+
+@with_supported_dtypes(
+    {
+        "2.11.0 and below": ("bfloat16", "half", "float32", "float64"),
+    },
+    "tensorflow",
+)
+def is_finite(x, name=None):
+    return ivy.isfinite(x)
+
+
+@to_ivy_arrays_and_back
+def atan(x, name=None):
+    return ivy.atan(x)
+
+
+@to_ivy_arrays_and_back
+def log(x, name=None):
+    return ivy.log(x)
+
+@to_ivy_arrays_and_back
+def add_n(x, name=None):
+    return ivy.add_n(x)
+
+@to_ivy_arrays_and_back
+def floormod(x, y, name=None):
+    return ivy.remainder(x, y)

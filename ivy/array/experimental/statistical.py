@@ -6,13 +6,13 @@ from typing import Optional, Union, Tuple, Sequence
 import ivy
 
 
-class ArrayWithStatisticalExperimental(abc.ABC):
+class _ArrayWithStatisticalExperimental(abc.ABC):
     def median(
         self: ivy.Array,
         /,
         *,
         axis: Optional[Union[Tuple[int], int]] = None,
-        keepdims: Optional[bool] = False,
+        keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.median. This method simply
@@ -52,7 +52,7 @@ class ArrayWithStatisticalExperimental(abc.ABC):
         /,
         *,
         axis: Optional[Union[Tuple[int], int]] = None,
-        keepdims: Optional[bool] = False,
+        keepdims: bool = False,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -146,7 +146,7 @@ class ArrayWithStatisticalExperimental(abc.ABC):
 
         Parameters
         ----------
-        a
+        self
             Input array.
         q
             Quantile or sequence of quantiles to compute, which must be
@@ -219,8 +219,8 @@ class ArrayWithStatisticalExperimental(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        y: ivy.Array = None,
-        rowvar: Optional[bool] = True,
+        y: Optional[ivy.Array] = None,
+        rowvar: bool = True,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.corrcoef. This method simply
@@ -229,7 +229,7 @@ class ArrayWithStatisticalExperimental(abc.ABC):
 
         Parameters
         ----------
-        x
+        self
             Input array.
         y
             An additional input array.
@@ -262,8 +262,8 @@ class ArrayWithStatisticalExperimental(abc.ABC):
         /,
         *,
         axis: Optional[Union[Tuple[int], int]] = None,
-        keepdims: Optional[bool] = False,
-        overwrite_input: Optional[bool] = False,
+        keepdims: bool = False,
+        overwrite_input: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.nanmedian. This method simply
@@ -275,15 +275,15 @@ class ArrayWithStatisticalExperimental(abc.ABC):
         self
             Input array.
         axis
-            Axis or axes along which the means are computed.
+            The axis or axes along which the means are computed.
             The default is to compute the mean of the flattened array.
         keepdims
             If this is set to True, the axes which are reduced are left in the result
             as dimensions with size one. With this option, the result will broadcast
-            correctly against the original a. If the value is anything but the default,
-            then keepdims will be passed through to the mean or sum methods of
-            sub-classes of ndarray. If the sub-classes methods does not implement
-            keepdims any exceptions will be raised.
+            correctly against the original input array. If the value is anything
+            but the default, then keepdims will be passed through to the mean or
+            sum methods of sub-classes of ndarray. If the sub-classes methods does
+            not implement keepdims any exceptions will be raised.
         overwrite_input
             If True, then allow use of memory of input array a for calculations.
             The input array will be modified by the call to median. This will
@@ -292,7 +292,7 @@ class ArrayWithStatisticalExperimental(abc.ABC):
             Treat the input as undefined, but it will
             probably be fully or partially sorted.
             Default is False. If overwrite_input
-            is True and a is not already an ndarray,
+            is True and input array is not already an ndarray,
             an error will be raised.
         out
             optional output array, for writing the result to.
@@ -303,13 +303,13 @@ class ArrayWithStatisticalExperimental(abc.ABC):
             A new array holding the result. If the input contains integers
 
         Examples
+        --------
         >>> a = ivy.Array([[10.0, ivy.nan, 4], [3, 2, 1]])
         >>> a.nanmedian(a)
             3.0
         >>> a.nanmedian(a, axis=0)
             array([6.5, 2. , 2.5])
         """
-
         return ivy.nanmedian(
             self._data,
             axis=axis,
@@ -323,7 +323,7 @@ class ArrayWithStatisticalExperimental(abc.ABC):
         /,
         *,
         weights: Optional[ivy.Array] = None,
-        minlength: Optional[int] = 0,
+        minlength: int = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.bincount. This method simply
