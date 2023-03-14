@@ -103,10 +103,12 @@ def test_jax_devicearray__pos_(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        on_device=on_device,
         init_all_as_kwargs_np={
             "object": x[0],
         },
@@ -133,6 +135,7 @@ def test_jax_devicearray__neg_(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -146,6 +149,7 @@ def test_jax_devicearray__neg_(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -164,6 +168,7 @@ def test_jax_devicearray__eq_(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     assume("bfloat16" not in input_dtype)
@@ -180,6 +185,7 @@ def test_jax_devicearray__eq_(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -198,6 +204,7 @@ def test_jax_devicearray__ne_(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     assume("bfloat16" not in input_dtype)
@@ -214,6 +221,7 @@ def test_jax_devicearray__ne_(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -233,6 +241,7 @@ def test_jax_devicearray__lt_(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -248,6 +257,7 @@ def test_jax_devicearray__lt_(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -266,6 +276,7 @@ def test_jax_devicearray__le_(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     assume("bfloat16" not in input_dtype)
@@ -282,6 +293,7 @@ def test_jax_devicearray__le_(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -300,6 +312,7 @@ def test_jax_devicearray__gt_(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     assume("bfloat16" not in input_dtype)
@@ -316,6 +329,7 @@ def test_jax_devicearray__gt_(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -334,6 +348,7 @@ def test_jax_devicearray__ge_(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     assume("bfloat16" not in input_dtype)
@@ -350,6 +365,7 @@ def test_jax_devicearray__ge_(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -367,6 +383,7 @@ def test_jax_devicearray__abs_(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -380,6 +397,7 @@ def test_jax_devicearray__abs_(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -413,6 +431,7 @@ def test_jax_devicearray__pow_(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x, pow = dtype_x_pow
     helpers.test_frontend_method(
@@ -428,6 +447,7 @@ def test_jax_devicearray__pow_(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -443,6 +463,7 @@ def test_jax_devicearray__rpow_(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x, pow = dtype_x_pow
     helpers.test_frontend_method(
@@ -458,6 +479,7 @@ def test_jax_devicearray__rpow_(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -477,6 +499,7 @@ def test_jax_devicearray__and_(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -490,6 +513,7 @@ def test_jax_devicearray__and_(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -509,6 +533,7 @@ def test_jax_devicearray__rand_(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -522,6 +547,7 @@ def test_jax_devicearray__rand_(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -541,6 +567,7 @@ def test_jax_devicearray__or_(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -554,6 +581,7 @@ def test_jax_devicearray__or_(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -573,6 +601,7 @@ def test_jax_devicearray__ror_(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -586,6 +615,7 @@ def test_jax_devicearray__ror_(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -605,6 +635,7 @@ def test_jax_devicearray__xor_(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -618,6 +649,7 @@ def test_jax_devicearray__xor_(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -637,6 +669,7 @@ def test_jax_devicearray__rxor_(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -650,6 +683,7 @@ def test_jax_devicearray__rxor_(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -667,6 +701,7 @@ def test_jax_devicearray__invert_(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -680,6 +715,7 @@ def test_jax_devicearray__invert_(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -710,6 +746,7 @@ def test_jax_special_lshift(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x, shift = dtype_x_shift
     helpers.test_frontend_method(
@@ -723,6 +760,7 @@ def test_jax_special_lshift(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -738,6 +776,7 @@ def test_jax_special_rlshift(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x, shift = dtype_x_shift
     helpers.test_frontend_method(
@@ -751,6 +790,7 @@ def test_jax_special_rlshift(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -766,6 +806,7 @@ def test_jax_special_rshift(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x, shift = dtype_x_shift
     helpers.test_frontend_method(
@@ -779,6 +820,7 @@ def test_jax_special_rshift(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -794,6 +836,7 @@ def test_jax_special_rrshift(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x, shift = dtype_x_shift
     helpers.test_frontend_method(
@@ -807,6 +850,7 @@ def test_jax_special_rrshift(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -826,6 +870,7 @@ def test_jax_special_add(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
@@ -839,6 +884,7 @@ def test_jax_special_add(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -858,6 +904,7 @@ def test_jax_special_radd(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
@@ -871,6 +918,7 @@ def test_jax_special_radd(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -890,6 +938,7 @@ def test_jax_special_sub(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
@@ -903,6 +952,7 @@ def test_jax_special_sub(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -922,6 +972,7 @@ def test_jax_special_rsub(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
@@ -935,6 +986,7 @@ def test_jax_special_rsub(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -954,6 +1006,7 @@ def test_jax_special_mul(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
@@ -967,6 +1020,7 @@ def test_jax_special_mul(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -986,6 +1040,7 @@ def test_jax_special_rmul(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
@@ -999,6 +1054,7 @@ def test_jax_special_rmul(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1018,6 +1074,7 @@ def test_jax_special_div(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_x
     assume(not np.any(np.isclose(x[1], 0)))
@@ -1032,6 +1089,7 @@ def test_jax_special_div(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1051,6 +1109,7 @@ def test_jax_special_rdiv(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_x
     assume(not np.any(np.isclose(x[0], 0)))
@@ -1065,6 +1124,7 @@ def test_jax_special_rdiv(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1084,6 +1144,7 @@ def test_jax_special_truediv(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_x
     assume(not np.any(np.isclose(x[1], 0)))
@@ -1098,6 +1159,7 @@ def test_jax_special_truediv(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1117,6 +1179,7 @@ def test_jax_special_rtruediv(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_x
     assume(not np.any(np.isclose(x[0], 0)))
@@ -1131,6 +1194,7 @@ def test_jax_special_rtruediv(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1150,6 +1214,7 @@ def test_jax_special_mod(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_x
     assume(not np.any(np.isclose(x[1], 0)))
@@ -1164,6 +1229,7 @@ def test_jax_special_mod(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1183,6 +1249,7 @@ def test_jax_special_rmod(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_x
     assume(not np.any(np.isclose(x[0], 0)))
@@ -1197,6 +1264,7 @@ def test_jax_special_rmod(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1229,6 +1297,7 @@ def test_jax_special_matmul(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
@@ -1242,6 +1311,7 @@ def test_jax_special_matmul(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1257,6 +1327,7 @@ def test_jax_special_rmatmul(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
@@ -1270,6 +1341,7 @@ def test_jax_special_rmatmul(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1285,6 +1357,7 @@ def test_jax_special_getitem(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     dtypes, x = dtype_x_index
     helpers.test_frontend_method(
@@ -1298,4 +1371,5 @@ def test_jax_special_getitem(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )

@@ -15,6 +15,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 def AddN(*, inputs, name="AddN"):
     return ivy.sum(inputs, dtype=inputs.dtype, axis=0)
 
+AddN = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add_n))
 
 @to_ivy_arrays_and_back
 def Acos(*, x, name="Acos"):
@@ -35,6 +36,42 @@ ArgMax = to_ivy_arrays_and_back(
         kwargs_to_update={"dimension": "axis"},
     )
 )
+
+
+AddV2 = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add))
+
+
+@with_unsupported_dtypes(
+    {
+        "2.10.0 and below": (
+            "float16",
+            "bool",
+            "bfloat16",
+        )
+    },
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def ApproximateEqual(
+    *,
+    x,
+    y,
+    tolerance=1e-05,
+    name="ApproximateEqual",
+):
+    x, y = check_tensorflow_casting(x, y)
+    ret = ivy.abs(x - y)
+    return ret < tolerance
+
+
+@to_ivy_arrays_and_back
+def Angle(
+    *,
+    input,
+    Tout=ivy.float32,
+    name="Angle",
+):
+    return ivy.astype(ivy.angle(input), Tout)
 
 
 @to_ivy_arrays_and_back
@@ -155,6 +192,12 @@ def Floor(*, x, name="Floor"):
 def FloorDiv(*, x, y, name="FloorDiv"):
     x, y = check_tensorflow_casting(x, y)
     return ivy.floor_divide(x, y)
+
+
+@to_ivy_arrays_and_back
+def FloorMod(*, x, y, name="FloorMod"):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.remainder(x, y)
 
 
 @to_ivy_arrays_and_back
@@ -613,3 +656,6 @@ Elu.supported_dtypes = {
 @to_ivy_arrays_and_back
 def LinSpace(*, start, stop, num, name=None):
     return ivy.linspace(start, stop, num)
+
+
+Roll = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.roll))

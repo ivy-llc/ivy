@@ -148,7 +148,10 @@ def result_type(*arrays_and_dtypes: Union[np.ndarray, np.dtype]) -> ivy.Dtype:
 # ------#
 
 
-def as_ivy_dtype(dtype_in: Union[np.dtype, str, bool, int, float], /) -> ivy.Dtype:
+def as_ivy_dtype(
+    dtype_in: Union[np.dtype, str, int, float, complex, bool],
+    /,
+) -> ivy.Dtype:
     if dtype_in is int:
         return ivy.default_int_dtype()
     if dtype_in is float:
@@ -157,15 +160,32 @@ def as_ivy_dtype(dtype_in: Union[np.dtype, str, bool, int, float], /) -> ivy.Dty
         return ivy.default_complex_dtype()
     if dtype_in is bool:
         return ivy.Dtype("bool")
+
     if isinstance(dtype_in, str):
         if dtype_in in native_dtype_dict:
-            return ivy.Dtype(dtype_in)
+            dtype_str = dtype_in
         else:
             raise ivy.utils.exceptions.IvyException(
                 "Cannot convert to ivy dtype."
-                f" {dtype_in} is not supported by NumPy backend."
+                f" {dtype_in} is not supported by PyTorch backend."
             )
-    return ivy.Dtype(ivy_dtype_dict[dtype_in])
+    else:
+        dtype_str = ivy_dtype_dict[dtype_in]
+
+    if "uint" in dtype_str:
+        return ivy.UintDtype(dtype_str)
+    elif "int" in dtype_str:
+        return ivy.IntDtype(dtype_str)
+    elif "float" in dtype_str:
+        return ivy.FloatDtype(dtype_str)
+    elif "complex" in dtype_str:
+        return ivy.ComplexDtype(dtype_str)
+    elif "bool" in dtype_str:
+        return ivy.Dtype("bool")
+    else:
+        raise ivy.utils.exceptions.IvyException(
+            f"Cannot recognize {dtype_str} as a valid Dtype."
+        )
 
 
 @with_unsupported_dtypes({"1.23.0 and below": ("bfloat16",)}, backend_version)

@@ -721,6 +721,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         axis: int,
         /,
         *,
+        mode: str = "fill",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -736,6 +737,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             The indices of the values to extract.
         axis
             The axis over which to select values.
+        mode
+            One of: 'clip', 'fill', 'drop'. Parameter controlling how out-of-bounds
+            indices will be handled.
         out
             Optional output, for writing the result to.
 
@@ -752,7 +756,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         >>> print(y)
         ivy.array([[4, 3, 3], [1, 1, 1]])
         """
-        return ivy.take_along_axis(self._data, indices, axis, out=out)
+        return ivy.take_along_axis(self._data, indices, axis, mode=mode, out=out)
 
     @handle_view
     def hsplit(

@@ -31,9 +31,9 @@ def flatten(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    start_dim: Optional[int] = 0,
-    end_dim: Optional[int] = -1,
-    order: Optional[str] = "C",
+    start_dim: int = 0,
+    end_dim: int = -1,
+    order: str = "C",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Flattens input by reshaping it into a one-dimensional tensor.
@@ -465,8 +465,8 @@ def rot90(
     m: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    k: Optional[int] = 1,
-    axes: Optional[Tuple[int, int]] = (0, 1),
+    k: int = 1,
+    axes: Tuple[int, int] = (0, 1),
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Rotate an array by 90 degrees in the plane specified by axes.
@@ -546,7 +546,7 @@ def top_k(
     /,
     *,
     axis: Optional[int] = None,
-    largest: Optional[bool] = True,
+    largest: bool = True,
     out: Optional[tuple] = None,
 ) -> Tuple[ivy.Array, ivy.NativeArray]:
     """Returns the `k` largest elements of the given input array along a given axis.
@@ -967,28 +967,26 @@ def pad(
     pad_width: Union[Iterable[Tuple[int]], int],
     /,
     *,
-    mode: Optional[
-        Union[
-            Literal[
-                "constant",
-                "edge",
-                "linear_ramp",
-                "maximum",
-                "mean",
-                "median",
-                "minimum",
-                "reflect",
-                "symmetric",
-                "wrap",
-                "empty",
-            ],
-            Callable,
-        ]
+    mode: Union[
+        Literal[
+            "constant",
+            "edge",
+            "linear_ramp",
+            "maximum",
+            "mean",
+            "median",
+            "minimum",
+            "reflect",
+            "symmetric",
+            "wrap",
+            "empty",
+        ],
+        Callable,
     ] = "constant",
     stat_length: Optional[Union[Iterable[Tuple[int]], int]] = None,
     constant_values: Optional[Union[Iterable[Tuple[Number]], Number]] = None,
     end_values: Optional[Union[Iterable[Tuple[Number]], Number]] = None,
-    reflect_type: Optional[Literal["even", "odd"]] = "even",
+    reflect_type: Literal["even", "odd"] = "even",
     **kwargs: Optional[Any],
 ) -> ivy.Array:
     """Pads an array.
@@ -1465,6 +1463,7 @@ def take_along_axis(
     axis: int,
     /,
     *,
+    mode: str = "fill",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Take values from the input array by matching 1d index and data slices.
@@ -1478,6 +1477,9 @@ def take_along_axis(
     axis
         The axis over which to select values.
         If axis is None, arr is treated as a flattened 1D array.
+    mode
+        One of: 'clip', 'fill', 'drop'. Parameter controlling how out-of-bounds indices
+        will be handled.
     out
         The output array.
 
@@ -1494,7 +1496,9 @@ def take_along_axis(
     >>> print(y)
     ivy.array([[4, 3, 3], [1, 1, 1]])
     """
-    return ivy.current_backend(arr).take_along_axis(arr, indices, axis, out=out)
+    return ivy.current_backend(arr).take_along_axis(
+        arr, indices, axis, mode=mode, out=out
+    )
 
 
 @handle_view
@@ -1545,7 +1549,7 @@ def hsplit(
 
 
 @handle_exceptions
-def broadcast_shapes(shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
+def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     """Broadcasts shapes.
 
     Parameters
@@ -1567,7 +1571,7 @@ def broadcast_shapes(shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     >>> print(ivy.broadcast_shapes([(3, 3),(3, 1),(1, 3)]))
     (3, 3)
     """
-    return ivy.current_backend().broadcast_shapes(shapes)
+    return ivy.current_backend().broadcast_shapes(*shapes)
 
 
 @handle_view
