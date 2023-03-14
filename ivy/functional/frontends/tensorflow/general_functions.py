@@ -347,21 +347,22 @@ def roll(input, shift, axis, name=None):
 
 
 @to_ivy_arrays_and_back
-def split(
-    value, num_or_size_splits, axis=0, num=None, name=None
-):
+def split(value, num_or_size_splits, axis=0, num=None, name=None):
     return ivy.split(
-        value,
-        num_or_size_splits=num_or_size_splits,
-        axis=axis,
-        with_remainder=False
+        value, num_or_size_splits=num_or_size_splits, axis=axis, with_remainder=False
     )
 
 
 def repeat(
-        input,
-        repeats,
-        axis=None,
-        name=None,
+    input,
+    repeats,
+    axis=None,
+    name=None,
 ):
     return ivy.repeat(input, repeats, axis=axis)
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@to_ivy_arrays_and_back
+def unstack(value: ivy.array, axis=0, num=None, name=None):
+    return ivy.unstack(value, axis=axis)
