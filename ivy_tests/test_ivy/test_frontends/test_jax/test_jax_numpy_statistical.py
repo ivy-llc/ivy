@@ -673,7 +673,7 @@ def test_jax_numpy_nanvar(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        ta=x[0],
+        a=x[0],
         axis=axis,
         dtype=dtype[0],
         out=None,
