@@ -3073,7 +3073,7 @@ def test_torch_instance_bitwise_or(
     init_tree="torch.tensor",
     method_name="bitwise_or_",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
     ),
 )
