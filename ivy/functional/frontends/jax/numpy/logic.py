@@ -154,6 +154,11 @@ def isfinite(x, /):
 
 
 @to_ivy_arrays_and_back
+def isin(element, test_elements, assume_unique=False, invert=False):
+    return ivy.isin(element, test_elements, assume_unique=assume_unique, invert=invert)
+
+
+@to_ivy_arrays_and_back
 def isinf(x, /):
     return ivy.isinf(x)
 
