@@ -1,5 +1,4 @@
 # global
-from typing import Optional
 import tensorflow as tf
 
 # local
@@ -13,8 +12,8 @@ def isin(
     test_elements: tf.Tensor,
     /,
     *,
-    assume_unique: Optional[bool] = False,
-    invert: Optional[bool] = False,
+    assume_unique: bool = False,
+    invert: bool = False,
 ) -> tf.Tensor:
     input_shape = elements.shape
 
