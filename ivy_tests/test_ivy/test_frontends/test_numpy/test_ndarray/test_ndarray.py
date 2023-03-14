@@ -2415,7 +2415,7 @@ def test_numpy_instance_abs__(
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "object": x[0],
         },
         method_input_dtypes=input_dtypes,
         method_all_as_kwargs_np={},
