@@ -9,6 +9,16 @@ from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
 
 
+def _elementwise_helper(x1,x2):
+    x1, x2 = ivy.to_native(ivy.array(x1)), ivy.to_native(ivy.array(x2))
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = ivy.broadcast_arrays(x1, x2)
+    return ivy.to_native(x1), ivy.to_native(x2), x1.dtype
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def add(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],
@@ -17,12 +27,12 @@ def add(
     alpha: Optional[Union[int, float]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    x1, x2 = ivy.broadcast_arrays(x1, x2)
-    x1, x2 = x1.data, x2.data
+    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    if x1.dtype in [paddle.int8, paddle.uint8, paddle.float16, paddle.bool]:
+        x1, x2 = x1.cast('float32'), x2.cast('float32')
     if alpha not in (1, None):
         x2 = multiply(x2, alpha)
-    return paddle.add(x1, x2)
+    return paddle.add(x1, x2).cast(ret_dtype)
 
 
 def bitwise_xor(
@@ -128,10 +138,16 @@ def floor(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
 
 
 def asin(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    return asin(x)
+    if x.dtype not in [paddle.float32, paddle.float64]:
+        x, x_dtype = x.cast('float64'), x.dtype
+        return paddle.asin(x).cast(x_dtype)
+    return paddle.asin(x)
 
 
 def asinh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    if x.dtype not in [paddle.float32, paddle.float64]:
+        x, x_dtype = x.cast('float64'), x.dtype
+        return paddle.asinh(x).cast(x_dtype)
     return paddle.asinh(x)
 
 
@@ -180,11 +196,10 @@ def multiply(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    x1, x2 = ivy.broadcast_arrays(x1, x2)
-    x1, x2 = x1.data, x2.data
-
-    return paddle.multiply(x1, x2)
+    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    if x1.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
+        x1, x2 = x1.cast('float32'), x2.cast('float32')
+    return paddle.multiply(x1, x2).cast(ret_dtype)
 
 
 def cos(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -238,20 +253,22 @@ def acos(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
 def logical_xor(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    return logical_xor(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    return paddle.logical_xor(x1, x2)
 
 
 def logical_and(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    return logical_and(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    return paddle.logical_and(x1, x2)
 
 
 def logical_or(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return logical_or(x1, x2)
+    return paddle.logical_or(x1, x2)
 
 
 def acosh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
