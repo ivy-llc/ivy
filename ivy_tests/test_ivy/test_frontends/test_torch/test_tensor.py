@@ -1,7 +1,6 @@
 # global
 import pytest
 from types import SimpleNamespace
-from ivy.func_wrapper import with_supported_dtypes
 
 
 try:
@@ -3069,7 +3068,6 @@ def test_torch_instance_bitwise_or(
 
 
 # bitwise_or_
-@with_supported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",

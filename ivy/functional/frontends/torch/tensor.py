@@ -4,6 +4,8 @@
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
 from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_supported_dtypes
+
 
 
 class Tensor:
@@ -280,6 +282,7 @@ class Tensor:
 
     def bitwise_or(self, other, *, out=None):
         return torch_frontend.bitwise_or(self._ivy_array, other)
+
 
     def bitwise_or_(self, other, *, out=None):
         self._ivy_array = self.bitwise_or(other, out=out).ivy_array
