@@ -6,7 +6,18 @@ import inspect
 import math
 from functools import wraps
 from numbers import Number
-from typing import Callable, Any, Union, List, Tuple, Dict, Iterable, Optional, Sequence
+from typing import (
+    Callable,
+    Any,
+    Union,
+    List,
+    Tuple,
+    Dict,
+    Iterable,
+    Optional,
+    Sequence,
+    Literal,
+)
 import einops
 import numpy as np
 
@@ -64,11 +75,7 @@ def _parse_ellipsis(so, ndims):
 
 
 def get_referrers_recursive(
-    item, 
-    depth=0, 
-    max_depth=None, 
-    seen_set=None, 
-    local_set=None
+    item, depth=0, max_depth=None, seen_set=None, local_set=None
 ):
     """
     Summary.
@@ -398,7 +405,7 @@ def get_nestable_mode() -> bool:
 
 
 @handle_exceptions
-def set_exception_trace_mode(mode: str) -> None:
+def set_exception_trace_mode(mode: Literal["ivy", "full", "frontend"]) -> None:
     """
     Set the mode of whether to show frontend-truncated exception stack traces,
     ivy-truncated exception stack traces or full exception stack traces
@@ -688,7 +695,7 @@ def to_numpy(
     x
         input array
     copy
-        whether to copy the array to a new address or not. 
+        whether to copy the array to a new address or not.
         Default is ``True``.
 
     Returns
@@ -895,10 +902,10 @@ def clip_vector_norm(
     max_norm
         The maximum value of the array norm.
     p
-        The p-value for computing the p-norm. 
+        The p-value for computing the p-norm.
         Default is 2.
     out
-        optional output array, for writing the result to. 
+        optional output array, for writing the result to.
         It must have a shape that the inputs broadcast to.
 
     Returns
@@ -984,7 +991,7 @@ def clip_matrix_norm(
     max_norm
         The maximum value of the array norm.
     p
-        The p-value for computing the p-norm. 
+        The p-value for computing the p-norm.
         Default is 2.
     out
         optional output array, for writing the result to. It must have a shape that the
@@ -1069,7 +1076,7 @@ def fourier_encode(
     max_freq
         The maximum frequency of the encoding.
     num_bands
-        The number of frequency bands for the encoding. 
+        The number of frequency bands for the encoding.
         Default is 4.
     linear
         Whether to space the frequency bands linearly as opposed to geometrically.
@@ -1078,7 +1085,7 @@ def fourier_encode(
         Whether to concatenate the position, sin and cos values, or return seperately.
         Default is ``True``.
     flatten
-        Whether to flatten the position dimension into the batch dimension. 
+        Whether to flatten the position dimension into the batch dimension.
         Default is False.
 
     Returns
@@ -1159,7 +1166,7 @@ def value_is_nan(
     x: Union[ivy.Array, ivy.NativeArray, Number],
     /,
     *,
-    include_infs: Optional[bool] = True,
+    include_infs: bool = True,
 ) -> bool:
     """
     Determines whether the single valued array or scalar is of nan type.
@@ -1169,7 +1176,7 @@ def value_is_nan(
     x
         The input to check Input array.
     include_infs
-        Whether to include infs and -infs in the check. 
+        Whether to include infs and -infs in the check.
         Default is ``True``.
 
     Returns
@@ -1376,10 +1383,10 @@ def default(
     default_val
         The default value.
     catch_exceptions
-        Whether to catch exceptions from callable x. 
+        Whether to catch exceptions from callable x.
         Default is ``False``.
     rev
-        Whether to reverse the input x and default_val. 
+        Whether to reverse the input x and default_val.
         Default is ``False``.
     with_callable
         Whether either of the arguments might be callable functions.
@@ -2277,6 +2284,7 @@ def num_arrays_in_memory() -> int:
     -------
     ret
         Number of all arrays which are alive.
+
     Examples
     --------
     >>> ivy.num_arrays_in_memory()
@@ -2437,14 +2445,9 @@ def container_types():
 
 
 @handle_exceptions
-def inplace_arrays_supported(f=None):
+def inplace_arrays_supported() -> bool:
     """
     Determine whether inplace arrays are supported for the current backend framework.
-
-    Parameters
-    ----------
-    f
-         (Default value = None)
 
     Returns
     -------
@@ -2456,15 +2459,10 @@ def inplace_arrays_supported(f=None):
 
 
 @handle_exceptions
-def inplace_variables_supported(f=None):
+def inplace_variables_supported() -> bool:
     """
     Determine whether inplace variables are supported for the current backend
     framework.
-
-    Parameters
-    ----------
-    f
-         (Default value = None)
 
     Returns
     -------
@@ -2710,9 +2708,8 @@ def inplace_update(
         b: ivy.array([2])
     }
 
-    With mix of :class:`ivy.Array` and :class:
-    `ivy.Container` instances:,
-    and backend set as `torch`:
+    With mix of :class:`ivy.Array` and :class:`ivy.Container` instances:, and backend
+    set as `torch`:
 
     >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))
     >>> y = ivy.array([1, 2])
@@ -2724,7 +2721,9 @@ def inplace_update(
     }
 
     """
-    return current_backend(x).inplace_update(x, val, ensure_in_backend)
+    return current_backend(x).inplace_update(
+        x, val, ensure_in_backend=ensure_in_backend
+    )
 
 
 inplace_update.unsupported_dtypes = {"torch": ("bfloat16",)}
@@ -2902,7 +2901,6 @@ def scatter_flat(
 
     Examples
     --------
-
     With :class:`ivy.Array` input:
     >>> indices = ivy.array([0, 0, 1, 0, 2, 2, 3, 3])
     >>> updates = ivy.array([5, 1, 7, 2, 3, 2, 1, 3])
@@ -3042,8 +3040,8 @@ def gather(
     indices: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    axis: Optional[int] = -1,
-    batch_dims: Optional[int] = 0,
+    axis: int = -1,
+    batch_dims: int = 0,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """
@@ -3057,7 +3055,7 @@ def gather(
         The array which indicates the indices that will be gathered along
         the specified axis.
     axis
-        optional int, the axis from which to gather from. 
+        optional int, the axis from which to gather from.
         Default is ``-1``.
     batch_dims
         optional int, lets you gather different items from each element of a batch.
@@ -3151,7 +3149,7 @@ def gather_nd(
     indices: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    batch_dims: Optional[int] = 0,
+    batch_dims: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -3219,7 +3217,7 @@ def gather_nd(
 @handle_nestable
 @handle_exceptions
 @handle_array_function
-def multiprocessing(context: str = None):
+def multiprocessing(context: Optional[str] = None):
     """
     Return backend-specific multiprocessing module.
 
@@ -3396,7 +3394,7 @@ def get_num_dims(
 
 
 @handle_exceptions
-def arg_info(fn: Callable, *, name: str = None, idx: int = None):
+def arg_info(fn: Callable, *, name: Optional[str] = None, idx: Optional[int] = None):
     """
     Return the index and `inspect.Parameter` representation of the specified argument.
     In the form of a dict with keys "idx" and "param".
@@ -3567,7 +3565,7 @@ def _get_devices_and_dtypes(fn, complement=True):
 
 @handle_nestable
 @handle_exceptions
-def function_supported_devices_and_dtypes(fn: Callable, recurse=True) -> Dict:
+def function_supported_devices_and_dtypes(fn: Callable, recurse: bool = True) -> Dict:
     """
     Returns the supported combination of devices and dtypes
     of the current backend's function.
@@ -3577,7 +3575,7 @@ def function_supported_devices_and_dtypes(fn: Callable, recurse=True) -> Dict:
     fn
         The function to check for the supported device and dtype attribute
     recurse
-        Whether to recurse into used ivy functions. 
+        Whether to recurse into used ivy functions.
         Default is ``True``.
 
     Returns
@@ -3606,7 +3604,7 @@ def function_supported_devices_and_dtypes(fn: Callable, recurse=True) -> Dict:
 
 @handle_nestable
 @handle_exceptions
-def function_unsupported_devices_and_dtypes(fn: Callable, recurse=True) -> Dict:
+def function_unsupported_devices_and_dtypes(fn: Callable, recurse: bool = True) -> Dict:
     """
     Returns the unsupported combination of devices and dtypes
     of the current backend's function.
@@ -3616,7 +3614,7 @@ def function_unsupported_devices_and_dtypes(fn: Callable, recurse=True) -> Dict:
     fn
         The function to check for the unsupported device and dtype attribute
     recurse
-        Whether to recurse into used ivy functions. 
+        Whether to recurse into used ivy functions.
         Default is ``True``.
 
     Returns
@@ -3647,7 +3645,7 @@ def function_unsupported_devices_and_dtypes(fn: Callable, recurse=True) -> Dict:
 def vmap(
     func: Callable,
     in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
-    out_axes: Optional[int] = 0,
+    out_axes: int = 0,
 ) -> Callable:
     """
     Vectorizing map. Creates a function which maps func over argument axes.

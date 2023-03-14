@@ -1098,7 +1098,7 @@ class _ArrayWithGeneral(abc.ABC):
         val
             The array to update the variable with.
         ensure_in_backend
-            Whether or not to ensure that the `ivy.NativeArray` is also inplace updated.
+            Whether to ensure that the `ivy.NativeArray` is also inplace updated.
             In cases where it should be, backends which do not natively support inplace
             updates will raise an exception.
 
@@ -1109,7 +1109,6 @@ class _ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-
         With :class:`ivy.Array` input and default backend set as `numpy`:
 
         >>> x = ivy.array([1, 2, 3])
