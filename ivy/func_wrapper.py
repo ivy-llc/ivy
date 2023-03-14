@@ -894,7 +894,7 @@ with_supported_device_and_dtypes = _dtype_device_wrapper_creator(
 )
 
 
-def notImplemented(fn):
+def not_implemented(fn):
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         raise NotImplementedError("Not Implemented")
