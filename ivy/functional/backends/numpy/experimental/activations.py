@@ -7,7 +7,13 @@ import numpy as np
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 
 
-def logit(x: np.ndarray, /, *, eps: Optional[float] = None, out=None):
+def logit(
+    x: np.ndarray,
+    /,
+    *,
+    eps: Optional[float] = None,
+    out: Optional[np.ndarray] = None,
+):
     x_dtype = x.dtype
     if eps is None:
         x = np.where(np.logical_or(x > 1, x < 0), np.nan, x)
@@ -24,7 +30,7 @@ def thresholded_relu(
     x: np.ndarray,
     /,
     *,
-    threshold: Optional[Union[int, float]] = 0,
+    threshold: Union[int, float] = 0,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.where(x > threshold, x, 0).astype(x.dtype)
@@ -61,6 +67,7 @@ def batch_norm(
     inv = 1.0 / np.sqrt(variance + eps)
     if scale is not None:
         inv *= scale
-    ret = x * inv.astype(x.dtype, copy=False) + \
-        (offset - mean * inv if offset is not None else -mean * inv).astype(x.dtype)
-    return np.transpose(ret, (0, ndims-1, *range(1, ndims-1)))
+    ret = x * inv.astype(x.dtype, copy=False) + (
+        offset - mean * inv if offset is not None else -mean * inv
+    ).astype(x.dtype)
+    return np.transpose(ret, (0, ndims - 1, *range(1, ndims - 1)))

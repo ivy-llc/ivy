@@ -60,7 +60,7 @@ def beta(
     /,
     *,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: str = None,
+    device: Optional[str] = None,
     dtype: Optional[Union[DType, ivy.Dtype]] = None,
     seed: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
@@ -81,7 +81,7 @@ def gamma(
     /,
     *,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: str = None,
+    device: Optional[str] = None,
     dtype: Optional[Union[DType, ivy.Dtype]] = None,
     seed: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
@@ -105,7 +105,7 @@ def poisson(
     dtype: DType,
     seed: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-):
+) -> Union[tf.Tensor, tf.Variable]:
     lam = tf.cast(lam, "float32")
     with tf.device(device):
         if seed:

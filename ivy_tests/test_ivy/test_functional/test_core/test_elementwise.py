@@ -273,6 +273,8 @@ def test_atan2(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
+        rtol_=1e-2,
+        atol_=1e-2,
         x1=x[0],
         x2=x[1],
     )

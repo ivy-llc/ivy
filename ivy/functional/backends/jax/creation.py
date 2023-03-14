@@ -36,6 +36,7 @@ def arange(
 ) -> JaxArray:
     if dtype:
         dtype = as_native_dtype(dtype)
+        ivy.utils.assertions._check_jax_x64_flag(dtype.name)
     res = _to_device(jnp.arange(start, stop, step, dtype=dtype), device=device)
     if not dtype:
         if res.dtype == jnp.float64:
@@ -60,17 +61,20 @@ def asarray(
     if isinstance(obj, ivy.NativeArray) and not dtype:
         if copy is True:
             dtype = obj.dtype
+            ivy.utils.assertions._check_jax_x64_flag(dtype)
             return _to_device(jnp.array(obj, dtype=dtype, copy=True), device=device)
         else:
             return _to_device(obj, device=device)
     elif isinstance(obj, (list, tuple, dict)) and len(obj) != 0 and dtype is None:
         dtype = ivy.default_dtype(item=obj, as_native=True)
+        ivy.utils.assertions._check_jax_x64_flag(dtype)
         if copy is True:
             return _to_device(jnp.array(obj, dtype=dtype, copy=True), device=device)
         else:
             return _to_device(jnp.asarray(obj, dtype=dtype), device=device)
     else:
         dtype = ivy.default_dtype(dtype=dtype, item=obj)
+        ivy.utils.assertions._check_jax_x64_flag(dtype)
 
     if copy is True:
         return _to_device(jnp.array(obj, dtype=dtype, copy=True), device=device)
@@ -299,7 +303,7 @@ array = asarray
 
 
 def copy_array(
-    x: JaxArray, *, to_ivy_array: Optional[bool] = True, out: Optional[JaxArray] = None
+    x: JaxArray, *, to_ivy_array: bool = True, out: Optional[JaxArray] = None
 ) -> JaxArray:
     if to_ivy_array:
         return ivy.to_ivy(jnp.array(x))

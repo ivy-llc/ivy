@@ -64,8 +64,7 @@ framework_versions = {
 
 run_iter = int(sys.argv[1])
 os.system(
-    "docker run -v `pwd`:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/multiversion:latest /opt/miniconda/envs/multienv/bin/python -m pytest --disable-pytest-warnings ivy_tests/test_ivy --my_test_dump true > test_names"  # noqa
-    # noqa
+    "docker run -v `pwd`:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/multiversion:latest /opt/miniconda/envs/multienv/bin/python -m pytest --disable-pytest-warnings ivy_tests/test_ivy --my_test_dump true > test_names" # noqa
 )
 test_names_without_backend = []
 test_names = []
@@ -99,6 +98,7 @@ test_names.sort()
 
 # Run 150 tests in each iteration of the cron job
 num_tests = len(test_names)
+print(num_tests)
 tests_per_run = 150
 start = run_iter * tests_per_run
 end = (run_iter + 1) * tests_per_run

@@ -6,7 +6,13 @@ from .. import backend_version
 
 
 @with_unsupported_dtypes({"0.3.14 and below": ("float16",)}, backend_version)
-def l2_normalize(x: JaxArray, /, *, axis: int = None, out=None) -> JaxArray:
+def l2_normalize(
+    x: JaxArray,
+    /,
+    *,
+    axis: Optional[int] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
     if axis is None:
         denorm = jnp.linalg.norm(x.flatten(), 2, axis)
     else:
@@ -23,12 +29,12 @@ def instance_norm(
     scale: Optional[JaxArray] = None,
     bias: Optional[JaxArray] = None,
     eps: float = 1e-05,
-    momentum: Optional[float] = 0.1,
+    momentum: float = 0.1,
     data_format: str = "NCHW",
     running_mean: Optional[JaxArray] = None,
     running_stddev: Optional[JaxArray] = None,
-    affine: Optional[bool] = True,
-    track_running_stats: Optional[bool] = False,
+    affine: bool = True,
+    track_running_stats: bool = False,
     out: Optional[JaxArray] = None,
 ):
     if scale is not None:
@@ -71,7 +77,12 @@ def instance_norm(
 
 @with_unsupported_dtypes({"0.3.14 and below": ("float16",)}, backend_version)
 def lp_normalize(
-    x: JaxArray, /, *, p: float = 2, axis: int = None, out=None
+    x: JaxArray,
+    /,
+    *,
+    p: float = 2,
+    axis: Optional[int] = None,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if axis is None:
         denorm = jnp.linalg.norm(x.flatten(), axis=axis, ord=p)
