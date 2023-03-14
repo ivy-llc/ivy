@@ -5,9 +5,9 @@ poisson
 
 .. autofunction:: ivy.array.array_methods.poisson
 
-.. autofunction:: ivy.container.container_methods.poisson
-
 .. autofunction:: ivy.container.container_methods.static_poisson
+
+.. autofunction:: ivy.container.container_methods.poisson
 |
 | **Supported Frameworks:**
 
