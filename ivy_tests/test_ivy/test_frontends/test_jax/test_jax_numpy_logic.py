@@ -631,6 +631,35 @@ def test_jax_numpy_isfinite(
     )
 
 
+# isin
+@handle_frontend_test(
+    fn_tree="jax.numpy.isin",
+    dtype_and_args=helpers.args_and_dtypes(
+        args=st.tuples(
+            np_helpers.array_shapes(),
+            np_helpers.array_shapes(),
+        ),
+        dtype=helpers.get_dtypes(),
+    ),
+)
+def test_jax_numpy_isin(
+    dtype_and_args,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    args, input_dtype = dtype_and_args
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        args=args,
+    )
+
+
 # isinf
 @handle_frontend_test(
     fn_tree="jax.numpy.isinf",
