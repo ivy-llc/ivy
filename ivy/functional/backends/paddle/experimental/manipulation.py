@@ -8,7 +8,7 @@ import ivy
 
 
 @with_unsupported_dtypes(
-    {"2.4.2 and below": ('int8', 'int16', 'uint8', 'uint16')},
+    {"2.4.2 and below": ("int8", "int16", "uint8", "uint16")},
     backend_version,
 )
 def moveaxis(
@@ -23,8 +23,19 @@ def moveaxis(
 
 
 @with_unsupported_dtypes(
-    {"2.4.2 and below": ('int8', 'int16', 'uint8', 'uint16', 'bfloat16',
-                         'float16', 'complex64', 'complex128', 'bool')},
+    {
+        "2.4.2 and below": (
+            "int8",
+            "int16",
+            "uint8",
+            "uint16",
+            "bfloat16",
+            "float16",
+            "complex64",
+            "complex128",
+            "bool",
+        )
+    },
     backend_version,
 )
 def heaviside(
@@ -127,8 +138,9 @@ def top_k(
     largest: Optional[bool] = True,
     out: Optional[Tuple[paddle.Tensor, paddle.Tensor]] = None,
 ) -> Tuple[paddle.Tensor, paddle.Tensor]:
-    topk_res = NamedTuple("top_k", [("values", paddle.Tensor), 
-                                    ("indices", paddle.Tensor)])
+    topk_res = NamedTuple(
+        "top_k", [("values", paddle.Tensor), ("indices", paddle.Tensor)]
+    )
     val, indices = paddle.topk(x, k, axis=axis, largest=largest)
     return topk_res(val, indices)
 
@@ -164,7 +176,12 @@ def flatten(
     order: Optional[str] = "C",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    ivy.utils.assertions.check_elem_in_list(order, ["C", "F"])
+    if order == "F":
+        return ivy.functional.experimental.flatten(
+            x, start_dim=start_dim, end_dim=end_dim, order=order
+        )
+    return paddle.flatten(x, start_axis=start_dim, stop_axis=end_dim)
 
 
 def vsplit(
@@ -258,8 +275,14 @@ def expand(
     if x.ndim > len(shape):
         x = x.reshape([-1])
 
-    if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16,]:
-        return paddle.expand(x.cast('float32'), shape).cast(x.dtype)
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+    ]:
+        return paddle.expand(x.cast("float32"), shape).cast(x.dtype)
+
     elif x.dtype in [paddle.complex64, paddle.complex128]:
         x_real = paddle.expand(ivy.real(x).data, shape)
         x_imag = paddle.expand(ivy.imag(x).data, shape)
