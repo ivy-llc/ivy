@@ -32,41 +32,11 @@ Check out our Google Colabs_ for some interactive demos!
 
 .. autosummary::
   :toctree: docs/functional
-  :template: experimental_module.rst
-  :caption: Functions
+  :template: top_level_toc.rst
   :recursive:
-  
-  ivy.functional.ivy.experimental
+  :include:
 
-.. Current implementation can't auto detect modules,
-.. check https://github.com/unifyai/ivy/pull/11883
-.. autosummary::
-  :toctree: docs/functional
-  :template: top_level_module.rst
-  :recursive:
-
-  ivy.functional.ivy.activations
-  ivy.functional.ivy.constants
-  ivy.functional.ivy.control_flow_ops
-  ivy.functional.ivy.creation
-  ivy.functional.ivy.data_type
-  ivy.functional.ivy.device
-  ivy.functional.ivy.elementwise
-  ivy.functional.ivy.general
-  ivy.functional.ivy.gradients
-  ivy.functional.ivy.layers
-  ivy.functional.ivy.linear_algebra
-  ivy.functional.ivy.losses
-  ivy.functional.ivy.manipulation
-  ivy.functional.ivy.meta
-  ivy.functional.ivy.nest
-  ivy.functional.ivy.norms
-  ivy.functional.ivy.random
-  ivy.functional.ivy.searching
-  ivy.functional.ivy.set
-  ivy.functional.ivy.sorting
-  ivy.functional.ivy.statistical
-  ivy.functional.ivy.utility
+  ivy.functional.ivy
 
 
 .. autosummary::

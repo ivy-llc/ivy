@@ -103,6 +103,7 @@ html_favicon = (
 autodoc_member_order = "alphabetical"
 
 ivy_toctree_caption_map = {
+    "ivy.functional.ivy": "Functions",
     "ivy.stateful": "Framework classes",
     "ivy.nested_array": "Nested array",
     "ivy.utils": "Utils",
