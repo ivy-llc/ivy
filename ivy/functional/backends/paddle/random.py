@@ -135,9 +135,7 @@ def shuffle(
 ) -> paddle.Tensor:
     if seed:
         _ = paddle.seed(seed)
-    # Use numpy's permutation function to shuffle indices
-    indices = paddle.to_tensor(np.random.permutation(x.shape[0]), dtype='int64')
+    # Use Paddle's randperm function to generate shuffled indices
+    indices = paddle.randperm(x.shape[0], dtype='int64')
     shuffled_x = paddle.index_select(x, indices)
     return shuffled_x
-
-shuffle.support_native_out = True
