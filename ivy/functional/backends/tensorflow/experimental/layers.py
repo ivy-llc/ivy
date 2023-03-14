@@ -4,7 +4,7 @@ from typing import Union, Optional, Tuple, Literal, Sequence
 import tensorflow as tf
 
 # local
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, handle_mixed_function
 from .. import backend_version
 import ivy
 from ivy.functional.ivy.layers import _handle_padding
@@ -179,9 +179,9 @@ def dct(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    type: Optional[Literal[1, 2, 3, 4]] = 2,
+    type: Literal[1, 2, 3, 4] = 2,
     n: Optional[int] = None,
-    axis: Optional[int] = -1,
+    axis: int = -1,
     norm: Optional[Literal["ortho"]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> tf.Tensor:
@@ -238,7 +238,7 @@ def fft(
     dim: int,
     /,
     *,
-    norm: Optional[str] = "backward",
+    norm: str = "backward",
     n: Union[int, Tuple[int]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -342,7 +342,7 @@ def ifft(
     x: Union[tf.Tensor, tf.Variable],
     dim: int,
     *,
-    norm: Optional[str] = "backward",
+    norm: str = "backward",
     n: Union[int, Tuple[int]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -404,6 +404,14 @@ def embedding(
     return tf.nn.embedding_lookup(weights, indices, max_norm=max_norm)
 
 
+@handle_mixed_function(
+    lambda x, 
+    *args, 
+    mode, 
+    scale_factor, 
+    align_corners, 
+    **kwargs:
+    (align_corners and (len(x.shape) - 2) < 2) and mode not in ["nearest", "area"])
 def interpolate(
     x: Union[tf.Tensor, tf.Variable],
     size: Union[Sequence[int], int],
@@ -416,7 +424,7 @@ def interpolate(
             "trilinear",
             "nearest",
             "area",
-            "nearest_exact",
+            "nearest-exact",
             "tf_area",
             "bicubic_tensorflow",
             "mitchellcubic",
@@ -427,32 +435,29 @@ def interpolate(
     ] = "linear",
     scale_factor: Optional[Union[Sequence[int], int]] = None,
     align_corners: Optional[bool] = None,
-    antialias: Optional[bool] = False,
+    antialias: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
     dims = len(x.shape) - 2
     size = _get_size(scale_factor, size, dims, x.shape)
-    if align_corners or dims > 2 or mode in ["nearest", "area"]:
-        return ivy.functional.experimental.interpolate(
-            x,
-            size,
-            mode=mode,
-            align_corners=align_corners,
-            antialias=antialias,
-        )
     remove_dim = False
-    if mode in ["linear", "tf_area", "lanczos3", "lanczos5"]:
+    if mode in ["linear", "tf_area", "lanczos3", "lanczos5", "nearest-exact"]:
         if dims == 1:
             size = (1,) + tuple(size)
             x = tf.expand_dims(x, axis=-2)
             dims = 2
             remove_dim = True
-        mode = "bilinear" if mode == "linear" else "area" if mode == "tf_area" else mode
-    if mode=="bicubic_tensorflow":
+        mode = (
+            "bilinear"
+            if mode == "linear"
+            else "area"
+            if mode == "tf_area"
+            else "nearest"
+            if mode == "nearest-exact"
+            else mode
+        )
+    if mode == "bicubic_tensorflow":
         mode = "bicubic"
-        x = tf.transpose(x, (0, 2, 3, 1))
-        return tf.transpose(tf.image.resize(x, size, method=mode, antialias=False),
-                            (0, 3, 1, 2))
     x = tf.transpose(x, (0, *range(2, dims + 2), 1))
     ret = tf.transpose(
         tf.cast(

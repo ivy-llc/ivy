@@ -7,7 +7,6 @@ from ivy.functional.frontends.numpy import dtype
 
 
 class ndarray:
-    # TODO Add dtype support
     def __init__(self, array):
         self._ivy_array = (
             ivy.array(array) if not isinstance(array, ivy.Array) else array

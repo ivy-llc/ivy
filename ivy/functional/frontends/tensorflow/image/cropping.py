@@ -25,7 +25,11 @@ def extract_patches(images, sizes, strides, rates, padding):
 
 
 @to_ivy_arrays_and_back
-def resize(image, size, method='bilinear', preserve_aspect_ratio=False, antialias=False):
+def resize(image,
+           size,
+           method='bilinear',
+           preserve_aspect_ratio=False,
+           antialias=False):
     unsqueezed = False
     if len(image.shape) == 3:
         image = image.unsqueeze(0)

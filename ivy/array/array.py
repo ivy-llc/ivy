@@ -1106,7 +1106,4 @@ class Array(
     def __iter__(self):
         if self.ndim == 0:
             raise TypeError("iteration over a 0-d ivy.Array not supported")
-        elif self.ndim == 1:
-            return iter(self._data)
-        else:
-            return iter([to_ivy(i) for i in self._data])
+        return iter([to_ivy(i) for i in self._data])

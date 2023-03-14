@@ -131,3 +131,7 @@ def sort(
     if out == x:
         x = ivy.sort(x, out=x)
     return x
+
+
+def flatnonzero(a):
+    return ivy.nonzero(ivy.reshape(a, (-1,)))
