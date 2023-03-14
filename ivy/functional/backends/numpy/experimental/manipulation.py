@@ -83,8 +83,8 @@ def rot90(
     m: np.ndarray,
     /,
     *,
-    k: Optional[int] = 1,
-    axes: Optional[Tuple[int, int]] = (0, 1),
+    k: int = 1,
+    axes: Tuple[int, int] = (0, 1),
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.rot90(m, k, axes)
@@ -95,8 +95,8 @@ def top_k(
     k: int,
     /,
     *,
-    axis: Optional[int] = -1,
-    largest: Optional[bool] = True,
+    axis: int = -1,
+    largest: bool = True,
     out: Optional[Tuple[np.ndarray, np.ndarray]] = None,
 ) -> Tuple[np.ndarray, np.ndarray]:
     if not largest:
@@ -145,28 +145,26 @@ def pad(
     pad_width: Union[Sequence[Sequence[int]], np.ndarray, int],
     /,
     *,
-    mode: Optional[
-        Union[
-            Literal[
-                "constant",
-                "edge",
-                "linear_ramp",
-                "maximum",
-                "mean",
-                "median",
-                "minimum",
-                "reflect",
-                "symmetric",
-                "wrap",
-                "empty",
-            ],
-            Callable,
-        ]
+    mode: Union[
+        Literal[
+            "constant",
+            "edge",
+            "linear_ramp",
+            "maximum",
+            "mean",
+            "median",
+            "minimum",
+            "reflect",
+            "symmetric",
+            "wrap",
+            "empty",
+        ],
+        Callable,
     ] = "constant",
     stat_length: Optional[Union[Sequence[Sequence[int]], int]] = None,
-    constant_values: Optional[Union[Sequence[Sequence[Number]], Number]] = 0,
-    end_values: Optional[Union[Sequence[Sequence[Number]], Number]] = 0,
-    reflect_type: Optional[Literal["even", "odd"]] = "even",
+    constant_values: Union[Sequence[Sequence[Number]], Number] = 0,
+    end_values: Union[Sequence[Sequence[Number]], Number] = 0,
+    reflect_type: Literal["even", "odd"] = "even",
     **kwargs: Optional[Any],
 ) -> np.ndarray:
     if callable(mode):

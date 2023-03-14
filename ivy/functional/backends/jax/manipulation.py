@@ -23,7 +23,7 @@ def concat(
     xs: Union[Tuple[JaxArray, ...], List[JaxArray]],
     /,
     *,
-    axis: Optional[int] = 0,
+    axis: int = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     is_tuple = type(xs) is tuple
@@ -74,8 +74,8 @@ def reshape(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     copy: Optional[bool] = None,
-    order: Optional[str] = "C",
-    allowzero: Optional[bool] = True,
+    order: str = "C",
+    allowzero: bool = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     ivy.utils.assertions.check_elem_in_list(order, ["C", "F"])
@@ -171,7 +171,7 @@ def repeat(
     /,
     repeats: Union[int, Iterable[int]],
     *,
-    axis: int = None,
+    axis: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.repeat(x, repeats, axis)

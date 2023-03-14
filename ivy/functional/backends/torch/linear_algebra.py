@@ -51,7 +51,7 @@ def cross(
     axisa: int = -1,
     axisb: int = -1,
     axisc: int = -1,
-    axis: int = None,
+    axis: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
 
@@ -93,7 +93,7 @@ def diagonal(
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def eigh(
-    x: torch.Tensor, /, *, UPLO: Optional[str] = "L", out: Optional[torch.Tensor] = None
+    x: torch.Tensor, /, *, UPLO: str = "L", out: Optional[torch.Tensor] = None
 ) -> Tuple[torch.Tensor]:
     result_tuple = NamedTuple(
         "eigh", [("eigenvalues", torch.Tensor), ("eigenvectors", torch.Tensor)]
@@ -107,7 +107,7 @@ eigh.support_native_out = True
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def eigvalsh(
-    x: torch.Tensor, /, *, UPLO: Optional[str] = "L", out: Optional[torch.Tensor] = None
+    x: torch.Tensor, /, *, UPLO: str = "L", out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.linalg.eigvalsh(x, UPLO=UPLO, out=out)
 
@@ -193,8 +193,8 @@ def matrix_norm(
     x: torch.Tensor,
     /,
     *,
-    ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-    axis: Optional[Tuple[int, int]] = (-2, -1),
+    ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",
+    axis: Tuple[int, int] = (-2, -1),
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -291,7 +291,7 @@ def tensorsolve(
     x2: torch.Tensor,
     /,
     *,
-    axes: Union[int, Tuple[List[int], List[int]]] = None,
+    axes: Optional[Union[int, Tuple[List[int], List[int]]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.linalg.tensorsolve(x1, x2, dims=axes)
@@ -467,8 +467,8 @@ def vector_norm(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: Optional[bool] = False,
-    ord: Optional[Union[int, float, Literal[inf, -inf]]] = 2,
+    keepdims: bool = False,
+    ord: Union[int, float, Literal[inf, -inf]] = 2,
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:

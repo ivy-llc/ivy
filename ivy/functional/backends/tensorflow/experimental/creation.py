@@ -15,7 +15,7 @@ import ivy
 def triu_indices(
     n_rows: int,
     n_cols: Optional[int] = None,
-    k: Optional[int] = 0,
+    k: int = 0,
     /,
     *,
     device: str,
@@ -78,7 +78,7 @@ def kaiser_bessel_derived_window(
 def vorbis_window(
     window_length: Union[tf.Tensor, tf.Variable],
     *,
-    dtype: Optional[tf.DType] = tf.dtypes.float32,
+    dtype: tf.DType = tf.dtypes.float32,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.signal.vorbis_window(window_length, dtype=dtype, name=None)
@@ -88,7 +88,7 @@ def hann_window(
     size: int,
     /,
     *,
-    periodic: Optional[bool] = True,
+    periodic: bool = True,
     dtype: Optional[tf.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -98,7 +98,7 @@ def hann_window(
 def tril_indices(
     n_rows: int,
     n_cols: Optional[int] = None,
-    k: Optional[int] = 0,
+    k: int = 0,
     /,
     *,
     device: str,

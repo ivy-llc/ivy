@@ -43,7 +43,7 @@ def cross(
     axisa: int = -1,
     axisb: int = -1,
     axisc: int = -1,
-    axis: int = None,
+    axis: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = promote_types_of_inputs(x1, x2)
@@ -97,7 +97,7 @@ def tensorsolve(
     x2: JaxArray,
     /,
     *,
-    axes: Union[int, Tuple[Sequence[int], Sequence[int]]] = None,
+    axes: Optional[Union[int, Tuple[Sequence[int], Sequence[int]]]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.linalg.tensorsolve(x1, x2, axes)
@@ -108,7 +108,7 @@ def tensorsolve(
     backend_version,
 )
 def eigh(
-    x: JaxArray, /, *, UPLO: Optional[str] = "L", out: Optional[JaxArray] = None
+    x: JaxArray, /, *, UPLO: str = "L", out: Optional[JaxArray] = None
 ) -> Tuple[JaxArray]:
     result_tuple = NamedTuple(
         "eigh", [("eigenvalues", JaxArray), ("eigenvectors", JaxArray)]
@@ -122,7 +122,7 @@ def eigh(
     backend_version,
 )
 def eigvalsh(
-    x: JaxArray, /, *, UPLO: Optional[str] = "L", out: Optional[JaxArray] = None
+    x: JaxArray, /, *, UPLO: str = "L", out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.linalg.eigvalsh(x, UPLO=UPLO)
 
@@ -191,8 +191,8 @@ def matrix_norm(
     x: JaxArray,
     /,
     *,
-    ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-    axis: Optional[Tuple[int, int]] = (-2, -1),
+    ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",
+    axis: Tuple[int, int] = (-2, -1),
     keepdims: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
