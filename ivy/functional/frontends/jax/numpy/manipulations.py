@@ -42,6 +42,13 @@ def reshape(a, newshape, order="C"):
 
 
 @to_ivy_arrays_and_back
+def resize(a, new_shape):
+    a = ivy.array(a)
+    resized_a = ivy.reshape(a, new_shape)
+    return resized_a
+
+
+@to_ivy_arrays_and_back
 def moveaxis(a, source, destination):
     return ivy.moveaxis(a, source, destination)
 
@@ -157,6 +164,11 @@ def squeeze(a, axis=None):
 
 
 @to_ivy_arrays_and_back
+def rot90(m, k=1, axes=(0, 1)):
+    return ivy.rot90(m, k=k, axes=axes)
+
+
+@to_ivy_arrays_and_back
 def split(ary, indices_or_sections, axis=0):
     if isinstance(indices_or_sections, (list, tuple)):
         indices_or_sections = (
@@ -185,6 +197,11 @@ def array_split(ary, indices_or_sections, axis=0):
 @to_ivy_arrays_and_back
 def dsplit(ary, indices_or_sections):
     return ivy.dsplit(ary, indices_or_sections)
+
+
+@to_ivy_arrays_and_back
+def dstack(tup, dtype=None):
+    return ivy.dstack(tup)
 
 
 @to_ivy_arrays_and_back

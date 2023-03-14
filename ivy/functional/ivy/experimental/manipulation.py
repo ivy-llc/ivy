@@ -751,14 +751,14 @@ def _get_stats(padded, axis, width_pair, length_pair, stat_func):
         right_length = max_length
     left_slice = _slice_at_axis(slice(left_index, left_index + left_length), axis)
     left_chunk = ivy.array(padded[left_slice])
-    left_stat = stat_func(left_chunk, axis=axis, keepdims=True).astype(left_chunk.dtype)
+    left_stat = stat_func(left_chunk, axis=axis, keepdims=True)
+    left_stat = ivy.round(left_stat) if 'int' in left_chunk.dtype else left_stat
     if left_length == right_length == max_length:
         return left_stat, left_stat
     right_slice = _slice_at_axis(slice(right_index - right_length, right_index), axis)
     right_chunk = ivy.array(padded[right_slice])
-    right_stat = stat_func(right_chunk, axis=axis, keepdims=True).astype(
-        right_chunk.dtype
-    )
+    right_stat = stat_func(right_chunk, axis=axis, keepdims=True)
+    right_stat = ivy.round(right_stat) if 'int' in right_chunk.dtype else right_stat
     return left_stat, right_stat
 
 
@@ -927,30 +927,15 @@ def _check_arguments(
         message="the pad_widths must be greater or equal to zero",
     )
     if mode in ["maximum", "mean", "median", "minimum"]:
-        if stat_length is None:
-            raise ivy.utils.exceptions.IvyException(
-                "stat_length is required for mode: " + mode
-            )
-        else:
-            _check_tuple_arg(stat_length, "stat_length")
-            ivy.utils.assertions.check_true(
-                all(element[1] > 0 for element in ivy.ndenumerate(stat_length)),
-                message="the stat lengths must be greater than zero",
-            )
+        _check_tuple_arg(stat_length, "stat_length")
+        ivy.utils.assertions.check_true(
+            all(element[1] > 0 for element in ivy.ndenumerate(stat_length)),
+            message="the stat lengths must be greater than zero",
+        )
     elif mode == "constant":
-        if constant_values is None:
-            raise ivy.utils.exceptions.IvyException(
-                "constant_values is required for mode: " + mode
-            )
-        else:
-            _check_tuple_arg(constant_values, "constant_values", b_float=True)
+        _check_tuple_arg(constant_values, "constant_values", b_float=True)
     elif mode == "linear_ramp":
-        if end_values is None:
-            raise ivy.utils.exceptions.IvyException(
-                "end_values is required for mode: " + mode
-            )
-        else:
-            _check_tuple_arg(end_values, "end_values", b_float=True)
+        _check_tuple_arg(end_values, "end_values", b_float=True)
     ivy.utils.assertions.check_true(
         reflect_type in ["even", "odd"],
         message="the provided reflect_type is not supported",
@@ -983,9 +968,9 @@ def pad(
         ],
         Callable,
     ] = "constant",
-    stat_length: Optional[Union[Iterable[Tuple[int]], int]] = None,
-    constant_values: Optional[Union[Iterable[Tuple[Number]], Number]] = None,
-    end_values: Optional[Union[Iterable[Tuple[Number]], Number]] = None,
+    stat_length: Union[Iterable[Tuple[int]], int] = 1,
+    constant_values: Union[Iterable[Tuple[Number]], Number] = 0,
+    end_values: Union[Iterable[Tuple[Number]], Number] = 0,
     reflect_type: Literal["even", "odd"] = "even",
     **kwargs: Optional[Any],
 ) -> ivy.Array:

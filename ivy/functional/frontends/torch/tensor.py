@@ -3,7 +3,12 @@
 # local
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
+from ivy.functional.frontends.numpy.creation_routines.from_existing_data import (
+    array as np_frontend_array,
+)
 from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_supported_dtypes
+
 
 
 class Tensor:
@@ -280,6 +285,11 @@ class Tensor:
 
     def bitwise_or(self, other, *, out=None):
         return torch_frontend.bitwise_or(self._ivy_array, other)
+
+    @with_supported_dtypes({"1.11.0 and below": ("integer",)}, "torch")
+    def bitwise_or_(self, other, *, out=None):
+        self._ivy_array = self.bitwise_or(other, out=out).ivy_array
+        return self
 
     def contiguous(self, memory_format=None):
         return torch_frontend.tensor(self.ivy_array)
@@ -691,7 +701,7 @@ class Tensor:
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def numpy(self):
-        return ivy.to_numpy(self._ivy_array)
+        return np_frontend_array(self._ivy_array)
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def sigmoid(self):
@@ -840,3 +850,5 @@ class Tensor:
     # Method aliases
     absolute, absolute_ = abs, abs_
     ndimension = dim
+
+

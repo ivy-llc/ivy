@@ -157,7 +157,7 @@ def pad(
         ],
         Callable,
     ] = "constant",
-    stat_length: Optional[Union[Sequence[Sequence[int]], int]] = None,
+    stat_length: Union[Sequence[Sequence[int]], int] = 1,
     constant_values: Union[Sequence[Sequence[Number]], Number] = 0,
     end_values: Union[Sequence[Sequence[Number]], Number] = 0,
     reflect_type: Literal["even", "odd"] = "even",
@@ -168,7 +168,7 @@ def pad(
     constant_values = _to_nested_tuple(constant_values)
     end_values = _to_nested_tuple(end_values)
     input_dtype = input.dtype
-    if jnp.issubdtype(input_dtype, jnp.integer):
+    if jnp.issubdtype(input_dtype, jnp.integer) and mode in ["mean", "median"]:
         input = input.astype(jnp.float64)
     if callable(mode):
         ret = jnp.pad(
@@ -211,8 +211,8 @@ def pad(
             pad_width,
             mode=mode,
         )
-    if jnp.issubdtype(input_dtype, jnp.integer):
-        ret = jnp.floor(ret).astype(input_dtype)
+    if jnp.issubdtype(input_dtype, jnp.integer) and mode in ["mean", "median"]:
+        ret = jnp.round(ret).astype(input_dtype)
     return ret
 
 
