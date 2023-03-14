@@ -678,7 +678,7 @@
 <span class="c1"># ---------------#</span>
 
 
-<div class="viewcode-block" id="handle_array_function"><a class="viewcode-back" href="../../func_wrapper/handle_array_function.html#ivy.func_wrapper.handle_array_function">[docs]</a><span class="k">def</span> <span class="nf">handle_array_function</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+<div class="viewcode-block" id="handle_array_function"><a class="viewcode-back" href="../../functional/ivy/experimental.html#ivy.func_wrapper.handle_array_function">[docs]</a><span class="k">def</span> <span class="nf">handle_array_function</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wrap a function to extract the relevant argument types to be passed to</span>
 <span class="sd">    array_function method.</span>
@@ -739,7 +739,7 @@
     <span class="k">return</span> <span class="n">new_func</span></div>
 
 
-<div class="viewcode-block" id="handle_array_like_without_promotion"><a class="viewcode-back" href="../../func_wrapper/handle_array_like_without_promotion.html#ivy.func_wrapper.handle_array_like_without_promotion">[docs]</a><span class="k">def</span> <span class="nf">handle_array_like_without_promotion</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+<div class="viewcode-block" id="handle_array_like_without_promotion"><a class="viewcode-back" href="../../functional/ivy/experimental.html#ivy.func_wrapper.handle_array_like_without_promotion">[docs]</a><span class="k">def</span> <span class="nf">handle_array_like_without_promotion</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
@@ -778,7 +778,7 @@
     <span class="k">return</span> <span class="n">new_fn</span></div>
 
 
-<div class="viewcode-block" id="inputs_to_native_arrays"><a class="viewcode-back" href="../../func_wrapper/inputs_to_native_arrays.html#ivy.func_wrapper.inputs_to_native_arrays">[docs]</a><span class="k">def</span> <span class="nf">inputs_to_native_arrays</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+<div class="viewcode-block" id="inputs_to_native_arrays"><a class="viewcode-back" href="../../functional/ivy/experimental.html#ivy.func_wrapper.inputs_to_native_arrays">[docs]</a><span class="k">def</span> <span class="nf">inputs_to_native_arrays</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -854,7 +854,7 @@
     <span class="k">return</span> <span class="n">new_fn</span></div>
 
 
-<div class="viewcode-block" id="outputs_to_ivy_arrays"><a class="viewcode-back" href="../../func_wrapper/outputs_to_ivy_arrays.html#ivy.func_wrapper.outputs_to_ivy_arrays">[docs]</a><span class="k">def</span> <span class="nf">outputs_to_ivy_arrays</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+<div class="viewcode-block" id="outputs_to_ivy_arrays"><a class="viewcode-back" href="../../functional/ivy/experimental.html#ivy.func_wrapper.outputs_to_ivy_arrays">[docs]</a><span class="k">def</span> <span class="nf">outputs_to_ivy_arrays</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -921,7 +921,7 @@
     <span class="k">return</span> <span class="n">output_to_native_arrays</span><span class="p">(</span><span class="n">inputs_to_ivy_arrays</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="to_native_arrays_and_back"><a class="viewcode-back" href="../../func_wrapper/to_native_arrays_and_back.html#ivy.func_wrapper.to_native_arrays_and_back">[docs]</a><span class="k">def</span> <span class="nf">to_native_arrays_and_back</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+<div class="viewcode-block" id="to_native_arrays_and_back"><a class="viewcode-back" href="../../functional/ivy/experimental.html#ivy.func_wrapper.to_native_arrays_and_back">[docs]</a><span class="k">def</span> <span class="nf">to_native_arrays_and_back</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wraps `fn` so that input arrays are all converted to `ivy.NativeArray` instances</span>
 <span class="sd">    and return arrays are all converted to `ivy.Array` instances.</span>
@@ -929,7 +929,7 @@
     <span class="k">return</span> <span class="n">outputs_to_ivy_arrays</span><span class="p">(</span><span class="n">inputs_to_native_arrays</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="handle_view"><a class="viewcode-back" href="../../func_wrapper/handle_view.html#ivy.func_wrapper.handle_view">[docs]</a><span class="k">def</span> <span class="nf">handle_view</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+<div class="viewcode-block" id="handle_view"><a class="viewcode-back" href="../../functional/ivy/experimental.html#ivy.func_wrapper.handle_view">[docs]</a><span class="k">def</span> <span class="nf">handle_view</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wraps `fn` and performs view handling if copy is False. Used for functional</span>
 <span class="sd">    backends (Jax and TensorFlow). Checks if the first arg is a view or original</span>
@@ -995,7 +995,7 @@
 <span class="c1"># -------------------#</span>
 
 
-<div class="viewcode-block" id="infer_dtype"><a class="viewcode-back" href="../../func_wrapper/infer_dtype.html#ivy.func_wrapper.infer_dtype">[docs]</a><span class="k">def</span> <span class="nf">infer_dtype</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+<div class="viewcode-block" id="infer_dtype"><a class="viewcode-back" href="../../functional/ivy/experimental.html#ivy.func_wrapper.infer_dtype">[docs]</a><span class="k">def</span> <span class="nf">infer_dtype</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1029,7 +1029,7 @@
     <span class="k">return</span> <span class="n">new_fn</span></div>
 
 
-<div class="viewcode-block" id="integer_arrays_to_float"><a class="viewcode-back" href="../../func_wrapper/integer_arrays_to_float.html#ivy.func_wrapper.integer_arrays_to_float">[docs]</a><span class="k">def</span> <span class="nf">integer_arrays_to_float</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+<div class="viewcode-block" id="integer_arrays_to_float"><a class="viewcode-back" href="../../functional/ivy/experimental.html#ivy.func_wrapper.integer_arrays_to_float">[docs]</a><span class="k">def</span> <span class="nf">integer_arrays_to_float</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1070,7 +1070,7 @@
 <span class="c1"># ----------------#</span>
 
 
-<div class="viewcode-block" id="infer_device"><a class="viewcode-back" href="../../func_wrapper/infer_device.html#ivy.func_wrapper.infer_device">[docs]</a><span class="k">def</span> <span class="nf">infer_device</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+<div class="viewcode-block" id="infer_device"><a class="viewcode-back" href="../../functional/ivy/experimental.html#ivy.func_wrapper.infer_device">[docs]</a><span class="k">def</span> <span class="nf">infer_device</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1107,7 +1107,7 @@
 <span class="c1"># ------------------------#</span>
 
 
-<div class="viewcode-block" id="handle_out_argument"><a class="viewcode-back" href="../../func_wrapper/handle_out_argument.html#ivy.func_wrapper.handle_out_argument">[docs]</a><span class="k">def</span> <span class="nf">handle_out_argument</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+<div class="viewcode-block" id="handle_out_argument"><a class="viewcode-back" href="../../functional/ivy/experimental.html#ivy.func_wrapper.handle_out_argument">[docs]</a><span class="k">def</span> <span class="nf">handle_out_argument</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
     <span class="n">handle_out_in_backend</span> <span class="o">=</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s2">&quot;support_native_out&quot;</span><span class="p">)</span>
 
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
@@ -1167,7 +1167,7 @@
 <span class="c1"># ------------------#</span>
 
 
-<div class="viewcode-block" id="handle_nestable"><a class="viewcode-back" href="../../func_wrapper/handle_nestable.html#ivy.func_wrapper.handle_nestable">[docs]</a><span class="k">def</span> <span class="nf">handle_nestable</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+<div class="viewcode-block" id="handle_nestable"><a class="viewcode-back" href="../../functional/ivy/experimental.html#ivy.func_wrapper.handle_nestable">[docs]</a><span class="k">def</span> <span class="nf">handle_nestable</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
     <span class="n">fn_name</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span>
 
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>

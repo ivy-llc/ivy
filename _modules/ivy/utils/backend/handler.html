@@ -600,8 +600,8 @@
 <span class="n">ivy_original_fn_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
 
-<div class="viewcode-block" id="ContextManager"><a class="viewcode-back" href="../../../../utils/backend/handler/ContextManager.html#ivy.utils.backend.handler.ContextManager">[docs]</a><span class="k">class</span> <span class="nc">ContextManager</span><span class="p">:</span>
-<div class="viewcode-block" id="ContextManager.__init__"><a class="viewcode-back" href="../../../../utils/backend/handler/ContextManager.html#ivy.utils.backend.handler.ContextManager.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module</span><span class="p">):</span>
+<div class="viewcode-block" id="ContextManager"><a class="viewcode-back" href="../../../../utils/backend/handler/ContextManager.html#ivy.functional.ivy.experimental.ContextManager">[docs]</a><span class="k">class</span> <span class="nc">ContextManager</span><span class="p">:</span>
+<div class="viewcode-block" id="ContextManager.__init__"><a class="viewcode-back" href="../../../../utils/backend/handler/ContextManager.html#ivy.functional.ivy.experimental.ContextManager.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">module</span> <span class="o">=</span> <span class="n">module</span></div>
 
     <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -638,7 +638,7 @@
 <span class="c1"># ----------------------- #</span>
 
 
-<div class="viewcode-block" id="prevent_access_locally"><a class="viewcode-back" href="../../../../utils/backend/handler/prevent_access_locally.html#ivy.utils.backend.handler.prevent_access_locally">[docs]</a><span class="k">def</span> <span class="nf">prevent_access_locally</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+<div class="viewcode-block" id="prevent_access_locally"><a class="viewcode-back" href="../../../../utils/backend/handler/prevent_access_locally.html#ivy.functional.ivy.experimental.prevent_access_locally">[docs]</a><span class="k">def</span> <span class="nf">prevent_access_locally</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_local</span><span class="p">():</span>
@@ -696,7 +696,7 @@
             <span class="k">return</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="fn_name_from_version_specific_fn_name"><a class="viewcode-back" href="../../../../utils/backend/handler/fn_name_from_version_specific_fn_name.html#ivy.utils.backend.handler.fn_name_from_version_specific_fn_name">[docs]</a><span class="k">def</span> <span class="nf">fn_name_from_version_specific_fn_name</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">version</span><span class="p">):</span>
+<div class="viewcode-block" id="fn_name_from_version_specific_fn_name"><a class="viewcode-back" href="../../../../utils/backend/handler/fn_name_from_version_specific_fn_name.html#ivy.functional.ivy.experimental.fn_name_from_version_specific_fn_name">[docs]</a><span class="k">def</span> <span class="nf">fn_name_from_version_specific_fn_name</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">version</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -743,7 +743,7 @@
             <span class="k">return</span> <span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">i</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="set_backend_to_specific_version"><a class="viewcode-back" href="../../../../utils/backend/handler/set_backend_to_specific_version.html#ivy.utils.backend.handler.set_backend_to_specific_version">[docs]</a><span class="k">def</span> <span class="nf">set_backend_to_specific_version</span><span class="p">(</span><span class="n">backend</span><span class="p">):</span>
+<div class="viewcode-block" id="set_backend_to_specific_version"><a class="viewcode-back" href="../../../../utils/backend/handler/set_backend_to_specific_version.html#ivy.functional.ivy.experimental.set_backend_to_specific_version">[docs]</a><span class="k">def</span> <span class="nf">set_backend_to_specific_version</span><span class="p">(</span><span class="n">backend</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Updates the backend dict to make the original function</span>
 <span class="sd">    name point to the version specific one.</span>
@@ -768,7 +768,7 @@
                 <span class="n">backend</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">orig_name</span><span class="p">]</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="n">orig_name</span></div>
 
 
-<div class="viewcode-block" id="current_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/current_backend.html#ivy.utils.backend.handler.current_backend">[docs]</a><span class="k">def</span> <span class="nf">current_backend</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="current_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/current_backend.html#ivy.functional.ivy.experimental.current_backend">[docs]</a><span class="k">def</span> <span class="nf">current_backend</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the current backend. Priorities:</span>
 <span class="sd">    global_backend &gt; argument&#39;s backend.</span>
 
@@ -861,7 +861,7 @@
         <span class="n">backend</span><span class="o">.</span><span class="n">set_global_attr</span><span class="p">(</span><span class="s2">&quot;RNG&quot;</span><span class="p">,</span> <span class="n">backend</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RNG</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="convert_from_source_backend_to_numpy"><a class="viewcode-back" href="../../../../utils/backend/handler/convert_from_source_backend_to_numpy.html#ivy.utils.backend.handler.convert_from_source_backend_to_numpy">[docs]</a><span class="k">def</span> <span class="nf">convert_from_source_backend_to_numpy</span><span class="p">(</span><span class="n">variable_ids</span><span class="p">,</span> <span class="n">numpy_objs</span><span class="p">):</span>
+<div class="viewcode-block" id="convert_from_source_backend_to_numpy"><a class="viewcode-back" href="../../../../utils/backend/handler/convert_from_source_backend_to_numpy.html#ivy.functional.ivy.experimental.convert_from_source_backend_to_numpy">[docs]</a><span class="k">def</span> <span class="nf">convert_from_source_backend_to_numpy</span><span class="p">(</span><span class="n">variable_ids</span><span class="p">,</span> <span class="n">numpy_objs</span><span class="p">):</span>
     <span class="c1"># Dynamic Backend</span>
     <span class="kn">from</span> <span class="nn">ivy.functional.ivy.gradients</span> <span class="kn">import</span> <span class="n">_is_variable</span><span class="p">,</span> <span class="n">_variable_data</span>
 
@@ -943,7 +943,7 @@
     <span class="k">return</span> <span class="n">variable_ids</span><span class="p">,</span> <span class="n">numpy_objs</span></div>
 
 
-<div class="viewcode-block" id="convert_from_numpy_to_target_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/convert_from_numpy_to_target_backend.html#ivy.utils.backend.handler.convert_from_numpy_to_target_backend">[docs]</a><span class="k">def</span> <span class="nf">convert_from_numpy_to_target_backend</span><span class="p">(</span><span class="n">variable_ids</span><span class="p">,</span> <span class="n">numpy_objs</span><span class="p">):</span>
+<div class="viewcode-block" id="convert_from_numpy_to_target_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/convert_from_numpy_to_target_backend.html#ivy.functional.ivy.experimental.convert_from_numpy_to_target_backend">[docs]</a><span class="k">def</span> <span class="nf">convert_from_numpy_to_target_backend</span><span class="p">(</span><span class="n">variable_ids</span><span class="p">,</span> <span class="n">numpy_objs</span><span class="p">):</span>
     <span class="c1"># Dynamic Backend</span>
     <span class="kn">from</span> <span class="nn">ivy.functional.ivy.gradients</span> <span class="kn">import</span> <span class="n">_variable</span>
 
@@ -969,7 +969,7 @@
             <span class="n">obj</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">new_data</span><span class="o">.</span><span class="n">data</span></div>
 
 
-<div class="viewcode-block" id="set_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/set_backend.html#ivy.utils.backend.handler.set_backend">[docs]</a><span class="nd">@prevent_access_locally</span>
+<div class="viewcode-block" id="set_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/set_backend.html#ivy.functional.ivy.experimental.set_backend">[docs]</a><span class="nd">@prevent_access_locally</span>
 <span class="k">def</span> <span class="nf">set_backend</span><span class="p">(</span><span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dynamic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Sets `backend` to be the global backend.</span>
 <span class="sd">    Will also convert all Array and Container objects \</span>
@@ -1034,17 +1034,17 @@
     <span class="n">ivy</span><span class="o">.</span><span class="n">locks</span><span class="p">[</span><span class="s2">&quot;backend_setter&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">release</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="set_numpy_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/set_numpy_backend.html#ivy.utils.backend.handler.set_numpy_backend">[docs]</a><span class="k">def</span> <span class="nf">set_numpy_backend</span><span class="p">():</span>
+<div class="viewcode-block" id="set_numpy_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/set_numpy_backend.html#ivy.functional.ivy.experimental.set_numpy_backend">[docs]</a><span class="k">def</span> <span class="nf">set_numpy_backend</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Sets NumPy to be the global backend. equivalent to `ivy.set_backend(&quot;numpy&quot;)`.&quot;&quot;&quot;</span>  <span class="c1"></span>
     <span class="n">set_backend</span><span class="p">(</span><span class="s2">&quot;numpy&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="set_jax_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/set_jax_backend.html#ivy.utils.backend.handler.set_jax_backend">[docs]</a><span class="k">def</span> <span class="nf">set_jax_backend</span><span class="p">():</span>
+<div class="viewcode-block" id="set_jax_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/set_jax_backend.html#ivy.functional.ivy.experimental.set_jax_backend">[docs]</a><span class="k">def</span> <span class="nf">set_jax_backend</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Sets JAX to be the global backend. equivalent to `ivy.set_backend(&quot;jax&quot;)`.&quot;&quot;&quot;</span>  <span class="c1"></span>
     <span class="n">set_backend</span><span class="p">(</span><span class="s2">&quot;jax&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="set_tensorflow_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/set_tensorflow_backend.html#ivy.utils.backend.handler.set_tensorflow_backend">[docs]</a><span class="k">def</span> <span class="nf">set_tensorflow_backend</span><span class="p">():</span>
+<div class="viewcode-block" id="set_tensorflow_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/set_tensorflow_backend.html#ivy.functional.ivy.experimental.set_tensorflow_backend">[docs]</a><span class="k">def</span> <span class="nf">set_tensorflow_backend</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Sets TensorFlow to be the global backend. equivalent to</span>
 <span class="sd">    `ivy.set_backend(&quot;tensorflow&quot;)`.</span>
@@ -1052,12 +1052,12 @@
     <span class="n">set_backend</span><span class="p">(</span><span class="s2">&quot;tensorflow&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="set_torch_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/set_torch_backend.html#ivy.utils.backend.handler.set_torch_backend">[docs]</a><span class="k">def</span> <span class="nf">set_torch_backend</span><span class="p">():</span>
+<div class="viewcode-block" id="set_torch_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/set_torch_backend.html#ivy.functional.ivy.experimental.set_torch_backend">[docs]</a><span class="k">def</span> <span class="nf">set_torch_backend</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Sets torch to be the global backend. equivalent to `ivy.set_backend(&quot;torch&quot;)`.&quot;&quot;&quot;</span>  <span class="c1"></span>
     <span class="n">set_backend</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/get_backend.html#ivy.utils.backend.handler.get_backend">[docs]</a><span class="k">def</span> <span class="nf">get_backend</span><span class="p">(</span><span class="n">backend</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="get_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/get_backend.html#ivy.functional.ivy.experimental.get_backend">[docs]</a><span class="k">def</span> <span class="nf">get_backend</span><span class="p">(</span><span class="n">backend</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns Ivy&#39;s backend for `backend` if specified, or if it isn&#39;t specified it</span>
 <span class="sd">    returns the Ivy backend associated with the current globally set backend.</span>
 
@@ -1110,7 +1110,7 @@
     <span class="k">return</span> <span class="n">backend</span></div>
 
 
-<div class="viewcode-block" id="unset_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/unset_backend.html#ivy.utils.backend.handler.unset_backend">[docs]</a><span class="nd">@prevent_access_locally</span>
+<div class="viewcode-block" id="unset_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/unset_backend.html#ivy.functional.ivy.experimental.unset_backend">[docs]</a><span class="nd">@prevent_access_locally</span>
 <span class="k">def</span> <span class="nf">unset_backend</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Unsets the current global backend, and adjusts the ivy dict such that either</span>
 <span class="sd">    a previously set global backend is then used as the backend, otherwise we return</span>
@@ -1174,13 +1174,13 @@
     <span class="k">return</span> <span class="n">backend</span></div>
 
 
-<div class="viewcode-block" id="clear_backend_stack"><a class="viewcode-back" href="../../../../utils/backend/handler/clear_backend_stack.html#ivy.utils.backend.handler.clear_backend_stack">[docs]</a><span class="nd">@prevent_access_locally</span>
+<div class="viewcode-block" id="clear_backend_stack"><a class="viewcode-back" href="../../../../utils/backend/handler/clear_backend_stack.html#ivy.functional.ivy.experimental.clear_backend_stack">[docs]</a><span class="nd">@prevent_access_locally</span>
 <span class="k">def</span> <span class="nf">clear_backend_stack</span><span class="p">():</span>
     <span class="k">while</span> <span class="n">backend_stack</span><span class="p">:</span>
         <span class="n">unset_backend</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="choose_random_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/choose_random_backend.html#ivy.utils.backend.handler.choose_random_backend">[docs]</a><span class="nd">@prevent_access_locally</span>
+<div class="viewcode-block" id="choose_random_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/choose_random_backend.html#ivy.functional.ivy.experimental.choose_random_backend">[docs]</a><span class="nd">@prevent_access_locally</span>
 <span class="k">def</span> <span class="nf">choose_random_backend</span><span class="p">(</span><span class="n">excluded</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">excluded</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span> <span class="k">if</span> <span class="n">excluded</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">excluded</span>
     <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
@@ -1203,7 +1203,7 @@
 
 
 <span class="c1"># noinspection PyProtectedMember</span>
-<div class="viewcode-block" id="with_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/with_backend.html#ivy.utils.backend.handler.with_backend">[docs]</a><span class="nd">@prevent_access_locally</span>
+<div class="viewcode-block" id="with_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/with_backend.html#ivy.functional.ivy.experimental.with_backend">[docs]</a><span class="nd">@prevent_access_locally</span>
 <span class="k">def</span> <span class="nf">with_backend</span><span class="p">(</span><span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
     <span class="c1"># TODO do error handling if finder fails</span>
     <span class="n">finder</span> <span class="o">=</span> <span class="n">ast_helpers</span><span class="o">.</span><span class="n">IvyPathFinder</span><span class="p">()</span>
