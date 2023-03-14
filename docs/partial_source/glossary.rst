@@ -55,7 +55,7 @@ All of these new words can get confusing! We've created a glossary to help nail 
         Primary functions are the lowest level building blocks in Ivy and are generally implemented as light wrapping around an existing function in the backend framework, which serves a near-identical purpose.
 
     Compositional Functions
-        Compositional functiona are functions that are implemented as a composition of other Ivy functions,
+        Compositional functions are functions that are implemented as a composition of other Ivy functions,
 
     Mixed Functions
         Mixed functions are functions that have some backend-specific implementations but not for all backends.

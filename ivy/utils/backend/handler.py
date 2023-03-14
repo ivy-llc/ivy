@@ -388,7 +388,7 @@ def convert_from_numpy_to_target_backend(variable_ids, numpy_objs):
         if isinstance(obj, ivy.Container):
             obj.cont_inplace_update(new_data)
         else:
-            obj._data = new_data.data
+            obj.data = new_data.data
 
 
 @prevent_access_locally
