@@ -38,7 +38,7 @@ def _ceil(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def _floor(
+def floor(
     x,
     /,
     out=None,

@@ -52,7 +52,7 @@ def test_numpy_ceil(
 
 # floor
 @handle_frontend_test(
-    fn_tree="numpy.ceil",
+    fn_tree="numpy.floor",
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[
             lambda: helpers.dtype_and_values(
@@ -66,7 +66,7 @@ def test_numpy_ceil(
         fn_name="floor"
     ),
 )
-def test_numpy_ceil(
+def test_numpy_floor(
     dtypes_values_casting,
     where,
     frontend,
