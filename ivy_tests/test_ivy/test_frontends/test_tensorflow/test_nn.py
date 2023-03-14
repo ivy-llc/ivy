@@ -247,8 +247,10 @@ def _x_and_filters(
     )
     if type == "separable":
         p_filter_shape = (
-            1, 1, filter_shape[-1] * filter_shape[-2],
-            draw(helpers.ints(min_value=1, max_value=3))
+            1,
+            1,
+            filter_shape[-1] * filter_shape[-2],
+            draw(helpers.ints(min_value=1, max_value=3)),
         )
         p_filters = draw(
             helpers.array_values(
@@ -1240,4 +1242,41 @@ def test_tensorflow_embedding_lookup(
         ids=indices,
         max_norm=max_norm,
         atol=1e-4,
+    )
+
+
+@handle_frontend_test(
+    fn_name="tensorflow.nn.avg_pool1d",
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NWC", "NCW"]),
+        padding=st.sampled_from(["VALID", "SAME"]),
+        type="1d",
+    ),
+)
+def test_tensorflow_avg_pool1d(
+    *,
+    x_f_d_df,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, ksize, stride, data_format, padding = x_f_d_df
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+        ksize=ksize,
+        strides=stride,
+        padding=padding,
+        data_format=data_format,
     )
