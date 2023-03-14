@@ -9,6 +9,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa
+    _get_dtype_values_k_axes_for_rot90,
     _get_split_locations,
 )
 
@@ -925,6 +926,39 @@ def test_jax_numpy_squeeze(
         on_device=on_device,
         a=values[0],
         axis=axis,
+    )
+
+
+# rot90
+@handle_frontend_test(
+    fn_tree="jax.numpy.rot90",
+    dtype_m_k_axes=_get_dtype_values_k_axes_for_rot90(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_rot90(
+    *,
+    dtype_m_k_axes,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, m, k, axes = dtype_m_k_axes
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        m=m,
+        k=k,
+        axes=tuple(axes),
     )
 
 
