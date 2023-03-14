@@ -231,3 +231,12 @@ def cross(a, b, name=None):
 @to_ivy_arrays_and_back
 def svd(a, /, *, full_matrices=False, compute_uv=True, name=None):
     return ivy.svd(a, compute_uv=compute_uv, full_matrices=full_matrices)
+
+
+@with_supported_dtypes(
+    {"2.9.0 and below": ("float32", "float64", "half", "complex64", "complex128")},
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def sqrtm(input, name=None):
+    return ivy.sqrt(input)

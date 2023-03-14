@@ -298,7 +298,8 @@ def test_tensorflow_logdet(
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.slogdet",
     dtype_and_x=_get_dtype_and_matrix(),
-    test_with_out=st.just(False))
+    test_with_out=st.just(False),
+)
 def test_tensorflow_slogdet(
     *,
     dtype_and_x,
@@ -767,4 +768,28 @@ def test_tensorflow_svd(
         rtol=1e-2,
         atol=1e-2,
         ground_truth_backend=frontend,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.sqrtm",
+    dtype_and_input=_get_dtype_and_matrix(),
+)
+def test_tensorflow_linalg_sqrtm(
+    *,
+    dtype_and_input,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, input = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        input=input,
     )
