@@ -21,14 +21,14 @@ Check out our Google Colabs_ for some interactive demos!
     :maxdepth: -1
     :caption: Overview
 
-    partial_source/background.rst
-    partial_source/design.rst
-    partial_source/related_work.rst
-    partial_source/extensions.rst
-    partial_source/contributing.rst
-    partial_source/deep_dive.rst
-    partial_source/faq.rst
-    partial_source/glossary.rst
+    overview/background.rst
+    overview/design.rst
+    overview/related_work.rst
+    overview/extensions.rst
+    overview/contributing.rst
+    overview/deep_dive.rst
+    overview/faq.rst
+    overview/glossary.rst
 
 .. autosummary::
   :toctree: docs/functional
