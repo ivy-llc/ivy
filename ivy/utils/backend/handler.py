@@ -37,7 +37,12 @@ _backends_subpackage_path = "ivy.functional.backends"
 _backend_dict = dict()
 _backend_reverse_dict = dict()
 
-for backend in os.listdir(_backends_subpackage_path.replace(".", "/")):
+for backend in os.listdir(
+    os.path.join(
+        sys.modules["ivy"].__path__[0].rpartition("/")[0],
+        _backends_subpackage_path.replace(".", "/"),
+    )
+):
     if backend.startswith("__"):
         continue
     backend_path = f"{_backends_subpackage_path}.{backend}"
