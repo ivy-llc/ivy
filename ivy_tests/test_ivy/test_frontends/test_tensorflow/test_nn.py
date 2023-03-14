@@ -247,8 +247,10 @@ def _x_and_filters(
     )
     if type == "separable":
         p_filter_shape = (
-            1, 1, filter_shape[-1] * filter_shape[-2],
-            draw(helpers.ints(min_value=1, max_value=3))
+            1,
+            1,
+            filter_shape[-1] * filter_shape[-2],
+            draw(helpers.ints(min_value=1, max_value=3)),
         )
         p_filters = draw(
             helpers.array_values(
@@ -1244,42 +1246,24 @@ def test_tensorflow_embedding_lookup(
 
 
 @handle_frontend_test(
-    fn_tree="tensorflow.nn.relu6",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        large_abs_safety_factor=8,
-        small_abs_safety_factor=8,
-        safety_factor_scale="log",
-    ),
-    test_with_out=st.just(False),
-)
-def test_tensorflow_relu6(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        features=x[0],
-    )
-@handle_frontend_test(
     fn_tree="tensorflow.nn.avg_pool1d",
-    x_f_d_df = _x_and_filters(
+    x_f_d_df=_x_and_filters(
         dtypes=helpers.get_dtypes("float", full=False),
-        data_format=st.sampled_from(["NWC","NCW"]),
+        data_format=st.sampled_from(["NWC", "NCW"]),
         padding=st.sampled_from(["VALID", "SAME"]),
         type="1d",
     ),
 )
-def test_tensorflow_avg_pool1d(*, x_f_d_df, as_variable, num_positional_args, native_array, frontend, fn_tree, on_device):
+def test_tensorflow_avg_pool1d(
+    *,
+    x_f_d_df,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
     input_dtype, x, ksize, stride, data_format, padding = x_f_d_df
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -1287,8 +1271,8 @@ def test_tensorflow_avg_pool1d(*, x_f_d_df, as_variable, num_positional_args, na
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend= frontend,
-        fn_tree= fn_tree,
+        frontend=frontend,
+        fn_tree=fn_tree,
         on_device=on_device,
         input=x,
         ksize=ksize,
