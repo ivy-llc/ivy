@@ -13,5 +13,5 @@ Image
    :maxdepth: -1
    :caption: Image
 
-   image/ContainerWithImage.rst
+   image/_ContainerWithImage.rst
 

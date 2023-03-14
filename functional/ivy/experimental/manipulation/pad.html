@@ -596,7 +596,7 @@ for each axis.</p></li>
 </dd>
 </dl>
 </p></li>
-<li><p><strong>mode</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[‘constant’, ‘edge’, ‘linear_ramp’, ‘maximum’, ‘mean’, ‘median’, ‘minimum’, ‘reflect’, ‘symmetric’, ‘wrap’, ‘empty’], <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>]]) – <p>(default: <code class="docutils literal notranslate"><span class="pre">'constant'</span></code>)
+<li><p><strong>mode</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[‘constant’, ‘edge’, ‘linear_ramp’, ‘maximum’, ‘mean’, ‘median’, ‘minimum’, ‘reflect’, ‘symmetric’, ‘wrap’, ‘empty’], <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>]) – <p>(default: <code class="docutils literal notranslate"><span class="pre">'constant'</span></code>)
 One of the following string values or a user-supplied function.</p>
 <blockquote>
 <div><ul>
@@ -654,7 +654,7 @@ length for all axes.</p></li>
 </ul>
 </div></blockquote>
 </p></li>
-<li><p><strong>constant_values</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code>]], <code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code>]]) – <p>(default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+<li><p><strong>constant_values</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="../../experimental.html#ivy.functional.ivy.experimental.Number" title="numbers.Number"><code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code></a>]], <a class="reference internal" href="../../experimental.html#ivy.functional.ivy.experimental.Number" title="numbers.Number"><code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code></a>]]) – <p>(default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
 Used in “constant”. The values to set the padded values for each axis.</p>
 <blockquote>
 <div><ul>
@@ -666,7 +666,7 @@ all axes.</p></li>
 </ul>
 </div></blockquote>
 </p></li>
-<li><p><strong>end_values</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code>]], <code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code>]]) – <p>Used in “linear_ramp”. The values used for the ending value of the linear_ramp (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+<li><p><strong>end_values</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="../../experimental.html#ivy.functional.ivy.experimental.Number" title="numbers.Number"><code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code></a>]], <a class="reference internal" href="../../experimental.html#ivy.functional.ivy.experimental.Number" title="numbers.Number"><code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code></a>]]) – <p>Used in “linear_ramp”. The values used for the ending value of the linear_ramp (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
 and that will form the edge of the padded array.</p>
 <blockquote>
 <div><ul>
@@ -677,7 +677,7 @@ for each axis.</p></li>
 </ul>
 </div></blockquote>
 </p></li>
-<li><p><strong>reflect_type</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[‘even’, ‘odd’]]) – Used in “reflect”, and “symmetric”. The “even” style is the default with an (default: <code class="docutils literal notranslate"><span class="pre">'even'</span></code>)
+<li><p><strong>reflect_type</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[‘even’, ‘odd’]) – Used in “reflect”, and “symmetric”. The “even” style is the default with an (default: <code class="docutils literal notranslate"><span class="pre">'even'</span></code>)
 unaltered reflection around the edge value. For the “odd” style, the extended
 part of the array is created by subtracting the reflected values from two
 times the edge value.</p></li>

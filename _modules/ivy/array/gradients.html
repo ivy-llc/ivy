@@ -760,15 +760,12 @@
 <span class="sd">        lr</span>
 <span class="sd">            Learning rate(s), the rate(s) at which the weights should be</span>
 <span class="sd">            updated relative to the gradient.</span>
-<span class="sd">        inplace</span>
-<span class="sd">            Whether to perform the operation inplace, for backends which support inplace</span>
-<span class="sd">            variable updates, and handle gradients behind the scenes such as PyTorch.</span>
-<span class="sd">            If the update step should form part of a computation graph</span>
-<span class="sd">            (i.e. higher order optimization), then this should be set to False.</span>
-<span class="sd">            Default is ``True``, provided the backend framework supports it.</span>
 <span class="sd">        stop_gradients</span>
 <span class="sd">            Whether to stop the gradients of the variables after each gradient step.</span>
 <span class="sd">            Default is ``True``.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to. It must have a shape that</span>
+<span class="sd">            the inputs broadcast to.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>

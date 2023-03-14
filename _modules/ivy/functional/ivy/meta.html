@@ -1001,17 +1001,18 @@
     <span class="n">num_tasks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">stop_gradients</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Perform step of first order MAML.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Perform step of first order MAML.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    batch</span>
 <span class="sd">        The input batch</span>
 <span class="sd">    inner_cost_fn</span>
-<span class="sd">        callable for the inner loop cost function, receving task-specific sub-batch,</span>
-<span class="sd">        inner vars and outer vars</span>
+<span class="sd">        callable for the inner loop cost function, receiving sub-batch, inner vars and</span>
+<span class="sd">        outer vars</span>
 <span class="sd">    outer_cost_fn</span>
-<span class="sd">        callable for the outer loop cost function, receving task-specific sub-batch,</span>
+<span class="sd">        callable for the outer loop cost function, receiving task-specific sub-batch,</span>
 <span class="sd">        inner vars and outer vars. If None, the cost from the inner loop will also be</span>
 <span class="sd">        optimized in the outer loop.</span>
 <span class="sd">    variables</span>
@@ -1043,19 +1044,22 @@
 <span class="sd">        Default is ``True``.</span>
 <span class="sd">    outer_v</span>
 <span class="sd">        Nested variable keys to be optimized during the inner loop, with same keys and</span>
-<span class="sd">        boolean values. (Default value = None)</span>
+<span class="sd">        boolean values.</span>
+<span class="sd">        (Default value = None)</span>
 <span class="sd">    keep_outer_v</span>
 <span class="sd">        If True, the key chains in inner_v will be kept, otherwise they will be removed.</span>
 <span class="sd">        Default is ``True``.</span>
 <span class="sd">    return_inner_v</span>
 <span class="sd">        Either &#39;first&#39;, &#39;all&#39;, or False. &#39;first&#39; means the variables for the first task</span>
 <span class="sd">        inner loop will also be returned. variables for all tasks will be returned with</span>
-<span class="sd">        &#39;all&#39;. Default is ``False``.</span>
+<span class="sd">        &#39;all&#39;.</span>
+<span class="sd">        Default is ``False``.</span>
 <span class="sd">    num_tasks</span>
 <span class="sd">        Number of unique tasks to inner-loop optimize for the meta step. Determined from</span>
 <span class="sd">        batch by default.</span>
 <span class="sd">    stop_gradients</span>
-<span class="sd">        Whether to stop the gradients of the cost. Default is ``True``.</span>
+<span class="sd">        Whether to stop the gradients of the cost.</span>
+<span class="sd">        Default is ``True``.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1221,7 +1225,7 @@
 <span class="sd">    batch</span>
 <span class="sd">        The input batch</span>
 <span class="sd">    inner_cost_fn</span>
-<span class="sd">        callable for the inner loop cost function, receing sub-batch, inner vars and</span>
+<span class="sd">        callable for the inner loop cost function, receiving sub-batch, inner vars and</span>
 <span class="sd">        outer vars</span>
 <span class="sd">    outer_cost_fn</span>
 <span class="sd">        callable for the outer loop cost function, receving task-specific sub-batch,</span>

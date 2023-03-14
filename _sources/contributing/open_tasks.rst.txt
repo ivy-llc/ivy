@@ -17,7 +17,7 @@ This section of the docs will be updated frequently, whereby new tasks will be a
 The tasks outlined here are generally broad high-level tasks, each of which is made up of many individual sub-tasks, distributed across task-specific `ToDo List Issues <https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3AToDo>`_.
 
 Please read about `ToDo List Issues <https://lets-unify.ai/ivy/contributing/the_basics.html#todo-list-issues>`_ in detail before continuing.
-ALl tasks should be selected and allocated as described in the ToDo List Issues section.
+All tasks should be selected and allocated as described in the ToDo List Issues section.
 We make no mention of task selection and allocation in the explanations below, which instead focus on the steps to complete only once a sub-task has been allocated to you.
 
 The tasks currently open are:

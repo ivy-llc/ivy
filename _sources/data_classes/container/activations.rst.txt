@@ -13,5 +13,5 @@ Activations
    :maxdepth: -1
    :caption: Activations
 
-   activations/ContainerWithActivations.rst
+   activations/_ContainerWithActivations.rst
 

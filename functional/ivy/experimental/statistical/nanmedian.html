@@ -590,13 +590,13 @@ this method with minimal changes.</p>
 <li><p><strong>self</strong> – Input array.</p></li>
 <li><p><strong>axis</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]]) – Axis or axes along which the means are computed. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
 The default is to compute the mean of the flattened array.</p></li>
-<li><p><strong>keepdims</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]) – If this is set to True, the axes which are reduced are left in the result (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
+<li><p><strong>keepdims</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If this is set to True, the axes which are reduced are left in the result (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
 as dimensions with size one. With this option, the result will broadcast
 correctly against the original a. If the value is anything but the default,
 then keepdims will be passed through to the mean or sum methods of
 sub-classes of ndarray. If the sub-classes methods does not implement
 keepdims any exceptions will be raised.</p></li>
-<li><p><strong>overwrite_input</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]) – If True, then allow use of memory of input array a for calculations. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
+<li><p><strong>overwrite_input</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, then allow use of memory of input array a for calculations. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
 The input array will be modified by the call to median. This will
 save memory when you do not need to preserve the contents of the input array.
 Treat the input as undefined, but it will probably be fully or partially sorted.

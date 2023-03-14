@@ -596,14 +596,14 @@
 <span class="p">)</span>
 
 
-<div class="viewcode-block" id="triu_indices"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/triu_indices/triu_indices_functional.html#ivy.functional.ivy.experimental.creation.triu_indices">[docs]</a><span class="nd">@outputs_to_ivy_arrays</span>
+<div class="viewcode-block" id="triu_indices"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/triu_indices/triu_indices_functional.html#ivy.functional.ivy.experimental.triu_indices">[docs]</a><span class="nd">@outputs_to_ivy_arrays</span>
 <span class="nd">@infer_device</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">triu_indices</span><span class="p">(</span>
     <span class="n">n_rows</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">n_cols</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">k</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -692,7 +692,7 @@
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">triu_indices</span><span class="p">(</span><span class="n">n_rows</span><span class="p">,</span> <span class="n">n_cols</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="vorbis_window"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/vorbis_window/vorbis_window_functional.html#ivy.functional.ivy.experimental.creation.vorbis_window">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="vorbis_window"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/vorbis_window/vorbis_window_functional.html#ivy.functional.ivy.experimental.vorbis_window">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
@@ -730,7 +730,7 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">vorbis_window</span><span class="p">(</span><span class="n">window_length</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="hann_window"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/hann_window/hann_window_functional.html#ivy.functional.ivy.experimental.creation.hann_window">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="hann_window"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/hann_window/hann_window_functional.html#ivy.functional.ivy.experimental.hann_window">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@infer_dtype</span>
@@ -739,7 +739,7 @@
     <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">periodic</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">periodic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
@@ -777,7 +777,7 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="kaiser_window"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/kaiser_window/kaiser_window_functional.html#ivy.functional.ivy.experimental.creation.kaiser_window">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="kaiser_window"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/kaiser_window/kaiser_window_functional.html#ivy.functional.ivy.experimental.kaiser_window">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
@@ -824,7 +824,7 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="kaiser_bessel_derived_window"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/kaiser_bessel_derived_window/kaiser_bessel_derived_window_functional.html#ivy.functional.ivy.experimental.creation.kaiser_bessel_derived_window">[docs]</a><span class="nd">@outputs_to_ivy_arrays</span>
+<div class="viewcode-block" id="kaiser_bessel_derived_window"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/kaiser_bessel_derived_window/kaiser_bessel_derived_window_functional.html#ivy.functional.ivy.experimental.kaiser_bessel_derived_window">[docs]</a><span class="nd">@outputs_to_ivy_arrays</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
@@ -889,7 +889,7 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dn_low</span> <span class="o">+</span> <span class="n">dn_mid</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="hamming_window"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/hamming_window/hamming_window_functional.html#ivy.functional.ivy.experimental.creation.hamming_window">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="hamming_window"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/hamming_window/hamming_window_functional.html#ivy.functional.ivy.experimental.hamming_window">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
@@ -897,9 +897,9 @@
     <span class="n">window_length</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">periodic</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">alpha</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.54</span><span class="p">,</span>
-    <span class="n">beta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.46</span><span class="p">,</span>
+    <span class="n">periodic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.54</span><span class="p">,</span>
+    <span class="n">beta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.46</span><span class="p">,</span>
     <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
@@ -961,14 +961,14 @@
             <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="tril_indices"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/tril_indices/tril_indices_functional.html#ivy.functional.ivy.experimental.creation.tril_indices">[docs]</a><span class="nd">@outputs_to_ivy_arrays</span>
+<div class="viewcode-block" id="tril_indices"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/tril_indices/tril_indices_functional.html#ivy.functional.ivy.experimental.tril_indices">[docs]</a><span class="nd">@outputs_to_ivy_arrays</span>
 <span class="nd">@infer_device</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">tril_indices</span><span class="p">(</span>
     <span class="n">n_rows</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">n_cols</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">k</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1056,7 +1056,7 @@
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">tril_indices</span><span class="p">(</span><span class="n">n_rows</span><span class="p">,</span> <span class="n">n_cols</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="eye_like"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/eye_like/eye_like_functional.html#ivy.functional.ivy.experimental.creation.eye_like">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="eye_like"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/eye_like/eye_like_functional.html#ivy.functional.ivy.experimental.eye_like">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@infer_dtype</span>
 <span class="nd">@infer_device</span>
