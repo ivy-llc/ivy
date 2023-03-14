@@ -52,7 +52,12 @@ def avg_pool1d(
     else:
         padding_str = "VALID"
 
-    return ivy.avg_pool1d(input, kernel_size, stride, padding_str, data_format=data_format)
+    return ivy.avg_pool1d(
+        input,
+        kernel_size,
+        stride,
+        padding_str,
+        data_format=data_format)
     
 
 @to_ivy_arrays_and_back

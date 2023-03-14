@@ -55,6 +55,7 @@ def test_torch_avg_pool1d(
         count_include_pad=True,
     )
 
+
 # avg_pool2d
 @handle_frontend_test(
     fn_tree="torch.nn.functional.avg_pool2d",
