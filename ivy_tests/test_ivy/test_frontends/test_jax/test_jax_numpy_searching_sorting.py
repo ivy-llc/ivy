@@ -284,7 +284,7 @@ def test_numpy_sort(
 @handle_frontend_test(
     fn_tree="jax.numpy.flatnonzero",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
     test_with_out=st.just(False),
 )
