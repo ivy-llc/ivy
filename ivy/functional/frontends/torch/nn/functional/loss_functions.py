@@ -304,6 +304,49 @@ def nll_loss(
 
 
 @to_ivy_arrays_and_back
+def gaussian_nll_loss(
+    input,
+    target,
+    var,
+    full=False,
+    eps=1e-6,
+    reduction="mean"
+):
+
+    if var.shape != input.shape:
+        if input.shape[:-1] == var.shape:
+            var = torch_frontend.unsqueeze(var, dim=2)
+        elif input.shape[:-1] == var.shape[:-1] and var.shape[-1] == 1:
+            pass
+        else:
+            raise ivy.utils.exceptions.IvyError(
+                "var is of incorrect size"
+            )
+
+    if reduction is not None and reduction != "mean" and reduction != "sum":
+        raise ivy.utils.exceptions.IvyError(
+            f"{reduction} is not valid"
+        )
+
+    if ivy.any(var < 0):
+        raise ivy.utils.exceptions.IvyError(
+            "var has negative entry/entries"
+        )
+
+    var = ivy.maximum(var, eps)
+
+    loss = 0.5 * (ivy.log(var) + (input - target)**2 / var)
+
+    if full:
+        loss += 0.5 * ivy.log(2 * ivy.pi)
+
+    reduction = _get_reduction_func(reduction)
+    ret = reduction(loss)
+
+    return ret
+
+
+@to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
 def soft_margin_loss(
     input,
@@ -473,3 +516,32 @@ def triplet_margin_loss(
 
     loss = reduction(loss).astype(anchor.dtype)
     return loss
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+def multilabel_soft_margin_loss(
+    input,
+    target,
+    weight=None,
+    size_average=None,
+    reduce=None,
+    reduction="mean",
+):
+    loss = -(
+        target * ivy.log(ivy.sigmoid(input))
+        + (1 - target) * ivy.log(1 - ivy.sigmoid(input))
+    )
+
+    if weight is not None:
+        loss = ivy.multiply(weight, loss)
+
+    class_dim = ivy.get_num_dims(input) - 1
+    C = ivy.shape(input)[class_dim]
+
+    loss = ivy.sum(loss, axis=class_dim) / C
+
+    reduction = _get_reduction(reduction, size_average, reduce)
+    ret = reduction(loss)
+
+    return ret

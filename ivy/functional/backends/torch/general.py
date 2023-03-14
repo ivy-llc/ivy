@@ -152,8 +152,8 @@ def gather(
     indices: torch.Tensor,
     /,
     *,
-    axis: Optional[int] = -1,
-    batch_dims: Optional[int] = 0,
+    axis: int = -1,
+    batch_dims: int = 0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     axis = axis % len(params.shape)
@@ -218,7 +218,7 @@ def gather_nd(
     indices: torch.Tensor,
     /,
     *,
-    batch_dims: Optional[int] = 0,
+    batch_dims: int = 0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     ivy.utils.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
@@ -309,7 +309,7 @@ def inplace_variables_supported():
     return True
 
 
-def multiprocessing(context=None):
+def multiprocessing(context: Optional[str] = None):
     import torch.multiprocessing
 
     if context is None:
@@ -589,7 +589,7 @@ def shape(
 def vmap(
     func: Callable,
     in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
-    out_axes: Optional[int] = 0,
+    out_axes: int = 0,
 ) -> Callable:
     def _vmap(*args):
         new_fun = lambda *args: ivy.to_native(func(*args))

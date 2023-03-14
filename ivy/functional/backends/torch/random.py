@@ -25,7 +25,7 @@ def random_uniform(
     shape: Optional[Union[torch.Tensor, ivy.NativeShape, Sequence[int]]] = None,
     dtype: torch.dtype,
     device: torch.device,
-    seed=None,
+    seed: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     shape = _check_bounds_and_get_shape(low, high, shape)

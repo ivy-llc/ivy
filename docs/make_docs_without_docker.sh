@@ -7,8 +7,8 @@ cat $1/requirements.txt | xargs -n 1 pip install;
 
 # install libraries for ivy
 pip install -r ../requirements/requirements.txt || exit 1
-pip install torch==1.11.0
-pip install torch-scatter==2.0.9
+pip install torch
+pip install torch-scatter
 if [[ $(arch) == 'arm64' ]]; then
   pip install -r ../requirements/optional_m1_1.txt || exit 1
   pip install -r ../requirements/optional_m1_2.txt || exit 1
