@@ -20,7 +20,9 @@ try:
         pass
 except ImportError:
     warnings.warn(
-        "Unable to import pynvml, please install if you are using GPU with Ivy."
+        "pynvml installation was not found in the environment,\
+         functionalities of the Ivy's device module will be limited.\
+         Please install pynvml if you wish to use GPUs with Ivy."
     )
     # nvidia-ml-py (pynvml) is not installed in CPU Dockerfile.
 
