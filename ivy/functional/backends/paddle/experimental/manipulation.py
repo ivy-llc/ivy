@@ -8,7 +8,7 @@ import ivy
 
 
 @with_unsupported_dtypes(
-    {"2.4.2 and below": ("int8", "int16", "uint8", "uint16")},
+    {"2.4.2 and below": ('int8', 'int16', 'uint8', 'uint16')},
     backend_version,
 )
 def moveaxis(
@@ -23,19 +23,8 @@ def moveaxis(
 
 
 @with_unsupported_dtypes(
-    {
-        "2.4.2 and below": (
-            "int8",
-            "int16",
-            "uint8",
-            "uint16",
-            "bfloat16",
-            "float16",
-            "complex64",
-            "complex128",
-            "bool",
-        )
-    },
+    {"2.4.2 and below": ('int8', 'int16', 'uint8', 'uint16', 'bfloat16',
+                         'float16', 'complex64', 'complex128', 'bool')},
     backend_version,
 )
 def heaviside(
@@ -58,7 +47,7 @@ def flipud(
 
 
 @with_unsupported_dtypes(
-    {"2.4.2 and below": ("uint16", "bfloat16")},
+    {"2.4.2 and below": ("int16", "uint16", "bfloat16", "float16")},
     backend_version,
 )
 def vstack(
@@ -138,20 +127,15 @@ def top_k(
     largest: Optional[bool] = True,
     out: Optional[Tuple[paddle.Tensor, paddle.Tensor]] = None,
 ) -> Tuple[paddle.Tensor, paddle.Tensor]:
-    topk_res = NamedTuple(
-        "top_k", [("values", paddle.Tensor), ("indices", paddle.Tensor)]
-    )
+    topk_res = NamedTuple("top_k", [("values", paddle.Tensor), 
+                                    ("indices", paddle.Tensor)])
     val, indices = paddle.topk(x, k, axis=axis, largest=largest)
     return topk_res(val, indices)
 
 
 @with_unsupported_device_and_dtypes(
-    {
-        "2.4.2 and below": {
-            "cpu": ("int8", "int16", "uint8", "uint16", "bfloat16", "float16")
-        }
-    },
-    backend_version,
+    {"2.4.2 and below": {"cpu": ("int8", "int16", "uint8",
+                                 "uint16", "bfloat16", "float16")}}, backend_version
 )
 def fliplr(
     m: paddle.Tensor,
@@ -274,13 +258,8 @@ def expand(
     if x.ndim > len(shape):
         x = x.reshape([-1])
 
-    if x.dtype in [
-        paddle.int8,
-        paddle.int16,
-        paddle.uint8,
-        paddle.float16,
-    ]:
-        return paddle.expand(x.cast("float32"), shape).cast(x.dtype)
+    if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16,]:
+        return paddle.expand(x.cast('float32'), shape).cast(x.dtype)
     elif x.dtype in [paddle.complex64, paddle.complex128]:
         x_real = paddle.expand(ivy.real(x).data, shape)
         x_imag = paddle.expand(ivy.imag(x).data, shape)
