@@ -2,6 +2,7 @@
 import numpy as np
 from hypothesis import assume, strategies as st
 import random
+import jax.numpy as jnp
 
 # local
 import ivy
@@ -2269,4 +2270,76 @@ def test_jax_lax_select(
         pred=pred,
         on_true=on_true_on_false[0],
         on_false=on_true_on_false[0],
+    )
+
+
+@st.composite
+def _reduce_window_helper(draw):
+    dtype = draw(helpers.get_dtypes("numeric", full=False))
+    n = draw(st.integers(1, 5))
+    init_value = draw(st.integers()) if 'int' in dtype[0] else draw(st.floats())
+    def computation(accumulator, window): return accumulator + jnp.sum(window)
+    operand = draw(
+        helpers.dtype_and_values(
+            num_arrays=n,
+            dtype=dtype*n,
+            min_num_dims=1,
+        )
+    )
+    ndim = operand[1][0].ndim
+    other = draw(
+        helpers.dtype_and_values(
+            num_arrays=4,
+            dtype=['int64']*4,
+            shape=(ndim,),
+            min_value=1,
+            max_value=3,
+            small_abs_safety_factor=1,
+            large_abs_safety_factor=1,
+        )
+    )
+    padding = draw(
+        st.one_of(
+            st.lists(
+                st.tuples(
+                    st.integers(min_value=0, max_value=3),
+                    st.integers(min_value=0, max_value=3),
+                ),
+                min_size=ndim,
+                max_size=ndim,
+            ),
+            st.sampled_from(["SAME", "VALID"]),
+        )
+    )
+    return dtype, operand[1], init_value, computation, other[1], padding
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.reduce_window",
+    all_args=_reduce_window_helper(),
+    test_with_out=st.just(False),
+)
+def test_jax_lax_reduce_window(
+    *,
+    all_args,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, operand, init_value, computation, other, padding = all_args
+    helpers.test_frontend_function(
+        input_dtypes=dtype+['int64']*4,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        operand=operand,
+        init_value=init_value,
+        computation=computation,
+        window_dimensions=other[0],
+        window_strides=other[1],
+        padding=padding,
+        base_dilation=other[2],
+        window_dilation=other[3],
     )

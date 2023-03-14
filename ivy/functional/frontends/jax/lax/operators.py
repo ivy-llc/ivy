@@ -539,25 +539,35 @@ def reduce_window(
         base_dilation=None,
         window_dilation=None
 ):
-    ndim = len(window_dimensions)
-    dilations = base_dilation or (1,) * ndim
-    window_dilations = window_dilation or (1,) * ndim
-
-    pads = [(0, 0)] + [(p, p) for p in padding] + [(0, 0)]
-    operand = ivy.pad(operand, pads, mode='constant')
-
-    out_shape = tuple([operand.shape[0]] + [int((s - w) / s) + 1 for s, w in
-                                            zip(window_strides, window_dimensions)] + [
-                          operand.shape[-1]])
-    output = ivy.full(out_shape, init_value, dtype=operand.dtype)
-    for window_idx in ivy.ndindex(*out_shape[:-1]):
-        window_slice = tuple(
-            slice(window_idx[i] * window_strides[i] * dilations[i],
-                  window_idx[i] * window_strides[i] * dilations[i] + window_dimensions[i] * window_dilations[i],
-                  window_dilations[i])
-            for i in range(ndim)
-        ) + (slice(None),)
-        window = operand[window_slice]
-        output[window_idx] = computation(output[window_idx], window)
-
-    return output
+    if isinstance(padding, str):
+        in_shape = ivy.array(operand[0].shape, dtype=ivy.int64)
+        if padding == 'SAME':
+            out_shape = ivy.floor_divide(in_shape, window_strides)
+            pad_sizes = ivy.maximum(
+                0, (out_shape - 1) * window_strides + window_dimensions - in_shape
+            )
+            padding = [
+                (p // 2, p - p // 2) for p in [ivy.to_scalar(p) for p in pad_sizes]
+            ]
+        elif padding == 'VALID':
+            padding = [(0, 0)] * in_shape.ndim
+        else:
+            raise TypeError("Unknown padding type: {}.".format(padding))
+    out_shape = [int((s - w) / s) + 1 for s, w in zip(window_strides, window_dimensions)]
+    ret = []
+    for operand in operand:
+        operand = ivy.pad(operand, padding)
+        output = ivy.full(out_shape, init_value, dtype=operand.dtype)
+        for window_idx in ivy.ndindex(out_shape):
+            window_slice = tuple(
+                slice(
+                    ivy.to_scalar(window_idx[i] * window_strides[i] * base_dilation[i]),
+                    ivy.to_scalar(window_idx[i] * window_strides[i] * base_dilation[i] +
+                                  window_dimensions[i] * window_dilation[i]),
+                    ivy.to_scalar(window_dilation[i])
+                ) for i in range(len(window_dimensions))
+            )
+            window = operand[window_slice]
+            output[window_idx] = computation(output[window_idx], window)
+        ret.append(output)
+    return ret
