@@ -581,7 +581,7 @@
   <section id="graph-tracers">
 <span id="rworks-graph-tracers"></span><h1>Graph Tracers<a class="headerlink" href="#graph-tracers" title="Permalink to this heading">#</a></h1>
 <p>Graph tracers enable acyclic directed computation graphs to be extracted from functions which operate on the tensors, expressed as source code in the framework.
-There is inevitably some overlap with the role of the lower level compilers here, but for the purpose of this discussion we consider tracers as being any tool which: execute the function to be traced and produce a computation graph consisting solely of the lowest level functions defined within the framework itself, without going any lower.
+There is inevitably some overlap with the role of the lower level compilers here, but for the purpose of this discussion, we consider tracers as being any tool which executes the function to be traced and produces a computation graph consisting solely of the lowest level functions defined within the framework itself, without going any lower.
 In this light, the tracer does not need to know about the hardware, the compiler instruction set, or anything else lower level.
 It simply creates an acyclic directed graph which maps the inputs of a function to the outputs of a function, as a composition of the low level functions defined within the framework.
 This is a very useful representation which can then make subsequent compilation simpler, and so this graph representation often sits between the raw source code and the lower level compilers which compile to specific hardware.</p>
@@ -601,8 +601,8 @@ The results depend only on the input variables; there are no free variables capt
 </section>
 <section id="torch-jit">
 <h2>torch.jit<a class="headerlink" href="#torch-jit" title="Permalink to this heading">#</a></h2>
-<p><code class="code docutils literal notranslate"><span class="pre">torch.jit.trace</span></code> and <code class="code docutils literal notranslate"><span class="pre">torch.jit.trace_module</span></code> enable a module or Python function to be traced in <a class="reference external" href="https://pytorch.org/">PyTorch</a>, and an executable is returned which will be optimized using just-in-time compilation.
-Example inputs must be provided, and then the function is run, with recording of the operations performed on all the tensors.
+<p><code class="code docutils literal notranslate"><span class="pre">torch.jit.trace</span></code> and <code class="code docutils literal notranslate"><span class="pre">torch.jit.trace_module</span></code> enables a module or Python function to be traced in <a class="reference external" href="https://pytorch.org/">PyTorch</a>, and an executable is returned which will be optimized using just-in-time compilation.
+Example inputs must be provided, and then the function is run, with a recording of the operations performed on all the tensors.
 The resulting recording of a standalone function produces a <code class="code docutils literal notranslate"><span class="pre">ScriptFunction</span></code> instance.
 The resulting recording of <code class="code docutils literal notranslate"><span class="pre">nn.Module.forward</span></code> or <code class="code docutils literal notranslate"><span class="pre">nn.Module</span></code> produces a <code class="code docutils literal notranslate"><span class="pre">ScriptModule</span></code> instance.
 This module also contains any parameters that the original module had as well.</p>
@@ -616,7 +616,7 @@ It feeds fake values, called Proxies, through the code.
 Operations on these Proxies are recorded.
 The intermediate representation is the container for the operations that were recorded during symbolic tracing.
 It consists of a list of Nodes that represent function inputs, call-sites (to functions, methods, or <code class="code docutils literal notranslate"><span class="pre">torch.nn.Module</span></code> instances), and return values.
-The IR is the format on which transformations are applied.
+The IR is the format in which transformations are applied.
 Python code generation is what makes FX a Python-to-Python (or Module-to-Module) transformation toolkit.
 For each Graph IR, valid Python code matching the Graph’s semantics can be created.
 This functionality is wrapped up in GraphModule, which is a <code class="code docutils literal notranslate"><span class="pre">torch.nn.Module</span></code> instance that holds a Graph as well as a forward method generated from the Graph.</p>
