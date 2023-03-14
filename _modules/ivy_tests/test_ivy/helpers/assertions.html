@@ -683,7 +683,8 @@
     <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">ret_np_from_gt_flat</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">list</span><span class="p">:</span>
         <span class="n">ret_np_from_gt_flat</span> <span class="o">=</span> <span class="p">[</span><span class="n">ret_np_from_gt_flat</span><span class="p">]</span>
     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">ret_np_flat</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">ret_np_from_gt_flat</span><span class="p">),</span> <span class="p">(</span>
-        <span class="s2">&quot;The length of results from backend </span><span class="si">{}</span><span class="s2"> and ground truth framework </span><span class="si">{}</span><span class="s2"> does not match</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+        <span class="s2">&quot;The length of results from backend </span><span class="si">{}</span><span class="s2"> and ground truth&quot;</span>
+        <span class="s2">&quot;framework </span><span class="si">{}</span><span class="s2"> does not match</span><span class="se">\n\n</span><span class="s2">&quot;</span>
         <span class="s2">&quot;len(ret_np_flat) != len(ret_np_from_gt_flat):</span><span class="se">\n\n</span><span class="s2">&quot;</span>
         <span class="s2">&quot;ret_np_flat:</span><span class="se">\n\n</span><span class="si">{}</span><span class="se">\n\n</span><span class="s2">ret_np_from_gt_flat:</span><span class="se">\n\n</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">(),</span>

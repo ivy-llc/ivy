@@ -590,7 +590,7 @@
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">number_helpers</span> <span class="k">as</span> <span class="n">nh</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">array_helpers</span> <span class="k">as</span> <span class="n">ah</span>
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="nb">globals</span> <span class="k">as</span> <span class="n">test_globals</span>
-<span class="kn">from</span> <span class="nn">ivy_tests</span> <span class="kn">import</span> <span class="n">conftest</span>
+
 
 <span class="n">_dtype_kind_keys</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;valid&quot;</span><span class="p">,</span>
@@ -608,7 +608,7 @@
 
 <span class="k">def</span> <span class="nf">_get_fn_dtypes</span><span class="p">(</span><span class="n">framework</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;valid&quot;</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_RUNNING_TEST</span><span class="o">.</span><span class="n">supported_device_dtypes</span><span class="p">[</span><span class="n">framework</span><span class="o">.</span><span class="n">backend</span><span class="p">][</span>
-        <span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_DEVICE</span>
+        <span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_DEVICE_STRIPPED</span>
     <span class="p">][</span><span class="n">kind</span><span class="p">]</span>
 
 
@@ -681,7 +681,6 @@
 <span class="sd">    ret</span>
 <span class="sd">        dtype string</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">if</span> <span class="n">prune_function</span><span class="p">:</span>
         <span class="n">retrieval_fn</span> <span class="o">=</span> <span class="n">_get_fn_dtypes</span>
         <span class="k">if</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_RUNNING_TEST</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">_Notsetval</span><span class="p">:</span>
@@ -703,7 +702,6 @@
     <span class="c1"># FN_DTYPES &amp; BACKEND_DTYPES &amp; FRONTEND_DTYPES &amp; GROUND_TRUTH_DTYPES</span>
 
     <span class="c1"># If being called from a frontend test</span>
-    <span class="kn">import</span> <span class="nn">time</span>
 
     <span class="k">if</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_FRONTEND</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">_Notsetval</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span>
         <span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_FRONTEND_STR</span><span class="p">,</span> <span class="nb">list</span>
@@ -738,8 +736,8 @@
             <span class="k">if</span> <span class="n">frontend_ret</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">frontend_ret</span> <span class="o">=</span> <span class="n">jsonpickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">make_json_pickable</span><span class="p">(</span><span class="n">frontend_ret</span><span class="p">))</span>
-                <span class="k">except</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;source of all bugsss   </span><span class="si">{</span><span class="n">frontend_ret</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;source of all bugs   </span><span class="si">{</span><span class="n">frontend_ret</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="n">process</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">readlines</span><span class="p">())</span>
                 <span class="k">raise</span> <span class="ne">Exception</span>
