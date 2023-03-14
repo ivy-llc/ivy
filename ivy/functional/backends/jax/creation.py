@@ -303,7 +303,7 @@ array = asarray
 
 
 def copy_array(
-    x: JaxArray, *, to_ivy_array: Optional[bool] = True, out: Optional[JaxArray] = None
+    x: JaxArray, *, to_ivy_array: bool = True, out: Optional[JaxArray] = None
 ) -> JaxArray:
     if to_ivy_array:
         return ivy.to_ivy(jnp.array(x))

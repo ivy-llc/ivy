@@ -42,6 +42,13 @@ def reshape(a, newshape, order="C"):
 
 
 @to_ivy_arrays_and_back
+def resize(a, new_shape):
+    a = ivy.array(a)
+    resized_a = ivy.reshape(a, new_shape)
+    return resized_a
+
+
+@to_ivy_arrays_and_back
 def moveaxis(a, source, destination):
     return ivy.moveaxis(a, source, destination)
 
@@ -154,6 +161,11 @@ def block(arr, block_size):
 @to_ivy_arrays_and_back
 def squeeze(a, axis=None):
     return ivy.squeeze(a, axis)
+
+
+@to_ivy_arrays_and_back
+def rot90(m, k=1, axes=(0, 1)):
+    return ivy.rot90(m, k=k, axes=axes)
 
 
 @to_ivy_arrays_and_back

@@ -77,3 +77,8 @@ def iscomplexobj(a: np.ndarray):
             return True
         else:
             return False
+
+
+@to_ivy_arrays_and_back
+def iscomplex(x: np.ndarray):
+    return ivy.bitwise_invert(ivy.isreal(x))

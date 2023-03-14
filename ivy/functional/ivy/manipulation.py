@@ -47,7 +47,7 @@ def concat(
     ],
     /,
     *,
-    axis: Optional[int] = 0,
+    axis: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Joins a sequence of arrays along an existing axis.
@@ -409,8 +409,8 @@ def reshape(
     shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
     *,
     copy: Optional[bool] = None,
-    order: Optional[str] = "C",
-    allowzero: Optional[bool] = True,
+    order: str = "C",
+    allowzero: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Gives a new shape to an array without changing its data.
@@ -932,7 +932,7 @@ def constant_pad(
     /,
     pad_width: Iterable[Tuple[int]],
     *,
-    value: Optional[Number] = 0,
+    value: Number = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Pads an array with a constant value.
