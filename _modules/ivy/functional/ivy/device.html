@@ -598,7 +598,9 @@
         <span class="k">pass</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-        <span class="s2">&quot;Unable to import pynvml, please install if you are using GPU with Ivy.&quot;</span>
+        <span class="s2">&quot;pynvml installation was not found in the environment,</span><span class="se">\</span>
+<span class="s2">         functionalities of the Ivy&#39;s device module will be limited.</span><span class="se">\</span>
+<span class="s2">         Please install pynvml if you wish to use GPUs with Ivy.&quot;</span>
     <span class="p">)</span>
     <span class="c1"># nvidia-ml-py (pynvml) is not installed in CPU Dockerfile.</span>
 
