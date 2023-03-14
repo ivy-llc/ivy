@@ -269,7 +269,15 @@ def nextafter(
     subok: Optional[bool] = True,
     out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    return paddle.nextafter(x1, x2, where=where, casting=casting, order=order, dtype=dtype, subok=subok)
+    if x1.shape != x2.shape:
+        x1 = paddle.reshape(x1, shape=x2.shape)
+    if dtype is not None:
+        x1 = paddle.cast(x1, dtype)
+    
+    x3 = paddle.where(x1 < x2, 1, -1)
+    x1 = paddle.add(x1, x3)
+
+    return x1
 
 
 def zeta(
