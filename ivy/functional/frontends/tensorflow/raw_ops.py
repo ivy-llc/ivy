@@ -19,6 +19,9 @@ def AddN(*, inputs, name="AddN"):
     return ivy.sum(inputs, dtype=inputs.dtype, axis=0)
 
 
+AddN = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add_n))
+
+
 @to_ivy_arrays_and_back
 def Acos(*, x, name="Acos"):
     return ivy.acos(x)
