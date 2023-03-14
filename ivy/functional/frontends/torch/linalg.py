@@ -4,6 +4,7 @@ import ivy
 import ivy.functional.frontends.torch as torch_frontend
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
+from ivy_tests.test_ivy.helpers import assert_all_close
 
 
 @to_ivy_arrays_and_back
@@ -197,3 +198,7 @@ def lu_factor(A, *, pivot=True, out=None):
 
 def matmul(input, other, *, out=None):
     return ivy.matmul(input, other, out=out)
+
+
+def lu_factor_ex(a, *, pivot=True, check_errors=False, out=None):
+    return ivy.lu_factor_ex(a=a, pivot=pivot, check_errors=check_errors, out=out)
