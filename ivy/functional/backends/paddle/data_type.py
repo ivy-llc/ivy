@@ -159,7 +159,7 @@ def broadcast_to(
         if len(shape) == 0:
             return x
         else:
-            x = ivy.expand_dims(x, 0)
+            x = ivy.expand_dims(x,axis = 0).data
     if x.ndim > len(shape):
         x = x.reshape([-1])
 
