@@ -78,6 +78,7 @@ def Atan2(
     },
     "tensorflow",
 )
+@to_ivy_arrays_back
 def ApproximateEqual(
     *,
     x,
