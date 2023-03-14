@@ -66,8 +66,7 @@ Experimental
    experimental/interp.rst
    experimental/compute_weight_mat.rst
    experimental/interpolate.rst
-   experimental/adaptive_avg_pool1d.rst
-   experimental/adaptive_avg_pool2d.rst
+   experimental/padding_ceil_mode.rst
    experimental/is_native_dtype.rst
    experimental/eigh_tridiagonal.rst
    experimental/diagflat.rst

@@ -13,5 +13,5 @@ Layers
    :maxdepth: -1
    :caption: Layers
 
-   layers/_ContainerWithLayers.rst
+   layers/ContainerWithLayers.rst
 
