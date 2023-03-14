@@ -13,7 +13,7 @@ def median(
     /,
     *,
     axis: Optional[Union[Tuple[int], int]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
     return quantile(
@@ -33,7 +33,7 @@ def nanmean(
     /,
     *,
     axis: Optional[Union[int, Tuple[int]]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -52,8 +52,8 @@ def quantile(
     /,
     *,
     axis: Optional[Union[Sequence[int], int]] = None,
-    keepdims: Optional[bool] = False,
-    interpolation: Optional[str] = "linear",
+    keepdims: bool = False,
+    interpolation: str = "linear",
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
     temp = a.to(torch.float64)
@@ -85,7 +85,7 @@ def corrcoef(
     /,
     *,
     y: Optional[torch.Tensor] = None,
-    rowvar: Optional[bool] = True,
+    rowvar: bool = True,
     out: Optional[torch.tensor] = None,
 ) -> torch.Tensor:
     if y is None:
@@ -103,8 +103,8 @@ def nanmedian(
     /,
     *,
     axis: Optional[Union[Tuple[int], int]] = None,
-    keepdims: Optional[bool] = False,
-    overwrite_input: Optional[bool] = False,
+    keepdims: bool = False,
+    overwrite_input: bool = False,
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
     return torch.nanmedian(
@@ -138,7 +138,7 @@ def bincount(
     /,
     *,
     weights: Optional[torch.Tensor] = None,
-    minlength: Optional[int] = 0,
+    minlength: int = 0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if weights is None:

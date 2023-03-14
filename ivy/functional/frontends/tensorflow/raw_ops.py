@@ -40,10 +40,7 @@ ArgMax = to_ivy_arrays_and_back(
 )
 
 
-@to_ivy_arrays_and_back
-def AddV2(*, x, y, name="AddV2"):
-    check_tensorflow_casting(x, y)
-    return ivy.addv2(tf_frontend.to_tensor(x), tf_frontend.to_tensor(y))
+AddV2 = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add))
 
 
 @with_supported_dtypes(
@@ -66,6 +63,38 @@ def Atan2(
 ):
     x, y = check_tensorflow_casting(x, y)
     return ivy.atan2(y, x)
+
+
+@with_unsupported_dtypes(
+    {
+        "2.10.0 and below": (
+            "float16",
+            "bool",
+            "bfloat16",
+        )
+    },
+    "tensorflow",
+)
+def ApproximateEqual(
+    *,
+    x,
+    y,
+    tolerance=1e-05,
+    name="ApproximateEqual",
+):
+    x, y = check_tensorflow_casting(x, y)
+    ret = ivy.abs(x - y)
+    return ret < tolerance
+
+
+@to_ivy_arrays_and_back
+def Angle(
+    *,
+    input,
+    Tout=ivy.float32,
+    name="Angle",
+):
+    return ivy.astype(ivy.angle(input), Tout)
 
 
 @to_ivy_arrays_and_back
@@ -186,6 +215,12 @@ def Floor(*, x, name="Floor"):
 def FloorDiv(*, x, y, name="FloorDiv"):
     x, y = check_tensorflow_casting(x, y)
     return ivy.floor_divide(x, y)
+
+
+@to_ivy_arrays_and_back
+def FloorMod(*, x, y, name="FloorMod"):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.remainder(x, y)
 
 
 @to_ivy_arrays_and_back
