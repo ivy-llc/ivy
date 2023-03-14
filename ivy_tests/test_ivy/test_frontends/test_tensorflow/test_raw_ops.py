@@ -137,7 +137,7 @@ def test_tensorflow_Angle(  # NOQA
     tol=st.floats(1e-05, 1e-03),
     test_with_out=st.just(False),
 )
-def test_tensorflow_Atan2(  # NOQA
+def test_tensorflow_ApproximateEqual(  # NOQA
     *,
     dtype_and_x,
     tol,
