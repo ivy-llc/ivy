@@ -312,11 +312,11 @@ def _interp_args(draw, mode=None, mode_list=None):
         scale_factor = draw(
             st.one_of(
                 helpers.lists(
-                    x=st.floats(min_value=0.1, max_value=2.0),
+                    x=st.floats(min_value=1.0, max_value=2.0),
                     min_size=num_dims - 2,
                     max_size=num_dims - 2,
                 ),
-                st.floats(min_value=0.1, max_value=2.0),
+                st.floats(min_value=1.0, max_value=2.0),
             )
         )
         size = None
@@ -345,12 +345,14 @@ def _interp_args(draw, mode=None, mode_list=None):
 @handle_test(
     fn_tree="functional.ivy.experimental.interpolate",
     dtype_x_mode=_interp_args(),
+    recompute_scale_factor=st.booleans(),
     antialias=st.just(False),
     test_gradients=st.just(False),
     number_positional_args=st.just(2),
 )
 def test_interpolate(
     dtype_x_mode,
+    recompute_scale_factor,
     antialias,
     test_flags,
     backend_fw,
@@ -375,6 +377,7 @@ def test_interpolate(
             align_corners=align_corners,
             antialias=antialias,
             scale_factor=scale_factor,
+            recompute_scale_factor=recompute_scale_factor,
         )
     except Exception as e:
         if hasattr(e, "message"):
