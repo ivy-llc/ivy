@@ -291,13 +291,14 @@ def divide(
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     ret = torch.div(x1, x2)
-    if ivy.is_complex_dtype(x1.dtype) or ivy.is_float_dtype(x1.dtype):
+    if ivy.is_float_dtype(x1.dtype) or ivy.is_complex_dtype(x1.dtype):
         ret = ret.to(x1.dtype, copy=False)
-    elif ivy.is_complex_dtype(x1.dtype):
-        ret = ret.to(ivy.default_complex_dtype(as_native=True))
     else:
         ret = ret.to(ivy.default_float_dtype(as_native=True))
     return ret
+
+
+divide.support_native_out = True
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)

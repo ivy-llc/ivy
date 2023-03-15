@@ -232,10 +232,8 @@ def divide(
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     ret = np.divide(x1, x2, out=out)
-    if ivy.is_complex_dtype(x1.dtype) or ivy.is_float_dtype(x1.dtype):
+    if ivy.is_float_dtype(x1.dtype) or ivy.is_complex_dtype(x1.dtype):
         ret = np.asarray(ret, dtype=x1.dtype)
-    elif ivy.is_complex_dtype(x1.dtype):
-        ret = np.asarray(ret, dtype=ivy.default_complex_dtype(as_native=True))
     else:
         ret = np.asarray(ret, dtype=ivy.default_float_dtype(as_native=True))
     return ret
