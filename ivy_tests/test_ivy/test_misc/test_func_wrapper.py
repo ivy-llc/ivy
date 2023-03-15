@@ -5,7 +5,6 @@ from ivy.func_wrapper import handle_array_like_without_promotion
 from typing import Union, Tuple, List, Sequence
 
 
-
 def _fn1(x: Union[ivy.Array, Tuple[int, int]]):
     return x
 
@@ -96,11 +95,11 @@ def test_integer_arrays_to_float(x, expected):
     ("x", "weight", "expected"),
     [
         ([[1, 1], [1, 1]], [[1, 1], [1, 1], [1, 1]], True),
-        ([[1, 1], [1, 1]],
-                        [[[1, 1], [1, 1], [1, 1]],
-                        [[1, 1], [1, 1], [1, 1]],
-                        [[1, 1], [1, 1], [1, 1]]]
-                                                    , False),
+        ([[1, 1], [1, 1]], [
+            [[1, 1], [1, 1], [1, 1]],
+            [[1, 1], [1, 1], [1, 1]],
+            [[1, 1], [1, 1], [1, 1]]
+        ], False),
     ]
 )
 def test_handle_mixed_function(x, weight, expected):
