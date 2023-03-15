@@ -1686,17 +1686,17 @@
 
 
 <span class="k">def</span> <span class="nf">_dim_scale_factor</span><span class="p">(</span><span class="n">input_size</span><span class="p">,</span> <span class="n">output_size</span><span class="p">,</span> <span class="n">align_corners</span><span class="p">,</span> <span class="n">scales</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">output_size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">align_corners</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">align_corners</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">output_size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">dim_scale_factor</span> <span class="o">=</span> <span class="p">(</span><span class="n">input_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">output_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">dim_scale_factor</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">input_size</span> <span class="o">/</span> <span class="p">(</span><span class="n">input_size</span> <span class="o">*</span> <span class="n">scales</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">scales</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                <span class="k">else</span> <span class="n">input_size</span> <span class="o">/</span> <span class="n">output_size</span>
-            <span class="p">)</span>
+            <span class="n">dim_scale_factor</span> <span class="o">=</span> <span class="mf">0.0</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">dim_scale_factor</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">dim_scale_factor</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">input_size</span> <span class="o">/</span> <span class="p">(</span><span class="n">input_size</span> <span class="o">*</span> <span class="n">scales</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">scales</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="n">input_size</span> <span class="o">/</span> <span class="n">output_size</span>
+        <span class="p">)</span>
     <span class="k">return</span> <span class="n">dim_scale_factor</span>
 
 
@@ -1854,9 +1854,9 @@
     <span class="n">size</span> <span class="o">=</span> <span class="n">_get_size</span><span class="p">(</span><span class="n">scale_factor</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">dims</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">recompute_scale_factor</span><span class="p">:</span>
         <span class="n">scale_factor</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="k">else</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">scale_factor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">scale_factor</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="p">[</span><span class="n">scale_factor</span><span class="p">]</span> <span class="o">*</span> <span class="n">dims</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scale_factor</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">else</span> <span class="n">scale_factor</span>
+            <span class="p">[</span><span class="n">scale_factor</span><span class="p">]</span> <span class="o">*</span> <span class="n">dims</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scale_factor</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="k">else</span> <span class="n">scale_factor</span>
         <span class="p">)</span>
         <span class="n">scale_factor</span> <span class="o">=</span> <span class="p">(</span>
             <span class="p">[</span><span class="n">scale_factor</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="n">dims</span>
