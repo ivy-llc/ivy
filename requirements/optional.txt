@@ -19,3 +19,8 @@ dm-haiku # unpinned mod_name=haiku
 pydriller
 tqdm
 coverage
+scikit-learn
+pandas
+pyspark
+paddlepaddle
+mxnet
