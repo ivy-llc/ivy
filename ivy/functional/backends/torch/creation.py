@@ -157,7 +157,7 @@ def asarray(
     else:
         dtype = ivy.as_native_dtype((ivy.default_dtype(dtype=dtype, item=obj)))
 
-    if dtype == torch.bfloat16 and isinstance(obj, np.ndarray):
+    if obj.dtype.name == "bfloat16" and isinstance(obj, np.ndarray):
         if copy is True:
             return (
                 torch.as_tensor(obj.tolist(), dtype=dtype).clone().detach().to(device)

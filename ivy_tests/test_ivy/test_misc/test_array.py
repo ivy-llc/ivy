@@ -1004,9 +1004,6 @@ def test_array__truediv__(
 ):
     dtype, x = dtype_and_x
 
-    # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in dtype))
-
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
@@ -1041,9 +1038,6 @@ def test_array__rtruediv__(
     on_device,
 ):
     dtype, x = dtype_and_x
-
-    # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in dtype))
 
     helpers.test_method(
         on_device=on_device,
@@ -1082,9 +1076,6 @@ def test_array__itruediv__(
     on_device,
 ):
     dtype, x = dtype_and_x
-
-    # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in dtype))
 
     helpers.test_method(
         on_device=on_device,
