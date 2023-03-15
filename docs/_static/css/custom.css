@@ -141,3 +141,24 @@ dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.
     width: 60%;
   }
 }
+
+html {
+  --pst-sidebar-font-size: 1.0em;
+  --pst-sidebar-header-font-size: 1.0em;
+  --pst-sidebar-secondary: 20rem;
+  --pst-sidebar-secondary-font-size: 0.9em;
+}
+
+.navbar-brand {
+  font-size: 0.2rem;
+}
+
+.dropdown-menu.show {
+  overflow: auto;
+  max-height: 75vh;
+}
+
+i.fa-chevron-down {
+  display: none;
+  visibility: hidden;
+}

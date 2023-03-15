@@ -37,7 +37,6 @@ extensions = [
     "sphinx.ext.mathjax",
     "sphinx.ext.viewcode",
     "sphinx.ext.autosectionlabel",
-    "sphinx_rtd_theme",
     "sphinx.ext.napoleon",
     "sphinx_autodoc_typehints",
     "docs._ext.custom_autosummary",
@@ -46,14 +45,14 @@ extensions = [
 ]
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ["_templates"]
+templates_path = ["_templates", "_html_templates"]
 
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = "sphinx_rtd_theme"  # 'pydata_sphinx_theme'
+html_theme = "pydata_sphinx_theme"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -64,25 +63,31 @@ html_css_files = [
     "css/custom.css",
 ]
 
-# html_theme_options = {
-#    "navbar_align": "left",
-#    "header_links_before_dropdown": 8,
-#    "secondary_sidebar_items": [],
-#    "logo": {
-#       "image_light":
-#           "https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo.png?raw=true",
-#       "image_dark":
-#           "https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo_dark.png?raw=true",
-#    },
-#    "github_url": "https://github.com/unifyai/ivy",
-#    "twitter_url": "https://twitter.com/letsunifyai",
-# }
+html_theme_options = {
+    "navbar_center": ["empty"],
+    "header_links_before_dropdown": 100,
+    "secondary_sidebar_items": ["sidebar-nav-bs", "page-toc"],
+    "logo": {
+        "image_light": "https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo.png?raw=true",  # noqa: E501
+        "image_dark": "https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo_dark.png?raw=true",  # noqa: E501
+    },
+    "icon_links": [
+        {
+            "name": "GitHub",
+            "url": "https://github.com/unifyai/ivy",
+            "icon": "fa-brands fa-square-github",
+        },
+        {
+            "name": "Twitter",
+            "url": "https://twitter.com/letsunifyai",
+            "icon": "fa-brands fa-square-twitter",
+        },
+    ],
+}
 
-# html_sidebars = {
-#    "**": ["sidebar-nav-bs", "page-toc"]
-# }
+html_sidebars = {"**": ["custom-toc-tree", "ivy-libraries"]}
 
-# html_title = "Ivy Documentation"
+html_title = "Ivy Documentation"
 
 html_favicon = (
     "https://github.com/unifyai/unifyai.github.io"
@@ -179,6 +184,3 @@ typehints_use_rtype = True
 typehints_defaults = "braces-after"
 simplify_optional_unions = False
 typehints_formatter = None
-
-# toc
-# toc_object_entries = False

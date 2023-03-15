@@ -80,22 +80,3 @@ Check out our Google Colabs_ for some interactive demos!
   :include:
 
   ivy_tests.test_ivy.helpers
-
-
-.. TODO check if this is better than adding an extension to automatically generate it
-.. The #https:// anchor is a hack to add relative links, see more here:
-.. https://stackoverflow.com/a/31820846/5847154
-.. toctree::
-  :hidden:
-  :maxdepth: -1
-  :caption: Docs
-
-  Ivy </ivy#https://>
-  Ivy mech </mech#https://>
-  Ivy vision </vision#https://>
-  Ivy robot </robot#https://>
-  Ivy gym </gym#https://>
-  Ivy memory </memory#https://>
-  Ivy builder </builder#https://>
-  Ivy models </models#https://>
-  Ivy ecosystem </ecosystem#https://>

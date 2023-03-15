@@ -1,0 +1,28 @@
+{% set ivy_libraries = {
+    "Ivy": "/ivy",
+    "Ivy mech": "/mech",
+    "Ivy vision": "/vision",
+    "Ivy robot": "/robot",
+    "Ivy gym": "/gym",
+    "Ivy memory": "/memory",
+    "Ivy builder": "/builder",
+    "Ivy models": "/models",
+    "Ivy ecosystem": "/ecosystem",
+} %}
+
+<nav class="bd-docs-nav bd-links">
+    <div class="bd-toc-item navbar-nav">
+        <p aria-level="2" class="caption" role="heading">
+            <span class="caption-text">Docs</span>
+        </p>
+        <ul class="nav bd-sidenav">
+            {% for title, link in ivy_libraries.items() -%}
+            <li class="toctree-l1">
+                <a class="reference external" href="{{link}}">
+                    {{ title }}
+                </a>
+            </li>
+            {% endfor -%}
+        </ul>
+    </div>
+</nav>
