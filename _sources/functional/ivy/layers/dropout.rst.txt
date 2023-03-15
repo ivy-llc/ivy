@@ -5,9 +5,9 @@ dropout
 
 .. autofunction:: ivy.array.array_methods.dropout
 
-.. autofunction:: ivy.container.container_methods.static_dropout
-
 .. autofunction:: ivy.container.container_methods.dropout
+
+.. autofunction:: ivy.container.container_methods.static_dropout
 |
 | **Supported Frameworks:**
 
