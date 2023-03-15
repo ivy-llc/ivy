@@ -37,8 +37,11 @@ def _pad_before_conv(x, filters, strides, padding, dims, dilations, data_format)
         padding[1::2] = padding_bot
     elif _is_list_or_tuple(padding):
         if len(padding) == dims + 2 and _is_list_or_tuple(padding[0]):
-            # Case 2: [(pad_left, pad_right), (pad_top, pad_bottom)...]
+            # Case 2: [(0,0),(pad_left, pad_right),(pad_top, pad_bottom)...,(0,0)]
             padding = padding[1:-1] if data_format == "NDHWC" else padding[2:]
+            padding = [elem for pad_i_dim in padding for elem in pad_i_dim]
+        elif len(padding) == dims and _is_list_or_tuple(padding[0]):
+            # Case 3: [(pad_left, pad_right), (pad_top, pad_bottom)...]
             padding = [elem for pad_i_dim in padding for elem in pad_i_dim]
         else:
             raise ValueError(f"Invalid padding format: {padding}")
