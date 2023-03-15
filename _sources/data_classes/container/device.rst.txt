@@ -13,5 +13,5 @@ Device
    :maxdepth: -1
    :caption: Device
 
-   device/ContainerWithDevice.rst
+   device/_ContainerWithDevice.rst
 
