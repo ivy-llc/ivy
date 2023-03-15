@@ -15,7 +15,7 @@ def update_functions(sub_backend: ModuleType, target: ModuleType):
         if k in target.__dict__ and not k.startswith("__"):
             if isinstance(v, FunctionType):
                 target.__dict__[k] = _wrap_function(
-            key=k, to_wrap=sub_backend.__dict__[k], original=v, compositional=False
+            key=k, to_wrap=v, original=target.__dict__[k], compositional=False
         )
 
             elif isinstance(v, ModuleType) and "ivy.functional." in v.__name__:
