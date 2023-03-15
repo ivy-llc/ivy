@@ -8,7 +8,6 @@ from jax import lax
 import ivy
 
 
-
 def logit(
     x: JaxArray,
     /,
