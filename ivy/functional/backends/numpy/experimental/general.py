@@ -1,4 +1,3 @@
-from typing import Optional
 import numpy as np
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
@@ -10,8 +9,8 @@ def isin(
     test_elements: np.ndarray,
     /,
     *,
-    assume_unique: Optional[bool] = False,
-    invert: Optional[bool] = False,
+    assume_unique: bool = False,
+    invert: bool = False,
 ) -> np.ndarray:
     return np.isin(
         elements,
