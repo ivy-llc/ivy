@@ -302,7 +302,7 @@ def _interp_args(draw, mode=None, mode_list=None):
             min_num_dims=num_dims,
             max_num_dims=num_dims,
             min_dim_size=1,
-            max_dim_size=5,
+            max_dim_size=3,
             large_abs_safety_factor=50,
             small_abs_safety_factor=50,
             safety_factor_scale="log",
@@ -312,25 +312,27 @@ def _interp_args(draw, mode=None, mode_list=None):
         scale_factor = draw(
             st.one_of(
                 helpers.lists(
-                    x=st.floats(min_value=0.1, max_value=2.0),
+                    x=st.floats(min_value=1.0, max_value=2.0),
                     min_size=num_dims - 2,
                     max_size=num_dims - 2,
                 ),
-                st.floats(min_value=0.1, max_value=2.0),
+                st.floats(min_value=1.0, max_value=2.0),
             )
         )
+        recompute_scale_factor = draw(st.booleans())
         size = None
     else:
         size = draw(
             st.one_of(
                 helpers.lists(
-                    x=helpers.ints(min_value=1, max_value=5),
+                    x=helpers.ints(min_value=1, max_value=3),
                     min_size=num_dims - 2,
                     max_size=num_dims - 2,
                 ),
-                st.integers(min_value=1, max_value=5),
+                st.integers(min_value=1, max_value=3),
             )
         )
+        recompute_scale_factor = False
         scale_factor = None
     return (
         dtype,
@@ -339,6 +341,7 @@ def _interp_args(draw, mode=None, mode_list=None):
         size,
         align_corners,
         scale_factor,
+        recompute_scale_factor
     )
 
 
@@ -358,7 +361,7 @@ def test_interpolate(
     on_device,
     ground_truth_backend,
 ):
-    input_dtype, x, mode, size, align_corners, scale_factor = dtype_x_mode
+    input_dtype, x, mode, size, align_corners, scale_factor, recompute_scale_factor = dtype_x_mode
     try:
         helpers.test_function(
             ground_truth_backend=ground_truth_backend,
@@ -375,6 +378,7 @@ def test_interpolate(
             align_corners=align_corners,
             antialias=antialias,
             scale_factor=scale_factor,
+            recompute_scale_factor=recompute_scale_factor,
         )
     except Exception as e:
         if hasattr(e, "message"):

@@ -499,8 +499,9 @@ def log(x, name=None):
 
 
 @to_ivy_arrays_and_back
-def add_n(x, name=None):
-    return ivy.add_n(x)
+def add_n(inputs, name=None):
+    return ivy.sum(inputs, dtype=inputs.dtype, axis=0)
+
 
 
 @to_ivy_arrays_and_back

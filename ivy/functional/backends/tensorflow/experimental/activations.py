@@ -11,7 +11,11 @@ from . import backend_version
 
 
 def logit(
-    x: Union[tf.Tensor, tf.Variable], /, *, eps: Optional[float] = None, out=None
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    eps: Optional[float] = None,
+    out: Optional[Tensor] = None,
 ) -> Tensor:
     x_dtype = x.dtype
     if eps is None:
@@ -26,7 +30,7 @@ def thresholded_relu(
     x: Tensor,
     /,
     *,
-    threshold: Optional[Union[int, float]] = 0,
+    threshold: Union[int, float] = 0,
     out: Optional[Tensor] = None,
 ) -> Tensor:
     return tf.where(x > threshold, x, 0)

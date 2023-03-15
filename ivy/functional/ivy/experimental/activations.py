@@ -25,7 +25,7 @@ def logit(
     /,
     *,
     eps: Optional[float] = None,
-    out: Optional["ivy.Array"] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Computes the logit of x, i.e. logit(x) = log(x / (1 - x)).
@@ -72,7 +72,7 @@ def prelu(
     slope: Union[float, ivy.NativeArray, ivy.Array],
     /,
     *,
-    out: Optional["ivy.Array"] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Prelu takes input data (Array) and slope array as input,
@@ -128,7 +128,7 @@ def thresholded_relu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    threshold: Optional[Union[int, float]] = 0,
+    threshold: Union[int, float] = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Applies the rectified linear unit function with custom threshold.
