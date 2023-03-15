@@ -240,3 +240,10 @@ def svd(a, /, *, full_matrices=False, compute_uv=True, name=None):
 @to_ivy_arrays_and_back
 def sqrtm(input, name=None):
     return ivy.sqrt(input)
+
+
+@to_ivy_arrays_and_back
+def lu_matrix_inverse(lower_upper, perm, validate_args=False, name=None):
+    return ivy.lu_matrix_inverse(
+        ivy.lu_reconstruct(lower_upper, perm), validate_args=validate_args, name=name
+    )

@@ -857,29 +857,39 @@ def _squeeze_helper(draw):
 # block
 @st.composite
 def _get_input_and_block(draw):
-    shapes = draw(st.lists(
-        helpers.get_shape(min_num_dims=1,
-                          max_num_dims=5,
-                          min_dim_size=2,
-                          max_dim_size=10),
-        min_size=2, max_size=10))
-    x_dtypes, xs = zip(*[draw(helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=2,
-        max_dim_size=10,
-        shape=shape,
-    )) for shape in shapes])
+    shapes = draw(
+        st.lists(
+            helpers.get_shape(
+                min_num_dims=1, max_num_dims=5, min_dim_size=2, max_dim_size=10
+            ),
+            min_size=2,
+            max_size=10,
+        )
+    )
+    x_dtypes, xs = zip(
+        *[
+            draw(
+                helpers.dtype_and_values(
+                    available_dtypes=helpers.get_dtypes("valid"),
+                    min_num_dims=1,
+                    max_num_dims=5,
+                    min_dim_size=2,
+                    max_dim_size=10,
+                    shape=shape,
+                )
+            )
+            for shape in shapes
+        ]
+    )
     return x_dtypes, xs
 
 
 @handle_frontend_test(
-    fn_tree="block",
+    fn_tree="jax.numpy.block",
     input_x_shape=_get_input_and_block(),
     test_with_out=st.just(False),
 )
-def test_ivy_block(
+def test_jax_numpy_block(
     *,
     input_x_shape,
     on_device,
@@ -1070,6 +1080,38 @@ def test_jax_numpy_dsplit(
         on_device=on_device,
         ary=value[0],
         indices_or_sections=indices_or_sections,
+    )
+
+
+# dstack
+@handle_frontend_test(
+    fn_tree="jax.numpy.dstack",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shared_dtype=True,
+        num_arrays=helpers.ints(min_value=1, max_value=10),
+        shape=helpers.get_shape(
+            min_num_dims=1,
+        ),
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_dstack(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tup=x,
     )
 
 
