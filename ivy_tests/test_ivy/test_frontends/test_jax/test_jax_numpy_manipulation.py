@@ -857,29 +857,39 @@ def _squeeze_helper(draw):
 # block
 @st.composite
 def _get_input_and_block(draw):
-    shapes = draw(st.lists(
-        helpers.get_shape(min_num_dims=1,
-                          max_num_dims=5,
-                          min_dim_size=2,
-                          max_dim_size=10),
-        min_size=2, max_size=10))
-    x_dtypes, xs = zip(*[draw(helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=2,
-        max_dim_size=10,
-        shape=shape,
-    )) for shape in shapes])
+    shapes = draw(
+        st.lists(
+            helpers.get_shape(
+                min_num_dims=1, max_num_dims=5, min_dim_size=2, max_dim_size=10
+            ),
+            min_size=2,
+            max_size=10,
+        )
+    )
+    x_dtypes, xs = zip(
+        *[
+            draw(
+                helpers.dtype_and_values(
+                    available_dtypes=helpers.get_dtypes("valid"),
+                    min_num_dims=1,
+                    max_num_dims=5,
+                    min_dim_size=2,
+                    max_dim_size=10,
+                    shape=shape,
+                )
+            )
+            for shape in shapes
+        ]
+    )
     return x_dtypes, xs
 
 
 @handle_frontend_test(
-    fn_tree="block",
+    fn_tree="jax.numpy.block",
     input_x_shape=_get_input_and_block(),
     test_with_out=st.just(False),
 )
-def test_ivy_block(
+def test_jax_numpy_block(
     *,
     input_x_shape,
     on_device,

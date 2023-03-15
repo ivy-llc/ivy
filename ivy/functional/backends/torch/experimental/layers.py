@@ -553,8 +553,17 @@ def embedding(
 embedding.support_native_out = False
 
 
-@handle_mixed_function(lambda *args, mode, **kwargs:
-                       mode not in ["tf_area","bicubic_tensorflow", "mitchellcubic", "lanczos3", "lanczos5", "gaussian"])
+@handle_mixed_function(
+    lambda *args,
+    mode,
+    **kwargs:
+    mode not in ["tf_area",
+                 "bicubic_tensorflow",
+                 "mitchellcubic",
+                 "lanczos3",
+                 "lanczos5",
+                 "gaussian"]
+)
 def interpolate(
     x: torch.Tensor,
     size: Union[Sequence[int], int],
