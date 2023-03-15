@@ -1,7 +1,8 @@
 import astunparse
 import ast
 
-# import sys
+import sys
+import subprocess
 import os
 
 _reference_backend = ""
@@ -12,7 +13,7 @@ _backend_ref_name = "tf"
 _target_backend_name = "torch"
 
 # This should be imported in the module
-_not_implemented_decorator_name = "not_implemented"
+_not_imlpemented_exc_name = "NotImplementedError"
 _decorator_black_list = [
     "with_unsupported_dtypes",
     "with_supported_dtypes",
@@ -22,12 +23,7 @@ _decorator_black_list = [
     "with_supported_device_and_dtypes",
 ]
 
-type_mapping = {
-    "int": "float",
-    "Tensor": "Array",
-    "Variable": "VarArray",
-    "Scaler": "NotAscaler",
-}
+type_mapping = {}
 
 
 class ImportTransformer(ast.NodeTransformer):
@@ -66,12 +62,29 @@ class FunctionBodyTransformer(ast.NodeTransformer):
                 return None
             else:
                 # Replace function body with Pass
-                node.body = [ast.Pass()]
+                node.body = [
+                    ast.Raise(
+                        exc=ast.Call(
+                            func=ast.Name(id=_not_imlpemented_exc_name, ctx=ast.Load()),
+                            args=[
+                                ast.Constant(
+                                    value="Function Not Implemented", kind=None
+                                )
+                            ],
+                            keywords=[],
+                        ),
+                        cause=None,
+                    )
+                ]
                 # Update decorators not to include ones in the blacklist
                 # Add Not Implemented decorator
-                new_list = [ast.Name(_not_implemented_decorator_name, ctx=ast.Load())]
+                new_list = []
                 for entry in node.decorator_list:
-                    if entry.id in _decorator_black_list:
+                    if isinstance(entry, ast.Call):
+                        name_of_decorator = entry.func.id
+                    else:
+                        name_of_decorator = entry.id
+                    if name_of_decorator in _decorator_black_list:
                         continue
                     new_list.append(entry)
                 node.decorator_list = new_list
@@ -82,42 +95,45 @@ class FunctionBodyTransformer(ast.NodeTransformer):
 class TypeHintTransformer(ast.NodeTransformer):
     def __init__(self, type_map):
         self.type_map = type_map
-        self.registered_type_hints = set()
+        self.registered_imports = set()
+
+    def _get_full_name(self, node):
+        return astunparse.unparse(node)
 
     def visit_Name(self, node: ast.Name):
         if isinstance(node, ast.Name):
-            if node.id == _backend_ref_name:
-                node.id = _target_backend_name
+            try:
+                node.id = self.type_map[node.id]
+            except KeyError:
+                pass
             else:
-                try:
-                    node.id = self.type_map[node.id]
-                except KeyError:
-                    pass
+                self.registered_imports.add(node.id)
         self.generic_visit(node)
         return node
 
     def visit_Attribute(self, node: ast.Attribute):
         if isinstance(node, ast.Attribute):
             try:
-                node.attr = self.type_map[node.attr]
+                str_repr = self._get_full_name(node).strip()
+                new_node = ast.parse(self.type_map[str_repr])
+                node = new_node.body[0].value
             except KeyError:
+                # self.generic_visit(node)
+                # return ast.Attribute(value=None)
                 pass
-            else:
-                # Function Scope-Level
-                self.registered_type_hints.add(node.attr)
         self.generic_visit(node)
         return node
 
 
 # Modify the AST tree
 def _parse_module(tree: ast.Module) -> ast.Module:
-    # Walk the AST tree and update type hints
-    transformer = TypeHintTransformer(type_mapping)
-    transformer.visit_Name(tree)
-    print("Found:", transformer.registered_type_hints)
-
     # Update decorators, update function body, remove private functions
     FunctionBodyTransformer().visit_FunctionDef(tree)
+
+    # Walk the AST tree and update type hints
+    transformer = TypeHintTransformer(type_mapping)
+    transformer.visit_Attribute(tree)
+
     # Update imports, remove backend specific imports
     ImportTransformer().visit_Import(tree)
     # Add target backend import, add type hints classes imports
@@ -144,7 +160,11 @@ def _copy_tree(backend_reference_path: str, backend_generation_path: str):
                 # Read source file from reference backend
                 ref_str = ref_file.read()
 
-            tree_to_write = _parse_module(ast.parse(ref_str))
+            ref_tree = ast.parse(ref_str)
+            try:
+                tree_to_write = _parse_module(ref_tree)
+            except Exception:
+                print(f"Failed to parse {os.path.join(root, name)}")
 
             # Create target backend
             with open(
@@ -165,16 +185,9 @@ def generate(backend_reference: str, target_backend: str):
 
     # Copy and generate backend tree
     _copy_tree(backend_reference_path, backend_generation_path)
+    subprocess.run(["black", backend_generation_path])
 
 
 # TODO remove
 if __name__ == "__main__":
-
-    with open("func2.py") as ref_file:
-        # Read source file from reference backend
-        ref_str = ref_file.read()
-
-    tree = ast.parse(ref_str)
-    tree_to_write = _parse_module(tree)
-    print(astunparse.unparse(tree))
-    # generate(sys.argv[1], sys.argv[2])
+    generate(sys.argv[1], sys.argv[2])
