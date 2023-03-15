@@ -48,10 +48,12 @@ def pinv(input, *, atol=None, rtol=None, hermitian=False, out=None):
 def det(input, *, out=None):
     return ivy.det(input, out=out)
 
+
 @to_ivy_arrays_and_back
 def eigvals(input, *, out=None):
     # TODO: add handling for out
     return ivy.eigvals(input)
+
 
 @to_ivy_arrays_and_back
 def eigvalsh(input, UPLO="L", *, out=None):
@@ -196,15 +198,13 @@ def lu_factor(A, *, pivot=True, out=None):
 def matmul(input, other, *, out=None):
     return ivy.matmul(input, other, out=out)
 
-def norm(input, p=2, dim=None, keepdim=False, *, out=None):
+
+def norm(input, ord=2, dim=None, keepdim=False, *, out=None):
     if isinstance(dim, int):
-        return ivy.vector_norm(
-            input, ord=p, axis=dim, keepdims=keepdim, out=out)
+        return ivy.vector_norm(input, ord=ord, axis=dim, keepdims=keepdim, out=out)
     elif isinstance(dim, tuple):
-        return ivy.matrix_norm(
-            input, ord=p, axis=dim, keepdims=keepdim, out=out)
-    elif dim is None and p is not None:
-        return ivy.vector_norm(
-            input, ord=p, axis=dim, keepdims=keepdim, out=out)
+        return ivy.matrix_norm(input, ord=ord, axis=dim, keepdims=keepdim, out=out)
+    elif dim is None and ord is not None:
+        return ivy.vector_norm(input, ord=ord, axis=dim, keepdims=keepdim, out=out)
     else:
         raise ValueError("Invalid axis or ord value.")
