@@ -303,13 +303,6 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../../../data_classes/container.html">
-                        Container
-                      </a>
-                    </li>
-                
-
-                    <li class="nav-item">
                       <a class="nav-link nav-internal" href="../../../../../data_classes/array.html">
                         Array
                       </a>
@@ -317,22 +310,15 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../../../stateful/helpers.html">
-                        Helpers
+                      <a class="nav-link nav-internal" href="../../../../../data_classes/container.html">
+                        Container
                       </a>
                     </li>
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../../../stateful/module.html">
-                        Module
-                      </a>
-                    </li>
-                
-
-                    <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../../../stateful/optimizers.html">
-                        Optimizers
+                      <a class="nav-link nav-internal" href="../../../../../stateful/converters.html">
+                        Converters
                       </a>
                     </li>
                 
@@ -345,8 +331,22 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../../../stateful/norms.html">
-                        Norms
+                      <a class="nav-link nav-internal" href="../../../../../stateful/activations.html">
+                        Activations
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../../../stateful/optimizers.html">
+                        Optimizers
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../../../stateful/module.html">
+                        Module
                       </a>
                     </li>
                 
@@ -366,15 +366,15 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../../../stateful/converters.html">
-                        Converters
+                      <a class="nav-link nav-internal" href="../../../../../stateful/norms.html">
+                        Norms
                       </a>
                     </li>
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../../../../stateful/activations.html">
-                        Activations
+                      <a class="nav-link nav-internal" href="../../../../../stateful/helpers.html">
+                        Helpers
                       </a>
                     </li>
                 
@@ -1685,19 +1685,46 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_and</span><span class="p">(</span><span class="n">x</span> <span class="o">&gt;=</span> <span class="n">radius</span><span class="p">,</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">radius</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
 
 
+<span class="k">def</span> <span class="nf">_dim_scale_factor</span><span class="p">(</span><span class="n">input_size</span><span class="p">,</span> <span class="n">output_size</span><span class="p">,</span> <span class="n">align_corners</span><span class="p">,</span> <span class="n">scales</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">output_size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">align_corners</span><span class="p">:</span>
+            <span class="n">dim_scale_factor</span> <span class="o">=</span> <span class="p">(</span><span class="n">input_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">output_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dim_scale_factor</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">input_size</span> <span class="o">/</span> <span class="p">(</span><span class="n">input_size</span> <span class="o">*</span> <span class="n">scales</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">scales</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="k">else</span> <span class="n">input_size</span> <span class="o">/</span> <span class="n">output_size</span>
+            <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">dim_scale_factor</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">return</span> <span class="n">dim_scale_factor</span>
+
+
 <div class="viewcode-block" id="compute_weight_mat"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/layers/compute_weight_mat.html#ivy.functional.ivy.experimental.compute_weight_mat">[docs]</a><span class="k">def</span> <span class="nf">compute_weight_mat</span><span class="p">(</span>
-    <span class="n">input_size</span><span class="p">,</span> <span class="n">output_size</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">align_corners</span><span class="p">,</span> <span class="n">kernel_fn</span><span class="p">,</span> <span class="n">antialias</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">input_size</span><span class="p">,</span>
+    <span class="n">output_size</span><span class="p">,</span>
+    <span class="n">scale</span><span class="p">,</span>
+    <span class="n">align_corners</span><span class="p">,</span>
+    <span class="n">kernel_fn</span><span class="p">,</span>
+    <span class="n">antialias</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">dim_scale_factor</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="n">inv_scale</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">scale</span>
     <span class="n">kernel_scale</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">inv_scale</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span> <span class="k">if</span> <span class="n">antialias</span> <span class="k">else</span> <span class="mf">1.0</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">align_corners</span> <span class="ow">or</span> <span class="n">align_corners</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">sample_f</span> <span class="o">=</span> <span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">output_size</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">inv_scale</span> <span class="o">-</span> <span class="mf">0.5</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">sample_f</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">ivy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">input_size</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">])</span> <span class="o">/</span> <span class="n">kernel_scale</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">sample_f</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">input_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">output_size</span><span class="p">)</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">sample_f</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">ivy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">input_size</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span>
-            <span class="n">kernel_scale</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">align_corners</span><span class="p">:</span>
+        <span class="n">sample_f</span> <span class="o">=</span> <span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">output_size</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">dim_scale_factor</span> <span class="o">-</span> <span class="mf">0.5</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span>
+                <span class="n">ivy</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">sample_f</span><span class="p">)</span>
+                <span class="o">-</span> <span class="n">ivy</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">input_size</span><span class="p">),</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="o">/</span> <span class="n">kernel_scale</span>
         <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sample_f</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">output_size</span><span class="p">)</span> <span class="o">*</span> <span class="n">dim_scale_factor</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">sample_f</span><span class="p">)</span> <span class="o">-</span> <span class="n">ivy</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">input_size</span><span class="p">),</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">kernel_scale</span><span class="p">)</span>
     <span class="n">weights</span> <span class="o">=</span> <span class="n">kernel_fn</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="n">total_weight_sum</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">weights</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
@@ -1707,7 +1734,9 @@
     <span class="p">)</span>
     <span class="n">input_size_minus_0_5</span> <span class="o">=</span> <span class="n">input_size</span> <span class="k">if</span> <span class="n">align_corners</span> <span class="k">else</span> <span class="n">input_size</span> <span class="o">-</span> <span class="mf">0.5</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">sample_f</span> <span class="o">&gt;=</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">sample_f</span> <span class="o">&lt;=</span> <span class="n">input_size_minus_0_5</span><span class="p">)[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:],</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">sample_f</span> <span class="o">&gt;=</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">sample_f</span> <span class="o">&lt;=</span> <span class="n">input_size_minus_0_5</span><span class="p">)</span>
+        <span class="p">),</span>
         <span class="n">weights</span><span class="p">,</span>
         <span class="mi">0</span><span class="p">,</span>
     <span class="p">)</span></div>
@@ -1735,6 +1764,7 @@
         <span class="s2">&quot;gaussian&quot;</span><span class="p">,</span>
     <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;linear&quot;</span><span class="p">,</span>
     <span class="n">scale_factor</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">recompute_scale_factor</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">align_corners</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">antialias</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1822,6 +1852,17 @@
     <span class="n">input_shape</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="n">dims</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">input_shape</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span>
     <span class="n">size</span> <span class="o">=</span> <span class="n">_get_size</span><span class="p">(</span><span class="n">scale_factor</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">dims</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">recompute_scale_factor</span><span class="p">:</span>
+        <span class="n">scale_factor</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">scale_factor</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">[</span><span class="n">scale_factor</span><span class="p">]</span> <span class="o">*</span> <span class="n">dims</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scale_factor</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">else</span> <span class="n">scale_factor</span>
+        <span class="p">)</span>
+        <span class="n">scale_factor</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">[</span><span class="n">scale_factor</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="n">dims</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scale_factor</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">scale_factor</span><span class="p">)</span> <span class="o">!=</span> <span class="n">dims</span>
+            <span class="k">else</span> <span class="n">scale_factor</span>
+        <span class="p">)</span>
     <span class="n">spatial_dims</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span> <span class="o">+</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dims</span><span class="p">)]</span>
     <span class="n">scale</span> <span class="o">=</span> <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">size</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">input_shape</span><span class="p">[</span><span class="n">spatial_dims</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dims</span><span class="p">)]</span>
     <span class="k">if</span> <span class="n">mode</span> <span class="ow">in</span> <span class="p">[</span>
@@ -1852,8 +1893,14 @@
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">spatial_dims</span><span class="p">):</span>
             <span class="n">m</span> <span class="o">=</span> <span class="n">input_shape</span><span class="p">[</span><span class="n">d</span><span class="p">]</span>
             <span class="n">n</span> <span class="o">=</span> <span class="n">output_shape</span><span class="p">[</span><span class="n">d</span><span class="p">]</span>
+            <span class="n">dim_scale_factor</span> <span class="o">=</span> <span class="n">_dim_scale_factor</span><span class="p">(</span>
+                <span class="n">m</span><span class="p">,</span>
+                <span class="n">n</span><span class="p">,</span>
+                <span class="n">align_corners</span><span class="p">,</span>
+                <span class="n">scale_factor</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span> <span class="n">scale_factor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">)</span>
             <span class="n">w</span> <span class="o">=</span> <span class="n">compute_weight_mat</span><span class="p">(</span>
-                <span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">scale</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">align_corners</span><span class="p">,</span> <span class="n">kernel_func</span><span class="p">,</span> <span class="n">antialias</span>
+                <span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">scale</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">align_corners</span><span class="p">,</span> <span class="n">kernel_func</span><span class="p">,</span> <span class="n">antialias</span><span class="p">,</span> <span class="n">dim_scale_factor</span>
             <span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
             <span class="n">operands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="n">equation</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">operands</span><span class="p">)</span>
@@ -1985,6 +2032,9 @@
     <span class="k">if</span> <span class="n">scale_factor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scale_factor</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">)):</span>
             <span class="n">scale_factor</span> <span class="o">=</span> <span class="p">[</span><span class="n">scale_factor</span><span class="p">]</span> <span class="o">*</span> <span class="n">dims</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scale_factor</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">scale_factor</span><span class="p">)</span> <span class="o">!=</span> <span class="n">dims</span><span class="p">:</span>
+            <span class="n">scale_factor</span> <span class="o">=</span> <span class="p">[</span><span class="n">scale_factor</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="n">dims</span>
+
         <span class="n">size</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
             <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">x_shape</span><span class="p">[</span><span class="mi">2</span> <span class="o">+</span> <span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">scale_factor</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dims</span><span class="p">)]</span>
         <span class="p">)</span>

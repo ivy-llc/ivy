@@ -305,13 +305,6 @@
                     </li>
                 
 
-                    <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../container.html">
-                        Container
-                      </a>
-                    </li>
-                
-
                     <li class="nav-item current active">
                       <a class="nav-link nav-internal" href="../array.html">
                         Array
@@ -320,22 +313,15 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../stateful/helpers.html">
-                        Helpers
+                      <a class="nav-link nav-internal" href="../container.html">
+                        Container
                       </a>
                     </li>
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../stateful/module.html">
-                        Module
-                      </a>
-                    </li>
-                
-
-                    <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../stateful/optimizers.html">
-                        Optimizers
+                      <a class="nav-link nav-internal" href="../../stateful/converters.html">
+                        Converters
                       </a>
                     </li>
                 
@@ -348,8 +334,22 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../stateful/norms.html">
-                        Norms
+                      <a class="nav-link nav-internal" href="../../stateful/activations.html">
+                        Activations
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../stateful/optimizers.html">
+                        Optimizers
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../stateful/module.html">
+                        Module
                       </a>
                     </li>
                 
@@ -369,15 +369,15 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../stateful/converters.html">
-                        Converters
+                      <a class="nav-link nav-internal" href="../../stateful/norms.html">
+                        Norms
                       </a>
                     </li>
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../stateful/activations.html">
-                        Activations
+                      <a class="nav-link nav-internal" href="../../stateful/helpers.html">
+                        Helpers
                       </a>
                     </li>
                 
@@ -2383,7 +2383,7 @@ the inputs broadcast to.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.experimental._ArrayWithLayersExperimental.interpolate">
-<span class="sig-name descname"><span class="pre">interpolate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'linear'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">align_corners</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antialias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/experimental/layers.html#_ArrayWithLayersExperimental.interpolate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.experimental._ArrayWithLayersExperimental.interpolate" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">interpolate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'linear'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recompute_scale_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">align_corners</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antialias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/experimental/layers.html#_ArrayWithLayersExperimental.interpolate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.experimental._ArrayWithLayersExperimental.interpolate" title="Permalink to this definition">#</a></dt>
 <dd><p>Down/up samples the input to the given size.
 The algorithm used for interpolation is determined by mode.</p>
 <dl class="field-list simple">
