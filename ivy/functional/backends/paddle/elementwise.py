@@ -501,7 +501,10 @@ def abs(
 def logaddexp(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1 = paddle.to_tensor(x1)
+    x2 = paddle.to_tensor(x2)
+    return paddle.log(paddle.add(paddle.exp(x1), paddle.exp(x2)))
 
 
 @with_unsupported_device_and_dtypes(
