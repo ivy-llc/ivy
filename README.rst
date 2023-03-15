@@ -80,25 +80,20 @@ Contents
 Overview
 --------
 
-Ivy is an ML framework that currently supports JAX, TensorFlow, PyTorch, and Numpy.
-We’re very excited for you to try it out!
+Ivy is a machine learning framework that presently supports Jax, TensorFlow, PyTorch, and NumPy. We are very eager for you to give it a go! 
 
-Next on our roadmap is to support automatic code conversions between all frameworks 🔄,
-and add instant multi-framework support for all open-source libraries with only a few lines of code changed!
-Read on to learn more 😊
+Our roadmap involves facilitating automatic code conversions between all frameworks and providing immediate multi-framework support for all open-source libraries with just a few lines of code edits. Read on to find out more.😊
 
-The docs are split into a number of sub-pages explaining different aspects of why we created Ivy,
-how to use it, what we’ve got planned on our roadmap, and how to contribute!
-Click on the sub-headings below to check out these pages!
+Our documentation is split into a range of sub-pages that explain the various aspects of Ivy, including why it was developed, how to utilize it, what is planned on our roadmap, and how to contribute. Click on the subheadings for more information !
 
-We use 🚧 to indicate that the feature being discussed is in development.
-We use ✅ to indicate that it is already implemented!
+We utilize the "construction" symbol 🚧 to signify that a feature is currently in development, while the "white_check_mark" ✅  denotes features that have already been implemented.
 
-Check out the docs_ for more info,
-and check out our Google Colabs_ for some interactive demos!
+For more information, check out the docs_ and our Google Colabs_ for interactive demos.
 
 🚨 Ivy is still at a relatively early stage of development.
 Expect breaking changes and sharp edges until we release version 1.2.0 in the next few weeks!
+
+It is important to keep in mind that Ivy is still in its early stages of development, and there may be breaking changes and rough edges before the release of version 1.2.0 in the coming weeks. If you want to contribute, please refer to our `contributor guide`_  and `open tasks`_ if you'd like to dive straight in !. 🧑<200d>💻
 
 If you would like to contribute,
 please check out our `contributor guide`_,
