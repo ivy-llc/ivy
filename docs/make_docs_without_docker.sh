@@ -21,4 +21,5 @@ rm -rf build
 
 sphinx-build -b html . build
 
+# Disable Jekyll in GitHub pages
 touch build/.nojekyll
