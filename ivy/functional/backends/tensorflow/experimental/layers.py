@@ -405,13 +405,11 @@ def embedding(
 
 
 @handle_mixed_function(
-    lambda x, 
-    *args, 
-    mode, 
-    scale_factor, 
-    align_corners, 
-    **kwargs:
-    (align_corners and (len(x.shape) - 2) < 2) and mode not in ["nearest", "area"])
+    lambda x, *args, mode="linear", scale_factor=None, align_corners=None, **kwargs: (
+        not align_corners and (len(x.shape) - 2) < 2
+    )
+    and mode not in ["nearest", "area"]
+)
 def interpolate(
     x: Union[tf.Tensor, tf.Variable],
     size: Union[Sequence[int], int],
