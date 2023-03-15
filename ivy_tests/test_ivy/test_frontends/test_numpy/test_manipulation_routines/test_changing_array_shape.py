@@ -185,7 +185,16 @@ def test_numpy_moveaxis(
 @handle_frontend_test(
     fn_tree='numpy.resize',
     dtypes_x_reshape=dtypes_x_reshape(),
-    # order =st.sampled_from(['C',]),
+    # dtypes_x_reshape=helpers.dtype_and_values(
+    #         available_dtypes=helpers.get_dtypes("valid"),
+    #         shape=helpers.get_shape(
+    #             allow_none=False,
+    #             min_num_dims=1,
+    #             max_num_dims=5,
+    #             min_dim_size=1,
+    #             max_dim_size=10,
+    #         ),
+    #     )
 
 )
 def test_numpy_resize(
@@ -205,5 +214,4 @@ def test_numpy_resize(
         on_device=on_device,
         x = x[0],
         newshape = shape,
-        # order= order,
     )

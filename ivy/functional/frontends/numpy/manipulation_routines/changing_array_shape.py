@@ -24,10 +24,10 @@ def resize(x, /, newshape, refcheck=True):
         return ivy.zeros_like(x)   
     
     repetition = -(-total_size//x.size)
+    zeros = ivy.zeros((repetition * repetition),dtype=int)
+    x = ivy.concat((x,zeros))[:total_size]
     # or
-    # zeros = ivy.zeros((repetition * repetition),dtype=int)
-    # x = ivy.concat((x,zeros))[:total_size]
-    x = ivy.concat((x,) * repetition)[:total_size]
+    # x = ivy.concat((x,) * repetition)[:total_size]
     return ivy.reshape(x,newshape=newshape,order="C")
     # return ivy.resize(x, newshape=newshape, refcheck=refcheck)
 
