@@ -404,8 +404,19 @@ def embedding(
     return tf.nn.embedding_lookup(weights, indices, max_norm=max_norm)
 
 
-@handle_mixed_function(lambda x, *args, mode, scale_factor, align_corners, **kwargs:
-                       (align_corners and (len(x.shape) - 2) < 2) and mode not in ["nearest", "area"])
+@handle_mixed_function(
+    lambda x,
+    *args,
+    mode="linear",
+    scale_factor=None,
+    recompute_scale_factor=None,
+    align_corners=None,
+    **kwargs: (
+        not align_corners and (len(x.shape) - 2) < 2
+    )
+    and mode not in ["nearest", "area"]
+    and recompute_scale_factor
+)
 def interpolate(
     x: Union[tf.Tensor, tf.Variable],
     size: Union[Sequence[int], int],
@@ -428,6 +439,7 @@ def interpolate(
         ]
     ] = "linear",
     scale_factor: Optional[Union[Sequence[int], int]] = None,
+    recompute_scale_factor: Optional[bool] = None,
     align_corners: Optional[bool] = None,
     antialias: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,

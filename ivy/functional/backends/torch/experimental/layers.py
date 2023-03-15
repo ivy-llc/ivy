@@ -553,8 +553,17 @@ def embedding(
 embedding.support_native_out = False
 
 
-@handle_mixed_function(lambda *args, mode, **kwargs:
-                       mode not in ["tf_area","bicubic_tensorflow", "mitchellcubic", "lanczos3", "lanczos5", "gaussian"])
+@handle_mixed_function(
+    lambda *args, mode="linear", **kwargs: mode
+    not in [
+        "tf_area",
+        "bicubic_tensorflow",
+        "mitchellcubic",
+        "lanczos3",
+        "lanczos5",
+        "gaussian",
+    ]
+)
 def interpolate(
     x: torch.Tensor,
     size: Union[Sequence[int], int],
@@ -575,6 +584,7 @@ def interpolate(
         "gaussian",
     ] = "linear",
     scale_factor: Optional[Union[Sequence[int], int]] = None,
+    recompute_scale_factor: Optional[bool] = None,
     align_corners: Optional[bool] = None,
     antialias: bool = False,
     out: Optional[torch.Tensor] = None,
@@ -586,6 +596,7 @@ def interpolate(
         align_corners=align_corners,
         antialias=antialias,
         scale_factor=scale_factor,
+        recompute_scale_factor=recompute_scale_factor,
     )
 
 
