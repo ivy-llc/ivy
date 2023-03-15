@@ -217,3 +217,8 @@ def hsplit(ary, indices_or_sections):
 @to_ivy_arrays_and_back
 def roll(a, shift, axis=None):
     return ivy.roll(a, shift, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def resize(a, newshape):
+    return ivy.resize(a, shape=newshape)

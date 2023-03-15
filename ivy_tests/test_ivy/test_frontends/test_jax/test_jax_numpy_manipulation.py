@@ -1253,3 +1253,49 @@ def test_jax_numpy_roll(
         shift=shift_val,
         axis=axis,
     )
+
+
+
+@st.composite
+def _get_input_and_resize(draw):
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=2, max_num_dims=5, min_dim_size=2, max_dim_size=10
+        )
+    )
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=1,
+            max_num_dims=5,
+            min_dim_size=2,
+            max_dim_size=10,
+            shape=shape,
+        )
+    )
+    new_shape = shape[1:] + (shape[0],)
+    return x_dtype, x, new_shape
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.reshape",
+    input_x_shape=_get_input_and_resize(),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_resize(
+    *,
+    input_x_shape,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    x_dtype, x, shape = input_x_shape
+    helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        newshape=shape,
+    )

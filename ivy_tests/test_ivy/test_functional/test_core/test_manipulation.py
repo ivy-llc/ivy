@@ -802,3 +802,42 @@ def test_unstack(
         axis=axis,
         keepdims=keepdims,
     )
+
+
+
+@handle_test(
+    fn_tree="functional.ivy.reshape",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+        shape=st.shared(helpers.get_shape(), key="value_shape"),
+    ),
+    reshape=helpers.reshape_shapes(
+        shape=st.shared(helpers.get_shape(), key="value_shape")
+    ),
+
+    allowzero=st.booleans(),
+)
+def test_resize(
+    *,
+    dtype_value,
+    reshape,
+    allowzero,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    dtype, value = dtype_value
+
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=value[0],
+        shape=reshape,
+        allowzero=allowzero,
+    )
