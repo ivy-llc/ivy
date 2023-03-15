@@ -5,9 +5,9 @@ eye_like
 
 .. autofunction:: ivy.array.array_methods.eye_like
 
-.. autofunction:: ivy.container.container_methods.eye_like
-
 .. autofunction:: ivy.container.container_methods.static_eye_like
+
+.. autofunction:: ivy.container.container_methods.eye_like
 |
 | **Supported Frameworks:**
 

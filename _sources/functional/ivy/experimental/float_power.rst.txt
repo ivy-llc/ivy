@@ -5,9 +5,9 @@ float_power
 
 .. autofunction:: ivy.array.array_methods.float_power
 
-.. autofunction:: ivy.container.container_methods.static_float_power
-
 .. autofunction:: ivy.container.container_methods.float_power
+
+.. autofunction:: ivy.container.container_methods.static_float_power
 |
 | **Supported Frameworks:**
 

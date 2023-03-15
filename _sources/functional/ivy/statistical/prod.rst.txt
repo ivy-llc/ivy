@@ -5,9 +5,9 @@ prod
 
 .. autofunction:: ivy.array.array_methods.prod
 
-.. autofunction:: ivy.container.container_methods.prod
-
 .. autofunction:: ivy.container.container_methods.static_prod
+
+.. autofunction:: ivy.container.container_methods.prod
 |
 | **Supported Frameworks:**
 
