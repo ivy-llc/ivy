@@ -1283,7 +1283,7 @@ def interpolate(
         scale_factor = (
             [scale_factor[0]] * dims
             if isinstance(scale_factor, (list, tuple)) and len(scale_factor) != dims
-            else scale_factor
+            else [scale_factor] * dims
         )
     spatial_dims = [2 + i for i in range(dims)]
     scale = [ivy.divide(size[i], input_shape[spatial_dims[i]]) for i in range(dims)]
@@ -1439,12 +1439,12 @@ def interpolate(
         x = ivy.pad(x, ((0, 0), (0, 0), padding, padding), mode="reflect")
         x = ivy.conv2d(
             x,
-            kernel.unsqueeze(-1).unsqueeze(-1),
+            ivy.expand_dims(ivy.expand_dims(kernel, axis=-1), axis=-1),
             1,
             ((0, 0), (0, 0)),
             data_format="NCHW",
         )
-        return interpolate(x, size=size, mode="bicubic", align_corners=True)
+        return interpolate(x, size, mode="bicubic", align_corners=True)
     elif mode == "tf_area":
         ret = _tf_area_interpolate(x, size, dims)
     return ivy.astype(ret, ivy.dtype(x), out=out)

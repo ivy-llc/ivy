@@ -381,12 +381,10 @@ def test_interpolate(
             recompute_scale_factor=recompute_scale_factor,
         )
     except Exception as e:
-        if hasattr(e, "message"):
-            if (
-                "output dimensions must be positive" in e.message
-                or "Input and output sizes should be greater than 0" in e.message
-            ):
-                assume(False)
+        if hasattr(e, "message") and \
+                ("output dimensions must be positive" in e.message or
+                 "Input and output sizes should be greater than 0" in e.message):
+            assume(False)
         raise e
 
 
