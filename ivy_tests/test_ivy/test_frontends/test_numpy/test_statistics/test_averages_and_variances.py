@@ -341,8 +341,6 @@ def test_numpy_nanpercentile(
         test_flags=test_flags,
     )
 
-    # https://lets-unify.ai/ivy/deep_dive/ivy_frontends_tests.html
-
     np_frontend_helpers.test_frontend_function(
         a=values[0][0],
         q=values[0][1],
