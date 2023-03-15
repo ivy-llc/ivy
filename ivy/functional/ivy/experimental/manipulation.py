@@ -31,9 +31,9 @@ def flatten(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    start_dim: Optional[int] = 0,
-    end_dim: Optional[int] = -1,
-    order: Optional[str] = "C",
+    start_dim: int = 0,
+    end_dim: int = -1,
+    order: str = "C",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Flattens input by reshaping it into a one-dimensional tensor.
@@ -465,8 +465,8 @@ def rot90(
     m: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    k: Optional[int] = 1,
-    axes: Optional[Tuple[int, int]] = (0, 1),
+    k: int = 1,
+    axes: Tuple[int, int] = (0, 1),
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Rotate an array by 90 degrees in the plane specified by axes.
@@ -546,7 +546,7 @@ def top_k(
     /,
     *,
     axis: Optional[int] = None,
-    largest: Optional[bool] = True,
+    largest: bool = True,
     out: Optional[tuple] = None,
 ) -> Tuple[ivy.Array, ivy.NativeArray]:
     """Returns the `k` largest elements of the given input array along a given axis.
@@ -927,30 +927,15 @@ def _check_arguments(
         message="the pad_widths must be greater or equal to zero",
     )
     if mode in ["maximum", "mean", "median", "minimum"]:
-        if stat_length is None:
-            raise ivy.utils.exceptions.IvyException(
-                "stat_length is required for mode: " + mode
-            )
-        else:
-            _check_tuple_arg(stat_length, "stat_length")
-            ivy.utils.assertions.check_true(
-                all(element[1] > 0 for element in ivy.ndenumerate(stat_length)),
-                message="the stat lengths must be greater than zero",
-            )
+        _check_tuple_arg(stat_length, "stat_length")
+        ivy.utils.assertions.check_true(
+            all(element[1] > 0 for element in ivy.ndenumerate(stat_length)),
+            message="the stat lengths must be greater than zero",
+        )
     elif mode == "constant":
-        if constant_values is None:
-            raise ivy.utils.exceptions.IvyException(
-                "constant_values is required for mode: " + mode
-            )
-        else:
-            _check_tuple_arg(constant_values, "constant_values", b_float=True)
+        _check_tuple_arg(constant_values, "constant_values", b_float=True)
     elif mode == "linear_ramp":
-        if end_values is None:
-            raise ivy.utils.exceptions.IvyException(
-                "end_values is required for mode: " + mode
-            )
-        else:
-            _check_tuple_arg(end_values, "end_values", b_float=True)
+        _check_tuple_arg(end_values, "end_values", b_float=True)
     ivy.utils.assertions.check_true(
         reflect_type in ["even", "odd"],
         message="the provided reflect_type is not supported",
@@ -967,28 +952,26 @@ def pad(
     pad_width: Union[Iterable[Tuple[int]], int],
     /,
     *,
-    mode: Optional[
-        Union[
-            Literal[
-                "constant",
-                "edge",
-                "linear_ramp",
-                "maximum",
-                "mean",
-                "median",
-                "minimum",
-                "reflect",
-                "symmetric",
-                "wrap",
-                "empty",
-            ],
-            Callable,
-        ]
+    mode: Union[
+        Literal[
+            "constant",
+            "edge",
+            "linear_ramp",
+            "maximum",
+            "mean",
+            "median",
+            "minimum",
+            "reflect",
+            "symmetric",
+            "wrap",
+            "empty",
+        ],
+        Callable,
     ] = "constant",
-    stat_length: Optional[Union[Iterable[Tuple[int]], int]] = None,
-    constant_values: Optional[Union[Iterable[Tuple[Number]], Number]] = None,
-    end_values: Optional[Union[Iterable[Tuple[Number]], Number]] = None,
-    reflect_type: Optional[Literal["even", "odd"]] = "even",
+    stat_length: Union[Iterable[Tuple[int]], int] = 1,
+    constant_values: Union[Iterable[Tuple[Number]], Number] = 0,
+    end_values: Union[Iterable[Tuple[Number]], Number] = 0,
+    reflect_type: Literal["even", "odd"] = "even",
     **kwargs: Optional[Any],
 ) -> ivy.Array:
     """Pads an array.
@@ -1551,7 +1534,7 @@ def hsplit(
 
 
 @handle_exceptions
-def broadcast_shapes(shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
+def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     """Broadcasts shapes.
 
     Parameters
@@ -1573,7 +1556,7 @@ def broadcast_shapes(shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     >>> print(ivy.broadcast_shapes([(3, 3),(3, 1),(1, 3)]))
     (3, 3)
     """
-    return ivy.current_backend().broadcast_shapes(shapes)
+    return ivy.current_backend().broadcast_shapes(*shapes)
 
 
 @handle_view

@@ -108,7 +108,7 @@ def check_all_or_any_fn(
     fn,
     type="all",
     limit=[0],
-    message="args must exist according to type and limit given"
+    message="args must exist according to type and limit given",
 ):
     if type == "all":
         check_all([fn(arg) for arg in args], message)
@@ -266,3 +266,22 @@ def check_kernel_padding_size(kernel_size, padding_size):
                     kernel_size, padding_size
                 )
             )
+
+
+# Jax Specific #
+# ------- #
+
+
+def _check_jax_x64_flag(dtype):
+    if (
+        ivy.backend == "jax"
+        and not ivy.functional.backends.jax.jax.config.jax_enable_x64
+    ):
+        ivy.utils.assertions.check_elem_in_list(
+            dtype,
+            ["float64", "int64", "uint64", "complex128"],
+            inverse=True,
+            message=f"{dtype} output not supported while jax_enable_x64"
+            f" is set to False, please import jax and enable the flag using "
+            f"jax.config.update('jax_enable_x64', True)",
+        )

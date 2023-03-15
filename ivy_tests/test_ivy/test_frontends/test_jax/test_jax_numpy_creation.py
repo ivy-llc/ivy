@@ -456,6 +456,33 @@ def test_jax_numpy_full_like(
     )
 
 
+# identity
+@handle_frontend_test(
+    fn_tree="jax.numpy.identity",
+    n=helpers.ints(min_value=3, max_value=10),
+    dtypes=helpers.get_dtypes("valid", full=False),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_identity(
+    *,
+    n,
+    dtypes,
+    on_device,
+    fn_tree,
+    test_flags,
+    frontend,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        n=n,
+        dtype=dtypes[0],
+    )
+
+
 # ndim
 @handle_frontend_test(
     fn_tree="jax.numpy.ndim",

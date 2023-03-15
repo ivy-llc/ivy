@@ -70,6 +70,44 @@ def test_jax_numpy_add(
     )
 
 
+# angle
+@handle_frontend_test(
+    fn_tree="jax.numpy.angle",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float64"],
+        min_value=-5,
+        max_value=5,
+        max_dim_size=5,
+        max_num_dims=5,
+        min_dim_size=1,
+        min_num_dims=1,
+        allow_inf=False,
+        allow_nan=False,
+    ),
+    deg=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_angle(
+    *,
+    dtype_and_x,
+    deg,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, z = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        z=z[0],
+        deg=deg,
+    )
+
+
 # diff
 @st.composite
 def _get_dtype_input_and_vector(draw):
@@ -123,9 +161,7 @@ def test_jax_numpy_diff(
 @handle_frontend_test(
     fn_tree="jax.numpy.ediff1d",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
-        max_num_dims=1
+        available_dtypes=helpers.get_dtypes("float"), min_num_dims=1, max_num_dims=1
     ),
     to_end=helpers.ints(
         min_value=-1,
@@ -2459,3 +2495,28 @@ def test_jax_numpy_subtract(
         x2=x[0],
     )
 
+
+# around
+@handle_frontend_test(
+    fn_tree="jax.numpy.around",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_jax_numpy_around(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0]
+    )
