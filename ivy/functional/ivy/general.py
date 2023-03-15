@@ -2654,6 +2654,7 @@ def inplace_update(
     /,
     *,
     ensure_in_backend: bool = False,
+    keep_input_dtype: bool = False,
 ) -> ivy.Array:
     """
     Perform in-place update for the input array. This will always be performed on
@@ -2722,7 +2723,10 @@ def inplace_update(
 
     """
     return current_backend(x).inplace_update(
-        x, val, ensure_in_backend=ensure_in_backend
+        x, 
+        val, 
+        ensure_in_backend, 
+        keep_input_dtype,
     )
 
 
