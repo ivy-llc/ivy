@@ -9,4 +9,6 @@
     :show-inheritance:
 {% endblock %}
 
+{% block custom_content %}{% endblock %}
+
 .. discussion-links:: {% block discussion_module_name %}{{fullname}}{% endblock %}

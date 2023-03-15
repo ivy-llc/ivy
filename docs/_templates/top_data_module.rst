@@ -15,6 +15,7 @@
    :toctree: {{name}}
    :template: data_module.rst
    :hide-table:
+   :recursive:
 {% for submodule in modules -%}
 {% if base_module != submodule %}
    {{ submodule }}
