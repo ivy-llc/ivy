@@ -700,7 +700,6 @@ class _ContainerWithActivationExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
-    
 
     @staticmethod
     def static_selu(
@@ -820,7 +819,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
-         
+
     @staticmethod
     def static_hard_tanh(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -939,7 +938,6 @@ class _ContainerWithActivationExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
-    
 
     @staticmethod
     def static_hard_sigmoid(
@@ -1059,7 +1057,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
-        
+
     @staticmethod
     def static_softplus(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -1476,7 +1474,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
-    
+
     @staticmethod
     def static_hard_silu(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -1611,7 +1609,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
-        
+
     @staticmethod
     def static_log_sigmoid(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -1747,7 +1745,6 @@ class _ContainerWithActivationExperimental(ContainerBase):
             out=out,
         )
 
-
     @staticmethod
     def static_leaky_relu(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -1881,7 +1878,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        alpha: ivy.Container = 1.,
+        alpha: ivy.Container = 1.0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1945,7 +1942,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        alpha: ivy.Container = 1.,
+        alpha: ivy.Container = 1.0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2009,7 +2006,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        alpha: ivy.Container = 1.,
+        alpha: ivy.Container = 1.0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2073,7 +2070,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        alpha: ivy.Container = 1.,
+        alpha: ivy.Container = 1.0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2131,7 +2128,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
-        
+
     @staticmethod
     def static_glu(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
