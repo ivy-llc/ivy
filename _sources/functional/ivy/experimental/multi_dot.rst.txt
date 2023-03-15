@@ -5,9 +5,9 @@ multi_dot
 
 .. autofunction:: ivy.array.array_methods.multi_dot
 
-.. autofunction:: ivy.container.container_methods.static_multi_dot
-
 .. autofunction:: ivy.container.container_methods.multi_dot
+
+.. autofunction:: ivy.container.container_methods.static_multi_dot
 |
 | **Supported Frameworks:**
 

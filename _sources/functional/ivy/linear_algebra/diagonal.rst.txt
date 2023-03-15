@@ -5,9 +5,9 @@ diagonal
 
 .. autofunction:: ivy.array.array_methods.diagonal
 
-.. autofunction:: ivy.container.container_methods.static_diagonal
-
 .. autofunction:: ivy.container.container_methods.diagonal
+
+.. autofunction:: ivy.container.container_methods.static_diagonal
 |
 | **Supported Frameworks:**
 
