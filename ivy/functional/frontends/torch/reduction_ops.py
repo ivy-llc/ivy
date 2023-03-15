@@ -182,3 +182,19 @@ quantile.unsupported_dtypes = {
 @to_ivy_arrays_and_back
 def count_nonzero(input, dim=None):
     return ivy.count_nonzero(input, axis=dim).astype(ivy.int64)
+
+
+@to_ivy_arrays_and_back
+def logsumexp(input, dim, keepdim=False, *, out=None):
+    c = ivy.max(input, axis=dim, keepdims=True)
+    if ivy.get_num_dims(c) > 0:
+        c = ivy.where(ivy.isinf(c), ivy.zeros_like(c), c)
+    elif not ivy.isinf(c):
+        c = 0
+    exponential = ivy.exp(input - c)
+    sum = ivy.sum(exponential, axis=dim, keepdims=keepdim)
+    ret = ivy.log(sum)
+    if not keepdim:
+        c = ivy.squeeze(c, axis=dim)
+    ret = ivy.add(ret, c, out=out)
+    return ret
