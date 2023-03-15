@@ -22,6 +22,11 @@ def add(x1, x2):
 
 
 @to_ivy_arrays_and_back
+def angle(z, deg=False):
+    return ivy.angle(z, deg=deg)
+
+
+@to_ivy_arrays_and_back
 def diff(a, n=1, axis=-1, prepend=None, append=None):
     return ivy.diff(a, n=n, axis=axis, prepend=prepend, append=append, out=None)
 
@@ -503,3 +508,8 @@ def conj(x, /):
 def subtract(x1, x2):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.subtract(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def around(a, decimals=0, out=None):
+    return ivy.round(a, decimals=decimals, out=out)
