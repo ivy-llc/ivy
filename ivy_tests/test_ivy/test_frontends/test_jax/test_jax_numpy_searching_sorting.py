@@ -334,6 +334,6 @@ def test_jax_numpy_sort_complex(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        ag=x[0],
+        a=x[0],
         test_values=False,
     )
