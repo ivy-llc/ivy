@@ -733,6 +733,14 @@ class Tensor:
     def unbind(self, dim=0):
         return torch_frontend.unbind(self._ivy_array, dim=dim)
 
+    def bitwise_and_(self, other):
+        self.ivy_array = self.bitwise_and(other).ivy_array
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+    def atan2_(self, other):
+        self._ivy_array = self.atan2(other).ivy_array
+        return self
+
     # Special Methods #
     # -------------------#
 
