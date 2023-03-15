@@ -174,7 +174,6 @@ def test_jax_numpy_take_along_axis(
     )
 
 
-
 # Tril_indices
 @handle_frontend_test(
     fn_tree="jax.numpy.tril_indices",
