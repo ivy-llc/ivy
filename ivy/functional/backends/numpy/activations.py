@@ -115,3 +115,7 @@ def mish(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 
 mish.support_native_out = True
+
+
+def logsigmoid(input: np.ndarray) -> np.ndarray:
+    return -(np.log1p(np.exp(-(input))))

@@ -115,17 +115,9 @@ def tanh(input):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes(
-    {
-        "1.11.0 and below": (
-            "float16",
-            "bfloat16",
-        )
-    },
-    "torch",
-)
+@with_unsupported_dtypes({"1.13.0 and below": ("float16",)}, "torch")
 def logsigmoid(input):
-    return ivy.negative(ivy.softplus(ivy.negative(input)))
+    return ivy.logsigmoid(input)
 
 
 @to_ivy_arrays_and_back
