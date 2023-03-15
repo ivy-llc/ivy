@@ -184,7 +184,7 @@ def ceil(x):
 @to_ivy_arrays_and_back
 def float_power(x1, x2):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
-    return ivy.float_power(x1, x2)
+    return ivy.float_power(x1, x2).astype(x1.dtype, copy=False)
 
 
 @to_ivy_arrays_and_back
