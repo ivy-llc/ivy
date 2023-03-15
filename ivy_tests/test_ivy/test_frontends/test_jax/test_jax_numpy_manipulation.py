@@ -971,5 +971,5 @@ def test_jax_numpy_expand_dims(
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
-        axis = axis
+        axis=axis
     )
