@@ -291,7 +291,7 @@ def divide(
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     ret = torch.div(x1, x2)
-    if ivy.is_float_dtype(x1.dtype):
+    if ivy.is_float_dtype(x1.dtype) or ivy.is_complex_dtype(x1.dtype):
         ret = ivy.astype(ret, x1.dtype, copy=False)
     else:
         ret = ivy.astype(ret, ivy.default_float_dtype(as_native=True), copy=False)
