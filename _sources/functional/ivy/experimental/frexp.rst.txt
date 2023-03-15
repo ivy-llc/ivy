@@ -5,9 +5,9 @@ frexp
 
 .. autofunction:: ivy.array.array_methods.frexp
 
-.. autofunction:: ivy.container.container_methods.static_frexp
-
 .. autofunction:: ivy.container.container_methods.frexp
+
+.. autofunction:: ivy.container.container_methods.static_frexp
 |
 | **Supported Frameworks:**
 

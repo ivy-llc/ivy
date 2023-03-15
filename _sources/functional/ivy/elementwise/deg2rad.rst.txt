@@ -5,9 +5,9 @@ deg2rad
 
 .. autofunction:: ivy.array.array_methods.deg2rad
 
-.. autofunction:: ivy.container.container_methods.static_deg2rad
-
 .. autofunction:: ivy.container.container_methods.deg2rad
+
+.. autofunction:: ivy.container.container_methods.static_deg2rad
 |
 | **Supported Frameworks:**
 

@@ -1,140 +1,140 @@
 Experimental
 ============
 
-.. autoclass:: ivy.container.experimental._ContainerWithActivationExperimental
+.. autoclass:: ivy.container.experimental.ContainerWithActivationExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.container.experimental._ContainerWithConversionExperimental
+.. autoclass:: ivy.container.experimental.ContainerWithConversionExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.container.experimental._ContainerWithCreationExperimental
+.. autoclass:: ivy.container.experimental.ContainerWithCreationExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.container.experimental._ContainerWithData_typeExperimental
+.. autoclass:: ivy.container.experimental.ContainerWithData_typeExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.container.experimental._ContainerWithDeviceExperimental
+.. autoclass:: ivy.container.experimental.ContainerWithDeviceExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.container.experimental._ContainerWithElementWiseExperimental
+.. autoclass:: ivy.container.experimental.ContainerWithElementWiseExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.container.experimental._ContainerWithGeneralExperimental
+.. autoclass:: ivy.container.experimental.ContainerWithGeneralExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.container.experimental._ContainerWithGradientsExperimental
+.. autoclass:: ivy.container.experimental.ContainerWithGradientsExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.container.experimental._ContainerWithImageExperimental
+.. autoclass:: ivy.container.experimental.ContainerWithImageExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.container.experimental._ContainerWithLayersExperimental
+.. autoclass:: ivy.container.experimental.ContainerWithLayersExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.container.experimental._ContainerWithLinearAlgebraExperimental
+.. autoclass:: ivy.container.experimental.ContainerWithLinearAlgebraExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.container.experimental._ContainerWithLossesExperimental
+.. autoclass:: ivy.container.experimental.ContainerWithLossesExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.container.experimental._ContainerWithManipulationExperimental
+.. autoclass:: ivy.container.experimental.ContainerWithManipulationExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.container.experimental._ContainerWithNormsExperimental
+.. autoclass:: ivy.container.experimental.ContainerWithNormsExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.container.experimental._ContainerWithRandomExperimental
+.. autoclass:: ivy.container.experimental.ContainerWithRandomExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.container.experimental._ContainerWithSearchingExperimental
+.. autoclass:: ivy.container.experimental.ContainerWithSearchingExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.container.experimental._ContainerWithSetExperimental
+.. autoclass:: ivy.container.experimental.ContainerWithSetExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.container.experimental._ContainerWithSortingExperimental
+.. autoclass:: ivy.container.experimental.ContainerWithSortingExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.container.experimental._ContainerWithStatisticalExperimental
+.. autoclass:: ivy.container.experimental.ContainerWithStatisticalExperimental
    :members:
    :special-members: __init__
    :undoc-members:
    :show-inheritance:
 
 
-.. autoclass:: ivy.container.experimental._ContainerWithUtilityExperimental
+.. autoclass:: ivy.container.experimental.ContainerWithUtilityExperimental
    :members:
    :special-members: __init__
    :undoc-members:
