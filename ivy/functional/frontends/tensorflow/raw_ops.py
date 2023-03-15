@@ -74,7 +74,7 @@ def AvgPool(
     data_format="NHWC",
     name="AvgPool",
 ):
-    return ivy.avg_pool1d(
+    return ivy.avg_pool2d(
         value,
         ksize,
         strides,
