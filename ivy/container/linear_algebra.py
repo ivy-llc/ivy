@@ -1803,9 +1803,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
 
             Example
             -------
-            >>> x1 = ivy.array([[1, 2, 3], [4, 5, 6]])
-            >>> x2 = ivy.array([1, 2, 3])
-            >>> y = ivy.static_outer(x1, x2)
+            >>> x1 =ivy.Container( a=ivy.array([[1, 2, 3], [4, 5, 6]]))
+            >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]))
+            >>> y = ivy.Container.static_outer(x1, x2)
             >>> print(y)
             ivy.array([[[ 1.,  2.,  3.],
                         [ 2.,  4.,  6.],
