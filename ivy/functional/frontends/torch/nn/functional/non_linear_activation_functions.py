@@ -98,11 +98,15 @@ def softmax(input, dim=None, _stacklevel=3, dtype=None):
     },
     "torch",
 )
-def gelu(input, approximate=None):
-    if approximate is None:
-        approximate = False
-
-    return ivy.gelu(input, approximate=approximate)
+def gelu(input, *, approximate="none"):
+    if approximate == "none":
+        return ivy.gelu(input, approximate=False)
+    elif approximate == "tanh":
+        return ivy.gelu(input, approximate=True)
+    else:
+        raise ivy.utils.exceptions.IvyException(
+            "`approximate` argument must be either 'none' or 'tanh'."
+        )
 
 
 @to_ivy_arrays_and_back
