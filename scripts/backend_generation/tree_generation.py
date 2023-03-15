@@ -1,6 +1,7 @@
 import astunparse
 import ast
-import sys
+
+# import sys
 import os
 
 _reference_backend = ""
@@ -60,7 +61,7 @@ class FunctionBodyTransformer(ast.NodeTransformer):
     def visit_FunctionDef(self, node: ast.FunctionDef):
         if isinstance(node, ast.FunctionDef):
             # Remove private functions
-            if node.name.startswith("_"):
+            if node.name.startswith("_") and not node.name.endswith("__"):
                 self.generic_visit(node)
                 return None
             else:
@@ -110,20 +111,10 @@ class TypeHintTransformer(ast.NodeTransformer):
 
 # Modify the AST tree
 def _parse_module(tree: ast.Module) -> ast.Module:
-    _module_registered_type_hints = set()
     # Walk the AST tree and update type hints
-    for node in ast.walk(tree):
-        if isinstance(node, ast.FunctionDef):
-            # Update Return Type hints
-            if node.returns is not None:
-                transformer = TypeHintTransformer(type_mapping)
-                transformer.visit_Name(node.returns)
-                _module_registered_type_hints.update(transformer.registered_type_hints)
-        # Update Arguments Type hints
-        if isinstance(node, ast.arguments):
-            transformer = TypeHintTransformer(type_mapping)
-            transformer.visit_Name(node)
-            _module_registered_type_hints.update(transformer.registered_type_hints)
+    transformer = TypeHintTransformer(type_mapping)
+    transformer.visit_Name(tree)
+    print("Found:", transformer.registered_type_hints)
 
     # Update decorators, update function body, remove private functions
     FunctionBodyTransformer().visit_FunctionDef(tree)
@@ -176,6 +167,14 @@ def generate(backend_reference: str, target_backend: str):
     _copy_tree(backend_reference_path, backend_generation_path)
 
 
+# TODO remove
 if __name__ == "__main__":
-    # TODO remove
-    generate(sys.argv[1], sys.argv[2])
+
+    with open("func2.py") as ref_file:
+        # Read source file from reference backend
+        ref_str = ref_file.read()
+
+    tree = ast.parse(ref_str)
+    tree_to_write = _parse_module(tree)
+    print(astunparse.unparse(tree))
+    # generate(sys.argv[1], sys.argv[2])
