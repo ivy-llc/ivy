@@ -42,7 +42,7 @@ Check out our Google Colabs_ for some interactive demos!
 .. autosummary::
   :toctree: docs/data_classes
   :caption: Data classes
-  :template: data_module.rst
+  :template: top_data_module.rst
   :recursive:
   :hide-table:
 

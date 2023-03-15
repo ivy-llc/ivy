@@ -2,10 +2,11 @@
 
 {% block toctree %}{% endblock %}
 
-.. automodule:: {% block module_name %}{{fullname}}{% endblock %}
+.. automodule:: {% block module_name %}{{fullname}}{% endblock %}{% block options %}
     :members:
     :special-members: __init__
     :undoc-members:
     :show-inheritance:
+{% endblock %}
 
 .. discussion-links:: {% block discussion_module_name %}{{fullname}}{% endblock %}
