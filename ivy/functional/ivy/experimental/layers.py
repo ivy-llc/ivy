@@ -1108,17 +1108,17 @@ def _lanczos_kernel(radius, x):
 
 
 def _dim_scale_factor(input_size, output_size, align_corners, scales):
-    if output_size > 1:
-        if align_corners:
+    if align_corners:
+        if output_size > 1:
             dim_scale_factor = (input_size - 1) / (output_size - 1)
         else:
-            dim_scale_factor = (
-                input_size / (input_size * scales)
-                if scales is not None
-                else input_size / output_size
-            )
+            dim_scale_factor = 0.0
     else:
-        dim_scale_factor = 0.0
+        dim_scale_factor = (
+            input_size / (input_size * scales)
+            if scales is not None
+            else input_size / output_size
+        )
     return dim_scale_factor
 
 
@@ -1276,9 +1276,9 @@ def interpolate(
     size = _get_size(scale_factor, size, dims, x.shape)
     if recompute_scale_factor:
         scale_factor = None
-    else:
+    elif scale_factor is not None:
         scale_factor = (
-            [scale_factor] * dims if isinstance(scale_factor, int) else scale_factor
+            [scale_factor] * dims if isinstance(scale_factor, (int, float)) else scale_factor
         )
         scale_factor = (
             [scale_factor[0]] * dims
