@@ -592,7 +592,7 @@
 <span class="p">)</span>
 
 
-<div class="viewcode-block" id="logit"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/logit/logit_functional.html#ivy.functional.ivy.experimental.activations.logit">[docs]</a><span class="nd">@handle_out_argument</span>
+<div class="viewcode-block" id="logit"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/logit/logit_functional.html#ivy.functional.ivy.experimental.logit">[docs]</a><span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_exceptions</span>
@@ -602,7 +602,7 @@
     <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">eps</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;ivy.Array&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the logit of x, i.e. logit(x) = log(x / (1 - x)).</span>
@@ -639,7 +639,7 @@
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">logit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="prelu"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/prelu/prelu_functional.html#ivy.functional.ivy.experimental.activations.prelu">[docs]</a><span class="nd">@handle_out_argument</span>
+<div class="viewcode-block" id="prelu"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/prelu/prelu_functional.html#ivy.functional.ivy.experimental.prelu">[docs]</a><span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_exceptions</span>
@@ -649,7 +649,7 @@
     <span class="n">slope</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">],</span>
     <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;ivy.Array&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Prelu takes input data (Array) and slope array as input,</span>
@@ -696,7 +696,7 @@
         <span class="k">raise</span> <span class="n">IvyException</span></div>
 
 
-<div class="viewcode-block" id="thresholded_relu"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/thresholded_relu/thresholded_relu_functional.html#ivy.functional.ivy.experimental.activations.thresholded_relu">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="thresholded_relu"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/thresholded_relu/thresholded_relu_functional.html#ivy.functional.ivy.experimental.thresholded_relu">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
@@ -705,7 +705,7 @@
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">threshold</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">threshold</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Applies the rectified linear unit function with custom threshold.</span>
@@ -754,7 +754,7 @@
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">thresholded_relu</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="relu6"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/relu6/relu6_functional.html#ivy.functional.ivy.experimental.activations.relu6">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="relu6"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/relu6/relu6_functional.html#ivy.functional.ivy.experimental.relu6">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
@@ -810,7 +810,7 @@
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">relu6</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="batch_norm"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/batch_norm/batch_norm_functional.html#ivy.functional.ivy.experimental.activations.batch_norm">[docs]</a><span class="nd">@handle_out_argument</span>
+<div class="viewcode-block" id="batch_norm"><a class="viewcode-back" href="../../../../../functional/ivy/experimental/batch_norm/batch_norm_functional.html#ivy.functional.ivy.experimental.batch_norm">[docs]</a><span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_exceptions</span>

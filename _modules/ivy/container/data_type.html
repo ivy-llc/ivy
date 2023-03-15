@@ -587,8 +587,8 @@
 
 
 <span class="c1"># noinspection PyMissingConstructor</span>
-<div class="viewcode-block" id="ContainerWithDataTypes"><a class="viewcode-back" href="../../../data_classes/container/data_type/ContainerWithDataTypes.html#ivy.container.data_type.ContainerWithDataTypes">[docs]</a><span class="k">class</span> <span class="nc">ContainerWithDataTypes</span><span class="p">(</span><span class="n">ContainerBase</span><span class="p">):</span>
-<div class="viewcode-block" id="ContainerWithDataTypes.static_astype"><a class="viewcode-back" href="../../../data_classes/container/data_type/ContainerWithDataTypes.html#ivy.container.data_type.ContainerWithDataTypes.static_astype">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="_ContainerWithDataTypes"><a class="viewcode-back" href="../../../data_classes/container/data_type/_ContainerWithDataTypes.html#ivy.container.data_type._ContainerWithDataTypes">[docs]</a><span class="k">class</span> <span class="nc">_ContainerWithDataTypes</span><span class="p">(</span><span class="n">ContainerBase</span><span class="p">):</span>
+<div class="viewcode-block" id="_ContainerWithDataTypes.static_astype"><a class="viewcode-back" href="../../../data_classes/container/data_type/_ContainerWithDataTypes.html#ivy.container.data_type._ContainerWithDataTypes.static_astype">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_astype</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="n">dtype</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span>
@@ -659,7 +659,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithDataTypes.astype"><a class="viewcode-back" href="../../../data_classes/container/data_type/ContainerWithDataTypes.html#ivy.container.data_type.ContainerWithDataTypes.astype">[docs]</a>    <span class="k">def</span> <span class="nf">astype</span><span class="p">(</span>
+<div class="viewcode-block" id="_ContainerWithDataTypes.astype"><a class="viewcode-back" href="../../../data_classes/container/data_type/_ContainerWithDataTypes.html#ivy.container.data_type._ContainerWithDataTypes.astype">[docs]</a>    <span class="k">def</span> <span class="nf">astype</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="n">dtype</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -687,7 +687,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x</span>
+<span class="sd">        self</span>
 <span class="sd">            array to cast.</span>
 <span class="sd">        dtype</span>
 <span class="sd">            desired data type.</span>
@@ -731,7 +731,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithDataTypes.static_broadcast_arrays"><a class="viewcode-back" href="../../../data_classes/container/data_type/ContainerWithDataTypes.html#ivy.container.data_type.ContainerWithDataTypes.static_broadcast_arrays">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="_ContainerWithDataTypes.static_broadcast_arrays"><a class="viewcode-back" href="../../../data_classes/container/data_type/_ContainerWithDataTypes.html#ivy.container.data_type._ContainerWithDataTypes.static_broadcast_arrays">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_broadcast_arrays</span><span class="p">(</span>
         <span class="o">*</span><span class="n">arrays</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -808,7 +808,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithDataTypes.broadcast_arrays"><a class="viewcode-back" href="../../../data_classes/container/data_type/ContainerWithDataTypes.html#ivy.container.data_type.ContainerWithDataTypes.broadcast_arrays">[docs]</a>    <span class="k">def</span> <span class="nf">broadcast_arrays</span><span class="p">(</span>
+<div class="viewcode-block" id="_ContainerWithDataTypes.broadcast_arrays"><a class="viewcode-back" href="../../../data_classes/container/data_type/_ContainerWithDataTypes.html#ivy.container.data_type._ContainerWithDataTypes.broadcast_arrays">[docs]</a>    <span class="k">def</span> <span class="nf">broadcast_arrays</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">*</span><span class="n">arrays</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -882,7 +882,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithDataTypes.static_broadcast_to"><a class="viewcode-back" href="../../../data_classes/container/data_type/ContainerWithDataTypes.html#ivy.container.data_type.ContainerWithDataTypes.static_broadcast_to">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="_ContainerWithDataTypes.static_broadcast_to"><a class="viewcode-back" href="../../../data_classes/container/data_type/_ContainerWithDataTypes.html#ivy.container.data_type._ContainerWithDataTypes.static_broadcast_to">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_broadcast_to</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
@@ -942,7 +942,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithDataTypes.broadcast_to"><a class="viewcode-back" href="../../../data_classes/container/data_type/ContainerWithDataTypes.html#ivy.container.data_type.ContainerWithDataTypes.broadcast_to">[docs]</a>    <span class="k">def</span> <span class="nf">broadcast_to</span><span class="p">(</span>
+<div class="viewcode-block" id="_ContainerWithDataTypes.broadcast_to"><a class="viewcode-back" href="../../../data_classes/container/data_type/_ContainerWithDataTypes.html#ivy.container.data_type._ContainerWithDataTypes.broadcast_to">[docs]</a>    <span class="k">def</span> <span class="nf">broadcast_to</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="n">shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
@@ -1001,7 +1001,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithDataTypes.static_can_cast"><a class="viewcode-back" href="../../../data_classes/container/data_type/ContainerWithDataTypes.html#ivy.container.data_type.ContainerWithDataTypes.static_can_cast">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="_ContainerWithDataTypes.static_can_cast"><a class="viewcode-back" href="../../../data_classes/container/data_type/_ContainerWithDataTypes.html#ivy.container.data_type._ContainerWithDataTypes.static_can_cast">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_can_cast</span><span class="p">(</span>
         <span class="n">from_</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="n">to</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span>
@@ -1062,7 +1062,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithDataTypes.can_cast"><a class="viewcode-back" href="../../../data_classes/container/data_type/ContainerWithDataTypes.html#ivy.container.data_type.ContainerWithDataTypes.can_cast">[docs]</a>    <span class="k">def</span> <span class="nf">can_cast</span><span class="p">(</span>
+<div class="viewcode-block" id="_ContainerWithDataTypes.can_cast"><a class="viewcode-back" href="../../../data_classes/container/data_type/_ContainerWithDataTypes.html#ivy.container.data_type._ContainerWithDataTypes.can_cast">[docs]</a>    <span class="k">def</span> <span class="nf">can_cast</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="n">to</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1116,7 +1116,7 @@
             <span class="bp">self</span><span class="p">,</span> <span class="n">to</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">,</span> <span class="n">map_sequences</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithDataTypes.static_dtype"><a class="viewcode-back" href="../../../data_classes/container/data_type/ContainerWithDataTypes.html#ivy.container.data_type.ContainerWithDataTypes.static_dtype">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="_ContainerWithDataTypes.static_dtype"><a class="viewcode-back" href="../../../data_classes/container/data_type/_ContainerWithDataTypes.html#ivy.container.data_type._ContainerWithDataTypes.static_dtype">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_dtype</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -1138,7 +1138,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithDataTypes.dtype"><a class="viewcode-back" href="../../../data_classes/container/data_type/ContainerWithDataTypes.html#ivy.container.data_type.ContainerWithDataTypes.dtype">[docs]</a>    <span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span>
+<div class="viewcode-block" id="_ContainerWithDataTypes.dtype"><a class="viewcode-back" href="../../../data_classes/container/data_type/_ContainerWithDataTypes.html#ivy.container.data_type._ContainerWithDataTypes.dtype">[docs]</a>    <span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">as_native</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -1169,7 +1169,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithDataTypes.static_default_float_dtype"><a class="viewcode-back" href="../../../data_classes/container/data_type/ContainerWithDataTypes.html#ivy.container.data_type.ContainerWithDataTypes.static_default_float_dtype">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="_ContainerWithDataTypes.static_default_float_dtype"><a class="viewcode-back" href="../../../data_classes/container/data_type/_ContainerWithDataTypes.html#ivy.container.data_type._ContainerWithDataTypes.static_default_float_dtype">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_default_float_dtype</span><span class="p">(</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="nb">input</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1191,7 +1191,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithDataTypes.static_default_complex_dtype"><a class="viewcode-back" href="../../../data_classes/container/data_type/ContainerWithDataTypes.html#ivy.container.data_type.ContainerWithDataTypes.static_default_complex_dtype">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="_ContainerWithDataTypes.static_default_complex_dtype"><a class="viewcode-back" href="../../../data_classes/container/data_type/_ContainerWithDataTypes.html#ivy.container.data_type._ContainerWithDataTypes.static_default_complex_dtype">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_default_complex_dtype</span><span class="p">(</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="nb">input</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1213,7 +1213,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithDataTypes.static_function_supported_dtypes"><a class="viewcode-back" href="../../../data_classes/container/data_type/ContainerWithDataTypes.html#ivy.container.data_type.ContainerWithDataTypes.static_function_supported_dtypes">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="_ContainerWithDataTypes.static_function_supported_dtypes"><a class="viewcode-back" href="../../../data_classes/container/data_type/_ContainerWithDataTypes.html#ivy.container.data_type._ContainerWithDataTypes.static_function_supported_dtypes">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_function_supported_dtypes</span><span class="p">(</span>
         <span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1230,7 +1230,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithDataTypes.static_function_unsupported_dtypes"><a class="viewcode-back" href="../../../data_classes/container/data_type/ContainerWithDataTypes.html#ivy.container.data_type.ContainerWithDataTypes.static_function_unsupported_dtypes">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="_ContainerWithDataTypes.static_function_unsupported_dtypes"><a class="viewcode-back" href="../../../data_classes/container/data_type/_ContainerWithDataTypes.html#ivy.container.data_type._ContainerWithDataTypes.static_function_unsupported_dtypes">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_function_unsupported_dtypes</span><span class="p">(</span>
         <span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1247,7 +1247,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithDataTypes.static_finfo"><a class="viewcode-back" href="../../../data_classes/container/data_type/ContainerWithDataTypes.html#ivy.container.data_type.ContainerWithDataTypes.static_finfo">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="_ContainerWithDataTypes.static_finfo"><a class="viewcode-back" href="../../../data_classes/container/data_type/_ContainerWithDataTypes.html#ivy.container.data_type._ContainerWithDataTypes.static_finfo">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_finfo</span><span class="p">(</span>
         <span class="nb">type</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
@@ -1295,7 +1295,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithDataTypes.finfo"><a class="viewcode-back" href="../../../data_classes/container/data_type/ContainerWithDataTypes.html#ivy.container.data_type.ContainerWithDataTypes.finfo">[docs]</a>    <span class="k">def</span> <span class="nf">finfo</span><span class="p">(</span>
+<div class="viewcode-block" id="_ContainerWithDataTypes.finfo"><a class="viewcode-back" href="../../../data_classes/container/data_type/_ContainerWithDataTypes.html#ivy.container.data_type._ContainerWithDataTypes.finfo">[docs]</a>    <span class="k">def</span> <span class="nf">finfo</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -1340,7 +1340,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithDataTypes.static_iinfo"><a class="viewcode-back" href="../../../data_classes/container/data_type/ContainerWithDataTypes.html#ivy.container.data_type.ContainerWithDataTypes.static_iinfo">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="_ContainerWithDataTypes.static_iinfo"><a class="viewcode-back" href="../../../data_classes/container/data_type/_ContainerWithDataTypes.html#ivy.container.data_type._ContainerWithDataTypes.static_iinfo">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_iinfo</span><span class="p">(</span>
         <span class="nb">type</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
@@ -1404,7 +1404,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithDataTypes.iinfo"><a class="viewcode-back" href="../../../data_classes/container/data_type/ContainerWithDataTypes.html#ivy.container.data_type.ContainerWithDataTypes.iinfo">[docs]</a>    <span class="k">def</span> <span class="nf">iinfo</span><span class="p">(</span>
+<div class="viewcode-block" id="_ContainerWithDataTypes.iinfo"><a class="viewcode-back" href="../../../data_classes/container/data_type/_ContainerWithDataTypes.html#ivy.container.data_type._ContainerWithDataTypes.iinfo">[docs]</a>    <span class="k">def</span> <span class="nf">iinfo</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -1471,7 +1471,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithDataTypes.static_is_bool_dtype"><a class="viewcode-back" href="../../../data_classes/container/data_type/ContainerWithDataTypes.html#ivy.container.data_type.ContainerWithDataTypes.static_is_bool_dtype">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="_ContainerWithDataTypes.static_is_bool_dtype"><a class="viewcode-back" href="../../../data_classes/container/data_type/_ContainerWithDataTypes.html#ivy.container.data_type._ContainerWithDataTypes.static_is_bool_dtype">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_is_bool_dtype</span><span class="p">(</span>
         <span class="n">dtype_in</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
@@ -1489,7 +1489,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithDataTypes.is_bool_dtype"><a class="viewcode-back" href="../../../data_classes/container/data_type/ContainerWithDataTypes.html#ivy.container.data_type.ContainerWithDataTypes.is_bool_dtype">[docs]</a>    <span class="k">def</span> <span class="nf">is_bool_dtype</span><span class="p">(</span>
+<div class="viewcode-block" id="_ContainerWithDataTypes.is_bool_dtype"><a class="viewcode-back" href="../../../data_classes/container/data_type/_ContainerWithDataTypes.html#ivy.container.data_type._ContainerWithDataTypes.is_bool_dtype">[docs]</a>    <span class="k">def</span> <span class="nf">is_bool_dtype</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1505,7 +1505,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithDataTypes.static_is_float_dtype"><a class="viewcode-back" href="../../../data_classes/container/data_type/ContainerWithDataTypes.html#ivy.container.data_type.ContainerWithDataTypes.static_is_float_dtype">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="_ContainerWithDataTypes.static_is_float_dtype"><a class="viewcode-back" href="../../../data_classes/container/data_type/_ContainerWithDataTypes.html#ivy.container.data_type._ContainerWithDataTypes.static_is_float_dtype">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_is_float_dtype</span><span class="p">(</span>
         <span class="n">dtype_in</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
@@ -1577,7 +1577,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithDataTypes.is_float_dtype"><a class="viewcode-back" href="../../../data_classes/container/data_type/ContainerWithDataTypes.html#ivy.container.data_type.ContainerWithDataTypes.is_float_dtype">[docs]</a>    <span class="k">def</span> <span class="nf">is_float_dtype</span><span class="p">(</span>
+<div class="viewcode-block" id="_ContainerWithDataTypes.is_float_dtype"><a class="viewcode-back" href="../../../data_classes/container/data_type/_ContainerWithDataTypes.html#ivy.container.data_type._ContainerWithDataTypes.is_float_dtype">[docs]</a>    <span class="k">def</span> <span class="nf">is_float_dtype</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1651,7 +1651,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithDataTypes.static_is_int_dtype"><a class="viewcode-back" href="../../../data_classes/container/data_type/ContainerWithDataTypes.html#ivy.container.data_type.ContainerWithDataTypes.static_is_int_dtype">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="_ContainerWithDataTypes.static_is_int_dtype"><a class="viewcode-back" href="../../../data_classes/container/data_type/_ContainerWithDataTypes.html#ivy.container.data_type._ContainerWithDataTypes.static_is_int_dtype">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_is_int_dtype</span><span class="p">(</span>
         <span class="n">dtype_in</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
@@ -1669,7 +1669,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithDataTypes.is_int_dtype"><a class="viewcode-back" href="../../../data_classes/container/data_type/ContainerWithDataTypes.html#ivy.container.data_type.ContainerWithDataTypes.is_int_dtype">[docs]</a>    <span class="k">def</span> <span class="nf">is_int_dtype</span><span class="p">(</span>
+<div class="viewcode-block" id="_ContainerWithDataTypes.is_int_dtype"><a class="viewcode-back" href="../../../data_classes/container/data_type/_ContainerWithDataTypes.html#ivy.container.data_type._ContainerWithDataTypes.is_int_dtype">[docs]</a>    <span class="k">def</span> <span class="nf">is_int_dtype</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1685,7 +1685,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithDataTypes.static_is_uint_dtype"><a class="viewcode-back" href="../../../data_classes/container/data_type/ContainerWithDataTypes.html#ivy.container.data_type.ContainerWithDataTypes.static_is_uint_dtype">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="_ContainerWithDataTypes.static_is_uint_dtype"><a class="viewcode-back" href="../../../data_classes/container/data_type/_ContainerWithDataTypes.html#ivy.container.data_type._ContainerWithDataTypes.static_is_uint_dtype">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_is_uint_dtype</span><span class="p">(</span>
         <span class="n">dtype_in</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1702,7 +1702,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithDataTypes.is_uint_dtype"><a class="viewcode-back" href="../../../data_classes/container/data_type/ContainerWithDataTypes.html#ivy.container.data_type.ContainerWithDataTypes.is_uint_dtype">[docs]</a>    <span class="k">def</span> <span class="nf">is_uint_dtype</span><span class="p">(</span>
+<div class="viewcode-block" id="_ContainerWithDataTypes.is_uint_dtype"><a class="viewcode-back" href="../../../data_classes/container/data_type/_ContainerWithDataTypes.html#ivy.container.data_type._ContainerWithDataTypes.is_uint_dtype">[docs]</a>    <span class="k">def</span> <span class="nf">is_uint_dtype</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -1717,7 +1717,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithDataTypes.static_is_complex_dtype"><a class="viewcode-back" href="../../../data_classes/container/data_type/ContainerWithDataTypes.html#ivy.container.data_type.ContainerWithDataTypes.static_is_complex_dtype">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="_ContainerWithDataTypes.static_is_complex_dtype"><a class="viewcode-back" href="../../../data_classes/container/data_type/_ContainerWithDataTypes.html#ivy.container.data_type._ContainerWithDataTypes.static_is_complex_dtype">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_is_complex_dtype</span><span class="p">(</span>
         <span class="n">dtype_in</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
@@ -1777,7 +1777,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithDataTypes.is_complex_dtype"><a class="viewcode-back" href="../../../data_classes/container/data_type/ContainerWithDataTypes.html#ivy.container.data_type.ContainerWithDataTypes.is_complex_dtype">[docs]</a>    <span class="k">def</span> <span class="nf">is_complex_dtype</span><span class="p">(</span>
+<div class="viewcode-block" id="_ContainerWithDataTypes.is_complex_dtype"><a class="viewcode-back" href="../../../data_classes/container/data_type/_ContainerWithDataTypes.html#ivy.container.data_type._ContainerWithDataTypes.is_complex_dtype">[docs]</a>    <span class="k">def</span> <span class="nf">is_complex_dtype</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1839,7 +1839,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithDataTypes.static_result_type"><a class="viewcode-back" href="../../../data_classes/container/data_type/ContainerWithDataTypes.html#ivy.container.data_type.ContainerWithDataTypes.static_result_type">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="_ContainerWithDataTypes.static_result_type"><a class="viewcode-back" href="../../../data_classes/container/data_type/_ContainerWithDataTypes.html#ivy.container.data_type._ContainerWithDataTypes.static_result_type">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_result_type</span><span class="p">(</span>
         <span class="o">*</span><span class="n">arrays_and_dtypes</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1854,8 +1854,6 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        self</span>
-<span class="sd">            input container from which to cast.</span>
 <span class="sd">        arrays_and_dtypes</span>
 <span class="sd">            an arbitrary number of input arrays and/or dtypes.</span>
 <span class="sd">        key_chains</span>
@@ -1897,7 +1895,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithDataTypes.result_type"><a class="viewcode-back" href="../../../data_classes/container/data_type/ContainerWithDataTypes.html#ivy.container.data_type.ContainerWithDataTypes.result_type">[docs]</a>    <span class="k">def</span> <span class="nf">result_type</span><span class="p">(</span>
+<div class="viewcode-block" id="_ContainerWithDataTypes.result_type"><a class="viewcode-back" href="../../../data_classes/container/data_type/_ContainerWithDataTypes.html#ivy.container.data_type._ContainerWithDataTypes.result_type">[docs]</a>    <span class="k">def</span> <span class="nf">result_type</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">*</span><span class="n">arrays_and_dtypes</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>

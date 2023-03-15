@@ -5,6 +5,8 @@ tensorsolve
 
 .. autofunction:: ivy.array.array_methods.tensorsolve
 
+.. autofunction:: ivy.container.container_methods.static_tensorsolve
+
 .. autofunction:: ivy.container.container_methods.tensorsolve
 |
 | **Supported Frameworks:**
@@ -30,6 +32,7 @@ tensorsolve
    :caption: tensorsolve
 
    tensorsolve/tensorsolve_functional.rst
+   tensorsolve/static_tensorsolve_container.rst
    tensorsolve/tensorsolve_array.rst
    tensorsolve/tensorsolve_container.rst
 

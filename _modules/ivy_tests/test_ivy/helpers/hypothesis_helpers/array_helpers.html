@@ -1095,7 +1095,7 @@
 <span class="sd">        a list of arrays, and an axis.</span>
 
 <span class="sd">    Examples</span>
-<span class="sd">    -------</span>
+<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; dtype_values_axis()</span>
 <span class="sd">    ([&#39;int16&#39;], [array(29788, dtype=int16)])</span>
 <span class="sd">    ([&#39;complex128&#39;], [array(1.62222885e+156-2.68281172e-257j)])</span>
@@ -1196,6 +1196,7 @@
     <span class="n">max_dim_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
     <span class="n">first_dimension_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">indices_same_dims</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">valid_bounds</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generates two arrays x &amp; indices, the values in the indices array are indices</span>
 <span class="sd">    of the array x. Draws an integers randomly from the minimum and maximum number of</span>
@@ -1227,6 +1228,8 @@
 <span class="sd">        The maximum size of the dimensions of the arrays.</span>
 <span class="sd">    indices_same_dims</span>
 <span class="sd">        Set x and indices dimensions to be the same</span>
+<span class="sd">    valid_bounds</span>
+<span class="sd">        If False, the strategy may produce out-of-bounds indices.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1340,6 +1343,8 @@
         <span class="n">max_axis</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">x_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">max_axis</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">x_shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">valid_bounds</span><span class="p">:</span>
+        <span class="n">max_axis</span> <span class="o">=</span> <span class="n">max_axis</span> <span class="o">+</span> <span class="mi">10</span>
     <span class="n">indices_dtype</span><span class="p">,</span> <span class="n">indices</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span>
         <span class="n">dtype_and_values</span><span class="p">(</span>
             <span class="n">available_dtypes</span><span class="o">=</span><span class="n">indices_dtypes</span><span class="p">,</span>

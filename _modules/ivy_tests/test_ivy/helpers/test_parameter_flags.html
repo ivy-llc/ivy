@@ -576,25 +576,29 @@
             <article class="bd-article" role="main">
               
   <h1>Source code for ivy_tests.test_ivy.helpers.test_parameter_flags</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">hypothesis</span> <span class="kn">import</span> <span class="n">strategies</span> <span class="k">as</span> <span class="n">st</span>  <span class="c1"># NOQA</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="nb">globals</span>
+<span></span><span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">from</span> <span class="nn">hypothesis</span> <span class="kn">import</span> <span class="n">strategies</span> <span class="k">as</span> <span class="n">st</span>  <span class="c1"># NOQA</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="nb">globals</span> <span class="k">as</span> <span class="n">test_globals</span>
+
+<span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">from</span> <span class="nn">ivy.functional.ivy.gradients</span> <span class="kn">import</span> <span class="n">_variable</span>
 
 
 <span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
 <span class="k">def</span> <span class="nf">_as_varaible_strategy</span><span class="p">(</span><span class="n">draw</span><span class="p">):</span>
     <span class="k">if</span> <span class="p">(</span>
-        <span class="nb">globals</span><span class="o">.</span><span class="n">CURRENT_BACKEND</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">globals</span><span class="o">.</span><span class="n">_Notsetval</span>
-        <span class="ow">and</span> <span class="nb">globals</span><span class="o">.</span><span class="n">CURRENT_BACKEND</span><span class="p">()</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;numpy&quot;</span>
+        <span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_BACKEND</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">_Notsetval</span>
+        <span class="ow">and</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_BACKEND</span><span class="p">()</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;numpy&quot;</span>
     <span class="p">):</span>
         <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">just</span><span class="p">([</span><span class="kc">False</span><span class="p">]))</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">globals</span><span class="o">.</span><span class="n">CURRENT_FRONTEND_STR</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_FRONTEND_STR</span><span class="p">:</span>
         <span class="c1"># non multiversion changes go here</span>
         <span class="k">if</span> <span class="p">(</span>
-            <span class="nb">globals</span><span class="o">.</span><span class="n">CURRENT_FRONTEND</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">globals</span><span class="o">.</span><span class="n">_Notsetval</span>
-            <span class="ow">and</span> <span class="nb">globals</span><span class="o">.</span><span class="n">CURRENT_FRONTEND</span><span class="p">()</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;numpy&quot;</span>
+            <span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_FRONTEND</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">_Notsetval</span>
+            <span class="ow">and</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_FRONTEND</span><span class="p">()</span><span class="o">.</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;numpy&quot;</span>
         <span class="p">):</span>
             <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">just</span><span class="p">([</span><span class="kc">False</span><span class="p">]))</span>
-    <span class="k">elif</span> <span class="nb">globals</span><span class="o">.</span><span class="n">CURRENT_FRONTEND_STR</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;numpy&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">test_globals</span><span class="o">.</span><span class="n">CURRENT_FRONTEND_STR</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;numpy&quot;</span><span class="p">:</span>
         <span class="c1"># multiversion changes go here</span>
         <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">just</span><span class="p">([</span><span class="kc">False</span><span class="p">]))</span>
     <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">lists</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span> <span class="n">min_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
@@ -635,7 +639,17 @@
 <span class="c1"># Strategy Helpers #</span>
 
 
-<div class="viewcode-block" id="FunctionTestFlags"><a class="viewcode-back" href="../../../../testing/test_parameter_flags/FunctionTestFlags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.FunctionTestFlags">[docs]</a><span class="k">class</span> <span class="nc">FunctionTestFlags</span><span class="p">:</span>
+<div class="viewcode-block" id="as_cont"><a class="viewcode-back" href="../../../../testing/test_parameter_flags/as_cont.html#ivy_tests.test_ivy.helpers.test_parameter_flags.as_cont">[docs]</a><span class="k">def</span> <span class="nf">as_cont</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns x as an Ivy Container, containing x at all its leaves.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">({</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">}})</span></div>
+
+
+<div class="viewcode-block" id="TestFlags"><a class="viewcode-back" href="../../../../testing/test_parameter_flags/TestFlags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.TestFlags">[docs]</a><span class="k">class</span> <span class="nc">TestFlags</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
+<div class="viewcode-block" id="TestFlags.apply_flags"><a class="viewcode-back" href="../../../../testing/test_parameter_flags/TestFlags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.TestFlags.apply_flags">[docs]</a>    <span class="k">def</span> <span class="nf">apply_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args_to_iterate</span><span class="p">,</span> <span class="n">input_dtypes</span><span class="p">,</span> <span class="n">on_device</span><span class="p">,</span> <span class="n">offset</span><span class="p">):</span>
+        <span class="k">pass</span></div></div>
+
+
+<div class="viewcode-block" id="FunctionTestFlags"><a class="viewcode-back" href="../../../../testing/test_parameter_flags/FunctionTestFlags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.FunctionTestFlags">[docs]</a><span class="k">class</span> <span class="nc">FunctionTestFlags</span><span class="p">(</span><span class="n">TestFlags</span><span class="p">):</span>
 <div class="viewcode-block" id="FunctionTestFlags.__init__"><a class="viewcode-back" href="../../../../testing/test_parameter_flags/FunctionTestFlags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.FunctionTestFlags.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">num_positional_args</span><span class="p">,</span>
@@ -655,6 +669,19 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">as_variable</span> <span class="o">=</span> <span class="n">as_variable</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">test_gradients</span> <span class="o">=</span> <span class="n">test_gradients</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">test_compile</span> <span class="o">=</span> <span class="n">test_compile</span></div>
+
+<div class="viewcode-block" id="FunctionTestFlags.apply_flags"><a class="viewcode-back" href="../../../../testing/test_parameter_flags/FunctionTestFlags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.FunctionTestFlags.apply_flags">[docs]</a>    <span class="k">def</span> <span class="nf">apply_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args_to_iterate</span><span class="p">,</span> <span class="n">input_dtypes</span><span class="p">,</span> <span class="n">on_device</span><span class="p">,</span> <span class="n">offset</span><span class="p">):</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">entry</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">args_to_iterate</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">offset</span><span class="p">):</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">input_dtypes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">on_device</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">as_variable</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">_variable</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">native_arrays</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_native</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">as_cont</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span>
@@ -700,7 +727,7 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="FrontendFunctionTestFlags"><a class="viewcode-back" href="../../../../testing/test_parameter_flags/FrontendFunctionTestFlags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.FrontendFunctionTestFlags">[docs]</a><span class="k">class</span> <span class="nc">FrontendFunctionTestFlags</span><span class="p">:</span>
+<div class="viewcode-block" id="FrontendFunctionTestFlags"><a class="viewcode-back" href="../../../../testing/test_parameter_flags/FrontendFunctionTestFlags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.FrontendFunctionTestFlags">[docs]</a><span class="k">class</span> <span class="nc">FrontendFunctionTestFlags</span><span class="p">(</span><span class="n">TestFlags</span><span class="p">):</span>
 <div class="viewcode-block" id="FrontendFunctionTestFlags.__init__"><a class="viewcode-back" href="../../../../testing/test_parameter_flags/FrontendFunctionTestFlags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.FrontendFunctionTestFlags.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">num_positional_args</span><span class="p">,</span>
@@ -714,6 +741,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">inplace</span> <span class="o">=</span> <span class="n">inplace</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">native_arrays</span> <span class="o">=</span> <span class="n">native_arrays</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">as_variable</span> <span class="o">=</span> <span class="n">as_variable</span></div>
+
+<div class="viewcode-block" id="FrontendFunctionTestFlags.apply_flags"><a class="viewcode-back" href="../../../../testing/test_parameter_flags/FrontendFunctionTestFlags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.FrontendFunctionTestFlags.apply_flags">[docs]</a>    <span class="k">def</span> <span class="nf">apply_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args_to_iterate</span><span class="p">,</span> <span class="n">input_dtypes</span><span class="p">,</span> <span class="n">on_device</span><span class="p">,</span> <span class="n">offset</span><span class="p">):</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">entry</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">args_to_iterate</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">offset</span><span class="p">):</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">input_dtypes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">on_device</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">as_variable</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">_variable</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">native_arrays</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_native</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span>
@@ -750,7 +788,58 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="MethodTestFlags"><a class="viewcode-back" href="../../../../testing/test_parameter_flags/MethodTestFlags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.MethodTestFlags">[docs]</a><span class="k">class</span> <span class="nc">MethodTestFlags</span><span class="p">:</span>
+<div class="viewcode-block" id="InitMethodTestFlags"><a class="viewcode-back" href="../../../../testing/test_parameter_flags/InitMethodTestFlags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.InitMethodTestFlags">[docs]</a><span class="k">class</span> <span class="nc">InitMethodTestFlags</span><span class="p">(</span><span class="n">TestFlags</span><span class="p">):</span>
+<div class="viewcode-block" id="InitMethodTestFlags.__init__"><a class="viewcode-back" href="../../../../testing/test_parameter_flags/InitMethodTestFlags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.InitMethodTestFlags.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">num_positional_args</span><span class="p">,</span>
+        <span class="n">as_variable</span><span class="p">,</span>
+        <span class="n">native_arrays</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_positional_args</span> <span class="o">=</span> <span class="n">num_positional_args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">native_arrays</span> <span class="o">=</span> <span class="n">native_arrays</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">as_variable</span> <span class="o">=</span> <span class="n">as_variable</span></div>
+
+<div class="viewcode-block" id="InitMethodTestFlags.apply_flags"><a class="viewcode-back" href="../../../../testing/test_parameter_flags/InitMethodTestFlags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.InitMethodTestFlags.apply_flags">[docs]</a>    <span class="k">def</span> <span class="nf">apply_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args_to_iterate</span><span class="p">,</span> <span class="n">input_dtypes</span><span class="p">,</span> <span class="n">on_device</span><span class="p">,</span> <span class="n">offset</span><span class="p">):</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">entry</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">args_to_iterate</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">offset</span><span class="p">):</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">input_dtypes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">on_device</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">as_variable</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">_variable</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">native_arrays</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_native</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;num_positional_args=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">num_positional_args</span><span class="si">}</span><span class="s2">. &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;native_arrays=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">native_arrays</span><span class="si">}</span><span class="s2">. &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;as_variable=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">as_variable</span><span class="si">}</span><span class="s2">. &quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="init_method_flags"><a class="viewcode-back" href="../../../../testing/test_parameter_flags/init_method_flags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.init_method_flags">[docs]</a><span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
+<span class="k">def</span> <span class="nf">init_method_flags</span><span class="p">(</span>
+    <span class="n">draw</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">num_positional_args</span><span class="p">,</span>
+    <span class="n">as_variable</span><span class="p">,</span>
+    <span class="n">native_arrays</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="k">return</span> <span class="n">draw</span><span class="p">(</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">builds</span><span class="p">(</span>
+            <span class="n">InitMethodTestFlags</span><span class="p">,</span>
+            <span class="n">num_positional_args</span><span class="o">=</span><span class="n">num_positional_args</span><span class="p">,</span>
+            <span class="n">as_variable</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
+            <span class="n">native_arrays</span><span class="o">=</span><span class="n">native_arrays</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MethodTestFlags"><a class="viewcode-back" href="../../../../testing/test_parameter_flags/MethodTestFlags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.MethodTestFlags">[docs]</a><span class="k">class</span> <span class="nc">MethodTestFlags</span><span class="p">(</span><span class="n">TestFlags</span><span class="p">):</span>
 <div class="viewcode-block" id="MethodTestFlags.__init__"><a class="viewcode-back" href="../../../../testing/test_parameter_flags/MethodTestFlags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.MethodTestFlags.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">num_positional_args</span><span class="p">,</span>
@@ -761,14 +850,27 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">num_positional_args</span> <span class="o">=</span> <span class="n">num_positional_args</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">native_arrays</span> <span class="o">=</span> <span class="n">native_arrays</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">as_variable</span> <span class="o">=</span> <span class="n">as_variable</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">container_flags</span> <span class="o">=</span> <span class="n">container_flags</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">container</span> <span class="o">=</span> <span class="n">container_flags</span></div>
+
+<div class="viewcode-block" id="MethodTestFlags.apply_flags"><a class="viewcode-back" href="../../../../testing/test_parameter_flags/MethodTestFlags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.MethodTestFlags.apply_flags">[docs]</a>    <span class="k">def</span> <span class="nf">apply_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args_to_iterate</span><span class="p">,</span> <span class="n">input_dtypes</span><span class="p">,</span> <span class="n">on_device</span><span class="p">,</span> <span class="n">offset</span><span class="p">):</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">entry</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">args_to_iterate</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">offset</span><span class="p">):</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">input_dtypes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">on_device</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">as_variable</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">_variable</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">native_arrays</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_native</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">as_cont</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;num_positional_args=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">num_positional_args</span><span class="si">}</span><span class="s2">. &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;native_arrays=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">native_arrays</span><span class="si">}</span><span class="s2">. &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;as_variable=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">as_variable</span><span class="si">}</span><span class="s2">. &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;container_flags=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">container_flags</span><span class="si">}</span><span class="s2">. &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;container_flags=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="si">}</span><span class="s2">. &quot;</span>
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -795,7 +897,7 @@
     <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="FrontendMethodTestFlags"><a class="viewcode-back" href="../../../../testing/test_parameter_flags/FrontendMethodTestFlags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.FrontendMethodTestFlags">[docs]</a><span class="k">class</span> <span class="nc">FrontendMethodTestFlags</span><span class="p">:</span>
+<div class="viewcode-block" id="FrontendMethodTestFlags"><a class="viewcode-back" href="../../../../testing/test_parameter_flags/FrontendMethodTestFlags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.FrontendMethodTestFlags">[docs]</a><span class="k">class</span> <span class="nc">FrontendMethodTestFlags</span><span class="p">(</span><span class="n">TestFlags</span><span class="p">):</span>
 <div class="viewcode-block" id="FrontendMethodTestFlags.__init__"><a class="viewcode-back" href="../../../../testing/test_parameter_flags/FrontendMethodTestFlags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.FrontendMethodTestFlags.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">num_positional_args</span><span class="p">,</span>
@@ -805,6 +907,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">num_positional_args</span> <span class="o">=</span> <span class="n">num_positional_args</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">native_arrays</span> <span class="o">=</span> <span class="n">native_arrays</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">as_variable</span> <span class="o">=</span> <span class="n">as_variable</span></div>
+
+<div class="viewcode-block" id="FrontendMethodTestFlags.apply_flags"><a class="viewcode-back" href="../../../../testing/test_parameter_flags/FrontendMethodTestFlags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.FrontendMethodTestFlags.apply_flags">[docs]</a>    <span class="k">def</span> <span class="nf">apply_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args_to_iterate</span><span class="p">,</span> <span class="n">input_dtypes</span><span class="p">,</span> <span class="n">on_device</span><span class="p">,</span> <span class="n">offset</span><span class="p">):</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">entry</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">args_to_iterate</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">offset</span><span class="p">):</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">input_dtypes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">on_device</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">as_variable</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">_variable</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">native_arrays</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_native</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span>
