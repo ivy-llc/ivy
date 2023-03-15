@@ -313,3 +313,65 @@ def test_jax_numpy_count_nonzero(
         axis=axis,
         keepdims=keep_dims,
     )
+
+
+# flatnonzero
+@handle_frontend_test(
+    fn_tree="jax.numpy.flatnonzero",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_flatnonzero(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+    )
+
+
+# sort_complex
+@handle_frontend_test(
+    fn_tree="jax.numpy.sort_complex",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        min_dim_size=1,
+        min_axis=-1,
+        max_axis=0,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_sort_complex(
+    *,
+    dtype_x_axis,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    keep_dims,
+):
+    input_dtype, x, axis = dtype_x_axis
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        axis=axis,
+        keepdims=keep_dims,
+        test_values=False,
+)

@@ -135,8 +135,8 @@ def conv2d_transpose(
     /,
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    data_format: Optional[str] = "NHWC",
-    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
+    data_format: str = "NHWC",
+    dilations: Union[int, Tuple[int, int]] = 1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     strides = [strides] * 2 if isinstance(strides, int) else strides
@@ -167,8 +167,8 @@ def depthwise_conv2d(
     padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
-    data_format: Optional[str] = "NHWC",
-    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
+    data_format: str = "NHWC",
+    dilations: Union[int, Tuple[int, int]] = 1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     strides = [strides] * 2 if isinstance(strides, int) else strides
@@ -196,8 +196,8 @@ def conv3d(
     padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
-    data_format: Optional[str] = "NDHWC",
-    dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
+    data_format: str = "NDHWC",
+    dilations: Union[int, Tuple[int, int, int]] = 1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     strides = [strides] * 3 if isinstance(strides, int) else strides
@@ -221,8 +221,8 @@ def conv3d_transpose(
     /,
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
-    data_format: Optional[str] = "NDHWC",
+    dilations: Union[int, Tuple[int, int, int]] = 1,
+    data_format: str = "NDHWC",
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     strides = [strides] * 3 if isinstance(strides, int) else strides
@@ -262,15 +262,11 @@ def conv_general_dilated(
     padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
-    dims: Optional[int] = 2,
-    data_format: Optional[str] = "channel_last",
-    feature_group_count: Optional[int] = 1,
-    x_dilations: Optional[
-        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
-    ] = 1,
-    dilations: Optional[
-        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
-    ] = 1,
+    dims: int = 2,
+    data_format: str = "channel_last",
+    feature_group_count: int = 1,
+    x_dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     bias: Optional[JaxArray] = None,
     out: Optional[JaxArray] = None,
 ):
@@ -325,12 +321,10 @@ def conv_general_transpose(
     padding: str,
     /,
     *,
-    dims: Optional[int] = 2,
+    dims: int = 2,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    data_format: Optional[str] = "channel_last",
-    dilations: Optional[
-        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
-    ] = 1,
+    data_format: str = "channel_last",
+    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     feature_group_count: Optional[int] = 1,
     bias: Optional[JaxArray] = None,
     out: Optional[JaxArray] = None,

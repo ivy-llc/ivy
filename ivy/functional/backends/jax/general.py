@@ -78,8 +78,8 @@ def gather(
     indices: JaxArray,
     /,
     *,
-    axis: Optional[int] = -1,
-    batch_dims: Optional[int] = 0,
+    axis: int = -1,
+    batch_dims: int = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     axis = axis % len(params.shape)
@@ -141,7 +141,7 @@ def gather_nd(
     indices: JaxArray,
     /,
     *,
-    batch_dims: Optional[int] = 0,
+    batch_dims: int = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     ivy.utils.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
@@ -255,7 +255,7 @@ def inplace_variables_supported():
     return False
 
 
-def multiprocessing(context=None):
+def multiprocessing(context: Optional[str] = None):
     return (
         _multiprocessing if context is None else _multiprocessing.get_context(context)
     )
@@ -313,7 +313,7 @@ def scatter_nd(
     /,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     *,
-    reduction="sum",
+    reduction: str = "sum",
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     # parse numeric inputs
@@ -416,7 +416,7 @@ def shape(
 def vmap(
     func: Callable,
     in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
-    out_axes: Optional[int] = 0,
+    out_axes: int = 0,
 ) -> Callable:
     return ivy.to_native_arrays_and_back(
         jax.vmap(func, in_axes=in_axes, out_axes=out_axes)

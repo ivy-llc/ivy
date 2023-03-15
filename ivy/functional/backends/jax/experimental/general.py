@@ -1,4 +1,3 @@
-from typing import Optional
 from ivy.functional.backends.jax import JaxArray
 import jax.numpy as jnp
 from ivy.func_wrapper import with_unsupported_dtypes
@@ -11,7 +10,7 @@ def isin(
     test_elements: JaxArray,
     /,
     *,
-    assume_unique: Optional[bool] = False,
-    invert: Optional[bool] = False,
+    assume_unique: bool = False,
+    invert: bool = False,
 ) -> JaxArray:
     return jnp.isin(elements, test_elements, assume_unique=assume_unique, invert=invert)
