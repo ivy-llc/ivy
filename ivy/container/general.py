@@ -390,12 +390,15 @@ class _ContainerWithGeneral(ContainerBase):
         max_norm
             float, the maximum value of the array norm.
         p
-            optional float, the p-value for computing the p-norm. Default is 2.
+            optional float, the p-value for computing the p-norm. 
+            Default is 2.
         key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
+            The key-chains to apply or not apply the method to. 
+            Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
+            will be skipped. 
+            Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
             Default is ``False``.
@@ -460,12 +463,15 @@ class _ContainerWithGeneral(ContainerBase):
         max_norm
             float, the maximum value of the array norm.
         p
-            optional float, the p-value for computing the p-norm. Default is 2.
+            optional float, the p-value for computing the p-norm. 
+            Default is 2.
         key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
+            The key-chains to apply or not apply the method to. 
+            Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
+            will be skipped. 
+            Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
             Default is ``False``.
@@ -610,7 +616,6 @@ class _ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-
         With :class:`ivy.Container` input and default backend set as `numpy`:
 
         >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))

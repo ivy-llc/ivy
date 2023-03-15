@@ -273,10 +273,6 @@ class _ContainerWithActivationExperimental(ContainerBase):
         prune_unapplied
         map_sequences
         out
-
-        Returns
-        -------
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "prelu",
@@ -309,10 +305,6 @@ class _ContainerWithActivationExperimental(ContainerBase):
         prune_unapplied
         map_sequences
         out
-
-        Returns
-        -------
-
         """
         return self.static_prelu(
             self,

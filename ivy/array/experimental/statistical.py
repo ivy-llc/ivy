@@ -275,15 +275,15 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         self
             Input array.
         axis
-            Axis or axes along which the means are computed.
+            The axis or axes along which the means are computed.
             The default is to compute the mean of the flattened array.
         keepdims
             If this is set to True, the axes which are reduced are left in the result
             as dimensions with size one. With this option, the result will broadcast
-            correctly against the original a. If the value is anything but the default,
-            then keepdims will be passed through to the mean or sum methods of
-            sub-classes of ndarray. If the sub-classes methods does not implement
-            keepdims any exceptions will be raised.
+            correctly against the original input array. If the value is anything
+            but the default, then keepdims will be passed through to the mean or
+            sum methods of sub-classes of ndarray. If the sub-classes methods does
+            not implement keepdims any exceptions will be raised.
         overwrite_input
             If True, then allow use of memory of input array a for calculations.
             The input array will be modified by the call to median. This will
@@ -292,7 +292,7 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
             Treat the input as undefined, but it will
             probably be fully or partially sorted.
             Default is False. If overwrite_input
-            is True and a is not already an ndarray,
+            is True and input array is not already an ndarray,
             an error will be raised.
         out
             optional output array, for writing the result to.
@@ -310,7 +310,6 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         >>> a.nanmedian(a, axis=0)
             array([6.5, 2. , 2.5])
         """
-
         return ivy.nanmedian(
             self._data,
             axis=axis,

@@ -7,6 +7,7 @@ import math
 
 # local
 import ivy
+from ivy.func_wrapper import handle_mixed_function
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.random import RNG
 from ivy.functional.ivy.layers import _handle_padding
@@ -291,9 +292,9 @@ def dct(
     x: JaxArray,
     /,
     *,
-    type: Optional[Literal[1, 2, 3, 4]] = 2,
+    type: Literal[1, 2, 3, 4] = 2,
     n: Optional[int] = None,
-    axis: Optional[int] = -1,
+    axis: int = -1,
     norm: Optional[Literal["ortho"]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
@@ -366,8 +367,8 @@ def fft(
     dim: int,
     /,
     *,
-    norm: Optional[str] = "backward",
-    n: Union[int, Tuple[int]] = None,
+    norm: str = "backward",
+    n: Optional[Union[int, Tuple[int]]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if not isinstance(dim, int):
@@ -451,8 +452,8 @@ def ifft(
     x: JaxArray,
     dim: int,
     *,
-    norm: Optional[str] = "backward",
-    n: Union[int, Tuple[int]] = None,
+    norm: str = "backward",
+    n: Optional[Union[int, Tuple[int]]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if not isinstance(dim, int):
@@ -479,42 +480,54 @@ def ifft(
     return jnp.fft.ifft(x, n, dim, norm)
 
 
+@handle_mixed_function(
+    lambda *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (
+        not align_corners
+        and mode
+        not in [
+            "area",
+            "nearest",
+            "tf_area",
+            "mitchellcubic",
+            "gaussian",
+        ]
+        and recompute_scale_factor
+    )
+)
 def interpolate(
     x: JaxArray,
     size: Union[Sequence[int], int],
     /,
     *,
-    mode: Union[
-        Literal[
-            "linear",
-            "bilinear",
-            "trilinear",
-            "nearest",
-            "area",
-            "nearest_exact",
-            "tf_area",
-            "bicubic",
-            "mitchellcubic",
-            "lanczos3",
-            "lanczos5",
-            "gaussian",
-        ]
+    mode: Literal[
+        "linear",
+        "bilinear",
+        "trilinear",
+        "nearest",
+        "area",
+        "nearest_exact",
+        "tf_area",
+        "bicubic",
+        "mitchellcubic",
+        "lanczos3",
+        "lanczos5",
+        "gaussian",
     ] = "linear",
     scale_factor: Optional[Union[Sequence[int], int]] = None,
+    recompute_scale_factor: Optional[bool] = None,
     align_corners: Optional[bool] = None,
-    antialias: Optional[bool] = False,
+    antialias: bool = False,
     out: Optional[JaxArray] = None,
 ):
     dims = len(x.shape) - 2
     size = _get_size(scale_factor, size, dims, x.shape)
-    if align_corners or mode in ["area", "nearest", "tf_area", "mitchellcubic", "gaussian"]:
-        return ivy.functional.experimental.interpolate(
-            x,
-            size,
-            mode=mode,
-            align_corners=align_corners,
-            antialias=antialias,
-        )
+    mode = (
+        "nearest"
+        if mode == "nearest-exact"
+        else "bicubic"
+        if mode == "bicubic_tensorflow"
+        else mode
+    )
     size = [x.shape[0], *size, x.shape[1]]
     x = jnp.transpose(x, (0, *range(2, dims + 2), 1))
     return jnp.transpose(

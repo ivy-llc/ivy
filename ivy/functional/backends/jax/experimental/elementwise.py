@@ -63,8 +63,8 @@ def trapz(
     /,
     *,
     x: Optional[JaxArray] = None,
-    dx: Optional[float] = 1.0,
-    axis: Optional[int] = -1,
+    dx: float = 1.0,
+    axis: int = -1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.trapz(y, x=x, dx=dx, axis=axis)
@@ -113,7 +113,7 @@ def count_nonzero(
     /,
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
@@ -130,7 +130,7 @@ def nansum(
     *,
     axis: Optional[Union[Tuple[int, ...], int]] = None,
     dtype: Optional[jnp.dtype] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if isinstance(axis, list):
@@ -154,9 +154,9 @@ def isclose(
     b: JaxArray,
     /,
     *,
-    rtol: Optional[float] = 1e-05,
-    atol: Optional[float] = 1e-08,
-    equal_nan: Optional[bool] = False,
+    rtol: float = 1e-05,
+    atol: float = 1e-08,
+    equal_nan: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
@@ -166,8 +166,8 @@ def nan_to_num(
     x: JaxArray,
     /,
     *,
-    copy: Optional[bool] = True,
-    nan: Optional[Union[float, int]] = 0.0,
+    copy: bool = True,
+    nan: Union[float, int] = 0.0,
     posinf: Optional[Union[float, int]] = None,
     neginf: Optional[Union[float, int]] = None,
     out: Optional[JaxArray] = None,
@@ -213,9 +213,9 @@ def allclose(
     x2: JaxArray,
     /,
     *,
-    rtol: Optional[float] = 1e-05,
-    atol: Optional[float] = 1e-08,
-    equal_nan: Optional[bool] = False,
+    rtol: float = 1e-05,
+    atol: float = 1e-08,
+    equal_nan: bool = False,
     out: Optional[JaxArray] = None,
 ) -> bool:
     return jnp.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
@@ -262,7 +262,7 @@ def angle(
     z: JaxArray,
     /,
     *,
-    deg: Optional[bool] = False,
+    deg: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.angle(z, deg=deg)
@@ -332,9 +332,9 @@ def gradient(
     x: JaxArray,
     /,
     *,
-    spacing: Optional[Union[int, list, tuple]] = 1,
+    spacing: Union[int, list, tuple] = 1,
     axis: Optional[Union[int, list, tuple]] = None,
-    edge_order: Optional[int] = 1,
+    edge_order: int = 1,
 ) -> Union[JaxArray, List[JaxArray]]:
     f = jnp.asarray(x)
     N = f.ndim  # number of dimensions
@@ -527,7 +527,7 @@ def real(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 
 def conj(
-    x: Union[JaxArray],
+    x: JaxArray,
     /,
     *,
     out: Optional[JaxArray] = None,

@@ -109,8 +109,8 @@ def trapz(
     /,
     *,
     x: Optional[np.ndarray] = None,
-    dx: Optional[float] = 1.0,
-    axis: Optional[int] = -1,
+    dx: float = 1.0,
+    axis: int = -1,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.trapz(y, x=x, dx=dx, axis=axis)
@@ -170,7 +170,7 @@ def count_nonzero(
     /,
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     dtype: Optional[np.dtype] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
@@ -191,7 +191,7 @@ def nansum(
     *,
     axis: Optional[Union[Tuple[int, ...], int]] = None,
     dtype: Optional[np.dtype] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if isinstance(axis, list):
@@ -221,14 +221,14 @@ def isclose(
     b: np.ndarray,
     /,
     *,
-    rtol: Optional[float] = 1e-05,
-    atol: Optional[float] = 1e-08,
-    equal_nan: Optional[bool] = False,
+    rtol: float = 1e-05,
+    atol: float = 1e-08,
+    equal_nan: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ret = np.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
     if np.isscalar(ret):
-        return np.array(ret, dtype=np.bool)
+        return np.array(ret, dtype="bool")
     return ret
 
 
@@ -239,7 +239,7 @@ def angle(
     z: np.ndarray,
     /,
     *,
-    deg: Optional[bool] = False,
+    deg: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
 
@@ -266,8 +266,8 @@ def nan_to_num(
     x: np.ndarray,
     /,
     *,
-    copy: Optional[bool] = True,
-    nan: Optional[Union[float, int]] = 0.0,
+    copy: bool = True,
+    nan: Union[float, int] = 0.0,
     posinf: Optional[Union[float, int]] = None,
     neginf: Optional[Union[float, int]] = None,
     out: Optional[np.ndarray] = None,
@@ -341,9 +341,9 @@ def allclose(
     x2: np.ndarray,
     /,
     *,
-    rtol: Optional[float] = 1e-05,
-    atol: Optional[float] = 1e-08,
-    equal_nan: Optional[bool] = False,
+    rtol: float = 1e-05,
+    atol: float = 1e-08,
+    equal_nan: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> bool:
     return np.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
@@ -408,9 +408,9 @@ def gradient(
     x: np.ndarray,
     /,
     *,
-    spacing: Optional[Union[int, list, tuple]] = 1,
+    spacing: Union[int, list, tuple] = 1,
     axis: Optional[Union[int, list, tuple]] = None,
-    edge_order: Optional[int] = 1,
+    edge_order: int = 1,
 ) -> Union[np.ndarray, List[np.ndarray]]:
     if type(spacing) in (int, float):
         return np.gradient(x, spacing, axis=axis, edge_order=edge_order)
@@ -432,7 +432,7 @@ def real(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 
 def conj(
-    x: Union[np.ndarray],
+    x: np.ndarray,
     /,
     *,
     out: Optional[np.ndarray] = None,
@@ -454,9 +454,6 @@ def frexp(
     x: np.ndarray,
     /,
     *,
-    out: Optional[Union[Tuple[np.ndarray, np.ndarray], Tuple[None, None]]] = (
-        None,
-        None,
-    ),
+    out: Union[Tuple[np.ndarray, np.ndarray], Tuple[None, None]] = (None, None),
 ) -> Tuple[np.ndarray, np.ndarray]:
     return np.frexp(x, out=out)
