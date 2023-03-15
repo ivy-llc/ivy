@@ -573,9 +573,10 @@ def test_torch_as_strided(
             storage_offset=offset,
         )
     except Exception as e:
-        if hasattr(e, "message"):
-            if "out of bounds for storage of size" in e.message:
-                assume(False)
+        if hasattr(e, "message") and "out of bounds for storage of size" in e.message:
+            assume(False)
+        else:
+            raise e
 
 
 # heaviside
