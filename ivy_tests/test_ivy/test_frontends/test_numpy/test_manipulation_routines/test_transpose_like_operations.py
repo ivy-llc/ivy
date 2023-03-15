@@ -75,3 +75,38 @@ def test_numpy_swapaxes(
         axis1=axis1,
         axis2=axis2,
     )
+
+
+# rollaxis
+@handle_frontend_test(
+    fn_tree="numpy.rollaxis",
+    dtype_and_a=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=3,
+        min_dim_size=2,
+    ),
+    axis=helpers.ints(min_value=-2, max_value=2),
+    start=helpers.ints(min_value=-2, max_value=2),
+    test_with_out=st.just(False),
+)
+def test_numpy_rollaxis(
+    *,
+    dtype_and_a,
+    axis,
+    start,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, a = dtype_and_a
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=a[0],
+        axis=axis,
+        start=start,
+    )
