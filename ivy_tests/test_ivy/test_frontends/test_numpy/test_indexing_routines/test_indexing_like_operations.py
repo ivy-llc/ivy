@@ -154,6 +154,7 @@ def max_value_as_shape_prod(draw):
         )
     )
     return dtype_and_x, shape
+
 @handle_frontend_test(
     fn_tree="numpy.unravel_index",
     dtype_x_shape=max_value_as_shape_prod(),
@@ -177,4 +178,33 @@ def test_numpy_unravel_index(
         on_device=on_device,
         indices=x[0],
         shape=shape,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.tril_indices",
+    n=helpers.ints(min_value=1, max_value=10),
+    m=helpers.ints(min_value=1, max_value=10),
+    k=st.integers(min_value=-10, max_value=10),
+    test_with_out=st.just(False),
+)
+def test_tril_indices(
+    *,
+    n,
+    m,
+    k,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=["int32"],
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        n=n,
+        k=k,
+        m=m,
     )

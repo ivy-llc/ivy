@@ -33,3 +33,8 @@ def take_along_axis(arr, indices, axis):
 def unravel_index(indices, shape, order='C'):
     ret = ivy.unravel_index(indices, shape)
     return tuple(np.asarray(x, dtype=np.int64) for x in ret)
+    
+
+@to_ivy_arrays_and_back
+def tril_indices(n, k=0, m=None):
+    return ivy.tril_indices(n, m, k)

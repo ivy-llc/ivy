@@ -43,9 +43,9 @@ def diagflat(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    offset: Optional[int] = 0,
-    padding_value: Optional[float] = 0,
-    align: Optional[str] = "RIGHT_LEFT",
+    offset: int = 0,
+    padding_value: float = 0,
+    align: str = "RIGHT_LEFT",
     num_rows: Optional[int] = None,
     num_cols: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
@@ -137,9 +137,9 @@ def adjoint(
     backend_version,
 )
 def multi_dot(
-    x: Sequence[Union[tf.Tensor, tf.Variable]], 
-    /, 
-    *, 
+    x: Sequence[Union[tf.Tensor, tf.Variable]],
+    /,
+    *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> tf.Tensor:
     # This implementation simply chains tf.tensordot multiple times

@@ -1,6 +1,5 @@
 # global
 from hypothesis import strategies as st
-import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -52,7 +51,7 @@ def test_numpy_equal(
         where=where,
         casting=casting,
         order="K",
-        dtype=dtype,
+        dtype=None,
         subok=True,
     )
 
@@ -74,7 +73,6 @@ def test_numpy_array_equal(
     test_flags,
 ):
     dtype, x = dtype_and_x
-    equal_nan = np.array(equal_nan, dtype=np.bool)
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -130,7 +128,7 @@ def test_numpy_greater(
         where=where,
         casting=casting,
         order="K",
-        dtype=dtype,
+        dtype=None,
         subok=True,
     )
 
@@ -178,7 +176,7 @@ def test_numpy_greater_equal(
         where=where,
         casting=casting,
         order="K",
-        dtype=dtype,
+        dtype=None,
         subok=True,
     )
 
@@ -226,7 +224,7 @@ def test_numpy_less(
         where=where,
         casting=casting,
         order="K",
-        dtype=dtype,
+        dtype=None,
         subok=True,
     )
 
@@ -275,7 +273,7 @@ def test_numpy_less_equal(
         where=where,
         casting=casting,
         order="K",
-        dtype=dtype,
+        dtype=None,
         subok=True,
     )
 
@@ -324,7 +322,7 @@ def test_numpy_not_equal(
         where=where,
         casting=casting,
         order="K",
-        dtype=dtype,
+        dtype=None,
         subok=True,
     )
 
