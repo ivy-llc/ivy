@@ -166,7 +166,9 @@ def linear(
         return ivy.inplace_update(out, y)
     return y
 
+
 linear.mixed_function = True
+
 
 # Dropout #
 
