@@ -47,6 +47,7 @@ def test_jax_numpy_absolute(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
+        shared_dtype=True,
     ),
     test_with_out=st.just(False),
 )
@@ -2473,6 +2474,7 @@ def test_jax_numpy_conj(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
+        shared_dtype=True,
     ),
     test_with_out=st.just(False),
 )
@@ -2518,5 +2520,5 @@ def test_jax_numpy_around(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        a=x[0]
+        a=x[0],
     )
