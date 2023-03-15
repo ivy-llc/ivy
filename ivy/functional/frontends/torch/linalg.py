@@ -197,4 +197,14 @@ def matmul(input, other, *, out=None):
     return ivy.matmul(input, other, out=out)
 
 def norm(input, p=2, dim=None, keepdim=False, *, out=None):
-    return ivy.norm(input, ord=p, axis=dim, keepdims=keepdim, out=out)
+    if isinstance(dim, int):
+        return ivy.vector_norm(
+            input, ord=p, axis=dim, keepdims=keepdim, out=out)
+    elif isinstance(dim, tuple):
+        return ivy.matrix_norm(
+            input, ord=p, axis=dim, keepdims=keepdim, out=out)
+    elif dim is None and p is not None:
+        return ivy.vector_norm(
+            input, ord=p, axis=dim, keepdims=keepdim, out=out)
+    else:
+        raise ValueError("Invalid axis or ord value.")
