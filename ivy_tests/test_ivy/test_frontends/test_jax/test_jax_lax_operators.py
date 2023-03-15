@@ -2313,18 +2313,16 @@ def test_jax_lax_top_k(
 @st.composite
 def _reduce_window_helper(draw):
     dtype = draw(helpers.get_dtypes("numeric", full=False))
-    n = draw(st.integers(1, 5))
     init_value = draw(st.integers()) if 'int' in dtype[0] else draw(st.floats())
-    def computation(accumulator, window): return accumulator + jnp.sum(window)
-    operand = draw(
+    def computation(accumulator, window): return jnp.add(accumulator, jnp.sum(window))
+    dtype, operand = draw(
         helpers.dtype_and_values(
-            num_arrays=n,
-            dtype=dtype*n,
+            dtype=dtype,
             min_num_dims=1,
         )
     )
-    ndim = operand[1][0].ndim
-    other = draw(
+    ndim = operand[0].ndim
+    dtypes, other = draw(
         helpers.dtype_and_values(
             num_arrays=4,
             dtype=['int64']*4,
@@ -2348,7 +2346,7 @@ def _reduce_window_helper(draw):
             st.sampled_from(["SAME", "VALID"]),
         )
     )
-    return dtype, operand[1], init_value, computation, other[1], padding
+    return dtype+dtypes, operand, init_value, computation, other, padding
 
 
 @handle_frontend_test(
@@ -2364,14 +2362,14 @@ def test_jax_lax_reduce_window(
     frontend,
     test_flags,
 ):
-    dtype, operand, init_value, computation, other, padding = all_args
+    dtypes, operand, init_value, computation, other, padding = all_args
     helpers.test_frontend_function(
-        input_dtypes=dtype+['int64']*4,
+        input_dtypes=dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        operand=operand,
+        operand=operand[0],
         init_value=init_value,
         computation=computation,
         window_dimensions=other[0],

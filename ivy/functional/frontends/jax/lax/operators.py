@@ -7,6 +7,7 @@ import string
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
 from ivy.functional.frontends.jax.numpy import can_cast
+from ivy.func_wrapper import to_native_arrays_and_back
 
 
 @to_ivy_arrays_and_back
@@ -548,7 +549,7 @@ def reduce_window(
         window_dilation=None
 ):
     if isinstance(padding, str):
-        in_shape = ivy.array(operand[0].shape, dtype=ivy.int64)
+        in_shape = ivy.array(operand.shape, dtype=ivy.int64)
         if padding == 'SAME':
             out_shape = ivy.floor_divide(in_shape, window_strides)
             pad_sizes = ivy.maximum(
@@ -562,20 +563,19 @@ def reduce_window(
         else:
             raise TypeError("Unknown padding type: {}.".format(padding))
     out_shape = [int((s - w) / s) + 1 for s, w in zip(window_strides, window_dimensions)]
-    ret = []
-    for operand in operand:
-        operand = ivy.pad(operand, padding)
-        output = ivy.full(out_shape, init_value, dtype=operand.dtype)
-        for window_idx in ivy.ndindex(out_shape):
-            window_slice = tuple(
-                slice(
-                    ivy.to_scalar(window_idx[i] * window_strides[i] * base_dilation[i]),
-                    ivy.to_scalar(window_idx[i] * window_strides[i] * base_dilation[i] +
-                                  window_dimensions[i] * window_dilation[i]),
-                    ivy.to_scalar(window_dilation[i])
-                ) for i in range(len(window_dimensions))
-            )
-            window = operand[window_slice]
-            output[window_idx] = computation(output[window_idx], window)
-        ret.append(output)
-    return ret
+    operand = ivy.pad(operand, padding)
+    output = ivy.full(out_shape, init_value, dtype=operand.dtype)
+    for window_idx in ivy.ndindex(out_shape):
+        window_slice = tuple(
+            slice(
+                ivy.to_scalar(window_idx[i] * window_strides[i] * base_dilation[i]),
+                ivy.to_scalar(window_idx[i] * window_strides[i] * base_dilation[i] +
+                              window_dimensions[i] * window_dilation[i]),
+                ivy.to_scalar(window_dilation[i])
+            ) for i in range(len(window_dimensions))
+        )
+        window = operand[window_slice]
+        output[window_idx] = to_native_arrays_and_back(computation)(
+            output[window_idx], window
+        )
+    return output
