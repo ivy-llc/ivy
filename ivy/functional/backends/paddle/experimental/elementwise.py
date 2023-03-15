@@ -79,8 +79,9 @@ def float_power(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
-
+    x1 = paddle.cast(x1, dtype='float64')
+    x2 = paddle.cast(x2, dtype='float64')    # Compute the element-wise power
+    return paddle.cast(paddle.pow(x1, x2), dtype=paddle.float64)
 
 def exp2(
     x: Union[paddle.Tensor, float, list, tuple],
