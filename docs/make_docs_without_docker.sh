@@ -20,3 +20,5 @@ rm -rf docs
 rm -rf build
 
 sphinx-build -b html . build
+
+touch build/.nojekyll
