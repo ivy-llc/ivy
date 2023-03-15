@@ -1,5 +1,5 @@
 import contextlib
-
+import numbers
 import ivy
 import functools
 import logging
@@ -187,11 +187,15 @@ def handle_array_like_without_promotion(fn: Callable) -> Callable:
             ):
 
                 if i < num_args:
-                    if not ivy.is_array(arg):
+                    if ivy.is_native_array(arg) or isinstance(
+                        arg, (list, tuple, numbers.Number)
+                    ):
                         args[i] = ivy.array(arg)
                 elif parameters in kwargs:
                     kwarg = kwargs[parameter]
-                    if not ivy.is_array(arg):
+                    if ivy.is_native_array(kwarg) or isinstance(
+                        kwarg, (list, tuple, numbers.Number)
+                    ):
                         kwargs[parameter] = ivy.array(kwarg)
 
         return fn(*args, **kwargs)
@@ -918,19 +922,21 @@ def handle_nans(fn: Callable) -> Callable:
 
     new_fn.handle_nans = True
     return new_fn
-    
+
 
 def handle_mixed_function(condition) -> Callable:
     def inner_function(fn):
         @functools.wraps(fn)
         def new_fn(*args, **kwargs):
-            compos = getattr(new_fn, 'compos')
+            compos = getattr(new_fn, "compos")
             if condition(*args, **kwargs):
                 return fn(*args, **kwargs)
 
             return compos(*args, **kwargs)
+
         new_fn.handle_mixed_functions = True
         return new_fn
+
     return inner_function
 
 
