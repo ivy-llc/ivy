@@ -33,3 +33,11 @@ def sort_complex(a):
 @to_ivy_arrays_and_back
 def lexsort(keys, /, *, axis=-1):
     return ivy.lexsort(keys, axis=axis)
+
+
+#partition function
+@to_ivy_arrays_and_back
+def partition(a,x,/,*,axis=-1):
+    if x>1:
+        return ivy.partition(a,axis=axis)
+        
