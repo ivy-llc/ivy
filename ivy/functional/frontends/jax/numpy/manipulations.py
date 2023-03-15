@@ -177,3 +177,8 @@ def vsplit(ary, indices_or_sections):
 @to_ivy_arrays_and_back
 def hsplit(ary, indices_or_sections):
     return ivy.hsplit(ary, indices_or_sections)
+
+
+@to_ivy_arrays_and_back
+def expand_dims(a, axis):
+    return ivy.expand_dims(a, axis=axis)

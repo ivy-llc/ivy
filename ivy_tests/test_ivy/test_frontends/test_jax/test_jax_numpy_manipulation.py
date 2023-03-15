@@ -943,3 +943,33 @@ def test_jax_numpy_hsplit(
         ary=value[0],
         indices_or_sections=indices_or_sections,
     )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.expand_dims",
+    dtype_values_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        valid_axis=True,
+        allow_neg_axes=False,
+        force_int_axis=True,
+    )
+)
+def test_jax_numpy_expand_dims(
+        *,
+        dtype_values_axis,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
+):
+    input_dtype, x, axis = dtype_values_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        axis = axis
+    )
