@@ -135,3 +135,8 @@ def sort(
 
 def flatnonzero(a):
     return ivy.nonzero(ivy.reshape(a, (-1,)))
+
+
+@to_ivy_arrays_and_back
+def sort_complex(a):
+    return ivy.sort(a)
