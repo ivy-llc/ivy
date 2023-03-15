@@ -1,8 +1,6 @@
 """Collection of Paddle general functions, wrapped to fit Ivy syntax and signature."""
 # global
-from functools import reduce
 from numbers import Number
-from operator import mul
 from typing import Optional, Union, Sequence, Callable, List, Tuple
 import paddle
 import numpy as np
@@ -36,11 +34,18 @@ def current_backend_str() -> str:
     return "paddle"
 
 
-@with_unsupported_dtypes({"2.4.2 and below": ("float16", "int8", "int16", "uint8",)}, backend_version)
-def get_item(
-    x: paddle.Tensor,
-    query: Union[paddle.Tensor, Tuple]
-) -> paddle.Tensor:
+@with_unsupported_dtypes(
+    {
+        "2.4.2 and below": (
+            "float16",
+            "int8",
+            "int16",
+            "uint8",
+        )
+    },
+    backend_version,
+)
+def get_item(x: paddle.Tensor, query: Union[paddle.Tensor, Tuple]) -> paddle.Tensor:
     if isinstance(query, tuple):
         return x.__getitem__(query)
 
@@ -54,7 +59,7 @@ def get_item(
         return paddle.masked_select(x, query)
 
     if x_dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
-        ret = paddle.cast(x, 'float32').__getitem__(tuple(query))
+        ret = paddle.cast(x, "float32").__getitem__(tuple(query))
         return paddle.cast(ret, x_dtype)
 
     return x.__getitem__(tuple(query))
@@ -211,4 +216,6 @@ def vmap(
     in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
     out_axes: Optional[int] = 0,
 ) -> Callable:
-    raise IvyNotImplementedException()
+    return ivy.to_native_arrays_and_back(
+        paddle.vmap(func, in_axes=in_axes, out_axes=out_axes)
+    )
