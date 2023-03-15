@@ -138,8 +138,8 @@ def df(draw, data_format):
 # AvgPool
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.AvgPool",
-    data_format=df(data_format=st.sampled_from(["NHWC"])),
-    x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
+    data_format=df(data_format=st.sampled_from(["NHWC, "NCHW"])),
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=4, max_dims=4, min_side=1, max_side=4),
     test_with_out=st.just(False),
 )
 def test_tensorflow_AvgPool(  # NOQA
@@ -159,7 +159,7 @@ def test_tensorflow_AvgPool(  # NOQA
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        value=x[0],
+        value=x,
         ksize=kernel,
         strides=strides,
         padding=pad,
