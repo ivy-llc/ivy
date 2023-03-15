@@ -211,3 +211,427 @@ class _ArrayWithActivationsExperimental(abc.ABC):
             training=training,
             eps=eps,
         )
+
+    def sigmoid(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.sigmoid.
+
+        This method simply wraps the function, and so the docstring for ivy.sigmoid also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array
+        out
+            optional output array for writing the result to. It must have the same shape
+            the input broadcast to default: None
+
+        Returns
+        -------
+        ret
+            an array with the sigmoid activation function applied element-wise.
+
+
+        Examples
+        --------
+        >>> x = ivy.array([-1., 1., 2.])
+        >>> y = x.sigmoid()
+        >>> print(y)
+        ivy.array([0.269, 0.731, 0.881])
+        """
+        return ivy.sigmoid(self._data, out=out)
+
+    def hard_tanh(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.hard_tanh.
+
+        This method simply wraps the function, and so the docstring for ivy.hard_tanh
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array
+        out
+            optional output array for writing the result to. It must have the same shape
+            the input broadcast to default: None
+
+        Returns
+        -------
+        ret
+            an array with the hard_tanh activation function applied element-wise.
+
+
+        Examples
+        --------
+        >>> x = ivy.array([-1. ,  1. ,  0.1])
+        >>> y = x.hard_tanh()
+        >>> print(y)
+        ivy.array([-1. ,  1. ,  0.1])
+        """
+        return ivy.hard_tanh(self._data, out=out)
+
+    def softplus(
+        self: ivy.Array,
+        /,
+        *,
+        beta: Optional[Union[int, float]] = None,
+        threshold: Optional[Union[int, float]] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.softplus. This method simply wraps the
+        function, and so the docstring for ivy.softplus also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        beta
+            the beta parameter of the softplus function.
+        threshold
+            the threshold parameter of the softplus function.
+        out
+            optional output array, for writing the result to. It must have a shape
+
+        Returns
+        -------
+        ret
+            an array with the softplus activation function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.array([-0.3461, -0.6491])
+        >>> y = x.softplus()
+        >>> print(y)
+        ivy.array([0.535,0.42])
+
+        >>> x = ivy.array([-0.3461, -0.6491])
+        >>> y = x.softplus(beta=0.5)
+        >>> print(y)
+        ivy.array([1.22, 1.09])
+
+        >>> x = ivy.array([1.31, 2., 2.])
+        >>> y = x.softplus(threshold=2, out=x)
+        >>> print(x)
+        ivy.array([1.55, 2.13, 2.13])
+        """
+        return ivy.softplus(self._data, beta=beta, threshold=threshold, out=out)
+
+    def softsign(self, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.softsign. This method simply wraps the
+        function, and so the docstring for ivy.softsign also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        out
+            optional output array, for writing the result to. It must have a shape
+
+        Returns
+        -------
+        ret
+            an array with the softsign activation function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.array([-0.3461, -0.6491])
+        >>> y = x.softsign()
+        >>> print(y)
+        ivy.array([-0.25711316, -0.39360863])
+        """
+        return ivy.softsign(self._data, out=out)
+
+    def silu(self, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.silu. This method simply wraps the
+        function, and so the docstring for ivy.silu also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        out
+            optional output array, for writing the result to. It must have a shape
+
+        Returns
+        -------
+        ret
+            an array with the silu activation function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.array([-0.3461, -0.6491])
+        >>> y = x.silu()
+        >>> print(y)
+        ivy.array([-0.14339909, -0.22276618])
+        """
+        return ivy.silu(self._data, out=out)
+
+    def hard_silu(self, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.hard_silu. This method simply wraps the
+        function, and so the docstring for ivy.hard_silu also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        out
+            optional output array, for writing the result to. It must have a shape
+
+        Returns
+        -------
+        ret
+            an array with the hard_silu activation function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.array([-0.3461, -0.6491])
+        >>> y = x.hard_silu()
+        >>> print(y)
+        ivy.array([-0.1530858 , -0.25432822])
+
+        """
+        return ivy.hard_silu(self._data, out=out)
+
+    def log_sigmoid(self, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.log_sigmoid. This method simply wraps
+        the function, and so the docstring for ivy.log_sigmoid also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        out
+            optional output array, for writing the result to. It must have a shape
+
+        Returns
+        -------
+        ret
+            an array with the log_sigmoid activation function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.array([-0.3461, -0.6491])
+        >>> y = x.log_sigmoid()
+        >>> print(y)
+        ivy.array([-0.88109624, -1.0694641 ])
+
+        """
+        return ivy.log_sigmoid(self._data, out=out)
+
+    def leaky_relu(
+        self: ivy.Array,
+        /,
+        *,
+        alpha: float = 0.2,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.leaky_relu. This method simply wraps
+        the function, and so the docstring for ivy.leaky_relu also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        alpha
+            the slope of the negative section.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array with the leaky relu activation function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.array([0.39, -0.85])
+        >>> y = x.leaky_relu()
+        >>> print(y)
+        ivy.array([-0.51704043, -1.205865  ])
+        """
+        return ivy.leaky_relu(self._data, alpha=alpha, out=out)
+
+    def elu(
+        self: ivy.Array,
+        /,
+        *,
+        alpha: float = 1.0,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.elu. This method simply wraps
+        the function, and so the docstring for ivy.elu also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        alpha
+            the slope of the negative section.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array with the elu activation function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.array([0.39, -0.85])
+        >>> y = x.elu()
+        >>> print(y)
+        ivy.array([ 0.39     , -0.5725851])
+        """
+        return ivy.elu(self._data, alpha=alpha, out=out)
+
+    def celu(
+        self: ivy.Array,
+        /,
+        *,
+        alpha: float = 1.0,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.celu. This method simply wraps
+        the function, and so the docstring for ivy.celu also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        alpha
+            the slope of the negative section.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array with the lcelu activation function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.array([0.39, -0.85])
+        >>> y = x.celu()
+        >>> print(y)
+        ivy.array([ 0.39     , -0.5725851])
+        """
+        return ivy.celu(self._data, alpha=alpha, out=out)
+
+    def hard_sigmoid(
+        self: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.hard_sigmoid. This method simply wraps
+        the function, and so the docstring for ivy.hard_sigmoid also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        alpha
+            the slope of the negative section.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array with the hard_sigmoid activation function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.array([0.39, -0.85])
+        >>> y = x.hard_sigmoid()
+        >>> print(y)
+        ivy.array([0.565     , 0.35833335])
+        """
+        return ivy.hard_sigmoid(self._data, out=out)
+
+    def selu(
+        self: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.selu. This method simply wraps
+        the function, and so the docstring for ivy.selu also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array with the selu activation function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.array([0.39, -0.85])
+        >>> y = x.selu()
+        >>> print(y)
+        ivy.array([ 0.40977338, -1.0066615 ])
+        """
+        return ivy.selu(self._data, out=out)
+
+    def glu(self, /, *, axis: int = -1, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.glu. This method simply wraps the
+        function, and so the docstring for ivy.glu also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        axis
+            the axis along which the split should be computed
+        out
+            optional output array, for writing the result to. It must have a shape
+
+        Returns
+        -------
+        ret
+            an array with the glu activation function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.array([-0.3461, -0.6491])
+        >>> y = x.glu()
+        >>> print(y)
+        ivy.array([-0.11877888])
+
+        """
+        return ivy.glu(self._data, axis=axis, out=out)

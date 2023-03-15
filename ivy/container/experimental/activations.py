@@ -581,3 +581,1614 @@ class _ContainerWithActivationExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
+
+    @staticmethod
+    def static_sigmoid(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.sigmoid.
+        This method simply wraps the function, and so the docstring
+        for ivy.sigmoid also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the sigmoid unit function applied element-wise.
+
+        Examples
+        --------
+        >>> ivy.Container(a=ivy.array([-1., 1., 2.]), b=ivy.array([0.5, 0., -0.1]))
+        >>> y = ivy.Container.static_sigmoid(x)
+        >>> print(y)
+        {
+            a: ivy.array([0.2689414, 0.7310586, 0.88079703]),
+            b: ivy.array([0.62245935, 0.5, 0.4750208])
+        }
+
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "sigmoid",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def sigmoid(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.sigmoid.
+        This method simply wraps the function, and so the docstring
+        for ivy.sigmoid also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the sigmoid unit function applied element-wise.
+
+        Examples
+        --------
+        >>> ivy.Container(a=ivy.array([-1., 1., 2.]), b=ivy.array([0.5, 0., -0.1]))
+        >>> y = x.sigmoid()
+        >>> print(y)
+        {
+            a: ivy.array([0.2689414, 0.7310586, 0.88079703]),
+            b: ivy.array([0.62245935, 0.5, 0.4750208])
+        }
+        """
+        return self.static_sigmoid(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+    
+
+    @staticmethod
+    def static_selu(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.sigmoid.
+        This method simply wraps the function, and so the docstring
+        for ivy.sigmoid also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the sigmoid unit function applied element-wise.
+
+        Examples
+        --------
+        >>> ivy.Container(a=ivy.array([-1., 1., 2.]), b=ivy.array([0.5, 0., -0.1]))
+        >>> y = ivy.Container.static_sigmoid(x)
+        >>> print(y)
+        {
+            a: ivy.array([0.2689414, 0.7310586, 0.88079703]),
+            b: ivy.array([0.62245935, 0.5, 0.4750208])
+        }
+
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "selu",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def selu(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.sigmoid.
+        This method simply wraps the function, and so the docstring
+        for ivy.sigmoid also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the sigmoid unit function applied element-wise.
+
+        Examples
+        --------
+        >>> ivy.Container(a=ivy.array([-1., 1., 2.]), b=ivy.array([0.5, 0., -0.1]))
+        >>> y = x.sigmoid()
+        >>> print(y)
+        {
+            a: ivy.array([0.2689414, 0.7310586, 0.88079703]),
+            b: ivy.array([0.62245935, 0.5, 0.4750208])
+        }
+        """
+        return self.static_selu(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+         
+    @staticmethod
+    def static_hard_tanh(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.sigmoid.
+        This method simply wraps the function, and so the docstring
+        for ivy.sigmoid also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the sigmoid unit function applied element-wise.
+
+        Examples
+        --------
+        >>> ivy.Container(a=ivy.array([-1., 1., 2.]), b=ivy.array([0.5, 0., -0.1]))
+        >>> y = ivy.Container.static_sigmoid(x)
+        >>> print(y)
+        {
+            a: ivy.array([0.2689414, 0.7310586, 0.88079703]),
+            b: ivy.array([0.62245935, 0.5, 0.4750208])
+        }
+
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "hard_tanh",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def hard_tanh(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.sigmoid.
+        This method simply wraps the function, and so the docstring
+        for ivy.sigmoid also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the sigmoid unit function applied element-wise.
+
+        Examples
+        --------
+        >>> ivy.Container(a=ivy.array([-1., 1., 2.]), b=ivy.array([0.5, 0., -0.1]))
+        >>> y = x.sigmoid()
+        >>> print(y)
+        {
+            a: ivy.array([0.2689414, 0.7310586, 0.88079703]),
+            b: ivy.array([0.62245935, 0.5, 0.4750208])
+        }
+        """
+        return self.static_hard_tanh(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+    
+
+    @staticmethod
+    def static_hard_sigmoid(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.sigmoid.
+        This method simply wraps the function, and so the docstring
+        for ivy.sigmoid also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the sigmoid unit function applied element-wise.
+
+        Examples
+        --------
+        >>> ivy.Container(a=ivy.array([-1., 1., 2.]), b=ivy.array([0.5, 0., -0.1]))
+        >>> y = ivy.Container.static_sigmoid(x)
+        >>> print(y)
+        {
+            a: ivy.array([0.2689414, 0.7310586, 0.88079703]),
+            b: ivy.array([0.62245935, 0.5, 0.4750208])
+        }
+
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "hard_sigmoid",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def hard_sigmoid(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.sigmoid.
+        This method simply wraps the function, and so the docstring
+        for ivy.sigmoid also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the sigmoid unit function applied element-wise.
+
+        Examples
+        --------
+        >>> ivy.Container(a=ivy.array([-1., 1., 2.]), b=ivy.array([0.5, 0., -0.1]))
+        >>> y = x.sigmoid()
+        >>> print(y)
+        {
+            a: ivy.array([0.2689414, 0.7310586, 0.88079703]),
+            b: ivy.array([0.62245935, 0.5, 0.4750208])
+        }
+        """
+        return self.static_hard_sigmoid(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+        
+    @staticmethod
+    def static_softplus(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        beta: Optional[Union[int, float]] = None,
+        threshold: Optional[Union[int, float]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.softplus.
+        This method simply wraps the function, and so the docstring
+        for ivy.softplus also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        beta
+            The beta value for the softplus formation. Default: ``None``.
+        threshold
+            values above this revert to a linear function. Default: ``None``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the softplus unit function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-0.3461, -0.6491]), b=ivy.array([1., 0.]))
+        >>> y = ivy.Container.static_softplus(x)
+        >>> print(y)
+        {
+            a: ivy.array([0.53499615, 0.42036411]),
+            b: ivy.array([1.31326175, 0.69314718])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([-1., 2., 4.]))
+        >>> y = ivy.Container.static_softplus(x, beta=0.5, threshold=2)
+        >>> print(y)
+        {
+            a: ivy.array([0.948, 2.63, 4.25])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "softplus",
+            x,
+            beta=beta,
+            threshold=threshold,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def softplus(
+        self: ivy.Container,
+        /,
+        *,
+        beta: Optional[Union[int, float]] = None,
+        threshold: Optional[Union[int, float]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.softplus.
+        This method simply wraps the function, and so the docstring
+        for ivy.softplus also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        beta
+            The beta value for the softplus formation. Default: ``None``.
+        threshold
+            values above this revert to a linear function. Default: ``None``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the softplus unit function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-0.3461, -0.6491]))
+        >>> y = x.softplus()
+        >>> print(y)
+        {
+            a: ivy.array([0.535, 0.42])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([-1., 2., 4.]))
+        >>> y = x.softplus(beta=0.5, threshold=2)
+        >>> print(y)
+        {
+            a: ivy.array([0.948, 2.63, 4.25])
+        }
+        """
+        return self.static_softplus(
+            self,
+            beta=beta,
+            threshold=threshold,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_softsign(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.softplus.
+        This method simply wraps the function, and so the docstring
+        for ivy.softplus also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the softplus unit function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-0.3461, -0.6491]), b=ivy.array([1., 0.]))
+        >>> y = ivy.Container.static_softplus(x)
+        >>> print(y)
+        {
+            a: ivy.array([0.53499615, 0.42036411]),
+            b: ivy.array([1.31326175, 0.69314718])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([-1., 2., 4.]))
+        >>> y = ivy.Container.static_softplus(x, beta=0.5, threshold=2)
+        >>> print(y)
+        {
+            a: ivy.array([0.948, 2.63, 4.25])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "softsign",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def softsign(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.softplus.
+        This method simply wraps the function, and so the docstring
+        for ivy.softplus also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        beta
+            The beta value for the softplus formation. Default: ``None``.
+        threshold
+            values above this revert to a linear function. Default: ``None``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the softplus unit function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-0.3461, -0.6491]))
+        >>> y = x.softplus()
+        >>> print(y)
+        {
+            a: ivy.array([0.535, 0.42])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([-1., 2., 4.]))
+        >>> y = x.softplus(beta=0.5, threshold=2)
+        >>> print(y)
+        {
+            a: ivy.array([0.948, 2.63, 4.25])
+        }
+        """
+        return self.static_softsign(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_silu(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.softplus.
+        This method simply wraps the function, and so the docstring
+        for ivy.softplus also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the softplus unit function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-0.3461, -0.6491]), b=ivy.array([1., 0.]))
+        >>> y = ivy.Container.static_softplus(x)
+        >>> print(y)
+        {
+            a: ivy.array([0.53499615, 0.42036411]),
+            b: ivy.array([1.31326175, 0.69314718])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([-1., 2., 4.]))
+        >>> y = ivy.Container.static_softplus(x, beta=0.5, threshold=2)
+        >>> print(y)
+        {
+            a: ivy.array([0.948, 2.63, 4.25])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "silu",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def silu(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.softplus.
+        This method simply wraps the function, and so the docstring
+        for ivy.softplus also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        beta
+            The beta value for the softplus formation. Default: ``None``.
+        threshold
+            values above this revert to a linear function. Default: ``None``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the softplus unit function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-0.3461, -0.6491]))
+        >>> y = x.softplus()
+        >>> print(y)
+        {
+            a: ivy.array([0.535, 0.42])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([-1., 2., 4.]))
+        >>> y = x.softplus(beta=0.5, threshold=2)
+        >>> print(y)
+        {
+            a: ivy.array([0.948, 2.63, 4.25])
+        }
+        """
+        return self.static_silu(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+    
+    @staticmethod
+    def static_hard_silu(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.softplus.
+        This method simply wraps the function, and so the docstring
+        for ivy.softplus also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the softplus unit function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-0.3461, -0.6491]), b=ivy.array([1., 0.]))
+        >>> y = ivy.Container.static_softplus(x)
+        >>> print(y)
+        {
+            a: ivy.array([0.53499615, 0.42036411]),
+            b: ivy.array([1.31326175, 0.69314718])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([-1., 2., 4.]))
+        >>> y = ivy.Container.static_softplus(x, beta=0.5, threshold=2)
+        >>> print(y)
+        {
+            a: ivy.array([0.948, 2.63, 4.25])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "hard_silu",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def hard_silu(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.softplus.
+        This method simply wraps the function, and so the docstring
+        for ivy.softplus also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        beta
+            The beta value for the softplus formation. Default: ``None``.
+        threshold
+            values above this revert to a linear function. Default: ``None``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the softplus unit function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-0.3461, -0.6491]))
+        >>> y = x.softplus()
+        >>> print(y)
+        {
+            a: ivy.array([0.535, 0.42])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([-1., 2., 4.]))
+        >>> y = x.softplus(beta=0.5, threshold=2)
+        >>> print(y)
+        {
+            a: ivy.array([0.948, 2.63, 4.25])
+        }
+        """
+        return self.static_hard_silu(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+        
+    @staticmethod
+    def static_log_sigmoid(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.softplus.
+        This method simply wraps the function, and so the docstring
+        for ivy.softplus also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the softplus unit function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-0.3461, -0.6491]), b=ivy.array([1., 0.]))
+        >>> y = ivy.Container.static_softplus(x)
+        >>> print(y)
+        {
+            a: ivy.array([0.53499615, 0.42036411]),
+            b: ivy.array([1.31326175, 0.69314718])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([-1., 2., 4.]))
+        >>> y = ivy.Container.static_softplus(x, beta=0.5, threshold=2)
+        >>> print(y)
+        {
+            a: ivy.array([0.948, 2.63, 4.25])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "log_sigmoid",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def log_sigmoid(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.softplus.
+        This method simply wraps the function, and so the docstring
+        for ivy.softplus also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        beta
+            The beta value for the softplus formation. Default: ``None``.
+        threshold
+            values above this revert to a linear function. Default: ``None``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container with the softplus unit function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-0.3461, -0.6491]))
+        >>> y = x.softplus()
+        >>> print(y)
+        {
+            a: ivy.array([0.535, 0.42])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([-1., 2., 4.]))
+        >>> y = x.softplus(beta=0.5, threshold=2)
+        >>> print(y)
+        {
+            a: ivy.array([0.948, 2.63, 4.25])
+        }
+        """
+        return self.static_log_sigmoid(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+
+    @staticmethod
+    def static_leaky_relu(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        alpha: ivy.Container = 0.2,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.leaky_relu.
+        This method simply wraps the function, and so the docstring
+        for ivy.leaky_relu also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        alpha
+            array or scalar specifying the negative slope.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+             a container with the leaky relu unit function applied element-wise.
+
+        Examples
+        --------
+        >>> x = x = ivy.Container(a=ivy.array([0.39, -0.85]), b=ivy.array([1., -0.2]))
+        >>> y = ivy.Container.static_leaky_relu(x)
+        >>> print(y)
+        {
+            a: ivy.array([0.38999999, -0.17]),
+            b: ivy.array([1., -0.04])
+        }
+
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "leaky_relu",
+            x,
+            alpha=alpha,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def leaky_relu(
+        self: ivy.Container,
+        /,
+        *,
+        alpha: ivy.Container = 0.2,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.leaky_relu.
+        This method simply wraps the function, and so the docstring
+        for ivy.leaky_relu also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        alpha
+            array or scalar specifying the negative slope.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+           a container with the leaky relu unit function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0.39, -0.85]), b=ivy.array([1., -0.2]))
+        >>> y = x.leaky_relu()
+        >>> print(y)
+        {
+            a: ivy.array([0.38999999, -0.17]),
+            b: ivy.array([1., -0.04])
+        }
+
+        """
+        return self.static_leaky_relu(
+            self,
+            alpha=alpha,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_elu(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        alpha: ivy.Container = 1.,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.leaky_relu.
+        This method simply wraps the function, and so the docstring
+        for ivy.leaky_relu also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        alpha
+            array or scalar specifying the negative slope.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+             a container with the leaky relu unit function applied element-wise.
+
+        Examples
+        --------
+        >>> x = x = ivy.Container(a=ivy.array([0.39, -0.85]), b=ivy.array([1., -0.2]))
+        >>> y = ivy.Container.static_leaky_relu(x)
+        >>> print(y)
+        {
+            a: ivy.array([0.38999999, -0.17]),
+            b: ivy.array([1., -0.04])
+        }
+
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "elu",
+            x,
+            alpha=alpha,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def elu(
+        self: ivy.Container,
+        /,
+        *,
+        alpha: ivy.Container = 1.,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.leaky_relu.
+        This method simply wraps the function, and so the docstring
+        for ivy.leaky_relu also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        alpha
+            array or scalar specifying the negative slope.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+           a container with the leaky relu unit function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0.39, -0.85]), b=ivy.array([1., -0.2]))
+        >>> y = x.leaky_relu()
+        >>> print(y)
+        {
+            a: ivy.array([0.38999999, -0.17]),
+            b: ivy.array([1., -0.04])
+        }
+
+        """
+        return self.static_elu(
+            self,
+            alpha=alpha,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_celu(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        alpha: ivy.Container = 1.,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.leaky_relu.
+        This method simply wraps the function, and so the docstring
+        for ivy.leaky_relu also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        alpha
+            array or scalar specifying the negative slope.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+             a container with the leaky relu unit function applied element-wise.
+
+        Examples
+        --------
+        >>> x = x = ivy.Container(a=ivy.array([0.39, -0.85]), b=ivy.array([1., -0.2]))
+        >>> y = ivy.Container.static_leaky_relu(x)
+        >>> print(y)
+        {
+            a: ivy.array([0.38999999, -0.17]),
+            b: ivy.array([1., -0.04])
+        }
+
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "celu",
+            x,
+            alpha=alpha,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def celu(
+        self: ivy.Container,
+        /,
+        *,
+        alpha: ivy.Container = 1.,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.leaky_relu.
+        This method simply wraps the function, and so the docstring
+        for ivy.leaky_relu also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        alpha
+            array or scalar specifying the negative slope.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+           a container with the leaky relu unit function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0.39, -0.85]), b=ivy.array([1., -0.2]))
+        >>> y = x.leaky_relu()
+        >>> print(y)
+        {
+            a: ivy.array([0.38999999, -0.17]),
+            b: ivy.array([1., -0.04])
+        }
+
+        """
+        return self.static_celu(
+            self,
+            alpha=alpha,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+        
+    @staticmethod
+    def static_glu(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        axis: int = -1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.batch_norm.
+        This method simply wraps the function, and so the docstring
+        for ivy.batch_norm also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input container.
+        mean
+            A mean array for the input's normalization.
+
+        Returns
+        -------
+        ret
+             Container containing the normalized, scaled, offset values.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "glu",
+            x,
+            axis=axis,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def glu(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        axis: int = -1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.static_glu(
+            self,
+            axis=axis,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )

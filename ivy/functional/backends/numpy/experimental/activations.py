@@ -2,12 +2,13 @@ from typing import Optional, Union
 
 # global
 import numpy as np
+import ivy
 
 # local
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 
 
-def logit(x: np.ndarray, /, *, eps: Optional[float] = None, out=None):
+def logit(x: np.ndarray, /, *, eps: Optional[float] = None, out=None) -> np.ndarray:
     x_dtype = x.dtype
     if eps is None:
         x = np.where(np.logical_or(x > 1, x < 0), np.nan, x)
@@ -51,7 +52,7 @@ def batch_norm(
     offset: Optional[np.ndarray] = None,
     training: bool = False,
     eps: float = 1e-5,
-):
+) -> np.ndarray:
     ndims = len(x.shape)
     if training:
         dims = (0, *range(2, ndims))
@@ -65,3 +66,99 @@ def batch_norm(
         offset - mean * inv if offset is not None else -mean * inv
     ).astype(x.dtype)
     return np.transpose(ret, (0, ndims - 1, *range(1, ndims - 1)))
+
+
+def sigmoid(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    if not ivy.is_array(x):
+        return np.asarray(1 / (1 + np.exp(-x)))
+    return np.asarray(1 / (1 + np.exp(-x))).astype(x.dtype)
+
+
+def hard_tanh(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.where(x > 1, 1, np.where(x < -1, -1, x)).astype(x.dtype)
+
+
+@_scalar_output_to_0d_array
+def softplus(
+    x: np.ndarray,
+    /,
+    *,
+    beta: Optional[Union[int, float]] = None,
+    threshold: Optional[Union[int, float]] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+
+    if beta is not None and beta != 1:
+        x_beta = x * beta
+        res = (
+            np.add(
+                np.log1p(np.exp(-np.abs(x_beta))),
+                np.maximum(x_beta, 0, dtype=x.dtype),
+                out=out,
+            )
+        ) / beta
+    else:
+        x_beta = x
+        res = np.add(
+            np.log1p(np.exp(-np.abs(x_beta))),
+            np.maximum(x_beta, 0, dtype=x.dtype),
+            out=out,
+        )
+    if threshold is not None:
+        return np.where(x_beta > threshold, x, res).astype(x.dtype)
+    return res.astype(x.dtype)
+
+
+def softsign(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return x / (np.abs(x) + 1)
+
+
+def silu(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.multiply(x, sigmoid(x))
+
+
+def log_sigmoid(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return -softplus(-x)
+
+
+@_scalar_output_to_0d_array
+def hard_sigmoid(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    res = relu6(x + 3.0) / 6.0
+    return res.astype(x.dtype)
+
+
+def hard_silu(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.multiply(x, hard_sigmoid(x))
+
+
+def leaky_relu(
+    x: np.ndarray, /, *, alpha: float = 0.2, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return np.asarray(np.where(x > 0, x, np.multiply(x, alpha)), x.dtype)
+
+
+def elu(
+    x: np.ndarray, /, *, alpha: float = 1.0, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return np.where(x > 0, x, alpha * np.expm1(x)).astype(x.dtype)
+
+
+def selu(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    alpha = 1.6732632423543772848170429916717
+    scale = np.array(1.0507009873554804934193349852946, dtype=x.dtype)
+    return np.multiply(scale, elu(x, alpha=alpha))
+
+
+def celu(
+    x: np.ndarray, /, *, alpha: float = 1.0, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return np.where(x > 0, x, alpha * np.expm1(x / alpha)).astype(x.dtype)
+
+
+def glu(
+    x: np.ndarray, /, *, axis: int = -1, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    size = x.shape[axis]
+    assert size % 2 == 0, "axis size must be divisible by 2"
+    x1, x2 = np.split(x, 2, axis)
+    return x1 / (1 + np.exp(-x2))

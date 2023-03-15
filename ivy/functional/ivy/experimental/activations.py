@@ -8,6 +8,7 @@ from ivy.utils.exceptions import handle_exceptions
 from ivy.func_wrapper import (
     handle_array_function,
     handle_nestable,
+    integer_arrays_to_float,
     to_native_arrays_and_back,
     handle_array_like_without_promotion,
     handle_out_argument,
@@ -284,3 +285,689 @@ def batch_norm(
         training=training,
         eps=eps,
     )
+
+
+@integer_arrays_to_float
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
+def sigmoid(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+) -> ivy.Array:
+    """
+    Applies the sigmoid function element-wise.
+
+    Parameters
+    ----------
+    x
+        input array.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        input broadcast to.
+        default: None
+
+    Returns
+    -------
+    ret
+        an array containing the sigmoid activation of each element in ``x``.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([-1.0, 1.0, 2.0])
+    >>> y = ivy.sigmoid(x)
+    >>> print(y)
+    ivy.array([0.269, 0.731, 0.881])
+
+    >>> x = ivy.array([-1.0, 1.0, 2.0])
+    >>> y = x.sigmoid()
+    >>> print(y)
+    ivy.array([0.269, 0.731, 0.881])
+
+
+    >>> x = ivy.array([[-1.3, 3.8, 2.1], [1.7, 4.2, -6.6]])
+    >>> y = ivy.sigmoid(x)
+    >>> print(y)
+    ivy.array([[0.214, 0.978, 0.891], [0.846,0.985,0.001]] )
+    """
+    return current_backend(x).sigmoid(x, out=out)
+
+
+@integer_arrays_to_float
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
+def hard_sigmoid(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+) -> ivy.Array:
+    """
+    Applies the sigmoid function element-wise.
+
+    Parameters
+    ----------
+    x
+        input array.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        input broadcast to.
+        default: None
+
+    Returns
+    -------
+    ret
+        an array containing the sigmoid activation of each element in ``x``.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([-1.0, 1.0, 2.0])
+    >>> y = ivy.sigmoid(x)
+    >>> print(y)
+    ivy.array([0.269, 0.731, 0.881])
+
+    >>> x = ivy.array([-1.0, 1.0, 2.0])
+    >>> y = x.sigmoid()
+    >>> print(y)
+    ivy.array([0.269, 0.731, 0.881])
+
+
+    >>> x = ivy.array([[-1.3, 3.8, 2.1], [1.7, 4.2, -6.6]])
+    >>> y = ivy.sigmoid(x)
+    >>> print(y)
+    ivy.array([[0.214, 0.978, 0.891], [0.846,0.985,0.001]] )
+    """
+    return current_backend(x).hard_sigmoid(x, out=out)
+
+
+@integer_arrays_to_float
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
+def selu(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+) -> ivy.Array:
+    """
+    Applies the sigmoid function element-wise.
+
+    Parameters
+    ----------
+    x
+        input array.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        input broadcast to.
+        default: None
+
+    Returns
+    -------
+    ret
+        an array containing the sigmoid activation of each element in ``x``.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([-1.0, 1.0, 2.0])
+    >>> y = ivy.sigmoid(x)
+    >>> print(y)
+    ivy.array([0.269, 0.731, 0.881])
+
+    >>> x = ivy.array([-1.0, 1.0, 2.0])
+    >>> y = x.sigmoid()
+    >>> print(y)
+    ivy.array([0.269, 0.731, 0.881])
+
+
+    >>> x = ivy.array([[-1.3, 3.8, 2.1], [1.7, 4.2, -6.6]])
+    >>> y = ivy.sigmoid(x)
+    >>> print(y)
+    ivy.array([[0.214, 0.978, 0.891], [0.846,0.985,0.001]] )
+    """
+    return current_backend(x).selu(x, out=out)
+
+
+@integer_arrays_to_float
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
+def hard_tanh(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+) -> ivy.Array:
+    """
+    Applies the sigmoid function element-wise.
+
+    Parameters
+    ----------
+    x
+        input array.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        input broadcast to.
+        default: None
+
+    Returns
+    -------
+    ret
+        an array containing the sigmoid activation of each element in ``x``.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([-1.0, 1.0, 2.0])
+    >>> y = ivy.sigmoid(x)
+    >>> print(y)
+    ivy.array([0.269, 0.731, 0.881])
+
+    >>> x = ivy.array([-1.0, 1.0, 2.0])
+    >>> y = x.sigmoid()
+    >>> print(y)
+    ivy.array([0.269, 0.731, 0.881])
+
+
+    >>> x = ivy.array([[-1.3, 3.8, 2.1], [1.7, 4.2, -6.6]])
+    >>> y = ivy.sigmoid(x)
+    >>> print(y)
+    ivy.array([[0.214, 0.978, 0.891], [0.846,0.985,0.001]] )
+    """
+    return current_backend(x).hard_tanh(x, out=out)
+
+
+@integer_arrays_to_float
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
+def log_sigmoid(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+) -> ivy.Array:
+    """
+    Applies the sigmoid function element-wise.
+
+    Parameters
+    ----------
+    x
+        input array.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        input broadcast to.
+        default: None
+
+    Returns
+    -------
+    ret
+        an array containing the sigmoid activation of each element in ``x``.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([-1.0, 1.0, 2.0])
+    >>> y = ivy.sigmoid(x)
+    >>> print(y)
+    ivy.array([0.269, 0.731, 0.881])
+
+    >>> x = ivy.array([-1.0, 1.0, 2.0])
+    >>> y = x.sigmoid()
+    >>> print(y)
+    ivy.array([0.269, 0.731, 0.881])
+
+
+    >>> x = ivy.array([[-1.3, 3.8, 2.1], [1.7, 4.2, -6.6]])
+    >>> y = ivy.sigmoid(x)
+    >>> print(y)
+    ivy.array([[0.214, 0.978, 0.891], [0.846,0.985,0.001]] )
+    """
+    return current_backend(x).log_sigmoid(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
+def softplus(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    beta: Optional[Union[int, float]] = None,
+    threshold: Optional[Union[int, float]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Applies the softplus function element-wise.
+
+    Parameters
+    ----------
+    x
+        input array.
+    beta
+        The beta value for the softplus formation. Default: ``None``.
+    threshold
+        values above this revert to a linear function. Default: ``None``.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing the softplus activation of each element in ``x``.
+
+    Functional Examples
+    -------------------
+
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([-0.3461, -0.6491])
+    >>> y = ivy.softplus(x)
+    >>> print(y)
+    ivy.array([0.535,0.42])
+
+    >>> x = ivy.array([-0.3461, -0.6491])
+    >>> y = ivy.softplus(x, beta=0.5)
+    >>> print(y)
+    ivy.array([1.22, 1.09])
+
+    >>> x = ivy.array([1., 2., 3.])
+    >>> y = ivy.softplus(x, threshold=2)
+    >>> print(y)
+    ivy.array([1.31, 2.13, 3.  ])
+
+    """
+    return current_backend(x).softplus(x, beta=beta, threshold=threshold, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
+def softsign(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Applies the softsign function element-wise.
+
+    Parameters
+    ----------
+    x
+        input array.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing the softplus activation of each element in ``x``.
+
+    Functional Examples
+    -------------------
+
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([-0.3461, -0.6491])
+    >>> y = ivy.softsign(x)
+    >>> print(y)
+    ivy.array([0.535,0.42])
+
+    >>> x = ivy.array([-0.3461, -0.6491])
+    >>> y = ivy.softsign(x, beta=0.5)
+    >>> print(y)
+    ivy.array([1.22, 1.09])
+
+    >>> x = ivy.array([1., 2., 3.])
+    >>> y = ivy.softsign(x, threshold=2)
+    >>> print(y)
+    ivy.array([1.31, 2.13, 3.  ])
+
+    """
+    return current_backend(x).softsign(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
+def silu(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Applies the softsign function element-wise.
+
+    Parameters
+    ----------
+    x
+        input array.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing the softplus activation of each element in ``x``.
+
+    Functional Examples
+    -------------------
+
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([-0.3461, -0.6491])
+    >>> y = ivy.softsign(x)
+    >>> print(y)
+    ivy.array([0.535,0.42])
+
+    >>> x = ivy.array([-0.3461, -0.6491])
+    >>> y = ivy.softsign(x, beta=0.5)
+    >>> print(y)
+    ivy.array([1.22, 1.09])
+
+    >>> x = ivy.array([1., 2., 3.])
+    >>> y = ivy.softsign(x, threshold=2)
+    >>> print(y)
+    ivy.array([1.31, 2.13, 3.  ])
+
+    """
+    return current_backend(x).silu(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
+def hard_silu(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Applies the softsign function element-wise.
+
+    Parameters
+    ----------
+    x
+        input array.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing the softplus activation of each element in ``x``.
+
+    Functional Examples
+    -------------------
+
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([-0.3461, -0.6491])
+    >>> y = ivy.softsign(x)
+    >>> print(y)
+    ivy.array([0.535,0.42])
+
+    >>> x = ivy.array([-0.3461, -0.6491])
+    >>> y = ivy.softsign(x, beta=0.5)
+    >>> print(y)
+    ivy.array([1.22, 1.09])
+
+    >>> x = ivy.array([1., 2., 3.])
+    >>> y = ivy.softsign(x, threshold=2)
+    >>> print(y)
+    ivy.array([1.31, 2.13, 3.  ])
+
+    """
+    return current_backend(x).hard_silu(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
+def leaky_relu(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    alpha: float = 0.2,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Applies the leaky rectified linear unit function element-wise.
+
+    Parameters
+    ----------
+    x
+        Input array.
+    alpha
+        Negative slope for ReLU.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The input array with leaky relu applied element-wise.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([0.39, -0.85])
+    >>> y = ivy.leaky_relu(x)
+    >>> print(y)
+    ivy.array([ 0.39, -0.17])
+
+    >>> x = ivy.array([1.5, 0.7, -2.4])
+    >>> y = ivy.zeros(3)
+    >>> ivy.leaky_relu(x, out=y)
+    >>> print(y)
+    ivy.array([ 1.5 ,  0.7 , -0.48])
+
+    >>> x = ivy.array([[1.1, 2.2, 3.3],
+    ...                [-4.4, -5.5, -6.6]])
+    >>> ivy.leaky_relu(x, out=x)
+    >>> print(x)
+    ivy.array([[ 1.1 ,  2.2 ,  3.3 ],
+       [-0.88, -1.1 , -1.32]])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0.0, -1.2]), b=ivy.array([0.4, -0.2]))
+    >>> x = ivy.leaky_relu(x, out=x)
+    >>> print(x)
+    {
+        a: ivy.array([0., -0.24000001]),
+        b: ivy.array([0.40000001, -0.04])
+    }
+    """
+    return current_backend(x).leaky_relu(x, alpha=alpha, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
+def elu(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    alpha: float = 1.0,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Applies the leaky rectified linear unit function element-wise.
+
+    Parameters
+    ----------
+    x
+        Input array.
+    alpha
+        Negative slope for ReLU.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The input array with leaky relu applied element-wise.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([0.39, -0.85])
+    >>> y = ivy.leaky_relu(x)
+    >>> print(y)
+    ivy.array([ 0.39, -0.17])
+
+    >>> x = ivy.array([1.5, 0.7, -2.4])
+    >>> y = ivy.zeros(3)
+    >>> ivy.leaky_relu(x, out=y)
+    >>> print(y)
+    ivy.array([ 1.5 ,  0.7 , -0.48])
+
+    >>> x = ivy.array([[1.1, 2.2, 3.3],
+    ...                [-4.4, -5.5, -6.6]])
+    >>> ivy.leaky_relu(x, out=x)
+    >>> print(x)
+    ivy.array([[ 1.1 ,  2.2 ,  3.3 ],
+       [-0.88, -1.1 , -1.32]])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0.0, -1.2]), b=ivy.array([0.4, -0.2]))
+    >>> x = ivy.leaky_relu(x, out=x)
+    >>> print(x)
+    {
+        a: ivy.array([0., -0.24000001]),
+        b: ivy.array([0.40000001, -0.04])
+    }
+    """
+    return current_backend(x).elu(x, alpha=alpha, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
+def celu(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    alpha: float = 1.0,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Applies the leaky rectified linear unit function element-wise.
+
+    Parameters
+    ----------
+    x
+        Input array.
+    alpha
+        Negative slope for ReLU.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The input array with leaky relu applied element-wise.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([0.39, -0.85])
+    >>> y = ivy.leaky_relu(x)
+    >>> print(y)
+    ivy.array([ 0.39, -0.17])
+
+    >>> x = ivy.array([1.5, 0.7, -2.4])
+    >>> y = ivy.zeros(3)
+    >>> ivy.leaky_relu(x, out=y)
+    >>> print(y)
+    ivy.array([ 1.5 ,  0.7 , -0.48])
+
+    >>> x = ivy.array([[1.1, 2.2, 3.3],
+    ...                [-4.4, -5.5, -6.6]])
+    >>> ivy.leaky_relu(x, out=x)
+    >>> print(x)
+    ivy.array([[ 1.1 ,  2.2 ,  3.3 ],
+       [-0.88, -1.1 , -1.32]])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0.0, -1.2]), b=ivy.array([0.4, -0.2]))
+    >>> x = ivy.leaky_relu(x, out=x)
+    >>> print(x)
+    {
+        a: ivy.array([0., -0.24000001]),
+        b: ivy.array([0.40000001, -0.04])
+    }
+    """
+    return current_backend(x).celu(x, alpha=alpha, out=out)
+
+
+@handle_out_argument
+@handle_nestable
+@to_native_arrays_and_back
+@handle_exceptions
+@handle_array_like_without_promotion
+def glu(
+    x: Union[ivy.NativeArray, ivy.Array],
+    /,
+    *,
+    axis: int = -1,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Applies batch normalization to the input array.
+
+    Parameters
+    ----------
+    x
+        Input array of shape (N,C,S), where N is the batch dimension, C is the feature
+        dimension and S corresponds to the following spatial dimensions.
+    mean
+        A mean array for the input's normalization.
+
+    Returns
+    -------
+    ret
+         Array containing the normalized, scaled, offset values.
+    """
+    return current_backend(x).glu(x, axis=axis, out=out)

@@ -8,7 +8,7 @@ from jax import lax
 import ivy
 
 
-def logit(x: JaxArray, /, *, eps: Optional[float] = None, out=None):
+def logit(x: JaxArray, /, *, eps: Optional[float] = None, out=None) -> JaxArray:
     if eps is None:
         x = jnp.where(jnp.logical_or(x > 1, x < 0), jnp.nan, x)
     else:
@@ -52,7 +52,7 @@ def batch_norm(
     offset: Optional[JaxArray] = None,
     training: bool = False,
     eps: float = 1e-5,
-):
+) -> JaxArray:
     ndims = len(x.shape)
     if training:
         dims = (0, *range(2, ndims))
@@ -68,3 +68,76 @@ def batch_norm(
     ).astype(x.dtype)
 
     return jnp.transpose(ret, (0, ndims - 1, *range(1, ndims - 1)))
+
+
+def sigmoid(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jax.nn.sigmoid(x)
+
+
+def hard_tanh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jax.nn.hard_tanh(x)
+
+
+def softplus(
+    x: JaxArray,
+    /,
+    *,
+    beta: Optional[Union[int, float]] = None,
+    threshold: Optional[Union[int, float]] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if beta is None:
+        x_beta = x
+        res = jax.nn.softplus(x_beta)
+    else:
+        x_beta = x * beta
+        res = jax.nn.softplus(x_beta) / beta
+    if threshold is not None:
+        return jnp.where(x_beta > threshold, x, res).astype(x.dtype)
+    return res.astype(x.dtype)
+
+
+def softsign(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jax.nn.soft_sign(x)
+
+
+def silu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jax.nn.silu(x)
+
+
+def log_sigmoid(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jax.nn.log_sigmoid(x)
+
+
+def selu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jax.nn.selu(x)
+
+
+def leaky_relu(
+    x: JaxArray, /, *, alpha: float = 0.2, out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jax.nn.leaky_relu(x, negative_slope=alpha)
+
+
+def elu(
+    x: JaxArray, /, *, alpha: float = 1.0, out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jax.nn.elu(x, alpha=alpha)
+
+
+def celu(
+    x: JaxArray, /, *, alpha: float = 1.0, out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jax.nn.celu(x, alpha=alpha)
+
+
+def hard_sigmoid(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jax.nn.hard_sigmoid(x)
+
+
+def hard_silu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jax.nn.hard_silu(x)
+
+
+def glu(x: JaxArray, /, *, axis: int = -1, out: Optional[JaxArray] = None) -> JaxArray:
+    return jax.nn.glu(x, axis=axis)

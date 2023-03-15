@@ -115,20 +115,6 @@ def tanh(input):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes(
-    {
-        "1.11.0 and below": (
-            "float16",
-            "bfloat16",
-        )
-    },
-    "torch",
-)
-def logsigmoid(input):
-    return ivy.negative(ivy.softplus(ivy.negative(input)))
-
-
-@to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def softmin(input, dim=None, dtype=None):
     if dtype:
@@ -155,29 +141,17 @@ def relu6(input, inplace=False):
 
 
 def elu(input, alpha=1.0, inplace=False):
-    return _compute_elu(input, alpha, inplace=inplace)
+    out = input if inplace else None
+    return ivy.elu(input, alpha=alpha, out=out)
 
 
 def elu_(input, alpha=1.0):
-    return _compute_elu(input, alpha, inplace=True)
+    return ivy.elu(input, alpha=alpha, out=input)
 
 
 def celu(input, alpha=1.0, inplace=False):
-    prod = ivy.multiply(
-        alpha,
-        ivy.subtract(
-            ivy.exp(ivy.divide(input, alpha)),
-            1,
-        ),
-    )
-    ret = ivy.add(
-        ivy.maximum(0, input),
-        ivy.minimum(0, prod),
-    )
-    if inplace:
-        ivy.inplace_update(input, ret)
-        return input
-    return ret
+    out = input if inplace else None
+    return ivy.celu(input, alpha=alpha, out=out)
 
 
 def mish(input, inplace=False):
@@ -207,7 +181,8 @@ def relu_(input):
 
 
 def selu(input, inplace=False):
-    return _selu_with_inplace(input, inplace=inplace)
+    out = input if inplace else None
+    return ivy.selu(input, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -232,11 +207,6 @@ def hardshrink(input, lambd=0.5):
 
 
 @to_ivy_arrays_and_back
-def softsign(input):
-    return ivy.divide(input, ivy.add(1, ivy.abs(input)))
-
-
-@to_ivy_arrays_and_back
 def softshrink(input, lambd=0.5):
     low = ivy.where(ivy.less(input, -lambd), ivy.add(input, lambd), 0)
     up = ivy.where(ivy.greater(input, lambd), ivy.subtract(input, lambd), 0)
@@ -245,17 +215,13 @@ def softshrink(input, lambd=0.5):
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def silu(input, inplace=False):
-    ret = ivy.multiply(input, ivy.sigmoid(input))
-    if inplace:
-        ivy.inplace_update(input, ret)
-        return input
-    return ret
+    out = input if inplace else None
+    return ivy.silu(input, out=out)
 
 
 @to_ivy_arrays_and_back
 def glu(input, dim=-1):
-    a, b = ivy.split(input, num_or_size_splits=2, axis=dim)
-    return ivy.multiply(a, ivy.sigmoid(b))
+    return ivy.glu(input, axis=dim)
 
 
 @to_ivy_arrays_and_back
@@ -283,21 +249,15 @@ def leaky_relu_(input, negative_slope=0.01):
 
 @to_ivy_arrays_and_back
 def hardswish(input, inplace=False):
-    relu6_val = ivy.relu6(ivy.add(input, 3))
-    ret = ivy.multiply(input, ivy.divide(relu6_val, 6))
-    if inplace:
-        ivy.inplace_update(input, ret)
-        return input
-    return ret
+    out = input if inplace else None
+    return ivy.hard_silu(input, out=out)
 
 
 @to_ivy_arrays_and_back
 def hardsigmoid(input, inplace=False):
-    ret = ivy.divide(ivy.minimum(ivy.maximum(ivy.add(input, 3), 0), 6), 6)
-    if inplace:
-        ivy.inplace_update(input, ret)
-        return input
-    return ret
+    # ret = ivy.divide(ivy.minimum(ivy.maximum(ivy.add(input, 3), 0), 6), 6)
+    out = input if inplace else None
+    return ivy.hard_sigmoid(input, out=out)
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
@@ -351,6 +311,16 @@ def layer_norm(input, normalized_shape, weight=None, bias=None, eps=1e-05):
 )
 def softplus(input, beta=1, threshold=20):
     return ivy.softplus(input, beta=beta, threshold=threshold)
+
+
+@to_ivy_arrays_and_back
+def softsign(input):
+    return ivy.softsign(input)
+
+
+@to_ivy_arrays_and_back
+def logsigmoid(input):
+    return ivy.log_sigmoid(input)
 
 
 @to_ivy_arrays_and_back

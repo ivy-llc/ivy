@@ -234,7 +234,8 @@ def dropout(x, rate, noise_shape=None, seed=None, name=None):
 )
 @to_ivy_arrays_and_back
 def silu(features, beta: float = 1.0):
-    beta = ivy.astype(ivy.array(beta), ivy.dtype(features))
+    if beta == 1.0:
+        return ivy.silu(features)
     return ivy.multiply(features, ivy.sigmoid(ivy.multiply(beta, features)))
 
 
@@ -482,3 +483,8 @@ def relu6(features, name=None):
 @to_ivy_arrays_and_back
 def softmax(logits, axis=None, name=None):
     return ivy.softmax(logits, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def softsign(features, name=None):
+    return ivy.softsign(features)
