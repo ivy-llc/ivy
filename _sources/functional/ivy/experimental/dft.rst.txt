@@ -3,6 +3,8 @@ dft
 
 .. autofunction:: ivy.functional.ivy.experimental.dft
 
+.. autofunction:: ivy.array.array_methods.dft
+
 .. autofunction:: ivy.container.container_methods.static_dft
 
 .. autofunction:: ivy.container.container_methods.dft
@@ -30,6 +32,7 @@ dft
    :caption: dft
 
    dft/dft_functional.rst
+   dft/dft_array.rst
    dft/dft_container.rst
    dft/static_dft_container.rst
 

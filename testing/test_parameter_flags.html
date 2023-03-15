@@ -43,7 +43,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'testing/test_parameter_flags';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="build_flag" href="test_parameter_flags/build_flag.html" />
+    <link rel="next" title="as_cont" href="test_parameter_flags/as_cont.html" />
     <link rel="prev" title="FrontendMethodData" href="structs/FrontendMethodData.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="docsearch:language" content="en">
@@ -583,10 +583,15 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.test_parameter_flags.FrontendFunctionTestFlags">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.test_parameter_flags.</span></span><span class="sig-name descname"><span class="pre">FrontendFunctionTestFlags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_positional_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_out</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_variable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">native_arrays</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_tests/test_ivy/helpers/test_parameter_flags.html#FrontendFunctionTestFlags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.test_parameter_flags.FrontendFunctionTestFlags" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dd><p>Bases: <a class="reference internal" href="test_parameter_flags/TestFlags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.TestFlags" title="ivy_tests.test_ivy.helpers.test_parameter_flags.TestFlags"><code class="xref py py-class docutils literal notranslate"><span class="pre">TestFlags</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.test_parameter_flags.FrontendFunctionTestFlags.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_positional_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_out</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_variable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">native_arrays</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_tests/test_ivy/helpers/test_parameter_flags.html#FrontendFunctionTestFlags.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.test_parameter_flags.FrontendFunctionTestFlags.__init__" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.test_parameter_flags.FrontendFunctionTestFlags.apply_flags">
+<span class="sig-name descname"><span class="pre">apply_flags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args_to_iterate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_dtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_tests/test_ivy/helpers/test_parameter_flags.html#FrontendFunctionTestFlags.apply_flags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.test_parameter_flags.FrontendFunctionTestFlags.apply_flags" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -594,10 +599,15 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.test_parameter_flags.FrontendMethodTestFlags">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.test_parameter_flags.</span></span><span class="sig-name descname"><span class="pre">FrontendMethodTestFlags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_positional_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_variable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">native_arrays</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_tests/test_ivy/helpers/test_parameter_flags.html#FrontendMethodTestFlags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.test_parameter_flags.FrontendMethodTestFlags" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dd><p>Bases: <a class="reference internal" href="test_parameter_flags/TestFlags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.TestFlags" title="ivy_tests.test_ivy.helpers.test_parameter_flags.TestFlags"><code class="xref py py-class docutils literal notranslate"><span class="pre">TestFlags</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.test_parameter_flags.FrontendMethodTestFlags.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_positional_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_variable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">native_arrays</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_tests/test_ivy/helpers/test_parameter_flags.html#FrontendMethodTestFlags.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.test_parameter_flags.FrontendMethodTestFlags.__init__" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.test_parameter_flags.FrontendMethodTestFlags.apply_flags">
+<span class="sig-name descname"><span class="pre">apply_flags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args_to_iterate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_dtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_tests/test_ivy/helpers/test_parameter_flags.html#FrontendMethodTestFlags.apply_flags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.test_parameter_flags.FrontendMethodTestFlags.apply_flags" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -605,10 +615,31 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.test_parameter_flags.FunctionTestFlags">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.test_parameter_flags.</span></span><span class="sig-name descname"><span class="pre">FunctionTestFlags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_positional_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_out</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance_method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_variable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">native_arrays</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">container</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_gradients</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_compile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_tests/test_ivy/helpers/test_parameter_flags.html#FunctionTestFlags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.test_parameter_flags.FunctionTestFlags" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dd><p>Bases: <a class="reference internal" href="test_parameter_flags/TestFlags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.TestFlags" title="ivy_tests.test_ivy.helpers.test_parameter_flags.TestFlags"><code class="xref py py-class docutils literal notranslate"><span class="pre">TestFlags</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.test_parameter_flags.FunctionTestFlags.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_positional_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_out</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instance_method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_variable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">native_arrays</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">container</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_gradients</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_compile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_tests/test_ivy/helpers/test_parameter_flags.html#FunctionTestFlags.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.test_parameter_flags.FunctionTestFlags.__init__" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.test_parameter_flags.FunctionTestFlags.apply_flags">
+<span class="sig-name descname"><span class="pre">apply_flags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args_to_iterate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_dtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_tests/test_ivy/helpers/test_parameter_flags.html#FunctionTestFlags.apply_flags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.test_parameter_flags.FunctionTestFlags.apply_flags" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.test_parameter_flags.InitMethodTestFlags">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.test_parameter_flags.</span></span><span class="sig-name descname"><span class="pre">InitMethodTestFlags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_positional_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_variable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">native_arrays</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_tests/test_ivy/helpers/test_parameter_flags.html#InitMethodTestFlags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.test_parameter_flags.InitMethodTestFlags" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="test_parameter_flags/TestFlags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.TestFlags" title="ivy_tests.test_ivy.helpers.test_parameter_flags.TestFlags"><code class="xref py py-class docutils literal notranslate"><span class="pre">TestFlags</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.test_parameter_flags.InitMethodTestFlags.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_positional_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_variable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">native_arrays</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_tests/test_ivy/helpers/test_parameter_flags.html#InitMethodTestFlags.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.test_parameter_flags.InitMethodTestFlags.__init__" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.test_parameter_flags.InitMethodTestFlags.apply_flags">
+<span class="sig-name descname"><span class="pre">apply_flags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args_to_iterate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_dtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_tests/test_ivy/helpers/test_parameter_flags.html#InitMethodTestFlags.apply_flags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.test_parameter_flags.InitMethodTestFlags.apply_flags" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -616,12 +647,34 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.test_parameter_flags.MethodTestFlags">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.test_parameter_flags.</span></span><span class="sig-name descname"><span class="pre">MethodTestFlags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_positional_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_variable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">native_arrays</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">container_flags</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_tests/test_ivy/helpers/test_parameter_flags.html#MethodTestFlags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.test_parameter_flags.MethodTestFlags" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dd><p>Bases: <a class="reference internal" href="test_parameter_flags/TestFlags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.TestFlags" title="ivy_tests.test_ivy.helpers.test_parameter_flags.TestFlags"><code class="xref py py-class docutils literal notranslate"><span class="pre">TestFlags</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.test_parameter_flags.MethodTestFlags.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_positional_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_variable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">native_arrays</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">container_flags</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_tests/test_ivy/helpers/test_parameter_flags.html#MethodTestFlags.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.test_parameter_flags.MethodTestFlags.__init__" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.test_parameter_flags.MethodTestFlags.apply_flags">
+<span class="sig-name descname"><span class="pre">apply_flags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args_to_iterate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_dtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_tests/test_ivy/helpers/test_parameter_flags.html#MethodTestFlags.apply_flags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.test_parameter_flags.MethodTestFlags.apply_flags" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.test_parameter_flags.TestFlags">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.test_parameter_flags.</span></span><span class="sig-name descname"><span class="pre">TestFlags</span></span><a class="reference internal" href="../_modules/ivy_tests/test_ivy/helpers/test_parameter_flags.html#TestFlags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.test_parameter_flags.TestFlags" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.test_parameter_flags.TestFlags.apply_flags">
+<span class="sig-name descname"><span class="pre">apply_flags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args_to_iterate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_dtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_tests/test_ivy/helpers/test_parameter_flags.html#TestFlags.apply_flags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.test_parameter_flags.TestFlags.apply_flags" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.test_parameter_flags.as_cont">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.test_parameter_flags.</span></span><span class="sig-name descname"><span class="pre">as_cont</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_tests/test_ivy/helpers/test_parameter_flags.html#as_cont"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.test_parameter_flags.as_cont" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns x as an Ivy Container, containing x at all its leaves.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -660,6 +713,16 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.test_parameter_flags.init_method_flags">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.test_parameter_flags.</span></span><span class="sig-name descname"><span class="pre">init_method_flags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_positional_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_variable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">native_arrays</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_tests/test_ivy/helpers/test_parameter_flags.html#init_method_flags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.test_parameter_flags.init_method_flags" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SearchStrategy</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.test_parameter_flags.method_flags">
 <span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.test_parameter_flags.</span></span><span class="sig-name descname"><span class="pre">method_flags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_positional_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_variable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">native_arrays</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">container_flags</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy_tests/test_ivy/helpers/test_parameter_flags.html#method_flags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.test_parameter_flags.method_flags" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
@@ -688,10 +751,10 @@
           <p class="prev-next-title">FrontendMethodData</p>
       </div>
   </a>
-  <a class='right-next' id="next-link" href="test_parameter_flags/build_flag.html" title="next page">
+  <a class='right-next' id="next-link" href="test_parameter_flags/as_cont.html" title="next page">
   <div class="prev-next-info">
       <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">build_flag</p>
+      <p class="prev-next-title">as_cont</p>
   </div>
   <i class="fa-solid fa-angle-right"></i>
   </a>
@@ -712,15 +775,19 @@
   <div class="bd-toc-item navbar-nav">
     <p aria-level="2" class="caption" role="heading"><span class="caption-text">test_parameter_flags</span></p>
 <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="test_parameter_flags/as_cont.html">as_cont</a></li>
 <li class="toctree-l1"><a class="reference internal" href="test_parameter_flags/build_flag.html">build_flag</a></li>
 <li class="toctree-l1"><a class="reference internal" href="test_parameter_flags/frontend_function_flags.html">frontend_function_flags</a></li>
 <li class="toctree-l1"><a class="reference internal" href="test_parameter_flags/frontend_method_flags.html">frontend_method_flags</a></li>
 <li class="toctree-l1"><a class="reference internal" href="test_parameter_flags/function_flags.html">function_flags</a></li>
+<li class="toctree-l1"><a class="reference internal" href="test_parameter_flags/init_method_flags.html">init_method_flags</a></li>
 <li class="toctree-l1"><a class="reference internal" href="test_parameter_flags/method_flags.html">method_flags</a></li>
 <li class="toctree-l1"><a class="reference internal" href="test_parameter_flags/FrontendFunctionTestFlags.html">FrontendFunctionTestFlags</a></li>
 <li class="toctree-l1"><a class="reference internal" href="test_parameter_flags/FrontendMethodTestFlags.html">FrontendMethodTestFlags</a></li>
 <li class="toctree-l1"><a class="reference internal" href="test_parameter_flags/FunctionTestFlags.html">FunctionTestFlags</a></li>
+<li class="toctree-l1"><a class="reference internal" href="test_parameter_flags/InitMethodTestFlags.html">InitMethodTestFlags</a></li>
 <li class="toctree-l1"><a class="reference internal" href="test_parameter_flags/MethodTestFlags.html">MethodTestFlags</a></li>
+<li class="toctree-l1"><a class="reference internal" href="test_parameter_flags/TestFlags.html">TestFlags</a></li>
 </ul>
 
   </div>
