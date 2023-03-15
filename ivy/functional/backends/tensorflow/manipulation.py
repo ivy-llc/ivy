@@ -28,7 +28,7 @@ def concat(
     xs: Union[Tuple[tf.Tensor, ...], List[tf.Tensor]],
     /,
     *,
-    axis: Optional[int] = 0,
+    axis: int = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     is_tuple = type(xs) is tuple
@@ -105,8 +105,8 @@ def reshape(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     copy: Optional[bool] = None,
-    order: Optional[str] = "C",
-    allowzero: Optional[bool] = True,
+    order: str = "C",
+    allowzero: bool = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     ivy.utils.assertions.check_elem_in_list(order, ["C", "F"])
