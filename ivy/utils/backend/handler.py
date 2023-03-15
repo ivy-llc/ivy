@@ -14,7 +14,7 @@ from ivy.utils.backend import ast_helpers
 
 # local
 from ivy.func_wrapper import _wrap_function
-from ivy.utils.backend.sub_backend_handler import add_sub_backend_attributes
+from ivy.utils.backend.sub_backend_handler import add_sub_backend_attributes, remove_sub_backend_attributes
 
 backend_stack = []
 compiled_backends = {}
@@ -446,6 +446,7 @@ def set_backend(backend: str, dynamic: bool = False):
     elif backend.current_backend_str() == "jax":
         ivy.set_global_attr("RNG", ivy.functional.backends.jax.random.RNG)
     backend_stack.append(backend)
+    
     set_backend_to_specific_version(backend)
     _set_backend_as_ivy(ivy_original_dict, ivy, backend)
     
@@ -571,6 +572,7 @@ def unset_backend():
     backend = None
     # if the backend stack is empty, nothing is done then we just return `None`
     if backend_stack:
+        remove_sub_backend_attributes(ivy)
         backend = backend_stack.pop(-1)  # remove last backend from the stack
         if backend.current_backend_str() == "numpy":
             ivy.unset_default_device()

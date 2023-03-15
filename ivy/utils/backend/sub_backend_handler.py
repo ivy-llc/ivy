@@ -37,9 +37,10 @@ def unset_sub_backend(sub_backend: ModuleType, current_ivy):
 
 
 def create_enable_function(sub_backend_name: str, backend_name: str, current_ivy):
-    # TODO(Yasser): make sure to unset any sub_backend
-    # that the current sub_backend is incompatible with (functions overlapping) 
+ 
     def enable_function(enable: bool=False):
+        # TODO(Yasser): make sure to unset any sub_backend
+        # that the current sub_backend is incompatible with (functions overlapping)
         sub_backend = importlib.import_module(_sub_backend_dict[sub_backend_name])
         original_dict = current_ivy.current_backend().sub_backends.original_dict
         if not original_dict:
@@ -53,6 +54,7 @@ def create_enable_function(sub_backend_name: str, backend_name: str, current_ivy
                 unset_sub_backend(sub_backend, current_ivy)
                 current_ivy.__dict__[f"is_{sub_backend_name}_enabled"] = False
 
+    enable_function.__doc__ = current_ivy.current_backend().sub_backends.docstrings[sub_backend_name]
     return enable_function
 
 
@@ -63,9 +65,16 @@ def add_sub_backend_attributes(current_ivy):
             current_ivy.__dict__[f'enable_{sub_backend}'] = create_enable_function(sub_backend, backend, current_ivy)
             current_ivy.__dict__[f'is_{sub_backend}_enabled'] = False
 
+            current_ivy.current_backend().sub_backends_attrs.append(f'enable_{sub_backend}')
+            current_ivy.current_backend().sub_backends_attrs.append(f'is_{sub_backend}_enabled')
+
+
 
 def remove_sub_backend_attributes(current_ivy):
+    # if backend agnostic ivy is set (i.e no backend is set), this will return an empty string
     backend = current_ivy.current_backend_str()
     if backend:
-        for k in current_ivy.current_backend().sub_backend_attrs:
+        for k in current_ivy.current_backend().sub_backends_attrs:
             del current_ivy.__dict__[k]
+        current_ivy.current_backend().sub_backends_attrs = []
+    
