@@ -30,3 +30,9 @@ def take_along_axis(arr, indices, axis, mode="fill"):
 @to_ivy_arrays_and_back
 def tril_indices(n_rows, n_cols=None, k=0):
     return ivy.tril_indices(n_rows, n_cols, k)
+
+
+# indices
+@to_ivy_arrays_and_back
+def indices(dimensions, dtype=<class 'jax.numpy.int32'>, sparse=False):
+    return ivy.indices(dimensions, dtype, sparse)
