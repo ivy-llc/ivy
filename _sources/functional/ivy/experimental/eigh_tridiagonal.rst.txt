@@ -5,9 +5,9 @@ eigh_tridiagonal
 
 .. autofunction:: ivy.array.array_methods.eigh_tridiagonal
 
-.. autofunction:: ivy.container.container_methods.static_eigh_tridiagonal
-
 .. autofunction:: ivy.container.container_methods.eigh_tridiagonal
+
+.. autofunction:: ivy.container.container_methods.static_eigh_tridiagonal
 |
 | **Supported Frameworks:**
 

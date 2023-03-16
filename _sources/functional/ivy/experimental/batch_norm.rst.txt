@@ -5,9 +5,9 @@ batch_norm
 
 .. autofunction:: ivy.array.array_methods.batch_norm
 
-.. autofunction:: ivy.container.container_methods.batch_norm
-
 .. autofunction:: ivy.container.container_methods.static_batch_norm
+
+.. autofunction:: ivy.container.container_methods.batch_norm
 |
 | **Supported Frameworks:**
 

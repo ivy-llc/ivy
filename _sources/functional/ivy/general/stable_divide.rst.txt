@@ -5,9 +5,9 @@ stable_divide
 
 .. autofunction:: ivy.array.array_methods.stable_divide
 
-.. autofunction:: ivy.container.container_methods.static_stable_divide
-
 .. autofunction:: ivy.container.container_methods.stable_divide
+
+.. autofunction:: ivy.container.container_methods.static_stable_divide
 |
 | **Supported Frameworks:**
 
