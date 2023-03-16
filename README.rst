@@ -383,7 +383,7 @@ Lastly, you can also find there the `Related Work <https://lets-unify.ai/ivy/rel
 Examples
 --------
 
-The `Examples page`_ features a wide range of demos and tutorials showcasing the functionalities of Ivy along with multiple use cases, but feel free to check out some shorter framework-specific examples here ⬇
+The `Examples page`_ features a wide range of demos and tutorials showcasing the functionalities of Ivy along with multiple use cases, but feel free to check out some shorter framework-specific examples here ⬇️
 
 .. raw:: html
 
