@@ -368,6 +368,7 @@ def test_interpolate(
         scale_factor,
         recompute_scale_factor,
     ) = dtype_x_mode
+
     try:
         helpers.test_function(
             ground_truth_backend=ground_truth_backend,
@@ -757,4 +758,31 @@ def test_adaptive_avg_pool2d(
         fn_name=fn_name,
         input=x[0],
         output_size=output_size,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.collapse_repeated",
+    dtype_x_seq=helpers.arrays_for_collapsed_repeated(),
+    test_with_out=st.just(False),
+)
+def test_collapse_repeated(
+    *,
+    dtype_x_seq,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    dtype, x, seq = dtype_x_seq
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        x=x,
+        seq_length=seq,
+        on_device=on_device,
+        ground_truth_backend=ground_truth_backend,
     )

@@ -11,8 +11,9 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
     integer_arrays_to_float,
+    handle_array_function,
 )
-from ivy.utils.exceptions import handle_exceptions
+from ivy.utils.exceptions import handle_exceptions, IvyException
 
 
 @handle_nestable
@@ -1685,3 +1686,75 @@ def adaptive_avg_pool2d(
     if squeeze:
         return ivy.squeeze(pooled_output, axis=0)
     return pooled_output
+
+
+def _collapse_repeated_1d(
+    x_1d: Union[ivy.Array, ivy.NativeArray], seq_length_1d: float, pad_to_length_1d: int
+):
+    seq_length_1d = int(seq_length_1d)
+    x_1d = x_1d[:seq_length_1d]
+    collapsed = [i[0] for i in itertools.groupby(x_1d)]
+    return ivy.zero_pad(collapsed, [[0, pad_to_length_1d - len(collapsed)]]), len(
+        collapsed
+    )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_function
+def collapse_repeated(
+    x: Union[ivy.Array, ivy.NativeArray],
+    seq_length: Union[Sequence[int], int],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> Tuple[ivy.Array, ivy.Array]:
+    """Merge repeated labels into single labels.
+    Parameters
+    ----------
+    x
+        Input of shape [batch, max value in seq_length]
+    seq_length
+        Input of shape [batch], sequence length of each batch element.
+    out
+        optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
+    Returns
+    -------
+    ret
+        A tuple (collapsed_labels, new_seq_length).
+
+    Examples
+    --------
+    >>> labels = [[0, 0, 1, 1, 0], [0, 1, 2, 3, 4]]
+    >>> seq_len = 5
+    >>> collapsed_labels, new_seq_len = collapse_repeated(labels, seq_len)
+    >>> print(collapsed_labels)
+    ivy.Array([[0, 1, 0, 0, 0], [0, 1, 2, 3, 4]])
+    >>> print(new_seq_len)
+    ivy.Array([3, 5])
+    """
+
+    shape = ivy.shape(x)
+    if isinstance(seq_length, (float, int)):
+        seq_length = [seq_length] * shape[0]
+
+    if len(shape) == 2:
+        pad_to_length = int(ivy.max(seq_length))
+        ret = ivy.map(
+            _collapse_repeated_1d,
+            {"pad_to_length_1d": pad_to_length},
+            {"x_1d": ivy.to_list(x), "seq_length_1d": seq_length},
+            False,
+        )
+        collapsed_x, new_seq_length = zip(*ret)
+        collapsed_x = ivy.reshape(ivy.concat(collapsed_x), (-1, pad_to_length))
+        new_seq_length = ivy.array(new_seq_length)
+    else:
+        raise IvyException(
+            f"Expected x to be 2 dimensional, but got { len(shape) } dimensions"
+        )
+
+    return collapsed_x, new_seq_length

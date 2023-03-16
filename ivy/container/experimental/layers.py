@@ -1676,3 +1676,80 @@ class _ContainerWithLayersExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
+
+    @staticmethod
+    def static_collapse_repeated(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        seq_length: Union[Sequence[float], float],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """ivy.Container static method variant of ivy.collapse_repeated. This method
+        simply wraps the function, and so the docstring for ivy.collapse_repeated also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input container
+        seq_length
+            Input of shape [batch], sequence length of each batch element.
+        out
+            optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+        Returns
+        -------
+        ret
+            A tuple (collapsed_labels, new_seq_length).
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "collapse_repeated",
+            x,
+            seq_length,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def collapse_repeated(
+        self: ivy.Container,
+        seq_length: Union[Sequence[float], float],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """Merge repeated labels into single labels.
+        Parameters
+        ----------
+        self
+            Input container
+        seq_length
+            Input of shape [batch], sequence length of each batch element.
+        out
+            optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+        Returns
+        -------
+        ret
+            A tuple (collapsed_labels, new_seq_length).
+        """
+        return self.static_collapse_repeated(
+            self,
+            seq_length,
+            out=out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )

@@ -776,3 +776,27 @@ class _ArrayWithLayersExperimental(abc.ABC):
             self._data,
             output_size,
         )
+
+    def collapse_repeated(
+        self: ivy.Array,
+        seq_length: Union[Sequence[float], float],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> Tuple[ivy.Array, ivy.Array]:
+        """Merge repeated labels into single labels.
+        Parameters
+        ----------
+        self
+            Input array
+        seq_length
+            Input of shape [batch], sequence length of each batch element.
+        out
+            optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+        Returns
+        -------
+        ret
+            A tuple (collapsed_labels, new_seq_length).
+        """
+        return ivy.collapse_repeated(self._data, seq_length, out=out)

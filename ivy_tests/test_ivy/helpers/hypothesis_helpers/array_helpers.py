@@ -1229,3 +1229,30 @@ def arrays_for_pooling(
     if return_dilation:
         return dtype, x, kernel, strides, padding, dilations
     return dtype, x, kernel, strides, padding
+
+
+@st.composite
+def arrays_for_collapsed_repeated(
+    draw,
+):
+    in_shape = draw(nph.array_shapes(min_dims=2, max_dims=2))
+    x = draw(
+        array_values(
+            dtype=get_dtypes("integer"), shape=in_shape, min_value=0, max_value=10
+        )
+    )
+
+    batch_dim = x.shape[0]
+    max_seq_len = x.shape[1]
+
+    seq_length = draw(
+        st.one_of(
+            lists(
+                x=st.floats(min_value=1.0, max_value=max_seq_len),
+                min_size=batch_dim,
+                max_size=batch_dim,
+            ),
+            st.floats(min_value=1.0, max_value=max_seq_len),
+        )
+    )
+    return draw(get_dtypes("numeric")), x, seq_length
