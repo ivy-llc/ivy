@@ -48,7 +48,7 @@ def test_numpy_logical_and(
         where=where,
         casting=casting,
         order="K",
-        dtype=dtype,
+        dtype="bool",
         subok=True,
     )
 
@@ -96,7 +96,7 @@ def test_numpy_logical_or(
         where=where,
         casting=casting,
         order="K",
-        dtype=dtype,
+        dtype="bool",
         subok=True,
     )
 
@@ -190,6 +190,6 @@ def test_numpy_logical_xor(
         where=where,
         casting=casting,
         order="K",
-        dtype=dtype,
+        dtype="bool",
         subok=True,
     )

@@ -167,6 +167,9 @@ def linear(
     return y
 
 
+linear.mixed_function = True
+
+
 # Dropout #
 
 
@@ -183,7 +186,7 @@ def dropout(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     training: bool = True,
     seed: Optional[int] = None,
-    noise_shape: Sequence[int] = None,
+    noise_shape: Optional[Sequence[int]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -1148,8 +1151,8 @@ def conv2d_transpose(
     /,
     *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
-    data_format: Optional[str] = "NHWC",
-    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
+    data_format: str = "NHWC",
+    dilations: Union[int, Tuple[int, int]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 2-D transpose convolution given 4-D input x and filters arrays.
@@ -1265,8 +1268,8 @@ def depthwise_conv2d(
     padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
-    data_format: Optional[str] = "NHWC",
-    dilations: Optional[Union[int, Tuple[int, int]]] = 1,
+    data_format: str = "NHWC",
+    dilations: Union[int, Tuple[int, int]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -1403,8 +1406,8 @@ def conv3d(
     padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
-    data_format: Optional[str] = "NDHWC",
-    dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
+    data_format: str = "NDHWC",
+    dilations: Union[int, Tuple[int, int, int]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 3-D convolution given 5-D input x and filters arrays.
@@ -1520,8 +1523,8 @@ def conv3d_transpose(
     /,
     *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
-    data_format: Optional[str] = "NDHWC",
-    dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
+    data_format: str = "NDHWC",
+    dilations: Union[int, Tuple[int, int, int]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 3-D transpose convolution given 5-D input x and filters arrays.
@@ -1627,15 +1630,11 @@ def conv_general_dilated(
     padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
-    dims: Optional[int] = 2,
-    data_format: Optional[str] = "channel_last",
-    feature_group_count: Optional[int] = 1,
-    x_dilations: Optional[
-        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
-    ] = 1,
-    dilations: Optional[
-        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
-    ] = 1,
+    dims: int = 2,
+    data_format: str = "channel_last",
+    feature_group_count: int = 1,
+    x_dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -1706,13 +1705,11 @@ def conv_general_transpose(
     padding: str,
     /,
     *,
-    dims: Optional[int] = 2,
+    dims: int = 2,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
-    data_format: Optional[str] = "channel_last",
-    dilations: Optional[
-        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
-    ] = 1,
-    feature_group_count: Optional[int] = 1,
+    data_format: str = "channel_last",
+    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    feature_group_count: int = 1,
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -1779,17 +1776,13 @@ def conv(
     padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
-    transpose: Optional[bool] = False,
-    dims: Optional[int] = 2,
+    transpose: bool = False,
+    dims: int = 2,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
-    data_format: Optional[str] = "channel_last",
-    feature_group_count: Optional[int] = 1,
-    x_dilations: Optional[
-        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
-    ] = 1,
-    dilations: Optional[
-        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
-    ] = 1,
+    data_format: str = "channel_last",
+    feature_group_count: int = 1,
+    x_dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:

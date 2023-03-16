@@ -1,5 +1,5 @@
 import contextlib
-
+import numbers
 import ivy
 import functools
 import logging
@@ -29,6 +29,7 @@ FN_DECORATORS = [
     "with_unsupported_dtypes",
     "handle_nans",
     "handle_array_like_without_promotion",
+    "handle_mixed_function",
 ]
 
 
@@ -186,11 +187,15 @@ def handle_array_like_without_promotion(fn: Callable) -> Callable:
             ):
 
                 if i < num_args:
-                    if not ivy.is_array(arg):
+                    if ivy.is_native_array(arg) or isinstance(
+                        arg, (list, tuple, numbers.Number)
+                    ):
                         args[i] = ivy.array(arg)
                 elif parameters in kwargs:
                     kwarg = kwargs[parameter]
-                    if not ivy.is_array(arg):
+                    if ivy.is_native_array(kwarg) or isinstance(
+                        kwarg, (list, tuple, numbers.Number)
+                    ):
                         kwargs[parameter] = ivy.array(kwarg)
 
         return fn(*args, **kwargs)
@@ -442,6 +447,7 @@ def infer_dtype(fn: Callable) -> Callable:
         arr = None if ivy.exists(dtype) else _get_first_array(*args, **kwargs)
         # infer the correct data type
         dtype = ivy.default_dtype(dtype=dtype, item=arr, as_native=True)
+        ivy.utils.assertions._check_jax_x64_flag(dtype)
         # call the function with dtype provided explicitly
         return fn(*args, dtype=dtype, **kwargs)
 
@@ -696,6 +702,11 @@ def _wrap_function(
                     "inputs_to_native_arrays",
                 ],
             }
+            # if the backend has a primary implementation
+            # we'll store the compositional fn's reference
+            # for the handle_mixed_function decorator
+            if to_wrap != original:
+                to_wrap.compos = original
             for attr in to_replace[compositional]:
                 setattr(original, attr, True)
 
@@ -911,6 +922,22 @@ def handle_nans(fn: Callable) -> Callable:
 
     new_fn.handle_nans = True
     return new_fn
+
+
+def handle_mixed_function(condition) -> Callable:
+    def inner_function(fn):
+        @functools.wraps(fn)
+        def new_fn(*args, **kwargs):
+            compos = getattr(new_fn, "compos")
+            if condition(*args, **kwargs):
+                return fn(*args, **kwargs)
+
+            return compos(*args, **kwargs)
+
+        new_fn.handle_mixed_functions = True
+        return new_fn
+
+    return inner_function
 
 
 attribute_dict = {
