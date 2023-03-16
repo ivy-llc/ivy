@@ -28,6 +28,10 @@
    :width: 100%
    :class: only-light
 
+..
+
+   ⚠️ **Warning**: The compiler and the transpiler are not publicly available yet, so certain parts of this README won't work as expected as of now!
+
 .. raw:: html
 
     <br/>
