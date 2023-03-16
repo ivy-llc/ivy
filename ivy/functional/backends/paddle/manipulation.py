@@ -8,7 +8,8 @@ import paddle
 # local
 import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
-from ivy.func_wrapper import with_unsupported_dtypes , with_unsupported_device_and_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
+
 # noinspection PyProtectedMember
 from ivy.functional.ivy.manipulation import _calculate_out_shape
 from . import backend_version
@@ -27,8 +28,9 @@ def concat(
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()
 
+
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16")}}, backend_version
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def expand_dims(
     x: paddle.Tensor,
@@ -38,7 +40,7 @@ def expand_dims(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if x.dtype == paddle.float16:
-        return paddle.unsqueeze(x.cast('float32'), axis).cast('float16')
+        return paddle.unsqueeze(x.cast(ivy.default_float_dtype()), axis).cast(x.dtype)
     return paddle.unsqueeze(x, axis)
 
 
@@ -65,7 +67,9 @@ def permute_dims(
 def _reshape_fortran_paddle(x, shape):
     if len(x.shape) > 0:
         x = paddle.transpose(x, list(reversed(range(len(x.shape)))))
-    return paddle.transpose(paddle.reshape(x, shape[::-1]), list(range(len(shape)))[::-1])
+    return paddle.transpose(
+        paddle.reshape(x, shape[::-1]), list(range(len(shape)))[::-1]
+    )
 
 
 @with_unsupported_device_and_dtypes(
@@ -106,7 +110,6 @@ def reshape(
             return ret
         ret = paddle.reshape(newarr, shape)
         if out_scalar:
-
             return ret.squeeze().cast(out_dtype)
 
         return ret
@@ -133,6 +136,7 @@ def roll(
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()
 
+
 @with_unsupported_dtypes(
     {"2.4.2 and below": ("int16", "uint16", "float16")},
     backend_version,
@@ -146,7 +150,7 @@ def squeeze(
 ) -> paddle.Tensor:
     if isinstance(axis, list):
         axis = tuple(axis)
-    if len(x.shape)==0:
+    if len(x.shape) == 0:
         if axis is None or axis == 0 or axis == -1:
             return x
         raise ivy.utils.exceptions.IvyException(
@@ -165,7 +169,6 @@ def stack(
     axis: int = 0,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-
     # The input list is converted to a tensor to promote the dtypes of the elements to the same dtype.
     # This is necessary because the stack function does not support mixed dtypes.
     dtype_list = set(map(lambda x: x.dtype, arrays))
@@ -179,7 +182,7 @@ def stack(
     arrays = paddle.to_tensor(arrays, dtype=dtype)
     if len(arrays.shape) == 1:  # handles scalar tensors
         return arrays
-    if 'complex' in str(dtype):
+    if "complex" in str(dtype):
         real_list = []
         imag_list = []
         for array in arrays:
@@ -190,7 +193,7 @@ def stack(
         return re_stacked + imag_stacked * 1j
     else:
         arrays_list = []
-        for array in arrays.cast('float64'):
+        for array in arrays.cast("float64"):
             arrays_list.append(array)
         return paddle.stack(arrays_list, axis=axis).cast(dtype)
 
@@ -268,15 +271,31 @@ def clip(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ('int8', 'int16', 'uint8', "uint16", "bfloat16",
-                                 'float16', 'complex64', 'complex128', 'bool')}}, backend_version
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def unstack(
     x: paddle.Tensor, /, *, axis: int = 0, keepdims: bool = False
 ) -> List[paddle.Tensor]:
     if x.ndim == 0:
         return [x]
-    ret = paddle.unbind(x, axis)
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.complex64,
+        paddle.complex128,
+        paddle.bool,
+    ]:
+        if paddle.is_complex(x):
+            real_list = paddle.unbind(x.real(), axis)
+            imag_list = paddle.unbind(x.imag(), axis)
+            ret = [(a + 1j * b) for a, b in zip(real_list, imag_list)]
+        else:
+            ret = paddle.unbind(x.cast(ivy.default_float_dtype()), axis)
+            ret = list(map(lambda a: a.cast(x.dtype), ret))
+
+    else:
+        ret = paddle.unbind(x, axis)
     if keepdims:
-        return [r.unsqueeze(axis) for r in ret]
+        return [ivy.expand_dims(r, axis=axis) for r in ret]
     return ret
