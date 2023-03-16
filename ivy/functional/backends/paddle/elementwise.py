@@ -9,6 +9,20 @@ from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
 
 
+def _elementwise_helper(x1, x2):
+    x1, x2 = ivy.to_native(ivy.array(x1)), ivy.to_native(ivy.array(x2))
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2 = ivy.broadcast_arrays(x1, x2)
+    return ivy.to_native(x1), ivy.to_native(x2), x1.dtype
+
+
+def _complex_modulus(x):
+    return paddle.sqrt(x.real()**2 + x.imag()**2)
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def add(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],
@@ -17,12 +31,12 @@ def add(
     alpha: Optional[Union[int, float]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    x1, x2 = ivy.broadcast_arrays(x1, x2)
-    x1, x2 = x1.data, x2.data
+    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    if x1.dtype in [paddle.int8, paddle.uint8, paddle.float16, paddle.bool]:
+        x1, x2 = x1.cast('float32'), x2.cast('float32')
     if alpha not in (1, None):
         x2 = multiply(x2, alpha)
-    return paddle.add(x1, x2)
+    return paddle.add(x1, x2).cast(ret_dtype)
 
 
 def bitwise_xor(
@@ -36,6 +50,9 @@ def bitwise_xor(
     return paddle.bitwise_xor(x1, x2)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def expm1(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     return paddle.expm1(x)
 
@@ -67,6 +84,9 @@ def isfinite(
     return paddle.isfinite(x)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def isinf(
     x: paddle.Tensor,
     /,
@@ -79,15 +99,17 @@ def isinf(
         return paddle.isinf(x)
 
     if detect_negative:
-        return paddle.equal(x, paddle.to_tensor([float('-inf')]))
+        return equal(x, paddle.to_tensor([float('-inf')]))
 
     if detect_positive:
-        return paddle.equal(x, paddle.to_tensor([float('inf')]))
+        return equal(x, paddle.to_tensor([float('inf')]))
 
-    # TODO: What should happen if both detect positive and detect negative are False?
-    raise IvyNotImplementedException()
+    return paddle.zeros(shape=x.shape, dtype=bool)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def equal(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],
@@ -95,9 +117,17 @@ def equal(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    if x1.dtype in [paddle.int8, paddle.uint8, paddle.complex64, paddle.complex128]:
+        if paddle.is_complex(x1):
+            return logical_and(paddle.equal(x1.real(), x2.real()), paddle.equal(x1.imag(), x2.imag()))
+        return paddle.equal(x1.cast('float32'), x2.cast('float32'))
     return paddle.equal(x1, x2)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def less_equal(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],
@@ -105,6 +135,15 @@ def less_equal(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    if x1.dtype in [paddle.int8, paddle.uint8, paddle.complex64, paddle.complex128]:
+        if paddle.is_complex(x1):
+            if paddle.is_complex(x1):
+                real = paddle.less_equal(x1.real(), x2.real())
+                imag = paddle.less_equal(x1.imag(), x2.imag())
+                return logical_and(real, imag)
+        return paddle.less_equal(x1.cast('float32'), x2.cast('float32'))
+
     return paddle.less_equal(x1, x2)
 
 
@@ -127,11 +166,25 @@ def floor(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
     return paddle.floor(x)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {
+        "cpu": ("uint16", "bfloat16", 'complex64', 'complex128', 'bool')}}, backend_version
+)
 def asin(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    return asin(x)
+    if x.dtype in [paddle.int8, paddle.int16, paddle.int32, paddle.int64, paddle.uint8, paddle.float16]:
+        ret_dtype = x.dtype
+        return paddle.asin(x.cast('float32')).cast(ret_dtype)
+    return paddle.asin(x)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {
+        "cpu": ("uint16", "bfloat16", 'complex64', 'complex128', 'bool')}}, backend_version
+)
 def asinh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    if x.dtype in [paddle.int8, paddle.int16, paddle.int32, paddle.int64, paddle.uint8, paddle.float16]:
+        ret_dtype = x.dtype
+        return paddle.asinh(x.cast('float32')).cast(ret_dtype)
     return paddle.asinh(x)
 
 
@@ -163,6 +216,9 @@ def isnan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
     return paddle.isnan(x)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def less(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],
@@ -170,6 +226,14 @@ def less(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    if x1.dtype in [paddle.int8, paddle.uint8, paddle.complex64, paddle.complex128]:
+        if paddle.is_complex(x1):
+            real = paddle.less_than(x1.real(), x2.real())
+            imag = paddle.less_than(x1.imag(), x2.imag())
+            return logical_and(real, imag)
+        return paddle.less_than(x1.cast('float32'), x2.cast('float32'))
+
     return paddle.less_than(x1, x2)
 
 
@@ -180,14 +244,20 @@ def multiply(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    x1, x2 = ivy.broadcast_arrays(x1, x2)
-    x1, x2 = x1.data, x2.data
+    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    if x1.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
+        x1, x2 = x1.cast('float32'), x2.cast('float32')
+    return paddle.multiply(x1, x2).cast(ret_dtype)
 
-    return paddle.multiply(x1, x2)
 
-
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {
+        "cpu": ("uint16", "bfloat16", 'complex64', 'complex128', 'bool')}}, backend_version
+)
 def cos(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    if x.dtype in [paddle.int8, paddle.int16, paddle.int32, paddle.int64, paddle.uint8, paddle.float16]:
+        ret_dtype = x.dtype
+        return paddle.cos(x.cast('float32')).cast(ret_dtype)
     return paddle.cos(x)
 
 
@@ -211,6 +281,9 @@ def divide(
     return paddle.divide(x1, x2)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def greater(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],
@@ -218,9 +291,21 @@ def greater(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    if x1.dtype in [paddle.int8, paddle.uint8, paddle.complex64, paddle.complex128]:
+        if paddle.is_complex(x1):
+            if paddle.is_complex(x1):
+                real = paddle.greater_than(x1.real(), x2.real())
+                imag = paddle.greater_than(x1.imag(), x2.imag())
+                return logical_and(real, imag)
+        return paddle.greater_than(x1.cast('float32'), x2.cast('float32'))
+
     return paddle.greater_than(x1, x2)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def greater_equal(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],
@@ -228,46 +313,87 @@ def greater_equal(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    if x1.dtype in [paddle.int8, paddle.uint8, paddle.complex64, paddle.complex128]:
+        if paddle.is_complex(x1):
+            if paddle.is_complex(x1):
+                real = paddle.greater_equal(x1.real(), x2.real())
+                imag = paddle.greater_equal(x1.imag(), x2.imag())
+                return logical_and(real, imag)
+        return paddle.greater_equal(x1.cast('float32'), x2.cast('float32'))
+
     return paddle.greater_equal(x1, x2)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {
+        "cpu": ("uint16", "bfloat16", 'complex64', 'complex128', 'bool')}}, backend_version
+)
 def acos(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    if x.dtype in [paddle.int8, paddle.int16, paddle.int32, paddle.int64, paddle.uint8, paddle.float16]:
+        ret_dtype = x.dtype
+        return paddle.acos(x.cast('float32')).cast(ret_dtype)
     return paddle.acos(x)
 
 
 def logical_xor(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    return logical_xor(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    return paddle.logical_xor(x1, x2)
 
 
 def logical_and(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    return logical_and(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    return paddle.logical_and(x1, x2)
 
 
 def logical_or(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return logical_or(x1, x2)
+    return paddle.logical_or(x1, x2)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {
+        "cpu": ("uint16", "bfloat16", 'complex64', 'complex128', 'bool')}}, backend_version
+)
 def acosh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    if x.dtype in [paddle.int8, paddle.int16, paddle.int32, paddle.int64, paddle.uint8, paddle.float16]:
+        ret_dtype = x.dtype
+        return paddle.acosh(x.cast('float32')).cast(ret_dtype)
     return paddle.acosh(x)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {
+        "cpu": ("uint16", "bfloat16", 'complex64', 'complex128', 'bool')}}, backend_version
+)
 def sin(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    if x.dtype in [paddle.int8, paddle.int16, paddle.int32, paddle.int64, paddle.uint8, paddle.float16]:
+        ret_dtype = x.dtype
+        return paddle.sin(x.cast('float32')).cast(ret_dtype)
     return paddle.sin(x)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def negative(
     x: Union[float, paddle.Tensor], /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
+    x, _ = ivy.promote_types_of_inputs(x, x) 
+    if x.dtype == paddle.bool:
+        return logical_not(x)
     return paddle.neg(x)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def not_equal(
     x1: Union[float, paddle.Tensor],
     x2: Union[float, paddle.Tensor],
@@ -275,15 +401,23 @@ def not_equal(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle.not_equal(x1, x2)
+    return logical_not(equal(x1, x2))
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {
+        "cpu": ("uint16", "bfloat16", 'complex64', 'complex128', 'bool')}}, backend_version
+)
 def tanh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    if x.dtype in [paddle.int8, paddle.int16, paddle.int32, paddle.int64, paddle.uint8, paddle.float16]:
+        ret_dtype = x.dtype
+        return paddle.tanh(x.cast('float32')).cast(ret_dtype)
     return paddle.tanh(x)
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "float16", "complex64", "complex128")}}, backend_version
+    {"2.4.2 and below": {
+        "cpu": ("uint16", "bfloat16", "float16", "complex64", "complex128")}}, backend_version
 )
 def floor_divide(
     x1: Union[float, paddle.Tensor],
@@ -306,14 +440,25 @@ def bitwise_or(
     return paddle.bitwise_or(x1, x2)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {
+        "cpu": ("uint16", "bfloat16", 'complex64', 'complex128', 'bool')}}, backend_version
+)
 def sinh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    if x.dtype in [paddle.int8, paddle.int16, paddle.int32, paddle.int64, paddle.uint8, paddle.float16]:
+        ret_dtype = x.dtype
+        return paddle.sinh(x.cast('float32')).cast(ret_dtype)
     return paddle.sinh(x)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def positive(
     x: Union[float, paddle.Tensor], /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    return logical_not(negative(x))
+    x, _ = ivy.promote_types_of_inputs(x, x)
+    return x.clone()
 
 
 def square(
@@ -356,21 +501,43 @@ def abs(
 def logaddexp(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    return log(add(exp(x1), exp(x2))).cast(ret_dtype)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {
+        "cpu": ("uint16", "bfloat16", 'complex64', 'complex128', 'bool')}}, backend_version
+)
 def tan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    if x.dtype in [paddle.int8, paddle.int16, paddle.int32, paddle.int64, paddle.uint8, paddle.float16]:
+        ret_dtype = x.dtype
+        return paddle.tan(x.cast('float32')).cast(ret_dtype)
     return paddle.tan(x)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {
+        "cpu": ("uint16", "bfloat16", 'complex64', 'complex128', 'bool')}}, backend_version
+)
 def atan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    if x.dtype in [paddle.int8, paddle.int16, paddle.int32, paddle.int64, paddle.uint8, paddle.float16]:
+        ret_dtype = x.dtype
+        return paddle.atan(x.cast('float32')).cast(ret_dtype)
     return paddle.atan(x)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {
+        "cpu": ("uint16", "bfloat16", 'complex64', 'complex128', 'bool')}}, backend_version
+)
 def atan2(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    return paddle.atan2(x1, x2)
+    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    if x1.dtype in [paddle.int8, paddle.int16, paddle.uint8]:
+        x1, x2 = x1.cast('float32'), x2.cast('float32')
+    return paddle.atan2(x1, x2).cast(ret_dtype)
 
 
 def log(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -392,7 +559,7 @@ def subtract(
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     x1, x2 = ivy.broadcast_arrays(x1, x2)
     x1, x2 = x1.data, x2.data
-    
+
     if alpha not in (1, None):
         x2 = multiply(x2, alpha)
     return paddle.subtract(x1, x2)
@@ -416,7 +583,14 @@ def remainder(
     return paddle.remainder(x1, x2)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {
+        "cpu": ("uint16", "bfloat16", 'complex64', 'complex128', 'bool')}}, backend_version
+)
 def atanh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    if x.dtype in [paddle.int8, paddle.int16, paddle.int32, paddle.int64, paddle.uint8, paddle.float16]:
+        ret_dtype = x.dtype
+        return paddle.atanh(x.cast('float32')).cast(ret_dtype)
     return paddle.atanh(x)
 
 
@@ -432,6 +606,7 @@ def bitwise_right_shift(
     x1, x2 = ivy.broadcast_arrays(x1.cast('float64'), x2.cast('float64'))
 
     return paddle.floor(x1.data / 2**x2.data).astype(ret_dtype) 
+
 
 def bitwise_left_shift(
     x1: Union[int, bool, paddle.Tensor],
@@ -512,6 +687,6 @@ def isreal(
         x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     if paddle.is_complex(x):
-        return paddle.equal(paddle.imag(x), paddle.zeros_like(paddle.imag(x)))
+        return paddle.logical_not(x.imag().astype(bool))
     else:
         return paddle.ones_like(x, dtype='bool')

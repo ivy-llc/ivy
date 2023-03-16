@@ -8,7 +8,7 @@ import ivy
 
 
 @with_unsupported_dtypes(
-    {"2.4.2 and below": ('int8', 'int16', 'uint8', 'uint16')},
+    {"2.4.2 and below": ("int8", "int16", "uint8", "uint16")},
     backend_version,
 )
 def moveaxis(
@@ -23,8 +23,19 @@ def moveaxis(
 
 
 @with_unsupported_dtypes(
-    {"2.4.2 and below": ('int8', 'int16', 'uint8', 'uint16', 'bfloat16',
-                         'float16', 'complex64', 'complex128', 'bool')},
+    {
+        "2.4.2 and below": (
+            "int8",
+            "int16",
+            "uint8",
+            "uint16",
+            "bfloat16",
+            "float16",
+            "complex64",
+            "complex128",
+            "bool",
+        )
+    },
     backend_version,
 )
 def heaviside(
@@ -46,13 +57,37 @@ def flipud(
     raise IvyNotImplementedException()
 
 
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ("int16", "uint16", "bfloat16", "float16")},
+    backend_version,
+)
 def vstack(
     arrays: Sequence[paddle.Tensor],
     /,
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    dtypes = set(map(lambda x: x.dtype, arrays))
+    if len(dtypes) == 1:
+        dtype = dtypes.pop()
+    elif len(dtypes) == 2:
+        dtype = paddle.promote_types(*dtypes)
+    else:
+        raise ValueError("Cannot promote more than 2 dtypes per stack.")
+
+    if dtype == paddle.bool:
+        int_tensors = [paddle.cast(t, "int32") for t in arrays]
+        if arrays[0].dim() >= 2:
+            concat_int_tensor = paddle.concat(arrays, axis=0)
+        else:
+            concat_int_tensor = paddle.stack(int_tensors, axis=0)
+        concat_bool_tensor = paddle.cast(concat_int_tensor, "bool")
+        return concat_bool_tensor
+
+    if arrays[0].dim() >= 2:
+        return paddle.concat(arrays, axis=0).astype(dtype)
+    else:
+        return paddle.concat([paddle.unsqueeze(t, 0) for t in arrays], axis=0)
 
 
 @with_unsupported_dtypes(
@@ -103,14 +138,16 @@ def top_k(
     largest: Optional[bool] = True,
     out: Optional[Tuple[paddle.Tensor, paddle.Tensor]] = None,
 ) -> Tuple[paddle.Tensor, paddle.Tensor]:
-    topk_res = NamedTuple("top_k", [("values", paddle.Tensor), 
-                                    ("indices", paddle.Tensor)])
+    topk_res = NamedTuple(
+        "top_k", [("values", paddle.Tensor), ("indices", paddle.Tensor)]
+    )
     val, indices = paddle.topk(x, k, axis=axis, largest=largest)
     return topk_res(val, indices)
-    
+
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int8", "int16", "uint8", "uint16", "bfloat16", "float16")}}, backend_version
+    {"2.4.2 and below": {"cpu": ("int8", "int16", "uint8",
+                                 "uint16", "bfloat16", "float16")}}, backend_version
 )
 def fliplr(
     m: paddle.Tensor,
@@ -139,7 +176,12 @@ def flatten(
     order: Optional[str] = "C",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    ivy.utils.assertions.check_elem_in_list(order, ["C", "F"])
+    if order == "F":
+        return ivy.functional.experimental.flatten(
+            x, start_dim=start_dim, end_dim=end_dim, order=order
+        )
+    return paddle.flatten(x, start_axis=start_dim, stop_axis=end_dim)
 
 
 def vsplit(
@@ -199,12 +241,12 @@ def hsplit(
 
 
 def broadcast_shapes(shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
-    
-    if len(shapes[0])==0 and len(shapes[1])==0:
+
+    if len(shapes[0]) == 0 and len(shapes[1]) == 0:
         return shapes[0]
-    elif len(shapes[0])==0 and not len(shapes[1])==0:
+    elif len(shapes[0]) == 0 and not len(shapes[1]) == 0:
         return shapes[1]
-    elif not len(shapes[0])==0 and len(shapes[1])==0:
+    elif not len(shapes[0]) == 0 and len(shapes[1]) == 0:
         return shapes[0]
     else:
         return paddle.broadcast_shape(*shapes)
@@ -221,25 +263,29 @@ def expand(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     shape = list(shape)
-    
+
     for i, dim in enumerate(shape):
         if dim < 0:
             shape[i] = x.shape[i]
     if x.ndim == 0:
-        if len(shape)==0:
+        if len(shape) == 0:
             return x
         else:
-            x = ivy.expand_dims(x,0)
+            x = ivy.expand_dims(x, 0)
     if x.ndim > len(shape):
         x = x.reshape([-1])
-    
-    if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16,]:
-        return paddle.expand(x.cast('float32'), shape).cast(x.dtype)
+
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+    ]:
+        return paddle.expand(x.cast("float32"), shape).cast(x.dtype)
+
     elif x.dtype in [paddle.complex64, paddle.complex128]:
-        x_real = paddle.expand(ivy.real(x).data,shape)
-        x_imag = paddle.expand(ivy.imag(x).data,shape)
+        x_real = paddle.expand(ivy.real(x).data, shape)
+        x_imag = paddle.expand(ivy.imag(x).data, shape)
         return x_real + 1j * x_imag
     else:
         return paddle.expand(x, shape)
-
-    
