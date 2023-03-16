@@ -681,6 +681,11 @@ def Complex(real, imag, Tout=ivy.complex64, name="Complex"):
 
 
 @to_ivy_arrays_and_back
-def AccumulateNV2(inputs, shape=ivy.TensorShape, name="AccumulateNV2"):
-    return ivy.AccumulateNV2(inputs, shape=shape) 
+def AccumulateNV2(inputs, shape, name="AccumulateNV2"):
+    return ivy.AccumulateNV2(inputs, shape) 
+    
+
+@to_ivy_arrays_and_back
+def DebugGradientIdentity(input, name="DebugGradientIdentity"):
+    return ivy.DebugGradientIdentity(input)
     

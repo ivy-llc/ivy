@@ -3370,5 +3370,31 @@ def test_tensorflow_AccumulateNV2(
         fn_tree=fn_tree,
         on_device=on_device,
         inputs=x[0],
-        shape=shape,
+        shape=x[1],
     )           
+
+
+# DebugGradientIdentity
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.DebugGradientIdentity",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Acos(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+    )
