@@ -688,4 +688,8 @@ def AccumulateNV2(inputs, shape, name="AccumulateNV2"):
 @to_ivy_arrays_and_back
 def DebugGradientIdentity(input, name="DebugGradientIdentity"):
     return ivy.DebugGradientIdentity(input)
-    
+
+
+@to_ivy_arrays_and_back
+def Real(input, Tout=ivy.float32, name="Real"):
+    return ivy.Real(input, Tout=Tout) 
