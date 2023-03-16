@@ -5,9 +5,9 @@ linspace
 
 .. autofunction:: ivy.array.array_methods.linspace
 
-.. autofunction:: ivy.container.container_methods.linspace
-
 .. autofunction:: ivy.container.container_methods.static_linspace
+
+.. autofunction:: ivy.container.container_methods.linspace
 |
 | **Supported Frameworks:**
 

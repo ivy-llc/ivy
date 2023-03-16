@@ -5,9 +5,9 @@ avg_pool1d
 
 .. autofunction:: ivy.array.array_methods.avg_pool1d
 
-.. autofunction:: ivy.container.container_methods.avg_pool1d
-
 .. autofunction:: ivy.container.container_methods.static_avg_pool1d
+
+.. autofunction:: ivy.container.container_methods.avg_pool1d
 |
 | **Supported Frameworks:**
 

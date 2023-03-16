@@ -5,9 +5,9 @@ median
 
 .. autofunction:: ivy.array.array_methods.median
 
-.. autofunction:: ivy.container.container_methods.median
-
 .. autofunction:: ivy.container.container_methods.static_median
+
+.. autofunction:: ivy.container.container_methods.median
 |
 | **Supported Frameworks:**
 
