@@ -104,7 +104,7 @@ def take(
     indices_are_sorted=False,
     fill_value=None,
 ):
-    return ivy.take_along_axis(a, indices, axis, out=out)
+    return ivy.take(a, indices, axis, out=out)  # TODO: add support to modes
 
 
 @to_ivy_arrays_and_back
