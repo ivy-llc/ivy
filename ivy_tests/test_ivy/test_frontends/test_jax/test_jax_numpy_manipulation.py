@@ -1185,7 +1185,8 @@ def test_jax_numpy_hsplit(
         indices_or_sections=indices_or_sections,
     )
 
-#expand_dims
+
+# expand_dims
 @handle_frontend_test(
     fn_tree="jax.numpy.expand_dims",
     dtype_values_axis=helpers.dtype_values_axis(
@@ -1212,7 +1213,7 @@ def test_jax_numpy_expand_dims(
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
-        axis=axis
+        axis=axis,
     )
 
 
@@ -1275,8 +1276,11 @@ def test_jax_numpy_roll(
 
     helpers.test_frontend_function(
         input_dtypes=value_dtype + shift_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
         a=value[0],
         shift=shift_val,
         axis=axis,
     )
-
