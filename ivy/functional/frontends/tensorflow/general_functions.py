@@ -1,3 +1,6 @@
+# global
+from builtins import slice as py_slice
+
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
@@ -296,7 +299,7 @@ def strided_slice(
                     end_i = None
                 else:
                     end_i = int(end[i])
-                full_slice += (slice(begin_i, end_i, int(strides[i])),)
+                full_slice += (py_slice(begin_i, end_i, int(strides[i])),)
     return input_[full_slice]
 
 
