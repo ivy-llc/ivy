@@ -120,7 +120,7 @@ COPY requirements/optional_gpu.txt .
 RUN pip3 install --no-cache-dir -r optional_gpu.txt
 
 # Install jax cuda after optional_gpu.txt, otherwise cpu version will override
-RUN pip install --no-cache-dir jaxlib==0.3.14+cuda11.cudnn82 -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+RUN pip install --no-cache-dir jaxlib -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
 
 COPY run_tests_CLI/test_dependencies.py .
 RUN python3 test_dependencies.py -fp requirements.txt,optional_gpu.txt && \

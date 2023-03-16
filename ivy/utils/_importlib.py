@@ -17,7 +17,11 @@ def _from_import(name: str, package=None, mod_globals=None, from_list=(), level=
     for entry_name, entry_asname in from_list:
         if entry_name == "*":
             if "__all__" in module.__dict__.keys():
-                _all = module.__dict__["__all__"]
+                _all = {
+                    k: v
+                    for (k, v) in module.__dict__.items()
+                    if k in module.__dict__["__all__"]
+                }
             else:
                 _all = {
                     k: v for (k, v) in module.__dict__.items() if not k.startswith("__")

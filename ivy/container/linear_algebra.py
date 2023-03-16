@@ -1763,6 +1763,57 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+            ivy.Container static method variant of ivy.outer. This method simply wraps the
+            function, and so the docstring for ivy.outer also applies to this method with
+            minimal changes.
+
+            Computes the outer product of two arrays, x1 and x2, by computing the tensor
+            product along the last dimension of both arrays.
+
+            Parameters
+            ----------
+            x1
+                first input array having shape (..., N1)
+            x2
+                second input array having shape (..., N2)
+            key_chains
+                The key-chains to apply or not apply the method to. Default is ``None``.
+            to_apply
+                If True, the method will be applied to key_chains, otherwise key_chains will be
+                skipped. Default is ``True``.
+            prune_unapplied
+                Whether to prune key_chains for which the function was not applied.
+                Default is ``False``.
+            map_sequences
+                Whether to also map method to sequences (lists, tuples).
+                Default is ``False``.
+            out
+                optional output container, for writing the result to. The container must have
+                shape (..., N1, N2). The first x1.ndim-1 dimensions must have the same size as
+                those of the input array x1 and the first x2.ndim-1 dimensions must have the same
+                size as those of the input array x2.
+
+            Returns
+            -------
+            ret
+                an ivy container whose shape is (..., N1, N2). The first x1.ndim-1 dimensions
+                have the same size as those of the input array x1 and the first x2.ndim-1
+                dimensions have the same size as those of the input array x2.
+
+            Example
+            -------
+            >>> x1 =ivy.Container( a=ivy.array([[1, 2, 3], [4, 5, 6]]))
+            >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]))
+            >>> y = ivy.Container.static_outer(x1, x2)
+            >>> print(y)
+            ivy.array([[[ 1.,  2.,  3.],
+                        [ 2.,  4.,  6.],
+                        [ 3.,  6.,  9.]],
+                       [[ 4.,  8., 12.],
+                        [ 5., 10., 15.],
+                        [ 6., 12., 18.]]])
+            """
         return ContainerBase.cont_multi_map_in_function(
             "outer",
             x1,
@@ -1785,6 +1836,49 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        This is the instance method implementation of the static method static_outer
+         of the ivy.Container class.
+        It calculates the outer product of two input arrays or containers along the last dimension
+         and returns the resulting container.
+        The input arrays should be either ivy.Container, ivy.Array, or ivy.NativeArray.
+        The output container shape is the concatenation of the shapes of the input container
+        s along the last dimension.
+
+        Parameters
+        ----------
+        self : ivy.Container
+        Input container of shape (...,B) where the last dimension represents B elements.
+        x2 : Union[ivy.Container, ivy.Array, ivy.NativeArray]
+        Second input array or container of shape (..., N) where the last dimension represents N elements.
+        key_chains : Optional[Union[List[str], Dict[str, str]]]
+        The key-chains to apply or not apply the method to. Default is None.
+        to_apply : bool
+        If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+         Default is True.
+        prune_unapplied : bool
+        Whether to prune key_chains for which the function was not applied. Default is False.
+        map_sequences : bool
+        Whether to also map the method to sequences (lists, tuples). Default is False.
+        out : Optional[ivy.Container]
+        Optional output container to write the result to. If not provided, a new container will be created.
+
+        Returns
+        -------
+        ivy.Container
+        A new container of shape (..., M, N) representing the outer product of the input arrays
+         or containers along the last dimension.
+        Examples
+        --------
+        >>> x = ivy.array([[1., 2.],[3., 4.]])
+        >>> y = ivy.array([[5., 6.],[7., 8.]])
+        >>> d = ivy.outer(x,y)
+        >>> print(d)
+        ivy.array([[ 5.,  6.,  7.,  8.],
+                    [10., 12., 14., 16.],
+                    [15., 18., 21., 24.],
+                    [20., 24., 28., 32.]])
+        """
         return self.static_outer(
             self,
             x2,
