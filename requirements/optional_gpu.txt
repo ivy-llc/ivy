@@ -13,9 +13,9 @@ tensorflow-addons # mod_name=tensorflow_addons
 tensorflow-probability # mod_name=tensorflow_probability
 torch==1.11.0
 torch-scatter==2.0.9
-functorch
+functorch==0.1.1
 scipy
-dm-haiku
+dm-haiku==0.0.6
 pydriller
 tqdm
 coverage
