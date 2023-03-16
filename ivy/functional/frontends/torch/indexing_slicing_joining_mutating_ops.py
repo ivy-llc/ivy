@@ -270,3 +270,8 @@ def where(condition, input=None, other=None):
     if not ivy.exists(input) and not ivy.exists(other):
         return nonzero(condition, as_tuple=True)
     return ivy.where(condition, input, other)
+
+
+@to_ivy_arrays_and_back
+def conj(input):
+    return ivy.conj(input)
