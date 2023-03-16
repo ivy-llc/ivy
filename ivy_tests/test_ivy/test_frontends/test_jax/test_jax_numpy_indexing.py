@@ -200,3 +200,48 @@ def test_jax_numpy_tril_indices(
         n_rows=n_rows,
         k=k,
     )
+
+
+@st.composite
+def _unravel_index_helper(draw):
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=10
+        )
+    )
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            min_value=0,
+            max_value=shape[0]*shape[1]-1
+        )
+    )
+
+    return x_dtype, shape, x
+
+
+# unravel_index
+@handle_frontend_test(
+    fn_tree="jax.numpy.unravel_index",
+    dtype_n_shape_x=_unravel_index_helper(),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_unravel_index(
+    *,
+    dtype_n_shape_x,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, shape, x = dtype_n_shape_x
+
+    helpers.test_frontend_function(
+        indices=x[0],
+        shape=shape,
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+    )

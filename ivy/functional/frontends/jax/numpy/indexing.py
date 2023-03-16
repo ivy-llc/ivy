@@ -30,3 +30,9 @@ def take_along_axis(arr, indices, axis, mode="fill"):
 @to_ivy_arrays_and_back
 def tril_indices(n_rows, n_cols=None, k=0):
     return ivy.tril_indices(n_rows, n_cols, k)
+
+
+@to_ivy_arrays_and_back
+def unravel_index(indices, shape):
+    return ivy.unravel_index(indices, shape)
+

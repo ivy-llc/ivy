@@ -52,7 +52,7 @@ def unravel_index(
     *,
     out: Optional[np.ndarray] = None,
 ) -> Tuple:
-    ret = np.asarray(np.unravel_index(indices, shape), dtype=np.int32)
+    ret = np.asarray(np.unravel_index(indices, shape), dtype=indices.dtype)
     return tuple(ret)
 
 

@@ -59,8 +59,7 @@ def unravel_index(
         output.append(temp % dim)
         temp = temp // dim
     output.reverse()
-    ret = tf.convert_to_tensor(output, dtype=tf.int32)
-    return tuple(ret)
+    return tuple(output)
 
 
 def quantile(
