@@ -83,3 +83,14 @@ def shuffle(x, /):
     if isinstance(x, int):
         x = ivy.arange(x)
     return ivy.shuffle(x)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def logseries(p, size=None):
+    if p < 0 or p > 1:
+        raise ValueError("p must be in the interval [0, 1]")
+    oneMinusP = ivy.subtract(1, p)
+    sizeMinusOne = ivy.subtract(size, 1)
+
+    return ivy.multiply(ivy.pow(oneMinusP, sizeMinusOne), p)
