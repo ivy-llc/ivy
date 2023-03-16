@@ -1,6 +1,7 @@
 # local
 
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_jax_dtype,
@@ -386,6 +387,7 @@ def nanvar(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=
 
 
 @handle_jax_dtype
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16")}, "jax")
 @to_ivy_arrays_and_back
 def std(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=None):
     axis = tuple(axis) if isinstance(axis, list) else axis
