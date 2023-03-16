@@ -8,14 +8,14 @@ matplotlib # unpinned
 opencv-python # unpinned , mod_name=cv2
 jax==0.3.14
 jaxlib==0.3.14
-tensorflow==2.9.1
-tensorflow-addons==0.17.1 # mod_name=tensorflow_addons
-tensorflow-probability==0.17.0 # mod_name=tensorflow_probability
+tensorflow
+tensorflow-addons # mod_name=tensorflow_addons
+tensorflow-probability # mod_name=tensorflow_probability
 torch==1.11.0
 torch-scatter==2.0.9
-functorch==0.1.1
-scipy==1.8.1
-dm-haiku==0.0.6
+functorch
+scipy
+dm-haiku
 pydriller
 tqdm
 coverage
