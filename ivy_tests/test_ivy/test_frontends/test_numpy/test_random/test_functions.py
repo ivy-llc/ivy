@@ -299,7 +299,8 @@ def test_numpy_beta(
         size=size,
     )
 
- #shuffle
+
+# shuffle
 @handle_frontend_test(
     fn_tree="numpy.random.shuffle",
     dtype_and_x=helpers.dtype_and_values(
