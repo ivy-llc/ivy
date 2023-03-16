@@ -109,9 +109,11 @@ class Module(ModuleConverters, ModuleHelpers):
         self._track_submod_call_order = False
         self.expected_submod_rets = None
         self.submod_dict = dict()
-        backend = ivy.with_backend("numpy")
-        self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=backend)
-        self.submod_call_order = ivy.Container(alphabetical_keys=False, ivyh=backend)
+        with ivy.utils.backend.ContextManager("numpy") as backend:
+            self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=backend)
+            self.submod_call_order = ivy.Container(
+                alphabetical_keys=False, ivyh=backend
+            )
         self._sub_mods = set()
         self._dtype = dtype
         self._args = args
@@ -512,9 +514,11 @@ class Module(ModuleConverters, ModuleHelpers):
             return self._module_graph(*args, v=v, **kwargs)
 
         with_grads = ivy.with_grads(with_grads=with_grads)
-        backend = ivy.with_backend("numpy")
-        self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=backend)
-        self.submod_call_order = ivy.Container(alphabetical_keys=False, ivyh=backend)
+        with ivy.utils.backend.ContextManager("numpy") as backend:
+            self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=backend)
+            self.submod_call_order = ivy.Container(
+                alphabetical_keys=False, ivyh=backend
+            )
         self._set_submod_flags(
             track_submod_rets,
             submod_depth,

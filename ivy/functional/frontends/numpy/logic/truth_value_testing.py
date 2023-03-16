@@ -65,6 +65,11 @@ def isreal(x):
 
 
 @to_ivy_arrays_and_back
+def isrealobj(x: any):
+    return not ivy.is_complex_dtype(ivy.dtype(x))
+
+
+@to_ivy_arrays_and_back
 def iscomplexobj(a: np.ndarray):
     """The return value, True if x is of a complex type or 
         has at least one complex element.

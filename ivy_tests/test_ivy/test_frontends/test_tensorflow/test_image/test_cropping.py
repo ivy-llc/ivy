@@ -88,19 +88,17 @@ def test_tensorflow_extract_patches(
         "mitchellcubic",
         "gaussian"]),
     antialias=st.booleans(),
-    preserve_aspect_ratio=st.booleans(),
     test_with_out=st.just(False),
 )
 def test_tensorflow_resize(
     dtype_x_mode,
     antialias,
-    preserve_aspect_ratio,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    input_dtype, x, mode, size, align_corners, _ = dtype_x_mode
+    input_dtype, x, mode, size, _, _, preserve = dtype_x_mode
     try:
         helpers.test_frontend_function(
             input_dtypes=input_dtype,
@@ -108,19 +106,17 @@ def test_tensorflow_resize(
             test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
-            rtol_=1e-01,
-            atol_=1e-01,
-            x=x[0],
+            rtol=1e-01,
+            atol=1e-01,
+            image=x[0],
             size=size,
-            mode=mode,
-            align_corners=align_corners,
+            method=mode,
             antialias=antialias,
-            preserve_aspect_ratio=preserve_aspect_ratio,
+            preserve_aspect_ratio=preserve,
         )
     except Exception as e:
-        if hasattr(e, "message"):
-            if (
-                "output dimensions must be positive" in e.message
-                or "Input and output sizes should be greater than 0" in e.message
-            ):
-                assume(False)
+        if hasattr(e, "message") and \
+                ("output dimensions must be positive" in e.message or
+                 "Input and output sizes should be greater than 0" in e.message):
+            assume(False)
+        raise e
