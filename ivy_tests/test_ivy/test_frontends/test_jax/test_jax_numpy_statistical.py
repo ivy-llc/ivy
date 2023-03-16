@@ -7,6 +7,7 @@ import numpy as np
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_helpers
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     statistical_dtype_values,
