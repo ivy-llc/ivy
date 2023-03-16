@@ -282,7 +282,13 @@ def _interp_args(draw, mode=None, mode_list=None):
     align_corners = draw(st.one_of(st.booleans(), st.none()))
     if mode == "linear":
         num_dims = 3
-    elif mode in ["bilinear", "bicubic_tensorflow", "mitchellcubic", "gaussian"]:
+    elif mode in [
+        "bilinear",
+        "bicubic_tensorflow",
+        "bicubic",
+        "mitchellcubic",
+        "gaussian"
+    ]:
         num_dims = 4
     elif mode == "trilinear":
         num_dims = 5
@@ -381,12 +387,10 @@ def test_interpolate(
             recompute_scale_factor=recompute_scale_factor,
         )
     except Exception as e:
-        if hasattr(e, "message"):
-            if (
-                "output dimensions must be positive" in e.message
-                or "Input and output sizes should be greater than 0" in e.message
-            ):
-                assume(False)
+        if hasattr(e, "message") and \
+                ("output dimensions must be positive" in e.message or
+                 "Input and output sizes should be greater than 0" in e.message):
+            assume(False)
         raise e
 
 

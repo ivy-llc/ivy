@@ -162,7 +162,7 @@ if __name__ == "__main__":
             print(coll, submod, test_fn)
             if with_gpu:
                 ret = os.system(
-                    f'docker run --rm --gpus all --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest-gpu python3 -m pytest --tb=short --device=gpu:0 -B={backend} {test}'  # noqa
+                    f'docker run --rm --gpus all --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multicuda:latest python3 -m pytest --tb=short --device=gpu:0 -B={backend} {test}'  # noqa
                     # noqa
                 )
             else:

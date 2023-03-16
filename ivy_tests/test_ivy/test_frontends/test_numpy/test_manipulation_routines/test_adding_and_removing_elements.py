@@ -72,3 +72,33 @@ def test_numpy_append(
         values=values[1],
         axis=axis,
     )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.trim_zeros",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=1
+    ),
+    trim=st.sampled_from(['f', 'b', 'fb'])
+)
+def test_numpy_trim_zeros(
+        frontend,
+        on_device,
+        *,
+        dtype_and_x,
+        trim,
+        fn_tree,
+        test_flags,
+):
+    input_dtypes, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        filt=x[0],
+        trim=trim
+    )
