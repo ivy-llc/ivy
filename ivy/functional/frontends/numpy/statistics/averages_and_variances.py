@@ -368,8 +368,8 @@ def nanpercentile(
             qqq.append(eee)
         return qqq
     elif axis == 0:
-        if a.ndim > 0:
-            a = ivy.swapaxes(a, 0, 1)
+        # if a.ndim > 0:
+        a = ivy.swapaxes(a, 0, 1)
 
         qqq = []
         na = []
