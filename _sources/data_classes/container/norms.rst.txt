@@ -13,5 +13,5 @@ Norms
    :maxdepth: -1
    :caption: Norms
 
-   norms/_ContainerWithNorms.rst
+   norms/ContainerWithNorms.rst
 
