@@ -773,6 +773,30 @@ def test_torch_vdot(
     )
 
 
+# dot
+@handle_frontend_test(
+    fn_tree="torch.dot",
+    dtype_and_vecs=_get_dtype_input_and_vectors(same_size=True),
+)
+def test_torch_dot(
+    dtype_and_vecs,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, vec1, vec2 = dtype_and_vecs
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=vec1,
+        other=vec2,
+    )
+
+
 @st.composite
 def _get_dtype_and_matrices(draw):
     dim1 = draw(helpers.ints(min_value=2, max_value=7))
@@ -826,3 +850,4 @@ def test_torch_trapezoid(
         on_device=on_device,
         **kwargs
     )
+
