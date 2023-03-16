@@ -684,15 +684,13 @@ def test_jax_numpy_nanvar(
         rtol=1e-3,
     )
 
+
 # std
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16")}, "jax")
 @handle_frontend_test(
     fn_tree="jax.numpy.std",
-    dtype_x_axis=statistical_dtype_values(function="std").filter(
-        lambda x: x[0][0] != "bfloat16"
-    ),
-    dtype=helpers.get_dtypes("float", full=False, none=True).filter(
-        lambda x: x != "bfloat16"
-    ),
+    dtype_x_axis=statistical_dtype_values(function="std"),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_helpers.where(),
     keepdims=st.booleans(),
 )
