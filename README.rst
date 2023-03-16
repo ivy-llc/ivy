@@ -414,7 +414,7 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 .. raw:: html
 
    <details>
-   <summary><b>I'm using PyTorch&ensp;<img src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/pytorch_small_logo.png"></b></summary>
+   <summary><b>I'm using PyTorch&ensp;<img src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/torch_small_logo.png"></b></summary>
       <blockquote>You can use Ivy to get PyTorch code from:
          <details>
             <summary>Any model</summary>
