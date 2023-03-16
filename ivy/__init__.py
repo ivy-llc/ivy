@@ -718,6 +718,12 @@ from . import stateful
 from .stateful import *
 from ivy.utils.inspection import fn_array_spec, add_array_specs
 
+try:
+    from . compiler.compiler import transpile , compile , unify
+
+except:
+    compile,transpile,unify = None, None ,None
+
 add_array_specs()
 
 # add instance methods to Ivy Array and Container
