@@ -5,9 +5,9 @@ ldexp
 
 .. autofunction:: ivy.array.array_methods.ldexp
 
-.. autofunction:: ivy.container.container_methods.static_ldexp
-
 .. autofunction:: ivy.container.container_methods.ldexp
+
+.. autofunction:: ivy.container.container_methods.static_ldexp
 |
 | **Supported Frameworks:**
 

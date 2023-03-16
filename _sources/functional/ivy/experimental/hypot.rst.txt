@@ -5,9 +5,9 @@ hypot
 
 .. autofunction:: ivy.array.array_methods.hypot
 
-.. autofunction:: ivy.container.container_methods.hypot
-
 .. autofunction:: ivy.container.container_methods.static_hypot
+
+.. autofunction:: ivy.container.container_methods.hypot
 |
 | **Supported Frameworks:**
 

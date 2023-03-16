@@ -5,9 +5,9 @@ dirichlet
 
 .. autofunction:: ivy.array.array_methods.dirichlet
 
-.. autofunction:: ivy.container.container_methods.static_dirichlet
-
 .. autofunction:: ivy.container.container_methods.dirichlet
+
+.. autofunction:: ivy.container.container_methods.static_dirichlet
 |
 | **Supported Frameworks:**
 

@@ -3,9 +3,9 @@ is_complex_dtype
 
 .. autofunction:: ivy.functional.ivy.data_type.is_complex_dtype
 
-.. autofunction:: ivy.container.container_methods.is_complex_dtype
-
 .. autofunction:: ivy.container.container_methods.static_is_complex_dtype
+
+.. autofunction:: ivy.container.container_methods.is_complex_dtype
 |
 | **Supported Frameworks:**
 
