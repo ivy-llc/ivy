@@ -665,7 +665,7 @@ def test_jax_numpy_linspace(
 @handle_frontend_test(
     fn_tree="jax.numpy.copy",
     dtype_and_a=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=1,
         min_num_dims=0,
         max_num_dims=5,
