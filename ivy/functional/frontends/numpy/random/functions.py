@@ -94,3 +94,4 @@ def logseries(p, size=None):
     sizeMinusOne = ivy.subtract(size, 1)
 
     return ivy.multiply(ivy.pow(oneMinusP, sizeMinusOne), p)
+
