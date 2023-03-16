@@ -5,9 +5,9 @@ relu6
 
 .. autofunction:: ivy.array.array_methods.relu6
 
-.. autofunction:: ivy.container.container_methods.static_relu6
-
 .. autofunction:: ivy.container.container_methods.relu6
+
+.. autofunction:: ivy.container.container_methods.static_relu6
 |
 | **Supported Frameworks:**
 

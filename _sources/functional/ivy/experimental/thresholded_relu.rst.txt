@@ -5,9 +5,9 @@ thresholded_relu
 
 .. autofunction:: ivy.array.array_methods.thresholded_relu
 
-.. autofunction:: ivy.container.container_methods.static_thresholded_relu
-
 .. autofunction:: ivy.container.container_methods.thresholded_relu
+
+.. autofunction:: ivy.container.container_methods.static_thresholded_relu
 |
 | **Supported Frameworks:**
 
