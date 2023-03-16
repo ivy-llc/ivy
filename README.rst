@@ -1382,6 +1382,8 @@ Last but not least, we can also build the training pipeline in pure ivy ⬇️
 
    </details>
 
+|
+
 Contributing
 ------------
 
@@ -1397,6 +1399,8 @@ Join our amazing community as a code contributor, and help accelerate our journe
    <a href="https://github.com/unifyai/ivy/graphs/contributors">
      <img src="https://contrib.rocks/image?repo=unifyai/ivy&anon=0&columns=20&max=100" />
    </a>
+
+|
 
 Community
 ------------
