@@ -253,7 +253,33 @@ but the backend can easily be changed to your favorite frameworks, such as Tenso
 Last but not least, we are also working on specific extension totally written in Ivy and therefore usable within any framework, 
 covering topics like `Mechanics`_, `Computer Vision`_, `Robotics`_, a `Reinforcement Learning Gym`_, `Memory`_ and implementation of various `Models`_ or `Builder tools`_ with trainers, data loaders and more.
 
-TODO: Maybe add small logos in a row?
+.. raw:: html
+
+    <br/>
+    <div align="center">
+    <a href="https://github.com/unifyai/mech">
+        <img width="10%" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logos/ivy_mech.png">
+    </a>
+    <a href="https://github.com/unifyai/vision">
+        <img width="10%" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logos/ivy_vision.png">
+    </a>
+    <a href="https://github.com/unifyai/robot">
+        <img width="10%" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logos/ivy_robot.png">
+    </a>
+    <a href="https://github.com/unifyai/gym">
+        <img width="10%" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logos/ivy_gym.png">
+    </a>
+    <a href="https://github.com/unifyai/memory">
+        <img width="10%" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logos/ivy_memory.png">
+    </a>
+    <a href="https://github.com/unifyai/builder">
+        <img width="10%" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logos/ivy_builder.png">
+    </a>
+    <a href="https://github.com/unifyai/models">
+        <img width="10%" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logos/ivy_models.png">
+    </a>
+    </div>
+    <br clear="all" />
 
 As always, you can find more information about `Ivy as a framework in the docs! <https://lets-unify.ai/ivy/design/ivy_as_a_framework.html#ivy-as-a-framework>`_
 
