@@ -2313,8 +2313,11 @@ def test_jax_lax_top_k(
 @st.composite
 def _reduce_window_helper(draw):
     dtype = draw(helpers.get_dtypes("numeric", full=False))
-    init_value = draw(st.integers()) if 'int' in dtype[0] else draw(st.floats())
-    def computation(accumulator, window): return jnp.add(accumulator, jnp.sum(window))
+    init_value = draw(helpers.array_values(dtype=dtype[0], shape=()))
+
+    def computation(accumulator, window):
+        return jnp.add(accumulator, jnp.sum(window, dtype=window.dtype))
+
     dtype, operand = draw(
         helpers.dtype_and_values(
             dtype=dtype,
@@ -2322,10 +2325,10 @@ def _reduce_window_helper(draw):
         )
     )
     ndim = operand[0].ndim
-    dtypes, other = draw(
+    _, others = draw(
         helpers.dtype_and_values(
             num_arrays=4,
-            dtype=['int64']*4,
+            dtype=["int64"] * 4,
             shape=(ndim,),
             min_value=1,
             max_value=3,
@@ -2333,6 +2336,7 @@ def _reduce_window_helper(draw):
             large_abs_safety_factor=1,
         )
     )
+    others = [other.tolist() for other in others]
     padding = draw(
         st.one_of(
             st.lists(
@@ -2346,7 +2350,7 @@ def _reduce_window_helper(draw):
             st.sampled_from(["SAME", "VALID"]),
         )
     )
-    return dtype+dtypes, operand, init_value, computation, other, padding
+    return dtype * 2, operand, init_value, computation, others, padding
 
 
 @handle_frontend_test(
@@ -2362,7 +2366,7 @@ def test_jax_lax_reduce_window(
     frontend,
     test_flags,
 ):
-    dtypes, operand, init_value, computation, other, padding = all_args
+    dtypes, operand, init_value, computation, others, padding = all_args
     helpers.test_frontend_function(
         input_dtypes=dtypes,
         frontend=frontend,
@@ -2372,9 +2376,9 @@ def test_jax_lax_reduce_window(
         operand=operand[0],
         init_value=init_value,
         computation=computation,
-        window_dimensions=other[0],
-        window_strides=other[1],
+        window_dimensions=others[0],
+        window_strides=others[1],
         padding=padding,
-        base_dilation=other[2],
-        window_dilation=other[3],
+        base_dilation=others[2],
+        window_dilation=others[3],
     )
