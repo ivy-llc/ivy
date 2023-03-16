@@ -7,7 +7,6 @@ import numpy as np
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_helpers
-from ivy.func_wrapper import with_unsupported_dtypes
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     statistical_dtype_values,
@@ -687,7 +686,6 @@ def test_jax_numpy_nanvar(
 
 
 # std
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16")}, "jax")
 @handle_frontend_test(
     fn_tree="jax.numpy.std",
     dtype_x_axis=statistical_dtype_values(function="std"),
