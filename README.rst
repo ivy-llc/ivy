@@ -1,6 +1,3 @@
-..
-    ToDo:
-    [ ] Maybe add some images
 
 .. _`Backend Handler`: https://lets-unify.ai/ivy/design/building_blocks.html#backend-handler
 .. _`Backend Functional APIs`: https://lets-unify.ai/ivy/design/building_blocks.html#backend-functional-apis
@@ -294,8 +291,6 @@ As Ivy supports multiple backends, writing code in Ivy breaks you free from fram
 
 Setting up Ivy
 --------------
-
-ToDo: test each one of these procedures in various platforms, add links
 
 There are various ways to use Ivy, depending on your preferred environment:
 
