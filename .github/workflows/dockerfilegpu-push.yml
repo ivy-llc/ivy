@@ -10,7 +10,7 @@ jobs:
 
   build:
 
-    runs-on: ubuntu-latest-16-cores
+    runs-on: ubuntu-20.04
 
     steps:
     - 
