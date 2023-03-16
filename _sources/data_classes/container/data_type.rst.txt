@@ -13,5 +13,5 @@ Data type
    :maxdepth: -1
    :caption: Data type
 
-   data_type/ContainerWithDataTypes.rst
+   data_type/_ContainerWithDataTypes.rst
 
