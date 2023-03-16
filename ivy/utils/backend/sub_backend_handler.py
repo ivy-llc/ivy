@@ -9,21 +9,25 @@ _sub_backend_dict = dict()
 _sub_backend_dict["xformers"] = "ivy.functional.backends.torch.sub_backends.xformers"
 
 
-# Recursively updates the modules
-def update_functions(sub_backend: ModuleType, target: ModuleType):
+
+
+def replace_functions(sub_backend: ModuleType, current_ivy: ModuleType, original_backend_dict: dict):
+    '''Recursively replaces current ivy functions with the sub_backend functions'''
+
     for k, v in sub_backend.__dict__.items():
-        if k in target.__dict__ and not k.startswith("__"):
+        if k in original_backend_dict and not k.startswith("__"):
             if isinstance(v, FunctionType):
-                target.__dict__[k] = _wrap_function(
-            key=k, to_wrap=v, original=target.__dict__[k], compositional=False
+                current_ivy.__dict__[k] = _wrap_function(
+            key=k, to_wrap=v, original=original_backend_dict[k], compositional=False
         )
 
             elif isinstance(v, ModuleType) and "ivy.functional." in v.__name__:
-                update_functions(sub_backend.__dict__[k], target.__dict__[k])
+                replace_functions(sub_backend.__dict__[k], current_ivy.__dict__[k], original_backend_dict[k].__dict__)
 
 
-def set_sub_backend(sub_backend: ModuleType, current_ivy):
-    update_functions(sub_backend, current_ivy)
+def set_sub_backend(sub_backend: ModuleType, current_ivy: ModuleType):
+    original_dict = current_ivy.current_backend().sub_backends.original_dict
+    replace_functions(sub_backend, current_ivy, original_dict)
 
 
 def unset_sub_backend(sub_backend: ModuleType, current_ivy):
@@ -36,17 +40,17 @@ def unset_sub_backend(sub_backend: ModuleType, current_ivy):
                 current_ivy.__dict__[k] = original_dict[k]
 
 
-def create_enable_function(sub_backend_name: str, backend_name: str, current_ivy):
+def create_enable_function(sub_backend_name: str, backend_name: str, current_ivy: ModuleType):
  
     def enable_function(enable: bool=False):
-        # TODO(Yasser): make sure to unset any sub_backend
-        # that the current sub_backend is incompatible with (functions overlapping)
         sub_backend = importlib.import_module(_sub_backend_dict[sub_backend_name])
         original_dict = current_ivy.current_backend().sub_backends.original_dict
         if not original_dict:
             # TODO: Find a better way to copy the original backend dict, calling with_backend is probably not so efficient
             current_ivy.current_backend().sub_backends.original_dict = current_ivy.with_backend(backend_name).__dict__
         if enable:
+            # TODO(Yasser): make sure to unset any sub_backend
+            # that the current sub_backend is incompatible with (functions overlapping)
             set_sub_backend(sub_backend, current_ivy)
             current_ivy.__dict__[f"is_{sub_backend_name}_enabled"] = True
         if not enable:
@@ -58,7 +62,7 @@ def create_enable_function(sub_backend_name: str, backend_name: str, current_ivy
     return enable_function
 
 
-def add_sub_backend_attributes(current_ivy):
+def add_sub_backend_attributes(current_ivy: ModuleType):
     backend = current_ivy.current_backend_str()
     if backend:
         for sub_backend in ivy.current_backend().available_sub_backends:
@@ -70,7 +74,7 @@ def add_sub_backend_attributes(current_ivy):
 
 
 
-def remove_sub_backend_attributes(current_ivy):
+def remove_sub_backend_attributes(current_ivy: ModuleType):
     # if backend agnostic ivy is set (i.e no backend is set), this will return an empty string
     backend = current_ivy.current_backend_str()
     if backend:
