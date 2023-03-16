@@ -293,17 +293,18 @@ def strided_slice(
             if new_axis_mask[i]:
                 full_slice += (ivy.newaxis,)
             else:
+                strides_i = int(strides[i])
                 if not begin_mask[i] or shrink_axis_mask[i]:
                     begin_i = int(begin[i])
                 else:
                     begin_i = None
                 if shrink_axis_mask[i]:
-                    end_i = begin_i + 1
+                    end_i = begin_i + int(strides_i > 0)
                 elif end_mask[i]:
                     end_i = None
                 else:
                     end_i = int(end[i])
-                full_slice += (py_slice(begin_i, end_i, int(strides[i])),)
+                full_slice += (py_slice(begin_i, end_i, strides_i),)
     return input_[full_slice]
 
 
