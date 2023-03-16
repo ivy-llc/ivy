@@ -282,13 +282,9 @@ def strided_slice(
     begin, end = map(lambda x: ivy.array(x) if isinstance(x, int) else x, [begin, end])
 
     full_slice = ()
-    need_ellipsis = False
-    if len(input_.shape) - len(begin.shape) > 0:
-        need_ellipsis = True
-    for i, _ in enumerate(begin.shape):
-        if need_ellipsis and ellipsis_mask[i]:
+    for i, _ in enumerate(input_.shape):
+        if ellipsis_mask[i]:
             full_slice += (...,)
-            need_ellipsis = False
         else:
             if new_axis_mask[i]:
                 full_slice += (ivy.newaxis,)
