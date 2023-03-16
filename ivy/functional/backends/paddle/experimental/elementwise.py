@@ -262,6 +262,7 @@ def nextafter(
     x1: paddle.Tensor,
     x2: paddle.Tensor,
     /,
+    *,
     where: Optional[bool] = True,
     casting: Optional[str] = 'same_kind',
     order: Optional[str] = 'K',
