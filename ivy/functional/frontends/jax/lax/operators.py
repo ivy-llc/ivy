@@ -2,6 +2,7 @@
 from typing import Any
 import itertools
 import string
+import math
 
 # local
 import ivy
@@ -548,25 +549,45 @@ def reduce_window(
     base_dilation=None,
     window_dilation=None,
 ):
+    dims = len(operand.shape)
+    base_dilation, window_dilation = map(
+        lambda x: [1]*dims if x is None else x,
+        [base_dilation, window_dilation]
+    )
+    effect_window = [
+        (window_dimensions[i] - 1) * window_dilation[i] + 1
+        for i in range(dims)
+    ]
     if isinstance(padding, str):
-        in_shape = ivy.array(operand.shape, dtype=ivy.int64)
-        if padding == "SAME":
-            out_shape = ivy.floor_divide(in_shape, window_strides)
-            pad_sizes = ivy.maximum(
-                0, (out_shape - 1) * window_strides + window_dimensions - in_shape
-            )
-            padding = [
-                (p // 2, p - p // 2) for p in [ivy.to_scalar(p) for p in pad_sizes]
+        if padding == 'VALID':
+            out_shape = [
+                math.ceil((operand.shape[i] - effect_window[i] + 1) / (
+                        window_strides[i] * base_dilation[i]))
+                for i in range(dims)
             ]
-        elif padding == "VALID":
-            padding = [(0, 0)] * in_shape.ndim
+        elif padding == 'SAME':
+            out_shape = [
+                math.ceil((operand.shape[i] + window_strides[i] * base_dilation[i] -
+                           effect_window[i]) / (window_strides[i] * base_dilation[i]))
+                for i in range(dims)
+            ]
+            pad_sizes = [ivy.to_scalar(p) for p in [
+                ivy.maximum(0, (out_shape[i] - 1) * window_strides[i] * base_dilation[i]
+                            + effect_window[i] - operand.shape[i])
+                for i in range(dims)
+            ]]
+            padding = [(p // 2, p - p // 2) for p in pad_sizes]
+            operand = ivy.pad(operand, padding)
         else:
             raise TypeError("Unknown padding type: {}.".format(padding))
-    out_shape = [
-        int((w - s) / s) + 1 for s, w in zip(window_strides, window_dimensions)
-    ]
-    operand = ivy.pad(operand, padding)
-    output = ivy.full(out_shape, int(init_value), dtype=operand.dtype)
+    else:
+        operand = ivy.pad(operand, padding)
+        out_shape = [
+            math.ceil((operand.shape[i] - effect_window[i] + 1) / (
+                    window_strides[i] * base_dilation[i]))
+            for i in range(dims)
+        ]
+    output = ivy.full(out_shape, ivy.to_scalar(init_value), dtype=operand.dtype)
     for window_idx in ivy.ndindex(out_shape):
         window_slice = tuple(
             slice(
