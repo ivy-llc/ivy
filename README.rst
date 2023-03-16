@@ -258,25 +258,25 @@ covering topics like `Mechanics`_, `Computer Vision`_, `Robotics`_, a `Reinforce
     <br/>
     <div align="center">
     <a href="https://github.com/unifyai/mech">
-        <img width="10%" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logos/ivy_mech.png">
+        <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logos/ivy_mech.png">
     </a>
     <a href="https://github.com/unifyai/vision">
-        <img width="10%" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logos/ivy_vision.png">
+        <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logos/ivy_vision.png">
     </a>
     <a href="https://github.com/unifyai/robot">
-        <img width="10%" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logos/ivy_robot.png">
+        <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logos/ivy_robot.png">
     </a>
     <a href="https://github.com/unifyai/gym">
-        <img width="10%" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logos/ivy_gym.png">
+        <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logos/ivy_gym.png">
     </a>
     <a href="https://github.com/unifyai/memory">
-        <img width="10%" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logos/ivy_memory.png">
+        <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logos/ivy_memory.png">
     </a>
     <a href="https://github.com/unifyai/builder">
-        <img width="10%" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logos/ivy_builder.png">
+        <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logos/ivy_builder.png">
     </a>
     <a href="https://github.com/unifyai/models">
-        <img width="10%" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logos/ivy_models.png">
+        <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logos/ivy_models.png">
     </a>
     </div>
     <br clear="all" />
