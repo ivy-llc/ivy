@@ -1,0 +1,8 @@
+FROM ubuntu:20.04
+WORKDIR /ivy
+ARG CLI
+
+FROM unifyai/ivy:latest as base
+
+COPY requirements/optional_applied.txt .
+RUN pip3 install --no-cache-dir -r optional_applied.txt

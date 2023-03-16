@@ -3139,6 +3139,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         Maps the values of the input tensor to either 0 or 1,
         element-wise, based on the outcome of a comparison
         against a threshold value.
+
         Parameters
         ----------
         self
@@ -3160,6 +3161,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+
         Returns
         -------
         ret
@@ -3190,13 +3192,14 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         Maps the values of the input tensor to either 0 or 1,
         element-wise, based on the outcome of a comparison
         against a threshold value.
+
         Parameters
         ----------
         threshold
             Values greater than this are
             mapped to 1, others to 0.
         key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
+            The keychains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
             will be skipped. Default is ``True``.
@@ -3209,6 +3212,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+
         Returns
         -------
         ret
@@ -3425,6 +3429,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         """ivy.Container instance method variant of ivy.ldexp. This method simply
         wraps the function, and so the docstring for ivy.ldexp also applies to this
         method with minimal changes.
+
         Parameters
         ----------
         self
@@ -3433,10 +3438,12 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
             The container whose arrays should be used to multiply x1 by 2**x2.
         out
             optional output container, for writing the result to.
+
         Returns
         -------
         ret
             container including x1 * 2**x2.
+
         Examples
         --------
         With one :class:`ivy.Container` input:
@@ -3518,16 +3525,19 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         """ivy.Container instance method variant of ivy.frexp. This method simply
         wraps the function, and so the docstring for ivy.frexp also applies to this
         method with minimal changes.
+
         Parameters
         ----------
         self
             The container whose arrays should be split into mantissa and exponent.
         out
             optional output container, for writing the result to.
+
         Returns
         -------
         ret
             container including the mantissa and exponent of x.
+
         Examples
         --------
         With one :class:`ivy.Container` input:
