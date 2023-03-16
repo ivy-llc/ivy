@@ -85,10 +85,10 @@ def _grad_func(y, xs, retain_grads):
                 create_graph=retain_grads,
                 allow_unused=True,
             )[0]
-            return grad if grad is not None else paddle.zeros_like(x)
+            return grad if grad is not None else ivy.to_native(ivy.zeros_like(x))
 
         grads = ivy.nested_map(xs, grad_, include_derived=True, shallow=False)
-        grads = ivy.nested_multi_map(lambda x, _: (x[0] + x[1]), [grads, grads_])
+        grads = ivy.nested_multi_map(lambda x, _: (ivy.add(x[0],x[1])), [grads, grads_])
     return grads
 
 
