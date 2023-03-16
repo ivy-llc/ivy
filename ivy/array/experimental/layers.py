@@ -660,6 +660,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
             ]
         ] = "linear",
         scale_factor: Optional[Union[Sequence[int], int]] = None,
+        recompute_scale_factor: Optional[bool] = None,
         align_corners: Optional[bool] = None,
         antialias: bool = False,
         out: Optional[ivy.Array] = None,
@@ -714,6 +715,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
             size,
             mode=mode,
             scale_factor=scale_factor,
+            recompute_scale_factor=recompute_scale_factor,
             align_corners=align_corners,
             antialias=antialias,
             out=out,

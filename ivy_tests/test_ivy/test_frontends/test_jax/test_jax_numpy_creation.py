@@ -627,6 +627,40 @@ def test_jax_numpy_logspace(
     )
 
 
+# linspace
+@handle_frontend_test(
+    fn_tree="jax.numpy.linspace",
+    dtype_start_stop=_get_dtype_and_range(),
+    num=helpers.ints(min_value=2, max_value=5),
+    axis=helpers.ints(min_value=-1, max_value=0),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_linspace(
+    dtype_start_stop,
+    num,
+    axis,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, start, stop = dtype_start_stop
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        start=start,
+        stop=stop,
+        num=num,
+        endpoint=True,
+        retstep=False,
+        dtype=input_dtypes[0],
+        axis=axis,
+    )
+
+
 # single
 @handle_frontend_test(
     fn_tree="jax.numpy.single",
