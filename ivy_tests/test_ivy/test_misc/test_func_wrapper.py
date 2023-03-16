@@ -1,5 +1,6 @@
 import ivy
 import pytest
+from unittest.mock import patch
 from ivy.func_wrapper import handle_array_like_without_promotion
 from typing import Union, Tuple, List, Sequence
 
@@ -88,3 +89,25 @@ def test_integer_arrays_to_float(x, expected):
     expected = ivy.array(expected)
 
     assert ivy.array_equal(ivy.func_wrapper.integer_arrays_to_float(_fn1)(x), expected)
+
+
+@pytest.mark.parametrize(
+    ("x", "weight", "expected"),
+    [
+        ([[1, 1], [1, 1]], [[1, 1], [1, 1], [1, 1]], True),
+        ([[1, 1], [1, 1]], [
+            [[1, 1], [1, 1], [1, 1]],
+            [[1, 1], [1, 1], [1, 1]],
+            [[1, 1], [1, 1], [1, 1]]
+        ], False),
+    ]
+)
+def test_handle_mixed_function(x, weight, expected):
+    test_fn = 'torch.nn.functional.linear'
+    if ivy.current_backend_str() != 'torch':
+        # ivy.matmul is used inside the compositional implementation
+        test_fn = 'ivy.matmul'
+        expected = True
+    with patch(test_fn) as test_mock_function:
+        ivy.linear(x, weight)
+        assert test_mock_function.called == expected

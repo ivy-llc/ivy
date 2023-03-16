@@ -1,6 +1,6 @@
 # global
 import tensorflow as tf
-from typing import Union, Optional
+from typing import Union, Optional, Literal, List
 
 # local
 import ivy
@@ -56,9 +56,9 @@ def searchsorted(
     v: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    side="left",
-    sorter=None,
-    ret_dtype=tf.int64,
+    side: Literal["left", "right"] = "left",
+    sorter: Optional[Union[ivy.Array, ivy.NativeArray, List[int]]] = None,
+    ret_dtype: tf.DType = tf.int64,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     assert ivy.is_int_dtype(ret_dtype), ValueError(

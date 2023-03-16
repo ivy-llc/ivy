@@ -28,7 +28,7 @@ def concat(
     xs: Union[Tuple[torch.Tensor, ...], List[torch.Tensor]],
     /,
     *,
-    axis: Optional[int] = 0,
+    axis: int = 0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis is None:
@@ -96,8 +96,8 @@ def reshape(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     copy: Optional[bool] = None,
-    order: Optional[str] = "C",
-    allowzero: Optional[bool] = True,
+    order: str = "C",
+    allowzero: bool = True,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     ivy.utils.assertions.check_elem_in_list(order, ["C", "F"])
@@ -239,7 +239,7 @@ def repeat(
     /,
     repeats: Union[int, Iterable[int]],
     *,
-    axis: int = None,
+    axis: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if len(x.shape) == 0 and axis in [0, -1]:

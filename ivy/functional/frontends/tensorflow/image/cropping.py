@@ -25,7 +25,11 @@ def extract_patches(images, sizes, strides, rates, padding):
 
 
 @to_ivy_arrays_and_back
-def resize(image, size, method='bilinear', preserve_aspect_ratio=False, antialias=False):
+def resize(image,
+           size,
+           method='bilinear',
+           preserve_aspect_ratio=False,
+           antialias=False):
     unsqueezed = False
     if len(image.shape) == 3:
         image = image.unsqueeze(0)
@@ -43,10 +47,14 @@ def resize(image, size, method='bilinear', preserve_aspect_ratio=False, antialia
             new_height = int(new_width / aspect_ratio)
     else:
         new_height, new_width = size
+    if method == 'bicubic':
+        method = 'bicubic_tensorflow'
+    elif method == 'area':
+        method = 'tf_area'
     image = ivy.interpolate(
         image,
         (new_height, new_width),
-        mode="tf_area" if method == "area" else method,
+        mode=method,
         align_corners=False,
         antialias=antialias)
     if unsqueezed:

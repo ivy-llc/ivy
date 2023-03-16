@@ -1047,7 +1047,7 @@ def _strided_slice_helper(draw):
     )
     begin, end, strides = [], [], []
     n_omit = np.random.randint(0, ndims)
-    sub_shape = shape[:-n_omit]
+    sub_shape = shape[:len(shape)-n_omit]
     for i in sub_shape:
         begin += [draw(st.integers(min_value=0, max_value=i - 1))]
         end += [
@@ -1097,9 +1097,10 @@ def test_tensorflow_strided_slice(
             shrink_axis_mask=masks[4],
         )
     except Exception as e:
-        if hasattr(e, "message"):
-            if "only stride 1 allowed on non-range indexing" in e.message:
-                assume(False)
+        if hasattr(e, "message") and \
+                "only stride 1 allowed on non-range indexing" in e.message:
+            assume(False)
+        raise e
 
 
 # slice
@@ -1129,9 +1130,10 @@ def test_tensorflow_slice(
             size=end - begin,
         )
     except Exception as e:
-        if hasattr(e, "message"):
-            if "only stride 1 allowed on non-range indexing" in e.message:
-                assume(False)
+        if hasattr(e, "message") and \
+                "only stride 1 allowed on non-range indexing" in e.message:
+            assume(False)
+        raise e
 
 
 @st.composite
