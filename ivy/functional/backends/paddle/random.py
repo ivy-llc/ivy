@@ -78,7 +78,15 @@ def multinomial(
     seed: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if isinstance(probs, type(None)):
+        probs = paddle.ones(shape=(batch_size, population_size)) / population_size
+    probs = paddle.cast(probs, ivy.default_float_dtype())
+    if seed:
+        _ = paddle.seed(seed)
+    return to_device(
+        paddle.multinomial(x=probs, num_samples=num_samples, replacement=replace),
+        device,
+    )
 
 
 @with_unsupported_dtypes(
