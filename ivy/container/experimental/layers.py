@@ -1230,7 +1230,6 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-
         return ContainerBase.cont_multi_map_in_function(
             "embedding",
             weight,
@@ -1255,7 +1254,6 @@ class _ContainerWithLayersExperimental(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-
         return self.static_embedding(
             self,
             indices,
@@ -1366,7 +1364,18 @@ class _ContainerWithLayersExperimental(ContainerBase):
         size: Union[Sequence[int], int],
         /,
         *,
-        mode: Union[Literal["linear", "bilinear", "trilinear", "nearest"]] = "linear",
+        mode: Literal[
+            "linear",
+            "bilinear",
+            "trilinear",
+            "nearest",
+            "area",
+            "nearest_exact",
+            "tf_area",
+            "bicubic",
+        ] = "linear",
+        scale_factor: Optional[Union[Sequence[int], int]] = None,
+        recompute_scale_factor: Optional[bool] = None,
         align_corners: Optional[bool] = None,
         antialias: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -1392,6 +1401,16 @@ class _ContainerWithLayersExperimental(ContainerBase):
             - bilinear
             - trilinear
             - nearest
+            - area
+            - tf_area
+            - bicubic
+            - mitchellcubic
+            - lanczos3
+            - lanczos5
+            - gaussian
+        scale_factor
+            Multiplier for spatial size that defines the output
+            size (overwriting `size`).
         align_corners
             If True, the corner pixels of the input and output tensors are aligned,
             and thus preserving the values at the corner pixels. If False, the corner
@@ -1415,6 +1434,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
             x,
             size,
             mode=mode,
+            scale_factor=scale_factor,
+            recompute_scale_factor=recompute_scale_factor,
             align_corners=align_corners,
             antialias=antialias,
             key_chains=key_chains,
@@ -1429,7 +1450,18 @@ class _ContainerWithLayersExperimental(ContainerBase):
         size: Union[Sequence[int], int],
         /,
         *,
-        mode: Union[Literal["linear", "bilinear", "trilinear", "nearest"]] = "linear",
+        mode: Literal[
+            "linear",
+            "bilinear",
+            "trilinear",
+            "nearest",
+            "area",
+            "nearest_exact",
+            "tf_area",
+            "bicubic",
+        ] = "linear",
+        scale_factor: Optional[Union[Sequence[int], int]] = None,
+        recompute_scale_factor: Optional[bool] = None,
         align_corners: Optional[bool] = None,
         antialias: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -1455,6 +1487,16 @@ class _ContainerWithLayersExperimental(ContainerBase):
             - bilinear
             - trilinear
             - nearest
+            - area
+            - tf_area
+            - bicubic
+            - mitchellcubic
+            - lanczos3
+            - lanczos5
+            - gaussian
+        scale_factor
+            Multiplier for spatial size that defines the output
+            size (overwriting `size`).
         align_corners
             If True, the corner pixels of the input and output tensors are aligned,
             and thus preserving the values at the corner pixels. If False, the corner
@@ -1477,6 +1519,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
             self,
             size,
             mode=mode,
+            scale_factor=scale_factor,
+            recompute_scale_factor=recompute_scale_factor,
             align_corners=align_corners,
             antialias=antialias,
             key_chains=key_chains,

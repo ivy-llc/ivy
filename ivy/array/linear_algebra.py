@@ -572,6 +572,35 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+
+        """
+            Computes the outer product between two arrays.
+
+            Parameters
+            ----------
+            self : ivy.Array
+                The first input array.
+            x2 : ivy.Array or ivy.NativeArray
+                The second input array.
+            out : ivy.Array, optional
+                Output array. If provided, it must have the same shape as the expected output.
+
+            Returns
+            -------
+            ivy.Array
+                The outer product of the two arrays.
+
+            Examples
+            --------
+            >>> x = ivy.array([1, 2, 3])
+            >>> y = ivy.array([4, 5])
+            >>> z = x.outer(y)
+            >>> print(z)
+            ivy.array([[ 4,  5],
+                       [ 8, 10],
+                       [12, 15]])
+
+            """
         return ivy.outer(self._data, x2, out=out)
 
     def pinv(

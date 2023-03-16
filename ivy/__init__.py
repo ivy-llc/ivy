@@ -4,6 +4,7 @@ import warnings
 from ivy._version import __version__ as __version__
 import builtins
 import numpy as np
+import sys
 
 
 warnings.filterwarnings("ignore", module="^(?!.*ivy).*$")
@@ -717,6 +718,12 @@ from . import stateful
 from .stateful import *
 from ivy.utils.inspection import fn_array_spec, add_array_specs
 
+try:
+    from . compiler.compiler import transpile , compile , unify
+
+except:
+    compile,transpile,unify = None, None ,None
+
 add_array_specs()
 
 # add instance methods to Ivy Array and Container
@@ -1155,3 +1162,12 @@ class DynamicBackendContext:
 
 def dynamic_backend_as(value):
     return DynamicBackendContext(value)
+
+
+modules = ivy.utils.backend.handler._backend_dict.keys()
+for module in modules:
+    if module != "numpy" and module in sys.modules:
+        warnings.warn(
+            f"{module} module has been imported while ivy doesn't import it without "
+            "setting a backend, ignore if that's intended"
+        )
