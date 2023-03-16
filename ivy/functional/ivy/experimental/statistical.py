@@ -18,7 +18,7 @@ def median(
     /,
     *,
     axis: Optional[Union[Tuple[int], int]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Compute the median along the specified axis.
@@ -62,7 +62,7 @@ def nanmean(
     /,
     *,
     axis: Optional[Union[Tuple[int], int]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -152,8 +152,8 @@ def quantile(
     /,
     *,
     axis: Optional[Union[Sequence[int], int]] = None,
-    keepdims: Optional[bool] = False,
-    interpolation: Optional[str] = "linear",
+    keepdims: bool = False,
+    interpolation: str = "linear",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Compute the q-th quantile of the data along the specified axis.
@@ -233,7 +233,7 @@ def corrcoef(
     /,
     *,
     y: Optional[ivy.Array] = None,
-    rowvar: Optional[bool] = True,
+    rowvar: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     return ivy.current_backend().corrcoef(x, y=y, rowvar=rowvar, out=out)
@@ -248,11 +248,11 @@ def nanmedian(
     /,
     *,
     axis: Optional[Union[Tuple[int], int]] = None,
-    keepdims: Optional[bool] = False,
-    overwrite_input: Optional[bool] = False,
+    keepdims: bool = False,
+    overwrite_input: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """ivy.Array instance method variant of ivy.nanmedian. This method simply 
+    """ivy.Array instance method variant of ivy.nanmedian. This method simply
     wraps the function, and so the docstring for ivy.nanmedian also applies to
     this method with minimal changes.
 
@@ -293,7 +293,6 @@ def nanmedian(
     >>> a.nanmedian(a, axis=0)
         array([6.5, 2. , 2.5])
     """
-
     return ivy.current_backend().nanmedian(
         input, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out
     )
@@ -308,7 +307,7 @@ def bincount(
     /,
     *,
     weights: Optional[ivy.Array] = None,
-    minlength: Optional[int] = 0,
+    minlength: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     return ivy.current_backend(x).bincount(

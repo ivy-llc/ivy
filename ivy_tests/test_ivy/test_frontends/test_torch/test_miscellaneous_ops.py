@@ -137,6 +137,46 @@ def test_torch_roll(
     )
 
 
+# meshgrid
+@handle_frontend_test(
+    fn_tree="torch.meshgrid",
+    dtypes_and_tensors=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=st.integers(min_value=2, max_value=5),
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=5,
+        shared_dtype=True,
+    ),
+    indexing=st.sampled_from(["ij", "xy"]),
+)
+def test_torch_meshgrid(
+    *,
+    dtypes_and_tensors,
+    indexing,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtypes, tensors = dtypes_and_tensors
+    kwargs = {
+        f"tensor{i}": np.array(tensor, dtype=dtypes[i])
+        for i, tensor in enumerate(tensors)
+    }
+    kwargs["indexing"] = indexing
+    test_flags.num_positional_args = len(tensors)
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        **kwargs,
+    )
+
+
 # fliplr
 @handle_frontend_test(
     fn_tree="torch.fliplr",
@@ -996,4 +1036,51 @@ def test_torch_tensordot(
         rtol=1e-1,
         atol=1e-2,
         dims=dims,
+    )
+
+
+# diff
+@handle_frontend_test(
+    fn_tree="torch.diff",
+    dtype_n_x_n_axis=helpers.dtype_values_axis(
+        available_dtypes=st.shared(helpers.get_dtypes("valid"), key="dtype"),
+        min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    n=st.integers(min_value=0, max_value=5),
+    dtype_prepend=helpers.dtype_and_values(
+        available_dtypes=st.shared(helpers.get_dtypes("valid"), key="dtype"),
+        min_num_dims=1,
+        max_num_dims=1,
+    ),
+    dtype_append=helpers.dtype_and_values(
+        available_dtypes=st.shared(helpers.get_dtypes("valid"), key="dtype"),
+        min_num_dims=1,
+        max_num_dims=1,
+    ),
+)
+def test_diff(
+    *,
+    dtype_n_x_n_axis,
+    n,
+    dtype_prepend,
+    dtype_append,
+    test_flags,
+    frontend,
+    fn_tree,
+):
+    input_dtype, x, axis = dtype_n_x_n_axis
+    _, prepend = dtype_prepend
+    _, append = dtype_append
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        input=x[0],
+        n=n,
+        dim=axis,
+        prepend=prepend[0],
+        append=append[0],
     )

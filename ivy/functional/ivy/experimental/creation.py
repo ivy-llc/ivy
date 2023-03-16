@@ -25,7 +25,7 @@ from ivy.func_wrapper import (
 def triu_indices(
     n_rows: int,
     n_cols: Optional[int] = None,
-    k: Optional[int] = 0,
+    k: int = 0,
     /,
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -161,7 +161,7 @@ def hann_window(
     size: int,
     /,
     *,
-    periodic: Optional[bool] = True,
+    periodic: bool = True,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -319,9 +319,9 @@ def hamming_window(
     window_length: int,
     /,
     *,
-    periodic: Optional[bool] = True,
-    alpha: Optional[float] = 0.54,
-    beta: Optional[float] = 0.46,
+    periodic: bool = True,
+    alpha: float = 0.54,
+    beta: float = 0.46,
     dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -390,7 +390,7 @@ def hamming_window(
 def tril_indices(
     n_rows: int,
     n_cols: Optional[int] = None,
-    k: Optional[int] = 0,
+    k: int = 0,
     /,
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,

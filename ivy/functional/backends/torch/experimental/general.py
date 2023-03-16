@@ -1,4 +1,3 @@
-from typing import Optional
 import torch
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
@@ -10,8 +9,8 @@ def isin(
     test_elements: torch.tensor,
     /,
     *,
-    assume_unique: Optional[bool] = False,
-    invert: Optional[bool] = False,
+    assume_unique: bool = False,
+    invert: bool = False,
 ) -> torch.tensor:
     return torch.isin(
         elements,
