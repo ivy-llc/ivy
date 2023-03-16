@@ -794,6 +794,7 @@ def all_nested_indices(
     _index: Optional[Union[int, Sequence[int]]] = None,
     _base: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     extra_nest_types: Optional[Union[ivy.Dtype, Sequence[ivy.Dtype]]] = None,
+    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -827,6 +828,15 @@ def all_nested_indices(
     Both the description and the type hints above assumes an array input for
     simplicity, but this function is nestable, and therefore also accepts
     :class:ivy.Container instances in place of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+    >>> x = ivy.array([0, 1, 2])
+    >>> y = all_nested_indices(x)
+    >>> print(y)
+
+    With :class:`ivy.Container` input:
 
     """
     _index = list() if _index is None else _index
