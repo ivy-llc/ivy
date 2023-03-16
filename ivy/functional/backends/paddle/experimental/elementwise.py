@@ -4,11 +4,10 @@ from numbers import Number
 from math import pi
 import paddle
 from ivy.utils.exceptions import IvyNotImplementedException
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
 # local
 import ivy
 from ivy import promote_types_of_inputs
-from ivy.functional.backends.torch.elementwise import _cast_for_unary_op
 from .. import backend_version
 
 
@@ -72,6 +71,9 @@ def trapz(
     raise IvyNotImplementedException()
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)    
 def float_power(
     x1: Union[paddle.Tensor, float, list, tuple],
     x2: Union[paddle.Tensor, float, list, tuple],
