@@ -790,7 +790,6 @@ def nested_argwhere(
 def all_nested_indices(
     nest: Iterable,
     /,
-    *,
     include_nests: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     _index: Optional[Union[int, Sequence[int]]] = None,
     _base: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
