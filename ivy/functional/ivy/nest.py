@@ -831,13 +831,46 @@ def all_nested_indices(
 
     Examples
     --------
-    With :class:`ivy.Array` input:
-    >>> x = ivy.array([0, 1, 2])
+    With :class:`Dict` input:
+    >>> x = {'a': 2., 'b': [6., [15., 9.]], 'c': (7., 56.)}
     >>> y = all_nested_indices(x)
     >>> print(y)
 
-    With :class:`ivy.Container` input:
+    With :class:`Tuple` input:
+    >>> x = (12, 53)
+    >>> y = ivy.zeros(3)
+    >>> ivy.all_nested_indices(x, False, out=y)
+    >>> print(y)
 
+    With :class:`ivy.Array` input:
+    >>> x = ivy.array([0, 1, 2, 3, 4])
+    >>> y = all_nested_indices(x, out=x)
+    >>> print(y)
+
+    >>> x = ivy.array([[42, 68, 50], [12, 13, 18]])
+    >>> y = x.all_nested_indices()
+    >>> print(y)
+
+    >>> x = ivy.array([0, 1, 2, 3, 4])
+    >>> y = all_nested_indices(x, out=x)
+    >>> print(y)
+
+    With :class:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> y = all_nested_indices(x, True)
+    >>> print(y)
+
+    >>> x = ivy.Container(a=ivy.array([10, 15, 41, 58]),
+    >>>                   b=ivy.array([16, 7, 8, 1]),
+    >>>                   c=ivy.array([4, 8, 63, 33]))
+    >>> y = x.all_nested_indices()
+    >>> print(y)
+
+    >>> x = ivy.Container({'a': ivy.array([3., 78., 5.]),
+    >>>                    'b': {'c': ivy.array([28., 25., 32.]),
+    >>>                    'd': ivy.array([0., 52., 42.])}})
+    >>> y = ivy.Container.static_all_nested_indices(x)
+    >>> print(y)
     """
     _index = list() if _index is None else _index
     extra_nest_types = ivy.default(extra_nest_types, ())
