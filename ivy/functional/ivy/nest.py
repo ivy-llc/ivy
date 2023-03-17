@@ -788,7 +788,7 @@ def nested_argwhere(
 
 @handle_exceptions
 def all_nested_indices(
-    nest: Iterable,
+    nest: Optional[Iterable] = None,
     /,
     include_nests: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     _index: Optional[Union[int, Sequence[int]]] = None,
@@ -835,17 +835,20 @@ def all_nested_indices(
     >>> x = {'a': 2., 'b': [6., [15., 9.]], 'c': (7., 56.)}
     >>> y = all_nested_indices(x)
     >>> print(y)
+    [['a'], ['b', 0], ['b', 1, 0], ['b', 1, 1], ['c', 0], ['c', 1]]
 
     With :class:`Tuple` input:
     >>> x = (12, 53)
     >>> y = ivy.zeros(3)
     >>> ivy.all_nested_indices(x, False, out=y)
     >>> print(y)
+    [[0], [1]]
 
     With :class:`ivy.Array` input:
     >>> x = ivy.array([0, 1, 2, 3, 4])
     >>> y = all_nested_indices(x, out=x)
     >>> print(y)
+    [[]]
 
     >>> x = ivy.array([[42, 68, 50], [12, 13, 18]])
     >>> y = x.all_nested_indices()
@@ -854,15 +857,15 @@ def all_nested_indices(
     >>> x = ivy.array([0, 1, 2, 3, 4])
     >>> y = all_nested_indices(x, out=x)
     >>> print(y)
+    [[]]
 
     With :class:`ivy.Container` input:
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = all_nested_indices(x, True)
     >>> print(y)
+    [['a'], ['b']]
 
-    >>> x = ivy.Container(a=ivy.array([10, 15, 41, 58]),
-    >>>                   b=ivy.array([16, 7, 8, 1]),
-    >>>                   c=ivy.array([4, 8, 63, 33]))
+    >>> x = ivy.Container(a=ivy.array([1, 1, 1, 1]), c=ivy.array([4, 8, 6, 3]))
     >>> y = x.all_nested_indices()
     >>> print(y)
 
