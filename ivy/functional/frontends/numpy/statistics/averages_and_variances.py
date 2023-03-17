@@ -369,19 +369,24 @@ def nanpercentile(
         return qqq
     elif axis == 0:
         # if a.ndim > 0:
-        a = ivy.swapaxes(a, 0, 1)
+        try:
+            a = ivy.swapaxes(a, 0, 1)
+        except ivy.utils.exceptions.IvyError:
+            ivy.logging.warning("axis is 0 but couldn't swap")
 
-        qqq = []
-        na = []
-        for i in a:
-            rrr = []
-            for t in i:
-                if not ivy.isnan(t):
-                    rrr.append(t)
-            na.append(rrr)
-        for i in q:
-            eee = []
-            for ii in na:
-                eee.append(cpercentile(ii, i))
-            qqq.append(eee)
-        return qqq
+        finally:
+
+            qqq = []
+            na = []
+            for i in a:
+                rrr = []
+                for t in i:
+                    if not ivy.isnan(t):
+                        rrr.append(t)
+                na.append(rrr)
+            for i in q:
+                eee = []
+                for ii in na:
+                    eee.append(cpercentile(ii, i))
+                qqq.append(eee)
+            return qqq
