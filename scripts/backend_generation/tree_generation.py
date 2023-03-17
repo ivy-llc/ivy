@@ -26,73 +26,7 @@ _decorator_black_list = [
 type_mapping = {}
 
 
-class ImportTransformer(ast.NodeTransformer):
-    # TODO add backend specific imports for the type hints
-    def visit_Import(self, node: ast.Import):
-        if isinstance(node, ast.Import):
-            # Only keep "import typing" statements
-            entries_list = []
-            for entry in node.names:
-                if entry.name.startswith("typing"):
-                    entries_list.append(entry)
-            if len(entries_list) > 0:
-                node.names = entries_list
-            else:
-                self.generic_visit(node)
-                return None
-        self.generic_visit(node)
-        return node
-
-    def visit_ImportFrom(self, node: ast.ImportFrom):
-        # Only keep imports from "typing"
-        if isinstance(node, ast.ImportFrom):
-            if not node.module == "typing":
-                self.generic_visit(node)
-                return None
-        self.generic_visit(node)
-        return node
-
-
-class FunctionBodyTransformer(ast.NodeTransformer):
-    def visit_FunctionDef(self, node: ast.FunctionDef):
-        if isinstance(node, ast.FunctionDef):
-            # Remove private functions
-            if node.name.startswith("_") and not node.name.endswith("__"):
-                self.generic_visit(node)
-                return None
-            else:
-                # Replace function body with Pass
-                node.body = [
-                    ast.Raise(
-                        exc=ast.Call(
-                            func=ast.Name(id=_not_imlpemented_exc_name, ctx=ast.Load()),
-                            args=[
-                                ast.Constant(
-                                    value="Function Not Implemented", kind=None
-                                )
-                            ],
-                            keywords=[],
-                        ),
-                        cause=None,
-                    )
-                ]
-                # Update decorators not to include ones in the blacklist
-                # Add Not Implemented decorator
-                new_list = []
-                for entry in node.decorator_list:
-                    if isinstance(entry, ast.Call):
-                        name_of_decorator = entry.func.id
-                    else:
-                        name_of_decorator = entry.id
-                    if name_of_decorator in _decorator_black_list:
-                        continue
-                    new_list.append(entry)
-                node.decorator_list = new_list
-        self.generic_visit(node)
-        return node
-
-
-class TypeHintTransformer(ast.NodeTransformer):
+class SourceTransformer(ast.NodeTransformer):
     def __init__(self, type_map):
         self.type_map = type_map
         self.registered_imports = set()
@@ -101,41 +35,76 @@ class TypeHintTransformer(ast.NodeTransformer):
         return astunparse.unparse(node)
 
     def visit_Name(self, node: ast.Name):
-        if isinstance(node, ast.Name):
-            try:
-                node.id = self.type_map[node.id]
-            except KeyError:
-                pass
-            else:
-                self.registered_imports.add(node.id)
+        try:
+            node.id = self.type_map[node.id]
+        except KeyError:
+            pass
+        else:
+            self.registered_imports.add(node.id)
         self.generic_visit(node)
         return node
 
     def visit_Attribute(self, node: ast.Attribute):
-        if isinstance(node, ast.Attribute):
-            try:
-                str_repr = self._get_full_name(node).strip()
-                new_node = ast.parse(self.type_map[str_repr])
-                node = new_node.body[0].value
-            except KeyError:
-                # self.generic_visit(node)
-                # return ast.Attribute(value=None)
-                pass
+        try:
+            str_repr = self._get_full_name(node).strip()
+            new_node = ast.parse(self.type_map[str_repr])
+            node = new_node.body[0].value
+        except KeyError:
+            # Do not remove original framework type hints
+            pass
+        self.generic_visit(node)
+        return node
+
+    def visit_Assign(self, node: ast.Assign):
+        for name in node.targets:
+            if name.id.startswith("_") and not name.id.endswith("__"):
+                return None
+        self.generic_visit(node)
+        return node
+
+    def visit_FunctionDef(self, node: ast.FunctionDef):
+        # Remove private functions
+        if node.name.startswith("_") and not node.name.endswith("__"):
+            self.generic_visit(node)
+            return None
+        else:
+            # Replace function body with Pass
+            node.body = [
+                ast.Raise(
+                    exc=ast.Call(
+                        func=ast.Name(id=_not_imlpemented_exc_name, ctx=ast.Load()),
+                        args=[
+                            ast.Constant(value="Function Not Implemented", kind=None)
+                        ],
+                        keywords=[],
+                    ),
+                    cause=None,
+                )
+            ]
+            # Update decorators not to include ones in the blacklist
+            # Add Not Implemented decorator
+            new_list = []
+            for entry in node.decorator_list:
+                if isinstance(entry, ast.Call):
+                    name_of_decorator = entry.func.id
+                else:
+                    name_of_decorator = entry.id
+                if name_of_decorator in _decorator_black_list:
+                    continue
+                new_list.append(entry)
+            node.decorator_list = new_list
         self.generic_visit(node)
         return node
 
 
 # Modify the AST tree
 def _parse_module(tree: ast.Module) -> ast.Module:
-    # Update decorators, update function body, remove private functions
-    FunctionBodyTransformer().visit_FunctionDef(tree)
+    transformer = SourceTransformer(type_mapping)
+    transformer.visit(tree)
 
-    # Walk the AST tree and update type hints
-    transformer = TypeHintTransformer(type_mapping)
-    transformer.visit_Attribute(tree)
+    import_node = ast.Import(names=[ast.alias(name=_target_backend_name, asname=None)])
+    tree.body.insert(0, import_node)
 
-    # Update imports, remove backend specific imports
-    ImportTransformer().visit_Import(tree)
     # Add target backend import, add type hints classes imports
     ast.fix_missing_locations(tree)
     return tree
@@ -185,7 +154,18 @@ def generate(backend_reference: str, target_backend: str):
 
     # Copy and generate backend tree
     _copy_tree(backend_reference_path, backend_generation_path)
+
     subprocess.run(["black", backend_generation_path])
+    subprocess.run(
+        [
+            "autoflake",
+            "-i",
+            "--remove-all-unused-imports",
+            "--quiet",
+            "-r",
+            backend_generation_path,
+        ]
+    )
 
 
 # TODO remove

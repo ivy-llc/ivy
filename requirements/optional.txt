@@ -19,3 +19,4 @@ dm-haiku # unpinned mod_name=haiku
 pydriller
 tqdm
 coverage
+autoflake # for backend generation
