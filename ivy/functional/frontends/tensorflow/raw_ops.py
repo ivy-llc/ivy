@@ -689,4 +689,4 @@ def DebugGradientIdentity(input, name="DebugGradientIdentity"):
 
 @to_ivy_arrays_and_back
 def Real(input, Tout=ivy.float32, name="Real"):
-    return ivy.Real(input, Tout=Tout) 
+    return ivy.Real(input, Tout=Tout)
