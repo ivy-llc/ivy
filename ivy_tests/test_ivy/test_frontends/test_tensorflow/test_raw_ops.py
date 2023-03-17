@@ -3296,8 +3296,8 @@ def test_tensorflow_CumulativeLogsumexp(
     test_flags,
     fn_tree,
     on_device,
-    axis, 
-    exclusive, 
+    axis,
+    exclusive,
     reverse,
 ):
     input_dtype, x = dtype_and_x
@@ -3307,11 +3307,11 @@ def test_tensorflow_CumulativeLogsumexp(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0], 
-        axis=axis, 
-        exclusive=exclusive, 
+        x=x[0],
+        axis=axis,
+        exclusive=exclusive,
         reverse=reverse,
-    )    
+    )
 
 
 # Complex
@@ -3342,9 +3342,9 @@ def test_tensorflow_Complex(
         real=x[0],
         imag=x[1],
         Tout=Tout,
-    )    
+    )
 
-  
+
 # AccumulateNV2
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.AccumulateNV2",
@@ -3359,7 +3359,7 @@ def test_tensorflow_AccumulateNV2(
     test_flags,
     fn_tree,
     on_device,
-    inputs, 
+    inputs,
     shape,
 ):
     input_dtype, x = dtype_and_x
@@ -3371,7 +3371,7 @@ def test_tensorflow_AccumulateNV2(
         on_device=on_device,
         inputs=x[0],
         shape=x[1],
-    )           
+    )
 
 
 # DebugGradientIdentity

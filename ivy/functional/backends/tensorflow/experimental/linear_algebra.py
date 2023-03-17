@@ -170,9 +170,9 @@ def cond(
         svd_inv = tf.linalg.svd(tf.linalg.inv(x), compute_uv=False)
         k = tf.reduce_sum(svd, axis=ax) * tf.reduce_sum(svd_inv, axis=ax)
     elif p == "fro":
-        k = tf.norm(x,
-                    ord="euclidean",
-                    axis=[-2, -1]) * tf.norm(tf.linalg.inv(x), ord="euclidean", axis=[-2, -1])
+        k = tf.norm(x, ord="euclidean", axis=[-2, -1]) * tf.norm(
+            tf.linalg.inv(x), ord="euclidean", axis=[-2, -1]
+        )
     elif p < 0:
         if p == -1:
             k = tf.reduce_min(
@@ -185,7 +185,7 @@ def cond(
                 tf.reduce_sum(tf.abs(x), axis=1), axis=ax
             ) * tf.reduce_min(tf.reduce_sum(tf.abs(tf.linalg.inv(x)), axis=1), axis=ax)
     else:
-        k = tf.norm(x,
-                    ord=p,
-                    axis=[-2, -1]) * tf.norm(tf.linalg.inv(x), ord=p, axis=[-2, -1])
+        k = tf.norm(x, ord=p, axis=[-2, -1]) * tf.norm(
+            tf.linalg.inv(x), ord=p, axis=[-2, -1]
+        )
     return k
