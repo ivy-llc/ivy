@@ -850,4 +850,3 @@ def test_torch_trapezoid(
         on_device=on_device,
         **kwargs
     )
-

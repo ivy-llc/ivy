@@ -396,5 +396,7 @@ def std(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=Non
     std_a = ivy.std(a, axis=axis, correction=ddof, keepdims=keepdims, out=out)
     if ivy.is_array(where):
         where = ivy.array(where, dtype=ivy.bool)
-        std_a = ivy.where(where, std_a, ivy.default(out, ivy.zeros_like(std_a)), out=out)
+        std_a = ivy.where(
+            where, std_a, ivy.default(out, ivy.zeros_like(std_a)), out=out
+        )
     return ivy.astype(std_a, ivy.as_ivy_dtype(dtype), copy=False)

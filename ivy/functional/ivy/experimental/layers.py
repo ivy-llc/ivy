@@ -1278,7 +1278,9 @@ def interpolate(
         scale_factor = None
     elif scale_factor is not None:
         scale_factor = (
-            [scale_factor] * dims if isinstance(scale_factor, (int, float)) else scale_factor
+            [scale_factor] * dims
+            if isinstance(scale_factor, (int, float))
+            else scale_factor
         )
         scale_factor = (
             [scale_factor[0]] * dims
