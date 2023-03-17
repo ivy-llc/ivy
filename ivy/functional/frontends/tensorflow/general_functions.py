@@ -277,7 +277,7 @@ def strided_slice(
     )
     ivy.assertions.check_true(
         sum(ellipsis_mask) <= 1,
-        message="Only one non-zero bit is allowed in ellipsis_mask."
+        message="Only one non-zero bit is allowed in ellipsis_mask.",
     )
     begin, end = map(lambda x: ivy.array(x) if isinstance(x, int) else x, [begin, end])
 
@@ -307,7 +307,7 @@ def strided_slice(
 @to_ivy_arrays_and_back
 def slice(input_, begin, size, name=None):
     n_slices = 1 if isinstance(begin, int) else len(begin)
-    return strided_slice(input_, begin, begin + size, strides=[1]*n_slices)
+    return strided_slice(input_, begin, begin + size, strides=[1] * n_slices)
 
 
 @to_ivy_arrays_and_back
