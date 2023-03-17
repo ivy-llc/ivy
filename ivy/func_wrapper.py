@@ -105,7 +105,7 @@ def _check_in_nested_sequence(sequence, value=None, _type=None):
         # Base case - N = 0
         return True
     elif isinstance(sequence, (tuple, list)):
-        if (value in sequence) or any(isinstance(_val, _type) for _val in sequence):
+        if any(isinstance(_val, _type) or _val is value for _val in sequence):
             # N = 1
             return True
         else:
