@@ -16,10 +16,10 @@ def abs(
 ) -> Union[tf.Tensor, tf.Variable]:
     if not tf.is_tensor(x):
         x = tf.convert_to_tensor(x)
-    if "uint" in ivy.dtype(x):
+    x_dtype = ivy.dtype(x)
+    if any(("uint" in x_dtype, "bool" in x_dtype)):
         return x
-    else:
-        return tf.abs(x)
+    return tf.abs(x)
 
 
 def acos(

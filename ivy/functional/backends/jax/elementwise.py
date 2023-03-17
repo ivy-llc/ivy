@@ -12,6 +12,8 @@ from . import backend_version
 
 
 def abs(x: Union[float, JaxArray], /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    if "bool" in str(x.dtype):
+        return x
     # jnp.where is used for consistent gradients
     return jnp.where(x != 0, jnp.absolute(x), 0)
 
