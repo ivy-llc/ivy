@@ -325,3 +325,8 @@ def tensordot(a, b, dims=2, out=None):
 )
 def diff(input, n=1, dim=-1, prepend=None, append=None):
     return ivy.diff(input, n=n, axis=dim, prepend=prepend, append=append, out=None)
+
+
+@to_ivy_arrays_and_back
+def broadcast_shapes(*shapes):
+    return ivy.broadcast_shapes(*shapes)

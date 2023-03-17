@@ -96,10 +96,12 @@ def test_torch_softmax(
         available_dtypes=helpers.get_dtypes("float"),
         max_value=1e04,
     ),
+    approximate=st.sampled_from(["none", "tanh"]),
 )
 def test_torch_gelu(
     *,
     dtype_and_x,
+    approximate,
     on_device,
     fn_tree,
     frontend,
@@ -112,8 +114,10 @@ def test_torch_gelu(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-02,
         input=x[0],
+        rtol=1e-02,
+        atol=1e-02,
+        approximate=approximate,
     )
 
 
