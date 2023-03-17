@@ -2,7 +2,7 @@
 import math
 
 import torch
-from typing import Optional, Tuple, Sequence
+from typing import Optional, Tuple, Sequence, Union
 
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
@@ -164,3 +164,16 @@ def multi_dot(
 
 
 multi_dot.support_native_out = True
+
+
+def cond(
+    x: torch.Tensor,
+    /,
+    *,
+    p: Optional[Union[None, int, str]] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.linalg.cond(x, p=p, out=out)
+
+
+cond.support_native_out = False
