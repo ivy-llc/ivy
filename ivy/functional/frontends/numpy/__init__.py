@@ -559,6 +559,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.hyperbolic_functions 
 from ivy.functional.frontends.numpy.mathematical_functions.rounding import (
     _ceil,
     _trunc,
+    _floor
 )
 
 from ivy.functional.frontends.numpy.logic.comparison import (
@@ -642,6 +643,7 @@ sinh = ufunc("_sinh")
 tanh = ufunc("_tanh")
 ceil = ufunc("_ceil")
 trunc = ufunc("_trunc")
+floor = ufunc("_floor")
 equal = ufunc("_equal")
 greater = ufunc("_greater")
 greater_equal = ufunc("_greater_equal")
