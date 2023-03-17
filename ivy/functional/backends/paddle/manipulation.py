@@ -62,6 +62,9 @@ def expand_dims(
     return paddle.unsqueeze(x, axis)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def flip(
     x: paddle.Tensor,
     /,
@@ -84,14 +87,16 @@ def permute_dims(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if x.dtype in [paddle.int8, paddle.int16, paddle.uint8]:
+        return paddle.transpose(x.cast(ivy.default_float_dtype()), axes).cast(x.dtype)
     return paddle.transpose(x, axes)
 
 
 def _reshape_fortran_paddle(x, shape):
     if len(x.shape) > 0:
-        x = paddle.transpose(x, list(reversed(range(len(x.shape)))))
-    return paddle.transpose(
-        paddle.reshape(x, shape[::-1]), list(range(len(shape)))[::-1]
+        x = ivy.to_native(permute_dims(x, list(reversed(range(len(x.shape))))))
+    return ivy.to_native(
+        permute_dims(paddle.reshape(x, shape[::-1]), list(range(len(shape)))[::-1])
     )
 
 
@@ -110,9 +115,6 @@ def reshape(
 ) -> paddle.Tensor:
     if len(shape) == 0:
         out_scalar = True
-        out_dtype = x.dtype
-        if x.dtype in [paddle.int16, paddle.float16]:
-            x = x.astype(paddle.float32)
         shape = [1]
     else:
         out_scalar = False
@@ -128,23 +130,23 @@ def reshape(
         if order == "F":
             ret = _reshape_fortran_paddle(newarr, shape)
             if out_scalar:
-                return ret.squeeze().cast(out_dtype)
+                return ivy.to_native(squeeze(ret, 0))
 
             return ret
         ret = paddle.reshape(newarr, shape)
         if out_scalar:
-            return ret.squeeze().cast(out_dtype)
+            return ivy.to_native(squeeze(ret, 0))
 
         return ret
     if order == "F":
         ret = _reshape_fortran_paddle(x, shape)
         if out_scalar:
-            return ret.squeeze().cast(out_dtype)
+            return ivy.to_native(squeeze(ret, 0))
 
         return ret
     ret = paddle.reshape(x, shape)
     if out_scalar:
-        return ret.squeeze().cast(out_dtype)
+        return ivy.to_native(squeeze(ret, 0))
 
     return ret
 
@@ -163,9 +165,8 @@ def roll(
     raise IvyNotImplementedException()
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("int16", "uint16", "float16")},
-    backend_version,
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def squeeze(
     x: paddle.Tensor,
@@ -181,6 +182,10 @@ def squeeze(
             return x
         raise ivy.utils.exceptions.IvyException(
             "tried to squeeze a zero-dimensional input by axis {}".format(axis)
+        )
+    if x.dtype in [paddle.int16, paddle.float16]:
+        return paddle.squeeze(x.cast(ivy.default_float_dtype()), axis=axis).cast(
+            x.dtype
         )
     return paddle.squeeze(x, axis=axis)
 
@@ -269,12 +274,14 @@ def split(
                 f"total split size is not compatible with input shape,"
                 f" got {sum(num_or_size_splits)} which is more than x.shape[axis]"
             )
+
     if x.dtype in [paddle.int16, paddle.complex64, paddle.complex128]:
         if paddle.is_complex(x):
             imag_list = paddle.split(x.imag(), num_or_size_splits, axis)
-            real_list = paddle.split(x.imag(), num_or_size_splits, axis)
+            real_list = paddle.split(x.real(), num_or_size_splits, axis)
             return [(a + b * 1j) for a, b in zip(real_list, imag_list)]
-        return paddle.split(x.cast("int32"), num_or_size_splits, axis)
+        ret = paddle.split(x.cast("int32"), num_or_size_splits, axis)
+        return [tensor.cast(x.dtype) for tensor in ret]
     return paddle.split(x, num_or_size_splits, axis)
 
 
@@ -289,7 +296,33 @@ def repeat(
     axis: int = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle.repeat_interleave(x, repeats)
+    #if isinstance(repeats, Number) and repeats == 0:
+        #return paddle.to_tensor([], dtype=x.dtype)
+    #elif isinstance(repeats, paddle.Tensor):
+        #if max(repeats.shape) == 1:
+            #repeats = repeats.item()
+            #if repeats == 0:
+                #return paddle.to_tensor([], dtype=x.dtype)
+
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+        paddle.complex64,
+        paddle.complex128,
+        paddle.bool,
+    ]:
+        if paddle.is_complex(x):
+            return paddle.repeat_interleave(
+                x.real(), repeats=repeats, axis=axis
+            ) + 1j * paddle.repeat_interleave(x.imag(), repeats=repeats, axis=axis)
+
+        return paddle.repeat_interleave(
+            x.cast(ivy.default_float_dtype()), repeats=repeats, axis=axis
+        ).cast(x.dtype)
+
+    return paddle.repeat_interleave(x, repeats=repeats, axis=axis)
 
 
 @with_unsupported_device_and_dtypes(
@@ -298,9 +331,27 @@ def repeat(
 def tile(
     x: paddle.Tensor, /, repeats: Sequence[int], *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    if isinstance(repeats, paddle.Tensor):
-        repeats = repeats.detach().cpu().numpy().tolist()
-    return x.repeat(repeats)
+    """
+    if x.ndim == 0:
+        x = ivy.to_native(reshape(x, (-1,)))
+    if isinstance(repeats, Number):
+        repeats = [repeats]
+    if isinstance(repeats, paddle.Tensor) and repeats.ndim == 0:
+        repeats = ivy.to_native(reshape(repeats, (-1,)))
+    # code to unify behaviour with numpy and torch
+    if len(x.shape) < len(repeats):
+        while len(x.shape) != len(repeats):
+            x = ivy.to_native(expand_dims(x, 0))
+    elif len(x.shape) > len(repeats):
+        repeats = list(repeats)
+        while len(x.shape) != len(repeats):
+            repeats = [1] + repeats
+    """
+    if len(repeats) == 1 and repeats[0] == 0:
+        return paddle.to_tensor([]).squeeze().cast(x.dtype)
+    if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
+        return paddle.tile(x.cast(ivy.default_float_dtype()), repeats).cast(x.dtype)
+    return paddle.tile(x, repeats)
 
 
 @with_unsupported_device_and_dtypes(
@@ -336,7 +387,9 @@ def zero_pad(
 def swapaxes(
     x: paddle.Tensor, axis0: int, axis1: int, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    axes = [x for x in range(x.ndim)]
+    axes[axis0], axes[axis1] = axes[axis1], axes[axis0]
+    return permute_dims(x, axes)
 
 
 @with_unsupported_device_and_dtypes(
@@ -366,7 +419,7 @@ def clip(
         return paddle.clip(x.cast(ivy.default_float_dtype()), x_min, x_max).cast(
             x.dtype
         )
-    raise paddle.clip(x, x_min, x_max)
+    return paddle.clip(x, x_min, x_max)
 
 
 @with_unsupported_device_and_dtypes(
