@@ -2335,56 +2335,59 @@
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            ivy.Container static method variant of ivy.outer. This method simply wraps the</span>
-<span class="sd">            function, and so the docstring for ivy.outer also applies to this method with</span>
-<span class="sd">            minimal changes.</span>
+<span class="sd">        ivy.Container static method variant of ivy.outer.</span>
+<span class="sd">        This method simply wraps the function, and so</span>
+<span class="sd">        the docstring for ivy.outer also applies to this method with</span>
+<span class="sd">        minimal changes.</span>
 
-<span class="sd">            Computes the outer product of two arrays, x1 and x2, by computing the tensor</span>
-<span class="sd">            product along the last dimension of both arrays.</span>
+<span class="sd">        Computes the outer product of two arrays, x1 and x2,</span>
+<span class="sd">        by computing the tensor product along the last dimension of both arrays.</span>
 
-<span class="sd">            Parameters</span>
-<span class="sd">            ----------</span>
-<span class="sd">            x1</span>
-<span class="sd">                first input array having shape (..., N1)</span>
-<span class="sd">            x2</span>
-<span class="sd">                second input array having shape (..., N2)</span>
-<span class="sd">            key_chains</span>
-<span class="sd">                The key-chains to apply or not apply the method to. Default is ``None``.</span>
-<span class="sd">            to_apply</span>
-<span class="sd">                If True, the method will be applied to key_chains, otherwise key_chains will be</span>
-<span class="sd">                skipped. Default is ``True``.</span>
-<span class="sd">            prune_unapplied</span>
-<span class="sd">                Whether to prune key_chains for which the function was not applied.</span>
-<span class="sd">                Default is ``False``.</span>
-<span class="sd">            map_sequences</span>
-<span class="sd">                Whether to also map method to sequences (lists, tuples).</span>
-<span class="sd">                Default is ``False``.</span>
-<span class="sd">            out</span>
-<span class="sd">                optional output container, for writing the result to. The container must have</span>
-<span class="sd">                shape (..., N1, N2). The first x1.ndim-1 dimensions must have the same size as</span>
-<span class="sd">                those of the input array x1 and the first x2.ndim-1 dimensions must have the same</span>
-<span class="sd">                size as those of the input array x2.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x1</span>
+<span class="sd">            first input array having shape (..., N1)</span>
+<span class="sd">        x2</span>
+<span class="sd">            second input array having shape (..., N2)</span>
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is ``None``.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains,</span>
+<span class="sd">            otherwise key_chains will be skipped. Default is ``True``.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is ``False``.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples).</span>
+<span class="sd">            Default is ``False``.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output container, for writing the result to.</span>
+<span class="sd">            The container must have shape (..., N1, N2). The first x1.ndim-1</span>
+<span class="sd">            dimensions must have the same size as those of the input array x1</span>
+<span class="sd">            and the first x2.ndim-1 dimensions must have the same</span>
+<span class="sd">            size as those of the input array x2.</span>
 
-<span class="sd">            Returns</span>
-<span class="sd">            -------</span>
-<span class="sd">            ret</span>
-<span class="sd">                an ivy container whose shape is (..., N1, N2). The first x1.ndim-1 dimensions</span>
-<span class="sd">                have the same size as those of the input array x1 and the first x2.ndim-1</span>
-<span class="sd">                dimensions have the same size as those of the input array x2.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            an ivy container whose shape is (..., N1, N2).</span>
+<span class="sd">            The first x1.ndim-1 dimensions have the same size as those</span>
+<span class="sd">            of the input array x1 and the first x2.ndim-1</span>
+<span class="sd">            dimensions have the same size as those of the input array x2.</span>
 
-<span class="sd">            Example</span>
-<span class="sd">            -------</span>
-<span class="sd">            &gt;&gt;&gt; x1 =ivy.Container( a=ivy.array([[1, 2, 3], [4, 5, 6]]))</span>
-<span class="sd">            &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([1, 2, 3]))</span>
-<span class="sd">            &gt;&gt;&gt; y = ivy.Container.static_outer(x1, x2)</span>
-<span class="sd">            &gt;&gt;&gt; print(y)</span>
-<span class="sd">            ivy.array([[[ 1.,  2.,  3.],</span>
-<span class="sd">                        [ 2.,  4.,  6.],</span>
-<span class="sd">                        [ 3.,  6.,  9.]],</span>
-<span class="sd">                       [[ 4.,  8., 12.],</span>
-<span class="sd">                        [ 5., 10., 15.],</span>
-<span class="sd">                        [ 6., 12., 18.]]])</span>
-<span class="sd">            &quot;&quot;&quot;</span>
+<span class="sd">        Example</span>
+<span class="sd">        -------</span>
+<span class="sd">        &gt;&gt;&gt; x1 =ivy.Container( a=ivy.array([[1, 2, 3], [4, 5, 6]]))</span>
+<span class="sd">        &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([1, 2, 3]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_outer(x1, x2)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([[[ 1.,  2.,  3.],</span>
+<span class="sd">                    [ 2.,  4.,  6.],</span>
+<span class="sd">                    [ 3.,  6.,  9.]],</span>
+<span class="sd">                   [[ 4.,  8., 12.],</span>
+<span class="sd">                    [ 5., 10., 15.],</span>
+<span class="sd">                    [ 6., 12., 18.]]])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">cont_multi_map_in_function</span><span class="p">(</span>
             <span class="s2">&quot;outer&quot;</span><span class="p">,</span>
             <span class="n">x1</span><span class="p">,</span>
@@ -2409,36 +2412,42 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This is the instance method implementation of the static method static_outer</span>
-<span class="sd">         of the ivy.Container class.</span>
-<span class="sd">        It calculates the outer product of two input arrays or containers along the last dimension</span>
-<span class="sd">         and returns the resulting container.</span>
+<span class="sd">        of the ivy.Container class.</span>
+<span class="sd">        It calculates the outer product of two input arrays or</span>
+<span class="sd">        containers along the last dimension and returns the resulting container.</span>
 <span class="sd">        The input arrays should be either ivy.Container, ivy.Array, or ivy.NativeArray.</span>
-<span class="sd">        The output container shape is the concatenation of the shapes of the input container</span>
-<span class="sd">        s along the last dimension.</span>
+<span class="sd">        The output container shape is the concatenation of</span>
+<span class="sd">        the shapes of the input containers along the last dimension.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        self : ivy.Container</span>
-<span class="sd">        Input container of shape (...,B) where the last dimension represents B elements.</span>
+<span class="sd">            Input container of shape (...,B) where the last dimension</span>
+<span class="sd">            represents B elements.</span>
 <span class="sd">        x2 : Union[ivy.Container, ivy.Array, ivy.NativeArray]</span>
-<span class="sd">        Second input array or container of shape (..., N) where the last dimension represents N elements.</span>
+<span class="sd">            Second input array or container of shape (..., N)</span>
+<span class="sd">            where the last dimension represents N elements.</span>
 <span class="sd">        key_chains : Optional[Union[List[str], Dict[str, str]]]</span>
-<span class="sd">        The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is None.</span>
 <span class="sd">        to_apply : bool</span>
-<span class="sd">        If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
-<span class="sd">         Default is True.</span>
+<span class="sd">            If True, the method will be applied to key_chains,</span>
+<span class="sd">            otherwise key_chains will be skipped.Default is True.</span>
 <span class="sd">        prune_unapplied : bool</span>
-<span class="sd">        Whether to prune key_chains for which the function was not applied. Default is False.</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is False.</span>
 <span class="sd">        map_sequences : bool</span>
-<span class="sd">        Whether to also map the method to sequences (lists, tuples). Default is False.</span>
+<span class="sd">            Whether to also map the method to sequences (lists, tuples).</span>
+<span class="sd">            Default is False.</span>
 <span class="sd">        out : Optional[ivy.Container]</span>
-<span class="sd">        Optional output container to write the result to. If not provided, a new container will be created.</span>
+<span class="sd">            Optional output container to write the result to.</span>
+<span class="sd">            If not provided, a new container will be created.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ivy.Container</span>
-<span class="sd">        A new container of shape (..., M, N) representing the outer product of the input arrays</span>
-<span class="sd">         or containers along the last dimension.</span>
+<span class="sd">            A new container of shape (..., M, N) representing</span>
+<span class="sd">            the outer product of the input arrays or containers</span>
+<span class="sd">            along the last dimension.</span>
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([[1., 2.],[3., 4.]])</span>

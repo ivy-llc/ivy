@@ -125,6 +125,7 @@ Experimental
    experimental/eigvals.rst
    experimental/adjoint.rst
    experimental/multi_dot.rst
+   experimental/cond.rst
    experimental/binary_cross_entropy_with_logits.rst
    experimental/dirichlet.rst
    experimental/beta.rst

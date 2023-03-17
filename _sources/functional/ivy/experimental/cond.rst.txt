@@ -1,0 +1,42 @@
+cond
+====
+
+.. autofunction:: ivy.functional.ivy.experimental.cond
+
+.. autofunction:: ivy.array.array_methods.cond
+
+.. autofunction:: ivy.container.container_methods.cond
+
+.. autofunction:: ivy.container.container_methods.static_cond
+|
+| **Supported Frameworks:**
+
+|jax_logo| |tf_logo| |pytorch_logo| |numpy_logo|
+
+.. |jax_logo| image:: ../../../logos/supported/jax_logo.png
+   :target: https://jax.readthedocs.io
+   :class: dark-light
+
+.. |tf_logo| image:: ../../../logos/supported/tensorflow_logo.png
+   :target: https://www.tensorflow.org
+   :class: dark-light
+
+.. |pytorch_logo| image:: ../../../logos/supported/pytorch_logo.png
+   :target: https://pytorch.org
+   :class: dark-light
+
+.. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
+   :target: https://numpy.org
+   :class: dark-light
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: cond
+
+   cond/cond_functional.rst
+   cond/cond_array.rst
+   cond/cond_container.rst
+   cond/static_cond_container.rst
+

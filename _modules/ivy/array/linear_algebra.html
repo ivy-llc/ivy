@@ -1145,33 +1145,34 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
 
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Computes the outer product between two arrays.</span>
+<span class="sd">        Computes the outer product between two arrays.</span>
 
-<span class="sd">            Parameters</span>
-<span class="sd">            ----------</span>
-<span class="sd">            self : ivy.Array</span>
-<span class="sd">                The first input array.</span>
-<span class="sd">            x2 : ivy.Array or ivy.NativeArray</span>
-<span class="sd">                The second input array.</span>
-<span class="sd">            out : ivy.Array, optional</span>
-<span class="sd">                Output array. If provided, it must have the same shape as the expected output.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self : ivy.Array</span>
+<span class="sd">            The first input array.</span>
+<span class="sd">        x2 : ivy.Array or ivy.NativeArray</span>
+<span class="sd">            The second input array.</span>
+<span class="sd">        out : ivy.Array, optional</span>
+<span class="sd">            Output array. If provided, it must have the same</span>
+<span class="sd">            shape as the expected output.</span>
 
-<span class="sd">            Returns</span>
-<span class="sd">            -------</span>
-<span class="sd">            ivy.Array</span>
-<span class="sd">                The outer product of the two arrays.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ivy.Array</span>
+<span class="sd">            The outer product of the two arrays.</span>
 
-<span class="sd">            Examples</span>
-<span class="sd">            --------</span>
-<span class="sd">            &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
-<span class="sd">            &gt;&gt;&gt; y = ivy.array([4, 5])</span>
-<span class="sd">            &gt;&gt;&gt; z = x.outer(y)</span>
-<span class="sd">            &gt;&gt;&gt; print(z)</span>
-<span class="sd">            ivy.array([[ 4,  5],</span>
-<span class="sd">                       [ 8, 10],</span>
-<span class="sd">                       [12, 15]])</span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.array([4, 5])</span>
+<span class="sd">        &gt;&gt;&gt; z = x.outer(y)</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
+<span class="sd">        ivy.array([[ 4,  5],</span>
+<span class="sd">                   [ 8, 10],</span>
+<span class="sd">                   [12, 15]])</span>
 
-<span class="sd">            &quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="_ArrayWithLinearAlgebra.pinv"><a class="viewcode-back" href="../../../data_classes/array/linear_algebra/_ArrayWithLinearAlgebra.html#ivy.array.linear_algebra._ArrayWithLinearAlgebra.pinv">[docs]</a>    <span class="k">def</span> <span class="nf">pinv</span><span class="p">(</span>
