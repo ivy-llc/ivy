@@ -1,12 +1,16 @@
+# global
 import mxnet as mx
+from typing import Union, Optional, Sequence
+
+# local
 import ivy
-import numpy as np
-from ivy.core.container import Container
-from ivy.core.framework_handler import get_framework_from_str
-from ivy.framework_handler import current_framework
+from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.backends.jax import JaxArray
+from . import backend_version
 
 # Array API Standard #
 # -------------------#
+
 
 def min(
     x: mx.nd.NDArray,
@@ -15,7 +19,7 @@ def min(
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     out: Optional[mx.nd.NDArray] = None,
-) -> np.ndarray:
+) -> mx.ndarray:
     if axis is not None:
         x = mx.nd.min(x, axis=axis, keepdims=keepdims, out=out)
     else:
