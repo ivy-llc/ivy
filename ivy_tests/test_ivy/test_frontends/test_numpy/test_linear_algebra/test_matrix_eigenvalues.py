@@ -1,4 +1,5 @@
 # global
+import sys
 from hypothesis import strategies as st
 import numpy as np
 
@@ -55,14 +56,12 @@ def test_numpy_eigvalsh(
         and np.linalg.det(np.asarray(x[1][0])) != 0
     ),
     UPLO=st.sampled_from(("L", "U")),
-    symmetrize_input=st.booleans(),
     test_with_out=st.just(False),
 )
 def test_numpy_eigh(
     *,
     dtype_and_x,
     UPLO,
-    symmetrize_input,
     on_device,
     fn_tree,
     frontend,
@@ -82,7 +81,6 @@ def test_numpy_eigh(
         test_values=False,
         a=x,
         UPLO=UPLO,
-        symmetrize_input=symmetrize_input,
     )
     ret = [ivy.to_numpy(x) for x in ret]
     frontend_ret = [np.asarray(x) for x in frontend_ret]
