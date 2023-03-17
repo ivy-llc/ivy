@@ -11,11 +11,8 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
 from ivy.func_wrapper import with_unsupported_dtypes
 
 
-@to_ivy_arrays_and_back
-def AddN(*, inputs, name="AddN"):
-    return ivy.sum(inputs, dtype=inputs.dtype, axis=0)
-
 AddN = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add_n))
+
 
 @to_ivy_arrays_and_back
 def Acos(*, x, name="Acos"):
@@ -62,6 +59,16 @@ def ApproximateEqual(
     x, y = check_tensorflow_casting(x, y)
     ret = ivy.abs(x - y)
     return ret < tolerance
+
+
+@to_ivy_arrays_and_back
+def Angle(
+    *,
+    input,
+    Tout=ivy.float32,
+    name="Angle",
+):
+    return ivy.astype(ivy.angle(input), Tout)
 
 
 @to_ivy_arrays_and_back

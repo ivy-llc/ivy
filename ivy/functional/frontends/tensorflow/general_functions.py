@@ -1,3 +1,6 @@
+# global
+from builtins import slice as py_slice
+
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
@@ -272,36 +275,39 @@ def strided_slice(
             [begin_mask, end_mask, ellipsis_mask, new_axis_mask, shrink_axis_mask],
         )
     )
+    ivy.assertions.check_true(
+        sum(ellipsis_mask) <= 1,
+        message="Only one non-zero bit is allowed in ellipsis_mask."
+    )
+    begin, end = map(lambda x: ivy.array(x) if isinstance(x, int) else x, [begin, end])
 
     full_slice = ()
-    need_ellipsis = False
-    if len(input_.shape) - len(begin.shape) > 0:
-        need_ellipsis = True
-    for i, _ in enumerate(begin.shape):
-        if need_ellipsis and ellipsis_mask[i]:
+    for i, _ in enumerate(input_.shape):
+        if ellipsis_mask[i]:
             full_slice += (...,)
-            need_ellipsis = False
         else:
             if new_axis_mask[i]:
                 full_slice += (ivy.newaxis,)
             else:
+                strides_i = int(strides[i])
                 if not begin_mask[i] or shrink_axis_mask[i]:
                     begin_i = int(begin[i])
                 else:
                     begin_i = None
                 if shrink_axis_mask[i]:
-                    end_i = begin_i + 1
+                    end_i = begin_i + int(strides_i > 0)
                 elif end_mask[i]:
                     end_i = None
                 else:
                     end_i = int(end[i])
-                full_slice += (slice(begin_i, end_i, int(strides[i])),)
+                full_slice += (py_slice(begin_i, end_i, strides_i),)
     return input_[full_slice]
 
 
 @to_ivy_arrays_and_back
 def slice(input_, begin, size, name=None):
-    return strided_slice(input_, begin, begin + size, [1] * len(size))
+    n_slices = 1 if isinstance(begin, int) else len(begin)
+    return strided_slice(input_, begin, begin + size, strides=[1]*n_slices)
 
 
 @to_ivy_arrays_and_back

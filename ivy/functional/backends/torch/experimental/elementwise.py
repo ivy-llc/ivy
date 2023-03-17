@@ -87,7 +87,7 @@ def trapz(
     *,
     x: Optional[torch.Tensor] = None,
     dx: Optional[float] = None,
-    axis: Optional[int] = -1,
+    axis: int = -1,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if x is None:
@@ -157,7 +157,7 @@ def count_nonzero(
     /,
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -192,7 +192,7 @@ def nansum(
     *,
     axis: Optional[Union[Tuple[int, ...], int]] = None,
     dtype: Optional[torch.dtype] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     dtype = ivy.as_native_dtype(dtype)
@@ -221,9 +221,9 @@ def isclose(
     b: torch.Tensor,
     /,
     *,
-    rtol: Optional[float] = 1e-05,
-    atol: Optional[float] = 1e-08,
-    equal_nan: Optional[bool] = False,
+    rtol: float = 1e-05,
+    atol: float = 1e-08,
+    equal_nan: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
@@ -267,8 +267,8 @@ def nan_to_num(
     x: torch.Tensor,
     /,
     *,
-    copy: Optional[bool] = True,
-    nan: Optional[Union[float, int]] = 0.0,
+    copy: bool = True,
+    nan: Union[float, int] = 0.0,
     posinf: Optional[Union[float, int]] = None,
     neginf: Optional[Union[float, int]] = None,
     out: Optional[torch.Tensor] = None,
@@ -353,9 +353,9 @@ def allclose(
     x2: torch.Tensor,
     /,
     *,
-    rtol: Optional[float] = 1e-05,
-    atol: Optional[float] = 1e-08,
-    equal_nan: Optional[bool] = False,
+    rtol: float = 1e-05,
+    atol: float = 1e-08,
+    equal_nan: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> bool:
     ret = torch.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
@@ -410,9 +410,9 @@ def gradient(
     x: torch.Tensor,
     /,
     *,
-    spacing: Optional[Union[int, list, tuple]] = 1,
+    spacing: Union[int, list, tuple] = 1,
     axis: Optional[Union[int, list, tuple]] = None,
-    edge_order: Optional[int] = 1,
+    edge_order: int = 1,
 ) -> Union[torch.Tensor, List[torch.Tensor]]:
     if axis is None:
         axis = tuple(range(len(x.shape)))

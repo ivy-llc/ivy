@@ -3,7 +3,11 @@ from typing import Union, Optional
 
 
 def l2_normalize(
-    x: Union[tf.Tensor, tf.Variable], /, *, axis: int = None, out=None
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[int] = None,
+    out: Optional[tf.Tensor] = None,
 ) -> tf.Tensor:
 
     denorm = tf.norm(x, axis=axis, keepdims=True)
@@ -15,17 +19,17 @@ def instance_norm(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    scale: Optional[Union[tf.Tensor, tf.Variable]],
-    bias: Optional[Union[tf.Tensor, tf.Variable]],
+    scale: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
     eps: float = 1e-05,
-    momentum: Optional[float] = 0.1,
+    momentum: float = 0.1,
     data_format: str = "NCHW",
     running_mean: Optional[Union[tf.Tensor, tf.Variable]] = None,
     running_stddev: Optional[Union[tf.Tensor, tf.Variable]] = None,
-    affine: Optional[bool] = True,
-    track_running_stats: Optional[bool] = False,
+    affine: bool = True,
+    track_running_stats: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-):
+) -> Union[tf.Tensor, tf.Variable]:
     if scale is not None:
         scale = tf.reshape(scale, shape=(1, 1, 1, -1))
     if bias is not None:
@@ -69,7 +73,12 @@ def instance_norm(
 
 
 def lp_normalize(
-    x: Union[tf.Tensor, tf.Variable], /, *, p: float = 2, axis: int = None, out=None
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    p: float = 2,
+    axis: Optional[int] = None,
+    out: Optional[tf.Tensor] = None,
 ) -> tf.Tensor:
     denorm = tf.norm(x, ord=p, axis=axis, keepdims=True)
     denorm = tf.math.maximum(denorm, 1e-12)
