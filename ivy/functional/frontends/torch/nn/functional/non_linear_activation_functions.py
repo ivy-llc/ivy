@@ -245,6 +245,7 @@ def softshrink(input, lambd=0.5):
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+@to_ivy_arrays_and_back
 def silu(input, inplace=False):
     ret = ivy.multiply(input, ivy.sigmoid(input))
     if inplace:
