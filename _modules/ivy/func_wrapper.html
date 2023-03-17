@@ -676,7 +676,7 @@
         <span class="c1"># Base case - N = 0</span>
         <span class="k">return</span> <span class="kc">True</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">value</span> <span class="ow">in</span> <span class="n">sequence</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">_val</span><span class="p">,</span> <span class="n">_type</span><span class="p">)</span> <span class="k">for</span> <span class="n">_val</span> <span class="ow">in</span> <span class="n">sequence</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">_val</span><span class="p">,</span> <span class="n">_type</span><span class="p">)</span> <span class="ow">or</span> <span class="n">_val</span> <span class="ow">is</span> <span class="n">value</span> <span class="k">for</span> <span class="n">_val</span> <span class="ow">in</span> <span class="n">sequence</span><span class="p">):</span>
             <span class="c1"># N = 1</span>
             <span class="k">return</span> <span class="kc">True</span>
         <span class="k">else</span><span class="p">:</span>
