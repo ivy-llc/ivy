@@ -16,10 +16,10 @@ def abs(
 ) -> Union[tf.Tensor, tf.Variable]:
     if not tf.is_tensor(x):
         x = tf.convert_to_tensor(x)
-    if "uint" in ivy.dtype(x):
+    x_dtype = ivy.dtype(x)
+    if any(("uint" in x_dtype, "bool" in x_dtype)):
         return x
-    else:
-        return tf.abs(x)
+    return tf.abs(x)
 
 
 def acos(
@@ -227,7 +227,7 @@ def divide(
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     ret = tf.experimental.numpy.divide(x1, x2)
-    if ivy.is_float_dtype(x1.dtype):
+    if ivy.is_float_dtype(x1.dtype) or ivy.is_complex_dtype(x1.dtype):
         ret = tf.cast(ret, dtype=x1.dtype)
     else:
         ret = tf.cast(ret, dtype=ivy.default_float_dtype(as_native=True))

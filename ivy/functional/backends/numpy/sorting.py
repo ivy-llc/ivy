@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from typing import Optional
+from typing import Optional, Literal, Union, List
 
 # local
 import ivy
@@ -41,9 +41,9 @@ def searchsorted(
     v: np.ndarray,
     /,
     *,
-    side="left",
-    sorter=None,
-    ret_dtype=np.int64,
+    side: Literal["left", "right"] = "left",
+    sorter: Optional[Union[np.ndarray, List[int]]] = None,
+    ret_dtype: np.dtype = np.int64,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     assert ivy.is_int_dtype(ret_dtype), ValueError(

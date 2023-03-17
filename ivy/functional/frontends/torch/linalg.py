@@ -48,14 +48,22 @@ def pinv(input, *, atol=None, rtol=None, hermitian=False, out=None):
 def det(input, *, out=None):
     return ivy.det(input, out=out)
 
+
 @to_ivy_arrays_and_back
 def eigvals(input, *, out=None):
     # TODO: add handling for out
     return ivy.eigvals(input)
 
+
 @to_ivy_arrays_and_back
 def eigvalsh(input, UPLO="L", *, out=None):
     return ivy.eigvalsh(input, UPLO=UPLO, out=out)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+def eigh(a, /, UPLO="L", out=None):
+    return ivy.eigh(a, UPLO=UPLO, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -193,5 +201,6 @@ def lu_factor(A, *, pivot=True, out=None):
     return ivy.lu_factor(A, pivot=pivot, out=out)
 
 
+@to_ivy_arrays_and_back
 def matmul(input, other, *, out=None):
     return ivy.matmul(input, other, out=out)

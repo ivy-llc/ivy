@@ -12,7 +12,7 @@ def median(
     /,
     *,
     axis: Optional[Union[Tuple[int], int]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tfp.stats.percentile(
@@ -29,7 +29,7 @@ def nanmean(
     /,
     *,
     axis: Optional[Union[int, Tuple[int]]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     dtype: Optional[tf.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -69,14 +69,18 @@ def quantile(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    interpolation: Optional[str] = "linear",
-    keepdims: Optional[bool] = False,
+    interpolation: str = "linear",
+    keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = tuple(axis) if isinstance(axis, list) else axis
 
     result = tfp.stats.percentile(
-        a, tf.math.multiply(q, 100), axis=axis, interpolation=interpolation, keepdims=keepdims
+        a,
+        tf.math.multiply(q, 100),
+        axis=axis,
+        interpolation=interpolation,
+        keepdims=keepdims,
     )
     return result
 
@@ -86,7 +90,7 @@ def corrcoef(
     /,
     *,
     y: tf.Tensor,
-    rowvar: Optional[bool] = True,
+    rowvar: bool = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> tf.Tensor:
     if y is None:
@@ -112,7 +116,7 @@ def nanmedian(
     /,
     *,
     axis: Optional[Union[Tuple[int], int]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tfp.stats.percentile(

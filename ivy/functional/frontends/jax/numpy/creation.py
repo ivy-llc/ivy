@@ -1,4 +1,5 @@
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.jax.devicearray import DeviceArray
 
 from ivy.functional.frontends.jax.func_wrapper import (
@@ -64,6 +65,11 @@ def asarray(a, dtype=None, order=None):
     return array(a, dtype=dtype, order=order)
 
 
+@to_ivy_arrays_and_back
+def copy(a, order=None):
+    return array(a, order=order)
+
+
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def hstack(tup, dtype=None):
@@ -101,6 +107,12 @@ def full_like(a, fill_value, dtype=None, shape=None):
     return ivy.full_like(a, fill_value, dtype=dtype)
 
 
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+def identity(n, dtype=None):
+    return ivy.eye(n, dtype=dtype)
+
+
 @to_ivy_arrays_and_back
 def ndim(a):
     return ivy.astype(ivy.array(a.ndim), ivy.int64)
@@ -119,3 +131,26 @@ def empty_like(a, dtype=None, shape=None):
 @to_ivy_arrays_and_back
 def full(shape, fill_value, dtype=None):
     return ivy.full(shape, fill_value, dtype=dtype)
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16", )}, 'jax')
+def logspace(start, stop, num=50, endpoint=True, base=10.0, dtype=None, axis=0):
+    if not endpoint:
+        interval = (stop - start) / num
+        stop -= interval
+    return ivy.logspace(start, stop, num, base=base, axis=axis, dtype=dtype)
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16", )}, 'jax')
+def linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis=0):
+    ret = ivy.linspace(start, stop, num, axis=axis, endpoint=endpoint, dtype=dtype)
+    if retstep:
+        if endpoint:
+            num -= 1
+        step = ivy.divide(ivy.subtract(stop, start), num)
+        return ret, step
+    return ret

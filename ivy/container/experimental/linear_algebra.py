@@ -779,3 +779,109 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+    @staticmethod
+    def static_cond(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        p: Optional[Union[int, float, None]] = None,
+        out: Optional[ivy.Container] = None,
+    ):
+        """
+        ivy.Container static method variant of ivy.cond.
+        This method simply wraps the function, and so the docstring for
+        ivy.cond also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+            self
+                container with input arrays.
+            p
+                order of the norm of the matrix (see ivy.norm).
+
+        Returns
+        -------
+            ret
+                container including array corresponding
+                to condition number of input array
+
+        Examples
+        --------
+        >>> x = ivy.array([[1,2], [3,4]])
+        >>> ivy.Container.static_cond(x)
+        ivy.array(14.933034)
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "cond",
+            self,
+            p=p,
+            out=out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def cond(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        p: Optional[Union[int, float, None]] = None,
+    ):
+        """
+        ivy.Container instance method variant of ivy.cond.
+        This method simply wraps the function, and so the docstring for
+        ivy.cond also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+            self
+                container with input arrays.
+            p
+                order of the norm of the matrix (see ivy.norm).
+
+        Returns
+        -------
+            ret
+                container including array corresponding
+                to condition number of input array
+
+        Examples
+        --------
+        >>> x = ivy.array([[1,2], [3,4]])
+        >>> c = ivy.Container(a=x)
+        >>> c.cond()
+        ivy.array(14.933034)
+
+        >>> x = ivy.array([[1,2], [3,4]])
+        >>> c = ivy.Container(a=x)
+        >>> c.cond(p=1)
+        ivy.array(21.0)
+
+        With :class:`ivy.Container` input:
+
+        >>> a = ivy.Container(x=ivy.arange(2 * 3).reshape((2, 3)),
+        ...                   y=ivy.arange(2 * 3).reshape((2, 3)))
+        >>> a.cond()
+        {
+            x: ivy.array(14.933034),
+            y: ivy.array(14.933034)
+        }
+        """
+        return self.static_cond(
+            self,
+            p=p,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )

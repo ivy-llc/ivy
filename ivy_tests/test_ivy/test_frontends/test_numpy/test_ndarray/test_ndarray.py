@@ -124,6 +124,7 @@ def test_numpy_ndarray_astype(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
     helpers.test_frontend_method(
@@ -142,6 +143,7 @@ def test_numpy_ndarray_astype(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -165,6 +167,7 @@ def test_numpy_ndarray_argmax(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, x, axis = dtype_x_axis
     helpers.test_frontend_method(
@@ -181,6 +184,7 @@ def test_numpy_ndarray_argmax(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -216,6 +220,7 @@ def test_numpy_ndarray_reshape(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, x, shape = dtypes_x_shape
     helpers.test_frontend_method(
@@ -232,6 +237,7 @@ def test_numpy_ndarray_reshape(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -252,6 +258,7 @@ def test_numpy_ndarray_transpose(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     array, input_dtypes, axes = array_and_axes
     helpers.test_frontend_method(
@@ -267,6 +274,7 @@ def test_numpy_ndarray_transpose(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -306,6 +314,7 @@ def test_numpy_ndarray_swapaxes(
     frontend_method_data,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtypes, x, axis1, axis2 = dtype_x_and_axes
     helpers.test_frontend_method(
@@ -322,6 +331,7 @@ def test_numpy_ndarray_swapaxes(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -350,6 +360,7 @@ def test_numpy_ndarray_any(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, x, axis = dtype_x_axis
     (
@@ -378,6 +389,7 @@ def test_numpy_ndarray_any(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -402,6 +414,7 @@ def test_numpy_ndarray_all(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
 
     input_dtypes, x, axis = dtype_x_axis
@@ -431,6 +444,7 @@ def test_numpy_ndarray_all(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -452,6 +466,7 @@ def test_numpy_instance_argsort(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, x, axis = dtype_x_axis
     helpers.test_frontend_method(
@@ -469,6 +484,7 @@ def test_numpy_instance_argsort(
             "kind": None,
             "order": None,
         },
+        on_device=on_device,
     )
 
 
@@ -490,6 +506,7 @@ def test_numpy_ndarray_mean(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, x, axis = dtype_x_axis
     helpers.test_frontend_method(
@@ -509,6 +526,7 @@ def test_numpy_ndarray_mean(
         method_flags=method_flags,
         rtol_=1e-2,
         atol_=1e-2,
+        on_device=on_device,
     )
 
 
@@ -532,6 +550,7 @@ def test_numpy_instance_min(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, x, axis = dtype_x_axis
 
@@ -549,6 +568,7 @@ def test_numpy_instance_min(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -571,6 +591,7 @@ def test_numpy_ndarray_argmin(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, x, axis = dtype_x_axis
     helpers.test_frontend_method(
@@ -587,6 +608,7 @@ def test_numpy_ndarray_argmin(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -602,6 +624,7 @@ def test_numpy_instance_clip(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, x, min, max = input_and_ranges
     helpers.test_frontend_method(
@@ -618,6 +641,7 @@ def test_numpy_instance_clip(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -641,6 +665,7 @@ def test_numpy_instance_max(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, x, axis = dtype_x_axis
 
@@ -658,6 +683,7 @@ def test_numpy_instance_max(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -681,6 +707,7 @@ def test_numpy_instance_cumprod(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, x, axis = dtype_x_axis
 
@@ -699,6 +726,7 @@ def test_numpy_instance_cumprod(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -714,6 +742,7 @@ def test_numpy_instance_cumsum(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, x, axis, dtype = dtype_x_axis_dtype
     helpers.test_frontend_method(
@@ -731,6 +760,7 @@ def test_numpy_instance_cumsum(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -753,6 +783,7 @@ def test_numpy_instance_diagonal(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, x, axis1, axis2 = dtype_x_axis
 
@@ -771,6 +802,7 @@ def test_numpy_instance_diagonal(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -792,6 +824,7 @@ def test_numpy_instance_sort(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, x, axis = dtype_x_axis
 
@@ -809,6 +842,7 @@ def test_numpy_instance_sort(
         init_flags=init_flags,
         method_flags=method_flags,
         test_values=False,
+        on_device=on_device,
     )
     frontend_ret = np.sort(x[0], axis=axis)
     assert_all_close(
@@ -835,6 +869,7 @@ def test_numpy_instance_copy(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, x = dtype_and_x
 
@@ -849,6 +884,7 @@ def test_numpy_instance_copy(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -866,6 +902,7 @@ def test_numpy_instance_nonzero(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, a = dtype_and_a
 
@@ -880,6 +917,7 @@ def test_numpy_instance_nonzero(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -897,6 +935,7 @@ def test_numpy_instance_ravel(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, a = dtype_and_a
 
@@ -911,6 +950,7 @@ def test_numpy_instance_ravel(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -934,6 +974,7 @@ def test_numpy_instance_repeat(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, x = dtype_and_x
 
@@ -951,6 +992,7 @@ def test_numpy_instance_repeat(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -973,6 +1015,7 @@ def test_numpy_instance_searchsorted(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, xs = dtype_x_v
 
@@ -991,6 +1034,7 @@ def test_numpy_instance_searchsorted(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1012,6 +1056,7 @@ def test_numpy_instance_squeeze(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, x, axis = dtype_x_axis
 
@@ -1028,6 +1073,7 @@ def test_numpy_instance_squeeze(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1052,6 +1098,7 @@ def test_numpy_instance_std(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, x, axis = dtype_x_axis
     (
@@ -1080,9 +1127,46 @@ def test_numpy_instance_std(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
+    
+# fill
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="fill",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
+)
+def test_numpy_ndarray_fill(
+    dtype_and_x,
+    num,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtypes, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=[],
+        method_all_as_kwargs_np={
+            "num": num,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
 
+    
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
@@ -1097,6 +1181,7 @@ def test_numpy_instance_add__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, xs = dtype_and_x
 
@@ -1113,6 +1198,7 @@ def test_numpy_instance_add__(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1130,6 +1216,7 @@ def test_numpy_instance_radd__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, xs = dtype_and_x
 
@@ -1146,6 +1233,7 @@ def test_numpy_instance_radd__(
         init_flags=init_flags,
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        on_device=on_device,
     )
 
 
@@ -1163,6 +1251,7 @@ def test_numpy_instance_sub__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, xs = dtype_and_x
 
@@ -1179,6 +1268,7 @@ def test_numpy_instance_sub__(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1197,6 +1287,7 @@ def test_numpy_instance_mul__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, xs = dtype_and_x
 
@@ -1213,6 +1304,7 @@ def test_numpy_instance_mul__(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1236,6 +1328,7 @@ def test_numpy_instance_floordiv__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, xs = dtype_and_x
     assume(not np.any(np.isclose(xs[1], 0)))
@@ -1253,6 +1346,7 @@ def test_numpy_instance_floordiv__(
         frontend_method_data=frontend_method_data,
         frontend=frontend,
         atol_=1,
+        on_device=on_device,
     )
 
 
@@ -1271,6 +1365,7 @@ def test_numpy_instance_truediv__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, xs = dtype_and_x
     assume(not np.any(np.isclose(xs[0], 0)))
@@ -1288,6 +1383,7 @@ def test_numpy_instance_truediv__(
         method_flags=method_flags,
         frontend_method_data=frontend_method_data,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -1306,6 +1402,7 @@ def test_numpy_instance_rtruediv__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, xs = dtype_and_x
     assume(not np.any(np.isclose(xs[0], 0)))
@@ -1323,6 +1420,7 @@ def test_numpy_instance_rtruediv__(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -1342,6 +1440,7 @@ def test_numpy_instance_pow__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, xs = dtype_and_x
 
@@ -1358,6 +1457,7 @@ def test_numpy_instance_pow__(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1376,6 +1476,7 @@ def test_numpy_instance_and__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, xs = dtype_and_x
 
@@ -1392,6 +1493,7 @@ def test_numpy_instance_and__(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1410,6 +1512,7 @@ def test_numpy_instance_or__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, xs = dtype_and_x
 
@@ -1426,6 +1529,7 @@ def test_numpy_instance_or__(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1444,6 +1548,7 @@ def test_numpy_instance_xor__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, xs = dtype_and_x
 
@@ -1460,6 +1565,7 @@ def test_numpy_instance_xor__(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1477,6 +1583,7 @@ def test_numpy_instance_matmul__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     dtype1, x1 = x
     dtype2, x2 = y
@@ -1495,6 +1602,7 @@ def test_numpy_instance_matmul__(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1513,6 +1621,7 @@ def test_numpy_instance_copy__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, x = dtype_and_x
 
@@ -1527,6 +1636,7 @@ def test_numpy_instance_copy__(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1545,6 +1655,7 @@ def test_numpy_instance_neg__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, x = dtype_and_x
 
@@ -1559,6 +1670,7 @@ def test_numpy_instance_neg__(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1577,6 +1689,7 @@ def test_numpy_instance_pos__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, x = dtype_and_x
 
@@ -1591,6 +1704,7 @@ def test_numpy_instance_pos__(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1613,6 +1727,7 @@ def test_numpy_instance_ifloordiv__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, xs = dtype_and_x
     assume(not np.any(np.isclose(xs[1], 0)))
@@ -1630,6 +1745,7 @@ def test_numpy_instance_ifloordiv__(
         frontend_method_data=frontend_method_data,
         frontend=frontend,
         atol_=1,
+        on_device=on_device,
     )
 
 
@@ -1648,6 +1764,7 @@ def test_numpy_instance_bool__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, x = dtype_and_x
 
@@ -1662,6 +1779,7 @@ def test_numpy_instance_bool__(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1680,6 +1798,7 @@ def test_numpy_instance_ne__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, xs = dtype_and_x
 
@@ -1696,6 +1815,7 @@ def test_numpy_instance_ne__(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1714,6 +1834,7 @@ def test_numpy_instance_eq__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, xs = dtype_and_x
 
@@ -1730,6 +1851,7 @@ def test_numpy_instance_eq__(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1748,6 +1870,7 @@ def test_numpy_instance_ge__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, xs = dtype_and_x
 
@@ -1764,6 +1887,7 @@ def test_numpy_instance_ge__(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1782,6 +1906,7 @@ def test_numpy_instance_gt__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, xs = dtype_and_x
 
@@ -1798,6 +1923,7 @@ def test_numpy_instance_gt__(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1816,6 +1942,7 @@ def test_numpy_instance_le__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, xs = dtype_and_x
 
@@ -1832,6 +1959,7 @@ def test_numpy_instance_le__(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1850,6 +1978,7 @@ def test_numpy_instance_lt__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, xs = dtype_and_x
 
@@ -1866,6 +1995,7 @@ def test_numpy_instance_lt__(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1885,6 +2015,7 @@ def test_numpy_instance_int__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, xs = dtype_and_x
 
@@ -1899,6 +2030,7 @@ def test_numpy_instance_int__(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1918,6 +2050,7 @@ def test_numpy_instance_float__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, xs = dtype_and_x
 
@@ -1932,6 +2065,7 @@ def test_numpy_instance_float__(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1949,6 +2083,7 @@ def test_numpy_instance_contains__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, xs = dtype_and_x
 
@@ -1965,6 +2100,7 @@ def test_numpy_instance_contains__(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -1982,6 +2118,7 @@ def test_numpy_instance_iadd__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, xs = dtype_and_x
 
@@ -1998,6 +2135,7 @@ def test_numpy_instance_iadd__(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -2015,6 +2153,7 @@ def test_numpy_instance_isub__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, xs = dtype_and_x
 
@@ -2031,6 +2170,7 @@ def test_numpy_instance_isub__(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -2048,6 +2188,7 @@ def test_numpy_instance_imul__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, xs = dtype_and_x
 
@@ -2064,15 +2205,17 @@ def test_numpy_instance_imul__(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
+# __itruediv__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
     method_name="__itruediv__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -2083,6 +2226,7 @@ def test_numpy_instance_itruediv__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, xs = dtype_and_x
 
@@ -2099,6 +2243,7 @@ def test_numpy_instance_itruediv__(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -2118,6 +2263,7 @@ def test_numpy_instance_ipow__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, xs = dtype_and_x
 
@@ -2134,6 +2280,7 @@ def test_numpy_instance_ipow__(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -2152,6 +2299,7 @@ def test_numpy_instance_iand__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, xs = dtype_and_x
 
@@ -2168,6 +2316,7 @@ def test_numpy_instance_iand__(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -2186,6 +2335,7 @@ def test_numpy_instance_ior__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, xs = dtype_and_x
 
@@ -2202,6 +2352,7 @@ def test_numpy_instance_ior__(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -2220,6 +2371,7 @@ def test_numpy_instance_ixor__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, xs = dtype_and_x
 
@@ -2236,6 +2388,7 @@ def test_numpy_instance_ixor__(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -2256,6 +2409,7 @@ def test_numpy_instance_imod__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, xs = dtype_and_x
     helpers.test_frontend_method(
@@ -2271,6 +2425,7 @@ def test_numpy_instance_imod__(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -2289,6 +2444,7 @@ def test_numpy_instance_abs__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, x = dtype_and_x
 
@@ -2303,6 +2459,7 @@ def test_numpy_instance_abs__(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
@@ -2323,6 +2480,7 @@ def test_numpy_instance_len__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, x = dtype_and_x
     helpers.test_frontend_method(
@@ -2336,6 +2494,7 @@ def test_numpy_instance_len__(
         method_flags=method_flags,
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        on_device=on_device,
     )
 
 
@@ -2354,6 +2513,7 @@ def test_numpy_instance_array__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, x = dtype_and_x
     helpers.test_frontend_method(
@@ -2369,6 +2529,7 @@ def test_numpy_instance_array__(
         method_flags=method_flags,
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        on_device=on_device,
     )
 
 
@@ -2386,6 +2547,7 @@ def test_numpy_instance_tobytes__(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, x = dtype_and_x
     helpers.test_frontend_method(
@@ -2399,6 +2561,7 @@ def test_numpy_instance_tobytes__(
         method_flags=method_flags,
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        on_device=on_device,
     )
 
 
@@ -2415,6 +2578,7 @@ def test_torch_instance_getitem(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     data = x[0]
@@ -2428,6 +2592,7 @@ def test_torch_instance_getitem(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -2446,6 +2611,7 @@ def test_numpy_instance_view(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtypes, x = dtype_and_x
     helpers.test_frontend_method(
@@ -2459,4 +2625,43 @@ def test_numpy_instance_view(
         method_flags=method_flags,
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        on_device=on_device,
+    )
+    
+
+# mod
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__mod__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_value=0,
+        exclude_min=True,
+    ),
+)
+def test_numpy_instance_mod__(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtypes, xs = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        method_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": xs[0],
+        },
+        method_all_as_kwargs_np={
+            "value": xs[1],
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
     )

@@ -22,8 +22,29 @@ def add(x1, x2):
 
 
 @to_ivy_arrays_and_back
+def angle(z, deg=False):
+    return ivy.angle(z, deg=deg)
+
+
+@to_ivy_arrays_and_back
 def diff(a, n=1, axis=-1, prepend=None, append=None):
     return ivy.diff(a, n=n, axis=axis, prepend=prepend, append=append, out=None)
+
+
+@to_ivy_arrays_and_back
+def ediff1d(ary, to_end=None, to_begin=None):
+    diffs = ivy.diff(ary)
+    if to_begin is not None:
+        if not isinstance(to_begin, (list, tuple)):
+            to_begin = [to_begin]
+        to_begin = ivy.array(to_begin)
+        diffs = ivy.concat((to_begin, diffs))
+    if to_end is not None:
+        if not isinstance(to_end, (list, tuple)):
+            to_end = [to_end]
+        to_end = ivy.array(to_end)
+        diffs = ivy.concat((diffs, to_end))
+    return diffs
 
 
 @to_ivy_arrays_and_back
@@ -163,7 +184,7 @@ def ceil(x):
 @to_ivy_arrays_and_back
 def float_power(x1, x2):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
-    return ivy.float_power(x1, x2)
+    return ivy.float_power(x1, x2).astype(x1.dtype, copy=False)
 
 
 @to_ivy_arrays_and_back
@@ -469,6 +490,35 @@ def inner(a, b):
     return ivy.inner(a, b)
 
 
-@to_ivy_arrays_and_back
 def outer(a, b, out=None):
     return ivy.outer(a, b, out=out)
+
+
+@to_ivy_arrays_and_back
+def reciprocal(x, /):
+    return ivy.reciprocal(x)
+
+
+@to_ivy_arrays_and_back
+def conj(x, /):
+    return ivy.conj(x)
+
+
+@to_ivy_arrays_and_back
+def subtract(x1, x2):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
+    return ivy.subtract(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def around(a, decimals=0, out=None):
+    factor = ivy.pow(10, decimals)
+    a = ivy.multiply(a, factor)
+    a = ivy.round(a)
+    a = ivy.divide(a, factor)
+    return a
+
+
+@to_ivy_arrays_and_back
+def frexp(x, /):
+    return ivy.frexp(x)
