@@ -96,6 +96,26 @@ def _build_view(original, view, fn, args, kwargs, index=None):
     return view
 
 
+def _check_in_nested_sequence(sequence, value=None, _type=None):
+    """
+    Helper to recursively check if a N-level nested `sequence` contains either a
+    `value` or contains a value of type `_type` and return a boolean flag
+    """
+    if sequence is value or (isinstance(sequence, _type)):
+        # Base case - N = 0
+        return True
+    elif isinstance(sequence, (tuple, list)):
+        if (value in sequence) or any(isinstance(_val, _type) for _val in sequence):
+            # N = 1
+            return True
+        else:
+            return any(
+                _check_in_nested_sequence(sub_sequence, value, _type)
+                for sub_sequence in sequence
+                if isinstance(sub_sequence, (tuple, list))
+            )
+
+
 # Array Handling #
 # ---------------#
 
@@ -187,6 +207,11 @@ def handle_array_like_without_promotion(fn: Callable) -> Callable:
             ):
 
                 if i < num_args:
+                    # Fix for ellipsis, slices for numpy's __getitem__
+                    # No need to try and convert them into arrays
+                    # since asarray throws unpredictable bugs
+                    if _check_in_nested_sequence(arg, value=Ellipsis, _type=slice):
+                        continue
                     if ivy.is_native_array(arg) or isinstance(
                         arg, (list, tuple, numbers.Number)
                     ):

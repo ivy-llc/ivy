@@ -360,3 +360,4 @@ def test_numpy_logseries(
         p=p,
         size=size,
     )
+
