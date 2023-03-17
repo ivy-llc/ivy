@@ -3,6 +3,7 @@ import sys
 import subprocess
 import pprint
 import inspect
+import json
 from colorama import Fore, Style, init
 from importlib import import_module
 from importlib.util import find_spec
@@ -62,7 +63,7 @@ def _update_native_config_value(key):
                 print(Fore.RED + f"{obj} is not a class.")
                 return False
             print(Fore.GREEN + f"Found class: {obj}")
-            config_natives[key] = obj
+            config_natives[key] = ret
             return True
         except KeyError:
             print(Fore.RED + f"Couldn't find {backend['name']}.{ret}")
@@ -229,5 +230,11 @@ if __name__ == "__main__":
     for key, value in config_flags.items():
         flag_color = Fore.GREEN if value else Fore.RED
         print(f"\n:: {key}: {flag_color}{value}")
+
+    json_config = {**backend, **config_flags, **config_natives}
+    for k, v in config_valids.items():
+        json_config[k] = list(v)
+    with open("config.json", "w") as file:
+        json.dump(json_config, file, indent=4)
 
     print(Style.BRIGHT + "\n:: Procced with generation? [Y/n]\n")
