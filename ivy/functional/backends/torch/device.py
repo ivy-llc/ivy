@@ -66,8 +66,9 @@ def as_native_dev(
     return torch.device(ivy.Device(device).replace("gpu", "cuda"))
 
 
-def clear_mem_on_dev(device: torch.device, /):
-    if "gpu" in device:
+def clear_cached_mem_on_dev(device: Union[ivy.Device, torch.device], /) -> None:
+    torch_dev = as_native_dev(device)
+    if torch_dev.type == "cuda":
         torch.cuda.empty_cache()
 
 
