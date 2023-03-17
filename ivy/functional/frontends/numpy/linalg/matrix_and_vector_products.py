@@ -50,3 +50,9 @@ def tensordot(a, b, axes=2):
 @to_ivy_arrays_and_back
 def tensorsolve(a, b, axes=2):
     return ivy.tensorsolve(a, b, axes=axes)
+
+
+@to_ivy_arrays_and_back
+def kron(a, b):
+    a, b = promote_types_of_numpy_inputs(a, b)
+    return ivy.kron(a, b)
