@@ -47,6 +47,7 @@ def test_jax_numpy_absolute(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
+        shared_dtype=True,
     ),
     test_with_out=st.just(False),
 )
@@ -247,12 +248,6 @@ def test_jax_numpy_arctan2(
     )
 
 
-@st.composite
-def _get_pooling_mode(draw):
-    mode = draw(st.sampled_from(["full", "valid", "same"]))
-    return mode
-
-
 # convolve
 @handle_frontend_test(
     fn_tree="jax.numpy.convolve",
@@ -263,8 +258,9 @@ def _get_pooling_mode(draw):
         max_num_dims=1,
         min_value=-1e04,
         max_value=1e04,
+        shared_dtype=True,
     ),
-    mode=_get_pooling_mode(),
+    mode=st.sampled_from(["valid", "same", "full"]),
 )
 def test_jax_numpy_convolve(
     *,
@@ -2473,6 +2469,7 @@ def test_jax_numpy_conj(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
+        shared_dtype=True,
     ),
     test_with_out=st.just(False),
 )
@@ -2518,5 +2515,33 @@ def test_jax_numpy_around(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        a=x[0]
+        a=x[0],
+    )
+
+
+# frexp
+@handle_frontend_test(
+    fn_tree="jax.numpy.frexp",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=1,
+        max_value=100,
+    ),
+)
+def test_jax_numpy_frexp(
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
     )

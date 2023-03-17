@@ -1046,8 +1046,8 @@ def _strided_slice_helper(draw):
         )  # maximum one ellipse
     )
     begin, end, strides = [], [], []
-    n_omit = np.random.randint(0, ndims)
-    sub_shape = shape[:-n_omit]
+    n_omit = draw(st.integers(min_value=0, max_value=ndims - 1))
+    sub_shape = shape[: len(shape) - n_omit]
     for i in sub_shape:
         begin += [draw(st.integers(min_value=0, max_value=i - 1))]
         end += [
@@ -1058,9 +1058,9 @@ def _strided_slice_helper(draw):
             )
         ]
         if begin[-1] < end[-1]:
-            strides += [draw(st.integers(min_value=1))]
+            strides += [draw(st.integers(min_value=1, max_value=i))]
         else:
-            strides += [draw(st.integers(max_value=-1))]
+            strides += [draw(st.integers(max_value=-1, min_value=-i))]
     return dtype, x, np.array(begin), np.array(end), np.array(strides), masks
 
 
@@ -1097,9 +1097,12 @@ def test_tensorflow_strided_slice(
             shrink_axis_mask=masks[4],
         )
     except Exception as e:
-        if hasattr(e, "message"):
-            if "only stride 1 allowed on non-range indexing" in e.message:
-                assume(False)
+        if (
+            hasattr(e, "message")
+            and "only stride 1 allowed on non-range indexing" in e.message
+        ):
+            assume(False)
+        raise e
 
 
 # slice
@@ -1129,9 +1132,12 @@ def test_tensorflow_slice(
             size=end - begin,
         )
     except Exception as e:
-        if hasattr(e, "message"):
-            if "only stride 1 allowed on non-range indexing" in e.message:
-                assume(False)
+        if (
+            hasattr(e, "message")
+            and "only stride 1 allowed on non-range indexing" in e.message
+        ):
+            assume(False)
+        raise e
 
 
 @st.composite
@@ -1545,7 +1551,7 @@ def test_tensorflow_split(
         valid_axis=True,
         force_int_axis=True,
     ),
-    repeats=helpers.ints(min_value=1, max_value=5)
+    repeats=helpers.ints(min_value=1, max_value=5),
 )
 def test_tensorflow_repeat(
     *,
@@ -1566,7 +1572,7 @@ def test_tensorflow_repeat(
         on_device=on_device,
         input=x[0],
         repeats=repeats,
-        axis=axis
+        axis=axis,
     )
 
 

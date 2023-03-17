@@ -227,7 +227,7 @@ def divide(
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     ret = tf.experimental.numpy.divide(x1, x2)
-    if ivy.is_float_dtype(x1.dtype):
+    if ivy.is_float_dtype(x1.dtype) or ivy.is_complex_dtype(x1.dtype):
         ret = tf.cast(ret, dtype=x1.dtype)
     else:
         ret = tf.cast(ret, dtype=ivy.default_float_dtype(as_native=True))

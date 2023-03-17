@@ -195,5 +195,6 @@ def lu_factor(A, *, pivot=True, out=None):
     return ivy.lu_factor(A, pivot=pivot, out=out)
 
 
+@to_ivy_arrays_and_back
 def matmul(input, other, *, out=None):
     return ivy.matmul(input, other, out=out)

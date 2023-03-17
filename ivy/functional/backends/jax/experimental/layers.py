@@ -481,7 +481,7 @@ def ifft(
 
 
 @handle_mixed_function(
-    lambda x, *args, mode="linear", scale_factor=None, align_corners=None, **kwargs: (
+    lambda *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # noqa: E501
         not align_corners
         and mode
         not in [
@@ -491,6 +491,7 @@ def ifft(
             "mitchellcubic",
             "gaussian",
         ]
+        and recompute_scale_factor
     )
 )
 def interpolate(
@@ -513,6 +514,7 @@ def interpolate(
         "gaussian",
     ] = "linear",
     scale_factor: Optional[Union[Sequence[int], int]] = None,
+    recompute_scale_factor: Optional[bool] = None,
     align_corners: Optional[bool] = None,
     antialias: bool = False,
     out: Optional[JaxArray] = None,
