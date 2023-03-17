@@ -1284,4 +1284,3 @@ def test_jax_numpy_row_stack(
         on_device=on_device,
         tup=xs,
     )
-

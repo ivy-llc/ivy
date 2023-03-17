@@ -700,6 +700,7 @@ def test_adaptive_avg_pool1d(
     test_flags,
     backend_fw,
     fn_name,
+    on_device,
     ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
@@ -709,6 +710,7 @@ def test_adaptive_avg_pool1d(
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
+        on_device=on_device,
         input=x[0],
         output_size=output_size,
     )

@@ -228,4 +228,3 @@ def row_stack(tup):
             xs += [ivy.reshape(t, (1, ivy.shape(t)[0]))]
         return ivy.concat(xs, axis=0)
     return ivy.concat(tup, axis=0)
-
