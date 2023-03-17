@@ -507,3 +507,47 @@ def multi_dot(
                [ 80, 148]])
     """
     return current_backend(x).multi_dot(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+def cond(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    p: Optional[Union[int, float, str]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Computes the condition number of x.
+
+    Parameters
+    ----------
+    x
+        An array with more than one dimension.
+    p
+        The order of the norm of the matrix (see :func:`ivy.norm` for details).
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        the condition number of the input.
+
+    Examples
+    --------
+        >>> x = ivy.array([[1., 2.],
+                           [3., 4.]])
+        >>> ivy.cond(x)
+        ivy.array(14.933034)
+
+        >>> x = ivy.array([[1., 2.],
+                            [3., 4.]])
+        >>> ivy.cond(x, p=ivy.inf)
+        ivy.array(21.0)
+    """
+    return current_backend(x).cond(x, p=p, out=out)

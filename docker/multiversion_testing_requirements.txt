@@ -20,3 +20,4 @@ termcolor
 colorama
 packaging
 nvidia-ml-py<=11.495.46 # mod_name=pynvml
+paddle-bfloat

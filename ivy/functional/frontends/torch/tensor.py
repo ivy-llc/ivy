@@ -10,7 +10,6 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.func_wrapper import with_supported_dtypes
 
 
-
 class Tensor:
     def __init__(self, array, device=None, _init_overload=False):
 
@@ -259,6 +258,10 @@ class Tensor:
     def log_(self):
         self._ivy_array = self.log().ivy_array
         return self
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def log2(self):
+        return torch_frontend.log2(self._ivy_array)
 
     def amax(self, dim=None, keepdim=False):
         return torch_frontend.amax(self._ivy_array, dim=dim, keepdim=keepdim)
@@ -858,5 +861,3 @@ class Tensor:
     # Method aliases
     absolute, absolute_ = abs, abs_
     ndimension = dim
-
-

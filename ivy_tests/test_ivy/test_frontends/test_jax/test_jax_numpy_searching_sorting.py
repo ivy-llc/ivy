@@ -374,4 +374,4 @@ def test_jax_numpy_sort_complex(
         axis=axis,
         keepdims=keep_dims,
         test_values=False,
-)
+    )

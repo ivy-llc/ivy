@@ -11,7 +11,7 @@ from ivy_tests.test_ivy.helpers.testing_helpers import handle_frontend_test
 @handle_frontend_test(
     fn_tree="torch.allclose",
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
     ),

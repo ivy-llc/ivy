@@ -23,7 +23,7 @@ def not_too_close_to_zero(x):
 @handle_test(
     fn_tree="functional.ivy.abs",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=helpers.get_dtypes("valid")
     ),
 )
 def test_abs(
