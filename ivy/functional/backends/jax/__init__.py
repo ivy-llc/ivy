@@ -123,6 +123,8 @@ valid_numeric_dtypes_dict = {
         ivy.float16,
         ivy.float32,
         ivy.float64,
+        ivy.complex64,
+        ivy.complex128,
     )
 }
 
