@@ -318,7 +318,6 @@ def test_numpy_nanvar(
 @handle_frontend_test(
     fn_tree="numpy.nanpercentile",
     dtype_values_axis=statistical_dtype_values(function="nanpercentile"),
-    # dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     keep_dims=st.booleans(),
 )

@@ -340,35 +340,33 @@ def nanpercentile(
     if not _quantile_is_valid(q):
         raise ValueError("percentile s must be in the range [0, 100]")
     if axis is None:
-        qqq = []
-        eee = []
-        for wi in a:
+        resultarray = []
+        nanlessarray = []
+        for x in a:
 
-            # eeen=0
-            for i in wi:
+            for i in x:
                 if not ivy.isnan(i):
-                    eee.append(i)
-                    # eeen=eeen+1
+                    nanlessarray.append(i)
+
         for i in q:
-            qqq.append(cpercentile(eee, i))
-        return qqq
+            resultarray.append(cpercentile(nanlessarray, i))
+        return resultarray
     elif axis == 1:
-        qqq = []
-        na = []
+        resultarray = []
+        nanlessarrayofarrays = []
         for i in a:
-            rrr = []
+            nanlessarray = []
             for t in i:
                 if not ivy.isnan(t):
-                    rrr.append(t)
-            na.append(rrr)
+                    nanlessarray.append(t)
+            nanlessarrayofarrays.append(nanlessarray)
         for i in q:
-            eee = []
-            for ii in na:
-                eee.append(cpercentile(ii, i))
-            qqq.append(eee)
-        return qqq
+            arrayofpercentiles = []
+            for ii in nanlessarrayofarrays:
+                arrayofpercentiles.append(cpercentile(ii, i))
+            resultarray.append(arrayofpercentiles)
+        return resultarray
     elif axis == 0:
-        # if a.ndim > 0:
         try:
             a = ivy.swapaxes(a, 0, 1)
         except ivy.utils.exceptions.IvyError:
@@ -376,17 +374,17 @@ def nanpercentile(
 
         finally:
 
-            qqq = []
-            na = []
+            resultarray = []
+            nanlessarrayofarrays = []
             for i in a:
-                rrr = []
+                nanlessarray = []
                 for t in i:
                     if not ivy.isnan(t):
-                        rrr.append(t)
-                na.append(rrr)
+                        nanlessarray.append(t)
+                nanlessarrayofarrays.append(nanlessarray)
             for i in q:
-                eee = []
-                for ii in na:
-                    eee.append(cpercentile(ii, i))
-                qqq.append(eee)
-            return qqq
+                arrayofpercentiles = []
+                for ii in nanlessarrayofarrays:
+                    arrayofpercentiles.append(cpercentile(ii, i))
+                resultarray.append(arrayofpercentiles)
+            return resultarray
