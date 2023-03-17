@@ -1,5 +1,4 @@
 # global
-import numpy as np
 from hypothesis import strategies as st, assume
 
 # local
@@ -13,33 +12,75 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
 
 
 # norm
+@st.composite
+def _norm_helper(draw):
+    def _matrix_norm_example():
+        x_dtype, x = draw(
+            helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("float"),
+                shape=helpers.get_shape(min_num_dims=2, max_num_dims=2),
+                min_num_dims=2,
+                max_num_dims=2,
+                min_dim_size=1,
+                max_dim_size=10,
+                min_value=-1e4,
+                max_value=1e4,
+                large_abs_safety_factor=10,
+                small_abs_safety_factor=10,
+                safety_factor_scale="log",
+            ),
+        )
+        ord = draw(st.sampled_from(["fro", "nuc"]))
+        axis = (-2, -1)
+        check_stable = True
+        return x_dtype, x, axis, ord, check_stable
+
+    def _vector_norm_example():
+        x_dtype, x, axis = draw(
+            helpers.dtype_values_axis(
+                available_dtypes=helpers.get_dtypes("float"),
+                min_num_dims=2,
+                max_num_dims=5,
+                min_dim_size=2,
+                max_dim_size=10,
+                valid_axis=True,
+                force_int_axis=True,
+                min_value=-1e04,
+                max_value=1e04,
+                large_abs_safety_factor=10,
+                small_abs_safety_factor=10,
+                safety_factor_scale="log",
+            )
+        )
+        ints = draw(helpers.ints(min_value=1, max_value=2))
+        floats = draw(helpers.floats(min_value=1, max_value=2))
+        ord = draw(st.sampled_from([ints, floats, float("inf"), float("-inf")]))
+        check_stable = False
+        return x_dtype, x, axis, ord, check_stable
+
+    is_vec_norm = draw(st.booleans())
+    if is_vec_norm:
+        return _vector_norm_example()
+    return _matrix_norm_example()
+
+
 @handle_frontend_test(
     fn_tree="numpy.linalg.norm",
-    dtype_values_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=2,
-        max_num_dims=3,
-        min_dim_size=2,
-        max_dim_size=5,
-        min_axis=-2,
-        max_axis=1,
-    ),
+    norm_values=_norm_helper(),
     keepdims=st.booleans(),
-    ord=st.sampled_from([None, "fro", "nuc", "inf", "-inf", 0, 1, -1, 2, -2]),
     test_with_out=st.just(False),
 )
 def test_numpy_norm(
-    dtype_values_axis,
+    norm_values,
     keepdims,
-    ord,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    dtype, x, axis = dtype_values_axis
-    if len(np.shape(x)) == 1:
-        axis = None
+    dtype, x, axis, ord, check_stable = norm_values
+    if check_stable:
+        assume(matrix_is_stable(x[0], cond_limit=10))
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
