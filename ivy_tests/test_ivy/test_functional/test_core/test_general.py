@@ -1346,17 +1346,16 @@ def test_inplace_update(x_val_and_dtypes, test_flags, on_device):
         shared_dtype=True,
         safety_factor_scale="log",
     ),
-    tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
-def test_inplace_decrement(x_val_and_dtypes, tensor_fn, on_device):
+def test_inplace_decrement(x_val_and_dtypes, test_flags, on_device):
     dtype = x_val_and_dtypes[0][0]
     x, val = x_val_and_dtypes[1]
     x, val = x.tolist(), val.tolist()
-    x = tensor_fn(x, dtype=dtype, device=on_device)
-    val = tensor_fn(val, dtype=dtype, device=on_device)
+    x = ivy.array(x, dtype=dtype, device=on_device)
+    val = ivy.array(val, dtype=dtype, device=on_device)
     new_val = x - val
-    if (tensor_fn is not helpers.var_fn and ivy.inplace_arrays_supported()) or (
-        tensor_fn is helpers.var_fn and ivy.inplace_variables_supported()
+    if (not test_flags.as_variable and ivy.inplace_arrays_supported()) or (
+        test_flags.as_variable and ivy.inplace_variables_supported()
     ):
         x_inplace = ivy.inplace_decrement(x, val)
         assert id(x_inplace) == id(x)
@@ -1377,19 +1376,18 @@ def test_inplace_decrement(x_val_and_dtypes, tensor_fn, on_device):
         num_arrays=2,
         shared_dtype=True,
     ),
-    tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
-def test_inplace_increment(x_val_and_dtypes, tensor_fn, on_device):
+def test_inplace_increment(x_val_and_dtypes, test_flags, on_device):
     dtype = x_val_and_dtypes[0][0]
     if dtype in ivy.function_unsupported_dtypes(ivy.inplace_increment):
         return
     x, val = x_val_and_dtypes[1]
     x, val = x.tolist(), val.tolist()
-    x = tensor_fn(x, dtype=dtype, device=on_device)
-    val = tensor_fn(val, dtype=dtype, device=on_device)
+    x = ivy.array(x, dtype=dtype, device=on_device)
+    val = ivy.array(val, dtype=dtype, device=on_device)
     new_val = x + val
-    if (tensor_fn is not helpers.var_fn and ivy.inplace_arrays_supported()) or (
-        tensor_fn is helpers.var_fn and ivy.inplace_variables_supported()
+    if (not test_flags.as_variable and ivy.inplace_arrays_supported()) or (
+        test_flags.as_variable and ivy.inplace_variables_supported()
     ):
         x_inplace = ivy.inplace_increment(x, val)
         assert id(x_inplace) == id(x)
