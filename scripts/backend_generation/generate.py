@@ -7,6 +7,7 @@ import json
 from colorama import Fore, Style, init
 from importlib import import_module
 from importlib.util import find_spec
+from tree_generation import generate as generate_backend
 
 
 _imported_backend = None
@@ -177,6 +178,16 @@ def _update_valid_config_value(key):
     return True
 
 
+def _call_generate_tree(config_name: str):
+    ret = input(Style.BRIGHT + "\n:: Procced with generation? [Y/n]\n").strip().lower()
+    if ret == "y":
+        generate_backend(config_name)
+        return True
+    elif ret == "n":
+        return True
+    return False
+
+
 if __name__ == "__main__":
     init(autoreset=True)
 
@@ -234,7 +245,11 @@ if __name__ == "__main__":
     json_config = {**backend, **config_flags, **config_natives}
     for k, v in config_valids.items():
         json_config[k] = list(v)
+
+    file_path = None
     with open("config.json", "w") as file:
         json.dump(json_config, file, indent=4)
+        file_path = file.name
 
-    print(Style.BRIGHT + "\n:: Procced with generation? [Y/n]\n")
+    print(f"Config saved to {file_path}.")
+    _get_user_input(_call_generate_tree, file_path)

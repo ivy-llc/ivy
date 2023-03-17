@@ -1,6 +1,6 @@
 import astunparse
 import ast
-
+import json
 import sys
 import subprocess
 import os
@@ -11,6 +11,7 @@ _target_backend = ""
 
 _backend_ref_name = "tf"
 _target_backend_name = "torch"
+_config = None
 
 # This should be imported in the module
 _not_imlpemented_exc_name = "NotImplementedError"
@@ -142,15 +143,19 @@ def _copy_tree(backend_reference_path: str, backend_generation_path: str):
                 generated_file.write(astunparse.unparse(tree_to_write))
 
 
-def generate(backend_reference: str, target_backend: str):
-    # Set backend variables
+def generate(config_file):
+    global _config
+
+    with open(config_file, "r") as file:
+        _config = json.load(file)
+
     global _target_backend, _reference_backend
-    _target_backend = target_backend
-    _reference_backend = backend_reference
+    _target_backend = _config["name"]
+    _reference_backend = "tensorflow"
 
     backends_root = "../../ivy/functional/backends/"
-    backend_reference_path = backends_root + backend_reference
-    backend_generation_path = backends_root + target_backend
+    backend_reference_path = backends_root + _reference_backend
+    backend_generation_path = backends_root + _target_backend
 
     # Copy and generate backend tree
     _copy_tree(backend_reference_path, backend_generation_path)
@@ -169,6 +174,6 @@ def generate(backend_reference: str, target_backend: str):
     )
 
 
-# TODO remove
 if __name__ == "__main__":
-    generate(sys.argv[1], sys.argv[2])
+    # Allow to call directly using config path
+    generate(sys.argv[1])
