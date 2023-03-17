@@ -280,6 +280,41 @@ def test_numpy_sort(
     )
 
 
+# count_nonzero
+@handle_frontend_test(
+    fn_tree="jax.numpy.count_nonzero",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_axis=-1,
+        max_axis=0,
+        min_num_dims=1,
+        force_int_axis=True,
+    ),
+    keep_dims=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_count_nonzero(
+    dtype_x_axis,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    keep_dims,
+):
+    input_dtype, x, axis = dtype_x_axis
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        axis=axis,
+        keepdims=keep_dims,
+    )
+
+
 # flatnonzero
 @handle_frontend_test(
     fn_tree="jax.numpy.flatnonzero",
@@ -325,6 +360,7 @@ def test_jax_numpy_sort_complex(
     test_flags,
     fn_tree,
     on_device,
+    keep_dims,
 ):
     input_dtype, x, axis = dtype_x_axis
 
@@ -335,5 +371,7 @@ def test_jax_numpy_sort_complex(
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
+        axis=axis,
+        keepdims=keep_dims,
         test_values=False,
     )
