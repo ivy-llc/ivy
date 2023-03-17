@@ -13,5 +13,5 @@ Searching
    :maxdepth: -1
    :caption: Searching
 
-   searching/_ContainerWithSearching.rst
+   searching/ContainerWithSearching.rst
 
