@@ -103,6 +103,7 @@ def expand_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    copy: Optional[bool] = None,
     axis: Union[int, Sequence[int]],
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -216,7 +217,7 @@ def expand_dims(
                       [5.]])
     }
     """
-    return current_backend(x).expand_dims(x, axis=axis, out=out)
+    return current_backend(x).expand_dims(x, copy=copy, axis=axis, out=out)
 
 
 @handle_view
@@ -230,6 +231,7 @@ def flip(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    copy: Optional[bool] = None,
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -302,7 +304,7 @@ def flip(
                 [ 9,  8,  7]]])
 
     """
-    return current_backend(x).flip(x, axis=axis, out=out)
+    return current_backend(x).flip(x, copy=copy, axis=axis, out=out)
 
 
 @handle_view
@@ -317,6 +319,7 @@ def permute_dims(
     /,
     axes: Tuple[int, ...],
     *,
+    copy: Optional[bool] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Permutes the axes (dimensions) of an array x.
@@ -393,7 +396,7 @@ def permute_dims(
     }
 
     """
-    return current_backend(x).permute_dims(x, axes, out=out)
+    return current_backend(x).permute_dims(x, axes, copy=copy, out=out)
 
 
 @handle_view
@@ -638,6 +641,7 @@ def squeeze(
     /,
     axis: Union[int, Sequence[int]],
     *,
+    copy: Optional[bool] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Removes singleton dimensions (axes) from x.
@@ -707,7 +711,7 @@ def squeeze(
         b: ivy.array([3., 4., 5.])
     }
     """
-    return current_backend(x).squeeze(x, axis, out=out)
+    return current_backend(x).squeeze(x, axis, copy=copy, out=out)
 
 
 @to_native_arrays_and_back
@@ -1088,6 +1092,7 @@ def split(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    copy: Optional[bool] = None,
     num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
     axis: int = 0,
     with_remainder: bool = False,
@@ -1147,6 +1152,7 @@ def split(
     """
     return current_backend(x).split(
         x,
+        copy=copy,
         num_or_size_splits=num_or_size_splits,
         axis=axis,
         with_remainder=with_remainder,
@@ -1166,6 +1172,7 @@ def swapaxes(
     axis1: int,
     /,
     *,
+    copy: Optional[bool] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Interchange two axes of an array.
@@ -1254,7 +1261,7 @@ def swapaxes(
     instances in place of any of the arguments.
 
     """
-    return current_backend(x).swapaxes(x, axis0, axis1, out=out)
+    return current_backend(x).swapaxes(x, axis0, axis1, copy=copy, out=out)
 
 
 @to_native_arrays_and_back
@@ -1343,7 +1350,12 @@ def tile(
 @handle_array_like_without_promotion
 @handle_array_function
 def unstack(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, axis: int = 0, keepdims: bool = False
+    x: Union[ivy.Array, ivy.NativeArray], 
+    /, 
+    *, 
+    copy: Optional[bool] = None,
+    axis: int = 0, 
+    keepdims: bool = False
 ) -> List[ivy.Array]:
     """Unpacks the given dimension of a rank-R array into rank-(R-1) arrays.
 
@@ -1417,7 +1429,7 @@ def unstack(
     instances in place of any of the arguments.
 
     """
-    return current_backend(x).unstack(x, axis=axis, keepdims=keepdims)
+    return current_backend(x).unstack(x, copy=copy, axis=axis, keepdims=keepdims)
 
 
 @to_native_arrays_and_back
