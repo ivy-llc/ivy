@@ -218,13 +218,3 @@ def hsplit(ary, indices_or_sections):
 @to_ivy_arrays_and_back
 def roll(a, shift, axis=None):
     return ivy.roll(a, shift, axis=axis)
-
-
-@to_ivy_arrays_and_back
-def row_stack(tup):
-    if len(ivy.shape(tup[0])) == 1:
-        xs = []
-        for t in tup:
-            xs += [ivy.reshape(t, (1, ivy.shape(t)[0]))]
-        return ivy.concat(xs, axis=0)
-    return ivy.concat(tup, axis=0)
