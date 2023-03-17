@@ -586,3 +586,37 @@ def test_numpy_nanmin(
         initial=initial,
         where=where,
     )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.median",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-2**10,
+        max_value=2**10,
+        valid_axis=True,
+    ),
+    keemdims=st.booleans(),
+)
+def test_jax_numpy_median(
+        *,
+        dtype_x_axis,
+        keemdims,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        axis=axis,
+        out=None,
+        overwrite_input=False,
+        keepdims=keemdims,
+    )
