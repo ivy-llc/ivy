@@ -6,6 +6,34 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
+# angle
+@handle_frontend_test(
+    fn_tree="numpy.angle",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("complex")
+    ),
+    deg=st.booleans(),
+)
+def test_numpy_angle(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    deg,
+):
+    input_dtypes, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        z=x[0],
+        deg=deg,
+    )
+
+
 # imag
 @handle_frontend_test(
     fn_tree="numpy.imag",
