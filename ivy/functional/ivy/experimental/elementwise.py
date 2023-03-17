@@ -676,8 +676,8 @@ def angle(
     -------
     ret
         Returns an array of angles for each complex number in the input.
-        If def is False(default), angle is calculated in radian and if
-        def is True, then angle is calculated in degrees.
+        If deg is False(default), angle is calculated in radian and if
+        deg is True, then angle is calculated in degrees.
 
     Examples
     --------
