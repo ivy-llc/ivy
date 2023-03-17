@@ -720,6 +720,12 @@ from ivy.utils.inspection import fn_array_spec, add_array_specs
 
 add_array_specs()
 
+try:
+    from .compiler.compiler import transpile, compile, unify
+except:  # noqa: E722
+    compile, transpile, unify = None, None, None
+
+
 # add instance methods to Ivy Array and Container
 from ivy.functional.ivy import (
     activations,

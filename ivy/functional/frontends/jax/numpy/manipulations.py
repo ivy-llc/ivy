@@ -153,8 +153,9 @@ def atleast_2d(*arys):
 @to_ivy_arrays_and_back
 def block(arr, block_size):
     if isinstance(arr, ivy.Array):
-        arr_blocks = ivy.reshape(arr,
-                                 ivy.concat([ivy.shape(arr)[:-1], [-1, block_size]], 0))
+        arr_blocks = ivy.reshape(
+            arr, ivy.concat([ivy.shape(arr)[:-1], [-1, block_size]], 0)
+        )
         return arr_blocks
 
 
@@ -217,3 +218,13 @@ def hsplit(ary, indices_or_sections):
 @to_ivy_arrays_and_back
 def roll(a, shift, axis=None):
     return ivy.roll(a, shift, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def row_stack(tup):
+    if len(ivy.shape(tup[0])) == 1:
+        xs = []
+        for t in tup:
+            xs += [ivy.reshape(t, (1, ivy.shape(t)[0]))]
+        return ivy.concat(xs, axis=0)
+    return ivy.concat(tup, axis=0)

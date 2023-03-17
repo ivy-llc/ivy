@@ -51,16 +51,19 @@ def prod(
     dtype=None,
     out=None,
     keepdims=False,
-    initial=ivy.nan,
+    initial=None,
     where=True,
 ):
     if ivy.is_array(where):
         x = ivy.where(where, x, ivy.default(out, ivy.ones_like(x)), out=out)
     if initial is not None:
-        s = ivy.shape(x, as_array=True)
-        s[axis] = 1
-        header = ivy.full(ivy.Shape(tuple(s)), initial)
-        x = ivy.concat([header, x], axis=axis)
+        if axis is not None:
+            s = ivy.to_list(ivy.shape(x, as_array=True))
+            s[axis] = 1
+            header = ivy.full(ivy.Shape(tuple(s)), initial)
+            x = ivy.concat([header, x], axis=axis)
+        else:
+            x[0] *= initial
     return ivy.prod(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
