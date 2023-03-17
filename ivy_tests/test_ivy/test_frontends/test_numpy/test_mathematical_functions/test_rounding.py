@@ -192,7 +192,7 @@ def test_numpy_floor(
     where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
-       test_flags=test_flags,
+        test_flags=test_flags,
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
@@ -208,4 +208,3 @@ def test_numpy_floor(
         dtype=dtype,
         subok=True,
     )
-
