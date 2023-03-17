@@ -19,6 +19,9 @@ from . import backend_version
 # -------------------#
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def concat(
     xs: Union[Tuple[paddle.Tensor, ...], List[paddle.Tensor]],
     /,
@@ -26,7 +29,22 @@ def concat(
     axis: Optional[int] = 0,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    dtypes_list = list(set(map(lambda x: x.dtype, xs)))
+    num_dtypes = len(dtypes_list)
+    if num_dtypes == 1:
+        dtype = dtypes_list[0]
+    elif num_dtypes == 2:
+        dtype = ivy.promote_types(*dtypes_list)
+    else:
+        raise ivy.utils.exceptions.IvyException(
+            "Tensor list contains more than two dtypes"
+        )
+    if dtype == "int16":
+        xs = [array.cast("int32") for array in xs]
+        return paddle.concat(xs, axis).cast("int16")
+    else:
+        xs = [array.cast(dtype) for array in xs]
+        return paddle.concat(xs, axis)
 
 
 @with_unsupported_device_and_dtypes(
@@ -51,9 +69,14 @@ def flip(
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
+        return paddle.flip(x.cast(ivy.default_float_dtype()), axis).cast(x.dtype)
+    return paddle.flip(x, axis)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def permute_dims(
     x: paddle.Tensor,
     /,
@@ -126,6 +149,9 @@ def reshape(
     return ret
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def roll(
     x: paddle.Tensor,
     /,
@@ -203,11 +229,7 @@ def stack(
 
 
 @with_unsupported_device_and_dtypes(
-    {
-        "2.4.2 and below": {
-            "cpu": ("uint16", "bfloat16")
-        }
-    },
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}},
     backend_version,
 )
 def split(
@@ -236,9 +258,9 @@ def split(
                 num_or_size_splits = [num_or_size_splits] * num_chunks + [remainder]
             else:
                 raise ivy.utils.exceptions.IvyException(
-                "Split size is not compatible with input shape"
-            )
-            
+                    "Split size is not compatible with input shape"
+                )
+
     if isinstance(num_or_size_splits, (list, tuple)):
         if sum(num_or_size_splits) < x.shape[axis]:
             num_or_size_splits + type(num_or_size_splits)([-1])
@@ -251,11 +273,14 @@ def split(
         if paddle.is_complex(x):
             imag_list = paddle.split(x.imag(), num_or_size_splits, axis)
             real_list = paddle.split(x.imag(), num_or_size_splits, axis)
-            return [(a + b * 1j) for a,b in zip(real_list, imag_list)]
-        return paddle.split(x.cast('int32'), num_or_size_splits, axis)
+            return [(a + b * 1j) for a, b in zip(real_list, imag_list)]
+        return paddle.split(x.cast("int32"), num_or_size_splits, axis)
     return paddle.split(x, num_or_size_splits, axis)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def repeat(
     x: paddle.Tensor,
     /,
@@ -267,6 +292,9 @@ def repeat(
     return paddle.repeat_interleave(x, repeats)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def tile(
     x: paddle.Tensor, /, repeats: Sequence[int], *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
@@ -275,6 +303,9 @@ def tile(
     return x.repeat(repeats)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def constant_pad(
     x: paddle.Tensor,
     /,
@@ -286,6 +317,9 @@ def constant_pad(
     raise IvyNotImplementedException()
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def zero_pad(
     x: paddle.Tensor,
     /,
@@ -296,12 +330,18 @@ def zero_pad(
     raise IvyNotImplementedException()
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def swapaxes(
     x: paddle.Tensor, axis0: int, axis1: int, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def clip(
     x: paddle.Tensor,
     x_min: Union[Number, paddle.Tensor],
@@ -310,7 +350,23 @@ def clip(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+        paddle.complex64,
+        paddle.complex128,
+        paddle.bool,
+    ]:
+        if paddle.is_complex(x):
+            return paddle.clip(x.real(), x_min, x_max) + 1j * paddle.clip(
+                x.imag(), x_min, x_max
+            )
+        return paddle.clip(x.cast(ivy.default_float_dtype()), x_min, x_max).cast(
+            x.dtype
+        )
+    raise paddle.clip(x, x_min, x_max)
 
 
 @with_unsupported_device_and_dtypes(
