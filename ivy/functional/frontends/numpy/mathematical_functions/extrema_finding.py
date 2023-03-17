@@ -45,6 +45,7 @@ def amin(
     initial=None,
     where=True,
 ):
+    out_dtype = ivy.dtype(a)
     where_mask = None
     if initial is not None:
         if ivy.is_array(where):
@@ -69,8 +70,8 @@ def amin(
             a = ivy.concat([a, header], axis=0)
     res = ivy.min(a, axis=axis, keepdims=keepdims, out=out)
     if where_mask is not None and ivy.any(where_mask):
-        res = ivy.where(ivy.logical_not(where_mask), res, ivy.nan, out=out)
-    return res
+        res = ivy.where(ivy.logical_not(where_mask), res, initial, out=out)
+    return ivy.astype(res, out_dtype, out=out, copy=False)
 
 
 @handle_numpy_out
@@ -86,6 +87,7 @@ def amax(
     initial=None,
     where=True,
 ):
+    out_dtype = ivy.dtype(a)
     where_mask = None
     if initial is not None:
         if ivy.is_array(where):
@@ -110,8 +112,8 @@ def amax(
             a = ivy.concat([a, header], axis=0)
     res = ivy.max(a, axis=axis, keepdims=keepdims, out=out)
     if where_mask is not None and ivy.any(where_mask):
-        res = ivy.where(ivy.logical_not(where_mask), res, ivy.nan, out=out)
-    return res
+        res = ivy.where(ivy.logical_not(where_mask), res, initial, out=out)
+    return ivy.astype(res, out_dtype, out=out, copy=False)
 
 
 @handle_numpy_out
@@ -125,6 +127,7 @@ def nanmin(
     initial=None,
     where=True,
 ):
+    out_dtype = ivy.dtype(a)
     nan_mask = ivy.isnan(a)
     a = ivy.where(ivy.logical_not(nan_mask), a, a.full_like(+ivy.inf))
     where_mask = None
@@ -161,7 +164,7 @@ def nanmin(
             )
     if where_mask is not None and ivy.any(where_mask):
         res = ivy.where(ivy.logical_not(where_mask), res, ivy.nan, out=out)
-    return res
+    return ivy.astype(res, out_dtype, out=out, copy=False)
 
 
 @handle_numpy_out
@@ -198,6 +201,7 @@ def nanmax(
     initial=None,
     where=True,
 ):
+    out_dtype = ivy.dtype(a)
     nan_mask = ivy.isnan(a)
     a = ivy.where(ivy.logical_not(nan_mask), a, a.full_like(-ivy.inf))
     where_mask = None
@@ -234,4 +238,4 @@ def nanmax(
             )
     if where_mask is not None and ivy.any(where_mask):
         res = ivy.where(ivy.logical_not(where_mask), res, ivy.nan, out=out)
-    return res
+    return ivy.astype(res, out_dtype, out=out, copy=False)
