@@ -367,6 +367,8 @@ def nanpercentile(
             resultarray.append(arrayofpercentiles)
         return resultarray
     elif axis == 0:
+        resultarray = []
+
         try:
             a = ivy.swapaxes(a, 0, 1)
         except ivy.utils.exceptions.IvyError:
@@ -374,7 +376,6 @@ def nanpercentile(
 
         finally:
 
-            resultarray = []
             nanlessarrayofarrays = []
             for i in a:
                 nanlessarray = []
@@ -387,4 +388,4 @@ def nanpercentile(
                 for ii in nanlessarrayofarrays:
                     arrayofpercentiles.append(cpercentile(ii, i))
                 resultarray.append(arrayofpercentiles)
-            return resultarray
+        return resultarray
