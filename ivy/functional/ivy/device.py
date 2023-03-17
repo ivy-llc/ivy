@@ -268,6 +268,7 @@ def print_all_ivy_arrays_on_dev(
 
 @handle_nestable
 @handle_exceptions
+@to_native_arrays_and_back
 def dev(
     x: Union[ivy.Array, ivy.NativeArray], /, *, as_native: bool = False
 ) -> Union[ivy.Device, ivy.NativeDevice]:
@@ -377,23 +378,23 @@ def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> ivy.NativeD
 
 
 @handle_exceptions
-def clear_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> None:
+def clear_cached_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> None:
     """Clear memory cache on target device.
 
     Parameters
     ----------
     device
-        The device string to convert to native device handle.
+        The device string to convert to native device handle or native device handle.
 
     Examples
     --------
     >>> import torch
     >>> ivy.set_backend("torch")
     >>> device = torch.device("cuda")
-    >>> ivy.clear_mem_on_dev(device)
+    >>> ivy.clear_cached_mem_on_dev(device)
 
     """
-    ivy.current_backend(None).clear_mem_on_dev(device)
+    ivy.current_backend().clear_cached_mem_on_dev(device)
 
 
 @handle_exceptions
@@ -473,13 +474,14 @@ def used_mem_on_dev(
     0.525205504
 
     """
-    ivy.clear_mem_on_dev(device)
+    ivy.clear_cached_mem_on_dev(device)
     if "gpu" in device:
-        ivy.utils.assertions.check_false(
-            process_specific,
-            "process-specific GPU queries are currently not supported",
-        )
         handle = _get_nvml_gpu_handle(device)
+        if process_specific:
+            pid = os.getpid()
+            for process in pynvml.nvmlDeviceGetComputeRunningProcesses(handle):
+                if process.pid == pid:
+                    return process.usedGpuMemory / 1e9
         info = pynvml.nvmlDeviceGetMemoryInfo(handle)
         return info.used / 1e9
     elif device == "cpu":
@@ -533,14 +535,15 @@ def percent_used_mem_on_dev(
     0.7095597456708771
 
     """
-    ivy.clear_mem_on_dev(device)
+    ivy.clear_cached_mem_on_dev(device)
     if "gpu" in device:
-        ivy.utils.assertions.check_false(
-            process_specific,
-            "process-specific GPU queries are currently not supported",
-        )
         handle = _get_nvml_gpu_handle(device)
         info = pynvml.nvmlDeviceGetMemoryInfo(handle)
+        if process_specific:
+            pid = os.getpid()
+            for process in pynvml.nvmlDeviceGetComputeRunningProcesses(handle):
+                if process.pid == pid:
+                    return (process.usedGpuMemory / info.total) * 100
         return (info.used / info.total) * 100
     elif device == "cpu":
         vm = psutil.virtual_memory()

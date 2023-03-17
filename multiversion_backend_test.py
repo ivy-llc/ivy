@@ -2,6 +2,7 @@ import ast
 import inspect
 from ivy_tests.test_ivy.helpers.function_testing import _is_frontend_array
 from ivy_tests import config
+
 # from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
 import sys
 import jsonpickle
@@ -12,6 +13,7 @@ from ivy_tests.test_ivy.helpers.testing_helpers import (
     _import_method,
     _get_method_supported_devices_dtypes,
 )
+
 # import paddle_bfloat
 
 
@@ -207,12 +209,10 @@ def create_args_kwargs(
 
 
 def _get_fn_dtypes(framework, fn_tree, type, device=None, kind="valid"):
-    if type == '1':
+    if type == "1":
         callable_fn, fn_name, fn_mod = _import_fn(fn_tree)
         supported_device_dtypes = _get_supported_devices_dtypes(fn_name, fn_mod)
-        return supported_device_dtypes[framework][
-            device
-        ][kind]
+        return supported_device_dtypes[framework][device][kind]
     else:
         method_tree = fn_tree
         callable_method, method_name, _, class_name, method_mod = _import_method(
@@ -221,9 +221,7 @@ def _get_fn_dtypes(framework, fn_tree, type, device=None, kind="valid"):
         supported_device_dtypes = _get_method_supported_devices_dtypes(
             method_name, method_mod, class_name
         )
-        return supported_device_dtypes[framework][
-            device
-        ][kind]
+        return supported_device_dtypes[framework][device][kind]
 
 
 def _get_type_dict(framework, fn_tree, type, device=None, kind="valid"):
@@ -271,7 +269,7 @@ def dtype_handler(framework, type):
     z = input()
     fn_tree = z
 
-    if retrieval_fn.__name__ == '_get_type_dict':
+    if retrieval_fn.__name__ == "_get_type_dict":
         framework = importlib.import_module("ivy.functional.backends." + framework)
 
     dtypes = retrieval_fn(framework, fn_tree, type, device, kind)
@@ -334,7 +332,6 @@ def check_unsupported_dtype(*, fn, input_dtypes, all_as_kwargs_np):
 
 
 def gradient_test():
-
     def grad_fn(all_args):
         args, kwargs, i = all_args
         ret = (
@@ -343,6 +340,7 @@ def gradient_test():
             else fn[i](*args, **kwargs)
         )
         return ivy.nested_map(ret, ivy.mean, include_derived=True)
+
     args_np = jsonpickle.loads(make_json_pickable(input()))
     arg_np_vals = jsonpickle.loads(make_json_pickable(input()))
     args_idxs = jsonpickle.loads(make_json_pickable(input()))
@@ -353,8 +351,7 @@ def gradient_test():
     test_flags = jsonpickle.loads(make_json_pickable(input()))
     fn = jsonpickle.loads(make_json_pickable(input()))
     all_as_kwargs_np = jsonpickle.loads(make_json_pickable(input()))
-    grad_fnn = jsonpickle.loads(make_json_pickable(input()))  # assigned but never used
-    xs_grad_idxs = jsonpickle.loads(make_json_pickable(input()))
+    grad_fnn = jsonpickle.loads(make_json_pickable(input()))  # noqa: F841
     ret_grad_idxs = jsonpickle.loads(make_json_pickable(input()))
     global temp_store
     if not temp_store and isinstance(fn, list):
@@ -378,12 +375,12 @@ def gradient_test():
         kwarg_np_vals=kwarg_np_vals,
         kwargs_idxs=kwargs_idxs,
         input_dtypes=input_dtypes,
-        test_flags=test_flags
+        test_flags=test_flags,
     )
     _, grads_from_gt = ivy.execute_with_gradients(
         grad_fn,
         [args, kwargs, 1],
-        xs_grad_idxs=xs_grad_idxs,
+        xs_grad_idxs=xs_grad_idxs,  # noqa: F821
         ret_grad_idxs=ret_grad_idxs,
     )
     grads_np_from_gt_flat = flatten_and_to_np(ret=grads_from_gt)
@@ -407,7 +404,7 @@ def method_test():
         kwargs_idxs=con_kwargs_idxs,
         kwarg_np_vals=con_kwarg_np_vals,
         input_dtypes=init_input_dtypes,
-        test_flags=init_flags
+        test_flags=init_flags,
     )
 
     args_np = jsonpickle.loads(make_json_pickable(input()))
@@ -430,7 +427,7 @@ def method_test():
         kwargs_idxs=kwargs_idxs,
         kwarg_np_vals=kwarg_np_vals,
         input_dtypes=input_dtypes,
-        test_flags=method_flags
+        test_flags=method_flags,
     )
     ins_gt = ivy.__dict__[class_name](*args_gt_constructor, **kwargs_gt_constructor)
     temp_store.append([ins_gt, method_name])
@@ -460,6 +457,7 @@ def method_test():
 
 if __name__ == "__main__":
     from ivy.functional.ivy.gradients import _variable
+
     arg_lis = sys.argv
     fw_lis = []
     for i in arg_lis[1:]:
@@ -471,18 +469,20 @@ if __name__ == "__main__":
     config.allow_global_framework_imports(fw=fw_lis)
     j = 1
     import ivy
+
     ivy.set_backend(arg_lis[2].split("/")[0])
     import numpy
+
     while j:
         try:
             z = input()
-            if z == '1' or z == '1a':
+            if z == "1" or z == "1a":
                 dtype_handler(arg_lis[2].split("/")[0], z)
                 continue
-            if z == '2':
+            if z == "2":
                 gradient_test()
                 continue
-            if z == '3':
+            if z == "3":
                 method_test()
                 continue
 
@@ -504,7 +504,7 @@ if __name__ == "__main__":
                 kwargs_idxs=kwargs_idxs,
                 kwarg_np_vals=kwarg_np_vals,
                 input_dtypes=input_dtypes,
-                test_flags=test_flags
+                test_flags=test_flags,
             )
             ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
                 ivy.__dict__[fn_name], *args, **kwargs
@@ -516,10 +516,10 @@ if __name__ == "__main__":
                     else ret_from_gt
                 )
                 out_from_gt = ivy.nested_map(
-                    test_ret_from_gt, 
-                    ivy.zeros_like, 
-                    to_mutable=True, 
-                    include_derived=True
+                    test_ret_from_gt,
+                    ivy.zeros_like,
+                    to_mutable=True,
+                    include_derived=True,
                 )
                 ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
                     ivy.__dict__[fn_name], *args, **kwargs, out=out_from_gt
