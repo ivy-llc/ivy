@@ -13,5 +13,5 @@ Utility
    :maxdepth: -1
    :caption: Utility
 
-   utility/ContainerWithUtility.rst
+   utility/_ContainerWithUtility.rst
 

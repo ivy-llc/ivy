@@ -158,7 +158,7 @@ ivy.tan()
 * NumPy has an optional argument :code:`where` which is generated using :func:`np_frontend_helpers.where`.
 * Using :func:`np_frontend_helpers.handle_where_and_array_bools` we do some processing on the generated :code:`where` value.
 * Instead of :func:`helpers.test_frontend_function` we use :func:`np_frontend_helpers.test_frontend_function` which behaves the same but has some extra code to handle the :code:`where` argument.
-* :code:`casting`, :code:`order`, :code:`subok` and are other other optional arguments for :func:`numpy.tan`.
+* :code:`casting`, :code:`order`, :code:`subok` and other are optional arguments for :func:`numpy.tan`.
 
 **TensorFlow**
 
