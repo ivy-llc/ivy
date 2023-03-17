@@ -337,4 +337,3 @@ def test_jax_numpy_sort_complex(
         a=x[0],
         test_values=False,
     )
-

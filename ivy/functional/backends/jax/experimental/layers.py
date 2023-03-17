@@ -481,7 +481,7 @@ def ifft(
 
 
 @handle_mixed_function(
-    lambda *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (
+    lambda *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # noqa: E501
         not align_corners
         and mode
         not in [
