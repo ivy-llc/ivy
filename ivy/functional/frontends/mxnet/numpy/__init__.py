@@ -167,3 +167,5 @@ from . import creation
 from .creation import *
 from . import symbol
 from .symbol import *
+from . import statistical
+from .statistical import *
