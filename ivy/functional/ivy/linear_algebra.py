@@ -1102,7 +1102,8 @@ def matrix_norm(
 
     Examples
     --------
-    With :class:'ivy.Array' inputs:
+    With :class:`ivy.Array` inputs:
+    
     >>> x = ivy.array([[1., 2.], [3., 4.]])
     >>> y = ivy.matrix_norm(x)
     >>> print(y)
@@ -1130,7 +1131,8 @@ def matrix_norm(
     >>> print(x)
     ivy.array([10.5 ,  2.05])
 
-    With :class:'ivy.Container' input:
+    With :class:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([[0.666, 9.11], \
                                        [42.69, 9.23]]), \
                           b=ivy.array([[1.1, 2.2, 3.3], \
@@ -1142,7 +1144,8 @@ def matrix_norm(
         b: ivy.array(6.6000004)
     }
 
-    With multiple :class:'ivy:Container' inputs:
+    With multiple :class:`ivy:Container` inputs:
+    
     >>> x = ivy.Container(a=ivy.arange(12, dtype=float).reshape((3, 2, 2)), \
                           b=ivy.arange(8, dtype=float).reshape((2, 2, 2))) 
     >>> ord = ivy.Container(a=1, b=float('inf'))
