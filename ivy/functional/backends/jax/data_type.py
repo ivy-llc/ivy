@@ -8,6 +8,8 @@ from typing import Optional, Union, Sequence, List
 import ivy
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 ivy_dtype_dict = {
     jnp.dtype("int8"): "int8",
@@ -102,6 +104,7 @@ def astype(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     dtype = ivy.as_native_dtype(dtype)
+    ivy.utils.assertions._check_jax_x64_flag(dtype)
     if x.dtype == dtype:
         return jnp.copy(x) if copy else x
     return x.astype(dtype)
@@ -111,6 +114,10 @@ def broadcast_arrays(*arrays: JaxArray) -> List[JaxArray]:
     return jnp.broadcast_arrays(*arrays)
 
 
+@with_unsupported_dtypes(
+    {"0.3.14 and below": ("complex")},
+    backend_version,
+)
 def broadcast_to(
     x: JaxArray,
     /,

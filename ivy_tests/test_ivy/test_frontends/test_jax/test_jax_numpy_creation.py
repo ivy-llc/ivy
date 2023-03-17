@@ -456,6 +456,33 @@ def test_jax_numpy_full_like(
     )
 
 
+# identity
+@handle_frontend_test(
+    fn_tree="jax.numpy.identity",
+    n=helpers.ints(min_value=3, max_value=10),
+    dtypes=helpers.get_dtypes("valid", full=False),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_identity(
+    *,
+    n,
+    dtypes,
+    on_device,
+    fn_tree,
+    test_flags,
+    frontend,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        n=n,
+        dtype=dtypes[0],
+    )
+
+
 # ndim
 @handle_frontend_test(
     fn_tree="jax.numpy.ndim",
@@ -597,4 +624,69 @@ def test_jax_numpy_logspace(
         base=base,
         dtype=input_dtypes[0],
         axis=axis,
+    )
+
+
+# linspace
+@handle_frontend_test(
+    fn_tree="jax.numpy.linspace",
+    dtype_start_stop=_get_dtype_and_range(),
+    num=helpers.ints(min_value=2, max_value=5),
+    axis=helpers.ints(min_value=-1, max_value=0),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_linspace(
+    dtype_start_stop,
+    num,
+    axis,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, start, stop = dtype_start_stop
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        start=start,
+        stop=stop,
+        num=num,
+        endpoint=True,
+        retstep=False,
+        dtype=input_dtypes[0],
+        axis=axis,
+    )
+
+
+# copy
+@handle_frontend_test(
+    fn_tree="jax.numpy.copy",
+    dtype_and_a=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=1,
+        min_num_dims=0,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_copy(
+    dtype_and_a,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, a = dtype_and_a
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=a[0],
     )

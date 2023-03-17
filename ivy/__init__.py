@@ -4,6 +4,7 @@ import warnings
 from ivy._version import __version__ as __version__
 import builtins
 import numpy as np
+import sys
 
 
 warnings.filterwarnings("ignore", module="^(?!.*ivy).*$")
@@ -718,6 +719,12 @@ from .stateful import *
 from ivy.utils.inspection import fn_array_spec, add_array_specs
 
 add_array_specs()
+
+try:
+    from .compiler.compiler import transpile, compile, unify
+except:  # noqa: E722
+    compile, transpile, unify = None, None, None
+
 
 # add instance methods to Ivy Array and Container
 from ivy.functional.ivy import (

@@ -14,36 +14,6 @@ from ivy import (
     complex64,
     complex128,
 )
-from . import nn
-from . import tensor
-from .tensor import *
-from . import blas_and_lapack_ops
-from .blas_and_lapack_ops import *
-from . import comparison_ops
-from .comparison_ops import *
-from . import creation_ops
-from .creation_ops import *
-from . import dtype
-from .dtype import *
-from . import indexing_slicing_joining_mutating_ops
-from .indexing_slicing_joining_mutating_ops import *
-from . import locally_disabling_gradient_computation
-from .locally_disabling_gradient_computation import *
-from . import miscellaneous_ops
-from .miscellaneous_ops import *
-from . import pointwise_ops
-from .pointwise_ops import *
-from . import random_sampling
-from .random_sampling import *
-from . import reduction_ops
-from .reduction_ops import *
-from . import spectral_ops
-from .spectral_ops import *
-from . import tensor_functions
-from .tensor_functions import *
-from . import utilities
-from .utilities import *
-from . import linalg
 import ivy
 from ivy.utils.exceptions import handle_exceptions
 
@@ -283,3 +253,35 @@ def promote_types_of_torch_inputs(
         x1 = ivy.asarray(x1, dtype=promoted)
         x2 = ivy.asarray(x2, dtype=promoted)
     return x1, x2
+
+
+from . import nn
+from . import tensor
+from .tensor import *
+from . import blas_and_lapack_ops
+from .blas_and_lapack_ops import *
+from . import comparison_ops
+from .comparison_ops import *
+from . import creation_ops
+from .creation_ops import *
+from . import dtype
+from .dtype import *
+from . import indexing_slicing_joining_mutating_ops
+from .indexing_slicing_joining_mutating_ops import *
+from . import locally_disabling_gradient_computation
+from .locally_disabling_gradient_computation import *
+from . import miscellaneous_ops
+from .miscellaneous_ops import *
+from . import pointwise_ops
+from .pointwise_ops import *
+from . import random_sampling
+from .random_sampling import *
+from . import reduction_ops
+from .reduction_ops import *
+from . import spectral_ops
+from .spectral_ops import *
+from . import tensor_functions
+from .tensor_functions import *
+from . import utilities
+from .utilities import *
+from . import linalg

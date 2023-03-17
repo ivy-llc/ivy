@@ -2355,6 +2355,9 @@ def less_equal(
     x2
         second input array. Must be compatible with x1 (with Broadcasting). May have any
         data type.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------
