@@ -9,6 +9,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 import ivy
 import sys
 
+
 @st.composite
 def _generate_diag_args(draw):
     x_shape = draw(
@@ -305,6 +306,7 @@ def test_kron(
     test_flags,
     backend_fw,
     fn_name,
+    on_device,
     ground_truth_backend,
 ):
     dtype, x = dtype_x
@@ -312,6 +314,7 @@ def test_kron(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
+        on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
         a=x[0],
@@ -486,16 +489,14 @@ def test_adjoint(
 # multi_dot
 @st.composite
 def _generate_multi_dot_dtype_and_arrays(draw):
-    input_dtype = [draw(
-        st.sampled_from(draw(helpers.get_dtypes("numeric")))
-    )]
+    input_dtype = [draw(st.sampled_from(draw(helpers.get_dtypes("numeric"))))]
     matrices_dims = draw(
         st.lists(st.integers(min_value=2, max_value=10), min_size=4, max_size=4)
     )
     shape_1 = (matrices_dims[0], matrices_dims[1])
     shape_2 = (matrices_dims[1], matrices_dims[2])
     shape_3 = (matrices_dims[2], matrices_dims[3])
-    
+
     matrix_1 = draw(
         helpers.dtype_and_values(
             shape=shape_1,
@@ -560,7 +561,9 @@ def _cond_data_gen_helper(draw):
         allow_nan=False,
         shared_dtype=True,
     ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon)
-    p = draw(st.sampled_from([None, 2, -2, 1, -1, "fro", "nuc", float("inf"), -float("inf")]))
+    p = draw(
+        st.sampled_from([None, 2, -2, 1, -1, "fro", "nuc", float("inf"), -float("inf")])
+    )
     dtype, x = draw(dtype_x)
     return dtype, (x[0], p)
 
