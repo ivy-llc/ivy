@@ -3,7 +3,11 @@ from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
 import sys
 import jsonpickle
 import importlib
-from ivy_tests.test_ivy.helpers.testing_helpers import _import_fn, _get_supported_devices_dtypes, _import_method, _get_method_supported_devices_dtypes
+from ivy_tests.test_ivy.helpers.testing_helpers import (
+    _import_fn,
+    _get_supported_devices_dtypes,
+    _get_method_supported_devices_dtypes,
+)
 
 
 def available_frameworks():
@@ -60,31 +64,26 @@ class NativeClass:
         self._native_class = native_class
 
 
-def _get_fn_dtypes(framework,fn_tree,type, device=None,kind="valid"):
-    if type=='1':
+def _get_fn_dtypes(framework, fn_tree, type, device=None, kind="valid"):
+    if type == "1":
         callable_fn, fn_name, fn_mod = _import_fn(fn_tree)
         supported_device_dtypes = _get_supported_devices_dtypes(fn_name, fn_mod)
-        return supported_device_dtypes[framework][
-            device
-        ][kind]
+        return supported_device_dtypes[framework][device][kind]
     else:
         method_name, class_tree, split_index = type
 
-
         class_module_path, class_name = (
             class_tree[:split_index],
-            class_tree[split_index + 1:],
+            class_tree[split_index + 1 :],
         )
         class_module = importlib.import_module(class_module_path)
         supported_device_dtypes = _get_method_supported_devices_dtypes(
             method_name, class_module, class_name
         )
-        return supported_device_dtypes[framework][
-            device
-        ][kind]
+        return supported_device_dtypes[framework][device][kind]
 
 
-def _get_type_dict(framework,fn_tree,type, device=None,kind="valid"):
+def _get_type_dict(framework, fn_tree, type, device=None, kind="valid"):
     if kind == "valid":
         return framework.valid_dtypes
     elif kind == "numeric":
@@ -117,23 +116,23 @@ def _get_type_dict(framework,fn_tree,type, device=None,kind="valid"):
         raise RuntimeError("{} is an unknown kind!".format(kind))
 
 
-def dtype_handler(framework,type):
-    if type=='1a':
-        type=jsonpickle.loads(input())
+def dtype_handler(framework, type):
+    if type == "1a":
+        type = jsonpickle.loads(input())
 
-    z=input()
-    retrieval_fn=globals()[z]
-    z=input()
-    kind=z
-    z=input()
-    device=z
-    z=input()
-    fn_tree=z
+    z = input()
+    retrieval_fn = globals()[z]
+    z = input()
+    kind = z
+    z = input()
+    device = z
+    z = input()
+    fn_tree = z
 
-    if retrieval_fn.__name__== '_get_type_dict':
+    if retrieval_fn.__name__ == "_get_type_dict":
         framework = importlib.import_module("ivy.functional.backends." + framework)
-    dtypes = retrieval_fn(framework,fn_tree,type,device,kind)
-    dtypes = jsonpickle.dumps(dtypes,kind)
+    dtypes = retrieval_fn(framework, fn_tree, type, device, kind)
+    dtypes = jsonpickle.dumps(dtypes, kind)
     print(dtypes)
 
 
@@ -206,7 +205,7 @@ def test_frontend_method():
     )
     try:
         tensorflow = importlib.import_module("tensorflow")
-    except:
+    except:  # noqa: E722
         tensorflow = None
     if ivy.current_backend_str() == "tensorflow" and isinstance(
         frontend_ret, getattr(tensorflow, "TensorShape", None)
@@ -240,19 +239,20 @@ if __name__ == "__main__":
 
     try:
         ivy.set_backend(arg_lis[2].split("/")[0])
-    except:
+    except:  # noqa: E722
         raise Exception(f"lalalalal {fw_lis}")
     import numpy
+
     try:
-        #check numpy bfloat16 enabled or not
+        # check numpy bfloat16 enabled or not
         numpy.dtype("bfloat16")
-    except:
-        import paddle_bfloat
+    except:  # noqa: E722
+        import paddle_bfloat  # noqa: F401
 
     while j:
         try:
             z = input()
-            if z == '1' or z == '1a':
+            if z == "1" or z == "1a":
                 dtype_handler(arg_lis[2].split("/")[0], z)
                 continue
             if z == "2":
@@ -299,8 +299,8 @@ if __name__ == "__main__":
             )
 
             frontend_ret = frontend_fw.__dict__[func](*args_frontend, **kwargs_frontend)
-            if isinstance(frontend_ret,tuple) or isinstance(frontend_ret,list):
-                frontend_ret=ivy.nested_map(frontend_ret,ivy.to_numpy)
+            if isinstance(frontend_ret, tuple) or isinstance(frontend_ret, list):
+                frontend_ret = ivy.nested_map(frontend_ret, ivy.to_numpy)
             else:
                 frontend_ret = ivy.to_numpy(frontend_ret)
             frontend_ret = jsonpickle.dumps(frontend_ret)

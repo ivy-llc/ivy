@@ -287,7 +287,7 @@ def _interp_args(draw, mode=None, mode_list=None):
         "bicubic_tensorflow",
         "bicubic",
         "mitchellcubic",
-        "gaussian"
+        "gaussian",
     ]:
         num_dims = 4
     elif mode == "trilinear":
@@ -340,15 +340,7 @@ def _interp_args(draw, mode=None, mode_list=None):
         )
         recompute_scale_factor = False
         scale_factor = None
-    return (
-        dtype,
-        x,
-        mode,
-        size,
-        align_corners,
-        scale_factor,
-        recompute_scale_factor
-    )
+    return (dtype, x, mode, size, align_corners, scale_factor, recompute_scale_factor)
 
 
 @handle_test(
@@ -367,7 +359,15 @@ def test_interpolate(
     on_device,
     ground_truth_backend,
 ):
-    input_dtype, x, mode, size, align_corners, scale_factor, recompute_scale_factor = dtype_x_mode
+    (
+        input_dtype,
+        x,
+        mode,
+        size,
+        align_corners,
+        scale_factor,
+        recompute_scale_factor,
+    ) = dtype_x_mode
     try:
         helpers.test_function(
             ground_truth_backend=ground_truth_backend,
@@ -387,9 +387,10 @@ def test_interpolate(
             recompute_scale_factor=recompute_scale_factor,
         )
     except Exception as e:
-        if hasattr(e, "message") and \
-                ("output dimensions must be positive" in e.message or
-                 "Input and output sizes should be greater than 0" in e.message):
+        if hasattr(e, "message") and (
+            "output dimensions must be positive" in e.message
+            or "Input and output sizes should be greater than 0" in e.message
+        ):
             assume(False)
         raise e
 

@@ -247,6 +247,7 @@ def matrix_transpose(
         np.conjugate(x)
     return np.swapaxes(x, -1, -2)
 
+
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def outer(
     x1: np.ndarray,

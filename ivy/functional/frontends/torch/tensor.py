@@ -10,7 +10,6 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.func_wrapper import with_supported_dtypes
 
 
-
 class Tensor:
     def __init__(self, array, device=None, _init_overload=False):
 
@@ -858,5 +857,3 @@ class Tensor:
     # Method aliases
     absolute, absolute_ = abs, abs_
     ndimension = dim
-
-
