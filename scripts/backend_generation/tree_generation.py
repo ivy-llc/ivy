@@ -155,12 +155,13 @@ def generate(backend_reference: str, target_backend: str):
     # Copy and generate backend tree
     _copy_tree(backend_reference_path, backend_generation_path)
 
-    subprocess.run(["black", backend_generation_path])
+    subprocess.run(["black", "-q", backend_generation_path])
     subprocess.run(
         [
             "autoflake",
             "-i",
             "--remove-all-unused-imports",
+            "--ignore-init-module-imports",
             "--quiet",
             "-r",
             backend_generation_path,
