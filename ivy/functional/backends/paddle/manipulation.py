@@ -202,6 +202,14 @@ def stack(
 # ------#
 
 
+@with_unsupported_device_and_dtypes(
+    {
+        "2.4.2 and below": {
+            "cpu": ("uint16", "bfloat16")
+        }
+    },
+    backend_version,
+)
 def split(
     x: paddle.Tensor,
     /,
@@ -220,16 +228,31 @@ def split(
         return [x]
     if num_or_size_splits is None:
         num_or_size_splits = x.shape[axis]
-    elif isinstance(num_or_size_splits, int) and with_remainder:
-        num_chunks = x.shape[axis] / num_or_size_splits
-        num_chunks_int = math.floor(num_chunks)
-        remainder = num_chunks - num_chunks_int
+    elif isinstance(num_or_size_splits, int):
+        num_chunks = x.shape[axis] // num_or_size_splits
+        remainder = x.shape[axis] % num_or_size_splits
         if remainder != 0:
-            num_or_size_splits = [num_or_size_splits] * num_chunks_int + [
-                int(remainder * num_or_size_splits)
-            ]
+            if with_remainder:
+                num_or_size_splits = [num_or_size_splits] * num_chunks + [remainder]
+            else:
+                raise ivy.utils.exceptions.IvyException(
+                "Split size is not compatible with input shape"
+            )
+            
     if isinstance(num_or_size_splits, (list, tuple)):
-        num_or_size_splits = paddle.cumsum(num_or_size_splits[:-1])
+        if sum(num_or_size_splits) < x.shape[axis]:
+            num_or_size_splits + type(num_or_size_splits)([-1])
+        elif sum(num_or_size_splits) > x.shape[axis]:
+            raise ivy.utils.exceptions.IvyException(
+                f"total split size is not compatible with input shape,"
+                f" got {sum(num_or_size_splits)} which is more than x.shape[axis]"
+            )
+    if x.dtype in [paddle.int16, paddle.complex64, paddle.complex128]:
+        if paddle.is_complex(x):
+            imag_list = paddle.split(x.imag(), num_or_size_splits, axis)
+            real_list = paddle.split(x.imag(), num_or_size_splits, axis)
+            return [(a + b * 1j) for a,b in zip(real_list, imag_list)]
+        return paddle.split(x.cast('int32'), num_or_size_splits, axis)
     return paddle.split(x, num_or_size_splits, axis)
 
 
