@@ -6,6 +6,7 @@ import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
+
 # avg_pool1d
 @handle_frontend_test(
     fn_tree="torch.nn.functional.avg_pool1d",
