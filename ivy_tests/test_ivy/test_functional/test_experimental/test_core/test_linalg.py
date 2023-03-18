@@ -7,6 +7,7 @@ import numpy as np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 import ivy
+import sys
 
 
 @st.composite
@@ -305,6 +306,7 @@ def test_kron(
     test_flags,
     backend_fw,
     fn_name,
+    on_device,
     ground_truth_backend,
 ):
     dtype, x = dtype_x
@@ -312,6 +314,7 @@ def test_kron(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
+        on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
         a=x[0],
@@ -486,16 +489,14 @@ def test_adjoint(
 # multi_dot
 @st.composite
 def _generate_multi_dot_dtype_and_arrays(draw):
-    input_dtype = [draw(
-        st.sampled_from(draw(helpers.get_dtypes("numeric")))
-    )]
+    input_dtype = [draw(st.sampled_from(draw(helpers.get_dtypes("numeric"))))]
     matrices_dims = draw(
         st.lists(st.integers(min_value=2, max_value=10), min_size=4, max_size=4)
     )
     shape_1 = (matrices_dims[0], matrices_dims[1])
     shape_2 = (matrices_dims[1], matrices_dims[2])
     shape_3 = (matrices_dims[2], matrices_dims[3])
-    
+
     matrix_1 = draw(
         helpers.dtype_and_values(
             shape=shape_1,
@@ -587,4 +588,29 @@ def test_solve_triangular(
         test_values=True,
         x=x[0],
         b=x[1],
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.cond",
+    dtype_x=_cond_data_gen_helper(),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_cond(
+    dtype_x,
+    test_flags,
+    backend_fw,
+    fn_name,
+    ground_truth_backend,
+):
+    dtype, x = dtype_x
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        x=x[0],
+        p=x[1],
     )

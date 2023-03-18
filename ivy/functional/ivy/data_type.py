@@ -1004,7 +1004,7 @@ def default_float_dtype(
     *,
     input: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     float_dtype: Optional[Union[ivy.FloatDtype, ivy.NativeDtype]] = None,
-    as_native: Optional[bool] = False,
+    as_native: bool = False,
 ) -> Union[ivy.Dtype, str, ivy.NativeDtype]:
     """
     Parameters
@@ -1145,7 +1145,7 @@ def default_dtype(
     *,
     dtype: Optional[Union[ivy.Dtype, str]] = None,
     item: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    as_native: Optional[bool] = False,
+    as_native: bool = False,
 ) -> Union[ivy.Dtype, ivy.NativeDtype, str]:
     """
     Parameters
@@ -1205,7 +1205,7 @@ def default_int_dtype(
     *,
     input: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     int_dtype: Optional[Union[ivy.IntDtype, ivy.NativeDtype]] = None,
-    as_native: Optional[bool] = False,
+    as_native: bool = False,
 ) -> Union[ivy.IntDtype, ivy.NativeDtype]:
     """
     Parameters
@@ -1314,7 +1314,7 @@ def default_uint_dtype(
     *,
     input: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     uint_dtype: Optional[Union[ivy.UintDtype, ivy.NativeDtype]] = None,
-    as_native: Optional[bool] = False,
+    as_native: bool = False,
 ) -> Union[ivy.UintDtype, ivy.NativeDtype]:
     """
     Parameters
@@ -1411,7 +1411,7 @@ def default_complex_dtype(
     *,
     input: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     complex_dtype: Optional[Union[ivy.ComplexDtype, ivy.NativeDtype]] = None,
-    as_native: Optional[bool] = False,
+    as_native: bool = False,
 ) -> Union[ivy.Dtype, str, ivy.NativeDtype]:
     """
     Parameters
@@ -2022,6 +2022,7 @@ def set_default_dtype(dtype: Union[ivy.Dtype, ivy.NativeDtype, str], /):
     ['uint64']
     """
     dtype = ivy.as_ivy_dtype(dtype)
+    ivy.utils.assertions._check_jax_x64_flag(dtype)
     global default_dtype_stack
     default_dtype_stack.append(dtype)
 
@@ -2049,6 +2050,7 @@ def set_default_float_dtype(float_dtype: Union[ivy.Dtype, str], /):
     'float32'
     """
     float_dtype = ivy.FloatDtype(ivy.as_ivy_dtype(float_dtype))
+    ivy.utils.assertions._check_jax_x64_flag(float_dtype)
     global default_float_dtype_stack
     default_float_dtype_stack.append(float_dtype)
 
@@ -2076,6 +2078,7 @@ def set_default_int_dtype(int_dtype: Union[ivy.Dtype, str], /):
     'int32'
     """
     int_dtype = ivy.IntDtype(ivy.as_ivy_dtype(int_dtype))
+    ivy.utils.assertions._check_jax_x64_flag(int_dtype)
     global default_int_dtype_stack
     default_int_dtype_stack.append(int_dtype)
 
@@ -2100,6 +2103,7 @@ def set_default_uint_dtype(uint_dtype: Union[ivy.Dtype, str], /):
     'uint64'
     """
     uint_dtype = ivy.UintDtype(ivy.as_ivy_dtype(uint_dtype))
+    ivy.utils.assertions._check_jax_x64_flag(uint_dtype)
     global default_uint_dtype_stack
     default_uint_dtype_stack.append(uint_dtype)
 
@@ -2127,6 +2131,7 @@ def set_default_complex_dtype(complex_dtype: Union[ivy.Dtype, str], /):
     'complex128'
     """
     complex_dtype = ivy.ComplexDtype(ivy.as_ivy_dtype(complex_dtype))
+    ivy.utils.assertions._check_jax_x64_flag(complex_dtype)
     global default_complex_dtype_stack
     default_complex_dtype_stack.append(complex_dtype)
 
@@ -2358,4 +2363,5 @@ def promote_types_of_inputs(
         x1 = ivy.asarray(x1, dtype=promoted)
         x2 = ivy.asarray(x2, dtype=promoted)
 
+    ivy.utils.assertions._check_jax_x64_flag(x1.dtype)
     return ivy.to_native(x1), ivy.to_native(x2)

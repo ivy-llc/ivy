@@ -1,7 +1,7 @@
 """Base class for deriving trainable modules"""
 
 # global
-from typing import Union
+from typing import Union, Optional
 
 # local
 import ivy
@@ -12,9 +12,9 @@ class Sequential(Module):
     def __init__(
         self,
         *sub_modules: Module,
-        device: Union[ivy.Device, ivy.NativeDevice] = None,
-        v: Union[ivy.Array, ivy.NativeVariable] = None,
-        dtype: Union[ivy.Dtype, ivy.NativeDtype] = None,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        v: Optional[Union[ivy.Array, ivy.NativeVariable]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     ):
         """
         A sequential container. Modules will be added to it in the order they are

@@ -94,7 +94,7 @@ def as_native_dev(device, /):
     return jax.devices(device)[idx]
 
 
-def clear_mem_on_dev(device: str, /):
+def clear_cached_mem_on_dev(device: str, /):
     return None
 
 
