@@ -23,7 +23,20 @@ def argmax(
     select_last_index: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if select_last_index:
+        x = paddle.flip(x, axis=axis)
+        ret = paddle.argmax(x, axis=axis, keepdims=keepdims)
+        if axis is not None:
+            ret = paddle.Tensor(x.shape[axis] - ret - 1)
+        else:
+            ret = paddle.Tensor(x.size - ret - 1)
+    else:
+        ret = paddle.Tensor(paddle.argmax(x, axis=axis, keepdims=keepdims))
+    if dtype:
+        dtype = ivy.as_native_dtype(dtype)
+        ret = ret.astype(dtype)
+    return ret
+
 
 
 def argmin(
@@ -36,7 +49,19 @@ def argmin(
     select_last_index: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if select_last_index:
+        x = paddle.flip(x, axis=axis)
+        ret = paddle.argmin(x, axis=axis, keepdims=keepdims)
+        if axis is not None:
+            ret = paddle.Tensor(x.shape[axis] - ret - 1)
+        else:
+            ret = paddle.Tensor(x.size - ret - 1)
+    else:
+        ret = paddle.Tensor(paddle.argmin(x, axis=axis, keepdims=keepdims))
+    if output_dtype:
+        output_dtype = ivy.as_native_dtype(output_dtype)
+        return ret.astype(output_dtype)
+    return ret
 
 
 def nonzero(

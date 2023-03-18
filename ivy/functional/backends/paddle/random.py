@@ -13,18 +13,15 @@ from ivy.functional.ivy.random import (
     _check_bounds_and_get_shape,
     _randint_check_dtype_and_bound,
 )
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
 from . import backend_version
+
 # Extra #
 # ------#
 
 
 @with_unsupported_dtypes(
-    {
-        "2.4.2 and below": (
-            "int8"
-        )
-    },
+    {"2.4.2 and below": ("int8")},
     backend_version,
 )
 def random_uniform(
@@ -49,9 +46,9 @@ def random_uniform(
         _ = paddle.seed(seed)
     _retval = to_device(
         paddle.cast(
-            paddle.uniform(shape or [1], min=0.0, max=1.0) * range + low,
-            dtype),
-        device
+            paddle.uniform(shape or [1], min=0.0, max=1.0) * range + low, dtype
+        ),
+        device,
     )
     return _retval if shape else _retval.squeeze(axis=0)
 
@@ -85,11 +82,7 @@ def multinomial(
 
 
 @with_unsupported_dtypes(
-    {
-        "2.4.2 and below": (
-            "int8",
-        )
-    },
+    {"2.4.2 and below": ("int8",)},
     backend_version,
 )
 def randint(
@@ -115,9 +108,9 @@ def randint(
         _ = paddle.seed(seed)
     _retval = to_device(
         paddle.cast(
-            paddle.uniform(shape or [1], min=0.0, max=1.0) * range + low,
-            dtype),
-        device
+            paddle.uniform(shape or [1], min=0.0, max=1.0) * range + low, dtype
+        ),
+        device,
     )
     return _retval if shape else _retval.squeeze(axis=0)
 
@@ -126,6 +119,17 @@ def seed(*, seed_value: int = 0) -> None:
     _ = paddle.seed(seed_value)
 
 
+@with_unsupported_device_and_dtypes(
+    {
+        "2.4.2 and below": {
+            "cpu": (
+                "uint16",
+                "bfloat16",
+            )
+        }
+    },
+    backend_version,
+)
 def shuffle(
     x: paddle.Tensor,
     /,
@@ -133,4 +137,24 @@ def shuffle(
     seed: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if seed:
+        _ = paddle.seed(seed)
+    # Use Paddle's randperm function to generate shuffled indices
+    indices = paddle.randperm(x.shape[0], dtype="int64")
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+        paddle.complex64,
+        paddle.complex128,
+        paddle.bool,
+    ]:
+        if paddle.is_complex(x):
+            shuffled_real = paddle.index_select(x.real(), indices)
+            shuffled_imag = paddle.index_select(x.imag(), indices)
+            return shuffled_real + 1j * shuffled_imag
+        return paddle.index_select(x.cast(ivy.default_float_dtype()), indices).cast(
+            x.dtype
+        )
+    return paddle.index_select(x, indices)
