@@ -198,7 +198,7 @@ def logaddexp2(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.log2(paddle.pow(2, x1) + paddle.pow(2, x2))
 
 
 def diff(
