@@ -169,7 +169,6 @@ def solve_triangular(
     )
 
     
-    
 def cond(
     x: Union[tf.Tensor, tf.Variable],
     /,
