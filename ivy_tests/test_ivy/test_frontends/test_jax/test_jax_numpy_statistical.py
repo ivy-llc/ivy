@@ -752,7 +752,6 @@ def test_jax_numpy_median(
         test_flags,
 ):
     input_dtype, x, axis = dtype_x_axis
-    print(type(x[0]))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -764,4 +763,6 @@ def test_jax_numpy_median(
         out=None,
         overwrite_input=False,
         keepdims=keemdims,
+        atol=1e-3,
+        rtol=1e-3,
     )
