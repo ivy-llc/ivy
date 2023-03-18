@@ -65,6 +65,11 @@ def asarray(a, dtype=None, order=None):
     return array(a, dtype=dtype, order=order)
 
 
+@to_ivy_arrays_and_back
+def copy(a, order=None):
+    return array(a, order=order)
+
+
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def hstack(tup, dtype=None):
@@ -149,3 +154,8 @@ def linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis
         step = ivy.divide(ivy.subtract(stop, start), num)
         return ret, step
     return ret
+
+
+@to_ivy_arrays_and_back
+def single(x):
+    return ivy.astype(x, ivy.float32)

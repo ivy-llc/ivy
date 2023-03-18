@@ -287,7 +287,7 @@ def _interp_args(draw, mode=None, mode_list=None):
         "bicubic_tensorflow",
         "bicubic",
         "mitchellcubic",
-        "gaussian"
+        "gaussian",
     ]:
         num_dims = 4
     elif mode == "trilinear":
@@ -340,15 +340,7 @@ def _interp_args(draw, mode=None, mode_list=None):
         )
         recompute_scale_factor = False
         scale_factor = None
-    return (
-        dtype,
-        x,
-        mode,
-        size,
-        align_corners,
-        scale_factor,
-        recompute_scale_factor
-    )
+    return (dtype, x, mode, size, align_corners, scale_factor, recompute_scale_factor)
 
 
 @handle_test(
@@ -367,7 +359,15 @@ def test_interpolate(
     on_device,
     ground_truth_backend,
 ):
-    input_dtype, x, mode, size, align_corners, scale_factor, recompute_scale_factor = dtype_x_mode
+    (
+        input_dtype,
+        x,
+        mode,
+        size,
+        align_corners,
+        scale_factor,
+        recompute_scale_factor,
+    ) = dtype_x_mode
     try:
         helpers.test_function(
             ground_truth_backend=ground_truth_backend,
@@ -387,9 +387,10 @@ def test_interpolate(
             recompute_scale_factor=recompute_scale_factor,
         )
     except Exception as e:
-        if hasattr(e, "message") and \
-                ("output dimensions must be positive" in e.message or
-                 "Input and output sizes should be greater than 0" in e.message):
+        if hasattr(e, "message") and (
+            "output dimensions must be positive" in e.message
+            or "Input and output sizes should be greater than 0" in e.message
+        ):
             assume(False)
         raise e
 
@@ -699,6 +700,7 @@ def test_adaptive_avg_pool1d(
     test_flags,
     backend_fw,
     fn_name,
+    on_device,
     ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
@@ -708,6 +710,7 @@ def test_adaptive_avg_pool1d(
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
+        on_device=on_device,
         input=x[0],
         output_size=output_size,
     )
@@ -723,8 +726,11 @@ def test_adaptive_avg_pool1d(
         max_value=100,
         min_value=-100,
     ),
-    output_size=st.tuples(
-        helpers.ints(min_value=1, max_value=10),
+    output_size=st.one_of(
+        st.tuples(
+            helpers.ints(min_value=1, max_value=10),
+            helpers.ints(min_value=1, max_value=10),
+        ),
         helpers.ints(min_value=1, max_value=10),
     ),
     test_with_out=st.just(False),
@@ -738,6 +744,7 @@ def test_adaptive_avg_pool2d(
     test_flags,
     backend_fw,
     fn_name,
+    on_device,
     ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
@@ -746,6 +753,7 @@ def test_adaptive_avg_pool2d(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
+        on_device=on_device,
         fn_name=fn_name,
         input=x[0],
         output_size=output_size,

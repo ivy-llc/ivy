@@ -404,6 +404,8 @@ all_numeric_dtypes = (
     float16,
     float32,
     float64,
+    complex64,
+    complex128,
 )
 all_int_dtypes = (
     int8,
@@ -719,6 +721,12 @@ from .stateful import *
 from ivy.utils.inspection import fn_array_spec, add_array_specs
 
 add_array_specs()
+
+try:
+    from .compiler.compiler import transpile, compile, unify
+except:  # noqa: E722
+    compile, transpile, unify = None, None, None
+
 
 # add instance methods to Ivy Array and Container
 from ivy.functional.ivy import (

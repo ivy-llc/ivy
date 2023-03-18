@@ -4,8 +4,9 @@ from hypothesis import strategies as st, assume
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers import \
-    _interp_args
+from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers import (
+    _interp_args,
+)
 
 
 @st.composite
@@ -78,15 +79,18 @@ def test_tensorflow_extract_patches(
 
 @handle_frontend_test(
     fn_tree="tensorflow.image.resize",
-    dtype_x_mode=_interp_args(mode_list=[
-        "bilinear",
-        "nearest",
-        "area",
-        "bicubic",
-        "lanczos3",
-        "lanczos5",
-        "mitchellcubic",
-        "gaussian"]),
+    dtype_x_mode=_interp_args(
+        mode_list=[
+            "bilinear",
+            "nearest",
+            "area",
+            "bicubic",
+            "lanczos3",
+            "lanczos5",
+            "mitchellcubic",
+            "gaussian",
+        ]
+    ),
     antialias=st.booleans(),
     test_with_out=st.just(False),
 )
@@ -115,8 +119,9 @@ def test_tensorflow_resize(
             preserve_aspect_ratio=preserve,
         )
     except Exception as e:
-        if hasattr(e, "message") and \
-                ("output dimensions must be positive" in e.message or
-                 "Input and output sizes should be greater than 0" in e.message):
+        if hasattr(e, "message") and (
+            "output dimensions must be positive" in e.message
+            or "Input and output sizes should be greater than 0" in e.message
+        ):
             assume(False)
         raise e

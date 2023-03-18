@@ -1278,7 +1278,9 @@ def interpolate(
         scale_factor = None
     elif scale_factor is not None:
         scale_factor = (
-            [scale_factor] * dims if isinstance(scale_factor, (int, float)) else scale_factor
+            [scale_factor] * dims
+            if isinstance(scale_factor, (int, float))
+            else scale_factor
         )
         scale_factor = (
             [scale_factor[0]] * dims
@@ -1639,6 +1641,9 @@ def adaptive_avg_pool2d(
         raise ivy.utils.exceptions.IvyException(
             f"Got {len(input.shape)}D input, but only 3D and 4D inputs are supported.",
         )
+
+    if isinstance(output_size, int):
+        output_size = (output_size, output_size)
 
     if all(i_s % o_s == 0 for i_s, o_s in zip(input.shape[-2:], output_size)):
         stride = tuple(i_s // o_s for i_s, o_s in zip(input.shape[-2:], output_size))
