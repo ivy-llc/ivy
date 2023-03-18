@@ -118,6 +118,18 @@ def where(
 # ----- #
 
 
+@with_unsupported_dtypes(
     {"2.4.2 and below": ("uint16", "bfloat16")},
+    backend_version,
+)
 def argwhere(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if x.ndim == 0:
+        return paddle.to_tensor([],dtype="int64").unsqueeze(0)
+    if x.dtype in [paddle.int8, paddle.uint8, paddle.float16, paddle.complex64, paddle.complex128]:
+        if paddle.is_complex(x):
+            real_idx = paddle.nonzero(x.real())
+            imag_idx = paddle.nonzero(x.imag())
+            idx = paddle.concat([real_idx, imag_idx], axis=0)
+            return paddle.unique(idx, axis=0)
+        return paddle.nonzero(x.cast(ivy.default_float_dtype()))
+    return paddle.nonzero(x)
