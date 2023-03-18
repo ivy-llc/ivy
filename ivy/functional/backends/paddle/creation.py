@@ -166,7 +166,9 @@ def asarray(
         ret.stop_gradient = False
         return ret
     else:
-        ret = paddle.to_tensor(obj, dtype=dtype, stop_gradient=False)
+        ret = obj.cast(dtype)
+        if not ivy.is_native_array(obj):
+            ret = paddle.to_tensor(obj, dtype=dtype, stop_gradient=False)
         ret.stop_gradient = False
         return ret
 
