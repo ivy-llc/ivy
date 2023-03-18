@@ -4,6 +4,8 @@
 
 from typing import Optional, Callable
 import paddle
+from itertools import chain
+
 # local
 import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
@@ -14,6 +16,7 @@ from ivy.functional.ivy.gradients import (
     _set_duplicates,
     _process_func_ret_and_grads,
 )
+
 
 def variable(x, /):
     if ivy.is_int_dtype(x.dtype):
@@ -40,7 +43,11 @@ def _grad_func(y, xs, retain_grads):
     # Creating a zero gradient nest for the case where no gradients are computed
     grads_ = ivy.nested_map(
         xs,
-        lambda x: ivy.to_native(ivy.zeros_like(x)),
+        lambda x: (
+            ivy.array([0.0]).to_native()
+            if x is None
+            else ivy.to_native(ivy.zeros_like(x))
+        ),
         include_derived=True,
         shallow=False,
     )
@@ -60,7 +67,10 @@ def _grad_func(y, xs, retain_grads):
             list(
                 paddle.grad(
                     outputs=[y],
-                    inputs=[v for k, v in xs.cont_to_iterator()],
+                    inputs=[
+                        ivy.array([0.0]).to_native() if v is None else v
+                        for k, v in xs.cont_to_iterator()
+                    ],
                     retain_graph=True,
                     create_graph=retain_grads,
                     allow_unused=True,
@@ -80,7 +90,7 @@ def _grad_func(y, xs, retain_grads):
         def grad_(x):
             grad = paddle.grad(
                 outputs=y,
-                inputs=x,
+                inputs=ivy.array([0.0]).to_native() if x is None else x,
                 retain_graph=True,
                 create_graph=retain_grads,
                 allow_unused=True,
@@ -88,7 +98,9 @@ def _grad_func(y, xs, retain_grads):
             return grad if grad is not None else ivy.to_native(ivy.zeros_like(x))
 
         grads = ivy.nested_map(xs, grad_, include_derived=True, shallow=False)
-        grads = ivy.nested_multi_map(lambda x, _: (ivy.add(x[0],x[1])), [grads, grads_])
+        grads = ivy.nested_multi_map(
+            lambda x, _: (ivy.add(x[0], x[1])), [grads, grads_]
+        )
     return grads
 
 
@@ -99,9 +111,17 @@ def execute_with_gradients(
     xs, xs1, required_duplicate_index_chains, _ = _get_required_float_variables(
         xs, xs_grad_idxs
     )
-
     func_ret = func(xs)
     xs = xs1
+    duplicate_indices = list(
+        chain.from_iterable(
+            [
+                map(lambda x: x.split("/"), duplicate_index_chain[1:])
+                for duplicate_index_chain in required_duplicate_index_chains
+            ]
+        )
+    )
+    xs = ivy.set_nest_at_indices(xs, duplicate_indices, None, shallow=False)
 
     # Getting the relevant outputs from the function return for gradient calculation
     y, ret_idxs = _get_y_and_ret_idxs(func_ret, ret_grad_idxs, create_var=True)
@@ -153,7 +173,6 @@ def stop_gradient(
 
 
 def jac(func: Callable):
-
     raise IvyNotImplementedException()
 
 
