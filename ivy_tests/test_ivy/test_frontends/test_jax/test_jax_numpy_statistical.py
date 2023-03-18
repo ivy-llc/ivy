@@ -633,3 +633,99 @@ def test_jax_numpy_nanstd(
         atol=1e-2,
         rtol=1e-2,
     )
+
+
+# nanvar
+@handle_frontend_test(
+    fn_tree="jax.numpy.nanvar",
+    dtype_x_axis=statistical_dtype_values(function="nanvar").filter(
+        lambda x: x[0][0] != "bfloat16"
+    ),
+    dtype=helpers.get_dtypes("float", full=False, none=True).filter(
+        lambda x: x != "bfloat16"
+    ),
+    where=np_helpers.where(),
+    keepdims=st.booleans(),
+)
+def test_jax_numpy_nanvar(
+    *,
+    dtype_x_axis,
+    dtype,
+    keepdims,
+    where,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtypes, x, axis, ddof = dtype_x_axis
+    if isinstance(axis, tuple):
+        axis = axis[0]
+    where, input_dtypes, test_flags = np_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
+    assume(np.dtype(dtype[0]) >= np.dtype(input_dtypes[0]))
+    np_helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        axis=axis,
+        dtype=dtype[0],
+        out=None,
+        ddof=ddof,
+        keepdims=keepdims,
+        where=where,
+        atol=1e-3,
+        rtol=1e-3,
+    )
+
+
+# std
+@handle_frontend_test(
+    fn_tree="jax.numpy.std",
+    dtype_x_axis=statistical_dtype_values(function="std"),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
+    where=np_helpers.where(),
+    keepdims=st.booleans(),
+)
+def test_jax_numpy_std(
+    *,
+    dtype_x_axis,
+    dtype,
+    keepdims,
+    where,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtypes, x, axis, ddof = dtype_x_axis
+    if isinstance(axis, tuple):
+        axis = axis[0]
+    where, input_dtypes, test_flags = np_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
+
+    np_helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        axis=axis,
+        dtype=dtype[0],
+        out=None,
+        ddof=ddof,
+        keepdims=keepdims,
+        where=where,
+        atol=1e-3,
+        rtol=1e-3,
+    )

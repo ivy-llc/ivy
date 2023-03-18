@@ -65,6 +65,7 @@ class _ArrayWithManipulation(abc.ABC):
         self: ivy.Array,
         /,
         *,
+        copy: Optional[bool] = None,
         axis: Union[int, Sequence[int]] = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -98,13 +99,14 @@ class _ArrayWithManipulation(abc.ABC):
         >>> print(y)
         ivy.array([[-4.7, -2.3,  0.7]])
         """
-        return ivy.expand_dims(self._data, axis=axis, out=out)
+        return ivy.expand_dims(self._data, copy=copy, axis=axis, out=out)
 
     @handle_view
     def flip(
         self: ivy.Array,
         /,
         *,
+        copy: Optional[bool] = None,
         axis: Optional[Union[int, Sequence[int]]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -146,7 +148,7 @@ class _ArrayWithManipulation(abc.ABC):
         ivy.array([6, 5, 4])
 
         """
-        return ivy.flip(self._data, axis=axis, out=out)
+        return ivy.flip(self._data, copy=copy, axis=axis, out=out)
 
     @handle_view
     def permute_dims(
@@ -154,6 +156,7 @@ class _ArrayWithManipulation(abc.ABC):
         /,
         axes: Tuple[int, ...],
         *,
+        copy: Optional[bool] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -196,7 +199,7 @@ class _ArrayWithManipulation(abc.ABC):
                    [0., 0.],
                    [0., 0.]])
         """
-        return ivy.permute_dims(self._data, axes, out=out)
+        return ivy.permute_dims(self._data, axes, copy=copy, out=out)
 
     @handle_view
     def reshape(
@@ -333,6 +336,7 @@ class _ArrayWithManipulation(abc.ABC):
         /,
         axis: Union[int, Sequence[int]],
         *,
+        copy: Optional[bool] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -347,7 +351,7 @@ class _ArrayWithManipulation(abc.ABC):
         >>> print(y)
         ivy.array([[0., 1.]])
         """
-        return ivy.squeeze(self._data, axis=axis, out=out)
+        return ivy.squeeze(self._data, axis=axis, copy=copy, out=out)
 
     def stack(
         self: ivy.Array,
@@ -531,6 +535,7 @@ class _ArrayWithManipulation(abc.ABC):
         self: ivy.Array,
         /,
         *,
+        copy: Optional[bool] = None,
         num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
         axis: int = 0,
         with_remainder: bool = False,
@@ -567,6 +572,7 @@ class _ArrayWithManipulation(abc.ABC):
         """
         return ivy.split(
             self._data,
+            copy=copy,
             num_or_size_splits=num_or_size_splits,
             axis=axis,
             with_remainder=with_remainder,
@@ -579,6 +585,7 @@ class _ArrayWithManipulation(abc.ABC):
         axis1: int,
         /,
         *,
+        copy: Optional[bool] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -622,7 +629,7 @@ class _ArrayWithManipulation(abc.ABC):
                    [[1, 5],
                     [3, 7]]])
         """
-        return ivy.swapaxes(self._data, axis0, axis1, out=out)
+        return ivy.swapaxes(self._data, axis0, axis1, copy=copy, out=out)
 
     def tile(
         self: ivy.Array,
@@ -671,7 +678,12 @@ class _ArrayWithManipulation(abc.ABC):
 
     @handle_view
     def unstack(
-        self: ivy.Array, /, *, axis: int = 0, keepdims: bool = False
+        self: ivy.Array, 
+        /, 
+        *, 
+        copy: Optional[bool] = None,
+        axis: int = 0, 
+        keepdims: bool = False
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.unstack. This method simply
         wraps the function, and so the docstring for ivy.unstack also applies to
@@ -705,7 +717,7 @@ class _ArrayWithManipulation(abc.ABC):
                 [3]]), ivy.array([[2],
                 [4]])]
         """
-        return ivy.unstack(self._data, axis=axis, keepdims=keepdims)
+        return ivy.unstack(self._data, copy=copy, axis=axis, keepdims=keepdims)
 
     def zero_pad(
         self: ivy.Array,

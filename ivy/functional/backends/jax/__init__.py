@@ -20,8 +20,6 @@ from ivy.func_wrapper import _dtype_from_version
 
 backend_version = {"version": jax.__version__}
 
-config.update("jax_enable_x64", True)
-
 # To avoid trying to add ivy.Container multiple times when with_backend is called
 if not ivy.is_local():
     register_pytree_node(
@@ -125,6 +123,8 @@ valid_numeric_dtypes_dict = {
         ivy.float16,
         ivy.float32,
         ivy.float64,
+        ivy.complex64,
+        ivy.complex128,
     )
 }
 

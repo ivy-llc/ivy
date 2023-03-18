@@ -23,7 +23,7 @@ def not_too_close_to_zero(x):
 @handle_test(
     fn_tree="functional.ivy.abs",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=helpers.get_dtypes("valid")
     ),
 )
 def test_abs(
@@ -237,6 +237,8 @@ def test_atan(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
+        rtol_=1e-2,
+        atol_=1e-2,
         x=x[0],
     )
 

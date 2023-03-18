@@ -263,8 +263,8 @@ def trapz(
     /,
     *,
     x: Optional[ivy.Array] = None,
-    dx: Optional[float] = 1.0,
-    axis: Optional[int] = -1,
+    dx: float = 1.0,
+    axis: int = -1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Integrate along the given axis using the composite trapezoidal rule.
@@ -444,7 +444,7 @@ def count_nonzero(
     /,
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -501,7 +501,7 @@ def nansum(
     *,
     axis: Optional[Union[Tuple[int, ...], int]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -595,9 +595,9 @@ def isclose(
     b: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    rtol: Optional[float] = 1e-05,
-    atol: Optional[float] = 1e-08,
-    equal_nan: Optional[bool] = False,
+    rtol: float = 1e-05,
+    atol: float = 1e-08,
+    equal_nan: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -657,7 +657,7 @@ def angle(
     z: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    deg: Optional[bool] = False,
+    deg: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -676,8 +676,8 @@ def angle(
     -------
     ret
         Returns an array of angles for each complex number in the input.
-        If def is False(default), angle is calculated in radian and if
-        def is True, then angle is calculated in degrees.
+        If deg is False(default), angle is calculated in radian and if
+        deg is True, then angle is calculated in degrees.
 
     Examples
     --------
@@ -738,8 +738,8 @@ def nan_to_num(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    copy: Optional[bool] = True,
-    nan: Optional[Union[float, int]] = 0.0,
+    copy: bool = True,
+    nan: Union[float, int] = 0.0,
     posinf: Optional[Union[float, int]] = None,
     neginf: Optional[Union[float, int]] = None,
     out: Optional[ivy.Array] = None,
@@ -956,9 +956,9 @@ def allclose(
     b: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    rtol: Optional[float] = 1e-05,
-    atol: Optional[float] = 1e-08,
-    equal_nan: Optional[bool] = False,
+    rtol: float = 1e-05,
+    atol: float = 1e-08,
+    equal_nan: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> bool:
     """
@@ -1145,8 +1145,8 @@ def gradient(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    spacing: Optional[Union[int, list, tuple]] = 1,
-    edge_order: Optional[int] = 1,
+    spacing: Union[int, list, tuple] = 1,
+    edge_order: int = 1,
     axis: Optional[Union[int, list, tuple]] = None,
 ) -> Union[ivy.Array, List[ivy.Array]]:
     """Calculates gradient of x with respect to (w.r.t.) spacing
@@ -1340,6 +1340,7 @@ def binarizer(
     Maps the values of the input tensor to either 0 or 1,
     element-wise, based on the outcome of a comparison
     against a threshold value.
+
     Parameters
     ----------
     x
@@ -1350,6 +1351,7 @@ def binarizer(
     out
         optional output array, for writing the result to.
         It must have a shape that the inputs broadcast to.
+
     Returns
     -------
     ret
@@ -1430,6 +1432,7 @@ def ldexp(
 ) -> ivy.Array:
     """
     Returns x1 * (2**x2), element-wise.
+
     Parameters
     ----------
     x1
@@ -1439,10 +1442,12 @@ def ldexp(
     out
         optional output array, for writing the result to.
         It must have a shape that the inputs broadcast to.
+
     Returns
     -------
     ret
         The next representable values of x1 in the direction of x2.
+
     Examples
     --------
     >>> x1 = ivy.array([1, 2, 3])
@@ -1466,6 +1471,7 @@ def frexp(
 ) -> Tuple[ivy.Array, ivy.Array]:
     """
     Decompose the elements of x into mantissa and twos exponent.
+
     Parameters
     ----------
     x
@@ -1473,10 +1479,12 @@ def frexp(
     out
         optional output array, for writing the result to.
         It must have a shape that the inputs broadcast to.
+
     Returns
     -------
     ret
         A tuple of two arrays, the mantissa and the twos exponent.
+
     Examples
     --------
     >>> x = ivy.array([1, 2, 3])

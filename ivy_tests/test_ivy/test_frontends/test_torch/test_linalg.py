@@ -299,11 +299,11 @@ def _get_symmetrix_matrix(draw):
     fn_tree="torch.linalg.eigvals",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=(
-                ivy.float32,
-                ivy.float64,
-                ivy.double,
-                ivy.complex64,
-                ivy.complex128,
+            ivy.float32,
+            ivy.float64,
+            ivy.double,
+            ivy.complex64,
+            ivy.complex128,
         ),
         min_num_dims=2,
         max_num_dims=2,
@@ -341,9 +341,11 @@ def test_torch_eigvals(
     """
 
     """
-    Depending on the chosen framework there may be small differences between our extremely small or big eigenvalues 
-    (eg: -3.62831993e-33+0.j(numpy) vs -1.9478e-32+0.j(PyTorch)). 
-    Important is that both are very very close to zero, indicating a small value(very close to 0) either way.
+    Depending on the chosen framework there may be small differences between our 
+    extremely small or big eigenvalues (eg: -3.62831993e-33+0.j(numpy) 
+    vs -1.9478e-32+0.j(PyTorch)). 
+    Important is that both are very very close to zero, indicating a 
+    small value(very close to 0) either way.
 
     To asses the correctness of our calculated eigenvalues for our initial matrix 
     we sort both numpy arrays and call assert_all_close on their modulus.
@@ -351,14 +353,17 @@ def test_torch_eigvals(
 
     """
     Supports input of float, double, cfloat and cdouble dtypes. 
-    Also supports batches of matrices, and if A is a batch of matrices then the output has the same batch dimension
+    Also supports batches of matrices, and if A is a batch of matrices then the 
+    output has the same batch dimension
     """
 
     frontend_ret = np.asarray(frontend_ret[0])
     frontend_ret = np.sort(frontend_ret)
     frontend_ret_modulus = np.zeros(len(frontend_ret), dtype=np.float64)
     for i in range(len(frontend_ret)):
-        frontend_ret_modulus[i] = math.sqrt(math.pow(frontend_ret[i].real, 2) + math.pow(frontend_ret[i].imag, 2))
+        frontend_ret_modulus[i] = math.sqrt(math.pow(frontend_ret[i].real,
+                                                     2) + math.pow(frontend_ret[i].imag,
+                                                                   2))
 
     ret = ivy.to_numpy(ret).astype(str(frontend_ret.dtype))
     ret = np.sort(ret)
@@ -723,6 +728,59 @@ def test_torch_eig(
     )
 
 
+# eigh
+@handle_frontend_test(
+    fn_tree="torch.linalg.eigh",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+    ).filter(
+        lambda x: "float16" not in x[0]
+        and "bfloat16" not in x[0]
+        and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(np.asarray(x[1][0])) != 0
+    ),
+    UPLO=st.sampled_from(("L", "U")),
+)
+def test_torch_eigh(
+    *,
+    dtype_and_x,
+    UPLO,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x = dtype_and_x
+    x = np.array(x[0], dtype=dtype[0])
+    # make symmetric positive-definite beforehand
+    x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
+
+    ret, frontend_ret = helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        a=x,
+        UPLO=UPLO,
+    )
+    ret = [ivy.to_numpy(x) for x in ret]
+    frontend_ret = [np.asarray(x) for x in frontend_ret]
+
+    L, Q = ret
+    frontend_L, frontend_Q = frontend_ret
+
+    assert_all_close(
+        ret_np=Q @ np.diag(L) @ Q.T,
+        ret_from_gt_np=frontend_Q @ np.diag(frontend_L) @ frontend_Q.T,
+        atol=1e-02,
+    )
+
+
 # svdvals
 @handle_frontend_test(
     fn_tree="torch.linalg.svdvals",
@@ -1002,6 +1060,7 @@ def test_torch_lu_factor(
         ret_from_gt_np=[frontend_LU, frontend_pivot],
         ground_truth_backend=frontend
     )
+
 
 @handle_frontend_test(
     fn_tree="torch.linalg.matmul",
