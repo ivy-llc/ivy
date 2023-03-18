@@ -1,7 +1,7 @@
 # Testing Function
 # global
 import numpy as np
-from hypothesis import strategies as st
+from hypothesis import strategies as st, reproduce_failure
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
