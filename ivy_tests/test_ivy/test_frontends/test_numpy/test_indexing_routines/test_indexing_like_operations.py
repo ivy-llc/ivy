@@ -1,7 +1,7 @@
 # Testing Function
 # global
 import numpy as np
-from hypothesis import strategies as st, reproduce_failure
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -154,6 +154,7 @@ def max_value_as_shape_prod(draw):
         )
     )
     return dtype_and_x, shape
+
 
 @handle_frontend_test(
     fn_tree="numpy.unravel_index",
