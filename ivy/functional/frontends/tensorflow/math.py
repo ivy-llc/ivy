@@ -506,3 +506,8 @@ def add_n(inputs, name=None):
 @to_ivy_arrays_and_back
 def floormod(x, y, name=None):
     return ivy.remainder(x, y)
+
+
+@to_ivy_arrays_and_back
+def softmax(logits, axis=None, name=None):
+    return ivy.softmax(logits, axis=axis)
