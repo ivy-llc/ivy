@@ -1,13 +1,13 @@
 # global
 import sys
-import warnings
+import logging
 import tensorflow as tf
 
 for device in tf.config.experimental.list_physical_devices("GPU"):
     try:
         tf.config.experimental.set_memory_growth(device, True)
     except RuntimeError as e:
-        warnings.warn(f"can not set {device} to dynamically allocate memory. {e}")
+        logging.warn(f"can not set {device} to dynamically allocate memory. {e}")
 
 
 from tensorflow.python.framework.dtypes import DType
@@ -16,6 +16,7 @@ from tensorflow.python.types.core import Tensor
 
 # local
 import ivy
+from ivy.func_wrapper import _dtype_from_version
 
 backend_version = {"version": tf.__version__}
 
@@ -62,68 +63,109 @@ native_bool = tf.bool
 
 # valid data types
 # ToDo: Add complex dtypes to valid_dtypes and fix all resulting failures.
-valid_dtypes = (
-    ivy.int8,
-    ivy.int16,
-    ivy.int32,
-    ivy.int64,
-    ivy.uint8,
-    ivy.uint16,
-    ivy.uint32,
-    ivy.uint64,
-    ivy.bfloat16,
-    ivy.float16,
-    ivy.float32,
-    ivy.float64,
-    ivy.complex64,
-    ivy.complex128,
-    ivy.bool,
-)
-valid_numeric_dtypes = (
-    ivy.int8,
-    ivy.int16,
-    ivy.int32,
-    ivy.int64,
-    ivy.uint8,
-    ivy.uint16,
-    ivy.uint32,
-    ivy.uint64,
-    ivy.bfloat16,
-    ivy.float16,
-    ivy.float32,
-    ivy.float64,
-)
-valid_int_dtypes = (
-    ivy.int8,
-    ivy.int16,
-    ivy.int32,
-    ivy.int64,
-    ivy.uint8,
-    ivy.uint16,
-    ivy.uint32,
-    ivy.uint64,
-)
-valid_float_dtypes = (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64)
-valid_uint_dtypes = (ivy.uint8, ivy.uint16, ivy.uint32, ivy.uint64)
-valid_complex_dtypes = (ivy.complex64, ivy.complex128)
+
+valid_dtypes_dict = {
+    "2.9.1 and below": (
+        ivy.int8,
+        ivy.int16,
+        ivy.int32,
+        ivy.int64,
+        ivy.uint8,
+        ivy.uint16,
+        ivy.uint32,
+        ivy.uint64,
+        ivy.bfloat16,
+        ivy.float16,
+        ivy.float32,
+        ivy.float64,
+        ivy.complex64,
+        ivy.complex128,
+        ivy.bool,
+    )
+}
+valid_dtypes = _dtype_from_version(valid_dtypes_dict, backend_version)
+
+valid_numeric_dtypes_dict = {
+    "2.9.1 and below": (
+        ivy.int8,
+        ivy.int16,
+        ivy.int32,
+        ivy.int64,
+        ivy.uint8,
+        ivy.uint16,
+        ivy.uint32,
+        ivy.uint64,
+        ivy.bfloat16,
+        ivy.float16,
+        ivy.float32,
+        ivy.float64,
+        ivy.complex64,
+        ivy.complex128,
+    )
+}
+
+valid_numeric_dtypes = _dtype_from_version(valid_numeric_dtypes_dict, backend_version)
+
+valid_int_dtypes_dict = {
+    "2.9.1 and below": (
+        ivy.int8,
+        ivy.int16,
+        ivy.int32,
+        ivy.int64,
+        ivy.uint8,
+        ivy.uint16,
+        ivy.uint32,
+        ivy.uint64,
+    )
+}
+
+valid_int_dtypes = _dtype_from_version(valid_int_dtypes_dict, backend_version)
+
+valid_float_dtypes_dict = {
+    "2.9.1 and below": (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64)
+}
+
+valid_float_dtypes = _dtype_from_version(valid_float_dtypes_dict, backend_version)
+
+valid_uint_dtypes_dict = {
+    "2.9.1 and below": (ivy.uint8, ivy.uint16, ivy.uint32, ivy.uint64)
+}
+valid_uint_dtypes = _dtype_from_version(valid_uint_dtypes_dict, backend_version)
+
+valid_complex_dtypes_dict = {"2.9.1 and below": (ivy.complex64, ivy.complex128)}
+valid_complex_dtypes = _dtype_from_version(valid_complex_dtypes_dict, backend_version)
 
 # invalid data types
-invalid_dtypes = ()
-invalid_numeric_dtypes = ()
-invalid_int_dtypes = ()
-invalid_float_dtypes = ()
-invalid_uint_dtypes = ()
-invalid_complex_dtypes = ()
+invalid_dtypes_dict = {"2.9.1 and below": ()}
+
+invalid_dtypes = _dtype_from_version(invalid_dtypes_dict, backend_version)
+
+invalid_numeric_dtypes_dict = {"2.9.1 and below": ()}
+invalid_numeric_dtypes = _dtype_from_version(
+    invalid_numeric_dtypes_dict, backend_version
+)
+
+invalid_int_dtypes_dict = {"2.9.1 and below": ()}
+invalid_int_dtypes = _dtype_from_version(invalid_int_dtypes_dict, backend_version)
+invalid_float_dtypes_dict = {"2.9.1 and below": ()}
+invalid_float_dtypes = _dtype_from_version(invalid_float_dtypes_dict, backend_version)
+invalid_uint_dtypes_dict = {"2.9.1 and below": ()}
+invalid_uint_dtypes = _dtype_from_version(invalid_uint_dtypes_dict, backend_version)
+
+invalid_complex_dtypes_dict = {"2.9.1 and below": ()}
+invalid_complex_dtypes = _dtype_from_version(
+    invalid_complex_dtypes_dict, backend_version
+)
 
 native_inplace_support = False
 
 supports_gradients = True
 
 
-def closest_valid_dtype(type, /):
+def closest_valid_dtype(type=None, /, as_native=False):
     if type is None:
-        return ivy.default_dtype()
-    return type
+        type = ivy.default_dtype()
+    return ivy.as_ivy_dtype(type) if not as_native else ivy.as_native_dtype(type)
 
 
 backend = "tensorflow"

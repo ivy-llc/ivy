@@ -439,9 +439,13 @@ def promote_types_of_numpy_inputs(
     type2 = ivy.default_dtype(item=x2).strip("u123456789")
     if hasattr(x1, "dtype") and not hasattr(x2, "dtype") and type1 == type2:
         x1 = ivy.asarray(x1)
-        x2 = ivy.asarray(x2, dtype=x1.dtype)
+        x2 = ivy.asarray(
+            x2, dtype=x1.dtype, device=ivy.default_device(item=x1, as_native=False)
+        )
     elif not hasattr(x1, "dtype") and hasattr(x2, "dtype") and type1 == type2:
-        x1 = ivy.asarray(x1, dtype=x2.dtype)
+        x1 = ivy.asarray(
+            x1, dtype=x2.dtype, device=ivy.default_device(item=x2, as_native=False)
+        )
         x2 = ivy.asarray(x2)
     else:
         x1 = ivy.asarray(x1)
@@ -488,7 +492,7 @@ from .linalg.matrix_and_vector_products import (
     tensordot,
     # einsum,
     # einsum_path,
-    # kron,
+    kron,
 )
 
 from .linalg.decompositions import cholesky, qr, svd

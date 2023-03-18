@@ -298,8 +298,7 @@ def test_tensorflow_logdet(
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.slogdet",
     dtype_and_x=_get_dtype_and_matrix(),
-    test_with_out=st.just(False),
-)
+    test_with_out=st.just(False))
 def test_tensorflow_slogdet(
     *,
     dtype_and_x,

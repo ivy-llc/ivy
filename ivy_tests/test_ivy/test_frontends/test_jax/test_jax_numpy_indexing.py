@@ -133,3 +133,70 @@ def test_jax_numpy_diag_indices(
         n=n,
         ndim=ndim,
     )
+
+
+# take_along_axis
+@handle_frontend_test(
+    fn_tree="jax.numpy.take_along_axis",
+    dtype_x_indices_axis=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("numeric"),
+        indices_dtypes=["int32", "int64"],
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+        indices_same_dims=True,
+        valid_bounds=False,
+    ),
+    mode=st.sampled_from(['clip', 'fill', 'drop']),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_take_along_axis(
+    *,
+    dtype_x_indices_axis,
+    mode,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtypes, x, indices, axis, _ = dtype_x_indices_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        arr=x,
+        indices=indices,
+        axis=axis,
+        mode=mode,
+    )
+
+
+# Tril_indices
+@handle_frontend_test(
+    fn_tree="jax.numpy.tril_indices",
+    n_rows=helpers.ints(min_value=1, max_value=10),
+    k=helpers.ints(min_value=2, max_value=10),
+    dtype=helpers.get_dtypes("valid", full=False),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_tril_indices(
+    n_rows,
+    k,
+    dtype,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        n_rows=n_rows,
+        k=k,
+    )

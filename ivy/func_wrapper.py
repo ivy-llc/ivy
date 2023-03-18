@@ -1,3 +1,5 @@
+import contextlib
+import numbers
 import ivy
 import functools
 import logging
@@ -27,6 +29,7 @@ FN_DECORATORS = [
     "with_unsupported_dtypes",
     "handle_nans",
     "handle_array_like_without_promotion",
+    "handle_mixed_function",
 ]
 
 
@@ -91,6 +94,26 @@ def _build_view(original, view, fn, args, kwargs, index=None):
     base._view_refs.append(weakref.ref(view))
     view._manipulation_stack.append((fn, args[1:], kwargs, index))
     return view
+
+
+def _check_in_nested_sequence(sequence, value=None, _type=None):
+    """
+    Helper to recursively check if a N-level nested `sequence` contains either a
+    `value` or contains a value of type `_type` and return a boolean flag
+    """
+    if sequence is value or (isinstance(sequence, _type)):
+        # Base case - N = 0
+        return True
+    elif isinstance(sequence, (tuple, list)):
+        if any(isinstance(_val, _type) or _val is value for _val in sequence):
+            # N = 1
+            return True
+        else:
+            return any(
+                _check_in_nested_sequence(sub_sequence, value, _type)
+                for sub_sequence in sequence
+                if isinstance(sub_sequence, (tuple, list))
+            )
 
 
 # Array Handling #
@@ -184,11 +207,20 @@ def handle_array_like_without_promotion(fn: Callable) -> Callable:
             ):
 
                 if i < num_args:
-                    if not ivy.is_array(arg):
+                    # Fix for ellipsis, slices for numpy's __getitem__
+                    # No need to try and convert them into arrays
+                    # since asarray throws unpredictable bugs
+                    if _check_in_nested_sequence(arg, value=Ellipsis, _type=slice):
+                        continue
+                    if ivy.is_native_array(arg) or isinstance(
+                        arg, (list, tuple, numbers.Number)
+                    ):
                         args[i] = ivy.array(arg)
                 elif parameters in kwargs:
                     kwarg = kwargs[parameter]
-                    if not ivy.is_array(arg):
+                    if ivy.is_native_array(kwarg) or isinstance(
+                        kwarg, (list, tuple, numbers.Number)
+                    ):
                         kwargs[parameter] = ivy.array(kwarg)
 
         return fn(*args, **kwargs)
@@ -440,6 +472,7 @@ def infer_dtype(fn: Callable) -> Callable:
         arr = None if ivy.exists(dtype) else _get_first_array(*args, **kwargs)
         # infer the correct data type
         dtype = ivy.default_dtype(dtype=dtype, item=arr, as_native=True)
+        ivy.utils.assertions._check_jax_x64_flag(dtype)
         # call the function with dtype provided explicitly
         return fn(*args, dtype=dtype, **kwargs)
 
@@ -694,6 +727,11 @@ def _wrap_function(
                     "inputs_to_native_arrays",
                 ],
             }
+            # if the backend has a primary implementation
+            # we'll store the compositional fn's reference
+            # for the handle_mixed_function decorator
+            if to_wrap != original:
+                to_wrap.compos = original
             for attr in to_replace[compositional]:
                 setattr(original, attr, True)
 
@@ -705,6 +743,7 @@ def _wrap_function(
 
 # Gets dtype from a version dictionary
 def _dtype_from_version(dic, version):
+
     # if version is a string, it's a frontend function
     if isinstance(version, str):
         version = ivy.functional.frontends.__dict__["versions"][version]
@@ -730,7 +769,6 @@ def _dtype_from_version(dic, version):
     for key in dic.keys():
         kl = key.split(" ")
         k1 = tuple(map(int, kl[0].split(".")))
-
         if "above" in key and k1 <= version_tuple:
             return dic[key]
         if "below" in key and k1 >= version_tuple:
@@ -785,7 +823,7 @@ def _dtype_device_wrapper_creator(attrib, t):
 
     """
 
-    def _wrapper_outer(version_dict, version):
+    def _wrapper_outer(version_dict, version, exclusive=True):
 
         typesets = {
             "valid": ivy.valid_dtypes,
@@ -806,8 +844,38 @@ def _dtype_device_wrapper_creator(attrib, t):
             val = _versioned_attribute_factory(
                 lambda: _dtype_from_version(version_dict, version), t
             )
+            if hasattr(func, "override"):
+                # we do nothing
+                return func
+            if not exclusive:
+                setattr(func, "exclusive", True)
             # set the attribute on the function and return the function as is
-            setattr(func, attrib, val)
+
+            has_attrib = [
+                attribute for attribute in attribute_dict if hasattr(func, attribute)
+            ] or False
+            if has_attrib:
+                for attribs in has_attrib:
+                    if not (
+                        attrib == attribs or (attrib, attribs) in attribute_conflict
+                    ):
+                        setattr(func, attrib, val)
+                        setattr(func, "dictionary_info", version_dict)
+                    elif hasattr(func, "exclusive"):
+                        if attrib == attribs:
+                            old_version_dict = getattr(func, "dictionary_info")
+                            old_version_dict.update(version_dict)
+                            val = _versioned_attribute_factory(
+                                lambda: _dtype_from_version(version_dict, version), t
+                            )
+                            setattr(func, attrib, val)
+                        else:
+                            # for conflicting ones we do nothing
+                            pass
+            else:
+                setattr(func, attrib, val)
+                setattr(func, "dictionary_info", version_dict)
+
             return func
 
         return _wrapped
@@ -881,14 +949,330 @@ def handle_nans(fn: Callable) -> Callable:
     return new_fn
 
 
-# Decorators to allow for versioned attributes
-with_unsupported_dtypes = _dtype_device_wrapper_creator("unsupported_dtypes", tuple)
-with_supported_dtypes = _dtype_device_wrapper_creator("supported_dtypes", tuple)
-with_unsupported_devices = _dtype_device_wrapper_creator("unsupported_devices", tuple)
-with_supported_devices = _dtype_device_wrapper_creator("supported_devices", tuple)
-with_unsupported_device_and_dtypes = _dtype_device_wrapper_creator(
-    "unsupported_device_and_dtype", dict
-)
-with_supported_device_and_dtypes = _dtype_device_wrapper_creator(
-    "supported_device_and_dtype", dict
-)
+def handle_mixed_function(condition) -> Callable:
+    def inner_function(fn):
+        @functools.wraps(fn)
+        def new_fn(*args, **kwargs):
+            compos = getattr(new_fn, "compos")
+            if condition(*args, **kwargs):
+                return fn(*args, **kwargs)
+
+            return compos(*args, **kwargs)
+
+        new_fn.handle_mixed_functions = True
+        return new_fn
+
+    return inner_function
+
+
+attribute_dict = {
+    "unsupported_dtypes",
+    "supported_dtypes",
+    "unsupported_devices",
+    "supported_devices",
+    "unsupported_device_and_dtype",
+    "supported_device_and_dtype",
+}
+
+
+attribute_conflict = {
+    ("unsupported_devices", "supported_devices"),
+    ("supported_devices", "unsupported_devices"),
+    ("unsupported_device_and_dtype", "supported_device_and_dtype"),
+    ("supported_device_and_dtype", "unsupported_device_and_dtype"),
+}
+
+
+def globals_getter_func(x=None):
+    # define and assign this function to
+    # ivy.func_wrapper.globals_getter_func in the module
+    # where you want to use the decorators as a context
+    # manager
+    if not x:
+        return globals()
+    else:
+        globals()[x[0]] = x[1]
+
+
+class with_unsupported_dtypes(contextlib.ContextDecorator):
+    def __init__(self, *args, **kwargs):
+        self.args = args
+        self.kwargs = kwargs
+        self.globals = {}
+
+    def __call__(self, func=None):
+        if func:
+            return (
+                _dtype_device_wrapper_creator("unsupported_dtypes", tuple)(
+                    *self.args, **self.kwargs
+                )
+            )(func)
+
+    def __enter__(self):
+        self.globals = globals_getter_func().copy()  # global snapshot baby
+
+    def __exit__(self, *exec):
+        new_globals = set(globals_getter_func().keys())
+        diff = new_globals.difference(set(self.globals))
+        for item in diff:
+            if globals_getter_func().get(item, None):
+                if isinstance(globals_getter_func()[item], FunctionType):
+                    # we need to add the decorator
+                    globals_getter_func(
+                        [
+                            item,
+                            (
+                                _dtype_device_wrapper_creator(
+                                    "unsupported_dtypes", tuple
+                                )(*self.args, **self.kwargs)
+                            )(globals_getter_func()[item]),
+                        ]
+                    )
+
+
+class with_supported_dtypes(contextlib.ContextDecorator):
+    def __init__(self, *args, **kwargs):
+        self.args = args
+        self.kwargs = kwargs
+        self.globals = {}
+
+    def __call__(self, func=None):
+        if func:
+            return (
+                _dtype_device_wrapper_creator("supported_dtypes", tuple)(
+                    *self.args, **self.kwargs
+                )
+            )(func)
+
+    def __enter__(self):
+        self.globals = globals_getter_func().copy()  # global snapshot baby
+
+    def __exit__(self, *exec):
+        new_globals = set(globals_getter_func().keys())
+        diff = new_globals.difference(set(self.globals))
+        for item in diff:
+            if globals_getter_func().get(item, None):
+                if isinstance(globals_getter_func()[item], FunctionType):
+                    # we need to add the decorator
+                    globals_getter_func(
+                        [
+                            item,
+                            (
+                                _dtype_device_wrapper_creator(
+                                    "supported_dtypes", tuple
+                                )(*self.args, **self.kwargs)
+                            )(globals_getter_func()[item]),
+                        ]
+                    )
+
+
+class with_unsupported_devices(contextlib.ContextDecorator):
+    def __init__(self, *args, **kwargs):
+        self.args = args
+        self.kwargs = kwargs
+        self.globals = {}
+
+    def __call__(self, func=None):
+        if func:
+            return (
+                _dtype_device_wrapper_creator("unsupported_devices", tuple)(
+                    *self.args, **self.kwargs
+                )
+            )(func)
+
+    def __enter__(self):
+        self.globals = globals_getter_func().copy()  # global snapshot baby
+
+    def __exit__(self, *exec):
+        new_globals = set(globals_getter_func().keys())
+        diff = new_globals.difference(set(self.globals))
+        for item in diff:
+            if globals_getter_func().get(item, None):
+                if isinstance(globals_getter_func()[item], FunctionType):
+                    # we need to add the decorator
+                    globals_getter_func(
+                        [
+                            item,
+                            (
+                                _dtype_device_wrapper_creator(
+                                    "unsupported_devices", tuple
+                                )(*self.args, **self.kwargs)
+                            )(globals_getter_func()[item]),
+                        ]
+                    )
+
+
+class with_supported_devices(contextlib.ContextDecorator):
+    def __init__(self, *args, **kwargs):
+        self.args = args
+        self.kwargs = kwargs
+        self.globals = {}
+
+    def __call__(self, func=None):
+        if func:
+            return (
+                _dtype_device_wrapper_creator("supported_devices", tuple)(
+                    *self.args, **self.kwargs
+                )
+            )(func)
+
+    def __enter__(self):
+        self.globals = globals_getter_func().copy()  # global snapshot baby
+
+    def __exit__(self, *exec):
+        new_globals = set(globals_getter_func().keys())
+        diff = new_globals.difference(set(self.globals))
+        for item in diff:
+            if globals_getter_func().get(item, None):
+                if isinstance(globals_getter_func()[item], FunctionType):
+                    # we need to add the decorator
+                    globals_getter_func(
+                        [
+                            item,
+                            (
+                                _dtype_device_wrapper_creator(
+                                    "supported_devices", tuple
+                                )(*self.args, **self.kwargs)
+                            )(globals_getter_func()[item]),
+                        ]
+                    )
+
+
+class with_unsupported_device_and_dtypes(contextlib.ContextDecorator):
+    def __init__(self, *args, **kwargs):
+        # arg inspection
+        dicti = args[0]
+        self.kwargs = kwargs
+        # iterate through the keys
+        for key in dicti.keys():
+            # maintain a dictionary for nested dictionary
+            nested_dic = {}
+            for nested_key in dicti[key].keys():
+                if nested_key == "all":
+                    nested_dic["cpu"] = dicti[key].get("cpu", ()) + tuple(
+                        dicti[key]["all"]
+                    )
+                    nested_dic["tpu"] = dicti[key].get("tpu", ()) + tuple(
+                        dicti[key]["all"]
+                    )
+                    nested_dic["gpu"] = dicti[key].get("gpu", ()) + tuple(
+                        dicti[key]["all"]
+                    )
+                else:
+                    nested_dic[nested_key] = dicti[key].get(nested_key, ()) + tuple(
+                        dicti[key][nested_key]
+                    )
+            dicti[key] = nested_dic
+        args = (dicti, args[1])
+
+        self.args = args
+        self.globals = {}
+
+    def __call__(self, func=None):
+        if func:
+            return (
+                _dtype_device_wrapper_creator("unsupported_device_and_dtype", tuple)(
+                    *self.args, **self.kwargs
+                )
+            )(func)
+
+    def __enter__(self):
+
+        self.globals = globals_getter_func().copy()  # global snapshot baby
+
+    def __exit__(self, *exec):
+        new_globals = set(globals_getter_func().keys())
+        diff = new_globals.difference(set(self.globals.keys()))
+        for item in diff:
+            if globals_getter_func().get(item, None):
+                if isinstance(globals_getter_func()[item], FunctionType):
+                    # we need to add the decorator
+                    globals_getter_func(
+                        [
+                            item,
+                            (
+                                _dtype_device_wrapper_creator(
+                                    "unsupported_device_and_dtype", tuple
+                                )(*self.args, **self.kwargs)
+                            )(globals_getter_func()[item]),
+                        ]
+                    )
+
+
+class with_supported_device_and_dtypes(contextlib.ContextDecorator):
+    def __init__(self, *args, **kwargs):
+        # arg inspection
+        dicti = args[0]
+        self.kwargs = kwargs
+        # iterate through the keys
+        for key in dicti.keys():
+            # maintain a dictionary for nested dictionary
+            nested_dic = {}
+            for nested_key in dicti[key].keys():
+                if nested_key == "all":
+                    nested_dic["cpu"] = dicti[key].get("cpu", ()) + tuple(
+                        dicti[key]["all"]
+                    )
+                    nested_dic["tpu"] = dicti[key].get("tpu", ()) + tuple(
+                        dicti[key]["all"]
+                    )
+                    nested_dic["gpu"] = dicti[key].get("gpu", ()) + tuple(
+                        dicti[key]["all"]
+                    )
+                else:
+                    nested_dic[nested_key] = dicti[key].get(nested_key, ()) + tuple(
+                        dicti[key][nested_key]
+                    )
+            dicti[key] = nested_dic
+        args = (dicti, args[1])
+
+        self.args = args
+        self.globals = {}
+
+    def __call__(self, func=None):
+        if func:
+            return (
+                _dtype_device_wrapper_creator("supported_device_and_dtype", tuple)(
+                    *self.args, **self.kwargs
+                )
+            )(func)
+
+    def __enter__(self):
+        self.globals = globals_getter_func().copy()  # global snapshot baby
+
+    def __exit__(self, *exec):
+        new_globals = set(globals_getter_func().keys())
+        diff = new_globals.difference(set(self.globals))
+        for item in diff:
+            if globals_getter_func().get(item, None):
+                if isinstance(globals_getter_func()[item], FunctionType):
+                    # we need to add the decorator
+                    globals_getter_func(
+                        [
+                            item,
+                            (
+                                _dtype_device_wrapper_creator(
+                                    "supported_device_and_dtype", tuple
+                                )(*self.args, **self.kwargs)
+                            )(globals_getter_func()[item]),
+                        ]
+                    )
+
+
+class override(contextlib.ContextDecorator):
+    def __call__(self, func=None):
+        if func:
+            setattr(func, "override")
+            return func
+
+    def __enter__(self):
+        self.globals = globals_getter_func().copy()  # global snapshot baby
+
+    def __exit__(self, *exec):
+        new_globals = set(globals().keys())
+        diff = new_globals.difference(set(self.globals))
+        for item in diff:
+            if globals_getter_func().get(item, None):
+                if isinstance(globals_getter_func()[item], FunctionType):
+                    # we need to add the decorator
+                    globals_getter_func([item, "override"])

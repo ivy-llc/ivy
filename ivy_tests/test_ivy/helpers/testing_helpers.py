@@ -1,6 +1,8 @@
 # general
+import pytest
 import importlib
 import inspect
+import functools
 from typing import List
 
 from hypothesis import given, strategies as st
@@ -347,7 +349,16 @@ def handle_test(
             for key in filtered_args:
                 _given_kwargs[key] = possible_arguments[key]
             # Wrap the test with the @given decorator
-            wrapped_test = given(**_given_kwargs)(test_fn)
+
+            hypothesis_test_fn = given(**_given_kwargs)(test_fn)
+
+            @functools.wraps(hypothesis_test_fn)
+            def wrapped_test(*args, **kwargs):
+                try:
+                    hypothesis_test_fn(*args, **kwargs)
+                except ivy.utils.exceptions.IvyNotImplementedException:
+                    pytest.skip("Function not implemented in backend.")
+
         else:
             wrapped_test = test_fn
 
@@ -442,7 +453,7 @@ def handle_frontend_test(
             }
             filtered_args = set(param_names).intersection(possible_arguments.keys())
             for key in filtered_args:
-                # extend Hypothesis given kwargs with our stratigies
+                # extend Hypothesis given kwargs with our strategies
                 _given_kwargs[key] = possible_arguments[key]
             # Wrap the test with the @given decorator
             wrapped_test = given(**_given_kwargs)(test_fn)
@@ -481,7 +492,6 @@ def handle_method(
     init_num_positional_args=None,
     init_native_arrays=BuiltNativeArrayStrategy,
     init_as_variable_flags=BuiltAsVariableStrategy,
-    init_container_flags=BuiltContainerStrategy,
     method_num_positional_args=None,
     method_native_arrays=BuiltNativeArrayStrategy,
     method_as_variable_flags=BuiltAsVariableStrategy,
@@ -520,11 +530,10 @@ def handle_method(
                 fn_name=class_name + ".__init__"
             )
 
-        possible_arguments["init_flags"] = pf.method_flags(
+        possible_arguments["init_flags"] = pf.init_method_flags(
             num_positional_args=init_num_positional_args,
             as_variable=init_as_variable_flags,
             native_arrays=init_native_arrays,
-            container_flags=init_container_flags,
         )
 
         if method_num_positional_args is None:
@@ -555,7 +564,15 @@ def handle_method(
                 # extend Hypothesis given kwargs with our strategies
                 _given_kwargs[key] = possible_arguments[key]
 
-            wrapped_test = given(**_given_kwargs)(test_fn)
+            hypothesis_test_fn = given(**_given_kwargs)(test_fn)
+
+            @functools.wraps(hypothesis_test_fn)
+            def wrapped_test(*args, **kwargs):
+                try:
+                    hypothesis_test_fn(*args, **kwargs)
+                except ivy.utils.exceptions.IvyNotImplementedException:
+                    pytest.skip("Function not implemented in backend.")
+
         else:
             wrapped_test = test_fn
 

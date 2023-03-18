@@ -257,32 +257,51 @@ def test_dct(
 
 
 @st.composite
-def _interp_args(draw, mode=None, scale_factor=False):
-    if not mode:
+def _interp_args(draw, mode=None, mode_list=None):
+    if not mode and not mode_list:
         mode = draw(
-            st.sampled_from(["linear", "bilinear", "trilinear", "nearest", "area"])
+            st.sampled_from(
+                [
+                    "linear",
+                    "bilinear",
+                    "trilinear",
+                    "nearest",
+                    "nearest-exact",
+                    "area",
+                    "tf_area",
+                    "bicubic_tensorflow",
+                    "lanczos3",
+                    "lanczos5",
+                    "mitchellcubic",
+                    "gaussian",
+                ]
+            )
         )
+    elif mode_list:
+        mode = draw(st.sampled_from(mode_list))
     align_corners = draw(st.one_of(st.booleans(), st.none()))
     if mode == "linear":
         num_dims = 3
-    elif mode == "bilinear":
+    elif mode in [
+        "bilinear",
+        "bicubic_tensorflow",
+        "bicubic",
+        "mitchellcubic",
+        "gaussian",
+    ]:
         num_dims = 4
     elif mode == "trilinear":
         num_dims = 5
-    elif mode == "nearest" or mode == "area":
-        dim = draw(helpers.ints(min_value=1, max_value=3))
-        num_dims = dim + 2
+    elif mode in [
+        "nearest",
+        "area",
+        "tf_area",
+        "lanczos3",
+        "lanczos5",
+        "nearest-exact",
+    ]:
+        num_dims = draw(helpers.ints(min_value=1, max_value=3)) + 2
         align_corners = None
-    size = draw(
-        st.one_of(
-            helpers.lists(
-                x=helpers.ints(min_value=1, max_value=5),
-                min_size=num_dims - 2,
-                max_size=num_dims - 2,
-            ),
-            st.integers(min_value=1, max_value=5),
-        )
-    )
     dtype, x = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float"),
@@ -295,25 +314,33 @@ def _interp_args(draw, mode=None, scale_factor=False):
             safety_factor_scale="log",
         )
     )
-    if scale_factor:
-        scale_factor = draw(st.booleans())
-        if scale_factor:
-            recompute_scale_factor = draw(st.booleans())
-            scale_factors = size
-            size = None
-        else:
-            scale_factors = None
-            recompute_scale_factor = False
-        return (
-            dtype,
-            x,
-            mode,
-            size,
-            align_corners,
-            scale_factors,
-            recompute_scale_factor,
+    if draw(st.booleans()):
+        scale_factor = draw(
+            st.one_of(
+                helpers.lists(
+                    x=st.floats(min_value=1.0, max_value=2.0),
+                    min_size=num_dims - 2,
+                    max_size=num_dims - 2,
+                ),
+                st.floats(min_value=1.0, max_value=2.0),
+            )
         )
-    return dtype, x, mode, size, align_corners
+        recompute_scale_factor = draw(st.booleans())
+        size = None
+    else:
+        size = draw(
+            st.one_of(
+                helpers.lists(
+                    x=helpers.ints(min_value=1, max_value=3),
+                    min_size=num_dims - 2,
+                    max_size=num_dims - 2,
+                ),
+                st.integers(min_value=1, max_value=3),
+            )
+        )
+        recompute_scale_factor = False
+        scale_factor = None
+    return (dtype, x, mode, size, align_corners, scale_factor, recompute_scale_factor)
 
 
 @handle_test(
@@ -332,22 +359,40 @@ def test_interpolate(
     on_device,
     ground_truth_backend,
 ):
-    input_dtype, x, mode, size, align_corners = dtype_x_mode
-    helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        rtol_=1e-01,
-        atol_=1e-01,
-        x=x[0],
-        size=size,
-        mode=mode,
-        align_corners=align_corners,
-        antialias=antialias,
-    )
+    (
+        input_dtype,
+        x,
+        mode,
+        size,
+        align_corners,
+        scale_factor,
+        recompute_scale_factor,
+    ) = dtype_x_mode
+    try:
+        helpers.test_function(
+            ground_truth_backend=ground_truth_backend,
+            input_dtypes=input_dtype,
+            test_flags=test_flags,
+            fw=backend_fw,
+            fn_name=fn_name,
+            on_device=on_device,
+            rtol_=1e-01,
+            atol_=1e-01,
+            x=x[0],
+            size=size,
+            mode=mode,
+            align_corners=align_corners,
+            antialias=antialias,
+            scale_factor=scale_factor,
+            recompute_scale_factor=recompute_scale_factor,
+        )
+    except Exception as e:
+        if hasattr(e, "message") and (
+            "output dimensions must be positive" in e.message
+            or "Input and output sizes should be greater than 0" in e.message
+        ):
+            assume(False)
+        raise e
 
 
 @st.composite
@@ -655,6 +700,7 @@ def test_adaptive_avg_pool1d(
     test_flags,
     backend_fw,
     fn_name,
+    on_device,
     ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
@@ -664,6 +710,7 @@ def test_adaptive_avg_pool1d(
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
+        on_device=on_device,
         input=x[0],
         output_size=output_size,
     )
@@ -679,8 +726,11 @@ def test_adaptive_avg_pool1d(
         max_value=100,
         min_value=-100,
     ),
-    output_size=st.tuples(
-        helpers.ints(min_value=1, max_value=10),
+    output_size=st.one_of(
+        st.tuples(
+            helpers.ints(min_value=1, max_value=10),
+            helpers.ints(min_value=1, max_value=10),
+        ),
         helpers.ints(min_value=1, max_value=10),
     ),
     test_with_out=st.just(False),
@@ -694,6 +744,7 @@ def test_adaptive_avg_pool2d(
     test_flags,
     backend_fw,
     fn_name,
+    on_device,
     ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
@@ -702,6 +753,7 @@ def test_adaptive_avg_pool2d(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
+        on_device=on_device,
         fn_name=fn_name,
         input=x[0],
         output_size=output_size,

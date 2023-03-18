@@ -98,14 +98,15 @@ def softmax(input, dim=None, _stacklevel=3, dtype=None):
     },
     "torch",
 )
-def gelu(
-    input,
-):  # , *, approximate="none"): ToDo: approximate is added in in PyTorch 1.12.1
-    # if approximate == "none":
-    # approximate = False
-    # else:
-    # approximate = True
-    return ivy.gelu(input, approximate=False)
+def gelu(input, *, approximate="none"):
+    if approximate == "none":
+        return ivy.gelu(input, approximate=False)
+    elif approximate == "tanh":
+        return ivy.gelu(input, approximate=True)
+    else:
+        raise ivy.utils.exceptions.IvyException(
+            "`approximate` argument must be either 'none' or 'tanh'."
+        )
 
 
 @to_ivy_arrays_and_back
@@ -244,6 +245,7 @@ def softshrink(input, lambd=0.5):
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+@to_ivy_arrays_and_back
 def silu(input, inplace=False):
     ret = ivy.multiply(input, ivy.sigmoid(input))
     if inplace:
@@ -281,6 +283,7 @@ def leaky_relu_(input, negative_slope=0.01):
     return input
 
 
+@to_ivy_arrays_and_back
 def hardswish(input, inplace=False):
     relu6_val = ivy.relu6(ivy.add(input, 3))
     ret = ivy.multiply(input, ivy.divide(relu6_val, 6))
@@ -290,6 +293,7 @@ def hardswish(input, inplace=False):
     return ret
 
 
+@to_ivy_arrays_and_back
 def hardsigmoid(input, inplace=False):
     ret = ivy.divide(ivy.minimum(ivy.maximum(ivy.add(input, 3), 0), 6), 6)
     if inplace:

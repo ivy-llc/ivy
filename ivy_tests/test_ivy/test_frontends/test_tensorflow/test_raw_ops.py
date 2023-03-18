@@ -66,6 +66,99 @@ def test_tensorflow_Acosh(  # NOQA
     )
 
 
+# Angle
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Angle",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("complex"),
+    ),
+    Tout=helpers.get_dtypes("float", full=False),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Angle(  # NOQA
+    *,
+    dtype_and_xs,
+    Tout,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, xs = dtype_and_xs
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=xs[0],
+        Tout=Tout,
+    )
+
+
+# ApproximateEqual
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.ApproximateEqual",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    tol=st.floats(1e-05, 1e-03),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_ApproximateEqual(  # NOQA
+    *,
+    dtype_and_x,
+    tol,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=xs[0],
+        y=xs[1],
+        tolerance=tol,
+    )
+
+
+# AddV2
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.AddV2",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_AddV2(  # NOQA
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
+
+
 # Add
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Add",
@@ -1122,6 +1215,36 @@ def test_tensorflow_Floor(  # NOQA
     test_with_out=st.just(False),
 )
 def test_tensorflow_FloorDiv(  # NOQA
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=xs[0],
+        y=xs[1],
+    )
+
+
+# FloorMod
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.FloorMod",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_FloorMod(  # NOQA
     *,
     dtype_and_x,
     frontend,
@@ -3111,4 +3234,195 @@ def test_tensorflow_LinSpace(
         stop=stop,
         num=num,
         on_device=on_device,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Roll",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+    ),
+    shift=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+        force_tuple=True,
+    ),
+    axis=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+        force_tuple=True,
+    ),
+)
+def test_tensorflow_roll(
+    *,
+    dtype_and_values,
+    shift,
+    axis,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, value = dtype_and_values
+    if isinstance(shift, int) and isinstance(axis, tuple):
+        axis = axis[0]
+    if isinstance(shift, tuple) and isinstance(axis, tuple):
+        if len(shift) != len(axis):
+            mn = min(len(shift), len(axis))
+            shift = shift[:mn]
+            axis = axis[:mn]
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=value[0],
+        shift=shift,
+        axis=axis,
+    )
+
+
+# CumulativeLogsumexp
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.CumulativeLogsumexp",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_CumulativeLogsumexp(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    axis,
+    exclusive,
+    reverse,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
+        exclusive=exclusive,
+        reverse=reverse,
+    )
+
+
+# Complex
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Complex",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Complex(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    real,
+    imag,
+    Tout,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        real=x[0],
+        imag=x[1],
+        Tout=Tout,
+    )
+
+
+# AccumulateNV2
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.AccumulateNV2",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_AccumulateNV2(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    inputs,
+    shape,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        inputs=x[0],
+        shape=x[1],
+    )
+
+
+# DebugGradientIdentity
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.DebugGradientIdentity",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_DebugGradientIdentity(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+    )
+
+
+# Real
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Real",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Real(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    Tout,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        Tout=Tout,
     )

@@ -10,16 +10,18 @@ def _clear_cache():
 
 
 def _from_import(name: str, package=None, mod_globals=None, from_list=(), level=0):
-    """
-    Handles absolute and relative from_import statmement
-    """
+    """Handles absolute and relative from_import statement"""
     module_exist = name != ""
     name = "." * level + name
     module = _import_module(name, package)
     for entry_name, entry_asname in from_list:
         if entry_name == "*":
             if "__all__" in module.__dict__.keys():
-                _all = module.__dict__["__all__"]
+                _all = {
+                    k: v
+                    for (k, v) in module.__dict__.items()
+                    if k in module.__dict__["__all__"]
+                }
             else:
                 _all = {
                     k: v for (k, v) in module.__dict__.items() if not k.startswith("__")

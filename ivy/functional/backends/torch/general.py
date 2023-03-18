@@ -16,7 +16,7 @@ import torch
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.general import _parse_ellipsis
-from . import backend_version
+from . import backend_version, is_variable
 
 torch_scatter = None
 
@@ -52,7 +52,7 @@ def is_native_array(x, /, *, exclusive=False):
     return False
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"1.11.0 and below": ("complex", "bfloat16")}, backend_version)
 def array_equal(x0: torch.Tensor, x1: torch.Tensor, /) -> bool:
     x0, x1 = ivy.promote_types_of_inputs(x0, x1)
     return torch.equal(x0, x1)
@@ -152,8 +152,8 @@ def gather(
     indices: torch.Tensor,
     /,
     *,
-    axis: Optional[int] = -1,
-    batch_dims: Optional[int] = 0,
+    axis: int = -1,
+    batch_dims: int = 0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     axis = axis % len(params.shape)
@@ -218,7 +218,7 @@ def gather_nd(
     indices: torch.Tensor,
     /,
     *,
-    batch_dims: Optional[int] = 0,
+    batch_dims: int = 0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     ivy.utils.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
@@ -289,7 +289,10 @@ def inplace_update(
     ivy.utils.assertions.check_inplace_sizes_valid(x, val)
     if ivy.is_array(x) and ivy.is_array(val):
         (x_native, val_native), _ = ivy.args_to_native(x, val)
-        x_native.data = val_native
+        if is_variable(x_native):
+            x_native.data = val_native
+        else:
+            x_native[()] = val_native
         if ivy.is_ivy_array(x):
             x.data = x_native
 
@@ -306,7 +309,7 @@ def inplace_variables_supported():
     return True
 
 
-def multiprocessing(context=None):
+def multiprocessing(context: Optional[str] = None):
     import torch.multiprocessing
 
     if context is None:
@@ -586,7 +589,7 @@ def shape(
 def vmap(
     func: Callable,
     in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
-    out_axes: Optional[int] = 0,
+    out_axes: int = 0,
 ) -> Callable:
     def _vmap(*args):
         new_fun = lambda *args: ivy.to_native(func(*args))
