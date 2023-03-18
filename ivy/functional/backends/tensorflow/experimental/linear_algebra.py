@@ -150,18 +150,20 @@ def multi_dot(
     return dot_out
 
 
-def solve_traingular(
+def solve_triangular(
     a: Union[tf.Tensor, tf.Variable],
     b: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    lower: bool = False,
+    lower: bool = True,
     adjoint: bool = False,
+    unit_diagonal: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.linalg.triangular_solve(
+    return tf.linalg.traingular_solve(
         a,
         b,
         lower=lower,
         adjoint=adjoint,
-    
+        unit_diagonal=unit_diagonal,
+    )

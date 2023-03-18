@@ -161,7 +161,14 @@ def solve_triangular(
     unit_diagonal: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.linalg.solve(a, b, out=out)
+    res = np.empty_like(b)
+    if lower:
+        for i in range(a.shape[0]):
+            res[i] = (b[i] - np.dot(a[i,:i], res[:i])) / a[i,i]
+    else:
+        for i in range(a.shape[0]-1, -1, -1):
+            res[i] = (b[i] - np.dot(a[i,i+1:], res[i+1:])) / a[i,i]
+    return res
 
 
 solve_triangular.support_native_out = True

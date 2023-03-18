@@ -841,3 +841,45 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
             to_apply=to_apply,
         )
     
+    def solve_triangular(
+        self: ivy.Container,
+        b: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        lower: bool = True,
+        transpose: bool = False,
+        conjugate: bool = False,
+        unit_diagonal: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.solve_triangular.
+        This method simply wraps the function, and so the docstring for
+        ivy.solve_triangular also applies to this method with minimal changes.
+
+        Examples
+        --------
+        >>> a = ivy.Container(x=ivy.array([[1., 0.], [2., 3.]]),
+        ...                   y=ivy.array([[1., 0.], [2., 3.]]))
+        >>> b = ivy.Container(x=ivy.array([1., 2.]),
+        ...                   y=ivy.array([1., 2.]))
+        >>> a.solve_triangular(b, lower=True)
+        {
+            x: ivy.array([1., 0.]),
+            y: ivy.array([1., 0.])
+        }
+        """
+        return self.static_solve_triangular(
+            self,
+            b,
+            lower=lower,
+            transpose=transpose,
+            conjugate=conjugate,
+            unit_diagonal=unit_diagonal,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            out=out,
+        )
+    
