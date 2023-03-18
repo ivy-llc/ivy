@@ -32,7 +32,7 @@ def is_variable(x, /, *, exclusive: bool = False):
 
 
 def variable_data(x: paddle.Tensor, /) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return x.value()
 
 
 def _grad_func(y, xs, retain_grads):
@@ -135,7 +135,27 @@ def execute_with_gradients(
 
 
 def value_and_grad(func):
-    raise IvyNotImplementedException()
+    grad_fn = lambda xs: ivy.to_native(func(xs))
+
+    def callback_fn(xs):
+        y = grad_fn(xs)
+
+        def autograd_fn(x):
+            x = ivy.to_native(x)
+            grad = paddle.grad(y, x, allow_unused=True)[0]
+            grad = (
+                grad
+                if grad is not None
+                else ivy.to_native(ivy.zeros_like(ivy.to_ivy(x)))
+            )
+            grad = ivy.to_ivy(grad)
+            return grad
+
+        grads = ivy.nested_map(xs, autograd_fn, include_derived=True, shallow=False)
+        y = ivy.to_ivy(y)
+        return y, grads
+
+    return callback_fn
 
 
 def stop_gradient(
@@ -153,8 +173,11 @@ def stop_gradient(
 
 
 def jac(func: Callable):
-
-    raise IvyNotImplementedException()
+    grad_fn = lambda x_in: ivy.to_native(func(x_in))
+    callback_fn = lambda x_in: ivy.to_ivy(
+        paddle.incubate.autograd.Jacobian(grad_fn, ivy.to_native(x_in))
+    )
+    return callback_fn
 
 
 def grad(func: Callable):
