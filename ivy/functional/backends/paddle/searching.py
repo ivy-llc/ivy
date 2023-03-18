@@ -118,5 +118,6 @@ def where(
 # ----- #
 
 
+    {"2.4.2 and below": ("uint16", "bfloat16")},
 def argwhere(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     raise IvyNotImplementedException()
