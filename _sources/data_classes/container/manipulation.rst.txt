@@ -13,5 +13,5 @@ Manipulation
    :maxdepth: -1
    :caption: Manipulation
 
-   manipulation/ContainerWithManipulation.rst
+   manipulation/_ContainerWithManipulation.rst
 
