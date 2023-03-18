@@ -266,17 +266,8 @@ def nextafter(
     x2: paddle.Tensor,
     /,
     *,
-    where: Optional[bool] = True,
-    casting: Optional[str] = 'same_kind',
-    order: Optional[str] = 'K',
-    dtype: Optional[paddle.dtype] = None,
-    subok: Optional[bool] = True,
-    out: Optional[paddle.Tensor] = None
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if x1.shape != x2.shape:
-        x1 = paddle.reshape(x1, shape=x2.shape)
-    if dtype is not None:
-        x1 = paddle.cast(x1, dtype)
     
     x3 = paddle.where(x1 < x2, 1, -1)
     x1 = paddle.add(x1, x3)
