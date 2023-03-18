@@ -115,8 +115,7 @@ def asarray(
             ret = obj.clone().detach()
             ret.stop_gradient = obj.stop_gradient
             return ret
-        else:
-            return obj
+        return obj
 
     elif isinstance(obj, (list, tuple, dict)) and len(obj) != 0:
         contain_tensor = False
@@ -145,7 +144,6 @@ def asarray(
         if dtype is None:
             dtype = ivy.promote_types(type(obj), type(obj))
         ret = paddle.full(shape=(), fill_value=obj).cast(dtype)
-        ret.stop_gradient = False
         return ret
 
     else:
@@ -154,22 +152,19 @@ def asarray(
     if dtype == paddle.bfloat16 and isinstance(obj, np.ndarray):
         if copy is True:
             ret = paddle.to_tensor(obj.tolist(), dtype=dtype).clone().detach()
-            ret.stop_gradient = False
             return ret
         else:
             ret = paddle.to_tensor(obj.tolist(), dtype=dtype)
-            ret.stop_gradient = False
             return ret
 
     if copy is True:
-        ret = paddle.to_tensor(obj, dtype=dtype, stop_gradient=False).clone().detach()
-        ret.stop_gradient = False
+        ret = paddle.to_tensor(obj, dtype=dtype).clone().detach()
         return ret
     else:
-        ret = obj.cast(dtype)
         if not ivy.is_native_array(obj):
-            ret = paddle.to_tensor(obj, dtype=dtype, stop_gradient=False)
-        ret.stop_gradient = False
+            ret = paddle.to_tensor(obj, dtype=dtype)
+        else:
+            ret = obj.cast(dtype)
         return ret
 
 
