@@ -733,10 +733,11 @@ class _ArrayWithGeneral(abc.ABC):
         max_norm
             float, the maximum value of the array norm.
         p
-            optional float, the p-value for computing the p-norm. Default is 2.
+            optional float, the p-value for computing the p-norm. 
+            Default is 2.
         out
-            optional output array, for writing the result to. It must have a shape
-            that the inputs broadcast to.
+            optional output array, for writing the result to. 
+            It must have a shape that the inputs broadcast to.
 
         Returns
         -------
@@ -1097,7 +1098,7 @@ class _ArrayWithGeneral(abc.ABC):
         val
             The array to update the variable with.
         ensure_in_backend
-            Whether or not to ensure that the `ivy.NativeArray` is also inplace updated.
+            Whether to ensure that the `ivy.NativeArray` is also inplace updated.
             In cases where it should be, backends which do not natively support inplace
             updates will raise an exception.
 
@@ -1108,7 +1109,6 @@ class _ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-
         With :class:`ivy.Array` input and default backend set as `numpy`:
 
         >>> x = ivy.array([1, 2, 3])

@@ -1,5 +1,6 @@
 # global
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 import ivy.functional.frontends.torch as torch_frontend
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
@@ -193,3 +194,19 @@ def vdot(input, other, *, out=None):
         raise RuntimeError("input must be 1D vectors")
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.vecdot(input, other, out=out)
+
+
+@to_ivy_arrays_and_back
+def dot(input, other, *, out=None):
+    if len(ivy.shape(input)) == 1 and len(ivy.shape(other)) == 1:
+        input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
+        return ivy.dot(input, other, out=out)
+    else:
+        raise RuntimeError("input must be 1D vectors")
+
+
+@with_unsupported_dtypes({"1.13.1 and below": ("float16", "bfloat16")}, "torch")
+def trapezoid(y, x=None, *, dx=None, dim=-1):
+    if x is not None:
+        y, x = torch_frontend.promote_types_of_torch_inputs(y, x)
+    return ivy.trapz(y, x=x, dx=dx, axis=dim)

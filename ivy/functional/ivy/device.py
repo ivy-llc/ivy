@@ -6,14 +6,26 @@ import gc
 import abc
 import math
 import psutil
-import pynvml
-from typing import Optional, Tuple
+import warnings
+import types
+from typing import Type, Optional, Tuple
 
 # noinspection PyUnresolvedReferences
 try:
-    pynvml.nvmlInit()
-except pynvml.NVMLError:
-    pass
+    import pynvml
+
+    try:
+        pynvml.nvmlInit()
+    except pynvml.NVMLError:
+        pass
+except ImportError:
+    warnings.warn(
+        "pynvml installation was not found in the environment,\
+         functionalities of the Ivy's device module will be limited.\
+         Please install pynvml if you wish to use GPUs with Ivy."
+    )
+    # nvidia-ml-py (pynvml) is not installed in CPU Dockerfile.
+
 from typing import Union, Callable, Iterable, Any
 
 # local
@@ -80,19 +92,32 @@ class DefaultDevice:
         ivy.set_default_device(self._dev)
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb) -> Union[ivy.Device, str]:
+    def __exit__(
+        self,
+        exc_type: Optional[Type[BaseException]],
+        exc_val: Optional[Type[BaseException]],
+        exc_tb: Optional[types.TracebackType],
+    ) -> Union[ivy.Device, str]:
         """
         Exit the runtime context related to the specified device.
+
+        Parameters
+        ----------
+        exc_type
+            The type of the exception that was raised.
+        exc_val
+            The exception that was raised.
+        exc_tb
+            The traceback of the exception that was raised.
 
         Returns
         -------
         ret
-            Self, an instance of the same class.
+            If no exception was raised, returns an instance of the same class.
 
         Examples
         --------
         A "gpu" as device:
-
         >>> with ivy.DefaultDevice("gpu") as device:
         >>>     pass
         >>> # after with block device.__exit__() is called
@@ -200,7 +225,9 @@ def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int
 @handle_nestable
 @handle_exceptions
 def print_all_ivy_arrays_on_dev(
-    *, device: Union[ivy.Device, ivy.NativeDevice] = None, attr_only: bool = True
+    *,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    attr_only: bool = True,
 ) -> None:
     """
     Prints the shape and dtype for all ivy arrays which are currently alive on the
@@ -241,6 +268,7 @@ def print_all_ivy_arrays_on_dev(
 
 @handle_nestable
 @handle_exceptions
+@to_native_arrays_and_back
 def dev(
     x: Union[ivy.Array, ivy.NativeArray], /, *, as_native: bool = False
 ) -> Union[ivy.Device, ivy.NativeDevice]:
@@ -350,23 +378,23 @@ def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> ivy.NativeD
 
 
 @handle_exceptions
-def clear_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> None:
+def clear_cached_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> None:
     """Clear memory cache on target device.
 
     Parameters
     ----------
     device
-        The device string to convert to native device handle.
+        The device string to convert to native device handle or native device handle.
 
     Examples
     --------
     >>> import torch
     >>> ivy.set_backend("torch")
     >>> device = torch.device("cuda")
-    >>> ivy.clear_mem_on_dev(device)
+    >>> ivy.clear_cached_mem_on_dev(device)
 
     """
-    ivy.current_backend(None).clear_mem_on_dev(device)
+    ivy.current_backend().clear_cached_mem_on_dev(device)
 
 
 @handle_exceptions
@@ -446,13 +474,14 @@ def used_mem_on_dev(
     0.525205504
 
     """
-    ivy.clear_mem_on_dev(device)
+    ivy.clear_cached_mem_on_dev(device)
     if "gpu" in device:
-        ivy.utils.assertions.check_false(
-            process_specific,
-            "process-specific GPU queries are currently not supported",
-        )
         handle = _get_nvml_gpu_handle(device)
+        if process_specific:
+            pid = os.getpid()
+            for process in pynvml.nvmlDeviceGetComputeRunningProcesses(handle):
+                if process.pid == pid:
+                    return process.usedGpuMemory / 1e9
         info = pynvml.nvmlDeviceGetMemoryInfo(handle)
         return info.used / 1e9
     elif device == "cpu":
@@ -506,14 +535,15 @@ def percent_used_mem_on_dev(
     0.7095597456708771
 
     """
-    ivy.clear_mem_on_dev(device)
+    ivy.clear_cached_mem_on_dev(device)
     if "gpu" in device:
-        ivy.utils.assertions.check_false(
-            process_specific,
-            "process-specific GPU queries are currently not supported",
-        )
         handle = _get_nvml_gpu_handle(device)
         info = pynvml.nvmlDeviceGetMemoryInfo(handle)
+        if process_specific:
+            pid = os.getpid()
+            for process in pynvml.nvmlDeviceGetComputeRunningProcesses(handle):
+                if process.pid == pid:
+                    return (process.usedGpuMemory / info.total) * 100
         return (info.used / info.total) * 100
     elif device == "cpu":
         vm = psutil.virtual_memory()
@@ -656,10 +686,10 @@ def tpu_is_available() -> bool:
 # noinspection PyShadowingNames
 @handle_exceptions
 def default_device(
-    device: Union[ivy.Device, ivy.NativeDevice] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     /,
     *,
-    item: Union[list, tuple, dict, ivy.Array, ivy.NativeArray] = None,
+    item: Optional[Union[list, tuple, dict, ivy.Array, ivy.NativeArray]] = None,
     as_native: bool = None,
 ) -> Union[ivy.Device, ivy.NativeDevice]:
     """Returns the input device or the default device.
@@ -832,7 +862,10 @@ def to_device(
 
 
 @handle_exceptions
-def split_factor(device: Union[ivy.Device, ivy.NativeDevice] = None, /) -> float:
+def split_factor(
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    /,
+) -> float:
     """
     Get a device's global split factor, which can be used to scale the device's
     batch splitting chunk sizes across the codebase.
@@ -870,7 +903,7 @@ def split_factor(device: Union[ivy.Device, ivy.NativeDevice] = None, /) -> float
 
 @handle_exceptions
 def set_split_factor(
-    factor: float, /, *, device: Union[ivy.Device, ivy.NativeDevice] = None
+    factor: float, /, *, device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None
 ) -> None:
     """Set the global split factor for a given device, which can be used to scale batch
     splitting chunk sizes for the device across the codebase.
@@ -922,12 +955,12 @@ def split_func_call(
     mode: str,
     /,
     *,
-    max_chunk_size: int = None,
-    chunk_size: int = None,
+    max_chunk_size: Optional[int] = None,
+    chunk_size: Optional[int] = None,
     input_axes: Union[int, Iterable[int]] = 0,
-    output_axes: Union[int, Iterable[int]] = None,
+    output_axes: Optional[Union[int, Iterable[int]]] = None,
     stop_gradients: bool = False,
-    device: Union[ivy.Device, ivy.NativeDevice] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Call a function by splitting its inputs along a given axis, and calling the
     function in chunks, rather than feeding the entire input array at once. This can be
@@ -1098,7 +1131,7 @@ def _get_devices(fn, complement=True):
 
 @handle_nestable
 @handle_exceptions
-def function_supported_devices(fn: Callable, recurse=True) -> Tuple:
+def function_supported_devices(fn: Callable, recurse: bool = True) -> Tuple:
     """Returns the supported devices of the current backend's function.
 
     Parameters
@@ -1136,7 +1169,7 @@ def function_supported_devices(fn: Callable, recurse=True) -> Tuple:
 
 @handle_nestable
 @handle_exceptions
-def function_unsupported_devices(fn: Callable, recurse=True) -> Tuple:
+def function_unsupported_devices(fn: Callable, recurse: bool = True) -> Tuple:
     """Returns the unsupported devices of the current backend's function.
 
     Parameters
