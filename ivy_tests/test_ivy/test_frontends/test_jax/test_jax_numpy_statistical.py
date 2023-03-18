@@ -714,10 +714,6 @@ def test_jax_numpy_std(
     )
 
     np_helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        out=None,
-        overwrite_input=False,
-        keepdims=keemdims,
         dtype=dtype[0],
         out=None,
         ddof=ddof,
