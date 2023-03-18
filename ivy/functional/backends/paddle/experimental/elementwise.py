@@ -268,10 +268,8 @@ def nextafter(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    
     x3 = paddle.where(x1 < x2, 1, -1)
     x1 = paddle.add(x1, x3)
-
     return x1
 
 
