@@ -154,3 +154,8 @@ def linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis
         step = ivy.divide(ivy.subtract(stop, start), num)
         return ret, step
     return ret
+
+
+@to_ivy_arrays_and_back
+def single(x):
+    return ivy.astype(x, ivy.float32)
