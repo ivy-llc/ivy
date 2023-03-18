@@ -324,3 +324,7 @@ def nanmin(
     if where_mask is not None and ivy.any(where_mask):
         res = ivy.where(ivy.logical_not(where_mask), res, ivy.nan, out=out)
     return res
+
+@to_ivy_arrays_and_back
+def median(a, axis=None, out=None, overwrite_input=False, keepdims=False):
+    return ivy.median(a, axis=axis, out=out, keepdims=keepdims)
