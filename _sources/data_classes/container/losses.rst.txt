@@ -13,5 +13,5 @@ Losses
    :maxdepth: -1
    :caption: Losses
 
-   losses/ContainerWithLosses.rst
+   losses/_ContainerWithLosses.rst
 

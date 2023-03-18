@@ -13,5 +13,5 @@ Gradients
    :maxdepth: -1
    :caption: Gradients
 
-   gradients/ContainerWithGradients.rst
+   gradients/_ContainerWithGradients.rst
 
