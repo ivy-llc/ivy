@@ -405,4 +405,3 @@ def std(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=Non
 @to_ivy_arrays_and_back
 def median(a, axis=None, out=None, overwrite_input=False, keepdims=False):
     return ivy.median(a, axis=axis, out=out, keepdims=keepdims)
-    
