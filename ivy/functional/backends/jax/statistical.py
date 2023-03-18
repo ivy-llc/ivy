@@ -215,7 +215,3 @@ def einsum(
     equation: str, *operands: JaxArray, out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.einsum(equation, *operands)
-
-
-def median(a, axis=None, out=None, overwrite_input=False, keepdims=False):
-    return ivy.median(a, axis=axis, out=out, keepdims=keepdims)
