@@ -94,7 +94,11 @@ class SourceTransformer(ast.NodeTransformer):
                     exc=ast.Call(
                         func=ast.Name(id=_not_imlpemented_exc_name, ctx=ast.Load()),
                         args=[
-                            ast.Constant(value="Function Not Implemented", kind=None)
+                            ast.Constant(
+                                value=f"{_target_backend_name}.{node.name} "
+                                "Not Implemented",
+                                kind=None,
+                            )
                         ],
                         keywords=[],
                     ),
