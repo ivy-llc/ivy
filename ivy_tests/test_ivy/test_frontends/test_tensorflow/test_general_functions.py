@@ -829,8 +829,41 @@ def test_tensorflow_stack(
         axis=axis,
     )
 
+# truncatediv
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.truncatediv",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"), num_arrays=2, shared_dtype=True
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_truncatediv(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, xs = dtype_and_x
+    # prevent too close to zero
+    assume(not np.any(np.isclose(xs[1], 0)))
+
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=xs[0],
+        y=xs[1],
+    )
 
 # is_tensor
+
+
 @handle_frontend_test(
     fn_tree="tensorflow.is_tensor",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),

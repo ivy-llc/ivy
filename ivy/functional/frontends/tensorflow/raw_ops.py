@@ -491,9 +491,7 @@ def Transpose(*, x, perm, name="Transpose"):
 Cumsum = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.cumsum))
 
 
-@to_ivy_arrays_and_back
-def TruncateDiv(*, x, y, name="TruncateDiv"):
-    return ivy.astype(ivy.trunc_divide(x, y), x.dtype)
+TruncateDiv = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.truncatediv))
 
 
 @with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
