@@ -88,6 +88,9 @@ def _stack_tensors(x, dtype):
     return x
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 @asarray_to_native_arrays_and_back
 @asarray_infer_device
 @asarray_handle_nestable
@@ -553,7 +556,9 @@ def zeros_like(
 
 array = asarray
 
-
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def copy_array(
     x: paddle.Tensor,
     *,
