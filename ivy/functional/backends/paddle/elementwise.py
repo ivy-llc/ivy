@@ -12,7 +12,6 @@ from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_an
 
 
 def _elementwise_helper(x1, x2):
-    x1, x2 = ivy.to_native(ivy.array(x1,copy=False)), ivy.to_native(ivy.array(x2,copy=False))
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     x1, x2 = ivy.broadcast_arrays(x1, x2)
     return ivy.to_native(x1), ivy.to_native(x2), x1.dtype
