@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import astunparse
 import ast
 import json
