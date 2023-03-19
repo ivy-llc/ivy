@@ -7,14 +7,12 @@ import sys
 import subprocess
 import os
 import logging
-from pprint import pprint
 from shared import BackendNativeObject
 
 _backend_reference = "tensorflow"
 _backend_import_alias = "tf"
 
 _target_backend = ""
-_target_backend_name = "torch"
 
 _config = None
 
@@ -58,12 +56,21 @@ class ReferenceDataGetter(ast.NodeVisitor):
 
 
 class SourceTransformer(ast.NodeTransformer):
-    def __init__(self, type_map):
+    def __init__(self, type_map, keep_private=False):
+        self.keep_private = keep_private
         self.type_map = type_map
         self.registered_imports = set()
 
     def _get_full_name(self, node):
         return astunparse.unparse(node)
+
+    def visit_Import(self, node: ast.Import):
+        # Remove reference backend imports
+        if node.names[0].name == _backend_reference:
+            self.generic_visit(node)
+            return
+        self.generic_visit(node)
+        return node
 
     def visit_Name(self, node: ast.Name):
         try:
@@ -79,69 +86,75 @@ class SourceTransformer(ast.NodeTransformer):
         return node
 
     def visit_Attribute(self, node: ast.Attribute):
-        try:
-            str_repr = self._get_full_name(node).strip()
+        str_repr = self._get_full_name(node).strip()
+        str_repr_without_package = str_repr.partition(".")[-1]
+        if str_repr in self.type_map.keys():
             new_node = ast.parse(self.type_map[str_repr].full_name())
             node = new_node.body[0].value
-        except KeyError:
-            # Do not remove original framework type hints
-            pass
-        else:
             namespace = self.type_map[str_repr].namespace
+            if namespace != "":
+                self.registered_imports.add(namespace)
+        elif str_repr_without_package in self.type_map.keys():
+            new_node = ast.parse(self.type_map[str_repr_without_package].full_name())
+            node = new_node.body[0].value
+            namespace = self.type_map[str_repr_without_package].namespace
             if namespace != "":
                 self.registered_imports.add(namespace)
         self.generic_visit(node)
         return node
 
     def visit_Assign(self, node: ast.Assign):
-        for name in node.targets:
-            if name.id.startswith("_") and not name.id.endswith("__"):
-                return None
+        if not self.keep_private:
+            for name in node.targets:
+                if name.id.startswith("_") and not name.id.endswith("__"):
+                    return None
         self.generic_visit(node)
         return node
 
     def visit_FunctionDef(self, node: ast.FunctionDef):
         # Remove private functions
-        if node.name.startswith("_") and not node.name.endswith("__"):
+        if (
+            not self.keep_private
+            and node.name.startswith("_")
+            and not node.name.endswith("__")
+        ):
             self.generic_visit(node)
             return None
-        else:
-            # Replace function body with Pass
-            node.body = [
-                ast.Raise(
-                    exc=ast.Call(
-                        func=ast.Name(id=_not_imlpemented_exc_name, ctx=ast.Load()),
-                        args=[
-                            ast.Constant(
-                                value=f"{_target_backend_name}.{node.name} "
-                                "Not Implemented",
-                                kind=None,
-                            )
-                        ],
-                        keywords=[],
-                    ),
-                    cause=None,
-                )
-            ]
-            # Update decorators not to include ones in the blacklist
-            # Add Not Implemented decorator
-            new_list = []
-            for entry in node.decorator_list:
-                if isinstance(entry, ast.Call):
-                    name_of_decorator = entry.func.id
-                else:
-                    name_of_decorator = entry.id
-                if name_of_decorator in _decorator_black_list:
-                    continue
-                new_list.append(entry)
-            node.decorator_list = new_list
+        # Replace function body with Pass
+        node.body = [
+            ast.Raise(
+                exc=ast.Call(
+                    func=ast.Name(id=_not_imlpemented_exc_name, ctx=ast.Load()),
+                    args=[
+                        ast.Constant(
+                            value=f"{_target_backend}.{node.name} " "Not Implemented",
+                            kind=None,
+                        )
+                    ],
+                    keywords=[],
+                ),
+                cause=None,
+            )
+        ]
+        # Update decorators not to include ones in the blacklist
+        # Add Not Implemented decorator
+        new_list = []
+        for entry in node.decorator_list:
+            if isinstance(entry, ast.Call):
+                name_of_decorator = entry.func.id
+            else:
+                name_of_decorator = entry.id
+            if name_of_decorator in _decorator_black_list:
+                continue
+            new_list.append(entry)
+        node.decorator_list = new_list
         self.generic_visit(node)
         return node
 
 
 # Modify the AST tree
-def _parse_module(tree: ast.Module) -> ast.Module:
-    transformer = SourceTransformer(type_mapping)
+def _parse_module(tree: ast.Module, keep_private=False) -> ast.Module:
+    transformer = SourceTransformer(type_mapping, keep_private=keep_private)
     transformer.visit(tree)
 
     for obj in transformer.registered_imports:
@@ -161,7 +174,7 @@ def _copy_tree(backend_reference_path: str, backend_generation_path: str):
 
         relative_path = os.path.relpath(root, backend_reference_path)
         # Make backend dirs
-        os.makedirs(os.path.join(backend_generation_path, relative_path))
+        os.makedirs(os.path.join(backend_generation_path, relative_path), exist_ok=True)
 
         for name in files:
             # Skip pycache modules
@@ -175,8 +188,8 @@ def _copy_tree(backend_reference_path: str, backend_generation_path: str):
             ref_tree = ast.parse(ref_str)
             try:
                 tree_to_write = _parse_module(ref_tree)
-            except Exception:
-                print(f"Failed to parse {os.path.join(root, name)}")
+            except Exception as e:
+                print(f"Failed to parse {os.path.join(root, name)}, {e}")
 
             # Create target backend
             with open(
@@ -220,8 +233,28 @@ def generate(config_file):
     backend_reference_path = backends_root + _backend_reference
     backend_generation_path = backends_root + _target_backend
 
+    _create_type_mapping(_config, f"{backend_reference_path}/__init__.py")
     # Copy and generate backend tree
     _copy_tree(backend_reference_path, backend_generation_path)
+
+    with open(os.path.join(backend_reference_path, "__init__.py")) as ref_file:
+        # Read source file from reference backend
+        ref_str = ref_file.read()
+
+    ref_tree = ast.parse(ref_str)
+    try:
+        tree_to_write = _parse_module(ref_tree, keep_private=True)
+    except Exception as e:
+        print(
+            "Failed to parse "
+            f"{os.path.join(backend_generation_path, '__init__.py')}, {e}"
+        )
+
+    # Create target backend
+    with open(
+        os.path.join(backend_generation_path, "__init__.py"), "w"
+    ) as generated_file:
+        generated_file.write(astunparse.unparse(tree_to_write))
 
     subprocess.run(["black", "-q", backend_generation_path])
     subprocess.run(
