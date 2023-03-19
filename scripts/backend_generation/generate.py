@@ -15,12 +15,12 @@ _backend_is_installed = False
 
 backend = {"name": None, "alias": None}
 config_natives = {
-    "NativeArray": None,
-    "NativeVariable": None,
-    "NativeDevice": None,
-    "NativeDtype": None,
-    "NativeShape": None,
-    "NativeSparseArray": None,
+    "NativeArray": "None",
+    "NativeVariable": "None",
+    "NativeDevice": "None",
+    "NativeDtype": "None",
+    "NativeShape": "None",
+    "NativeSparseArray": "None",
 }
 config_valids = {
     "valid_devices": list(ivy.all_devices),
@@ -72,13 +72,16 @@ def _update_native_config_value(key):
                     return False
                 try:
                     obj = getattr(mod, parsed[-1])
-                except KeyError:
+                except AttributeError:
                     print(Fore.RED + f"{parsed[-1]} is not found in module.")
                     return False
             if not inspect.isclass(obj):
                 print(Fore.RED + f"{obj} is not a class.")
                 return False
             print(Fore.GREEN + f"Found class: {obj}")
+            # Use alias if exists
+            if backend["alias"] is not None:
+                ret = ret.replace(backend["name"], backend["alias"], 1)
             config_natives[key] = ret
             return True
         except KeyError:
@@ -236,6 +239,15 @@ if __name__ == "__main__":
         all_items = ivy.__dict__[key]
         invalid_items = list(set(all_items).difference(value))
         config_valids["in" + key] = invalid_items
+
+    for key in config_valids["valid_dtypes"]:
+        new_key = "native_" + key
+        config_natives[new_key] = "None"
+        _get_user_input(_update_native_config_value, new_key)
+
+    for key in config_valids["invalid_dtypes"]:
+        new_key = "native_" + key
+        config_natives[new_key] = "None"
 
     print("\n:: Backend\n")
     pprint.pprint(backend, sort_dicts=False)
