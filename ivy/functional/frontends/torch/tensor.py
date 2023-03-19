@@ -675,6 +675,11 @@ class Tensor:
     def sqrt(self):
         return torch_frontend.sqrt(self._ivy_array)
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+    def sqrt_(self):
+        self._ivy_array = self.sqrt().ivy_array
+        return self
+
     def where(self, condition, other):
         # TODO: replace with torch_frontend.where when it's added
         return torch_frontend.tensor(ivy.where(condition, self._ivy_array, other))
