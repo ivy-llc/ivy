@@ -11,9 +11,7 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
 from ivy.func_wrapper import with_unsupported_dtypes
 
 
-@to_ivy_arrays_and_back
-def AddN(*, inputs, name="AddN"):
-    return ivy.sum(inputs, dtype=inputs.dtype, axis=0)
+AddN = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add_n))
 
 
 @to_ivy_arrays_and_back
@@ -37,10 +35,40 @@ ArgMax = to_ivy_arrays_and_back(
 )
 
 
+AddV2 = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add))
+
+
+@with_unsupported_dtypes(
+    {
+        "2.10.0 and below": (
+            "float16",
+            "bool",
+            "bfloat16",
+        )
+    },
+    "tensorflow",
+)
 @to_ivy_arrays_and_back
-def AddV2(*, x, y, name="AddV2"):
-    check_tensorflow_casting(x, y)
-    return ivy.addv2(tf_frontend.to_tensor(x), tf_frontend.to_tensor(y))
+def ApproximateEqual(
+    *,
+    x,
+    y,
+    tolerance=1e-05,
+    name="ApproximateEqual",
+):
+    x, y = check_tensorflow_casting(x, y)
+    ret = ivy.abs(x - y)
+    return ret < tolerance
+
+
+@to_ivy_arrays_and_back
+def Angle(
+    *,
+    input,
+    Tout=ivy.float32,
+    name="Angle",
+):
+    return ivy.astype(ivy.angle(input), Tout)
 
 
 @to_ivy_arrays_and_back
@@ -161,6 +189,12 @@ def Floor(*, x, name="Floor"):
 def FloorDiv(*, x, y, name="FloorDiv"):
     x, y = check_tensorflow_casting(x, y)
     return ivy.floor_divide(x, y)
+
+
+@to_ivy_arrays_and_back
+def FloorMod(*, x, y, name="FloorMod"):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.remainder(x, y)
 
 
 @to_ivy_arrays_and_back
@@ -620,4 +654,35 @@ Elu.supported_dtypes = {
 def LinSpace(*, start, stop, num, name=None):
     return ivy.linspace(start, stop, num)
 
+
 Roll = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.roll))
+
+
+@to_ivy_arrays_and_back
+def CumulativeLogsumexp(
+    x, axis, exclusive=False, reverse=False, name="CumulativeLogsumexp"
+):
+    return ivy.astype(
+        ivy.CumulativeLogsumexp(x, axis, exclusive=exclusive, reverse=reverse),
+        input.dtype,
+    )
+
+
+@to_ivy_arrays_and_back
+def Complex(real, imag, Tout=ivy.complex64, name="Complex"):
+    return ivy.Complex(real, imag, Tout=Tout)
+
+
+@to_ivy_arrays_and_back
+def AccumulateNV2(inputs, shape, name="AccumulateNV2"):
+    return ivy.AccumulateNV2(inputs, shape)
+
+
+@to_ivy_arrays_and_back
+def DebugGradientIdentity(input, name="DebugGradientIdentity"):
+    return ivy.DebugGradientIdentity(input)
+
+
+@to_ivy_arrays_and_back
+def Real(input, Tout=ivy.float32, name="Real"):
+    return ivy.Real(input, Tout=Tout)

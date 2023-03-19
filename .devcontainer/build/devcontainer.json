@@ -1,3 +1,5 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.236.0/containers/docker-existing-dockerfile
 {
 	"name": "Ivy Development Environment (build)",
 
@@ -29,6 +31,13 @@
 
 	// Uncomment to connect as a non-root user if you've added one. See https://aka.ms/vscode-remote/containers/non-root.
 	// "remoteUser": "vscode"
-}
 
+	// Uncomment to allow connection to JetBrians Gateway
+	// "features": {
+	//	 "ghcr.io/devcontainers/features/sshd:1": {
+	//		 "version": "latest"
+	// 	 }
+	// }
+
+}
 

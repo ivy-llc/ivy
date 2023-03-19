@@ -388,7 +388,7 @@ def convert_from_numpy_to_target_backend(variable_ids, numpy_objs):
         if isinstance(obj, ivy.Container):
             obj.cont_inplace_update(new_data)
         else:
-            obj._data = new_data.data
+            obj.data = new_data.data
 
 
 @prevent_access_locally
@@ -626,7 +626,10 @@ def choose_random_backend(excluded=None):
 
 # noinspection PyProtectedMember
 @prevent_access_locally
-def with_backend(backend: str):
+def with_backend(backend: str, cached: bool = False):
+    # Use already compiled object
+    if cached and backend in compiled_backends.keys():
+        return compiled_backends[backend][-1]
     # TODO do error handling if finder fails
     finder = ast_helpers.IvyPathFinder()
     sys.meta_path.insert(0, finder)
@@ -646,5 +649,8 @@ def with_backend(backend: str):
     _importlib.path_hooks.remove(finder)
     sys.meta_path.remove(finder)
     _importlib._clear_cache()
-    compiled_backends[f"{ivy_pack.backend}_{id(ivy_pack)}"] = ivy_pack
+    try:
+        compiled_backends[backend].append(ivy_pack)
+    except KeyError:
+        compiled_backends[backend] = [ivy_pack]
     return ivy_pack

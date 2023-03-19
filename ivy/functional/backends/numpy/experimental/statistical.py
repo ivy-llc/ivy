@@ -11,7 +11,7 @@ def median(
     /,
     *,
     axis: Optional[Union[Tuple[int], int]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if out is not None:
@@ -32,7 +32,7 @@ def nanmean(
     /,
     *,
     axis: Optional[Union[int, Tuple[int]]] = None,
-    keepdims: Optional[bool] = False,
+    keepdims: bool = False,
     dtype: Optional[np.dtype] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
@@ -65,8 +65,8 @@ def quantile(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: Optional[bool] = False,
-    interpolation: Optional[str] = "linear",
+    keepdims: bool = False,
+    interpolation: str = "linear",
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     # quantile method in numpy backend, always return an array with dtype=float64.
@@ -84,7 +84,7 @@ def corrcoef(
     /,
     *,
     y: Optional[np.ndarray] = None,
-    rowvar: Optional[bool] = True,
+    rowvar: bool = True,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.corrcoef(x, y=y, rowvar=rowvar, dtype=x.dtype)
@@ -95,8 +95,8 @@ def nanmedian(
     /,
     *,
     axis: Optional[Union[Tuple[int], int]] = None,
-    keepdims: Optional[bool] = False,
-    overwrite_input: Optional[bool] = False,
+    keepdims: bool = False,
+    overwrite_input: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.nanmedian(
@@ -112,7 +112,7 @@ def bincount(
     /,
     *,
     weights: Optional[np.ndarray] = None,
-    minlength: Optional[int] = 0,
+    minlength: int = 0,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if weights is not None:

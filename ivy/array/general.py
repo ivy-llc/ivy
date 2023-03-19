@@ -733,10 +733,11 @@ class _ArrayWithGeneral(abc.ABC):
         max_norm
             float, the maximum value of the array norm.
         p
-            optional float, the p-value for computing the p-norm. Default is 2.
+            optional float, the p-value for computing the p-norm. 
+            Default is 2.
         out
-            optional output array, for writing the result to. It must have a shape
-            that the inputs broadcast to.
+            optional output array, for writing the result to. 
+            It must have a shape that the inputs broadcast to.
 
         Returns
         -------
@@ -1097,7 +1098,7 @@ class _ArrayWithGeneral(abc.ABC):
         val
             The array to update the variable with.
         ensure_in_backend
-            Whether or not to ensure that the `ivy.NativeArray` is also inplace updated.
+            Whether to ensure that the `ivy.NativeArray` is also inplace updated.
             In cases where it should be, backends which do not natively support inplace
             updates will raise an exception.
 
@@ -1108,29 +1109,29 @@ class _ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-
         With :class:`ivy.Array` input and default backend set as `numpy`:
-        
+
         >>> x = ivy.array([1, 2, 3])
         >>> y = ivy.array([0])
         >>> x.inplace_update(y)
         >>> print(x)
         ivy.array([0])
-        
+
         With :class:`ivy.Array` input and default backend set as `torch`:
-        
+
         >>> x = ivy.array([1, 2, 3])
         >>> y = ivy.array([0])
         >>> x.inplace_update(y, ensure_in_backend=True)
         >>> print(x)
         ivy.array([0])
-        
+
         With :class:`ivy.Array` input and default backend set as `jax`:
-        
+
         >>> x = ivy.array([4, 5, 6])
         >>> y = ivy.array([1])
         >>> x.inplace_update(y, ensure_in_backend=True)
-        IvyBackendException: jax: inplace_update: JAX does not natively support inplace updates
+        IvyBackendException: jax: inplace_update: JAX does not natively
+        support inplace updates
 
         """
         return ivy.inplace_update(self, val, ensure_in_backend=ensure_in_backend)

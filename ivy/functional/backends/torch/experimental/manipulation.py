@@ -75,8 +75,8 @@ def rot90(
     m: torch.Tensor,
     /,
     *,
-    k: Optional[int] = 1,
-    axes: Optional[Tuple[int, int]] = (0, 1),
+    k: int = 1,
+    axes: Tuple[int, int] = (0, 1),
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.rot90(m, k, axes)
@@ -87,8 +87,8 @@ def top_k(
     k: int,
     /,
     *,
-    axis: Optional[int] = -1,
-    largest: Optional[bool] = True,
+    axis: int = -1,
+    largest: bool = True,
     out: Optional[Tuple[torch.Tensor, torch.Tensor]] = None,
 ) -> Tuple[torch.Tensor, torch.Tensor]:
     topk_res = NamedTuple(
@@ -135,9 +135,9 @@ def flatten(
     x: torch.Tensor,
     /,
     *,
-    start_dim: Optional[int] = 0,
-    end_dim: Optional[int] = -1,
-    order: Optional[str] = "C",
+    start_dim: int = 0,
+    end_dim: int = -1,
+    order: str = "C",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     ivy.utils.assertions.check_elem_in_list(order, ["C", "F"])
@@ -207,7 +207,7 @@ def take_along_axis(
     axis: int,
     /,
     *,
-    mode: str = 'fill',
+    mode: str = "fill",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if arr.ndim != indices.ndim:
@@ -216,19 +216,20 @@ def take_along_axis(
             + f" got {arr.ndim} vs {indices.ndim}"
         )
     indices = indices.long()
-    if mode not in ['clip', 'fill', 'drop']:
+    if mode not in ["clip", "fill", "drop"]:
         raise ValueError(
-            f"Invalid mode '{mode}'. Valid modes are 'clip', 'fill', 'drop'.")
+            f"Invalid mode '{mode}'. Valid modes are 'clip', 'fill', 'drop'."
+        )
     arr_shape = arr.shape
     if axis < 0:
         axis += arr.ndim
-    if mode == 'clip':
+    if mode == "clip":
         max_index = arr.shape[axis] - 1
         indices = torch.clamp(indices, 0, max_index)
-    elif mode == 'fill' or mode == 'drop':
-        if 'float' in str(arr.dtype):
-            fill_value = float('nan')
-        elif 'uint' in str(arr.dtype):
+    elif mode == "fill" or mode == "drop":
+        if "float" in str(arr.dtype):
+            fill_value = float("nan")
+        elif "uint" in str(arr.dtype):
             fill_value = torch.iinfo(arr.dtype).max
         else:
             fill_value = -torch.iinfo(arr.dtype).max - 1
@@ -252,8 +253,11 @@ def hsplit(
 take_along_axis.support_native_out = True
 
 
-def broadcast_shapes(shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
+def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     return tuple(torch.broadcast_shapes(*shapes))
+
+
+broadcast_shapes.support_native_out = False
 
 
 def expand(

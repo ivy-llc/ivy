@@ -3,6 +3,7 @@ import math
 
 import numpy as np
 from hypothesis import assume, strategies as st
+import hypothesis.extra.numpy as nph
 
 # local
 import ivy
@@ -1037,3 +1038,80 @@ def test_torch_tensordot(
         atol=1e-2,
         dims=dims,
     )
+
+
+# diff
+@handle_frontend_test(
+    fn_tree="torch.diff",
+    dtype_n_x_n_axis=helpers.dtype_values_axis(
+        available_dtypes=st.shared(helpers.get_dtypes("valid"), key="dtype"),
+        min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    n=st.integers(min_value=0, max_value=5),
+    dtype_prepend=helpers.dtype_and_values(
+        available_dtypes=st.shared(helpers.get_dtypes("valid"), key="dtype"),
+        min_num_dims=1,
+        max_num_dims=1,
+    ),
+    dtype_append=helpers.dtype_and_values(
+        available_dtypes=st.shared(helpers.get_dtypes("valid"), key="dtype"),
+        min_num_dims=1,
+        max_num_dims=1,
+    ),
+)
+def test_diff(
+    *,
+    dtype_n_x_n_axis,
+    n,
+    dtype_prepend,
+    dtype_append,
+    test_flags,
+    frontend,
+    fn_tree,
+):
+    input_dtype, x, axis = dtype_n_x_n_axis
+    _, prepend = dtype_prepend
+    _, append = dtype_append
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        input=x[0],
+        n=n,
+        dim=axis,
+        prepend=prepend[0],
+        append=append[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="torch.broadcast_shapes",
+    shapes=nph.mutually_broadcastable_shapes(
+        num_shapes=4, min_dims=1, max_dims=5, min_side=1, max_side=5
+    ),
+    test_with_out=st.just(False),
+)
+def test_torch_broadcast_shapes(
+    *,
+    shapes,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    shape, _ = shapes
+    shapes = {f"shape{i}": shape[i] for i in range(len(shape))}
+    test_flags.num_positional_args = len(shapes)
+    ret, frontend_ret = helpers.test_frontend_function(
+        input_dtypes=["int64"],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        **shapes,
+        test_values=False,
+    )
+    assert ret == frontend_ret

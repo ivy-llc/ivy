@@ -14,9 +14,21 @@ from ivy.func_wrapper import with_unsupported_dtypes
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def norm(x, ord=None, axis=None, keepdims=False):
-    ret = ivy.vector_norm(x, axis=axis, keepdims=keepdims, ord=ord)
-    if axis is None:
-        return ret[0]
+    if axis is None and not (ord is None):
+        if x.ndim not in (1, 2):
+            raise ValueError("Improper number of dimensions to norm.")
+        else:
+            if x.ndim == 1:
+                ret = ivy.vector_norm(x, axis=axis, keepdims=keepdims, ord=ord)
+            else:
+                ret = ivy.matrix_norm(x, axis=axis, keepdims=keepdims, ord=ord)
+    elif axis is None and ord is None:
+        x = ivy.flatten(x)
+        ret = ivy.vector_norm(x, axis=0, keepdims=keepdims, ord=2)
+    if isinstance(axis, int):
+        ret = ivy.vector_norm(x, axis=axis, keepdims=keepdims, ord=ord)
+    elif isinstance(axis, tuple):
+        ret = ivy.matrix_norm(x, axis=axis, keepdims=keepdims, ord=ord)
     return ret
 
 

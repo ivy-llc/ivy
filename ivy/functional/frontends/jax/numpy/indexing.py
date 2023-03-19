@@ -23,5 +23,10 @@ def diag_indices(n, ndim=2):
 
 # take_along_axis
 @to_ivy_arrays_and_back
-def take_along_axis(arr, indices, axis, mode='fill'):
+def take_along_axis(arr, indices, axis, mode="fill"):
     return ivy.take_along_axis(arr, indices, axis, mode=mode)
+
+
+@to_ivy_arrays_and_back
+def tril_indices(n_rows, n_cols=None, k=0):
+    return ivy.tril_indices(n_rows, n_cols, k)
