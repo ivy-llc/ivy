@@ -54,12 +54,27 @@ def _update_native_config_value(key):
         "(case sensistive) "
         f"default: '{Style.BRIGHT}{config_natives[key]}{Style.NORMAL}': "
     )
-    ret = ret.strip(" ")
     if ret != "" and _imported_backend is not None:
+        parsed = ret.strip().rpartition(".")
         try:
-            # TODO handle nested classes
-            # Check if it's in the backend dict
-            obj = _imported_backend.__dict__[ret]
+            if parsed[1] == "":
+                # Primitve type
+                try:
+                    obj = __builtins__.__dict__[parsed[-1]]
+                except KeyError:
+                    print(Fore.RED + f"{parsed[-1]} is not a primitive object.")
+                    return False
+            else:
+                try:
+                    mod = import_module(parsed[0])
+                except ModuleNotFoundError:
+                    print(Fore.RED + f"failed to import {parsed[0]}")
+                    return False
+                try:
+                    obj = getattr(mod, parsed[-1])
+                except KeyError:
+                    print(Fore.RED + f"{parsed[-1]} is not found in module.")
+                    return False
             if not inspect.isclass(obj):
                 print(Fore.RED + f"{obj} is not a class.")
                 return False
@@ -67,7 +82,7 @@ def _update_native_config_value(key):
             config_natives[key] = ret
             return True
         except KeyError:
-            print(Fore.RED + f"Couldn't find {backend['name']}.{ret}")
+            print(Fore.RED + f"Couldn't find {ret}")
             return False
     return True
 
