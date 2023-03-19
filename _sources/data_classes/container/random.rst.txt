@@ -13,5 +13,5 @@ Random
    :maxdepth: -1
    :caption: Random
 
-   random/_ContainerWithRandom.rst
+   random/ContainerWithRandom.rst
 
