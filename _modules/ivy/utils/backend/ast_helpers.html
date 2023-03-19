@@ -585,6 +585,7 @@
 <span class="n">importlib_abs_import_fn</span> <span class="o">=</span> <span class="s2">&quot;_absolute_import&quot;</span>
 <span class="n">importlib_from_import_fn</span> <span class="o">=</span> <span class="s2">&quot;_from_import&quot;</span>
 <span class="n">_unmodified_ivy_path</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="s2">&quot;ivy&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">__path__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">rpartition</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">_compiled_modules_cache</span> <span class="o">=</span> <span class="p">{}</span>
 
 
 <span class="k">def</span> <span class="nf">_retrive_local_modules</span><span class="p">():</span>
@@ -811,12 +812,16 @@
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
 
-        <span class="n">ast_tree</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-        <span class="n">transformer</span> <span class="o">=</span> <span class="n">ImportTransformer</span><span class="p">()</span>
-        <span class="n">transformer</span><span class="o">.</span><span class="n">visit_ImportFrom</span><span class="p">(</span><span class="n">ast_tree</span><span class="p">)</span>
-        <span class="n">transformer</span><span class="o">.</span><span class="n">visit_Import</span><span class="p">(</span><span class="n">ast_tree</span><span class="p">)</span>
-        <span class="n">transformer</span><span class="o">.</span><span class="n">impersonate_import</span><span class="p">(</span><span class="n">ast_tree</span><span class="p">)</span>
-        <span class="n">ast</span><span class="o">.</span><span class="n">fix_missing_locations</span><span class="p">(</span><span class="n">ast_tree</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ast_tree</span> <span class="o">=</span> <span class="n">_compiled_modules_cache</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">ast_tree</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="n">transformer</span> <span class="o">=</span> <span class="n">ImportTransformer</span><span class="p">()</span>
+            <span class="n">transformer</span><span class="o">.</span><span class="n">visit_Import</span><span class="p">(</span><span class="n">ast_tree</span><span class="p">)</span>
+            <span class="n">transformer</span><span class="o">.</span><span class="n">visit_ImportFrom</span><span class="p">(</span><span class="n">ast_tree</span><span class="p">)</span>
+            <span class="n">transformer</span><span class="o">.</span><span class="n">impersonate_import</span><span class="p">(</span><span class="n">ast_tree</span><span class="p">)</span>
+            <span class="n">ast</span><span class="o">.</span><span class="n">fix_missing_locations</span><span class="p">(</span><span class="n">ast_tree</span><span class="p">)</span>
+            <span class="n">_compiled_modules_cache</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">]</span> <span class="o">=</span> <span class="n">ast_tree</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">exec</span><span class="p">(</span>
                 <span class="nb">compile</span><span class="p">(</span><span class="n">ast_tree</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;exec&quot;</span><span class="p">),</span> <span class="n">module</span><span class="o">.</span><span class="vm">__dict__</span>
