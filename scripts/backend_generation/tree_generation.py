@@ -8,6 +8,7 @@ import subprocess
 import os
 import logging
 from pprint import pprint
+from shared import BackendNativeObject
 
 _backend_reference = "tensorflow"
 _backend_import_alias = "tf"
@@ -34,6 +35,14 @@ type_mapping = {}
 class ReferenceDataGetter(ast.NodeVisitor):
     def __init__(self):
         self.natives = {}
+        self.framework_imports = []
+
+    def visit_ImportFrom(self, node: ast.ImportFrom):
+        if node.module is not None and node.module.startswith(_backend_reference):
+            for name in node.names:
+                self.framework_imports.append(
+                    BackendNativeObject(name=name.name, namespace=node.module)
+                )
 
     def visit_Assign(self, node: ast.Assign):
         name = node.targets[0].id.lower()
@@ -58,22 +67,29 @@ class SourceTransformer(ast.NodeTransformer):
 
     def visit_Name(self, node: ast.Name):
         try:
-            node.id = self.type_map[node.id]
+            old_id = node.id
+            node.id = self.type_map[node.id].full_name()
         except KeyError:
             pass
         else:
-            self.registered_imports.add(node.id)
+            namespace = self.type_map[old_id].namespace
+            if namespace != "":
+                self.registered_imports.add(namespace)
         self.generic_visit(node)
         return node
 
     def visit_Attribute(self, node: ast.Attribute):
         try:
             str_repr = self._get_full_name(node).strip()
-            new_node = ast.parse(self.type_map[str_repr])
+            new_node = ast.parse(self.type_map[str_repr].full_name())
             node = new_node.body[0].value
         except KeyError:
             # Do not remove original framework type hints
             pass
+        else:
+            namespace = self.type_map[str_repr].namespace
+            if namespace != "":
+                self.registered_imports.add(namespace)
         self.generic_visit(node)
         return node
 
@@ -128,8 +144,9 @@ def _parse_module(tree: ast.Module) -> ast.Module:
     transformer = SourceTransformer(type_mapping)
     transformer.visit(tree)
 
-    import_node = ast.Import(names=[ast.alias(name=_target_backend_name, asname=None)])
-    tree.body.insert(0, import_node)
+    for obj in transformer.registered_imports:
+        import_node = ast.Import(names=[ast.alias(name=obj, asname=None)])
+        tree.body.insert(0, import_node)
 
     # Add target backend import, add type hints classes imports
     ast.fix_missing_locations(tree)
@@ -181,7 +198,10 @@ def _create_type_mapping(config: dict, reference_backend_init_path: str):
         if key not in config.keys():
             logging.warning(f"type {key} found in reference backend but not in config.")
             continue
-        mapping[value] = config[key]
+        obj = config[key]
+        mapping[value] = BackendNativeObject(
+            name=obj["name"], namespace=obj["namespace"]
+        )
 
     global type_mapping
     type_mapping = mapping

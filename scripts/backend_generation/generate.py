@@ -9,6 +9,8 @@ from colorama import Fore, Style, init
 from importlib import import_module
 from importlib.util import find_spec
 from tree_generation import generate as generate_backend
+from shared import BackendNativeObject
+from dataclasses import asdict
 
 
 all_devices = ("cpu", "gpu", "tpu")
@@ -66,12 +68,12 @@ _backend_is_installed = False
 
 backend = {"name": None, "alias": None}
 config_natives = {
-    "NativeArray": "None",
-    "NativeVariable": "None",
-    "NativeDevice": "None",
-    "NativeDtype": "None",
-    "NativeShape": "None",
-    "NativeSparseArray": "None",
+    "NativeArray": asdict(BackendNativeObject(name="None", namespace="")),
+    "NativeVariable": asdict(BackendNativeObject(name="None", namespace="")),
+    "NativeDevice": asdict(BackendNativeObject(name="None", namespace="")),
+    "NativeDtype": asdict(BackendNativeObject(name="None", namespace="")),
+    "NativeShape": asdict(BackendNativeObject(name="None", namespace="")),
+    "NativeSparseArray": asdict(BackendNativeObject(name="None", namespace="")),
 }
 config_valids = {
     "valid_devices": list(all_devices),
@@ -100,10 +102,10 @@ def _get_user_input(fn, *args, **kwargs):
 def _update_native_config_value(key):
     # Handle the logic for updating native config
     ret = input(
-        "\nPress ENTER to skip\n"
+        "\nPress ENTER to skip, use full namespace\n"
         f"Enter a value for {Style.BRIGHT + key + Style.NORMAL} "
         "(case sensistive) "
-        f"default: '{Style.BRIGHT}{config_natives[key]}{Style.NORMAL}': "
+        f"default: '{Style.BRIGHT}{config_natives[key]['name']}{Style.NORMAL}': "
     )
     if ret != "" and _imported_backend is not None:
         parsed = ret.strip().rpartition(".")
@@ -132,8 +134,12 @@ def _update_native_config_value(key):
             print(Fore.GREEN + f"Found class: {obj}")
             # Use alias if exists
             if backend["alias"] is not None:
-                ret = ret.replace(backend["name"], backend["alias"], 1)
-            config_natives[key] = ret
+                modified_namespace = parsed[0].replace(
+                    backend["name"], backend["alias"], 1
+                )
+            config_natives[key] = asdict(
+                BackendNativeObject(name=parsed[-1], namespace=modified_namespace)
+            )
             return True
         except KeyError:
             print(Fore.RED + f"Couldn't find {ret}")
@@ -303,12 +309,12 @@ if __name__ == "__main__":
 
     for key in config_valids["valid_dtypes"]:
         new_key = "native_" + key
-        config_natives[new_key] = "None"
+        config_natives[new_key] = asdict(BackendNativeObject(name="None", namespace=""))
         _get_user_input(_update_native_config_value, new_key)
 
     for key in config_valids["invalid_dtypes"]:
         new_key = "native_" + key
-        config_natives[new_key] = "None"
+        config_natives[new_key] = asdict(BackendNativeObject(name="None", namespace=""))
 
     print("\n:: Backend\n")
     pprint.pprint(backend, sort_dicts=False)
