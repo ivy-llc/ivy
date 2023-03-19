@@ -331,3 +331,9 @@ def diff(input, n=1, dim=-1, prepend=None, append=None):
 @to_ivy_arrays_and_back
 def broadcast_shapes(*shapes):
     return ivy.broadcast_shapes(*shapes)
+
+
+@to_ivy_arrays_and_back
+def kron(input, other, *, out=None):
+    input, other = promote_types_of_torch_inputs(input, other)
+    return ivy.kron(input, other, out=out)

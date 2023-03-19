@@ -1115,3 +1115,34 @@ def test_torch_broadcast_shapes(
         test_values=False,
     )
     assert ret == frontend_ret
+
+
+@handle_frontend_test(
+    fn_tree="torch.kron",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=1,
+        max_dim_size=10,
+        num_arrays=2,
+    ),
+    test_with_out=st.just(False),
+)
+def test_torch_kron(
+    dtype_x,
+    frontend,
+    test_flags,
+    fn_tree,
+):
+    dtype, input = dtype_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        rtol=1e-2,
+        atol=1e-3,
+        input=input[0],
+        other=input[1],
+    )
