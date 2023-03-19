@@ -14,7 +14,6 @@ _target_backend = ""
 
 _config = None
 
-# This should be imported in the module
 _not_imlpemented_exc_name = "NotImplementedError"
 _decorator_black_list = [
     "with_unsupported_dtypes",
