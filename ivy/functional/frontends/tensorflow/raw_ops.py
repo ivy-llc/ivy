@@ -11,11 +11,8 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
 from ivy.func_wrapper import with_unsupported_dtypes
 
 
-@to_ivy_arrays_and_back
-def AddN(*, inputs, name="AddN"):
-    return ivy.sum(inputs, dtype=inputs.dtype, axis=0)
-
 AddN = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add_n))
+
 
 @to_ivy_arrays_and_back
 def Acos(*, x, name="Acos"):
@@ -659,3 +656,33 @@ def LinSpace(*, start, stop, num, name=None):
 
 
 Roll = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.roll))
+
+
+@to_ivy_arrays_and_back
+def CumulativeLogsumexp(
+    x, axis, exclusive=False, reverse=False, name="CumulativeLogsumexp"
+):
+    return ivy.astype(
+        ivy.CumulativeLogsumexp(x, axis, exclusive=exclusive, reverse=reverse),
+        input.dtype,
+    )
+
+
+@to_ivy_arrays_and_back
+def Complex(real, imag, Tout=ivy.complex64, name="Complex"):
+    return ivy.Complex(real, imag, Tout=Tout)
+
+
+@to_ivy_arrays_and_back
+def AccumulateNV2(inputs, shape, name="AccumulateNV2"):
+    return ivy.AccumulateNV2(inputs, shape)
+
+
+@to_ivy_arrays_and_back
+def DebugGradientIdentity(input, name="DebugGradientIdentity"):
+    return ivy.DebugGradientIdentity(input)
+
+
+@to_ivy_arrays_and_back
+def Real(input, Tout=ivy.float32, name="Real"):
+    return ivy.Real(input, Tout=Tout)

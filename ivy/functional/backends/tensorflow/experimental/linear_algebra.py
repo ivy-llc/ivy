@@ -148,3 +148,44 @@ def multi_dot(
         raise ValueError("Expecting at least two tensors.")
     dot_out = reduce(tf.matmul, x)
     return dot_out
+
+
+def cond(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    p: Optional[Union[None, int, str]] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    svd = tf.linalg.svd(x, compute_uv=False)
+    if len(x.shape) >= 3:
+        ax = len(x.shape) // 2
+    elif len(x.shape) >= 3 and p == -1:
+        ax = [-1, -2]
+    else:
+        ax = None
+    if p is None or p == 2:
+        k = tf.reduce_max(svd, axis=ax) / tf.reduce_min(svd, axis=ax)
+    elif p == "nuc":
+        svd_inv = tf.linalg.svd(tf.linalg.inv(x), compute_uv=False)
+        k = tf.reduce_sum(svd, axis=ax) * tf.reduce_sum(svd_inv, axis=ax)
+    elif p == "fro":
+        k = tf.norm(x, ord="euclidean", axis=[-2, -1]) * tf.norm(
+            tf.linalg.inv(x), ord="euclidean", axis=[-2, -1]
+        )
+    elif p < 0:
+        if p == -1:
+            k = tf.reduce_min(
+                tf.reduce_sum(tf.abs(x), axis=0), axis=ax
+            ) * tf.reduce_min(tf.reduce_sum(tf.abs(tf.linalg.inv(x)), axis=0), axis=ax)
+        elif p == -2:
+            k = tf.reduce_min(svd, axis=ax) / tf.reduce_max(svd, axis=ax)
+        elif p == -float("inf"):
+            k = tf.reduce_min(
+                tf.reduce_sum(tf.abs(x), axis=1), axis=ax
+            ) * tf.reduce_min(tf.reduce_sum(tf.abs(tf.linalg.inv(x)), axis=1), axis=ax)
+    else:
+        k = tf.norm(x, ord=p, axis=[-2, -1]) * tf.norm(
+            tf.linalg.inv(x), ord=p, axis=[-2, -1]
+        )
+    return k

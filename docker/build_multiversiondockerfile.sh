@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker build --progress=plain -t experiment_conda   -f MultiversionDockerFile ..
+docker build  --progress=plain   -t unifyai/multiversion:base   -f MultiversionDockerFile ..

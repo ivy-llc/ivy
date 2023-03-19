@@ -120,6 +120,9 @@ def handle_exceptions(fn: Callable) -> Callable:
         """
         try:
             return fn(*args, **kwargs)
+        # Not to rethrow as IvyBackendException
+        except IvyNotImplementedException as e:
+            raise e
         except (IndexError, ValueError, AttributeError) as e:
             _print_traceback_history()
             raise ivy.utils.exceptions.IvyError(fn.__name__, str(e))
