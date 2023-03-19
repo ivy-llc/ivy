@@ -286,3 +286,45 @@ def nanvar(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=
     if ivy.all(all_nan):
         ret = ivy.astype(ret, ivy.array([float("inf")]))
     return ret
+
+
+
+@handle_numpy_out
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def nanmedian(
+    a,
+    /,
+    *,
+    axis=None,
+    keepdims=False,
+    out=None,
+    dtype=None,
+    where=True,
+):
+    is_nan = ivy.isnan(a)
+    axis = tuple(axis) if isinstance(axis, list) else axis
+
+    if not ivy.any(is_nan):
+        if dtype:
+            a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
+        ret = ivy.median(a, axis=axis, keepdims=keepdims, out=out)
+
+        if ivy.is_array(where):
+            ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+
+    else:
+        a = [i for i in a if ivy.isnan(i) is False]
+
+        if dtype:
+            a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
+        ret = ivy.median(a, axis=axis, keepdims=keepdims, out=out)
+
+        if ivy.is_array(where):
+            ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+
+    return ret
+
+
+
