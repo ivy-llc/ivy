@@ -1,4 +1,3 @@
-import ivy
 import sys
 import subprocess
 import pprint
@@ -9,6 +8,56 @@ from importlib import import_module
 from importlib.util import find_spec
 from tree_generation import generate as generate_backend
 
+
+all_devices = ("cpu", "gpu", "tpu")
+all_ivy_dtypes = (
+    "int8",
+    "int16",
+    "int32",
+    "int64",
+    "uint8",
+    "uint16",
+    "uint32",
+    "uint64",
+    "bfloat16",
+    "float16",
+    "float32",
+    "float64",
+    "complex64",
+    "complex128",
+    "bool",
+)
+
+all_int_dtypes = (
+    "int8",
+    "int16",
+    "int32",
+    "int64",
+    "uint8",
+    "uint16",
+    "uint32",
+    "uint64",
+)
+
+
+all_uint_dtypes = (
+    "uint8",
+    "uint16",
+    "uint32",
+    "uint64",
+)
+
+all_float_dtypes = (
+    "bfloat16",
+    "float16",
+    "float32",
+    "float64",
+)
+
+all_complex_dtypes = (
+    "complex64",
+    "complex128",
+)
 
 _imported_backend = None
 _backend_is_installed = False
@@ -23,10 +72,10 @@ config_natives = {
     "NativeSparseArray": "None",
 }
 config_valids = {
-    "valid_devices": list(ivy.all_devices),
-    "valid_int_dtypes": list(ivy.all_int_dtypes),
-    "valid_float_dtypes": list(ivy.all_float_dtypes),
-    "valid_complex_dtypes": list(ivy.all_complex_dtypes),
+    "valid_devices": list(all_devices),
+    "valid_int_dtypes": list(all_int_dtypes),
+    "valid_float_dtypes": list(all_float_dtypes),
+    "valid_complex_dtypes": list(all_complex_dtypes),
 }
 config_flags = {
     "native_inplace_support": False,
@@ -221,7 +270,7 @@ if __name__ == "__main__":
         _get_user_input(_update_valid_config_value, key)
 
     # Add uint dtypes
-    int_dtypes = set(ivy.all_int_dtypes).difference(ivy.all_uint_dtypes)
+    int_dtypes = set(all_int_dtypes).difference(all_uint_dtypes)
     config_valids["valid_uint_dtypes"] = (
         set(config_valids["valid_int_dtypes"]) - int_dtypes
     )
@@ -235,8 +284,18 @@ if __name__ == "__main__":
     config_valids["valid_dtypes"] = config_valids["valid_numeric_dtypes"] + ["bool"]
 
     # Create Invalid dict
+    fullset_mapping = {
+        "valid_dtypes": all_ivy_dtypes,
+        "valid_numeric_dtypes": all_int_dtypes + all_float_dtypes + all_complex_dtypes,
+        "valid_int_dtypes": all_int_dtypes,
+        "valid_uint_dtypes": all_uint_dtypes,
+        "valid_float_dtypes": all_float_dtypes,
+        "valid_complex_dtypes": all_complex_dtypes,
+        "valid_devices": all_devices,
+    }
+
     for key, value in config_valids.copy().items():
-        all_items = ivy.__dict__[key]
+        all_items = fullset_mapping[key]
         invalid_items = list(set(all_items).difference(value))
         config_valids["in" + key] = invalid_items
 
