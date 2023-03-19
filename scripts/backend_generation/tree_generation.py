@@ -4,13 +4,15 @@ import json
 import sys
 import subprocess
 import os
+import logging
+from pprint import pprint
 
-_reference_backend = ""
+_backend_reference = "tensorflow"
+_backend_import_alias = "tf"
+
 _target_backend = ""
-
-
-_backend_ref_name = "tf"
 _target_backend_name = "torch"
+
 _config = None
 
 # This should be imported in the module
@@ -25,6 +27,23 @@ _decorator_black_list = [
 ]
 
 type_mapping = {}
+
+
+class ReferenceDataGetter(ast.NodeVisitor):
+    def __init__(self):
+        self.natives = {}
+
+    def visit_Assign(self, node: ast.Assign):
+        name = node.targets[0].id.lower()
+        if name.startswith("native"):
+            # [:-1] to ignore \n from unparser
+            unparsed_value = astunparse.unparse(node.value)[:-1]
+            if unparsed_value in ["int", "float", "bool", "str"]:
+                return
+            if unparsed_value in self.natives.keys():
+                self.natives[node.targets[0].id] = self.natives[unparsed_value]
+            else:
+                self.natives[node.targets[0].id] = unparsed_value
 
 
 class SourceTransformer(ast.NodeTransformer):
@@ -143,18 +162,36 @@ def _copy_tree(backend_reference_path: str, backend_generation_path: str):
                 generated_file.write(astunparse.unparse(tree_to_write))
 
 
+def _create_type_mapping(config: dict, reference_backend_init_path: str):
+    with open(reference_backend_init_path, "r") as file:
+        file_src = file.read()
+
+    init_tree = ast.parse(file_src)
+    ast_visitor = ReferenceDataGetter()
+    ast_visitor.visit(init_tree)
+    del ast_visitor.natives["native_inplace_support"]
+    mapping = {}
+    for key, value in ast_visitor.natives.items():
+        if key not in config.keys():
+            logging.warning(f"type {key} found in reference backend but not in config.")
+            continue
+        mapping[value] = config[key]
+
+    global type_mapping
+    type_mapping = mapping
+
+
 def generate(config_file):
     global _config
 
     with open(config_file, "r") as file:
         _config = json.load(file)
 
-    global _target_backend, _reference_backend
+    global _target_backend
     _target_backend = _config["name"]
-    _reference_backend = "tensorflow"
 
     backends_root = "../../ivy/functional/backends/"
-    backend_reference_path = backends_root + _reference_backend
+    backend_reference_path = backends_root + _backend_reference
     backend_generation_path = backends_root + _target_backend
 
     # Copy and generate backend tree
