@@ -483,7 +483,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             ],
             Callable,
         ] = "constant",
-        stat_length: Optional[Union[Iterable[Tuple[int]], int]] = None,
+        stat_length: Union[Iterable[Tuple[int]], int] = 1,
         constant_values: Union[Iterable[Tuple[Number]], Number] = 0,
         end_values: Union[Iterable[Tuple[Number]], Number] = 0,
         reflect_type: Literal["even", "odd"] = "even",

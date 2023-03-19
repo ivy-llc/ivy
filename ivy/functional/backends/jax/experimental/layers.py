@@ -7,6 +7,7 @@ import math
 
 # local
 import ivy
+from ivy.func_wrapper import handle_mixed_function
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.random import RNG
 from ivy.functional.ivy.layers import _handle_padding
@@ -479,6 +480,20 @@ def ifft(
     return jnp.fft.ifft(x, n, dim, norm)
 
 
+@handle_mixed_function(
+    lambda *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # noqa: E501
+        not align_corners
+        and mode
+        not in [
+            "area",
+            "nearest",
+            "tf_area",
+            "mitchellcubic",
+            "gaussian",
+        ]
+        and recompute_scale_factor
+    )
+)
 def interpolate(
     x: JaxArray,
     size: Union[Sequence[int], int],
@@ -499,26 +514,13 @@ def interpolate(
         "gaussian",
     ] = "linear",
     scale_factor: Optional[Union[Sequence[int], int]] = None,
+    recompute_scale_factor: Optional[bool] = None,
     align_corners: Optional[bool] = None,
     antialias: bool = False,
     out: Optional[JaxArray] = None,
 ):
     dims = len(x.shape) - 2
     size = _get_size(scale_factor, size, dims, x.shape)
-    if align_corners or mode in [
-        "area",
-        "nearest",
-        "tf_area",
-        "mitchellcubic",
-        "gaussian",
-    ]:
-        return ivy.functional.experimental.interpolate(
-            x,
-            size,
-            mode=mode,
-            align_corners=align_corners,
-            antialias=antialias,
-        )
     mode = (
         "nearest"
         if mode == "nearest-exact"
