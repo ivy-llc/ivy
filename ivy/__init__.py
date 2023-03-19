@@ -1155,3 +1155,17 @@ class DynamicBackendContext:
 
 def dynamic_backend_as(value):
     return DynamicBackendContext(value)
+
+
+# sub_backends
+from ivy.utils.backend.sub_backend_handler import (
+    set_sub_backend,
+    unset_sub_backend,
+    clear_sub_backends,
+    available_sub_backends
+    )
+
+def current_sub_backends():
+    return []
+
+

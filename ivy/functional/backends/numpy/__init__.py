@@ -162,5 +162,5 @@ try:
 
 except ImportError:
     sub_backends = SimpleNamespace()
-    available_sub_backends = []
-    sub_backends_attrs = []
+    
+    

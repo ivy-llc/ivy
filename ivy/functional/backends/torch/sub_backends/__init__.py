@@ -1,16 +1,17 @@
 import importlib
 
 import ivy
-from ivy.utils.backend.sub_backend_handler import create_enable_function
 
-from .docstrings import docstrings
+_available_sub_backends = []
+_current_sub_backends = []
 
-sub_backends_attrs = []
-available_sub_backends = []
-original_dict = {}
-backend = "torch"
+def current_sub_backends():
+    return _current_sub_backends
+
+def available_sub_backends():
+    return _available_sub_backends
 
 
 if importlib.util.find_spec("xformers"):
-    available_sub_backends.append('xformers')
+    _available_sub_backends.append('xformers')
   
