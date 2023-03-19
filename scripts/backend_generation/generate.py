@@ -155,13 +155,14 @@ def _should_install_backend(package_name):
     )
     if ret.lower() == "y":
         try:
-            # TODO add it to Dockerfile/requirements
             # Install backend
             subprocess.check_call(
                 [sys.executable, "-m", "pip", "install", package_name]
             )
             global _backend_is_installed
             _backend_is_installed = True
+            with open("../../requirements/optional.txt", "a") as reqr_file:
+                reqr_file.write("\n" + package_name + "\n")
         except subprocess.CalledProcessError as e:
             raise RuntimeError(
                 Fore.RED + f"Installing {package_name} failed. {e}"
@@ -201,12 +202,34 @@ def _get_backend():
     _get_user_input(_add_alias_for_backend)
 
     if _backend_is_installed:
-        global _imported_backend
-        global backend
-        backend["name"] = package_name
-        print(Style.BRIGHT + f"Importing {package_name} for type checking...")
-        _imported_backend = import_module(package_name)
 
+        def _import_name():
+            ret = (
+                input(
+                    f"Enter Import name for package {package_name}, "
+                    "Press Enter to use {package_name}: "
+                )
+                .strip()
+                .lower()
+            )
+            if ret == "":
+                _package_import_name = package_name
+            else:
+                _package_import_name = ret
+            global backend, _imported_backend
+            backend["name"] = _package_import_name
+            print(
+                Style.BRIGHT + f"Importing {_package_import_name} "
+                "for type checking..."
+            )
+            try:
+                _imported_backend = import_module(_package_import_name)
+                return True
+            except Exception as e:
+                print(Fore.RED + f"Failed to import {_package_import_name}:{e}")
+                return False
+
+        _get_user_input(_import_name)
     return True
 
 
