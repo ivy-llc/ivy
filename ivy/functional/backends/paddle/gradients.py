@@ -112,15 +112,16 @@ def execute_with_gradients(
     )
     func_ret = func(xs)
     xs = xs1
-    duplicate_indices = list(
-        chain.from_iterable(
-            [
-                map(lambda x: x.split("/"), duplicate_index_chain[1:])
-                for duplicate_index_chain in required_duplicate_index_chains
-            ]
+    if isinstance(xs, ivy.Container):
+        duplicate_indices = list(
+            chain.from_iterable(
+                [
+                    map(lambda x: x.split("/"), duplicate_index_chain[1:])
+                    for duplicate_index_chain in required_duplicate_index_chains
+                ]
+            )
         )
-    )
-    xs = ivy.set_nest_at_indices(xs, duplicate_indices, None, shallow=False)
+        xs = ivy.set_nest_at_indices(xs, duplicate_indices, None, shallow=False)
 
     # Getting the relevant outputs from the function return for gradient calculation
     y, ret_idxs = _get_y_and_ret_idxs(func_ret, ret_grad_idxs, create_var=True)
