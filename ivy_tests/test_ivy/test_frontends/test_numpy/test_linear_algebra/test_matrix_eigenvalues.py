@@ -105,9 +105,9 @@ def test_numpy_eig(
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
     ).filter(
         lambda x: "float16" not in x[0]
-                and "bfloat16" not in x[0]
-                and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
-                and np.linalg.det(np.asarray(x[1][0])) != 0
+                  and "bfloat16" not in x[0]
+                  and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+                  and np.linalg.det(np.asarray(x[1][0])) != 0
     ),
     UPLO=st.sampled_from(("L", "U")),
     test_with_out=st.just(False),
