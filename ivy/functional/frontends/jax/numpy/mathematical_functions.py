@@ -520,5 +520,14 @@ def around(a, decimals=0, out=None):
 
 
 @to_ivy_arrays_and_back
+def round(a, decimals=0, out=None):
+    factor = ivy.pow(10, decimals)
+    a = ivy.multiply(a, factor)
+    a = ivy.round(a)
+    a = ivy.divide(a, factor)
+    return a
+
+
+@to_ivy_arrays_and_back
 def frexp(x, /):
     return ivy.frexp(x)
