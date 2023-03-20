@@ -343,6 +343,7 @@ def selu(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Applies the scaled exponential linear unit function element-wise.
+
     Parameters
     ----------
     x
@@ -350,11 +351,13 @@ def selu(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
+
     Returns
     -------
     ret
         an array containing the scaled exponential linear unit activation of each
         element in ``x``.
+
     Examples
     --------
     With :class:`ivy.Array` input:

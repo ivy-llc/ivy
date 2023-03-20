@@ -64,3 +64,10 @@ def batch_norm(
 
 def logsigmoid(input: Tensor) -> Tensor:
     return tf.math.log_sigmoid(input)
+
+
+def selu(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
+    ret = tf.cast(tf.nn.selu(x), x.dtype)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
