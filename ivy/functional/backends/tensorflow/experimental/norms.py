@@ -15,6 +15,27 @@ def l2_normalize(
     return tf.math.divide(x, denorm)
 
 
+def batch_norm(
+    x: tf.Tensor,
+    mean: tf.Tensor,
+    variance: tf.Tensor,
+    /,
+    *,
+    scale: Optional[tf.Tensor] = None,
+    offset: Optional[tf.Tensor] = None,
+    training: bool = False,
+    eps: float = 1e-5,
+):
+    ndims = len(x.shape)
+    if training:
+        dims = (0, *range(2, ndims))
+        mean = tf.math.reduce_mean(x, axis=dims)
+        variance = tf.math.reduce_variance(x, axis=dims)
+    x = tf.transpose(x, perm=(0, *range(2, ndims), 1))
+    ret = tf.nn.batch_normalization(x, mean, variance, offset, scale, eps)
+    return tf.transpose(ret, perm=(0, ndims - 1, *range(1, ndims - 1)))
+
+
 def instance_norm(
     x: Union[tf.Tensor, tf.Variable],
     /,

@@ -141,3 +141,72 @@ def test_instance_norm(
         affine=affine,
         track_running_stats=track_running_stats,
     )
+
+
+@st.composite
+def _batch_norm_helper(draw):
+    x_dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=2,
+            max_num_dims=4,
+            min_dim_size=4,
+            ret_shape=True,
+            max_value=999,
+            min_value=-1001,
+        )
+    )
+    _, variance = draw(
+        helpers.dtype_and_values(
+            dtype=x_dtype,
+            shape=(shape[0],),
+            max_value=999,
+            min_value=-1,
+        )
+    )
+    _, others = draw(
+        helpers.dtype_and_values(
+            dtype=x_dtype * 2,
+            shape=(shape[0],),
+            max_value=999,
+            min_value=-1001,
+            num_arrays=2,
+        )
+    )
+    return x_dtype, x[-1], others[0], others[1], others[2], variance[0]
+
+
+# batch_norm
+@handle_test(
+    fn_tree="functional.ivy.experimental.batch_norm",
+    data=_batch_norm_helper(),
+    eps=helpers.floats(min_value=0e-5, max_value=0.1),
+    test_with_out=st.just(False),
+)
+def test_batch_norm(
+    *,
+    data,
+    eps,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    x_dtype, x, scale, offset, mean, variance = data
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        fw=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        xs_grad_idxs=[[-1, 0]],
+        input_dtypes=x_dtype,
+        x=x,
+        mean=mean,
+        variance=variance,
+        scale=scale,
+        offset=offset,
+        eps=eps,
+        rtol_=0e-03,
+    )
