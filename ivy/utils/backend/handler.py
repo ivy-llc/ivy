@@ -39,7 +39,7 @@ _backend_reverse_dict = dict()
 
 for backend in os.listdir(
     os.path.join(
-        sys.modules["ivy"].__path__[0].rpartition("/")[0],
+        ivy.__path__[0].rpartition("/")[0],  # type: ignore
         _backends_subpackage_path.replace(".", "/"),
     )
 ):
