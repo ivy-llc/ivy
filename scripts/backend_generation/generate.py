@@ -174,22 +174,6 @@ def _should_install_backend(package_name):
         print(Fore.RED + f"{ret} not understood.")
         return False
 
-    def _import_name():
-        ret = (
-            input(
-                f"Enter Import name for package {package_name}, "
-                f"Press Enter to use {package_name}: "
-            )
-            .strip()
-            .lower()
-        )
-        if ret == "":
-            backend["name"] = package_name
-        else:
-            backend["name"] = ret
-        return True
-
-    _get_user_input(_import_name)
     return True
 
 
@@ -217,6 +201,24 @@ def _get_backend():
     _get_user_input(_add_alias_for_backend)
 
     if _backend_is_installed:
+
+        def _import_name():
+            ret = (
+                input(
+                    f"Enter Import name for package {package_name}, "
+                    f"Press Enter to use {package_name}: "
+                )
+                .strip()
+                .lower()
+            )
+            if ret == "":
+                backend["name"] = package_name
+            else:
+                backend["name"] = ret
+            return True
+
+        _get_user_input(_import_name)
+
         global _imported_backend
         print(Style.BRIGHT + f"Importing {backend['name']} " "for type checking...")
         try:
