@@ -1,9 +1,13 @@
 # global
 import paddle
 from typing import Union, Optional, Sequence
-from ivy.utils.exceptions import IvyNotImplementedException
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from . import backend_version
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def all(
     x: paddle.Tensor,
     /,
@@ -26,6 +30,9 @@ def all(
     return x
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def any(
     x: paddle.Tensor,
     /,
@@ -46,9 +53,3 @@ def any(
     for i, a in enumerate(axis):
         x = paddle.any(x, axis=a if keepdims else a - i, keepdim=keepdims)
     return x
-
-
-
-
-
-

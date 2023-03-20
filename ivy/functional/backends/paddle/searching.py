@@ -64,6 +64,10 @@ def argmin(
     return ret
 
 
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ("uint16", "bfloat16")},
+    backend_version,
+)
 def nonzero(
     x: paddle.Tensor,
     /,
@@ -72,7 +76,31 @@ def nonzero(
     size: Optional[int] = None,
     fill_value: Number = 0,
 ) -> Union[paddle.Tensor, Tuple[paddle.Tensor]]:
-    raise IvyNotImplementedException()
+    
+    if x.dtype in [paddle.int8, paddle.uint8, paddle.float16, paddle.complex64, paddle.complex128]:
+        if paddle.is_complex(x):
+            real_idx = paddle.nonzero(x.real())
+            imag_idx = paddle.nonzero(x.imag())
+            idx = paddle.concat([real_idx, imag_idx], axis=0)
+            res = paddle.unique(idx, axis=0)
+        else:
+            res =  paddle.nonzero(x.cast(ivy.default_float_dtype()))
+    else:
+        res =  paddle.nonzero(x)
+    
+    res = res.T
+    if size is not None:
+        if isinstance(fill_value, float):
+            res = res.to(dtype=paddle.float64)
+        diff = size - res[0].shape[0]
+        if diff > 0:
+            res = paddle.nn.functional.pad(res.unsqueeze(0), [0, diff], mode='constant', value=fill_value, data_format='NCL').squeeze(0)
+        elif diff < 0:
+            res = res[:, :size]
+
+    if as_tuple:
+        return tuple(res)
+    return res.T
 
 
 @with_unsupported_dtypes(
@@ -118,5 +146,18 @@ def where(
 # ----- #
 
 
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ("uint16", "bfloat16")},
+    backend_version,
+)
 def argwhere(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if x.ndim == 0:
+        return paddle.to_tensor([],dtype="int64").unsqueeze(0)
+    if x.dtype in [paddle.int8, paddle.uint8, paddle.float16, paddle.complex64, paddle.complex128]:
+        if paddle.is_complex(x):
+            real_idx = paddle.nonzero(x.real())
+            imag_idx = paddle.nonzero(x.imag())
+            idx = paddle.concat([real_idx, imag_idx], axis=0)
+            return paddle.unique(idx, axis=0)
+        return paddle.nonzero(x.cast(ivy.default_float_dtype()))
+    return paddle.nonzero(x)

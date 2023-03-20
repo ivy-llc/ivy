@@ -10,7 +10,7 @@ import paddle
 import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
 from . import backend_version
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
 
 # Array API Standard #
 # -------------------#
@@ -70,23 +70,8 @@ def max(
     return paddle.max(x, axis=axis, keepdim=keepdims)
 
 
-@with_unsupported_dtypes(
-    {
-        "2.4.2 and below": (
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-            "uint8",
-            "uint16",
-            "bfloat16",
-            "float16",
-            "complex64",
-            "complex128",
-            "bool",
-        )
-    },
-    backend_version,
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def mean(
     x: paddle.Tensor,
@@ -96,10 +81,27 @@ def mean(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if x.dtype not in (paddle.float32, paddle.float64):
-        x, x_dtype = x.astype("float64"), x.dtype
-        return paddle.mean(x, axis=axis, keepdim=keepdims).astype(x_dtype)
-    return paddle.mean(x, axis=axis, keepdim=keepdims)
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.int32,
+        paddle.int64,
+        paddle.uint8,
+        paddle.float16,
+        paddle.complex64,
+        paddle.complex128,
+    ]:
+        if paddle.is_complex(x):
+            ret = paddle.mean(x.real(), axis=axis, keepdim=keepdims) + 1j * paddle.mean(
+                x.imag(), axis=axis, keepdim=keepdims
+            )
+            return ret if keepdims else ret.squeeze()
+        ret = paddle.mean(
+            x.cast(ivy.default_float_dtype()), axis=axis, keepdim=keepdims
+        )
+        return ret.astype(x.dtype) if keepdims else ret.squeeze().astype(x.dtype)
+    ret = paddle.mean(x, axis=axis, keepdim=keepdims)
+    return ret if keepdims else ret.squeeze()
 
 
 @with_unsupported_dtypes(
