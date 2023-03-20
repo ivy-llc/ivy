@@ -106,7 +106,9 @@ class Bfloat16Finfo:
 # Array API Standard #
 # -------------------#
 
-
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def astype(
     x: paddle.Tensor,
     dtype: paddle.dtype,
@@ -172,7 +174,9 @@ def broadcast_to(
     else:
         return paddle.broadcast_to(x, shape)
 
-
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 @_handle_nestable_dtype_info
 def finfo(type: Union[paddle.dtype, str, paddle.Tensor], /) -> Finfo:
     if isinstance(type, paddle.Tensor):
@@ -185,7 +189,9 @@ def finfo(type: Union[paddle.dtype, str, paddle.Tensor], /) -> Finfo:
 
     return Finfo(np.finfo(type))
 
-
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 @_handle_nestable_dtype_info
 def iinfo(type: Union[paddle.dtype, str, paddle.Tensor], /) -> Iinfo:
     if isinstance(type, paddle.Tensor):
@@ -195,7 +201,9 @@ def iinfo(type: Union[paddle.dtype, str, paddle.Tensor], /) -> Iinfo:
 
     return Iinfo(np.iinfo(type))
 
-
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def result_type(*arrays_and_dtypes: Union[paddle.Tensor, paddle.dtype]) -> ivy.Dtype:
     return ivy.promote_types(arrays_and_dtypes[0].dtype,arrays_and_dtypes[1].dtype)
 
@@ -203,7 +211,9 @@ def result_type(*arrays_and_dtypes: Union[paddle.Tensor, paddle.dtype]) -> ivy.D
 # Extra #
 # ------#
 
-
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def as_ivy_dtype(dtype_in: Union[paddle.dtype, str, bool, int, float], /) -> ivy.Dtype:
     if dtype_in is int:
         return ivy.default_int_dtype()
@@ -223,7 +233,9 @@ def as_ivy_dtype(dtype_in: Union[paddle.dtype, str, bool, int, float], /) -> ivy
             )
     return ivy.Dtype(ivy_dtype_dict[dtype_in])
 
-
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def as_native_dtype(
     dtype_in: Union[paddle.dtype, str, bool, int, float]
 ) -> paddle.dtype:
@@ -244,13 +256,17 @@ def as_native_dtype(
             "Cannot convert to Paddle dtype." f" {dtype_in} is not supported by Paddle."
         )
 
-
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def dtype(x: paddle.Tensor, *, as_native: bool = False) -> ivy.Dtype:
     if as_native:
         return ivy.to_native(x).dtype
     return as_ivy_dtype(x.dtype)
 
-
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def dtype_bits(dtype_in: Union[paddle.dtype, str], /) -> int:
     dtype_str = as_ivy_dtype(dtype_in)
     if "bool" in dtype_str:
