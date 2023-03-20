@@ -14,6 +14,7 @@ importlib_module_path = "ivy.utils._importlib"
 importlib_abs_import_fn = "_absolute_import"
 importlib_from_import_fn = "_from_import"
 _unmodified_ivy_path = sys.modules["ivy"].__path__[0].rpartition("/")[0]
+_compiled_modules_cache = {}
 
 
 def _retrive_local_modules():
@@ -240,12 +241,16 @@ class IvyLoader(Loader):
         with open(self.filename) as f:
             data = f.read()
 
-        ast_tree = parse(data)
-        transformer = ImportTransformer()
-        transformer.visit_ImportFrom(ast_tree)
-        transformer.visit_Import(ast_tree)
-        transformer.impersonate_import(ast_tree)
-        ast.fix_missing_locations(ast_tree)
+        try:
+            ast_tree = _compiled_modules_cache[self.filename]
+        except KeyError:
+            ast_tree = parse(data)
+            transformer = ImportTransformer()
+            transformer.visit_Import(ast_tree)
+            transformer.visit_ImportFrom(ast_tree)
+            transformer.impersonate_import(ast_tree)
+            ast.fix_missing_locations(ast_tree)
+            _compiled_modules_cache[self.filename] = ast_tree
         try:
             exec(
                 compile(ast_tree, filename=self.filename, mode="exec"), module.__dict__

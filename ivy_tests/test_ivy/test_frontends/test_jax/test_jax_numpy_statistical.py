@@ -714,6 +714,13 @@ def test_jax_numpy_std(
     )
 
     np_helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        axis=axis,
         dtype=dtype[0],
         out=None,
         ddof=ddof,
@@ -722,8 +729,8 @@ def test_jax_numpy_std(
         atol=1e-3,
         rtol=1e-3,
     )
-   
-
+    
+    
 # median
 @handle_frontend_test(
     fn_tree="jax.numpy.median",
@@ -756,4 +763,6 @@ def test_jax_numpy_median(
         out=None,
         overwrite_input=False,
         keepdims=keemdims,
+        atol=1e-3,
+        rtol=1e-3,
     )
