@@ -464,6 +464,7 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
     import torch
 
     # Get a pretrained haiku model
+    # https://lets-unify.ai/demos/scripts/deepmind_perceiver_io.py
     from deepmind_perceiver_io import key, perceiver_backbone
 
     # Transpile it into a torch.nn.Module with the corresponding parameters
@@ -665,10 +666,11 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
     import tensorflow as tf
 
     # Get a pretrained haiku model
+    # https://lets-unify.ai/demos/scripts/deepmind_perceiver_io.py
     from deepmind_perceiver_io import key, perceiver_backbone
 
     # Transpile it into a tf.keras.Model with the corresponding parameters
-    dummy_input = jax.random.uniform(key, shape=(1, 3, 224, 224), dtype=jax.numpy.float32)
+    dummy_input = jax.random.uniform(key, shape=(1, 3, 224, 224))
     params = perceiver_backbone.init(rng=key, images=dummy_input)
     backbone = ivy.transpile(
         perceiver_backbone, to="tensorflow", params_v=params, args=(dummy_input,)
