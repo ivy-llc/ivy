@@ -604,28 +604,22 @@
         <span class="n">unset_backend</span><span class="p">()</span></div>
 
 
-<span class="n">_array_types</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-<span class="n">_array_types</span><span class="p">[</span><span class="s2">&quot;numpy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.numpy&quot;</span>
-<span class="n">_array_types</span><span class="p">[</span><span class="s2">&quot;jax.interpreters.xla&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.jax&quot;</span>
-<span class="n">_array_types</span><span class="p">[</span><span class="s2">&quot;jaxlib.xla_extension&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.jax&quot;</span>
-<span class="n">_array_types</span><span class="p">[</span><span class="s2">&quot;tensorflow.python.framework.ops&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.tensorflow&quot;</span>
-<span class="n">_array_types</span><span class="p">[</span>
-    <span class="s2">&quot;tensorflow.python.ops.resource_variable_ops&quot;</span>
-<span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.tensorflow&quot;</span>
-<span class="n">_array_types</span><span class="p">[</span><span class="s2">&quot;torch&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.torch&quot;</span>
-<span class="n">_array_types</span><span class="p">[</span><span class="s2">&quot;torch.nn.parameter&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.torch&quot;</span>
-
+<span class="n">_backends_subpackage_path</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends&quot;</span>
 <span class="n">_backend_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-<span class="n">_backend_dict</span><span class="p">[</span><span class="s2">&quot;numpy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.numpy&quot;</span>
-<span class="n">_backend_dict</span><span class="p">[</span><span class="s2">&quot;jax&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.jax&quot;</span>
-<span class="n">_backend_dict</span><span class="p">[</span><span class="s2">&quot;tensorflow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.tensorflow&quot;</span>
-<span class="n">_backend_dict</span><span class="p">[</span><span class="s2">&quot;torch&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends.torch&quot;</span>
-
 <span class="n">_backend_reverse_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-<span class="n">_backend_reverse_dict</span><span class="p">[</span><span class="s2">&quot;ivy.functional.backends.numpy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;numpy&quot;</span>
-<span class="n">_backend_reverse_dict</span><span class="p">[</span><span class="s2">&quot;ivy.functional.backends.jax&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;jax&quot;</span>
-<span class="n">_backend_reverse_dict</span><span class="p">[</span><span class="s2">&quot;ivy.functional.backends.tensorflow&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;tensorflow&quot;</span>
-<span class="n">_backend_reverse_dict</span><span class="p">[</span><span class="s2">&quot;ivy.functional.backends.torch&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;torch&quot;</span>
+
+<span class="k">for</span> <span class="n">backend</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="s2">&quot;ivy&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">__path__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">rpartition</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">_backends_subpackage_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
+<span class="p">):</span>
+    <span class="k">if</span> <span class="n">backend</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;__&quot;</span><span class="p">):</span>
+        <span class="k">continue</span>
+    <span class="n">backend_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_backends_subpackage_path</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">backend</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">_backend_dict</span><span class="p">[</span><span class="n">backend</span><span class="p">]</span> <span class="o">=</span> <span class="n">backend_path</span>
+    <span class="n">_backend_reverse_dict</span><span class="p">[</span><span class="n">backend_path</span><span class="p">]</span> <span class="o">=</span> <span class="n">backend</span>
+
 
 <span class="c1"># Backend Getting/Setting #</span>
 <span class="c1"># ----------------------- #</span>
@@ -639,6 +633,14 @@
         <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">new_fn</span></div>
+
+
+<span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span>
+<span class="k">def</span> <span class="nf">_get_backend_for_arg</span><span class="p">(</span><span class="n">arg_module_name</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">backend</span> <span class="ow">in</span> <span class="n">_backend_dict</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">backend</span> <span class="ow">in</span> <span class="n">arg_module_name</span><span class="p">:</span>
+            <span class="n">module_name</span> <span class="o">=</span> <span class="n">_backend_dict</span><span class="p">[</span><span class="n">backend</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_determine_backend_from_args</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
@@ -684,9 +686,7 @@
                 <span class="k">return</span> <span class="n">lib</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># check if the class module of the arg is in _array_types</span>
-        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span> <span class="ow">in</span> <span class="n">_array_types</span><span class="p">:</span>
-            <span class="n">module_name</span> <span class="o">=</span> <span class="n">_array_types</span><span class="p">[</span><span class="n">args</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="p">]</span>
-            <span class="k">return</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_get_backend_for_arg</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="fn_name_from_version_specific_fn_name"><a class="viewcode-back" href="../../../../utils/backend/handler/fn_name_from_version_specific_fn_name.html#ivy.functional.ivy.experimental.fn_name_from_version_specific_fn_name">[docs]</a><span class="k">def</span> <span class="nf">fn_name_from_version_specific_fn_name</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">version</span><span class="p">):</span>
