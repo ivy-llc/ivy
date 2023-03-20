@@ -228,3 +228,8 @@ def row_stack(tup):
             xs += [ivy.reshape(t, (1, ivy.shape(t)[0]))]
         return ivy.concat(xs, axis=0)
     return ivy.concat(tup, axis=0)
+
+
+@to_ivy_arrays_and_back
+def pad(array, pad_width, mode="constant", **kwargs):
+    return ivy.pad(array, pad_width, mode=mode, **kwargs)

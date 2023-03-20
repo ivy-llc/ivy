@@ -11,6 +11,7 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpe
 from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa
     _get_dtype_values_k_axes_for_rot90,
     _get_split_locations,
+    _pad_helper,
 )
 
 
@@ -1283,4 +1284,44 @@ def test_jax_numpy_row_stack(
         fn_tree=fn_tree,
         on_device=on_device,
         tup=xs,
+    )
+
+
+# pad
+@handle_frontend_test(
+    fn_tree="jax.numpy.pad",
+    dtype_and_input_and_other=_pad_helper(),
+    reflect_type=st.sampled_from(["even", "odd"]),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_pad(
+    dtype_and_input_and_other,
+    reflect_type,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    (
+        dtype,
+        x,
+        pad_width,
+        mode,
+        stat_length,
+        constant_values,
+        end_values,
+    ) = dtype_and_input_and_other
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        array=x[0],
+        pad_width=pad_width,
+        mode=mode,
+        reflect_type=reflect_type,
+        stat_length=stat_length,
+        constant_values=constant_values,
+        end_values=end_values,
     )
