@@ -1,5 +1,4 @@
 # global
-import math
 from numbers import Number
 from typing import Union, Optional, Tuple, List, Sequence, Iterable
 
@@ -8,10 +7,10 @@ import paddle
 # local
 import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
-from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.func_wrapper import to_native_arrays_and_back
 
 # noinspection PyProtectedMember
-from ivy.functional.ivy.manipulation import _calculate_out_shape
 from . import backend_version
 
 
@@ -200,7 +199,8 @@ def stack(
     axis: int = 0,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    # The input list is converted to a tensor to promote the dtypes of the elements to the same dtype.
+    # The input list is converted to a tensor.
+    # To promote the dtypes of the elements to the same dtype.
     # This is necessary because the stack function does not support mixed dtypes.
     dtype_list = set(map(lambda x: x.dtype, arrays))
     if len(dtype_list) == 1:
@@ -296,13 +296,13 @@ def repeat(
     axis: int = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    #if isinstance(repeats, Number) and repeats == 0:
-        #return paddle.to_tensor([], dtype=x.dtype)
-    #elif isinstance(repeats, paddle.Tensor):
-        #if max(repeats.shape) == 1:
-            #repeats = repeats.item()
-            #if repeats == 0:
-                #return paddle.to_tensor([], dtype=x.dtype)
+    if isinstance(repeats, Number) and repeats == 0:
+        return paddle.to_tensor([], dtype=x.dtype)
+    elif isinstance(repeats, paddle.Tensor):
+        if max(repeats.shape) == 1:
+            repeats = repeats.item()
+            if repeats == 0:
+                return paddle.to_tensor([], dtype=x.dtype)
 
     if x.dtype in [
         paddle.int8,
@@ -328,6 +328,33 @@ def repeat(
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
+@to_native_arrays_and_back
+def constant_pad(
+    x: paddle.Tensor,
+    /,
+    pad_width: List[List[int]],
+    *,
+    value: Number = 0.0,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    paddings = []
+    pad_width = list(pad_width)
+    for item in pad_width:
+        paddings.append(item[0])
+        paddings.append(item[1])
+    if x.dtype in [
+        paddle.uint8,
+        paddle.float16,
+    ]:
+        return paddle.nn.functional.pad(
+            x.cast(ivy.default_float_dtype()), pad=paddings, value=value
+        ).cast(x.dtype)
+    return paddle.nn.functional.pad(x=x, pad=paddings, value=value)
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "float16")}}, backend_version
+)
 def tile(
     x: paddle.Tensor, /, repeats: Sequence[int], *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
@@ -352,20 +379,6 @@ def tile(
     if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
         return paddle.tile(x.cast(ivy.default_float_dtype()), repeats).cast(x.dtype)
     return paddle.tile(x, repeats)
-
-
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
-def constant_pad(
-    x: paddle.Tensor,
-    /,
-    pad_width: List[List[int]],
-    *,
-    value: Number = 0.0,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    raise IvyNotImplementedException()
 
 
 @with_unsupported_device_and_dtypes(
