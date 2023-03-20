@@ -18,6 +18,7 @@ Experimental
    experimental/thresholded_relu.rst
    experimental/relu6.rst
    experimental/batch_norm.rst
+   experimental/logsigmoid.rst
    experimental/msort.rst
    experimental/lexsort.rst
    experimental/median.rst
@@ -43,7 +44,8 @@ Experimental
    experimental/interp.rst
    experimental/compute_weight_mat.rst
    experimental/interpolate.rst
-   experimental/padding_ceil_mode.rst
+   experimental/adaptive_avg_pool1d.rst
+   experimental/adaptive_avg_pool2d.rst
    experimental/sinc.rst
    experimental/lcm.rst
    experimental/fmod.rst
@@ -124,6 +126,7 @@ Experimental
    experimental/eigvals.rst
    experimental/adjoint.rst
    experimental/multi_dot.rst
+   experimental/cond.rst
    experimental/binary_cross_entropy_with_logits.rst
    experimental/dirichlet.rst
    experimental/beta.rst

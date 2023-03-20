@@ -18,4 +18,5 @@ Activations
    activations/thresholded_relu.rst
    activations/relu6.rst
    activations/batch_norm.rst
+   activations/logsigmoid.rst
 
