@@ -30,7 +30,7 @@ class ContextManager:
         set_backend(self.module)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        unset_backend()
+        previous_backend()
 
 
 _backends_subpackage_path = "ivy.functional.backends"
@@ -436,7 +436,7 @@ def set_backend(backend: str, dynamic: bool = False):
     if isinstance(backend, str):
         temp_stack = list()
         while backend_stack:
-            temp_stack.append(unset_backend())
+            temp_stack.append(previous_backend())
         backend = importlib.import_module(_backend_dict[backend])
         for fw in reversed(temp_stack):
             backend_stack.append(fw)
@@ -533,7 +533,7 @@ def get_backend(backend: Optional[str] = None):
 
 
 @prevent_access_locally
-def unset_backend():
+def previous_backend():
     """Unsets the current global backend, and adjusts the ivy dict such that either
     a previously set global backend is then used as the backend, otherwise we return
     to Ivy's implementations.
@@ -546,7 +546,7 @@ def unset_backend():
     Examples
     --------
     Torch is the last set backend hence is the backend used in the first examples.
-    However, as seen in the example after, if `unset_backend` is called before
+    However, as seen in the example after, if `previous_backend` is called before
     `ivy.native_array` then tensorflow will become the current backend and any
     torch backend implementations in the Ivy dict will be swapped with the
     tensorflow implementation::
@@ -559,7 +559,7 @@ def unset_backend():
 
     >>> ivy.set_backend("tensorflow")
     >>> ivy.set_backend("torch")
-    >>> ivy.unset_backend()
+    >>> ivy.previous_backend()
     >>> x = ivy.native_array([1])
     >>> print(type(x))
     <class'tensorflow.python.framework.ops.EagerTensor'>
@@ -597,9 +597,9 @@ def unset_backend():
 
 
 @prevent_access_locally
-def clear_backend_stack():
+def unset_backend():
     while backend_stack:
-        unset_backend()
+        previous_backend()
 
 
 @prevent_access_locally
