@@ -136,7 +136,13 @@ def inplace_increment(
     x: Union[ivy.Array, paddle.Tensor],
     val: Union[ivy.Array, paddle.Tensor],
 ) -> ivy.Array:
-    raise IvyNotImplementedException()
+    (x_native, val_native), _ = ivy.args_to_native(x, val)
+    x_native.data += val_native
+    if ivy.is_ivy_array(x):
+        x.data = x_native
+    else:
+        x = ivy.Array(x_native)
+    return x
 
 
 def inplace_update(
