@@ -507,7 +507,8 @@ def add_n(inputs, name=None):
 def floormod(x, y, name=None):
     return ivy.remainder(x, y)
 
+
 @to_ivy_arrays_and_back
 def greater(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
-    return ivy.greater(x,y)
+    return ivy.greater(x, y)
