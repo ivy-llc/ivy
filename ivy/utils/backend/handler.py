@@ -39,8 +39,8 @@ _backend_reverse_dict = dict()
 
 for backend in os.listdir(
     os.path.join(
-        ivy.__path__[0].rpartition("/")[0],  # type: ignore
-        _backends_subpackage_path.replace(".", "/"),
+        ivy.__path__[0].rpartition(os.path.sep)[0],  # type: ignore
+        _backends_subpackage_path.replace(".", os.path.sep),
     )
 ):
     if backend.startswith("__"):
