@@ -210,3 +210,10 @@ def trapezoid(y, x=None, *, dx=None, dim=-1):
     if x is not None:
         y, x = torch_frontend.promote_types_of_torch_inputs(y, x)
     return ivy.trapz(y, x=x, dx=dx, axis=dim)
+
+
+@to_ivy_arrays_and_back
+def cumulative_trapezoid(y, x=None, *, dx=None, dim=-1):
+    if x is not None:
+        y, x = torch_frontend.promote_types_of_torch_inputs(y, x)
+    return ivy.cumulative_trapezoid(y, x=x, dx=dx, axis=dim)
