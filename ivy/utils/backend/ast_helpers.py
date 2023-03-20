@@ -160,27 +160,19 @@ class ImportTransformer(ast.NodeTransformer):
         self.include_ivy_import = False
 
     def visit_Import(self, node):
-        if isinstance(node, ast.Module):
-            self.generic_visit(node)
-            return node
-        if isinstance(node, ast.Import):
-            ret, should_impersonate = _parse_import(node)
-            if should_impersonate and not self.include_ivy_import:
-                self.include_ivy_import = True
-            return ret
+        ret, should_impersonate = _parse_import(node)
+        if should_impersonate and not self.include_ivy_import:
+            self.include_ivy_import = True
+        return ret
 
     def visit_ImportFrom(self, node):
-        if isinstance(node, ast.Module):
-            self.generic_visit(node)
-            return node
-        if isinstance(node, ast.ImportFrom):
-            self.include_ivy_import = True
-            if node.level == 0:
-                if node.module is not None and node.module == "__future__":
-                    self.insert_index = 1
-                return _parse_absolute_fromimport(node)
-            else:
-                return _parse_relative_fromimport(node)
+        self.include_ivy_import = True
+        if node.level == 0:
+            if node.module is not None and node.module == "__future__":
+                self.insert_index = 1
+            return _parse_absolute_fromimport(node)
+        else:
+            return _parse_relative_fromimport(node)
 
     def impersonate_import(self, tree: ast.Module):
         if self.include_ivy_import:
@@ -211,7 +203,7 @@ class IvyPathFinder(MetaPathFinder):
         if path is None or path == "":
             path = [_unmodified_ivy_path]
         if "." in fullname:
-            *parents, name = fullname.split(".")
+            *_, name = fullname.split(".")
         else:
             name = fullname
         for entry in path:
@@ -238,23 +230,21 @@ class IvyLoader(Loader):
         self.filename = filename
 
     def exec_module(self, module):
-        with open(self.filename) as f:
-            data = f.read()
+        if self.filename in _compiled_modules_cache:
+            compiled_obj = _compiled_modules_cache[self.filename]
+        else:
+            with open(self.filename) as f:
+                data = f.read()
 
-        try:
-            ast_tree = _compiled_modules_cache[self.filename]
-        except KeyError:
             ast_tree = parse(data)
             transformer = ImportTransformer()
-            transformer.visit_Import(ast_tree)
-            transformer.visit_ImportFrom(ast_tree)
+            transformer.visit(ast_tree)
             transformer.impersonate_import(ast_tree)
             ast.fix_missing_locations(ast_tree)
-            _compiled_modules_cache[self.filename] = ast_tree
+            compiled_obj = compile(ast_tree, filename=self.filename, mode="exec")
+            _compiled_modules_cache[self.filename] = compiled_obj
         try:
-            exec(
-                compile(ast_tree, filename=self.filename, mode="exec"), module.__dict__
-            )
+            exec(compiled_obj, module.__dict__)
         except Exception as e:
             print(e)
             traceback.print_exc()
