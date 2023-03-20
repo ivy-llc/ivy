@@ -1,6 +1,8 @@
 project:
   type: website
   output-dir: docs
+  resources:
+    - "scripts/deepmind_perceiver_io.py"
 
 website:
   page-navigation: true
