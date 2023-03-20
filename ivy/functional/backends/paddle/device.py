@@ -77,7 +77,7 @@ def clear_mem_on_dev(device: Place, /):
 
 
 def num_gpus() -> int:
-    raise paddle.device.cuda.device_count()
+    return paddle.device.cuda.device_count()
 
 
 def gpu_is_available() -> bool:
