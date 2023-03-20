@@ -241,5 +241,5 @@ def lu_matrix_inverse(lower_upper, perm, validate_args=False, name=None):
 
 
 @to_ivy_arrays_and_back
-def einsum(equation, *operands):
-    return ivy.einsum(equation, *operands)
+def einsum(equation, *inputs, **kwargs):
+    return tf_frontend.einsum(equation, *inputs, **kwargs)
