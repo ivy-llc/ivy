@@ -24,7 +24,7 @@ def dev(
     if as_native:
         if isinstance(dv, Place):
             dv = "gpu" if dv.is_gpu_place() else "cpu"
-        return paddle.device.set_device(dv)
+        return x.place
     return as_ivy_dev(dv)
 
 
@@ -68,11 +68,15 @@ def as_native_dev(
 ) -> Optional[Place]:
     if not isinstance(device, str):
         return device
-    return paddle.device.set_device(ivy.Device(device))
+    elif 'cpu' in device:
+        return paddle.fluid.libpaddle.CPUPlace()
+    elif 'gpu' in device:
+        return paddle.fluid.libpaddle.CUDAPlace()
 
 
 def clear_mem_on_dev(device: Place, /):
-    if device.is_gpu_place():
+    device = as_native_dev(device)
+    if isinstance(device,paddle.fluid.libpaddle.CUDAPlace):
         paddle.device.cuda.empty_cache()
 
 
