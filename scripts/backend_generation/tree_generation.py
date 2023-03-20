@@ -149,6 +149,18 @@ class SourceTransformer(ast.NodeTransformer):
         return node
 
 
+class InitFileTransformer(ast.NodeTransformer):
+    def __init__(self, variables_to_update: dict):
+        self.variables = variables_to_update
+
+    def visit_Assign(self, node: ast.Assign):
+        target_str = astunparse.unparse(node.targets[0])[:-1]
+        if target_str in self.variables:
+            node.value = ast.parse(self.variables[target_str]).body[0].value
+        self.generic_visit(node)
+        return node
+
+
 # Modify the AST tree
 def _parse_module(tree: ast.Module, keep_private=False) -> ast.Module:
     transformer = SourceTransformer(type_mapping, keep_private=keep_private)
@@ -241,6 +253,29 @@ def generate(config_file):
     ref_tree = ast.parse(ref_str)
     try:
         tree_to_write = _parse_module(ref_tree, keep_private=True)
+        params = {
+            "valid_devices": f"({_config['valid_devices']},)",
+            "invalid_devices": f"({_config['invalid_devices']},)",
+            "backend": f'"{_config["name"]}"',
+            "supports_gradients": _config["supports_gradients"].__str__(),
+            "native_inplace_support": _config["native_inplace_support"].__str__(),
+        }
+        valids = [
+            "valid_dtypes",
+            "valid_numeric_dtypes",
+            "valid_float_dtypes",
+            "valid_complex_dtypes",
+            "valid_int_dtypes",
+            "valid_uint_dtypes",
+        ]
+        for key in valids:
+            params[key + "_dict"] = {
+                "None": tuple(["ivy." + x for x in _config[key]])
+            }.__str__()
+            params["in" + key + "_dict"] = {
+                "None": tuple(["ivy." + x for x in _config["in" + key]])
+            }.__str__()
+        InitFileTransformer(params).visit(tree_to_write)
     except Exception as e:
         print(
             "Failed to parse "
