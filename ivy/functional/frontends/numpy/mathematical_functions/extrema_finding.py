@@ -35,6 +35,35 @@ def _minimum(
 @handle_numpy_out
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
+def fmin(
+    a,
+    /,
+    *,
+    axis=None,
+    out=None,
+    keepdims=False,
+    initial=None,
+    where=True,
+    casting="same_kind",
+    order="k",
+    dtype=None,
+    subok=True,
+):
+    a = ivy.array(a)
+    if initial is not None:
+        if ivy.is_array(where):
+            a = ivy.where(where, a, ivy.full_like(initial, a))
+        header = ivy.full_like(a, initial, dtype=ivy.dtype(a))
+        a = ivy.concatenate([a, header], axis=axis)
+    res = ivy.reduce_min(a, axis=axis, keepdims=keepdims, out=out)
+    if ivy.is_array(where):
+        ret = ivy.where(where, res, ivy.full_like(res, ivy.nan), out=out)
+    return ivy.to_numpy(ret)
+
+
+@handle_numpy_out
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def amin(
     a,
     /,

@@ -58,6 +58,46 @@ def test_numpy_minimum(
     )
 
 
+# fmin
+@handle_frontend_test(
+    fn_tree="numpy.fmin",
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_2(
+        arrs_shapes=[((2, 3),), ((2, 3),)],
+        dtypes="all",
+        dtype_="float",
+        values=[(-10, 10)],
+        random_values=True,
+    ),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="fmin"
+    ),
+)
+def test_numpy_fmin(
+    dtypes_values_casting, 
+    where, 
+    frontend, 
+    test_flags, 
+    fn_tree, 
+    on_device,
+):
+    input_dtypes, x, casting, dtype = dtypes_values_casting
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+        where=where, input_dtype=input_dtypes, test_flags=test_flags
+    )
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x,
+        out=None,
+        where=where,
+        axis=None,
+        keepdims=False,
+    )
+
+    
 # amin
 @handle_frontend_test(
     fn_tree="numpy.amin",
