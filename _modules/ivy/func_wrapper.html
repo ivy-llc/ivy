@@ -570,7 +570,6 @@
               
   <h1>Source code for ivy.func_wrapper</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">contextlib</span>
-<span class="kn">import</span> <span class="nn">numbers</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">import</span> <span class="nn">logging</span>
@@ -783,15 +782,11 @@
                     <span class="c1"># since asarray throws unpredictable bugs</span>
                     <span class="k">if</span> <span class="n">_check_in_nested_sequence</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="bp">Ellipsis</span><span class="p">,</span> <span class="n">_type</span><span class="o">=</span><span class="nb">slice</span><span class="p">):</span>
                         <span class="k">continue</span>
-                    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span>
-                        <span class="n">arg</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Number</span><span class="p">)</span>
-                    <span class="p">):</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
                         <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="n">parameters</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
                     <span class="n">kwarg</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">parameter</span><span class="p">]</span>
-                    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">kwarg</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span>
-                        <span class="n">kwarg</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Number</span><span class="p">)</span>
-                    <span class="p">):</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">kwarg</span><span class="p">):</span>
                         <span class="n">kwargs</span><span class="p">[</span><span class="n">parameter</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">kwarg</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
