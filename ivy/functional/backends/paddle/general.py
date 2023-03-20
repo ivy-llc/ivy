@@ -10,7 +10,7 @@ import numpy as np
 # local
 import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
 from . import backend_version
 import multiprocessing as _multiprocessing
 
@@ -36,11 +36,10 @@ def current_backend_str() -> str:
     return "paddle"
 
 
-@with_unsupported_dtypes({"2.4.2 and below": ("float16", "int8", "int16", "uint8",)}, backend_version)
-def get_item(
-    x: paddle.Tensor,
-    query: Union[paddle.Tensor, Tuple]
-) -> paddle.Tensor:
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
+def get_item(x: paddle.Tensor, query: Union[paddle.Tensor, Tuple]) -> paddle.Tensor:
     if isinstance(query, tuple):
         return x.__getitem__(query)
 
@@ -54,12 +53,15 @@ def get_item(
         return paddle.masked_select(x, query)
 
     if x_dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
-        ret = paddle.cast(x, 'float32').__getitem__(tuple(query))
+        ret = paddle.cast(x, "float32").__getitem__(tuple(query))
         return paddle.cast(ret, x_dtype)
 
     return x.__getitem__(tuple(query))
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def to_numpy(
     x: Union[paddle.Tensor, List[paddle.Tensor]], /, *, copy: bool = True
 ) -> Union[np.ndarray, List[np.ndarray]]:
@@ -80,16 +82,25 @@ def to_numpy(
     raise ivy.utils.exceptions.IvyException("Expected a Paddle Tensor.")
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def to_scalar(x: paddle.Tensor, /) -> Number:
     if isinstance(x, Number):
         return x
     return x.item()
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def to_list(x: paddle.Tensor, /) -> list:
     return x.tolist()
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def gather(
     params: paddle.Tensor,
     indices: paddle.Tensor,
@@ -102,6 +113,9 @@ def gather(
     raise IvyNotImplementedException()
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def gather_nd(
     params: paddle.Tensor,
     indices: paddle.Tensor,
@@ -113,6 +127,9 @@ def gather_nd(
     raise IvyNotImplementedException()
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def get_num_dims(
     x: paddle.Tensor, /, *, as_array: bool = False
 ) -> Union[paddle.Tensor, int]:
@@ -125,6 +142,9 @@ def inplace_arrays_supported():
     return False
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def inplace_decrement(
     x: Union[ivy.Array, paddle.Tensor],
     val: Union[ivy.Array, paddle.Tensor],
@@ -132,6 +152,9 @@ def inplace_decrement(
     raise IvyNotImplementedException()
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def inplace_increment(
     x: Union[ivy.Array, paddle.Tensor],
     val: Union[ivy.Array, paddle.Tensor],
@@ -139,12 +162,14 @@ def inplace_increment(
     raise IvyNotImplementedException()
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def inplace_update(
     x: Union[ivy.Array, paddle.Tensor],
     val: Union[ivy.Array, paddle.Tensor],
     ensure_in_backend: bool = False,
 ) -> ivy.Array:
-
     if ivy.is_array(x) and ivy.is_array(val):
         (x_native, val_native), _ = ivy.args_to_native(x, val)
 
@@ -163,6 +188,9 @@ def inplace_update(
         return val
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def inplace_variables_supported():
     raise IvyNotImplementedException()
 
@@ -173,6 +201,9 @@ def multiprocessing(context=None):
     )
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def scatter_flat(
     indices: paddle.Tensor,
     updates: paddle.Tensor,
@@ -185,6 +216,9 @@ def scatter_flat(
     raise IvyNotImplementedException()
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def scatter_nd(
     indices: paddle.Tensor,
     updates: paddle.Tensor,
@@ -197,6 +231,9 @@ def scatter_nd(
     raise IvyNotImplementedException()
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def shape(
     x: paddle.Tensor, /, *, as_array: bool = False
 ) -> Union[ivy.Shape, ivy.Array]:
@@ -206,6 +243,9 @@ def shape(
         return ivy.Shape(x.shape)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def vmap(
     func: Callable,
     in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
