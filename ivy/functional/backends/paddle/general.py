@@ -99,7 +99,23 @@ def gather(
     batch_dims: Optional[int] = 0,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    axis = axis % paddle.Tensor.ndimension(params)
+    batch_dims = batch_dims % paddle.Tensor.ndimension(params)
+    ivy.utils.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
+    if batch_dims == 0:
+        result = paddle.gather(params, paddle.reshape(indices, shape=[-1]), axis=axis)
+    else:
+        params_list = [p for p in params]
+        indices_list = [i for i in indices]
+        for b in range(1, batch_dims):
+            params_list = [p1 for p in params_list for p1 in p]
+            indices_list = [i1 for i in indices_list for i1 in i]
+        result = []
+        for p, i in zip(params_list, indices_list):
+            result.append(paddle.gather(p, paddle.reshape(i, shape=[-1]), axis=axis - batch_dims))
+        result = paddle.concat(result, axis=0)
+    new_shape = params.shape[:axis] + indices.shape[batch_dims:] + params.shape[axis + 1:]
+    return paddle.reshape(result, shape=new_shape)
 
 
 def gather_nd(
