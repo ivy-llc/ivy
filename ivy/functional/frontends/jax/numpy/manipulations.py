@@ -151,6 +151,11 @@ def atleast_2d(*arys):
 
 
 @to_ivy_arrays_and_back
+def tril(m, k=0):
+    return ivy.tril(m, k=k)
+
+
+@to_ivy_arrays_and_back
 def block(arr, block_size):
     if isinstance(arr, ivy.Array):
         arr_blocks = ivy.reshape(
