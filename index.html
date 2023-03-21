@@ -470,7 +470,7 @@ document.write(`
 </a>
 </div>
 <br clear="all" /><div style="display: block;" align="center">
-<b><a href="https://lets-unify.ai/">Website</a></b> | <b><a href="https://lets-unify.ai/ivy/">Docs</a></b> | <b><a href="https://lets-unify.ai/demos/">Examples</a></b> | <b><a href="https://lets-unify.ai/ivy/design.html">Design</a></b> | <b><a href="https://lets-unify.ai/ivy/faq.html">FAQ</a></b><br><br>
+<b><a href="https://lets-unify.ai/">Website</a></b> | <b><a href="https://lets-unify.ai/ivy/">Docs</a></b> | <b><a href="https://lets-unify.ai/demos/">Examples</a></b> | <b><a href="https://lets-unify.ai/ivy/overview/design.html">Design</a></b> | <b><a href="https://lets-unify.ai/ivy/overview/faq.html">FAQ</a></b><br><br>
 
 <b>All of AI, at your fingertips</b>
 
@@ -504,8 +504,8 @@ document.write(`
 but also to <strong>convert 🔄 any function, model or library written in any of them to your preferred framework!</strong></p>
 <p>You can check out <a class="reference internal" href="#ivy-as-a-transpiler">Ivy as a transpiler</a> and <a class="reference internal" href="#ivy-as-a-framework">Ivy as a framework</a> to learn more about this, try out Ivy
 straight away going through the <a class="reference internal" href="#setting-up-ivy">Setting up Ivy</a> section, or dive deep into Ivy’s <a class="reference internal" href="#documentation">Documentation</a> and <a class="reference internal" href="#examples">Examples</a>!</p>
-<p>If you would like to contribute, you can join our growing <a class="reference internal" href="#community">Community</a> 🌍, check out our <a class="reference external" href="https://lets-unify.ai/ivy/contributing.html">Contributing</a> guide,
-and take a look at the <a class="reference external" href="https://lets-unify.ai/ivy/contributing/open_tasks.html">open tasks</a> if you’d like to dive straight in 🧑‍💻</p>
+<p>If you would like to contribute, you can join our growing <a class="reference internal" href="#community">Community</a> 🌍, check out our <a class="reference internal" href="#contributing">Contributing</a> guide,
+and take a look at the <a class="reference external" href="https://lets-unify.ai/ivy/overview/contributing/open_tasks.html">open tasks</a> if you’d like to dive straight in 🧑‍💻</p>
 <p><a class="reference external" href="https://lets-unify.ai">lets-unify.ai</a> <strong>together 🦾</strong></p>
 <section id="contents">
 <h1>Contents<a class="headerlink" href="#contents" title="Permalink to this heading">#</a></h1>
@@ -515,7 +515,7 @@ and take a look at the <a class="reference external" href="https://lets-unify.ai
 <li><p><a class="reference internal" href="#setting-up-ivy">Setting up Ivy</a></p></li>
 <li><p><a class="reference internal" href="#documentation">Documentation</a></p></li>
 <li><p><a class="reference internal" href="#examples">Examples</a></p></li>
-<li><p><a class="reference external" href="https://lets-unify.ai/ivy/contributing.html">Contributing</a></p></li>
+<li><p><a class="reference internal" href="#contributing">Contributing</a></p></li>
 <li><p><a class="reference internal" href="#community">Community</a></p></li>
 <li><p><a class="reference internal" href="#citation">Citation</a></p></li>
 </ul>
@@ -562,7 +562,7 @@ and take a look at the <a class="reference external" href="https://lets-unify.ai
 <span class="n">ret</span> <span class="o">=</span> <span class="n">lazy_graph</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>If you want to learn more, you can find more information in the <a class="reference external" href="https://lets-unify.ai/ivy/design/ivy_as_a_transpiler.html">Ivy as a transpiler section of the docs!</a></p>
+<p>If you want to learn more, you can find more information in the <a class="reference external" href="https://lets-unify.ai/ivy/overview/design/ivy_as_a_transpiler.html">Ivy as a transpiler section of the docs!</a></p>
 <section id="when-should-i-use-ivy-as-a-transpiler">
 <h2>When should I use Ivy as a transpiler?<a class="headerlink" href="#when-should-i-use-ivy-as-a-transpiler" title="Permalink to this heading">#</a></h2>
 <p>If you want to use building blocks published in other frameworks (neural networks, layers, array computing libraries, training pipelines…), you want to integrate code developed in various frameworks, or maybe straight up move code from one framework to another, the transpiler is definitely the tool 🔧 for the job! As the output of transpilation is native code in the target framework, you can use the converted code just as if it was code originally developed in that framework, appliying framework-specific optimizations or tools, instantly exposing your project to all of the unique perks of a different framework.</p>
@@ -570,8 +570,8 @@ and take a look at the <a class="reference external" href="https://lets-unify.ai
 </section>
 <section id="ivy-as-a-framework">
 <h1>Ivy as a framework<a class="headerlink" href="#ivy-as-a-framework" title="Permalink to this heading">#</a></h1>
-<p>The Ivy framework is built on top of various essential components, mainly the <a class="reference external" href="https://lets-unify.ai/ivy/design/building_blocks.html#backend-handler">Backend Handler</a>, which manages what framework is being used behind the scenes and the <a class="reference external" href="https://lets-unify.ai/ivy/design/building_blocks.html#backend-functional-apis">Backend Functional APIs</a>, which provide framework-specific implementations of the Ivy functions. Likewise, classes such as <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> or <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> are also available, facilitating the use of structured data and array-like objects (learn more about them <a class="reference external" href="https://lets-unify.ai/ivy/design/ivy_as_a_framework.html">here!</a>).</p>
-<p>All of the functionalities in Ivy are exposed through the <code class="code docutils literal notranslate"><span class="pre">Ivy</span> <span class="pre">functional</span> <span class="pre">API</span></code> and the <code class="code docutils literal notranslate"><span class="pre">Ivy</span> <span class="pre">stateful</span> <span class="pre">API</span></code>. All functions in the <a class="reference external" href="https://lets-unify.ai/ivy/design/building_blocks.html#ivy-functional-api">Functional API</a> are <strong>Framework Agnostic Functions</strong>, which mean that we can use them like this:</p>
+<p>The Ivy framework is built on top of various essential components, mainly the <a class="reference external" href="https://lets-unify.ai/ivy/overview/design/building_blocks.html#backend-handler">Backend Handler</a>, which manages what framework is being used behind the scenes and the <a class="reference external" href="https://lets-unify.ai/ivy/overview/design/building_blocks.html#backend-functional-apis">Backend Functional APIs</a>, which provide framework-specific implementations of the Ivy functions. Likewise, classes such as <code class="code docutils literal notranslate"><span class="pre">ivy.Container</span></code> or <code class="code docutils literal notranslate"><span class="pre">ivy.Array</span></code> are also available, facilitating the use of structured data and array-like objects (learn more about them <a class="reference external" href="https://lets-unify.ai/ivy/overview/design/ivy_as_a_framework.html">here!</a>).</p>
+<p>All of the functionalities in Ivy are exposed through the <code class="code docutils literal notranslate"><span class="pre">Ivy</span> <span class="pre">functional</span> <span class="pre">API</span></code> and the <code class="code docutils literal notranslate"><span class="pre">Ivy</span> <span class="pre">stateful</span> <span class="pre">API</span></code>. All functions in the <a class="reference external" href="https://lets-unify.ai/ivy/overview/design/building_blocks.html#ivy-functional-api">Functional API</a> are <strong>Framework Agnostic Functions</strong>, which mean that we can use them like this:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">import</span> <span class="nn">jax.numpy</span> <span class="k">as</span> <span class="nn">jnp</span>
 <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
@@ -589,7 +589,7 @@ and take a look at the <a class="reference external" href="https://lets-unify.ai
 </div>
 <p>In the example above we show how Ivy’s functions are compatible with tensors from different frameworks.
 This is the same for ALL Ivy functions. They can accept tensors from any framework and return the correct result.</p>
-<p>The <a class="reference external" href="https://lets-unify.ai/ivy/design/ivy_as_a_framework/ivy_stateful_api.html">Ivy Stateful API</a>, on the other hand, allows you to define trainable modules and layers, which you can use alone or as a part of any other framework code!</p>
+<p>The <a class="reference external" href="https://lets-unify.ai/ivy/overview/design/ivy_as_a_framework/ivy_stateful_api.html">Ivy Stateful API</a>, on the other hand, allows you to define trainable modules and layers, which you can use alone or as a part of any other framework code!</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ivy</span>
 
 <span class="k">class</span> <span class="nc">MyModel</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -661,7 +661,7 @@ covering topics like <a class="reference external" href="https://github.com/unif
     <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_models.png">
 </a>
 </div>
-<br clear="all" /><p>As always, you can find more information about <a class="reference external" href="https://lets-unify.ai/ivy/design/ivy_as_a_framework.html#ivy-as-a-framework">Ivy as a framework in the docs!</a></p>
+<br clear="all" /><p>As always, you can find more information about <a class="reference external" href="https://lets-unify.ai/ivy/overview/design/ivy_as_a_framework.html">Ivy as a framework in the docs!</a></p>
 <section id="when-should-i-use-ivy-as-a-framework">
 <h2>When should I use Ivy as a framework?<a class="headerlink" href="#when-should-i-use-ivy-as-a-framework" title="Permalink to this heading">#</a></h2>
 <p>As Ivy supports multiple backends, writing code in Ivy breaks you free from framework limitations. If you want to publish highly flexible code for everyone to use, independently of the framework they are using, or you plan to develop ML-related tools and want them to be interoperable with not only the already existing frameworks, but also with future frameworks, then Ivy is for you!</p>
@@ -704,7 +704,7 @@ pip<span class="w"> </span>install<span class="w"> </span>--user<span class="w">
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--user<span class="w"> </span>-e<span class="w"> </span>.
 </pre></div>
 </div>
-<p>If you want to set up testing and various frameworks it’s probably best to check out the <a class="reference external" href="https://lets-unify.ai/ivy/contributing/setting_up.html#setting-up">Contributing - Setting Up</a> page, where OS-specific and IDE-specific instructions and video tutorials to do so are available!</p>
+<p>If you want to set up testing and various frameworks it’s probably best to check out the <a class="reference external" href="https://lets-unify.ai/ivy/overview/contributing/setting_up.html#setting-up">Contributing - Setting Up</a> page, where OS-specific and IDE-specific instructions and video tutorials to do so are available!</p>
 </section>
 <section id="using-ivy">
 <h2>Using Ivy<a class="headerlink" href="#using-ivy" title="Permalink to this heading">#</a></h2>
@@ -746,9 +746,9 @@ pip<span class="w"> </span>install<span class="w"> </span>--user<span class="w">
 <section id="documentation">
 <h1>Documentation<a class="headerlink" href="#documentation" title="Permalink to this heading">#</a></h1>
 <p>The <a class="reference external" href="https://lets-unify.ai/ivy/">Ivy Docs page</a> holds all the relevant information about Ivy’s and it’s framework API reference.</p>
-<p>There, you will find the <a class="reference external" href="https://lets-unify.ai/ivy/design.html">Design</a> page, which is an user-focused guide about the architecture and the building blocks of Ivy. Likewise, you can take a look at the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive.html">Deep dive</a>, which is oriented towards potential contributors of the code base and explains the nuances of Ivy in full detail 🔎.</p>
-<p>Another important sections of the docs is <a class="reference external" href="https://lets-unify.ai/ivy/background.html">Background</a>, which contextualises the problem Ivy is trying to solve and the current <a class="reference external" href="https://lets-unify.ai/ivy/background/ml_explosion.html">ML Explosion</a>, explaining both (1) why is important <a class="reference external" href="https://lets-unify.ai/ivy/background/why_unify.html">to solve this problem</a> and (2) how we are adhering to existing <a class="reference external" href="https://lets-unify.ai/ivy/background/standardization.html">standards</a> to make this happen.</p>
-<p>Lastly, you can also find there the <a class="reference external" href="https://lets-unify.ai/ivy/related_work.html">Related Work</a> section, which paints a clear picture of the role Ivy plays in the ML stack, comparing it to other existing solutions in terms of functionalities and level.</p>
+<p>There, you will find the <a class="reference external" href="https://lets-unify.ai/ivy/overview/design.html">Design</a> page, which is an user-focused guide about the architecture and the building blocks of Ivy. Likewise, you can take a look at the <a class="reference external" href="https://lets-unify.ai/ivy/overview/deep_dive.html">Deep dive</a>, which is oriented towards potential contributors of the code base and explains the nuances of Ivy in full detail 🔎</p>
+<p>Another important sections of the docs is <a class="reference external" href="https://lets-unify.ai/ivy/overview/background.html">Background</a>, which contextualises the problem Ivy is trying to solve and the current <a class="reference external" href="https://lets-unify.ai/ivy/overview/background/ml_explosion.html#ml-explosion">ML Explosion</a>, explaining both (1) why is important <a class="reference external" href="https://lets-unify.ai/ivy/overview/background/why_unify.html#why-unify">to solve this problem</a> and (2) how we are adhering to existing <a class="reference external" href="https://lets-unify.ai/ivy/overview/background/standardization.html#standardization">standards</a> to make this happen.</p>
+<p>Lastly, you can also find there the <a class="reference external" href="https://lets-unify.ai/ivy/overview/related_work.html">Related Work</a> section, which paints a clear picture of the role Ivy plays in the ML stack, comparing it to other existing solutions in terms of functionalities and level.</p>
 </section>
 <section id="examples">
 <h1>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">#</a></h1>
@@ -1552,7 +1552,7 @@ pip<span class="w"> </span>install<span class="w"> </span>--user<span class="w">
 <h1>Contributing<a class="headerlink" href="#contributing" title="Permalink to this heading">#</a></h1>
 <p>We believe that everyone can contribute and make a difference. Whether it’s writing code 💻, fixing bugs 🐛,
 or simply sharing feedback 💬, your contributions are definitely welcome and appreciated 🙌</p>
-<p>Check out all of our open tasks, and find out more info in our <a class="reference external" href="https://lets-unify.ai/ivy/contributing.html">Contributing</a> guide in the docs!</p>
+<p>Check out all of our open tasks, and find out more info in our <a class="reference external" href="https://lets-unify.ai/ivy/overview/contributing.html">Contributing guide</a> in the docs!</p>
 <p>Join our amazing community as a code contributor, and help accelerate our journey to unify all ML frameworks!</p>
 <a href="https://github.com/unifyai/ivy/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=unifyai/ivy&anon=0&columns=20&max=100" />
