@@ -1089,6 +1089,8 @@
         <span class="n">val</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
+        <span class="n">ensure_in_backend</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">keep_input_dtype</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -1106,6 +1108,13 @@
 <span class="sd">            input container to be updated inplace</span>
 <span class="sd">        val</span>
 <span class="sd">            value to update the input container with</span>
+<span class="sd">        ensure_in_backend</span>
+<span class="sd">            Whether to ensure that the `ivy.NativeArray` is also inplace updated.</span>
+<span class="sd">            In cases where it should be, backends which do not natively support inplace</span>
+<span class="sd">            updates will raise an exception.</span>
+<span class="sd">        keep_input_dtype</span>
+<span class="sd">            Whether or not to preserve `x` data type after the update, otherwise `val` </span>
+<span class="sd">            data type will be applied. Defaults to False.</span>
 <span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is ``None``.</span>
 <span class="sd">        to_apply</span>
@@ -1133,6 +1142,8 @@
             <span class="s2">&quot;inplace_update&quot;</span><span class="p">,</span>
             <span class="n">cont</span><span class="p">,</span>
             <span class="n">val</span><span class="p">,</span>
+            <span class="n">ensure_in_backend</span><span class="o">=</span><span class="n">ensure_in_backend</span><span class="p">,</span>
+            <span class="n">keep_input_dtype</span><span class="o">=</span><span class="n">keep_input_dtype</span><span class="p">,</span>
             <span class="n">key_chains</span><span class="o">=</span><span class="n">key_chains</span><span class="p">,</span>
             <span class="n">to_apply</span><span class="o">=</span><span class="n">to_apply</span><span class="p">,</span>
             <span class="n">prune_unapplied</span><span class="o">=</span><span class="n">prune_unapplied</span><span class="p">,</span>
@@ -1148,6 +1159,8 @@
         <span class="n">val</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
+        <span class="n">ensure_in_backend</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">keep_input_dtype</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -1165,6 +1178,13 @@
 <span class="sd">            input container to be updated inplace</span>
 <span class="sd">        val</span>
 <span class="sd">            value to update the input container with</span>
+<span class="sd">        ensure_in_backend</span>
+<span class="sd">            Whether to ensure that the `ivy.NativeArray` is also inplace updated.</span>
+<span class="sd">            In cases where it should be, backends which do not natively support inplace</span>
+<span class="sd">            updates will raise an exception.</span>
+<span class="sd">        keep_input_dtype</span>
+<span class="sd">            Whether or not to preserve `x` data type after the update, otherwise `val` </span>
+<span class="sd">            data type will be applied. Defaults to False.</span>
 <span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is ``None``.</span>
 <span class="sd">        to_apply</span>
@@ -1202,6 +1222,8 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_inplace_update</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">val</span><span class="p">,</span>
+            <span class="n">ensure_in_backend</span><span class="o">=</span><span class="n">ensure_in_backend</span><span class="p">,</span>
+            <span class="n">keep_input_dtype</span><span class="o">=</span><span class="n">keep_input_dtype</span><span class="p">,</span>
             <span class="n">key_chains</span><span class="o">=</span><span class="n">key_chains</span><span class="p">,</span>
             <span class="n">to_apply</span><span class="o">=</span><span class="n">to_apply</span><span class="p">,</span>
             <span class="n">prune_unapplied</span><span class="o">=</span><span class="n">prune_unapplied</span><span class="p">,</span>

@@ -11193,6 +11193,7 @@
     <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">ensure_in_backend</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">keep_input_dtype</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ivy.Array instance method variant of ivy.inplace_update. This method simply</span>
@@ -11209,6 +11210,9 @@
 <span class="sd">        Whether to ensure that the `ivy.NativeArray` is also inplace updated.</span>
 <span class="sd">        In cases where it should be, backends which do not natively support inplace</span>
 <span class="sd">        updates will raise an exception.</span>
+<span class="sd">    keep_input_dtype</span>
+<span class="sd">        Whether or not to preserve `x` data type after the update, otherwise `val` </span>
+<span class="sd">        data type will be applied. Defaults to False.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -11241,7 +11245,12 @@
 <span class="sd">    IvyBackendException: jax: inplace_update: JAX does not natively</span>
 <span class="sd">    support inplace updates</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">inplace_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">ensure_in_backend</span><span class="o">=</span><span class="n">ensure_in_backend</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">inplace_update</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">val</span><span class="p">,</span>
+        <span class="n">ensure_in_backend</span><span class="o">=</span><span class="n">ensure_in_backend</span><span class="p">,</span>
+        <span class="n">keep_input_dtype</span><span class="o">=</span><span class="n">keep_input_dtype</span><span class="p">,</span>
+    <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="inplace_increment"><a class="viewcode-back" href="../../../functional/ivy/general/inplace_increment/inplace_increment_array.html#ivy.array.array_methods.inplace_increment">[docs]</a><span class="k">def</span> <span class="nf">inplace_increment</span><span class="p">(</span>
