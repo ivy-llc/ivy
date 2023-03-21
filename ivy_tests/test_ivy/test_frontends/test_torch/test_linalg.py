@@ -1096,7 +1096,7 @@ def test_torch_matmul(
     )
     
     
-    @st.composite
+@st.composite
 def _generate_multi_dot_dtype_and_arrays(draw):
     input_dtype = [draw(
         st.sampled_from(draw(helpers.get_dtypes("numeric")))
