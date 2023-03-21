@@ -96,12 +96,6 @@ def selu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jax.nn.selu(x)
 
 
-def leaky_relu(
-    x: JaxArray, /, *, alpha: float = 0.2, out: Optional[JaxArray] = None
-) -> JaxArray:
-    return jax.nn.leaky_relu(x, negative_slope=alpha)
-
-
 def elu(
     x: JaxArray, /, *, alpha: float = 1.0, out: Optional[JaxArray] = None
 ) -> JaxArray:

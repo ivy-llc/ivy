@@ -100,17 +100,6 @@ def hard_tanh(
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("complex", "float16")}, backend_version)
-def leaky_relu(
-    x: torch.Tensor,
-    /,
-    *,
-    alpha: float = 0.2,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.nn.functional.leaky_relu(x, negative_slope=alpha)
-
-
-@with_unsupported_dtypes({"1.11.0 and below": ("complex", "float16")}, backend_version)
 def elu(
     x: torch.Tensor,
     /,

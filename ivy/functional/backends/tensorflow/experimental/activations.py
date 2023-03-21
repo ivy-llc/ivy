@@ -104,13 +104,6 @@ def silu(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
-def leaky_relu(
-    x: Tensor, /, *, alpha: float = 0.2, out: Optional[Tensor] = None
-) -> Tensor:
-    return tf.nn.leaky_relu(x, alpha=alpha)
-
-
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def elu(x: Tensor, /, *, alpha: float = 1.0, out: Optional[Tensor] = None) -> Tensor:
     return tf.keras.activations.elu(x, alpha=alpha)
 

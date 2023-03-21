@@ -137,12 +137,6 @@ def hard_silu(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarr
     return np.multiply(x, hard_sigmoid(x))
 
 
-def leaky_relu(
-    x: np.ndarray, /, *, alpha: float = 0.2, out: Optional[np.ndarray] = None
-) -> np.ndarray:
-    return np.asarray(np.where(x > 0, x, np.multiply(x, alpha)), x.dtype)
-
-
 def elu(
     x: np.ndarray, /, *, alpha: float = 1.0, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
