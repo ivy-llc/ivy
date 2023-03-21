@@ -159,3 +159,8 @@ def linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis
 @to_ivy_arrays_and_back
 def single(x):
     return ivy.astype(x, ivy.float32)
+
+
+@to_ivy_arrays_and_back
+def from_dlpack(x):
+    return ivy.from_dlpack(x)
