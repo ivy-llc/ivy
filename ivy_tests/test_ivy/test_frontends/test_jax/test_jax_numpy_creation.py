@@ -714,3 +714,34 @@ def test_jax_numpy_single(
         on_device=on_device,
         x=x[0]
     )
+
+
+#from_dlpack
+@handle_frontend_test(
+    fn_tree="jax.numpy.from_dlpack",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_from_dlpack(
+    dtype_and_x,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
