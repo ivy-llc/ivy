@@ -38,10 +38,6 @@ class NativeArray:
     pass
 
 
-class NativeVariable:
-    pass
-
-
 class NativeDevice:
     pass
 
