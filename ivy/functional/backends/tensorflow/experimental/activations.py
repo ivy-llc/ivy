@@ -95,27 +95,6 @@ def hard_tanh(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
     return tf.where(x > 1, 1, tf.where(x < -1, -1, x))
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
-def softplus(
-    x: Tensor,
-    /,
-    *,
-    beta: Optional[Union[int, float]] = None,
-    threshold: Optional[Union[int, float]] = None,
-    out: Optional[Tensor] = None,
-) -> Tensor:
-
-    if beta is not None and beta != 1:
-        x_beta = x * beta
-        res = (tf.nn.softplus(x_beta)) / beta
-    else:
-        x_beta = x
-        res = tf.nn.softplus(x_beta)
-    if threshold is not None:
-        return tf.where(x_beta > threshold, x, res)
-    return res
-
-
 def softsign(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
     return tf.nn.softsign(x)
 

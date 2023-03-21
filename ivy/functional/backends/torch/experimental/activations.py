@@ -64,23 +64,6 @@ def log_sigmoid(
     return torch.nn.functional.logsigmoid(x)
 
 
-@with_unsupported_dtypes(
-    {"1.11.0 and below": ("complex", "float16", "bfloat16")}, backend_version
-)
-def softplus(
-    x: torch.Tensor,
-    /,
-    *,
-    beta: Optional[Union[int, float]] = None,
-    threshold: Optional[Union[int, float]] = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    kwargs = {
-        k: v for k, v in {"beta": beta, "threshold": threshold}.items() if v is not None
-    }
-    return torch.nn.functional.softplus(x, **kwargs)
-
-
 def softsign(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.nn.functional.softsign(x)
 

@@ -493,63 +493,6 @@ def log_sigmoid(
 @handle_exceptions
 @handle_array_like_without_promotion
 @handle_array_function
-def softplus(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    beta: Optional[Union[int, float]] = None,
-    threshold: Optional[Union[int, float]] = None,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """Applies the softplus function element-wise.
-
-    Parameters
-    ----------
-    x
-        input array.
-    beta
-        The beta value for the softplus formation. Default: ``None``.
-    threshold
-        values above this revert to a linear function. Default: ``None``.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        an array containing the softplus activation of each element in ``x``.
-
-    Functional Examples
-    -------------------
-
-    With :class:`ivy.Array` input:
-
-    >>> x = ivy.array([-0.3461, -0.6491])
-    >>> y = ivy.softplus(x)
-    >>> print(y)
-    ivy.array([0.535,0.42])
-
-    >>> x = ivy.array([-0.3461, -0.6491])
-    >>> y = ivy.softplus(x, beta=0.5)
-    >>> print(y)
-    ivy.array([1.22, 1.09])
-
-    >>> x = ivy.array([1., 2., 3.])
-    >>> y = ivy.softplus(x, threshold=2)
-    >>> print(y)
-    ivy.array([1.31, 2.13, 3.  ])
-
-    """
-    return current_backend(x).softplus(x, beta=beta, threshold=threshold, out=out)
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
-@handle_exceptions
-@handle_array_like_without_promotion
-@handle_array_function
 def softsign(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

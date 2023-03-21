@@ -80,25 +80,6 @@ def hard_tanh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jax.nn.hard_tanh(x)
 
 
-def softplus(
-    x: JaxArray,
-    /,
-    *,
-    beta: Optional[Union[int, float]] = None,
-    threshold: Optional[Union[int, float]] = None,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    if beta is None:
-        x_beta = x
-        res = jax.nn.softplus(x_beta)
-    else:
-        x_beta = x * beta
-        res = jax.nn.softplus(x_beta) / beta
-    if threshold is not None:
-        return jnp.where(x_beta > threshold, x, res).astype(x.dtype)
-    return res.astype(x.dtype)
-
-
 def softsign(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jax.nn.soft_sign(x)
 
