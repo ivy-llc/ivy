@@ -5,6 +5,7 @@ import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
+from ivy.functional.frontends.tensorflow.general_functions import _num_to_bit_list
 from ivy_tests.test_ivy.test_frontends.test_numpy.test_creation_routines.test_from_shape_or_value import (  # noqa : E501
     _input_fill_and_dtype,
 )
@@ -1042,13 +1043,11 @@ def _strided_slice_helper(draw):
         st.lists(
             st.integers(min_value=0, max_value=2**ndims - 1), min_size=5, max_size=5
         ).filter(
-            lambda x: bin(x[2])[2:].count("1") <= 1
+            lambda x: bin(x[2])[2:].count("1") <= min(len(shape)-1, 1)
         )  # maximum one ellipse
     )
     begin, end, strides = [], [], []
-    n_omit = draw(st.integers(min_value=0, max_value=ndims - 1))
-    sub_shape = shape[: len(shape) - n_omit]
-    for i in sub_shape:
+    for i in shape:
         begin += [draw(st.integers(min_value=0, max_value=i - 1))]
         end += [
             draw(
@@ -1061,6 +1060,15 @@ def _strided_slice_helper(draw):
             strides += [draw(st.integers(min_value=1, max_value=i))]
         else:
             strides += [draw(st.integers(max_value=-1, min_value=-i))]
+    ellipsis_mask = _num_to_bit_list(masks[2], ndims)
+    for i, v in enumerate(ellipsis_mask):
+        if v == 1:
+            skip = draw(st.integers(min_value=1, max_value=ndims))
+            begin, end, strides = map(
+                lambda x: x[:i] + x[i+skip:] if i+skip < ndims else x[:i],
+                [begin, end, strides]
+            )
+            break
     return dtype, x, np.array(begin), np.array(end), np.array(strides), masks
 
 
