@@ -1102,6 +1102,9 @@ class _ArrayWithGeneral(abc.ABC):
             Whether to ensure that the `ivy.NativeArray` is also inplace updated.
             In cases where it should be, backends which do not natively support inplace
             updates will raise an exception.
+        keep_input_dtype
+            Whether or not to preserve `x` data type after the update, otherwise `val` 
+            data type will be applied. Defaults to False.
 
         Returns
         -------
