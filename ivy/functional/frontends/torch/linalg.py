@@ -204,3 +204,9 @@ def lu_factor(A, *, pivot=True, out=None):
 @to_ivy_arrays_and_back
 def matmul(input, other, *, out=None):
     return ivy.matmul(input, other, out=out)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+def multi_dot(tensors, *, out=None):
+    return ivy.multi_dot(tensors, out=out)
