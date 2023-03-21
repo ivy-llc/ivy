@@ -3,7 +3,6 @@ from typing import Optional, Union
 # global
 import torch
 import torch.nn
-import ivy
 
 # local
 from ivy.func_wrapper import with_unsupported_dtypes
@@ -56,24 +55,6 @@ def batch_norm(
     return torch.nn.functional.batch_norm(
         x, mean, variance, weight=scale, bias=offset, training=training, eps=eps
     )
-
-
-@with_unsupported_dtypes(
-    {
-        "1.11.0 and below": (
-            "float16",
-            "bfloat16",
-        )
-    },
-    backend_version,
-)
-def sigmoid(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    if not ivy.is_array(x):
-        x = torch.tensor(x)
-    return torch.sigmoid(x, out=out)
-
-
-sigmoid.support_native_out = True
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)

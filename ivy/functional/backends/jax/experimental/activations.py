@@ -76,10 +76,6 @@ def batch_norm(
     return jnp.transpose(ret, (0, ndims - 1, *range(1, ndims - 1)))
 
 
-def sigmoid(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jax.nn.sigmoid(x)
-
-
 def hard_tanh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jax.nn.hard_tanh(x)
 

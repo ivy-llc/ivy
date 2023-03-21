@@ -393,56 +393,6 @@ def relu(
     return current_backend(x).relu(x, out=out)
 
 
-@integer_arrays_to_float
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
-@handle_exceptions
-@handle_array_like_without_promotion
-@handle_array_function
-def sigmoid(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
-) -> ivy.Array:
-    """
-    Applies the sigmoid function element-wise.
-
-    Parameters
-    ----------
-    x
-        input array.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        input broadcast to.
-        default: None
-
-    Returns
-    -------
-    ret
-        an array containing the sigmoid activation of each element in ``x``.
-
-    Examples
-    --------
-    With :class:`ivy.Array` input:
-
-    >>> x = ivy.array([-1.0, 1.0, 2.0])
-    >>> y = ivy.sigmoid(x)
-    >>> print(y)
-    ivy.array([0.269, 0.731, 0.881])
-
-    >>> x = ivy.array([-1.0, 1.0, 2.0])
-    >>> y = x.sigmoid()
-    >>> print(y)
-    ivy.array([0.269, 0.731, 0.881])
-
-
-    >>> x = ivy.array([[-1.3, 3.8, 2.1], [1.7, 4.2, -6.6]])
-    >>> y = ivy.sigmoid(x)
-    >>> print(y)
-    ivy.array([[0.214, 0.978, 0.891], [0.846,0.985,0.001]] )
-    """
-    return current_backend(x).sigmoid(x, out=out)
-
-
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
