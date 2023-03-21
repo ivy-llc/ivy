@@ -47,7 +47,7 @@ def to_ivy(
     Parameters
     ----------
     x
-        The input to maybe convert.
+        The input to be convert.
     nested
         Whether to apply the conversion on arguments in a nested manner. If so, all
         dicts, lists and tuples will be traversed to their lowest leaves in search of
@@ -58,7 +58,7 @@ def to_ivy(
 
     Returns
     -------
-     ret
+    ret
         the input in its native framework form in the case of ivy.Array or instances.
     """
     if nested:
