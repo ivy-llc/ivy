@@ -270,11 +270,13 @@ def strided_slice(
     var=None,
     name=None,
 ):
+    input_shape = list(input_.shape)
+    input_rank = len(input_shape)
     begin_mask, end_mask, ellipsis_mask, new_axis_mask, shrink_axis_mask = list(
         map(
             _num_to_bit_list,
             [begin_mask, end_mask, ellipsis_mask, new_axis_mask, shrink_axis_mask],
-            [len(input_.shape)] * 5,
+            [input_rank] * 5,
         )
     )
     begin, end, strides = map(
@@ -292,28 +294,37 @@ def strided_slice(
         [begin, end, strides]
     )
 
-    full_slice = ()
-    new_dims = ()
-    for i, _ in enumerate(input_.shape):
-        if ellipsis_mask[i]:
-            full_slice += (...,)
+    ellipsis_indices = [i for i, v in enumerate(ellipsis_mask) if v]
+    if len(ellipsis_indices) > 1:
+        raise ValueError("Multiple ellipses are not allowed.")
+    elif len(ellipsis_indices) == 1:
+        ellipsis_index = ellipsis_indices[0]
+        num_missing = input_rank - len(begin) + 1
+        if ellipsis_index >= len(begin):
+            begin = begin + [0] * num_missing
+            end = end + input_shape[ellipsis_index:ellipsis_index + num_missing]
+            strides = strides + [1] * num_missing
         else:
-            if new_axis_mask[i]:
-                new_dims += (i,)
-            else:
-                strides_i = int(strides[i])
-                if not begin_mask[i] or shrink_axis_mask[i]:
-                    begin_i = int(begin[i])
+            begin = begin[:ellipsis_index] + [0] * num_missing + begin[ellipsis_index:]
+            end = end[:ellipsis_index] + input_shape[ellipsis_index:ellipsis_index + num_missing] + end[ellipsis_index:]
+            strides = strides[:ellipsis_index] + [1] * num_missing + strides[ellipsis_index:]
+
+    full_slice = []
+    new_dims = []
+    for i, s in enumerate(input_shape):
+        if new_axis_mask[i]:
+            new_dims.append(i)
+            full_slice.append(py_slice(None))
+        else:
+            b = begin[i] if not begin_mask[i] else None
+            e = end[i] if not end_mask[i] else None
+            if shrink_axis_mask[i]:
+                if b is not None:
+                    e = b + 1 if strides[i] > 0 else b - 1
                 else:
-                    begin_i = None
-                if shrink_axis_mask[i]:
-                    end_i = begin_i + int(strides_i > 0)
-                elif end_mask[i]:
-                    end_i = None
-                else:
-                    end_i = int(end[i])
-                full_slice += (py_slice(begin_i, end_i, strides_i),)
-    ret = input_[full_slice] if full_slice else input_
+                    e = 1 if strides[i] > 0 else input_rank - 2
+            full_slice.append(py_slice(b, e, strides[i]))
+    ret = input_[tuple(full_slice)]
     return ivy.expand_dims(ret, axis=new_dims)
 
 
