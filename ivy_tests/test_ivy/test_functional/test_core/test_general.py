@@ -1315,8 +1315,9 @@ def test_inplace_variables_supported():
         num_arrays=2,
         shared_dtype=True,
     ),
+    keep_x_dtype=st.booleans(),
 )
-def test_inplace_update(x_val_and_dtypes, test_flags, on_device):
+def test_inplace_update(x_val_and_dtypes, keep_x_dtype, test_flags, on_device):
     dtype = x_val_and_dtypes[0][0]
     if dtype in ivy.function_unsupported_dtypes(ivy.inplace_update):
         return
@@ -1326,7 +1327,12 @@ def test_inplace_update(x_val_and_dtypes, test_flags, on_device):
     if (not test_flags.as_variable and ivy.inplace_arrays_supported()) or (
         test_flags.as_variable and ivy.inplace_variables_supported()
     ):
-        x_inplace = ivy.inplace_update(x, val)
+        if keep_x_dtype:
+            x_dtype = x.dtype
+            x_inplace = ivy.inplace_update(x, val, keep_input_dtype=True)
+            assert x_dtype == x_inplace.dtype
+        else:
+            x_inplace = ivy.inplace_update(x, val)
         assert id(x_inplace) == id(x)
         x = helpers.flatten_and_to_np(ret=x)
         val = helpers.flatten_and_to_np(ret=val)
