@@ -528,6 +528,7 @@ def test_frontend_function(
     rtol: float = None,
     atol: float = 1e-06,
     test_values: bool = True,
+    generate_frontend_arrays= None,
     **all_as_kwargs_np,
 ):
     """Tests a frontend function for the current backend by comparing the result with
