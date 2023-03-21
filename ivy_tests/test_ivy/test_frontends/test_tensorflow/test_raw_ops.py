@@ -696,6 +696,47 @@ def test_tensorflow_Atanh(  # NOQA
     )
 
 
+# AvgPool3d
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.AvgPool3D",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shapes=[[1, 4, 4, 4, 3]],
+    ),
+)
+def test_tensorflow_avg_pool_3d(
+    *,
+    dtype_and_x,
+    num_positional_args,
+    as_variable,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    ksize = [1, 2, 2, 2, 1]
+    strides = [1, 2, 2, 2, 1]
+    padding = 'VALID'
+    result = frontend.ops.tensorflow.raw_ops.AvgPool3D(
+        input=x,
+        ksize=ksize,
+        strides=strides,
+        padding=padding,
+        name=None,
+    )
+    helpers.test(
+        result=result,
+        fn_tree=fn_tree,
+        input_args=x,
+        input_arg_types=input_dtype,
+        num_positional_args=num_positional_args,
+        as_variable_flags=as_variable,
+        native_array_flags=native_array,
+        on_device=on_device,
+    )
+
+    
 # Tan
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Tan",

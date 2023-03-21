@@ -90,6 +90,17 @@ def Atan(*, x, name="atan"):
 
 
 @to_ivy_arrays_and_back
+def avg_pool_3d(x, ksize, strides, padding, name=None):
+        return ivy.avg_pool3d(
+            input=x,
+            ksize=ksize,
+            strides=strides,
+            padding=padding,
+            name=name
+        )
+
+
+@to_ivy_arrays_and_back
 def Atanh(*, x, name="Atanh"):
     return ivy.atanh(x)
 
