@@ -216,8 +216,8 @@ The `Ivy Stateful API <https://lets-unify.ai/ivy/design/ivy_as_a_framework/ivy_s
             return ivy.sigmoid(self.linear1(x))
 
 
-If we put it all toghether, we'll have something like this. This example uses PyTorch as a backend framework,
-but the backend can easily be changed to your favorite frameworks, such as TensorFlow, or JAX.
+If we put it all toghether, we'll have something like this. This example uses PyTorch as the backend,
+but this can easily be changed to your favorite framework, such as TensorFlow, or JAX.
 
 .. code-block:: python
 
@@ -252,7 +252,7 @@ but the backend can easily be changed to your favorite frameworks, such as Tenso
 
 
 Last but not least, we are also working on specific extension totally written in Ivy and therefore usable within any framework, 
-covering topics like `Mechanics`_, `Computer Vision`_, `Robotics`_, a `Reinforcement Learning Gym`_, `Memory`_ and implementation of various `Models`_ or `Builder tools`_ with trainers, data loaders and more.
+covering topics like `Mechanics`_, `Computer Vision`_, `Robotics`_, a `Reinforcement Learning Gym`_, `Memory`_ and implementation of various `Models`_ or `Builder tools`_ with trainers, data loaders and more!
 
 .. raw:: html
 
@@ -378,19 +378,19 @@ You can find quite a lot more examples in the corresponding section below, but u
 
 .. code-block:: python
 
-    import ivy
-    import ivy.compiler.compiler as compiler
-    import torch
-    import jax
+   import ivy
+   import torch
+   import jax
 
-    def jax_fn(x):
-        a = jax.numpy.dot(x, x)
-        b = jax.numpy.mean(x)
-        return x * a + b
+   def jax_fn(x):
+       a = jax.numpy.dot(x, x)
+       b = jax.numpy.mean(x)
+       return x * a + b
 
-    # NOTE: set up of transpiler API key required
-    torch_fn = compiler.transpile(jax_fn, source="jax", to="torch", args=(jax.numpy.array([1], dtype="float32"),))
-    torch_fn(torch.tensor([1, 2, 3], dtype=torch.float32))
+   jax_x = jax.numpy.array([1, 2, 3])
+   torch_x = torch.tensor([1, 2, 3])
+   torch_fn = ivy.transpile(jax_fn, source="jax", to="torch", args=(jax_x,))
+   ret = torch_fn(torch_x)
 
 
 Documentation
