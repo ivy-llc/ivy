@@ -133,7 +133,6 @@ This way, Ivy makes all ML-related projects available for you, independently of 
     # Compiles a function into an efficient fully-functional graph, removing all wrapping and redundant code
     ivy.compile()
 
-
     # Converts framework-specific code to a different framework
     ivy.transpile()
 
