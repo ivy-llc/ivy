@@ -12,7 +12,8 @@
 
 	"runArgs": ["--gpus","all"],
 
-	"postCreateCommand": "bash .devcontainer/post_create_commands.sh"
+	"postCreateCommand": "bash .devcontainer/post_create_commands.sh",
+	"initializeCommand": "docker pull unifyai/ivy:latest"
 	
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
