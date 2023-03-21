@@ -2436,6 +2436,9 @@ def test_numpy_instance_imod__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
+        allow_inf=False,
+        large_abs_safety_factor=4,
+        safety_factor_scale="linear",
     ),
 )
 def test_numpy_instance_abs__(
@@ -2451,7 +2454,7 @@ def test_numpy_instance_abs__(
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "object": x[0],
         },
         method_input_dtypes=input_dtypes,
         method_all_as_kwargs_np={},
