@@ -534,3 +534,8 @@ def top_k(operand, k):
     values, indices = ivy.top_k(operand, k, axis=-1)
     indices = ivy.astype(indices, ivy.int32, copy=False)
     return [values, indices]
+
+
+@to_ivy_arrays_and_back
+def real(x):
+    return ivy.real(x)
