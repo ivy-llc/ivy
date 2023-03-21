@@ -28,7 +28,25 @@ def _to_ivy(x: Any) -> Any:
         return x
     elif isinstance(x, ivy.Container):
         return x.to_ivy()
-    return ivy.Array(x) if ivy.is_native_array(x) else x
+    if ivy.is_native_array(x):
+        return ivy.Array(x)
+    try:
+        return _convert_other_native(x)
+    except Exception:
+        return x
+
+
+backends = ("numpy", "jax", "torch", "tensorflow")
+
+
+def _convert_other_native(x):
+    new_backends = (
+        ivy.with_backend(back) for back in backends if back != ivy.current_backend_str()
+    )
+    for backend in new_backends:
+        if backend.is_native_array(x):
+            return backend.Array(x)
+    return x
 
 
 # Wrapped #
