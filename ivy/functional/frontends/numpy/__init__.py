@@ -581,6 +581,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.exponents_and_logarit
     _log2,
     _logaddexp,
     _logaddexp2,
+    _ldexp,
 )
 
 from ivy.functional.frontends.numpy.logic.array_type_testing import (
@@ -671,3 +672,4 @@ maximum = ufunc("_maximum")
 minimum = ufunc("_minimum")
 real = ufunc("_real")
 divmod = ufunc("_divmod")
+ldexp = ufunc("_ldexp")
