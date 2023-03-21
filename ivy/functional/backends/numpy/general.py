@@ -11,6 +11,7 @@ from numbers import Number
 # local
 import ivy
 from ivy.functional.backends.numpy.device import _to_device
+from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 
 
 def array_equal(x0: np.ndarray, x1: np.ndarray, /) -> bool:
@@ -25,6 +26,7 @@ def current_backend_str() -> str:
     return "numpy"
 
 
+@_scalar_output_to_0d_array
 def get_item(x: np.ndarray, /, query: np.ndarray) -> np.ndarray:
     return x.__getitem__(query)
 
@@ -177,9 +179,12 @@ def inplace_update(
     /,
     *,
     ensure_in_backend: bool = False,
+    keep_input_dtype: bool = False,
 ) -> ivy.Array:
     ivy.utils.assertions.check_inplace_sizes_valid(x, val)
     if ivy.is_array(x) and ivy.is_array(val):
+        if keep_input_dtype:
+            val = ivy.astype(val, x.dtype)
         (x_native, val_native), _ = ivy.args_to_native(x, val)
 
         # make both arrays contiguous if not already

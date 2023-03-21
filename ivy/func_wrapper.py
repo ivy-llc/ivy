@@ -1,5 +1,4 @@
 import contextlib
-
 import ivy
 import functools
 import logging
@@ -96,6 +95,26 @@ def _build_view(original, view, fn, args, kwargs, index=None):
     return view
 
 
+def _check_in_nested_sequence(sequence, value=None, _type=None):
+    """
+    Helper to recursively check if a N-level nested `sequence` contains either a
+    `value` or contains a value of type `_type` and return a boolean flag
+    """
+    if sequence is value or (isinstance(sequence, _type)):
+        # Base case - N = 0
+        return True
+    elif isinstance(sequence, (tuple, list)):
+        if any(isinstance(_val, _type) or _val is value for _val in sequence):
+            # N = 1
+            return True
+        else:
+            return any(
+                _check_in_nested_sequence(sub_sequence, value, _type)
+                for sub_sequence in sequence
+                if isinstance(sub_sequence, (tuple, list))
+            )
+
+
 # Array Handling #
 # ---------------#
 
@@ -187,11 +206,16 @@ def handle_array_like_without_promotion(fn: Callable) -> Callable:
             ):
 
                 if i < num_args:
+                    # Fix for ellipsis, slices for numpy's __getitem__
+                    # No need to try and convert them into arrays
+                    # since asarray throws unpredictable bugs
+                    if _check_in_nested_sequence(arg, value=Ellipsis, _type=slice):
+                        continue
                     if not ivy.is_array(arg):
                         args[i] = ivy.array(arg)
                 elif parameters in kwargs:
                     kwarg = kwargs[parameter]
-                    if not ivy.is_array(arg):
+                    if not ivy.is_array(kwarg):
                         kwargs[parameter] = ivy.array(kwarg)
 
         return fn(*args, **kwargs)
@@ -918,19 +942,21 @@ def handle_nans(fn: Callable) -> Callable:
 
     new_fn.handle_nans = True
     return new_fn
-    
+
 
 def handle_mixed_function(condition) -> Callable:
     def inner_function(fn):
         @functools.wraps(fn)
         def new_fn(*args, **kwargs):
-            compos = getattr(new_fn, 'compos')
+            compos = getattr(new_fn, "compos")
             if condition(*args, **kwargs):
                 return fn(*args, **kwargs)
 
             return compos(*args, **kwargs)
+
         new_fn.handle_mixed_functions = True
         return new_fn
+
     return inner_function
 
 

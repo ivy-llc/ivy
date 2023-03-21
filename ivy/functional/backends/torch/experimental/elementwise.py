@@ -176,10 +176,10 @@ def count_nonzero(
         return x
     if isinstance(axis, tuple):
         for d in sorted(axis):
-            x = x.unsqueeze(d)
+            x = x.unsqueeze(d - 1)
         return x
     elif isinstance(axis, int):
-        return x.unsqueeze(axis)
+        return x.unsqueeze(axis - 1)
     return x
 
 

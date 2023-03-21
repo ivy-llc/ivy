@@ -492,7 +492,7 @@ from .linalg.matrix_and_vector_products import (
     tensordot,
     # einsum,
     # einsum_path,
-    # kron,
+    kron,
 )
 
 from .linalg.decompositions import cholesky, qr, svd
@@ -529,6 +529,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations
     _reciprocal,
     _subtract,
     _true_divide,
+    _divmod
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functions import (
@@ -669,3 +670,4 @@ matmul = ufunc("_matmul")
 maximum = ufunc("_maximum")
 minimum = ufunc("_minimum")
 real = ufunc("_real")
+divmod = ufunc("_divmod")

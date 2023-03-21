@@ -46,13 +46,14 @@ It's helpful to look at an example:
    z = ivy.matmul(jax.numpy.array([[2.,3.]]), jax.numpy.array([[5.],[6.]]))
    ivy.get_backend()
    <module 'ivy.functional.backends.jax' from '/opt/project/ivy/functional/backends/jax/__init__.py'>
-   ivy.unset_backend()
+   ivy.previous_backend()
    ivy.get_backend()
    <module 'ivy.functional.backends.torch' from '/opt/project/ivy/functional/backends/torch/__init__.py'>
 
 In the last example above, the moment any backend is set, it will be used over the `implicit_backend`_.
-However when the backend is unset using the :func:`ivy.unset_backend`, the `implicit_backend`_ will be used as a fallback, which will assume the backend from the last run.
+However when the current backend is set to the previous using the :func:`ivy.previous_backend`, the `implicit_backend`_ will be used as a fallback, which will assume the backend from the last run.
 While the `implicit_backend`_ functionality gives more freedom to the user, the recommended way of doing things would be set the backend explicitly.
+In addition, all the previously set backends can be cleared by calling :func:`ivy.unset_backend`.
 
 
 Backend and Frontend Version Support

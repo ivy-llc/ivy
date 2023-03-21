@@ -65,6 +65,11 @@ def asarray(a, dtype=None, order=None):
     return array(a, dtype=dtype, order=order)
 
 
+@to_ivy_arrays_and_back
+def copy(a, order=None):
+    return array(a, order=order)
+
+
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def hstack(tup, dtype=None):
@@ -136,3 +141,21 @@ def logspace(start, stop, num=50, endpoint=True, base=10.0, dtype=None, axis=0):
         interval = (stop - start) / num
         stop -= interval
     return ivy.logspace(start, stop, num, base=base, axis=axis, dtype=dtype)
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16", )}, 'jax')
+def linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis=0):
+    ret = ivy.linspace(start, stop, num, axis=axis, endpoint=endpoint, dtype=dtype)
+    if retstep:
+        if endpoint:
+            num -= 1
+        step = ivy.divide(ivy.subtract(stop, start), num)
+        return ret, step
+    return ret
+
+
+@to_ivy_arrays_and_back
+def single(x):
+    return ivy.astype(x, ivy.float32)

@@ -9,6 +9,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa
+    _get_dtype_values_k_axes_for_rot90,
     _get_split_locations,
 )
 
@@ -189,6 +190,62 @@ def test_jax_numpy_reshape(
         newshape=shape,
         order=order,
     )
+
+
+# resize
+@st.composite
+def _get_input_and_new_shape(draw):
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=2, max_num_dims=5, min_dim_size=2, max_dim_size=10
+        )
+    )
+    new_shape = draw(
+        helpers.get_shape(
+            min_num_dims=2, max_num_dims=5, min_dim_size=2, max_dim_size=10
+        )
+    )
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("all"),
+            min_num_dims=2,
+            max_num_dims=5,
+            min_dim_size=2,
+            max_dim_size=10,
+            shape=shape,
+        )
+    )
+    return x_dtype, x, new_shape
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.resize",
+    input_x_shape=_get_input_and_new_shape(),
+    test_with_out=st.just(True),
+)
+def test_resize(
+    *,
+    input_x_shape,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    x_dtype, x, new_shape = input_x_shape
+    expected_shape = tuple(new_shape)
+
+    ivy_resized = ivy.reshape(x, expected_shape)
+
+    out = helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x,
+        new_shape=new_shape,
+    )
+    assert np.array_equal(out, ivy.to_numpy(ivy_resized))
 
 
 # moveaxis
@@ -790,39 +847,76 @@ def test_jax_numpy_atleast_1d(
     )
 
 
-@st.composite
-def _squeeze_helper(draw):
-    shape = draw(st.shared(helpers.get_shape(), key="shape"))
-    valid_axes = [idx for idx in range(len(shape)) if shape[idx] == 1] + [None]
-    return draw(st.sampled_from(valid_axes))
+# tril
+@handle_frontend_test(
+    fn_tree="jax.numpy.tril",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+    ),
+    k=helpers.ints(min_value=-10, max_value=10),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_tril(
+    *,
+    dtype_and_x,
+    k,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        m=x[0],
+        k=k,
+    )
 
 
 # block
 @st.composite
 def _get_input_and_block(draw):
-    shapes = draw(st.lists(
-        helpers.get_shape(min_num_dims=1,
-                          max_num_dims=5,
-                          min_dim_size=2,
-                          max_dim_size=10),
-        min_size=2, max_size=10))
-    x_dtypes, xs = zip(*[draw(helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=2,
-        max_dim_size=10,
-        shape=shape,
-    )) for shape in shapes])
+    shapes = draw(
+        st.lists(
+            helpers.get_shape(
+                min_num_dims=1, max_num_dims=5, min_dim_size=2, max_dim_size=10
+            ),
+            min_size=2,
+            max_size=10,
+        )
+    )
+    x_dtypes, xs = zip(
+        *[
+            draw(
+                helpers.dtype_and_values(
+                    available_dtypes=helpers.get_dtypes("valid"),
+                    min_num_dims=1,
+                    max_num_dims=5,
+                    min_dim_size=2,
+                    max_dim_size=10,
+                    shape=shape,
+                )
+            )
+            for shape in shapes
+        ]
+    )
     return x_dtypes, xs
 
 
 @handle_frontend_test(
-    fn_tree="block",
+    fn_tree="jax.numpy.block",
     input_x_shape=_get_input_and_block(),
     test_with_out=st.just(False),
 )
-def test_ivy_block(
+def test_jax_numpy_block(
     *,
     input_x_shape,
     on_device,
@@ -839,6 +933,13 @@ def test_ivy_block(
         on_device=on_device,
         arrays=xs,
     )
+
+
+@st.composite
+def _squeeze_helper(draw):
+    shape = draw(st.shared(helpers.get_shape(), key="shape"))
+    valid_axes = [idx for idx in range(len(shape)) if shape[idx] == 1] + [None]
+    return draw(st.sampled_from(valid_axes))
 
 
 # squeeze
@@ -869,6 +970,39 @@ def test_jax_numpy_squeeze(
         on_device=on_device,
         a=values[0],
         axis=axis,
+    )
+
+
+# rot90
+@handle_frontend_test(
+    fn_tree="jax.numpy.rot90",
+    dtype_m_k_axes=_get_dtype_values_k_axes_for_rot90(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_rot90(
+    *,
+    dtype_m_k_axes,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, m, k, axes = dtype_m_k_axes
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        m=m,
+        k=k,
+        axes=tuple(axes),
     )
 
 
@@ -980,6 +1114,77 @@ def test_jax_numpy_dsplit(
         on_device=on_device,
         ary=value[0],
         indices_or_sections=indices_or_sections,
+    )
+
+
+# tile
+@handle_frontend_test(
+    fn_tree="jax.numpy.tile",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+    ),
+    repeat=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("signed_integer"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape").map(
+            lambda rep: (len(rep),)
+        ),
+        min_value=0,
+        max_value=10,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_tile(
+    *,
+    dtype_value,
+    repeat,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, value = dtype_value
+    repeat_dtype, repeat_list = repeat
+    helpers.test_frontend_function(
+        input_dtypes=dtype + repeat_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        A=value[0],
+        reps=repeat_list[0],
+    )
+
+
+# dstack
+@handle_frontend_test(
+    fn_tree="jax.numpy.dstack",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shared_dtype=True,
+        num_arrays=helpers.ints(min_value=1, max_value=10),
+        shape=helpers.get_shape(
+            min_num_dims=1,
+        ),
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_dstack(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tup=x,
     )
 
 
@@ -1120,4 +1325,35 @@ def test_jax_numpy_roll(
         a=value[0],
         shift=shift_val,
         axis=axis,
+    )
+
+
+# row_stack
+@handle_frontend_test(
+    fn_tree="jax.numpy.row_stack",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+    ),
+    factor=helpers.ints(min_value=2, max_value=6),
+)
+def test_jax_numpy_row_stack(
+    dtype_and_x,
+    factor,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    xs = [x[0]]
+    for i in range(factor):
+        xs += [x[0]]
+    helpers.test_frontend_function(
+        input_dtypes=[dtype[0]] * (factor + 1),
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tup=xs,
     )
