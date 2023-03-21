@@ -669,6 +669,7 @@ def reduce_window(
     base_dilation=None,
     window_dilation=None,
 ):
+    # ToDo: add support for window_dilation
     op, dims, strides = operand, window_dimensions, window_strides
     if isinstance(padding, str):
         pads = _padtype_to_pads(op.shape, dims, strides, padding)

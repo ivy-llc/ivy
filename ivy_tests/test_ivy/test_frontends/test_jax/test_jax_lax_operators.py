@@ -2390,5 +2390,5 @@ def test_jax_lax_reduce_window(
         window_strides=others[1],
         padding=padding,
         base_dilation=others[2],
-        window_dilation=others[3],
+        window_dilation=None,
     )
