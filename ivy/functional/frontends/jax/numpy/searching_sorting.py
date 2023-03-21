@@ -140,3 +140,8 @@ def flatnonzero(a):
 @to_ivy_arrays_and_back
 def sort_complex(a):
     return ivy.sort(a)
+
+
+@to_ivy_arrays_and_back
+def count_nonzero(a, axis=None, keepdims=False):
+    return ivy.count_nonzero(a, axis=axis, keepdims=keepdims)
