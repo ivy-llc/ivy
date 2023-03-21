@@ -149,7 +149,7 @@ def _batch_norm_helper(draw):
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float"),
             min_num_dims=2,
-            max_num_dims=4,
+            max_num_dims=5,
             min_dim_size=4,
             ret_shape=True,
             max_value=999,
@@ -161,16 +161,16 @@ def _batch_norm_helper(draw):
             dtype=x_dtype,
             shape=(shape[0],),
             max_value=999,
-            min_value=-1,
+            min_value=0,
         )
     )
     _, others = draw(
         helpers.dtype_and_values(
-            dtype=x_dtype * 2,
+            dtype=x_dtype,
             shape=(shape[0],),
             max_value=999,
             min_value=-1001,
-            num_arrays=2,
+            num_arrays=3,
         )
     )
     return x_dtype, x[-1], others[0], others[1], others[2], variance[0]
@@ -181,12 +181,14 @@ def _batch_norm_helper(draw):
     fn_tree="functional.ivy.experimental.batch_norm",
     data=_batch_norm_helper(),
     eps=helpers.floats(min_value=0e-5, max_value=0.1),
+    training=st.booleans(),
     test_with_out=st.just(False),
 )
 def test_batch_norm(
     *,
     data,
     eps,
+    training,
     test_flags,
     backend_fw,
     fn_name,
@@ -208,5 +210,6 @@ def test_batch_norm(
         scale=scale,
         offset=offset,
         eps=eps,
+        training=training,
         rtol_=0e-03,
     )

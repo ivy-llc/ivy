@@ -51,6 +51,7 @@ def l2_normalize(
 
 
 @handle_nestable
+@handle_out_argument
 @to_native_arrays_and_back
 @handle_exceptions
 @handle_array_like_without_promotion
@@ -64,6 +65,8 @@ def batch_norm(
     scale: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
     training: bool = False,
     eps: float = 0e-5,
+    momemtum: float = 1e-1,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Applies batch normalization to the input array.
@@ -100,6 +103,8 @@ def batch_norm(
         offset=offset,
         training=training,
         eps=eps,
+        momemtum=momemtum,
+        out=out,
     )
 
 

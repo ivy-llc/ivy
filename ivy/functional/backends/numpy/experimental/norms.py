@@ -30,12 +30,18 @@ def batch_norm(
     offset: Optional[np.ndarray] = None,
     training: bool = False,
     eps: float = 1e-5,
+    momentum: float = 1e-1,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    runningmean = mean
+    runningvariance = variance
     ndims = len(x.shape)
     if training:
         dims = (0, *range(2, ndims))
         mean = np.mean(x, axis=dims)
         variance = np.var(x, axis=dims)
+        runningmean = (1 - momentum) * mean + momentum * runningmean
+        runningvariance = (1 - momentum) * variance + momentum * runningvariance
     x = np.transpose(x, (0, *range(2, ndims), 1))
     inv = 1.0 / np.sqrt(variance + eps)
     if scale is not None:
@@ -43,7 +49,8 @@ def batch_norm(
     ret = x * inv.astype(x.dtype, copy=False) + (
         offset - mean * inv if offset is not None else -mean * inv
     ).astype(x.dtype)
-    return np.transpose(ret, (0, ndims - 1, *range(1, ndims - 1)))
+    result = np.transpose(ret, (0, ndims - 1, *range(1, ndims - 1)))
+    return result, runningmean, runningvariance
 
 
 def instance_norm(
@@ -62,14 +69,14 @@ def instance_norm(
         dims = (*range(2, ndims),)
         mean = np.mean(x, axis=dims)
         variance = np.var(x, axis=dims)
-    x = np.transpose(x, (*range(2, ndims), 0, 1))
+    x = np.transpose(x, (*range(2, ndims), 1, 0))
     inv = 1.0 / np.sqrt(variance + eps)
     if scale is not None:
         inv *= scale
     ret = x * inv.astype(x.dtype, copy=False) + (
         offset - mean * inv if offset is not None else -mean * inv
     ).astype(x.dtype)
-    return np.transpose(ret, (ndims - 2, ndims - 1, *range(0, ndims - 2)))
+    return np.transpose(ret, (ndims - 1, ndims - 2, *range(0, ndims - 2)))
 
 
 def lp_normalize(
