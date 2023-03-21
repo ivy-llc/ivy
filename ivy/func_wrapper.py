@@ -1,5 +1,4 @@
 import contextlib
-import numbers
 import ivy
 import functools
 import logging
@@ -105,7 +104,7 @@ def _check_in_nested_sequence(sequence, value=None, _type=None):
         # Base case - N = 0
         return True
     elif isinstance(sequence, (tuple, list)):
-        if (value in sequence) or any(isinstance(_val, _type) for _val in sequence):
+        if any(isinstance(_val, _type) or _val is value for _val in sequence):
             # N = 1
             return True
         else:
@@ -212,15 +211,11 @@ def handle_array_like_without_promotion(fn: Callable) -> Callable:
                     # since asarray throws unpredictable bugs
                     if _check_in_nested_sequence(arg, value=Ellipsis, _type=slice):
                         continue
-                    if ivy.is_native_array(arg) or isinstance(
-                        arg, (list, tuple, numbers.Number)
-                    ):
+                    if not ivy.is_array(arg):
                         args[i] = ivy.array(arg)
                 elif parameters in kwargs:
                     kwarg = kwargs[parameter]
-                    if ivy.is_native_array(kwarg) or isinstance(
-                        kwarg, (list, tuple, numbers.Number)
-                    ):
+                    if not ivy.is_array(kwarg):
                         kwargs[parameter] = ivy.array(kwarg)
 
         return fn(*args, **kwargs)

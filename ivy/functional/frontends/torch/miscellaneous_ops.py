@@ -1,6 +1,7 @@
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.torch import promote_types_of_torch_inputs
 
 
 @to_ivy_arrays_and_back
@@ -304,7 +305,7 @@ def einsum(equation, *operands):
 def cross(input, other, dim=None, *, out=None):
     if dim is None:
         dim = -1
-    input, other = ivy.promote_types_of_inputs(input, other)
+    input, other = promote_types_of_torch_inputs(input, other)
     return ivy.cross(input, other, axisa=-1, axisb=-1, axisc=-1, axis=dim, out=out)
 
 
@@ -315,7 +316,7 @@ def gcd(input, other, *, out=None):
 
 @to_ivy_arrays_and_back
 def tensordot(a, b, dims=2, out=None):
-    a, b = ivy.promote_types_of_inputs(a, b)
+    a, b = promote_types_of_torch_inputs(a, b)
     return ivy.tensordot(a, b, axes=dims, out=out)
 
 
@@ -330,3 +331,8 @@ def diff(input, n=1, dim=-1, prepend=None, append=None):
 @to_ivy_arrays_and_back
 def broadcast_shapes(*shapes):
     return ivy.broadcast_shapes(*shapes)
+
+
+@to_ivy_arrays_and_back
+def atleast_2d(*tensors):
+    return ivy.atleast_2d(*tensors)

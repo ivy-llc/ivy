@@ -33,28 +33,22 @@ class ContextManager:
         unset_backend()
 
 
-_array_types = dict()
-_array_types["numpy"] = "ivy.functional.backends.numpy"
-_array_types["jax.interpreters.xla"] = "ivy.functional.backends.jax"
-_array_types["jaxlib.xla_extension"] = "ivy.functional.backends.jax"
-_array_types["tensorflow.python.framework.ops"] = "ivy.functional.backends.tensorflow"
-_array_types[
-    "tensorflow.python.ops.resource_variable_ops"
-] = "ivy.functional.backends.tensorflow"
-_array_types["torch"] = "ivy.functional.backends.torch"
-_array_types["torch.nn.parameter"] = "ivy.functional.backends.torch"
-
+_backends_subpackage_path = "ivy.functional.backends"
 _backend_dict = dict()
-_backend_dict["numpy"] = "ivy.functional.backends.numpy"
-_backend_dict["jax"] = "ivy.functional.backends.jax"
-_backend_dict["tensorflow"] = "ivy.functional.backends.tensorflow"
-_backend_dict["torch"] = "ivy.functional.backends.torch"
-
 _backend_reverse_dict = dict()
-_backend_reverse_dict["ivy.functional.backends.numpy"] = "numpy"
-_backend_reverse_dict["ivy.functional.backends.jax"] = "jax"
-_backend_reverse_dict["ivy.functional.backends.tensorflow"] = "tensorflow"
-_backend_reverse_dict["ivy.functional.backends.torch"] = "torch"
+
+for backend in os.listdir(
+    os.path.join(
+        ivy.__path__[0].rpartition(os.path.sep)[0],  # type: ignore
+        _backends_subpackage_path.replace(".", os.path.sep),
+    )
+):
+    if backend.startswith("__"):
+        continue
+    backend_path = f"{_backends_subpackage_path}.{backend}"
+    _backend_dict[backend] = backend_path
+    _backend_reverse_dict[backend_path] = backend
+
 
 # Backend Getting/Setting #
 # ----------------------- #
@@ -68,6 +62,14 @@ def prevent_access_locally(fn):
         return fn(*args, **kwargs)
 
     return new_fn
+
+
+@functools.lru_cache
+def _get_backend_for_arg(arg_module_name):
+    for backend in _backend_dict:
+        if backend in arg_module_name:
+            module_name = _backend_dict[backend]
+            return importlib.import_module(module_name)
 
 
 def _determine_backend_from_args(args):
@@ -113,9 +115,7 @@ def _determine_backend_from_args(args):
                 return lib
     else:
         # check if the class module of the arg is in _array_types
-        if args.__class__.__module__ in _array_types:
-            module_name = _array_types[args.__class__.__module__]
-            return importlib.import_module(module_name)
+        return _get_backend_for_arg(args.__class__.__module__)
 
 
 def fn_name_from_version_specific_fn_name(name, version):
@@ -626,7 +626,10 @@ def choose_random_backend(excluded=None):
 
 # noinspection PyProtectedMember
 @prevent_access_locally
-def with_backend(backend: str):
+def with_backend(backend: str, cached: bool = False):
+    # Use already compiled object
+    if cached and backend in compiled_backends.keys():
+        return compiled_backends[backend][-1]
     # TODO do error handling if finder fails
     finder = ast_helpers.IvyPathFinder()
     sys.meta_path.insert(0, finder)
@@ -646,5 +649,8 @@ def with_backend(backend: str):
     _importlib.path_hooks.remove(finder)
     sys.meta_path.remove(finder)
     _importlib._clear_cache()
-    compiled_backends[f"{ivy_pack.backend}_{id(ivy_pack)}"] = ivy_pack
+    try:
+        compiled_backends[backend].append(ivy_pack)
+    except KeyError:
+        compiled_backends[backend] = [ivy_pack]
     return ivy_pack

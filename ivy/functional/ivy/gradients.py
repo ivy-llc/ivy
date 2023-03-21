@@ -160,13 +160,23 @@ def _set_duplicates(xs, duplicate_index_chains):
     """Setting the duplicates in the nested structure to
     have the same reference
     """
-    originals = [
-        [key_chains[0]] * (len(key_chains) - 1) for key_chains in duplicate_index_chains
-    ]
+    originals = list(
+        map(
+            lambda key_chains: [key_chains[0]] * (len(key_chains) - 1),
+            duplicate_index_chains,
+        )
+    )
     originals = ivy.multi_index_nest(xs, list(itertools.chain(*originals)))
-    duplicates = [list(index_chains[1:]) for index_chains in duplicate_index_chains]
+    duplicates = list(
+        map(lambda index_chains: list(index_chains[1:]), duplicate_index_chains)
+    )
     nullifying_index_chains = (
-        [index_chain.split("/") for index_chain in list(itertools.chain(*duplicates))]
+        list(
+            map(
+                lambda index_chain: index_chain.split("/"),
+                list(itertools.chain(*duplicates)),
+            )
+        )
         if isinstance(xs, ivy.Container)
         else list(itertools.chain(*duplicates))
     )
@@ -227,7 +237,7 @@ _check_if_empty = (
 
 
 _idxs_to_str = lambda idxs: [
-    "_".join([str(x) for x in idxs[i]]) for i in range(len(idxs))
+    "_".join(list(map(lambda x: str(x), idxs[i]))) for i in range(len(idxs))
 ]
 
 

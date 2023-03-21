@@ -25,7 +25,7 @@ def is_local():
 class FrameworkStr(str):
     def __new__(cls, fw_str):
         ivy.utils.assertions.check_elem_in_list(
-            fw_str, ["jax", "tensorflow", "torch", "numpy"]
+            fw_str, ivy.utils.backend.handler._backend_dict.keys()
         )
         return str.__new__(cls, fw_str)
 
@@ -35,10 +35,6 @@ class Framework:
 
 
 class NativeArray:
-    pass
-
-
-class NativeVariable:
     pass
 
 
@@ -404,6 +400,8 @@ all_numeric_dtypes = (
     float16,
     float32,
     float64,
+    complex64,
+    complex128,
 )
 all_int_dtypes = (
     int8,

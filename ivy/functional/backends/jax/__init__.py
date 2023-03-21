@@ -55,8 +55,6 @@ if version.parse(jax.__version__) >= version.parse("0.4.1"):
     NativeArray += (jax.Array,)
 
 # noinspection PyUnresolvedReferences,PyProtectedMember
-NativeVariable = jax.interpreters.xla._DeviceArray
-# noinspection PyUnresolvedReferences
 NativeDevice = jaxlib.xla_extension.Device
 NativeDtype = jnp.dtype
 NativeShape = tuple
@@ -123,6 +121,8 @@ valid_numeric_dtypes_dict = {
         ivy.float16,
         ivy.float32,
         ivy.float64,
+        ivy.complex64,
+        ivy.complex128,
     )
 }
 

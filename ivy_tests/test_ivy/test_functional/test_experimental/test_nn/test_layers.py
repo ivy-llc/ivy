@@ -700,6 +700,7 @@ def test_adaptive_avg_pool1d(
     test_flags,
     backend_fw,
     fn_name,
+    on_device,
     ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
@@ -709,6 +710,7 @@ def test_adaptive_avg_pool1d(
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
+        on_device=on_device,
         input=x[0],
         output_size=output_size,
     )
@@ -724,8 +726,11 @@ def test_adaptive_avg_pool1d(
         max_value=100,
         min_value=-100,
     ),
-    output_size=st.tuples(
-        helpers.ints(min_value=1, max_value=10),
+    output_size=st.one_of(
+        st.tuples(
+            helpers.ints(min_value=1, max_value=10),
+            helpers.ints(min_value=1, max_value=10),
+        ),
         helpers.ints(min_value=1, max_value=10),
     ),
     test_with_out=st.just(False),
@@ -739,6 +744,7 @@ def test_adaptive_avg_pool2d(
     test_flags,
     backend_fw,
     fn_name,
+    on_device,
     ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
@@ -747,6 +753,7 @@ def test_adaptive_avg_pool2d(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
+        on_device=on_device,
         fn_name=fn_name,
         input=x[0],
         output_size=output_size,
