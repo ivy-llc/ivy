@@ -2725,8 +2725,8 @@ def inplace_update(
     return current_backend(x).inplace_update(
         x,
         val,
-        ensure_in_backend,
-        keep_input_dtype,
+        ensure_in_backend=ensure_in_backend,
+        keep_input_dtype=keep_input_dtype,
     )
 
 
