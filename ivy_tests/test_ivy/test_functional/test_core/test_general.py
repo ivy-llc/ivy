@@ -1315,7 +1315,7 @@ def test_inplace_variables_supported():
         num_arrays=2,
         shared_dtype=True,
     ),
-    keep_x_dtype = st.booleans(),
+    keep_x_dtype=st.booleans(),
 )
 def test_inplace_update(x_val_and_dtypes, keep_x_dtype, test_flags, on_device):
     dtype = x_val_and_dtypes[0][0]
