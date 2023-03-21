@@ -1,0 +1,66 @@
+﻿Container
+=========
+
+.. autosummary::
+   :toctree: container
+   :template: data_module.rst
+   :hide-table:
+   :recursive:
+
+   ivy.data_classes.container.activations
+
+   ivy.data_classes.container.base
+
+   ivy.data_classes.container.conversions
+
+   ivy.data_classes.container.creation
+
+   ivy.data_classes.container.data_type
+
+   ivy.data_classes.container.device
+
+   ivy.data_classes.container.elementwise
+
+   ivy.data_classes.container.experimental
+
+   ivy.data_classes.container.general
+
+   ivy.data_classes.container.gradients
+
+   ivy.data_classes.container.image
+
+   ivy.data_classes.container.layers
+
+   ivy.data_classes.container.linear_algebra
+
+   ivy.data_classes.container.losses
+
+   ivy.data_classes.container.manipulation
+
+   ivy.data_classes.container.norms
+
+   ivy.data_classes.container.random
+
+   ivy.data_classes.container.searching
+
+   ivy.data_classes.container.set
+
+   ivy.data_classes.container.sorting
+
+   ivy.data_classes.container.statistical
+
+   ivy.data_classes.container.utility
+
+   ivy.data_classes.container.wrapping
+
+
+.. automodule:: ivy.data_classes.container.container
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+
+
+.. discussion-links:: ivy.data_classes.container.container

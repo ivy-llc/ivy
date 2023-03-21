@@ -1,0 +1,15 @@
+General
+=======
+
+
+
+.. automodule:: ivy.functional.ivy.general
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+
+
+.. discussion-links:: ivy.functional.ivy.general

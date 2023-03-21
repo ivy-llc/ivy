@@ -1,0 +1,15 @@
+Assertions
+==========
+
+
+
+.. automodule:: ivy.utils.assertions
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+
+
+.. discussion-links:: ivy.utils.assertions

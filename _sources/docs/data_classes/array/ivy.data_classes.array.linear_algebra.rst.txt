@@ -1,0 +1,17 @@
+Linear algebra
+==============
+
+
+
+.. automodule:: ivy.data_classes.array.linear_algebra
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+    :private-members:
+
+
+
+
+
+.. discussion-links:: ivy.data_classes.array.linear_algebra

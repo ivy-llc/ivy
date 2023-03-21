@@ -1,0 +1,157 @@
+Experimental
+============
+
+
+
+.. automodule:: ivy.data_classes.array.experimental
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+    :private-members:
+
+
+
+.. automodule:: ivy.data_classes.array.experimental.activations
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :private-members:
+
+
+.. automodule:: ivy.data_classes.array.experimental.conversions
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :private-members:
+
+
+.. automodule:: ivy.data_classes.array.experimental.creation
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :private-members:
+
+
+.. automodule:: ivy.data_classes.array.experimental.data_type
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :private-members:
+
+
+.. automodule:: ivy.data_classes.array.experimental.device
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :private-members:
+
+
+.. automodule:: ivy.data_classes.array.experimental.elementwise
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :private-members:
+
+
+.. automodule:: ivy.data_classes.array.experimental.general
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :private-members:
+
+
+.. automodule:: ivy.data_classes.array.experimental.gradients
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :private-members:
+
+
+.. automodule:: ivy.data_classes.array.experimental.image
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :private-members:
+
+
+.. automodule:: ivy.data_classes.array.experimental.layers
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :private-members:
+
+
+.. automodule:: ivy.data_classes.array.experimental.linear_algebra
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :private-members:
+
+
+.. automodule:: ivy.data_classes.array.experimental.losses
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :private-members:
+
+
+.. automodule:: ivy.data_classes.array.experimental.manipulation
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :private-members:
+
+
+.. automodule:: ivy.data_classes.array.experimental.norms
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :private-members:
+
+
+.. automodule:: ivy.data_classes.array.experimental.random
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :private-members:
+
+
+.. automodule:: ivy.data_classes.array.experimental.searching
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :private-members:
+
+
+.. automodule:: ivy.data_classes.array.experimental.set
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :private-members:
+
+
+.. automodule:: ivy.data_classes.array.experimental.sorting
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :private-members:
+
+
+.. automodule:: ivy.data_classes.array.experimental.statistical
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :private-members:
+
+
+.. automodule:: ivy.data_classes.array.experimental.utility
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :private-members:
+
+
+
+
+.. discussion-links:: ivy.data_classes.array.experimental

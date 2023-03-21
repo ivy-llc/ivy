@@ -1,0 +1,15 @@
+Nested array
+============
+
+
+
+.. automodule:: ivy.nested_array.nested_array
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+
+
+.. discussion-links:: ivy.nested_array.nested_array

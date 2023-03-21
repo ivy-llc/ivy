@@ -1,0 +1,17 @@
+Gradients
+=========
+
+
+
+.. automodule:: ivy.data_classes.array.gradients
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+    :private-members:
+
+
+
+
+
+.. discussion-links:: ivy.data_classes.array.gradients
