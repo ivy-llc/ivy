@@ -325,6 +325,7 @@ def test_numpy_shuffle(
         x=x[0],
     )
 
+
 @handle_frontend_test(
     fn_tree="numpy.random.standard_normal",
     input_dtypes=helpers.get_dtypes("integer", full=False),
