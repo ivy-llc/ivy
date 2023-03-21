@@ -130,9 +130,15 @@ This way, Ivy makes all ML-related projects available for you, independently of 
 
 .. code-block:: python
 
-    ivy.compile()     # Compiles a function into an efficient fully-functional graph, removing all wrapping and redundant code
-    ivy.transpile()   # Converts framework-specific code to a different framework
-    ivy.unify()       # Converts framework-specific code to Ivy
+    # Compiles a function into an efficient fully-functional graph, removing all wrapping and redundant code
+    ivy.compile()
+
+
+    # Converts framework-specific code to a different framework
+    ivy.transpile()
+
+    # Converts framework-specific code to Ivy
+    ivy.unify()
 
 These functions can be used eagerly or lazily. If you pass the neccesary arguments for function tracing, the compilation/transpilation step will happen instantly (eagerly). Otherwise, the compilation/transpilation will happen only when the returned function is first invoked.
 
