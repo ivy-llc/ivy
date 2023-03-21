@@ -392,7 +392,7 @@ class Array(
             state["backend"]
         ) > 0 else ivy.current_backend(state["data"])
         ivy_array = ivy.array(state["data"])
-        ivy.unset_backend()
+        ivy.previous_backend()
 
         self.__dict__ = ivy_array.__dict__
 

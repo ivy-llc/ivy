@@ -506,7 +506,7 @@ class Module(ModuleConverters, ModuleHelpers):
                 ivy.set_backend(self._target)
             self.compile(args=args, kwargs=kwargs)
             if self._target:
-                ivy.unset_backend()
+                ivy.previous_backend()
 
         if self._module_graph:
             # we need `v` in kwargs, since this is a compiled call
