@@ -194,7 +194,7 @@ All of the functionalities in Ivy are exposed through the :code:`Ivy functional 
     import torch
 
     def mse_loss(y, target):
-        return ivy.mean((out - target)**2)
+        return ivy.mean((y - target)**2)
 
     jax_mse   = mse_loss(jnp.ones((5,)), jnp.ones((5,)))
     tf_mse    = mse_loss(tf.ones((5,)), tf.ones((5,)))
