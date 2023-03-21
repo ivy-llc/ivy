@@ -702,10 +702,10 @@ from ivy.utils.backend import (
     set_jax_backend,
     set_tensorflow_backend,
     set_torch_backend,
-    unset_backend,
+    previous_backend,
     backend_stack,
     choose_random_backend,
-    clear_backend_stack,
+    unset_backend,
 )
 from . import func_wrapper
 from .utils import assertions, exceptions, verbosity
