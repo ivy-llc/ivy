@@ -39,3 +39,7 @@ def thresholded_relu(
 @with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def relu6(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
     return tf.nn.relu6(x)
+
+def logsigmoid(input: Tensor) -> Tensor:
+    return tf.math.log_sigmoid(input)
+

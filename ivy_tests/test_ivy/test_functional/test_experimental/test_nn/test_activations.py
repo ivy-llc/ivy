@@ -137,3 +137,35 @@ def test_relu6(
         on_device=on_device,
         x=x[0],
     )
+
+
+# logsigmoid
+@handle_test(
+    fn_tree="functional.ivy.experimental.logsigmoid",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        safety_factor_scale="log",
+        large_abs_safety_factor=120,
+    ),
+    test_with_out=st.just(False),
+)
+def test_logsigmoid(
+    *,
+    dtype_and_x,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x = dtype_and_x
+    test_flags.num_positional_args = len(x)
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        input=x[0],
+    )

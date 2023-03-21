@@ -847,11 +847,38 @@ def test_jax_numpy_atleast_1d(
     )
 
 
-@st.composite
-def _squeeze_helper(draw):
-    shape = draw(st.shared(helpers.get_shape(), key="shape"))
-    valid_axes = [idx for idx in range(len(shape)) if shape[idx] == 1] + [None]
-    return draw(st.sampled_from(valid_axes))
+# tril
+@handle_frontend_test(
+    fn_tree="jax.numpy.tril",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+    ),
+    k=helpers.ints(min_value=-10, max_value=10),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_tril(
+    *,
+    dtype_and_x,
+    k,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        m=x[0],
+        k=k,
+    )
 
 
 # block
@@ -906,6 +933,13 @@ def test_jax_numpy_block(
         on_device=on_device,
         arrays=xs,
     )
+
+
+@st.composite
+def _squeeze_helper(draw):
+    shape = draw(st.shared(helpers.get_shape(), key="shape"))
+    valid_axes = [idx for idx in range(len(shape)) if shape[idx] == 1] + [None]
+    return draw(st.sampled_from(valid_axes))
 
 
 # squeeze

@@ -46,3 +46,7 @@ def thresholded_relu(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.where(x > threshold, x, 0).astype(x.dtype)
+
+
+def logsigmoid(input: JaxArray) -> JaxArray:
+    return jax.nn.log_sigmoid(input)

@@ -45,3 +45,7 @@ def relu6(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 
 relu6.support_native_out = True
+
+@_scalar_output_to_0d_array
+def logsigmoid(input: np.ndarray) -> np.ndarray:
+    return -(np.log1p(np.exp(-(input))))

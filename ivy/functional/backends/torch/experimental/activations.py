@@ -40,3 +40,7 @@ relu6.unsupported_dtypes = (
     "float16",
     "bfloat16",
 )
+
+@with_unsupported_dtypes({"1.13.0 and below": ("float16", "bfloat16")}, backend_version)
+def logsigmoid(input: torch.Tensor) -> torch.Tensor:
+    return torch.nn.functional.logsigmoid(input)
