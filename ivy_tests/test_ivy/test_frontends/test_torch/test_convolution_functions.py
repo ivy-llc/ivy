@@ -1,5 +1,4 @@
 # global
-import math
 from hypothesis import strategies as st, assume
 
 # local
@@ -9,6 +8,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
     _assume_tf_dilation_gt_1,
 )
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import _unfold_helper, _fold_helper
 
 
 @st.composite
@@ -358,60 +358,6 @@ def test_torch_conv_tranpose3d(
     )
 
 
-@st.composite
-def _fold_unfold_helper(draw, dim):
-    stride = draw(
-        st.one_of(
-            st.lists(st.integers(min_value=1, max_value=3), min_size=dim, max_size=dim),
-            st.integers(min_value=1, max_value=3),
-        )
-    )
-    padding = draw(
-        st.one_of(
-            st.integers(min_value=1, max_value=3),
-            st.lists(st.integers(min_value=1, max_value=2), min_size=dim, max_size=dim),
-        )
-    )
-    dilation = draw(
-        st.one_of(
-            st.lists(st.integers(min_value=1, max_value=3), min_size=dim, max_size=dim),
-            st.integers(min_value=1, max_value=3),
-        )
-    )
-    kernel_size = draw(
-        st.one_of(
-            st.integers(min_value=1, max_value=5),
-            helpers.get_shape(
-                min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5
-            ),
-        )
-    )
-    return stride, padding, dilation, kernel_size
-
-
-@st.composite
-def _unfold_helper(draw, dim=2):
-    stride, padding, dilation, kernel_size = draw(_fold_unfold_helper(dim))
-    dilations = [dilation] * dim if isinstance(dilation, int) else dilation
-    kernel_sizes = [kernel_size] * dim if isinstance(kernel_size, int) else kernel_size
-    x_dim = []
-    for i in range(dim):
-        min_x = kernel_sizes[i] + (kernel_sizes[i] - 1) * (dilations[i] - 1)
-        x_dim.append(draw(st.integers(min_x, 15)))
-    batch_size = draw(st.integers(1, 5))
-    input_channels = draw(st.integers(1, 3))
-    x_shape = (batch_size, input_channels) + tuple(x_dim)
-    dtype, [vals] = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float"),
-            shape=x_shape,
-            min_value=0.0,
-            max_value=1.0,
-        )
-    )
-    return dtype, vals, kernel_size, dilation, stride, padding
-
-
 @handle_frontend_test(
     fn_tree="torch.nn.functional.unfold",
     dtype_vals=_unfold_helper(),
@@ -437,39 +383,6 @@ def test_torch_unfold(
         padding=padding,
         stride=strides,
     )
-
-
-@st.composite
-def _fold_helper(draw, dim=2):
-    stride, padding, dilation, kernel_size = draw(_fold_unfold_helper(dim))
-    strides = [stride] * dim if isinstance(stride, int) else stride
-    paddings = [padding] * dim if isinstance(padding, int) else padding
-    dilations = [dilation] * dim if isinstance(dilation, int) else dilation
-    kernel_sizes = [kernel_size] * dim if isinstance(kernel_size, int) else kernel_size
-    output_shape = ()
-    for i in range(dim):
-        min_dim = kernel_sizes[i] + (kernel_sizes[i] - 1) * (dilations[i] - 1)
-        output_shape = output_shape + (draw(st.integers(min_dim, 15)),)
-    batch_size = draw(st.integers(1, 5))
-    n_channels = draw(st.integers(1, 3))
-    x_shape = [
-        (output_shape[i] + 2 * paddings[i] - dilations[i] * (kernel_sizes[i] - 1) - 1)
-        // strides[i]
-        + 1
-        for i in range(2)
-    ]
-    x_shape = (batch_size, n_channels * math.prod(kernel_sizes), math.prod(x_shape))
-    dtype, [vals] = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float"),
-            shape=x_shape,
-            min_value=0.0,
-            max_value=1.0,
-        )
-    )
-    if vals.shape[0] == 1:  # un-batched inputs are also supported
-        vals = draw(st.one_of(st.just(vals), st.just(ivy.squeeze(vals, axis=0))))
-    return dtype, vals, kernel_size, output_shape, dilation, stride, padding
 
 
 @handle_frontend_test(

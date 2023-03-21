@@ -271,3 +271,41 @@ def expand(
 
 
 expand.support_native_out = False
+
+
+def fold(
+    input: torch.Tensor,
+    output_size: Union[int, Tuple[int, int]],
+    kernel_size: Union[int, Tuple[int, int]],
+    /,
+    *,
+    dilation: Union[int, Tuple[int, int]] = 1,
+    padding: Union[int, Tuple[int, int]] = 0,
+    stride: Union[int, Tuple[int, int]] = 1,
+) -> torch.Tensor:
+    return torch.nn.functional.fold(
+        input,
+        output_size,
+        kernel_size,
+        dilation=dilation,
+        padding=padding,
+        stride=stride,
+    )
+
+
+def unfold(
+    input: torch.Tensor,
+    kernel_size: Union[int, Tuple[int, int]],
+    /,
+    *,
+    dilation: Union[int, Tuple[int, int]] = 1,
+    padding: Union[int, Tuple[int, int]] = 0,
+    stride: Union[int, Tuple[int, int]] = 1,
+) -> torch.Tensor:
+    return torch.nn.functional.unfold(
+        input,
+        kernel_size,
+        dilation=dilation,
+        padding=padding,
+        stride=stride,
+    )

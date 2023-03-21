@@ -1593,3 +1593,91 @@ def expand(
         Output Array
     """
     return ivy.current_backend(x).expand(x, shape, out=out)
+
+
+@handle_view
+@to_native_arrays_and_back
+@handle_nestable
+@handle_array_like_without_promotion
+def fold(
+    input: Union[ivy.Array, ivy.NativeArray],
+    output_size: Union[int, Tuple[int, int]],
+    kernel_size: Union[int, Tuple[int, int]],
+    /,
+    *,
+    dilation: Union[int, Tuple[int, int]] = 1,
+    padding: Union[int, Tuple[int, int]] = 0,
+    stride: Union[int, Tuple[int, int]] = 1,
+) -> ivy.Array:
+    """
+    Extracts sliding blocks from an array and stacks them depth-wise.
+
+    Parameters
+    ----------
+    input
+        the array of sliding blocks
+    output_size
+        the shape of the spatial dimensions of the output
+    kernel_size
+        the size of the sliding blocks
+    stride
+        the stride of the sliding blocks in the input spatial dimensions
+    padding
+        implicit zero padding to be added on both sides of input
+    dilation
+        a parameter that controls the stride of elements within the neighborhood
+    Returns
+    -------
+    ret
+        the array containing the sliding blocks stacked depth-wise
+    """
+    return ivy.current_backend(input).fold(
+        input,
+        output_size,
+        kernel_size,
+        dilation=dilation,
+        padding=padding,
+        stride=stride,
+    )
+
+
+@handle_view
+@to_native_arrays_and_back
+@handle_nestable
+@handle_array_like_without_promotion
+def unfold(
+    input: Union[ivy.Array, ivy.NativeArray],
+    kernel_size: Union[int, Tuple[int, int]],
+    /,
+    *,
+    dilation: Union[int, Tuple[int, int]] = 1,
+    padding: Union[int, Tuple[int, int]] = 0,
+    stride: Union[int, Tuple[int, int]] = 1,
+) -> ivy.Array:
+    """
+    The inverse of `fold`. Unravels the depth dimension of a batched array.
+
+    Parameters
+    ----------
+    input
+        the batched input array
+    kernel_size
+        the size of the sliding blocks
+    stride
+        the stride of the sliding blocks in the input spatial dimensions
+    padding
+        implicit zero padding to be added on both sides of input
+    dilation
+        a parameter that controls the stride of elements within the neighborhood
+    Returns
+    -------
+    ret
+        the array containing the extracted sliding blocks
+    """
+    return ivy.current_backend(input).unfold(
+        input,
+        kernel_size,
+        dilation=dilation,
+        padding=padding,
+        stride=stride,
+    )

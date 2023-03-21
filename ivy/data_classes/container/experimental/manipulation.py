@@ -2342,3 +2342,179 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
         """
         return self.static_expand(self, shape, out=out)
+
+    @staticmethod
+    def static_fold(
+            input: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+            output_size: Union[int, Tuple[int, int]],
+            kernel_size: Union[int, Tuple[int, int]],
+            /,
+            *,
+            dilation: Union[int, Tuple[int, int]] = 1,
+            padding: Union[int, Tuple[int, int]] = 0,
+            stride: Union[int, Tuple[int, int]] = 1,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        Extracts sliding blocks from an array and stacks them depth-wise.
+
+        Parameters
+        ----------
+        input
+            the array of sliding blocks
+        output_size
+            the shape of the spatial dimensions of the output
+        kernel_size
+            the size of the sliding blocks
+        stride
+            the stride of the sliding blocks in the input spatial dimensions
+        padding
+            implicit zero padding to be added on both sides of input
+        dilation
+            a parameter that controls the stride of elements within the neighborhood
+        Returns
+        -------
+        ret
+            the array containing the sliding blocks stacked depth-wise
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "fold",
+            input,
+            output_size,
+            kernel_size,
+            dilation=dilation,
+            padding=padding,
+            stride=stride,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def fold(
+            self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+            output_size: Union[int, Tuple[int, int]],
+            kernel_size: Union[int, Tuple[int, int]],
+            /,
+            *,
+            dilation: Union[int, Tuple[int, int]] = 1,
+            padding: Union[int, Tuple[int, int]] = 0,
+            stride: Union[int, Tuple[int, int]] = 1,
+    ) -> ivy.Container:
+        """
+        Extracts sliding blocks from an array and stacks them depth-wise.
+
+        Parameters
+        ----------
+        self
+            the array of sliding blocks
+        output_size
+            the shape of the spatial dimensions of the output
+        kernel_size
+            the size of the sliding blocks
+        stride
+            the stride of the sliding blocks in the input spatial dimensions
+        padding
+            implicit zero padding to be added on both sides of input
+        dilation
+            a parameter that controls the stride of elements within the neighborhood
+        Returns
+        -------
+        ret
+            the array containing the sliding blocks stacked depth-wise
+        """
+        return self.static_fold(
+            self,
+            output_size,
+            kernel_size,
+            dilation=dilation,
+            padding=padding,
+            stride=stride,
+        )
+
+    @staticmethod
+    def static_unfold(
+            input: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+            kernel_size: Union[int, Tuple[int, int]],
+            /,
+            *,
+            dilation: Union[int, Tuple[int, int]] = 1,
+            padding: Union[int, Tuple[int, int]] = 0,
+            stride: Union[int, Tuple[int, int]] = 1,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        The inverse of `fold`. Unravels the depth dimension of a batched array.
+
+        Parameters
+        ----------
+        input
+            the batched input array
+        kernel_size
+            the size of the sliding blocks
+        stride
+            the stride of the sliding blocks in the input spatial dimensions
+        padding
+            implicit zero padding to be added on both sides of input
+        dilation
+            a parameter that controls the stride of elements within the neighborhood
+        Returns
+        -------
+        ret
+            the array containing the extracted sliding blocks
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "unfold",
+            input,
+            kernel_size,
+            dilation=dilation,
+            padding=padding,
+            stride=stride,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def unfold(
+            self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+            kernel_size: Union[int, Tuple[int, int]],
+            /,
+            *,
+            dilation: Union[int, Tuple[int, int]] = 1,
+            padding: Union[int, Tuple[int, int]] = 0,
+            stride: Union[int, Tuple[int, int]] = 1,
+    ) -> ivy.Container:
+        """
+        The inverse of `fold`. Unravels the depth dimension of a batched array.
+
+        Parameters
+        ----------
+        self
+            the batched input array
+        kernel_size
+            the size of the sliding blocks
+        stride
+            the stride of the sliding blocks in the input spatial dimensions
+        padding
+            implicit zero padding to be added on both sides of input
+        dilation
+            a parameter that controls the stride of elements within the neighborhood
+        Returns
+        -------
+        ret
+            the array containing the extracted sliding blocks
+        """
+        return self.static_unfold(
+            self,
+            kernel_size,
+            dilation=dilation,
+            padding=padding,
+            stride=stride,
+        )

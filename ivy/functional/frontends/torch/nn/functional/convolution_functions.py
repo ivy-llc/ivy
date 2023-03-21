@@ -1,6 +1,3 @@
-# global
-import math
-
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
@@ -235,89 +232,24 @@ def conv_transpose3d(
     )
 
 
-# ToDo: both for fold and unfold, the conversion to numpy and back to ivy can be removed
-#  as soon as scatter_nd stops failing for jax and tensorflow when given slices.
-
-
 @to_ivy_arrays_and_back
 def unfold(input, kernel_size, dilation=1, padding=0, stride=1):
-    if input.ndim != 4:
-        raise ivy.utils.exceptions.IvyException("only batched 4D inputs are supported")
-    stride = [stride] * 2 if isinstance(stride, int) else stride
-    dilation = [dilation] * 2 if isinstance(dilation, int) else dilation
-    padding = [padding] * 2 if isinstance(padding, int) else padding
-    kernel_size = [kernel_size] * 2 if isinstance(kernel_size, int) else kernel_size
-    output_shape = [
-        (input.shape[i + 2] + 2 * padding[i] - dilation[i] * (kernel_size[i] - 1) - 1)
-        // stride[i]
-        + 1
-        for i in range(2)
-    ]
-    ret = ivy.zeros((*input.shape[0:2], *kernel_size, *output_shape), dtype=input.dtype)
-    input_padded = ivy.zero_pad(
+    return ivy.unfold(
         input,
-        ((0, 0), (0, 0), (padding[0],) * 2, (padding[1],) * 2),
-    )
-    ret = ret.to_numpy()
-    input_padded = input_padded.to_numpy()
-    for i in range(output_shape[0]):
-        for j in range(output_shape[1]):
-            i_in = i * stride[0]
-            j_in = j * stride[1]
-            ret[:, :, :, :, i, j] = input_padded[
-                :,
-                :,
-                i_in : i_in + kernel_size[0] * dilation[0] : dilation[0],
-                j_in : j_in + kernel_size[1] * dilation[1] : dilation[1],
-            ]
-    return ivy.reshape(
-        ret, (input.shape[0], input.shape[1] * math.prod(kernel_size), -1)
+        kernel_size,
+        dilation=dilation,
+        padding=padding,
+        stride=stride,
     )
 
 
 @to_ivy_arrays_and_back
 def fold(input, output_size, kernel_size, dilation=1, padding=0, stride=1):
-    orig_ndim = input.ndim
-    if orig_ndim == 2:
-        input = ivy.expand_dims(input, axis=0)
-    elif orig_ndim != 3:
-        raise ivy.utils.exceptions.IvyException(
-            "only 2D or batched 3D inputs are supported"
-        )
-    stride = [stride] * 2 if isinstance(stride, int) else stride
-    dilation = [dilation] * 2 if isinstance(dilation, int) else dilation
-    padding = [padding] * 2 if isinstance(padding, int) else padding
-    kernel_size = [kernel_size] * 2 if isinstance(kernel_size, int) else kernel_size
-    output_size = [output_size] * 2 if isinstance(output_size, int) else output_size
-    input_shape = [
-        (output_size[i] + 2 * padding[i] - dilation[i] * (kernel_size[i] - 1) - 1)
-        // stride[i]
-        + 1
-        for i in range(2)
-    ]
-    n_batches = input.shape[0]
-    n_channels = input.shape[1] // math.prod(kernel_size)
-    output = ivy.zeros((n_batches, n_channels, *output_size), dtype=input.dtype)
-    output_padded = ivy.zero_pad(
-        output,
-        ((0, 0), (0, 0), (padding[0],) * 2, (padding[1],) * 2),
-    )
-    output_padded = ivy.to_numpy(output_padded)
-    k = 0
-    for i in range(input_shape[0]):
-        for j in range(input_shape[1]):
-            i_in = i * stride[0]
-            j_in = j * stride[1]
-            patch = ivy.to_numpy(
-                input[:, :, k].reshape((n_batches, n_channels, *kernel_size))
-            )
-            output_padded[
-                :,
-                :,
-                i_in : i_in + kernel_size[0] * dilation[0] : dilation[0],
-                j_in : j_in + kernel_size[1] * dilation[1] : dilation[1],
-            ] += patch
-            k += 1
-    return ivy.array(
-        output_padded[:, :, padding[0] : -padding[0], padding[1] : -padding[1]]
+    return ivy.fold(
+        input,
+        output_size,
+        kernel_size,
+        dilation=dilation,
+        padding=padding,
+        stride=stride,
     )

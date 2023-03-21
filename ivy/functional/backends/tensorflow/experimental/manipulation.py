@@ -234,3 +234,71 @@ def expand(
         if dim < 0:
             shape[i] = x.shape[i]
     return tf.broadcast_to(x, shape)
+
+
+def fold(
+    input: Union[tf.Tensor, tf.Variable],
+    output_size: Union[int, Tuple[int, int]],
+    kernel_size: Union[int, Tuple[int, int]],
+    /,
+    *,
+    dilation: Union[int, Tuple[int, int]] = 1,
+    padding: Union[int, Tuple[int, int]] = 0,
+    stride: Union[int, Tuple[int, int]] = 1,
+) -> Union[tf.Tensor, tf.Variable]:
+    if len(input.shape) == 2:
+        input = tf.expand_dims(input, axis=0)
+
+    output_size, kernel_size, dilation, padding, stride = map(
+        lambda x: [x, x] if isinstance(x, int) else x,
+        [output_size, kernel_size, dilation, padding, stride]
+    )
+
+    batch_size, channels, l = input.shape
+    input_channels = channels // (kernel_size[0] * kernel_size[1])
+
+    output_channels = input_channels
+    output_height = output_size[0]
+    output_width = output_size[1]
+
+    input = tf.reshape(input, (batch_size, input_channels, kernel_size[0], kernel_size[1], -1))
+
+    input = tf.transpose(input, perm=[0, 1, 4, 2, 3])
+
+    unfolded = tf.nn.conv_transpose(
+        input,
+        tf.eye(output_channels, dtype=input.dtype),
+        output_shape=[batch_size, output_channels, output_height, output_width],
+        strides=[1, 1, stride[0], stride[1]],
+        padding=[[0, 0], [0, 0], [padding[0], padding[0]], [padding[1], padding[1]]],
+        dilations=[1, 1, dilation[0], dilation[1]]
+    )
+    return unfolded
+
+
+def unfold(
+    input: Union[tf.Tensor, tf.Variable],
+    kernel_size: Union[int, Tuple[int, int]],
+    /,
+    *,
+    dilation: Union[int, Tuple[int, int]] = 1,
+    padding: Union[int, Tuple[int, int]] = 0,
+    stride: Union[int, Tuple[int, int]] = 1,
+) -> Union[tf.Tensor, tf.Variable]:
+    if len(input.shape) == 3:
+        input = tf.expand_dims(input, axis=0)
+    kernel_size, dilation, padding, stride = map(
+        lambda x: [x, x] if isinstance(x, int) else x,
+        [kernel_size, dilation, padding, stride]
+    )
+    sizes, strides, rates = map(lambda x: [1, *x, 1], [kernel_size, stride, dilation])
+    input = tf.transpose(
+        tf.pad(input, [[0, 0], [0, 0], [padding[0]]*2, [padding[1]]*2]),
+        perm=[0, 2, 3, 1],
+    )
+    patches = tf.image.extract_patches(input, sizes, strides, rates, 'VALID')
+    output = tf.reshape(
+        tf.transpose(patches, perm=[0, 3, 1, 2]),
+        [input.shape[0], kernel_size[0] * kernel_size[1] * input.shape[-1], -1],
+    )
+    return output
