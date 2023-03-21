@@ -8,6 +8,7 @@ from ivy.functional.frontends.numpy import (
     argmax,
     any,
     ndarray,
+    sum,
 )
 
 
@@ -117,3 +118,8 @@ class matrix:
         if ivy.exists(axis):
             return any(self.A, axis=axis, keepdims=True, out=out)
         return any(self.A, axis=axis, out=out)
+
+    def sum(self, axis=None, dtype=None, out=None):
+        """Returns the sum of the matrix elements, along the given axis."""
+
+        return sum(self.A, axis=axis, dtype=dtype, out=out)
