@@ -1035,6 +1035,7 @@ def _strided_slice_helper(draw):
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("valid"),
             min_num_dims=1,
+            min_dim_size=2,  # make end and start differ for now
             ret_shape=True,
         ),
     )
@@ -1046,6 +1047,39 @@ def _strided_slice_helper(draw):
             lambda x: bin(x[2])[2:].count("1") <= min(len(shape)-1, 1)
         )  # maximum one ellipse
     )
+    # make the masks non-overlapping for now
+    ###
+    begin_mask, end_mask, ellipsis_mask, new_axis_mask, shrink_axis_mask = list(
+        map(
+            _num_to_bit_list,
+            masks,
+            [ndims] * 5,
+        )
+    )
+    for i in range(len(shape)):
+        if begin_mask[i] == 1:
+            end_mask[i] = 0
+            ellipsis_mask[i] = 0
+            new_axis_mask[i] = 0
+            shrink_axis_mask[i] = 0
+        elif end_mask[i] == 1:
+            ellipsis_mask[i] = 0
+            new_axis_mask[i] = 0
+            shrink_axis_mask[i] = 0
+        elif ellipsis_mask[i] == 1:
+            new_axis_mask[i] = 0
+            shrink_axis_mask[i] = 0
+        elif new_axis_mask[i] == 1:
+            shrink_axis_mask[i] = 0
+
+    begin_mask, end_mask, ellipsis_mask, new_axis_mask, shrink_axis_mask = list(
+        map(
+            lambda l: sum(c << i for i, c in enumerate(l)),
+            [begin_mask, end_mask, ellipsis_mask, new_axis_mask, shrink_axis_mask],
+        )
+    )
+    masks = [begin_mask, end_mask, ellipsis_mask, new_axis_mask, shrink_axis_mask]
+    ###
     begin, end, strides = [], [], []
     for i in shape:
         begin += [draw(st.integers(min_value=0, max_value=i - 1))]
@@ -1055,7 +1089,7 @@ def _strided_slice_helper(draw):
                     lambda x: x != begin[-1]
                 )
             )
-        ]
+        ]  # make end and start differ for now
         if begin[-1] < end[-1]:
             strides += [draw(st.integers(min_value=1, max_value=i))]
         else:
