@@ -116,43 +116,43 @@ def softplus(
 
 
 def softsign(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return x / (np.abs(x) + 1)
+    return np.divide(x, np.abs(x) + 1, out=out)
 
 
 def silu(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.multiply(x, sigmoid(x))
+    return np.multiply(x, sigmoid(x), out=out)
 
 
 def log_sigmoid(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return -softplus(-x)
+    return -softplus(-x, out=out)
 
 
 @_scalar_output_to_0d_array
 def hard_sigmoid(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    res = relu6(x + 3.0) / 6.0
+    res = relu6(x + 3.0, out=out) / 6.0
     return res.astype(x.dtype)
 
 
 def hard_silu(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.multiply(x, hard_sigmoid(x))
+    return np.multiply(x, hard_sigmoid(x), out=out)
 
 
 def elu(
     x: np.ndarray, /, *, alpha: float = 1.0, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    return np.where(x > 0, x, alpha * np.expm1(x)).astype(x.dtype)
+    return np.where(x > 0, x, alpha * np.expm1(x), out=out).astype(x.dtype)
 
 
 def selu(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     alpha = 1.6732632423543772848170429916717
     scale = np.array(1.0507009873554804934193349852946, dtype=x.dtype)
-    return np.multiply(scale, elu(x, alpha=alpha))
+    return np.multiply(scale, elu(x, alpha=alpha), out=out)
 
 
 def celu(
     x: np.ndarray, /, *, alpha: float = 1.0, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    return np.where(x > 0, x, alpha * np.expm1(x / alpha)).astype(x.dtype)
+    return np.where(x > 0, x, alpha * np.expm1(x / alpha), out=out).astype(x.dtype)
 
 
 def glu(
@@ -161,4 +161,4 @@ def glu(
     size = x.shape[axis]
     assert size % 2 == 0, "axis size must be divisible by 2"
     x1, x2 = np.split(x, 2, axis)
-    return x1 / (1 + np.exp(-x2))
+    return np.divide(x1, 1 + np.exp(-x2), out=out)
