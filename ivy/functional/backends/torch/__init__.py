@@ -17,7 +17,6 @@ else:
 use = ivy.utils.backend.ContextManager(_module_in_memory)
 
 NativeArray = torch.Tensor
-NativeVariable = torch.Tensor
 NativeDevice = torch.device
 NativeDtype = torch.dtype
 NativeShape = torch.Size

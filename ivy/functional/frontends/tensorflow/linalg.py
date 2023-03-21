@@ -238,3 +238,8 @@ def lu_matrix_inverse(lower_upper, perm, validate_args=False, name=None):
     return ivy.lu_matrix_inverse(
         ivy.lu_reconstruct(lower_upper, perm), validate_args=validate_args, name=name
     )
+
+
+@to_ivy_arrays_and_back
+def einsum(equation, *inputs, **kwargs):
+    return tf_frontend.einsum(equation, *inputs, **kwargs)

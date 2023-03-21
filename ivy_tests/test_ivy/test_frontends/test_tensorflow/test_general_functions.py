@@ -1105,10 +1105,26 @@ def test_tensorflow_strided_slice(
         raise e
 
 
+@st.composite
+def _slice_helper(draw):
+    dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=1,
+            ret_shape=True,
+        ),
+    )
+    begin, size = [], []
+    for i in shape:
+        begin += [draw(st.integers(min_value=0, max_value=i - 1))]
+        size += [draw(st.integers(min_value=0, max_value=i - begin[-1]))]
+    return dtype, x, np.array(begin), np.array(size)
+
+
 # slice
 @handle_frontend_test(
     fn_tree="tensorflow.slice",
-    dtype_x_params=_strided_slice_helper(),
+    dtype_x_params=_slice_helper(),
     test_with_out=st.just(False),
 )
 def test_tensorflow_slice(
@@ -1119,25 +1135,17 @@ def test_tensorflow_slice(
     fn_tree,
     on_device,
 ):
-    dtype, x, begin, end, strides, masks = dtype_x_params
-    try:
-        helpers.test_frontend_function(
-            input_dtypes=dtype + 3 * ["int64"],
-            frontend=frontend,
-            test_flags=test_flags,
-            fn_tree=fn_tree,
-            on_device=on_device,
-            input_=x[0],
-            begin=begin,
-            size=end - begin,
-        )
-    except Exception as e:
-        if (
-            hasattr(e, "message")
-            and "only stride 1 allowed on non-range indexing" in e.message
-        ):
-            assume(False)
-        raise e
+    dtype, x, begin, size = dtype_x_params
+    helpers.test_frontend_function(
+        input_dtypes=dtype + 3 * ["int64"],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input_=x[0],
+        begin=begin,
+        size=size,
+    )
 
 
 @st.composite
