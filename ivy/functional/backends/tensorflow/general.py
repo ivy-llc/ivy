@@ -196,8 +196,11 @@ def inplace_update(
     /,
     *,
     ensure_in_backend: bool = False,
+    keep_input_dtype: bool = False,
 ) -> ivy.Array:
     if ivy.is_array(x) and ivy.is_array(val):
+        if keep_input_dtype:
+            val = ivy.astype(val, x.dtype)
         (x_native, val_native), _ = ivy.args_to_native(x, val)
         if _is_variable(x_native):
             x_native.assign(val_native)

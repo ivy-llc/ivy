@@ -25,7 +25,7 @@ def is_local():
 class FrameworkStr(str):
     def __new__(cls, fw_str):
         ivy.utils.assertions.check_elem_in_list(
-            fw_str, ["jax", "tensorflow", "torch", "numpy"]
+            fw_str, ivy.utils.backend.handler._backend_dict.keys()
         )
         return str.__new__(cls, fw_str)
 
@@ -35,10 +35,6 @@ class Framework:
 
 
 class NativeArray:
-    pass
-
-
-class NativeVariable:
     pass
 
 
@@ -706,10 +702,10 @@ from ivy.utils.backend import (
     set_jax_backend,
     set_tensorflow_backend,
     set_torch_backend,
-    unset_backend,
+    previous_backend,
     backend_stack,
     choose_random_backend,
-    clear_backend_stack,
+    unset_backend,
 )
 from . import func_wrapper
 from .utils import assertions, exceptions, verbosity

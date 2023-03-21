@@ -1085,6 +1085,7 @@ class _ArrayWithGeneral(abc.ABC):
         /,
         *,
         ensure_in_backend: bool = False,
+        keep_input_dtype: bool = False,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.inplace_update. This method simply
@@ -1101,6 +1102,9 @@ class _ArrayWithGeneral(abc.ABC):
             Whether to ensure that the `ivy.NativeArray` is also inplace updated.
             In cases where it should be, backends which do not natively support inplace
             updates will raise an exception.
+        keep_input_dtype
+            Whether or not to preserve `x` data type after the update, otherwise `val` 
+            data type will be applied. Defaults to False.
 
         Returns
         -------
@@ -1134,7 +1138,12 @@ class _ArrayWithGeneral(abc.ABC):
         support inplace updates
 
         """
-        return ivy.inplace_update(self, val, ensure_in_backend=ensure_in_backend)
+        return ivy.inplace_update(
+            self,
+            val,
+            ensure_in_backend=ensure_in_backend,
+            keep_input_dtype=keep_input_dtype,
+        )
 
     def inplace_increment(
         self: ivy.Array, val: Union[ivy.Array, ivy.NativeArray]
