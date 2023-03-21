@@ -277,12 +277,20 @@ def strided_slice(
             [len(input_.shape)] * 5,
         )
     )
-    ivy.assertions.check_true(
-        sum(ellipsis_mask) <= 1,
-        message="Only one non-zero bit is allowed in ellipsis_mask.",
+    begin, end, strides = map(
+        lambda x: ivy.array(x) if isinstance(x, int) else x,
+        [begin, end, strides]
     )
-    begin, end = map(lambda x: ivy.array(x) if isinstance(x, int) else x, [begin, end])
-    strides = [1] * len(input_.shape) if strides is None else strides
+    num_defined = len(begin.shape)
+    strides = ivy.repeat(ivy.array(1), num_defined) if strides is None else strides
+    ivy.assertions.check_true(
+        num_defined == len(end.shape) == len(strides.shape),
+        message="`begin`, `end`, and `strides` are expected to have the same length",
+    )
+    begin, end, strides = map(
+        lambda x: [ivy.to_scalar(i) for i in x] if ivy.is_ivy_array(x) else x,
+        [begin, end, strides]
+    )
 
     full_slice = ()
     new_dims = ()
