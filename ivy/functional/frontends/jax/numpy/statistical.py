@@ -400,3 +400,8 @@ def std(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=Non
             where, std_a, ivy.default(out, ivy.zeros_like(std_a)), out=out
         )
     return ivy.astype(std_a, ivy.as_ivy_dtype(dtype), copy=False)
+
+
+@to_ivy_arrays_and_back
+def median(a, axis=None, out=None, overwrite_input=False, keepdims=False):
+    return ivy.median(a, axis=axis, out=out, keepdims=keepdims)
