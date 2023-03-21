@@ -255,7 +255,6 @@ def hardswish(input, inplace=False):
 
 @to_ivy_arrays_and_back
 def hardsigmoid(input, inplace=False):
-    # ret = ivy.divide(ivy.minimum(ivy.maximum(ivy.add(input, 3), 0), 6), 6)
     out = input if inplace else None
     return ivy.hard_sigmoid(input, out=out)
 
