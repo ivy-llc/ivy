@@ -194,3 +194,13 @@ def isreal(x, out=None):
 def logical_xor(x1, x2, /):
     x1, x2 = promote_jax_arrays(x1, x2)
     return ivy.logical_xor(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def setxor1d(ar1, ar2, assume_unique=False):
+    if assume_unique:
+        ret = set(ar1).union(ar2)      
+    else:
+        ret = set(ar1).union(ar2)
+        ret = ret - set(ar1).intersection(ar2) 
+    return ret
