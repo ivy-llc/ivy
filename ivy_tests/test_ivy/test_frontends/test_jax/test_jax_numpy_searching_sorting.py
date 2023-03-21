@@ -337,3 +337,62 @@ def test_jax_numpy_sort_complex(
         a=x[0],
         test_values=False,
     )
+
+
+@st.composite
+def _get_dtype_values_axis_for_count_nonzero(
+    draw,
+    in_available_dtypes,
+    min_num_dims=1,
+    max_num_dims=10,
+    min_dim_size=1,
+    max_dim_size=10,
+):
+    input_dtype, values, axis = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=helpers.get_dtypes(in_available_dtypes),
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
+            valid_axis=True,
+        )
+    )
+    axis = draw(st.one_of(st.just(axis), st.none()))
+    return input_dtype, values, axis
+
+
+# count_nonzero
+@handle_frontend_test(
+    fn_tree="jax.numpy.count_nonzero",
+    dtype_x_axis=_get_dtype_values_axis_for_count_nonzero(
+        in_available_dtypes="integer",
+        min_num_dims=1,
+        max_num_dims=10,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    keepdims=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_count_nonzero(
+    *,
+    dtype_x_axis,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    keepdims,
+):
+    input_dtype, x, axis = dtype_x_axis
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        axis=axis,
+        keepdims=keepdims,
+    )
