@@ -219,7 +219,7 @@ def eye(
         return to_device(i.astype(dtype), device)
     reshape_dims = [1] * len(batch_shape) + [n_rows, n_cols]
     tile_dims = list(batch_shape) + [1, 1]
-    i = paddle.expand(i, reshape_dims)
+    i = ivy.broadcast_to(i, reshape_dims)
     return_mat = paddle.tile(i, tile_dims)
     return to_device(return_mat.astype(dtype), device)
 
@@ -263,7 +263,7 @@ def full_like(
 
 
 def _linspace_helper(start, stop, num, axis=None, *, dtype=None):
-    num = num.detach().numpy().item() if isinstance(num, paddle.Tensor) else num
+    num = num.detach().item() if isinstance(num, paddle.Tensor) else num
     start_is_array = isinstance(start, paddle.Tensor)
     stop_is_array = isinstance(stop, paddle.Tensor)
     linspace_method = paddle.linspace
@@ -281,10 +281,10 @@ def _linspace_helper(start, stop, num, axis=None, *, dtype=None):
             _differentiable_linspace if not start.stop_gradient else paddle.linspace
         )
     if stop_is_array:
-        stop_shape = list(stop.shape)
+        stop_shape = stop.shape
         sos_shape = stop_shape
         if num == 1:
-            return paddle.ones(stop_shape[:axis] + [1] + stop_shape[axis:]) * start
+            return ivy.ones(stop_shape[:axis] + [1] + stop_shape[axis:]) * start
         stop = stop.reshape((-1,))
         linspace_method = (
             _differentiable_linspace if not stop.stop_gradient else paddle.linspace
@@ -299,8 +299,7 @@ def _linspace_helper(start, stop, num, axis=None, *, dtype=None):
             res += [start + inc * i for i in range(1, num - 1)]
             res.append(stop)
         else:
-            res = [linspace_method(strt, stp, num) for strt, stp in zip(start, stop)]
-        res = paddle.concat(res, -1).reshape(start_shape + [num])
+            res = [linspace_method(strt, stp, num) for strt, stp in zip(ivy.unstack(start), ivy.unstack(stop))]
     elif start_is_array and not stop_is_array:
         if num < start.shape[0]:
             start = ivy.expand_dims(start, axis=axis)
@@ -308,7 +307,7 @@ def _linspace_helper(start, stop, num, axis=None, *, dtype=None):
             inc = diff / (num - 1)
             res = [start]
             res += [start + inc * i for i in range(1, num - 1)]
-            res.append(paddle.ones_like(start) * stop)
+            res.append(ivy.ones_like(start) * stop)
         else:
             res = [linspace_method(strt, stop, num) for strt in start]
     elif not start_is_array and stop_is_array:
@@ -316,19 +315,19 @@ def _linspace_helper(start, stop, num, axis=None, *, dtype=None):
             stop = ivy.expand_dims(stop, axis=-1)
             diff = stop - start
             inc = diff / (num - 1)
-            res = [paddle.ones_like(stop) * start]
+            res = [ivy.ones_like(stop) * start]
             res += [start + inc * i for i in range(1, num - 1)]
             res.append(stop)
         else:
             res = [linspace_method(start, stp, num) for stp in stop]
     else:
         return linspace_method(start, stop, num, dtype=dtype)
-    res = paddle.concat(res, -1).reshape(sos_shape + [num])
+    res = ivy.concat(res, axis = -1).reshape(sos_shape + [num])
     if axis is not None:
         ndim = res.ndim
-        perm = paddle.arange(0, ndim - 1).numpy().tolist()
+        perm = ivy.arange(0, ndim - 1).tolist()
         perm.insert(axis % (ndim + 1), ndim - 1)
-        res = paddle.transpose(res, perm)
+        res = ivy.permute_dims(res, perm)
     return res
 
 
@@ -338,11 +337,11 @@ def _differentiable_linspace(start, stop, num, *, dtype=None):
         return ivy.expand_dims(start, axis=0)
     n_m_1 = num - 1
     increment = (stop - start) / n_m_1
-    increment_tiled = paddle.repeat_interleave(increment, n_m_1)
+    increment_tiled = paddle.repeat_interleave(ivy.to_native(increment), n_m_1)
     increments = increment_tiled * paddle.linspace(
         1, n_m_1, n_m_1.cast(paddle.int32), dtype=dtype
     )
-    res = paddle.concat((start, start + increments), 0)
+    res = ivy.concat((start, start + increments), axis=0)
     return res.cast(dtype)
 
 
