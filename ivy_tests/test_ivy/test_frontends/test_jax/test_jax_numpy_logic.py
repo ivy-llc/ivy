@@ -853,3 +853,34 @@ def test_jax_numpy_logical_xor(
         x1=x[0],
         x2=x[1],
     )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.right_shift",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+        shared_dtype=True,
+        min_value=0,
+        max_value=8,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_right_shift(  # NOQA
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=xs[0],
+        y=xs[1],
+    )

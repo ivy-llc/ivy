@@ -194,3 +194,7 @@ def isreal(x, out=None):
 def logical_xor(x1, x2, /):
     x1, x2 = promote_jax_arrays(x1, x2)
     return ivy.logical_xor(x1, x2)
+
+
+def right_shift(x1, x2, /):
+    return ivy.bitwise_right_shift(x1, x2)
