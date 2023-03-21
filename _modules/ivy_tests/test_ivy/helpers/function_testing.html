@@ -1004,13 +1004,13 @@
                     <span class="n">out</span><span class="o">=</span><span class="n">out_from_gt</span><span class="p">,</span>
                 <span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">unset_backend</span><span class="p">()</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">previous_backend</span><span class="p">()</span>
             <span class="k">raise</span> <span class="n">e</span>
         <span class="n">fw_list</span> <span class="o">=</span> <span class="n">gradient_unsupported_dtypes</span><span class="p">(</span><span class="n">fn</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">fn_name</span><span class="p">])</span>
         <span class="n">gt_returned_array</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ret_from_gt</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">gt_returned_array</span><span class="p">:</span>
             <span class="n">ret_from_gt_device</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dev</span><span class="p">(</span><span class="n">ret_from_gt</span><span class="p">)</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">unset_backend</span><span class="p">()</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">previous_backend</span><span class="p">()</span>
     <span class="c1"># gradient test</span>
     <span class="n">fw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span>
     <span class="k">if</span> <span class="p">(</span>
@@ -1324,7 +1324,7 @@
                 <span class="n">frontend_ret_np_flat</span> <span class="o">=</span> <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">frontend_ret_flat</span><span class="p">]</span>
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">unset_backend</span><span class="p">()</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">previous_backend</span><span class="p">()</span>
             <span class="k">raise</span> <span class="n">e</span>
 
     <span class="k">else</span><span class="p">:</span>
@@ -1388,9 +1388,9 @@
                 <span class="p">)</span>
                 <span class="n">frontend_ret_np_flat</span> <span class="o">=</span> <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">frontend_ret_flat</span><span class="p">]</span>
             <span class="c1"># unset frontend framework from backend</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">unset_backend</span><span class="p">()</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">previous_backend</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">unset_backend</span><span class="p">()</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">previous_backend</span><span class="p">()</span>
             <span class="k">raise</span> <span class="n">e</span>
 
     <span class="n">ret_np_flat</span> <span class="o">=</span> <span class="n">flatten_and_to_np</span><span class="p">(</span><span class="n">ret</span><span class="o">=</span><span class="n">ret</span><span class="p">)</span>
@@ -1522,7 +1522,7 @@
             <span class="n">ret_grad_idxs</span><span class="o">=</span><span class="n">ret_grad_idxs</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">grads_np_from_gt_flat</span> <span class="o">=</span> <span class="n">flatten_and_to_np</span><span class="p">(</span><span class="n">ret</span><span class="o">=</span><span class="n">grads_from_gt</span><span class="p">)</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">unset_backend</span><span class="p">()</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">previous_backend</span><span class="p">()</span>
 
     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">grads_np_flat</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span>
         <span class="n">grads_np_from_gt_flat</span>
@@ -1876,7 +1876,7 @@
         <span class="n">gt_returned_array</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ret_from_gt</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">gt_returned_array</span><span class="p">:</span>
             <span class="n">ret_from_gt_device</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dev</span><span class="p">(</span><span class="n">ret_from_gt</span><span class="p">)</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">unset_backend</span><span class="p">()</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">previous_backend</span><span class="p">()</span>
     <span class="c1"># gradient test</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ground_truth_backend</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
@@ -2256,7 +2256,7 @@
             <span class="n">frontend_ret_idxs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_argwhere</span><span class="p">(</span><span class="n">frontend_ret</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">)</span>
             <span class="n">frontend_ret_flat</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">multi_index_nest</span><span class="p">(</span><span class="n">frontend_ret</span><span class="p">,</span> <span class="n">frontend_ret_idxs</span><span class="p">)</span>
             <span class="n">frontend_ret_np_flat</span> <span class="o">=</span> <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">frontend_ret_flat</span><span class="p">]</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">unset_backend</span><span class="p">()</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">previous_backend</span><span class="p">()</span>
 
     <span class="c1"># assuming value test will be handled manually in the test function</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">test_values</span><span class="p">:</span>

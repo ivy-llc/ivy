@@ -601,7 +601,7 @@
         <span class="n">set_backend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
-        <span class="n">unset_backend</span><span class="p">()</span></div>
+        <span class="n">previous_backend</span><span class="p">()</span></div>
 
 
 <span class="n">_backends_subpackage_path</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.backends&quot;</span>
@@ -1007,7 +1007,7 @@
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">temp_stack</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
         <span class="k">while</span> <span class="n">backend_stack</span><span class="p">:</span>
-            <span class="n">temp_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">unset_backend</span><span class="p">())</span>
+            <span class="n">temp_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">previous_backend</span><span class="p">())</span>
         <span class="n">backend</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">_backend_dict</span><span class="p">[</span><span class="n">backend</span><span class="p">])</span>
         <span class="k">for</span> <span class="n">fw</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">temp_stack</span><span class="p">):</span>
             <span class="n">backend_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fw</span><span class="p">)</span>
@@ -1103,8 +1103,8 @@
     <span class="k">return</span> <span class="n">backend</span></div>
 
 
-<div class="viewcode-block" id="unset_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/unset_backend.html#ivy.functional.ivy.experimental.unset_backend">[docs]</a><span class="nd">@prevent_access_locally</span>
-<span class="k">def</span> <span class="nf">unset_backend</span><span class="p">():</span>
+<div class="viewcode-block" id="previous_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/previous_backend.html#ivy.functional.ivy.experimental.previous_backend">[docs]</a><span class="nd">@prevent_access_locally</span>
+<span class="k">def</span> <span class="nf">previous_backend</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Unsets the current global backend, and adjusts the ivy dict such that either</span>
 <span class="sd">    a previously set global backend is then used as the backend, otherwise we return</span>
 <span class="sd">    to Ivy&#39;s implementations.</span>
@@ -1117,7 +1117,7 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    Torch is the last set backend hence is the backend used in the first examples.</span>
-<span class="sd">    However, as seen in the example after, if `unset_backend` is called before</span>
+<span class="sd">    However, as seen in the example after, if `previous_backend` is called before</span>
 <span class="sd">    `ivy.native_array` then tensorflow will become the current backend and any</span>
 <span class="sd">    torch backend implementations in the Ivy dict will be swapped with the</span>
 <span class="sd">    tensorflow implementation::</span>
@@ -1130,7 +1130,7 @@
 
 <span class="sd">    &gt;&gt;&gt; ivy.set_backend(&quot;tensorflow&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; ivy.set_backend(&quot;torch&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.unset_backend()</span>
+<span class="sd">    &gt;&gt;&gt; ivy.previous_backend()</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.native_array([1])</span>
 <span class="sd">    &gt;&gt;&gt; print(type(x))</span>
 <span class="sd">    &lt;class&#39;tensorflow.python.framework.ops.EagerTensor&#39;&gt;</span>
@@ -1167,10 +1167,10 @@
     <span class="k">return</span> <span class="n">backend</span></div>
 
 
-<div class="viewcode-block" id="clear_backend_stack"><a class="viewcode-back" href="../../../../utils/backend/handler/clear_backend_stack.html#ivy.functional.ivy.experimental.clear_backend_stack">[docs]</a><span class="nd">@prevent_access_locally</span>
-<span class="k">def</span> <span class="nf">clear_backend_stack</span><span class="p">():</span>
+<div class="viewcode-block" id="unset_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/unset_backend.html#ivy.functional.ivy.experimental.unset_backend">[docs]</a><span class="nd">@prevent_access_locally</span>
+<span class="k">def</span> <span class="nf">unset_backend</span><span class="p">():</span>
     <span class="k">while</span> <span class="n">backend_stack</span><span class="p">:</span>
-        <span class="n">unset_backend</span><span class="p">()</span></div>
+        <span class="n">previous_backend</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="choose_random_backend"><a class="viewcode-back" href="../../../../utils/backend/handler/choose_random_backend.html#ivy.functional.ivy.experimental.choose_random_backend">[docs]</a><span class="nd">@prevent_access_locally</span>

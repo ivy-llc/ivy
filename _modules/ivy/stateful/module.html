@@ -1077,7 +1077,7 @@
                 <span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_target</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target</span><span class="p">:</span>
-                <span class="n">ivy</span><span class="o">.</span><span class="n">unset_backend</span><span class="p">()</span>
+                <span class="n">ivy</span><span class="o">.</span><span class="n">previous_backend</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_module_graph</span><span class="p">:</span>
             <span class="c1"># we need `v` in kwargs, since this is a compiled call</span>

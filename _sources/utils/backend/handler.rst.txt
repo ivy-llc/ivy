@@ -25,8 +25,8 @@ Handler
    handler/set_tensorflow_backend.rst
    handler/set_torch_backend.rst
    handler/get_backend.rst
+   handler/previous_backend.rst
    handler/unset_backend.rst
-   handler/clear_backend_stack.rst
    handler/choose_random_backend.rst
    handler/with_backend.rst
    handler/ContextManager.rst
