@@ -602,6 +602,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.extrema_finding impor
     _minimum,
 )
 
+frontend_array = array
 # initializing ufuncs #
 # ---------------------#
 
