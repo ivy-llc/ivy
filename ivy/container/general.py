@@ -518,6 +518,8 @@ class _ContainerWithGeneral(ContainerBase):
         val: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
+        ensure_in_backend: bool = False,
+        keep_input_dtype: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -535,6 +537,10 @@ class _ContainerWithGeneral(ContainerBase):
             input container to be updated inplace
         val
             value to update the input container with
+        ensure_in_backend
+            Whether to ensure that the `ivy.NativeArray` is also inplace updated.
+            In cases where it should be, backends which do not natively support inplace
+            updates will raise an exception.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -562,6 +568,8 @@ class _ContainerWithGeneral(ContainerBase):
             "inplace_update",
             cont,
             val,
+            ensure_in_backend=ensure_in_backend,
+            keep_input_dtype=keep_input_dtype,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -577,6 +585,8 @@ class _ContainerWithGeneral(ContainerBase):
         val: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
+        ensure_in_backend: bool = False,
+        keep_input_dtype: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -594,6 +604,10 @@ class _ContainerWithGeneral(ContainerBase):
             input container to be updated inplace
         val
             value to update the input container with
+        ensure_in_backend
+            Whether to ensure that the `ivy.NativeArray` is also inplace updated.
+            In cases where it should be, backends which do not natively support inplace
+            updates will raise an exception.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -631,6 +645,8 @@ class _ContainerWithGeneral(ContainerBase):
         return self.static_inplace_update(
             self,
             val,
+            ensure_in_backend=ensure_in_backend,
+            keep_input_dtype=keep_input_dtype,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
