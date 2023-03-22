@@ -1,0 +1,837 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Array API Tests &#8212; Ivy Documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d" />
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'overview/deep_dive/array_api_tests';</script>
+    <link rel="icon" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Ivy Tests" href="ivy_tests.html" />
+    <link rel="prev" title="Docstring Examples" href="docstring_examples.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  <div class="navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo.png?raw=true" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo_dark.png?raw=true" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item"><div></div></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/unifyai/ivy" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/letsunifyai" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-twitter"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item"><div></div></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/unifyai/ivy" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/letsunifyai" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-twitter"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item"><nav class="bd-docs-nav bd-links"
+  aria-label="Section Navigation">
+    <div class="bd-toc-item navbar-nav">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../related_work.html">Related Work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../contributing.html">Contributing</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../contributing/setting_up.html">Setting Up</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing/the_basics.html">The Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing/building_the_docs.html">Building the Docs</a></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="navigating_the_code.html">Navigating the Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="function_types.html">Function Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="superset_behaviour.html">Superset Behaviour</a></li>
+<li class="toctree-l3"><a class="reference internal" href="backend_setting.html">Backend Setting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="arrays.html">Arrays</a></li>
+<li class="toctree-l3"><a class="reference internal" href="containers.html">Containers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="data_types.html">Data Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="devices.html">Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="inplace_updates.html">Inplace Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="formatting.html">Formatting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="function_arguments.html">Function Arguments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="docstrings.html">Docstrings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l3 current active has-children"><a class="current reference internal" href="#">Array API Tests</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+
+
+
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ivy_frontends.html">Ivy Frontends</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exception_handling.html">Exception Handling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="continuous_integration.html">Continuous Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing/open_tasks.html">Open Tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing/applied_libraries.html">Applied Libraries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing/helpful_resources.html">Helpful Resources</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="navigating_the_code.html">Navigating the Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_types.html">Function Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="superset_behaviour.html">Superset Behaviour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend_setting.html">Backend Setting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arrays.html">Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="containers.html">Containers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_types.html">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devices.html">Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inplace_updates.html">Inplace Updates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formatting.html">Formatting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_arguments.html">Function Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstrings.html">Docstrings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">Array API Tests</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
+
+
+
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_frontends.html">Ivy Frontends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exception_handling.html">Exception Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="continuous_integration.html">Continuous Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.control_flow_ops.html">Control flow ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.experimental.html">Experimental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.utility.html">Utility</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Data classes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/data_classes/ivy.data_classes.array.html">Array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/data_classes/ivy.data_classes.container.html">Container</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Framework classes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.helpers.html">Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.sequential.html">Sequential</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Nested array</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/nested-array/nested_array/ivy.nested_array.nested_array.html">Nested array</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Utils</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.backend.html">Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.dynamic_import.html">Dynamic import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.inspection.html">Inspection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.verbosity.html">Verbosity</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Testing</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.available_frameworks.html">Available frameworks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.function_testing.html">Function testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.globals.html">Globals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.hypothesis_helpers.html">Hypothesis helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.structs.html">Structs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.test_parameter_flags.html">Test parameter flags</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.testing_helpers.html">Testing helpers</a></li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links">
+    <div class="bd-toc-item navbar-nav">
+        <p aria-level="2" class="caption" role="heading">
+            <span class="caption-text">Docs</span>
+        </p>
+        <ul class="nav bd-sidenav">
+            <li class="toctree-l1">
+                <a class="reference external" href="/ivy">
+                    Ivy
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/mech">
+                    Ivy mech
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/vision">
+                    Ivy vision
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/robot">
+                    Ivy robot
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/gym">
+                    Ivy gym
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/memory">
+                    Ivy memory
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/builder">
+                    Ivy builder
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/models">
+                    Ivy models
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/ecosystem">
+                    Ivy ecosystem
+                </a>
+            </li>
+            </ul>
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumbs">
+  <ul class="bd-breadcrumbs" role="navigation" aria-label="Breadcrumb">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../contributing.html" class="nav-link">Contributing</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../deep_dive.html" class="nav-link">Deep Dive</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">Array API Tests</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="array-api-tests">
+<h1>Array API Tests<a class="headerlink" href="#array-api-tests" title="Permalink to this heading">#</a></h1>
+<p>In conjunction with our own ivy unit tests, we import the array-api <a class="reference external" href="https://github.com/data-apis/array-api-tests">test suite</a>.
+These tests check that all ivy backend libraries behave according to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a> which was established in May 2020 by a group of maintainers.
+It was intended to bring some consistency and completeness to the various python libraries that have gained popularity in the last 5-10 years.
+Since Ivy aims to unify machine learning frameworks, it makes sense that we value consistency in behaviour across each of the backend libraries in our code too.</p>
+<p>The test suite is included in the ivy repository as a submodule in the folder <a class="reference external" href="https://github.com/unifyai/ivy/tree/20d07d7887766bb0d1707afdabe6e88df55f27a5/ivy_tests">test_array_api</a>, which we keep updated with the upstream test suite.
+The array-api tests repository is maintained by a group of developers unconnected to Ivy.
+We have made the decision to import the test suite directly from this repository rather than having our own fork.
+This means that the test suite you see in the ivy source code cannot be modified in the usual way of pushing to the ivy master branch.
+Instead, the change must be made to the array-api repository directly and then our submodule must be updated with the commands:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># to initialise local config file and fetch + checkout submodule (not needed everytime)
+git submodule update --init --recursive
+
+# pulls changes from upstream remote repo and merges them
+git submodule update --recursive --remote --merge
+</pre></div>
+</div>
+<p>and only <em>then</em> can changes to the submodule be pushed to ivy-master, i.e. only when these changes exist in the source array-api repository.
+See the <a class="reference external" href="https://www.git-scm.com/book/en/v2/Git-Tools-Submodules">git website</a> for further information on working with submodules.</p>
+<section id="running-the-tests">
+<h2>Running the Tests<a class="headerlink" href="#running-the-tests" title="Permalink to this heading">#</a></h2>
+<p>The entire test suite is run independently <a class="reference external" href="https://github.com/unifyai/ivy/tree/20d07d7887766bb0d1707afdabe6e88df55f27a5/.github/workflows">for each backend</a> on every push to the repo.
+Therefore, every function which exists in the standard is thoroughly tested for adherence to the standard on a continuous basis.</p>
+<p>You will need to make sure the Array API tests are passing for each backend framework if/when making any changes to Ivy functions which are part of the standard.
+If a test fails on the CI, you can see details about the failure under <cite>Details -&gt; Run [backend] Tests</cite> as shown in <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/continuous_integration.html#ci-pipeline">CI Pipeline</a>.</p>
+<p>You can also run the tests locally before making a PR.
+There are two ways to do this: using the terminal or using your IDE.</p>
+<section id="using-terminal">
+<h3>Using Terminal<a class="headerlink" href="#using-terminal" title="Permalink to this heading">#</a></h3>
+<p>Using the terminal, you can run all array-api tests in a given file for a certain backend using the bash file <a class="reference external" href="https://github.com/unifyai/ivy/blob/d76f0f5ab02d608864eb2c4012af2404da5806c2/test_array_api.sh">test_array_api.sh</a>:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># /ivy
+/bin/bash -e ./run_tests_CLI/test_array_api.sh jax test_linalg
+</pre></div>
+</div>
+<p>You can change the argument with any of our supported frameworks - tensorflow, numpy, torch or jax - and the individual test function categories in <code class="code docutils literal notranslate"><span class="pre">ivy/ivy_tests/test_array_api/array_api_tests</span></code>, e.g. <em>test_set_functions</em>, <em>test_signatures</em> etc.</p>
+<p>You can also run a specific test, as often running <em>all</em> tests in a file is excessive.
+To make this work, you should set the backend explicitly in the <cite>_array_module.py</cite> file, which you can find in the <cite>array_api_tests</cite> submodule.
+At the beginning of the file, you will see the following line of code <code class="code docutils literal notranslate"><span class="pre">array_module</span> <span class="pre">=</span> <span class="pre">None</span></code>.
+You need to comment out that line and add the following:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>import ivy as array_module
+array_module.set_backend(&quot;jax&quot;) # or numpy, tensorflow, torch
+</pre></div>
+</div>
+<p>You should now be able to run the following commands via terminal:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># run all tests in a file
+pytest -vv ivy_tests/test_array_api/array_api_tests/test_manipulation_functions.py
+
+# run a single test
+pytest -vv ivy_tests/test_array_api/array_api_tests/test_manipulation_functions.py -k &quot;test_concat&quot;
+</pre></div>
+</div>
+</section>
+<section id="using-the-ide">
+<h3>Using the IDE<a class="headerlink" href="#using-the-ide" title="Permalink to this heading">#</a></h3>
+<p>You can also run a specific test or test file by using your IDE.
+To make this work, you should set the backend explicitly in the <cite>_array_module.py</cite> file as explained in the previous subsection.
+After that, you can run the API test files as you typically would with other tests.
+See <a class="reference external" href="https://lets-unify.ai/ivy/contributing/setting_up.html#setting-up-testing">here</a>  for instructions on how to run tests in ivy more generally.</p>
+<p><em>NB</em>: make sure to not add any changes to the array-api files to your commit.</p>
+</section>
+</section>
+<section id="regenerating-test-failures">
+<h2>Regenerating Test Failures<a class="headerlink" href="#regenerating-test-failures" title="Permalink to this heading">#</a></h2>
+<p>Array-API tests are written using <a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/">hypothesis</a> to perform property-based testing, just like the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/ivy_tests.html">ivy tests</a>.
+However, unlike the ivy tests, the Array-API tests make liberal use of <code class="code docutils literal notranslate"><span class="pre">data.draw</span></code> in the main body of the test function instead of generating the data in the <code class="code docutils literal notranslate"><span class="pre">&#64;given</span></code> decorator that wraps it.
+This means that failed tests cannot be re-run with the <code class="code docutils literal notranslate"><span class="pre">&#64;example</span></code> decorator, as explained in the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/ivy_tests.html#re-running-failed-ivy-tests">final section</a> of the ivy tests deep dive.
+Fortunately, it is possible to regenerate test failures using a unique decorator that appears in the final line of the falsifying example in the error stack trace:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>=================================== FAILURES ===================================
+______________________ test_remainder[remainder(x1, x2)] _______________________
+ivy_tests/test_array_api/array_api_tests/test_operators_and_elementwise_functions.py:1264: in test_remainder
+    @given(data=st.data())
+ivy_tests/test_array_api/array_api_tests/test_operators_and_elementwise_functions.py:1277: in test_remainder
+    binary_param_assert_against_refimpl(ctx, left, right, res, &quot;%&quot;, operator.mod)
+ivy_tests/test_array_api/array_api_tests/test_operators_and_elementwise_functions.py:620: in binary_param_assert_against_refimpl
+    binary_assert_against_refimpl(
+ivy_tests/test_array_api/array_api_tests/test_operators_and_elementwise_functions.py:324: in binary_assert_against_refimpl
+    assert isclose(scalar_o, expected), (
+E   AssertionError: out=-2.0, but should be roughly (x1 % x2)=1.0 [remainder()]
+E     x1=17304064.0, x2=3.0
+E   assert False
+E    +  where False = isclose(-2.0, 1.0)
+E   Falsifying example: test_remainder(
+E       data=data(...), ctx=BinaryParamContext(&lt;remainder(x1, x2)&gt;),
+E   )
+E   Draw 1 (x1): ivy.array(17304064.)
+E   Draw 2 (x2): ivy.array(3.)
+E
+E   You can reproduce this example by temporarily adding @reproduce_failure(&#39;6.55.0&#39;, b&#39;AXic42BAAowcnP+RuMwMABAeAR0=&#39;) as a decorator on your test case
+</pre></div>
+</div>
+<p>Copy the <code class="code docutils literal notranslate"><span class="pre">&#64;reproduce_failure</span></code> decorator and paste it after the usual decorators of <cite>test_remainder</cite>.
+You may also need to include the hypothesis import of <cite>reproduce_failure</cite> as shown below.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>from hypothesis import reproduce_failure
+
+@pytest.mark.parametrize(&quot;ctx&quot;, make_binary_params(&quot;remainder&quot;, dh.numeric_dtypes))
+@given(data=st.data())
+@reproduce_failure(&#39;6.55.0&#39;, b&#39;AXic42BAAowcnP+RuMwMABAeAR0=&#39;)
+def test_remainder(ctx, data):
+    left = data.draw(ctx.left_strat, label=ctx.left_sym)
+    right = data.draw(ctx.right_strat, label=ctx.right_sym)
+    if ctx.right_is_scalar:
+        assume(right != 0)
+    else:
+        assume(not xp.any(right == 0))
+
+    res = ctx.func(left, right)
+
+    binary_param_assert_dtype(ctx, left, right, res)
+    binary_param_assert_shape(ctx, left, right, res)
+    binary_param_assert_against_refimpl(ctx, left, right, res, &quot;%&quot;, operator.mod)
+</pre></div>
+</div>
+<p>The test should then include the inputs which led to the previous failure and recreate it.
+If you are taking the <code class="code docutils literal notranslate"><span class="pre">&#64;reproduce_failure</span></code> decorator from a CI stack trace and trying to reproduce it locally, you may find that sometimes the local test unexpectedly passes.
+This is usually caused by a discrepancy in your local source code and ivy-master, so try pulling from master to sync the behaviour.</p>
+</section>
+<section id="test-skipping">
+<h2>Test Skipping<a class="headerlink" href="#test-skipping" title="Permalink to this heading">#</a></h2>
+<p>Certain tests may need to be skipped when running the array-api test suite.
+This could be due to a variety of reasons:</p>
+<ol class="arabic simple">
+<li><p>the test function has a known issue which the <a class="reference external" href="https://github.com/data-apis/array-api/tree/main">array-api test repository</a> developers are working on (e.g. <code class="code docutils literal notranslate"><span class="pre">test_asarray_arrays</span></code>)</p></li>
+<li><p>the function itself deviates from the standard (e.g. <code class="code docutils literal notranslate"><span class="pre">test_floor_divide</span></code>)</p></li>
+<li><p>there is an issue with the hypothesis test data generation i.e. a failed ‘health check’ (e.g. <code class="code docutils literal notranslate"><span class="pre">test_iop[__imod__(x1_i</span> <span class="pre">&lt;</span> <span class="pre">0</span> <span class="pre">and</span> <span class="pre">x2_i</span> <span class="pre">is</span> <span class="pre">+0)</span> <span class="pre">-&gt;</span> <span class="pre">NaN]</span></code>)</p></li>
+<li><p>tolerance issues when asserting output <code class="code docutils literal notranslate"><span class="pre">isequal()</span></code> (e.g. <code class="code docutils literal notranslate"><span class="pre">test_matrix_norm</span></code>)</p></li>
+</ol>
+<p>All the examples in this list except point 3 (which only occurs with tensorflow) refer to numpy functions, and the first two are skipped in the <a class="reference external" href="https://github.com/data-apis/array-api/tree/main">array-api test repository</a> also.
+The data generation and tolerance issues are not skipped in the array-api repo and are difficult for Ivy developers to solve as we cannot alter the tests directly.
+Currently, we import the test suite and run it; we do not have our own fork that we can tweak at will.
+These issues have been raised in the array-api test repo and will be addressed in due course.</p>
+<p>There are currently two ways to skip array-api tests:</p>
+<ol class="arabic simple">
+<li><p>in <code class="code docutils literal notranslate"><span class="pre">ivy_tests/array_api_methods_to_test/&lt;submodule&gt;.txt</span></code> and</p></li>
+<li><p>in <code class="code docutils literal notranslate"><span class="pre">ivy_tests/skips.txt</span></code></p></li>
+</ol>
+<p>The first method was implemented before the second.
+Each <code class="code docutils literal notranslate"><span class="pre">&lt;submodule&gt;.txt</span></code> file contains a comprehensive list of functions which belong to that submodule, some of which are commented out.
+The commented-out functions are being skipped <em>only</em> for the backend(s) that is/are causing the failure, not all the backends.
+This is done by identifying any references to a backend in the commented-out line e.g. <code class="code docutils literal notranslate"><span class="pre">#trace</span> <span class="pre">#</span> <span class="pre">failing</span> <span class="pre">for</span> <span class="pre">jax,</span> <span class="pre">numpy</span> <span class="pre">due</span> <span class="pre">to</span> <span class="pre">issues</span> <span class="pre">with</span> <span class="pre">dtypes</span> <span class="pre">in</span> <span class="pre">output</span> <span class="pre">in</span> <span class="pre">test:</span> <span class="pre">https://github.com/data-apis/array-api/issues/202</span></code> will cause <code class="code docutils literal notranslate"><span class="pre">test_trace</span></code> to be skipped on the jax and numpy backends.</p>
+<p>The latter method, on the other hand, skips a test on <em>all</em> backends, even if it is just failing on one.
+The <code class="code docutils literal notranslate"><span class="pre">ivy_tests/skips.txt</span></code> scheme was implemented to skip <em>specific test cases</em>.
+The array-api test suite contains a set of special tests which aim to cover edge-case input and particular data type promotion rules (see <code class="code docutils literal notranslate"><span class="pre">ivy_tests/test_array_api/array_api_tests/test_special_cases.py</span></code>).
+In <code class="code docutils literal notranslate"><span class="pre">ivy_tests/skips.txt</span></code>, tests are skipped by writing the filepath + conditions on the input of the test e.g.,</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_iop<span class="o">[</span>__ipow__<span class="o">(</span>x1_i<span class="w"> </span>is<span class="w"> </span>-infinity<span class="w"> </span>and<span class="w"> </span>x2_i<span class="w"> </span>&gt;<span class="w"> </span><span class="m">0</span><span class="w"> </span>and<span class="w"> </span>not<span class="w"> </span><span class="o">(</span>x2_i.is_integer<span class="o">()</span><span class="w"> </span>and<span class="w"> </span>x2_i<span class="w"> </span>%<span class="w"> </span><span class="nv">2</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="o">))</span><span class="w"> </span>-&gt;<span class="w"> </span>+infinity<span class="o">]</span>
+</pre></div>
+</div>
+<p>is skipping the in-place operations test on the <code class="code docutils literal notranslate"><span class="pre">pow</span></code> instance method when x1 is -infinity and x2 is a positive, odd float.
+The result should be +infinity, however there is a known problem with the numpy instance method and an <a class="reference external" href="https://github.com/numpy/numpy/issues/21213">issue</a> has been raised on the numpy repository.
+Tests are categorised in <code class="code docutils literal notranslate"><span class="pre">ivy_tests/skips.txt</span></code> according to the backend they are failing on and the reason for the failure.
+The fact that the skip instruction itself contains the exact input conditions that are failing makes it easier to keep track of and revisit failing tests to try and fix them.</p>
+<p><strong>Round Up</strong></p>
+<p>This should have hopefully given you a good understanding of how the Array API test suite is used for testing Ivy.</p>
+<p>If you have any questions, please feel free to reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/982738404611592256">array api tests channel</a> or in the <a class="reference external" href="https://discord.com/channels/799879767196958751/1028297759738040440">array api tests forum</a> !</p>
+<p><strong>Video</strong></p>
+<iframe width="420" height="315"
+src="https://www.youtube.com/embed/R1XuYwzhxWw" class="video">
+</iframe></section>
+</section>
+
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="docstring_examples.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Docstring Examples</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="ivy_tests.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Ivy Tests</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item"><nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributing</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../contributing/setting_up.html">Setting Up</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/the_basics.html">The Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/building_the_docs.html">Building the Docs</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="navigating_the_code.html">Navigating the Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_types.html">Function Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="superset_behaviour.html">Superset Behaviour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend_setting.html">Backend Setting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arrays.html">Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="containers.html">Containers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_types.html">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devices.html">Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inplace_updates.html">Inplace Updates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formatting.html">Formatting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_arguments.html">Function Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstrings.html">Docstrings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Array API Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_frontends.html">Ivy Frontends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exception_handling.html">Exception Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="continuous_integration.html">Continuous Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/open_tasks.html">Open Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/applied_libraries.html">Applied Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/helpful_resources.html">Helpful Resources</a></li>
+</ul>
+</div>
+</nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-the-tests">Running the Tests</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-terminal">Using Terminal</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-the-ide">Using the IDE</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#regenerating-test-failures">Regenerating Test Failures</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#test-skipping">Test Skipping</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            <div class="bd-footer-content__inner"></div>
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="copyright">
+    
+      © Copyright 2020-2023, Ivy Team.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+  <p class="sphinx-version">
+    Created using <a href="https://sphinx-doc.org/">Sphinx</a> 6.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

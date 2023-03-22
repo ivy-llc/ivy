@@ -1,0 +1,22 @@
+﻿stateful
+========
+
+.. This is a placeholder so the include directive removes what's before it
+.. REMOVE_BEFORE_HERE
+.. autosummary::
+   :toctree: stateful
+   :template: top_level_module.rst
+   :caption: ivy.stateful
+   :substitute-caption:
+   :hide-table:
+   :fix-directory:
+
+   ivy.stateful.activations
+   ivy.stateful.converters
+   ivy.stateful.helpers
+   ivy.stateful.initializers
+   ivy.stateful.layers
+   ivy.stateful.module
+   ivy.stateful.norms
+   ivy.stateful.optimizers
+   ivy.stateful.sequential

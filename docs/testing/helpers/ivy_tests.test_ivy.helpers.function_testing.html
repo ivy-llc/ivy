@@ -1,0 +1,935 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Function testing &#8212; Ivy Documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d" />
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/clipboard.min.js"></script>
+    <script src="../../../_static/copybutton.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'docs/testing/helpers/ivy_tests.test_ivy.helpers.function_testing';</script>
+    <link rel="icon" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Globals" href="ivy_tests.test_ivy.helpers.globals.html" />
+    <link rel="prev" title="Available frameworks" href="ivy_tests.test_ivy.helpers.available_frameworks.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  <div class="navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo.png?raw=true" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo_dark.png?raw=true" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item"><div></div></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/unifyai/ivy" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/letsunifyai" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-twitter"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item"><div></div></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/unifyai/ivy" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/letsunifyai" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-twitter"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item"><nav class="bd-docs-nav bd-links"
+  aria-label="Section Navigation">
+    <div class="bd-toc-item navbar-nav">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../overview/background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview/design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview/related_work.html">Related Work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview/extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview/contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview/deep_dive.html">Deep Dive</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview/faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview/glossary.html">Glossary</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/ivy.functional.ivy.activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/ivy.functional.ivy.constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/ivy.functional.ivy.control_flow_ops.html">Control flow ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/ivy.functional.ivy.creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/ivy.functional.ivy.data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/ivy.functional.ivy.device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/ivy.functional.ivy.elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/ivy.functional.ivy.experimental.html">Experimental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/ivy.functional.ivy.general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/ivy.functional.ivy.gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/ivy.functional.ivy.layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/ivy.functional.ivy.linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/ivy.functional.ivy.losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/ivy.functional.ivy.manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/ivy.functional.ivy.meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/ivy.functional.ivy.nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/ivy.functional.ivy.norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/ivy.functional.ivy.random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/ivy.functional.ivy.searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/ivy.functional.ivy.set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/ivy.functional.ivy.sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/ivy.functional.ivy.statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../functional/ivy/ivy.functional.ivy.utility.html">Utility</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Data classes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../data_classes/ivy.data_classes.array.html">Array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../data_classes/ivy.data_classes.container.html">Container</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Framework classes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../framework/stateful/ivy.stateful.activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../framework/stateful/ivy.stateful.converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../framework/stateful/ivy.stateful.helpers.html">Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../framework/stateful/ivy.stateful.initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../framework/stateful/ivy.stateful.layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../framework/stateful/ivy.stateful.module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../framework/stateful/ivy.stateful.norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../framework/stateful/ivy.stateful.optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../framework/stateful/ivy.stateful.sequential.html">Sequential</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Nested array</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../nested-array/nested_array/ivy.nested_array.nested_array.html">Nested array</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Utils</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../utilities/utils/ivy.utils.assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utilities/utils/ivy.utils.backend.html">Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utilities/utils/ivy.utils.dynamic_import.html">Dynamic import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utilities/utils/ivy.utils.exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utilities/utils/ivy.utils.inspection.html">Inspection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utilities/utils/ivy.utils.verbosity.html">Verbosity</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Testing</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="ivy_tests.test_ivy.helpers.assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ivy_tests.test_ivy.helpers.available_frameworks.html">Available frameworks</a></li>
+<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Function testing</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ivy_tests.test_ivy.helpers.globals.html">Globals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ivy_tests.test_ivy.helpers.hypothesis_helpers.html">Hypothesis helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ivy_tests.test_ivy.helpers.structs.html">Structs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ivy_tests.test_ivy.helpers.test_parameter_flags.html">Test parameter flags</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ivy_tests.test_ivy.helpers.testing_helpers.html">Testing helpers</a></li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links">
+    <div class="bd-toc-item navbar-nav">
+        <p aria-level="2" class="caption" role="heading">
+            <span class="caption-text">Docs</span>
+        </p>
+        <ul class="nav bd-sidenav">
+            <li class="toctree-l1">
+                <a class="reference external" href="/ivy">
+                    Ivy
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/mech">
+                    Ivy mech
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/vision">
+                    Ivy vision
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/robot">
+                    Ivy robot
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/gym">
+                    Ivy gym
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/memory">
+                    Ivy memory
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/builder">
+                    Ivy builder
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/models">
+                    Ivy models
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/ecosystem">
+                    Ivy ecosystem
+                </a>
+            </li>
+            </ul>
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumbs">
+  <ul class="bd-breadcrumbs" role="navigation" aria-label="Breadcrumb">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">Function testing</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="module-ivy_tests.test_ivy.helpers.function_testing">
+<span id="function-testing"></span><h1>Function testing<a class="headerlink" href="#module-ivy_tests.test_ivy.helpers.function_testing" title="Permalink to this heading">#</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.function_testing.args_to_container">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.function_testing.</span></span><span class="sig-name descname"><span class="pre">args_to_container</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array_args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy_tests/test_ivy/helpers/function_testing.html#args_to_container"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.function_testing.args_to_container" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.function_testing.as_lists">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.function_testing.</span></span><span class="sig-name descname"><span class="pre">as_lists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy_tests/test_ivy/helpers/function_testing.html#as_lists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.function_testing.as_lists" title="Permalink to this definition">#</a></dt>
+<dd><p>Changes the elements in args to be of type list.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.function_testing.compiled_if_required">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.function_testing.</span></span><span class="sig-name descname"><span class="pre">compiled_if_required</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_compile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy_tests/test_ivy/helpers/function_testing.html#compiled_if_required"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.function_testing.compiled_if_required" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.function_testing.convtrue">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.function_testing.</span></span><span class="sig-name descname"><span class="pre">convtrue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">argument</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy_tests/test_ivy/helpers/function_testing.html#convtrue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.function_testing.convtrue" title="Permalink to this definition">#</a></dt>
+<dd><p>Convert NativeClass in argument to true framework counter part</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.function_testing.create_args_kwargs">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.function_testing.</span></span><span class="sig-name descname"><span class="pre">create_args_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args_np</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_np_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args_idxs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_np</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwarg_np_vals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_idxs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_dtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_device</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy_tests/test_ivy/helpers/function_testing.html#create_args_kwargs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.function_testing.create_args_kwargs" title="Permalink to this definition">#</a></dt>
+<dd><p>Creates arguments and keyword-arguments for the function to test.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args_np</strong> – A dictionary of arguments in Numpy.</p></li>
+<li><p><strong>kwargs_np</strong> – A dictionary of keyword-arguments in Numpy.</p></li>
+<li><p><strong>input_dtypes</strong> – data-types of the input arguments and keyword-arguments.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>Arguments, Keyword-arguments, number of arguments, and indexes on arguments and</em></p></li>
+<li><p><em>keyword-arguments.</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.function_testing.empty_func">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.function_testing.</span></span><span class="sig-name descname"><span class="pre">empty_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy_tests/test_ivy/helpers/function_testing.html#empty_func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.function_testing.empty_func" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.function_testing.flatten">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.function_testing.</span></span><span class="sig-name descname"><span class="pre">flatten</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ret</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy_tests/test_ivy/helpers/function_testing.html#flatten"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.function_testing.flatten" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns a flattened numpy version of the arrays in ret.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.function_testing.flatten_and_to_np">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.function_testing.</span></span><span class="sig-name descname"><span class="pre">flatten_and_to_np</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ret</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy_tests/test_ivy/helpers/function_testing.html#flatten_and_to_np"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.function_testing.flatten_and_to_np" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.function_testing.flatten_fw_and_to_np">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.function_testing.</span></span><span class="sig-name descname"><span class="pre">flatten_fw_and_to_np</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ret</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fw</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy_tests/test_ivy/helpers/function_testing.html#flatten_fw_and_to_np"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.function_testing.flatten_fw_and_to_np" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns a flattened numpy version of the arrays in ret for a given framework.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.function_testing.framework_comparator">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.function_testing.</span></span><span class="sig-name descname"><span class="pre">framework_comparator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frontend</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy_tests/test_ivy/helpers/function_testing.html#framework_comparator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.function_testing.framework_comparator" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.function_testing.get_frontend_ret">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.function_testing.</span></span><span class="sig-name descname"><span class="pre">get_frontend_ret</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy_tests/test_ivy/helpers/function_testing.html#get_frontend_ret"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.function_testing.get_frontend_ret" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.function_testing.get_ret_and_flattened_np_array">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.function_testing.</span></span><span class="sig-name descname"><span class="pre">get_ret_and_flattened_np_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_compile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy_tests/test_ivy/helpers/function_testing.html#get_ret_and_flattened_np_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.function_testing.get_ret_and_flattened_np_array" title="Permalink to this definition">#</a></dt>
+<dd><p>Runs func with args and kwargs, and returns the result along with its flattened
+version.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.function_testing.gradient_incompatible_function">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.function_testing.</span></span><span class="sig-name descname"><span class="pre">gradient_incompatible_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy_tests/test_ivy/helpers/function_testing.html#gradient_incompatible_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.function_testing.gradient_incompatible_function" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.function_testing.gradient_test">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.function_testing.</span></span><span class="sig-name descname"><span class="pre">gradient_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_as_kwargs_np</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args_np</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_np</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_dtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_compile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol_</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol_</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xs_grad_idxs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ret_grad_idxs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_truth_backend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_device</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy_tests/test_ivy/helpers/function_testing.html#gradient_test"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.function_testing.gradient_test" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.function_testing.gradient_unsupported_dtypes">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.function_testing.</span></span><span class="sig-name descname"><span class="pre">gradient_unsupported_dtypes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy_tests/test_ivy/helpers/function_testing.html#gradient_unsupported_dtypes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.function_testing.gradient_unsupported_dtypes" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.function_testing.kwargs_to_args_n_kwargs">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.function_testing.</span></span><span class="sig-name descname"><span class="pre">kwargs_to_args_n_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_positional_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy_tests/test_ivy/helpers/function_testing.html#kwargs_to_args_n_kwargs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.function_testing.kwargs_to_args_n_kwargs" title="Permalink to this definition">#</a></dt>
+<dd><p>Splits the kwargs into args and kwargs, with the first num_positional_args ported
+to args.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.function_testing.make_json_pickable">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.function_testing.</span></span><span class="sig-name descname"><span class="pre">make_json_pickable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy_tests/test_ivy/helpers/function_testing.html#make_json_pickable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.function_testing.make_json_pickable" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.function_testing.test_frontend_function">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.function_testing.</span></span><span class="sig-name descname"><span class="pre">test_frontend_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_dtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frontend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn_tree</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">all_as_kwargs_np</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy_tests/test_ivy/helpers/function_testing.html#test_frontend_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.function_testing.test_frontend_function" title="Permalink to this definition">#</a></dt>
+<dd><p>Tests a frontend function for the current backend by comparing the result with
+the function in the associated framework.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_dtypes</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>]]) – data types of the input arguments in order.</p></li>
+<li><p><strong>all_aliases</strong> – a list of strings containing all aliases for that function
+in the current frontend with their full namespaces.</p></li>
+<li><p><strong>frontend</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – current frontend (framework).</p></li>
+<li><p><strong>fn_tree</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Path to function in frontend framework namespace.</p></li>
+<li><p><strong>rtol</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – relative tolerance value. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>atol</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – absolute tolerance value. (default: <code class="docutils literal notranslate"><span class="pre">1e-06</span></code>)</p></li>
+<li><p><strong>test_values</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if True, test for the correctness of the resulting values. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)</p></li>
+<li><p><strong>all_as_kwargs_np</strong> – input arguments to the function as keyword arguments.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>ret</em> – optional, return value from the function</p></li>
+<li><p><em>ret_np</em> – optional, return value from the Numpy function</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.function_testing.test_frontend_method">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.function_testing.</span></span><span class="sig-name descname"><span class="pre">test_frontend_method</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_input_dtypes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method_input_dtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method_flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_all_as_kwargs_np</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method_all_as_kwargs_np</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frontend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frontend_method_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol_</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol_</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy_tests/test_ivy/helpers/function_testing.html#test_frontend_method"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.function_testing.test_frontend_method" title="Permalink to this definition">#</a></dt>
+<dd><p>Tests a class-method that consumes (or returns) arrays for the current backend
+by comparing the result with numpy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>init_input_dtypes</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>]]]) – data types of the input arguments to the constructor in order. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>init_as_variable_flags</strong> – dictates whether the corresponding input argument passed to the constructor
+should be treated as an ivy.Variable.</p></li>
+<li><p><strong>init_num_positional_args</strong> – number of input arguments that must be passed as positional arguments to the
+constructor.</p></li>
+<li><p><strong>init_native_array_flags</strong> – dictates whether the corresponding input argument passed to the constructor
+should be treated as a native array.</p></li>
+<li><p><strong>init_all_as_kwargs_np</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]) – input arguments to the constructor as keyword arguments. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>method_input_dtypes</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>]]) – data types of the input arguments to the method in order.</p></li>
+<li><p><strong>method_all_as_kwargs_np</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>) – input arguments to the method as keyword arguments.</p></li>
+<li><p><strong>frontend</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – current frontend (framework).</p></li>
+<li><p><strong>rtol</strong> – relative tolerance value.</p></li>
+<li><p><strong>atol</strong> – absolute tolerance value.</p></li>
+<li><p><strong>test_values</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – can be a bool or a string to indicate whether correctness of values should be (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
+tested. If the value is <cite>with_v</cite>, shapes are tested but not values.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>ret</em> – optional, return value from the function</p></li>
+<li><p><em>ret_gt</em> – optional, return value from the Ground Truth function</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.function_testing.test_function">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.function_testing.</span></span><span class="sig-name descname"><span class="pre">test_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_dtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol_</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol_</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xs_grad_idxs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ret_grad_idxs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_truth_backend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_flat_np_arrays</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">all_as_kwargs_np</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy_tests/test_ivy/helpers/function_testing.html#test_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.function_testing.test_function" title="Permalink to this definition">#</a></dt>
+<dd><p>Tests a function that consumes (or returns) arrays for the current backend
+by comparing the result with numpy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_dtypes</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>]]) – data types of the input arguments in order.</p></li>
+<li><p><strong>test_flags</strong> (<a class="reference internal" href="ivy_tests.test_ivy.helpers.test_parameter_flags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.FunctionTestFlags" title="ivy_tests.test_ivy.helpers.test_parameter_flags.FunctionTestFlags"><code class="xref py py-class docutils literal notranslate"><span class="pre">FunctionTestFlags</span></code></a>) – FunctionTestFlags object that stores all testing flags, including:
+num_positional_args, with_out, instance_method, as_variable,
+native_arrays, container, gradient</p></li>
+<li><p><strong>fw</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – current backend (framework).</p></li>
+<li><p><strong>fn_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – name of the function to test.</p></li>
+<li><p><strong>rtol</strong> – relative tolerance value.</p></li>
+<li><p><strong>atol</strong> – absolute tolerance value.</p></li>
+<li><p><strong>test_values</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if True, test for the correctness of the resulting values. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)</p></li>
+<li><p><strong>xs_grad_idxs</strong> – Indices of the input arrays to compute gradients with respect to. If None,
+gradients are returned with respect to all input arrays. (Default value = None)</p></li>
+<li><p><strong>ret_grad_idxs</strong> – Indices of the returned arrays for which to return computed gradients. If None,
+gradients are returned for all returned arrays. (Default value = None)</p></li>
+<li><p><strong>ground_truth_backend</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Ground Truth Backend to compare the result-values.</p></li>
+<li><p><strong>on_device</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The device on which to create arrays</p></li>
+<li><p><strong>return_flat_np_arrays</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If test_values is False, this flag dictates whether the original returns are (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
+returned, or whether the flattened numpy arrays are returned.</p></li>
+<li><p><strong>all_as_kwargs_np</strong> – input arguments to the function as keyword arguments.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>ret</em> – optional, return value from the function</p></li>
+<li><p><em>ret_gt</em> – optional, return value from the Ground Truth function</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">input_dtypes</span> <span class="o">=</span> <span class="s1">&#39;float64&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">as_variable_flags</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">with_out</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">num_positional_args</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">native_array_flags</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">container_flags</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">instance_method</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">test_flags</span> <span class="o">=</span> <span class="n">FunctionTestFlags</span><span class="p">(</span><span class="n">num_positional_args</span><span class="p">,</span> <span class="n">with_out</span><span class="p">,</span>
+<span class="go">    instance_method,</span>
+<span class="go">    as_variable,</span>
+<span class="go">    native_arrays,</span>
+<span class="go">    container_flags,</span>
+<span class="go">    none)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fw</span> <span class="o">=</span> <span class="s2">&quot;torch&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fn_name</span> <span class="o">=</span> <span class="s2">&quot;abs&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">test_function</span><span class="p">(</span><span class="n">input_dtypes</span><span class="p">,</span> <span class="n">test_flags</span><span class="p">,</span> <span class="n">fw</span><span class="p">,</span> <span class="n">fn_name</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">input_dtypes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;float64&#39;</span><span class="p">,</span> <span class="s1">&#39;float32&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">as_variable_flags</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">with_out</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">num_positional_args</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">native_array_flags</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">container_flags</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">instance_method</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">test_flags</span> <span class="o">=</span> <span class="n">FunctionTestFlags</span><span class="p">(</span><span class="n">num_positional_args</span><span class="p">,</span> <span class="n">with_out</span><span class="p">,</span>
+<span class="go">    instance_method,</span>
+<span class="go">    as_variable,</span>
+<span class="go">    native_arrays,</span>
+<span class="go">    container_flags,</span>
+<span class="go">    none)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fw</span> <span class="o">=</span> <span class="s2">&quot;numpy&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fn_name</span> <span class="o">=</span> <span class="s2">&quot;add&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">24</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">test_function</span><span class="p">(</span><span class="n">input_dtypes</span><span class="p">,</span> <span class="n">test_flags</span><span class="p">,</span> <span class="n">fw</span><span class="p">,</span> <span class="n">fn_name</span><span class="p">,</span> <span class="n">x1</span><span class="o">=</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="o">=</span><span class="n">x2</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.function_testing.test_method">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.function_testing.</span></span><span class="sig-name descname"><span class="pre">test_method</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_input_dtypes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method_input_dtypes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_all_as_kwargs_np</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method_all_as_kwargs_np</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method_flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">class_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'__call__'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_with_v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method_with_v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol_</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol_</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_gradients</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xs_grad_idxs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ret_grad_idxs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_compile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_truth_backend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_flat_np_arrays</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy_tests/test_ivy/helpers/function_testing.html#test_method"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.function_testing.test_method" title="Permalink to this definition">#</a></dt>
+<dd><p>Tests a class-method that consumes (or returns) arrays for the current backend
+by comparing the result with numpy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>init_input_dtypes</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>]]) – data types of the input arguments to the constructor in order. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>init_as_variable_flags</strong> – dictates whether the corresponding input argument passed to the constructor
+should be treated as an ivy.Array.</p></li>
+<li><p><strong>init_num_positional_args</strong> – number of input arguments that must be passed as positional arguments to the
+constructor.</p></li>
+<li><p><strong>init_native_array_flags</strong> – dictates whether the corresponding input argument passed to the constructor
+should be treated as a native array.</p></li>
+<li><p><strong>init_all_as_kwargs_np</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]) – input arguments to the constructor as keyword arguments. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>method_input_dtypes</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>]]) – data types of the input arguments to the method in order. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>method_as_variable_flags</strong> – dictates whether the corresponding input argument passed to the method should
+be treated as an ivy.Array.</p></li>
+<li><p><strong>method_num_positional_args</strong> – number of input arguments that must be passed as positional arguments to the
+method.</p></li>
+<li><p><strong>method_native_array_flags</strong> – dictates whether the corresponding input argument passed to the method should
+be treated as a native array.</p></li>
+<li><p><strong>method_container_flags</strong> – dictates whether the corresponding input argument passed to the method should
+be treated as an ivy Container.</p></li>
+<li><p><strong>method_all_as_kwargs_np</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>]) – input arguments to the method as keyword arguments. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>class_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – name of the class to test.</p></li>
+<li><p><strong>method_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – name of tthe method to test. (default: <code class="docutils literal notranslate"><span class="pre">'__call__'</span></code>)</p></li>
+<li><p><strong>init_with_v</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if the class being tested is an ivy.Module, then setting this flag as True will (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
+call the constructor with the variables v passed explicitly.</p></li>
+<li><p><strong>method_with_v</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if the class being tested is an ivy.Module, then setting this flag as True will (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
+call the method with the variables v passed explicitly.</p></li>
+<li><p><strong>rtol</strong> – relative tolerance value.</p></li>
+<li><p><strong>atol</strong> – absolute tolerance value.</p></li>
+<li><p><strong>test_values</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – can be a bool or a string to indicate whether correctness of values should be (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
+tested. If the value is <cite>with_v</cite>, shapes are tested but not values.</p></li>
+<li><p><strong>test_gradients</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if True, test for the correctness of gradients. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
+<li><p><strong>xs_grad_idxs</strong> – Indices of the input arrays to compute gradients with respect to. If None,
+gradients are returned with respect to all input arrays. (Default value = None)</p></li>
+<li><p><strong>ret_grad_idxs</strong> – Indices of the returned arrays for which to return computed gradients. If None,
+gradients are returned for all returned arrays. (Default value = None)</p></li>
+<li><p><strong>test_compile</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, test for the correctness of compilation. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
+<li><p><strong>ground_truth_backend</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Ground Truth Backend to compare the result-values.</p></li>
+<li><p><strong>device</strong> – The device on which to create arrays.</p></li>
+<li><p><strong>return_flat_np_arrays</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If test_values is False, this flag dictates whether the original returns are (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
+returned, or whether the flattened numpy arrays are returned.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>ret</em> – optional, return value from the function</p></li>
+<li><p><em>ret_gt</em> – optional, return value from the Ground Truth function</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy_tests.test_ivy.helpers.function_testing.var_fn">
+<span class="sig-prename descclassname"><span class="pre">ivy_tests.test_ivy.helpers.function_testing.</span></span><span class="sig-name descname"><span class="pre">var_fn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy_tests/test_ivy/helpers/function_testing.html#var_fn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy_tests.test_ivy.helpers.function_testing.var_fn" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns x as a variable wrapping an Ivy Array with given dtype and device</p>
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="ivy_tests.test_ivy.helpers.available_frameworks.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Available frameworks</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="ivy_tests.test_ivy.helpers.globals.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Globals</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item"><nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"></div>
+</nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ivy_tests.test_ivy.helpers.function_testing.args_to_container"><code class="docutils literal notranslate"><span class="pre">args_to_container()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ivy_tests.test_ivy.helpers.function_testing.as_lists"><code class="docutils literal notranslate"><span class="pre">as_lists()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ivy_tests.test_ivy.helpers.function_testing.compiled_if_required"><code class="docutils literal notranslate"><span class="pre">compiled_if_required()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ivy_tests.test_ivy.helpers.function_testing.convtrue"><code class="docutils literal notranslate"><span class="pre">convtrue()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ivy_tests.test_ivy.helpers.function_testing.create_args_kwargs"><code class="docutils literal notranslate"><span class="pre">create_args_kwargs()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ivy_tests.test_ivy.helpers.function_testing.empty_func"><code class="docutils literal notranslate"><span class="pre">empty_func()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ivy_tests.test_ivy.helpers.function_testing.flatten"><code class="docutils literal notranslate"><span class="pre">flatten()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ivy_tests.test_ivy.helpers.function_testing.flatten_and_to_np"><code class="docutils literal notranslate"><span class="pre">flatten_and_to_np()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ivy_tests.test_ivy.helpers.function_testing.flatten_fw_and_to_np"><code class="docutils literal notranslate"><span class="pre">flatten_fw_and_to_np()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ivy_tests.test_ivy.helpers.function_testing.framework_comparator"><code class="docutils literal notranslate"><span class="pre">framework_comparator()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ivy_tests.test_ivy.helpers.function_testing.get_frontend_ret"><code class="docutils literal notranslate"><span class="pre">get_frontend_ret()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ivy_tests.test_ivy.helpers.function_testing.get_ret_and_flattened_np_array"><code class="docutils literal notranslate"><span class="pre">get_ret_and_flattened_np_array()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ivy_tests.test_ivy.helpers.function_testing.gradient_incompatible_function"><code class="docutils literal notranslate"><span class="pre">gradient_incompatible_function()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ivy_tests.test_ivy.helpers.function_testing.gradient_test"><code class="docutils literal notranslate"><span class="pre">gradient_test()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ivy_tests.test_ivy.helpers.function_testing.gradient_unsupported_dtypes"><code class="docutils literal notranslate"><span class="pre">gradient_unsupported_dtypes()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ivy_tests.test_ivy.helpers.function_testing.kwargs_to_args_n_kwargs"><code class="docutils literal notranslate"><span class="pre">kwargs_to_args_n_kwargs()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ivy_tests.test_ivy.helpers.function_testing.make_json_pickable"><code class="docutils literal notranslate"><span class="pre">make_json_pickable()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ivy_tests.test_ivy.helpers.function_testing.test_frontend_function"><code class="docutils literal notranslate"><span class="pre">test_frontend_function()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ivy_tests.test_ivy.helpers.function_testing.test_frontend_method"><code class="docutils literal notranslate"><span class="pre">test_frontend_method()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ivy_tests.test_ivy.helpers.function_testing.test_function"><code class="docutils literal notranslate"><span class="pre">test_function()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ivy_tests.test_ivy.helpers.function_testing.test_method"><code class="docutils literal notranslate"><span class="pre">test_method()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ivy_tests.test_ivy.helpers.function_testing.var_fn"><code class="docutils literal notranslate"><span class="pre">var_fn()</span></code></a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            <div class="bd-footer-content__inner"></div>
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="copyright">
+    
+      © Copyright 2020-2023, Ivy Team.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+  <p class="sphinx-version">
+    Created using <a href="https://sphinx-doc.org/">Sphinx</a> 6.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

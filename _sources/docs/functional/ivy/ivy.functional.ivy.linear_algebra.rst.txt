@@ -1,0 +1,15 @@
+Linear algebra
+==============
+
+
+
+.. automodule:: ivy.functional.ivy.linear_algebra
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+
+
+.. discussion-links:: ivy.functional.ivy.linear_algebra

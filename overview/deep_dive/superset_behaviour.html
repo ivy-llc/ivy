@@ -1,0 +1,838 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Superset Behaviour &#8212; Ivy Documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d" />
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'overview/deep_dive/superset_behaviour';</script>
+    <link rel="icon" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Backend Setting" href="backend_setting.html" />
+    <link rel="prev" title="Function Types" href="function_types.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  <div class="navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo.png?raw=true" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo_dark.png?raw=true" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item"><div></div></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/unifyai/ivy" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/letsunifyai" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-twitter"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item"><div></div></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/unifyai/ivy" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/letsunifyai" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-twitter"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item"><nav class="bd-docs-nav bd-links"
+  aria-label="Section Navigation">
+    <div class="bd-toc-item navbar-nav">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../related_work.html">Related Work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../contributing.html">Contributing</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../contributing/setting_up.html">Setting Up</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing/the_basics.html">The Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing/building_the_docs.html">Building the Docs</a></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="navigating_the_code.html">Navigating the Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="function_types.html">Function Types</a></li>
+<li class="toctree-l3 current active has-children"><a class="current reference internal" href="#">Superset Behaviour</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+
+
+
+
+
+
+
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="backend_setting.html">Backend Setting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="arrays.html">Arrays</a></li>
+<li class="toctree-l3"><a class="reference internal" href="containers.html">Containers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="data_types.html">Data Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="devices.html">Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="inplace_updates.html">Inplace Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="formatting.html">Formatting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="function_arguments.html">Function Arguments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="docstrings.html">Docstrings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="array_api_tests.html">Array API Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ivy_frontends.html">Ivy Frontends</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exception_handling.html">Exception Handling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="continuous_integration.html">Continuous Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing/open_tasks.html">Open Tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing/applied_libraries.html">Applied Libraries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing/helpful_resources.html">Helpful Resources</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="navigating_the_code.html">Navigating the Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_types.html">Function Types</a></li>
+<li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">Superset Behaviour</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
+
+
+
+
+
+
+
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="backend_setting.html">Backend Setting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arrays.html">Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="containers.html">Containers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_types.html">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devices.html">Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inplace_updates.html">Inplace Updates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formatting.html">Formatting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_arguments.html">Function Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstrings.html">Docstrings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="array_api_tests.html">Array API Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_frontends.html">Ivy Frontends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exception_handling.html">Exception Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="continuous_integration.html">Continuous Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.control_flow_ops.html">Control flow ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.experimental.html">Experimental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.utility.html">Utility</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Data classes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/data_classes/ivy.data_classes.array.html">Array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/data_classes/ivy.data_classes.container.html">Container</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Framework classes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.helpers.html">Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.sequential.html">Sequential</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Nested array</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/nested-array/nested_array/ivy.nested_array.nested_array.html">Nested array</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Utils</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.backend.html">Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.dynamic_import.html">Dynamic import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.inspection.html">Inspection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.verbosity.html">Verbosity</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Testing</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.available_frameworks.html">Available frameworks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.function_testing.html">Function testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.globals.html">Globals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.hypothesis_helpers.html">Hypothesis helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.structs.html">Structs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.test_parameter_flags.html">Test parameter flags</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.testing_helpers.html">Testing helpers</a></li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links">
+    <div class="bd-toc-item navbar-nav">
+        <p aria-level="2" class="caption" role="heading">
+            <span class="caption-text">Docs</span>
+        </p>
+        <ul class="nav bd-sidenav">
+            <li class="toctree-l1">
+                <a class="reference external" href="/ivy">
+                    Ivy
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/mech">
+                    Ivy mech
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/vision">
+                    Ivy vision
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/robot">
+                    Ivy robot
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/gym">
+                    Ivy gym
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/memory">
+                    Ivy memory
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/builder">
+                    Ivy builder
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/models">
+                    Ivy models
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/ecosystem">
+                    Ivy ecosystem
+                </a>
+            </li>
+            </ul>
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumbs">
+  <ul class="bd-breadcrumbs" role="navigation" aria-label="Breadcrumb">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../contributing.html" class="nav-link">Contributing</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../deep_dive.html" class="nav-link">Deep Dive</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">Superset Behaviour</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="superset-behaviour">
+<h1>Superset Behaviour<a class="headerlink" href="#superset-behaviour" title="Permalink to this heading">#</a></h1>
+<p>When implementing functions in Ivy, whether they are primary, compositional or mixed, we are constantly faced with the question: which backend implementation should Ivy most closely follow?</p>
+<section id="extending-the-standard">
+<h2>Extending the Standard<a class="headerlink" href="#extending-the-standard" title="Permalink to this heading">#</a></h2>
+<p>It might seem as though this question is already answered.
+Ivy fully adheres to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>, which helpfully limits our design space for the functions, but in its current form this only covers a relatively small number of functions, which together make up less than half of the functions in Ivy.
+Even for Ivy functions which adhere to the standard, the standard permits the addition of extra arguments and function features, provided that they do not contradict the requirements of the standard.
+Therefore, we are still faced with the same kind of design decisions for all Ivy functions, even those appearing in the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>.</p>
+</section>
+<section id="what-is-the-superset">
+<h2>What is the Superset?<a class="headerlink" href="#what-is-the-superset" title="Permalink to this heading">#</a></h2>
+<p>We explain through examples how Ivy always goes for the superset of functionality among the backend frameworks.
+This means that even if only one framework supports a certain feature, then we still strive to include this feature in the Ivy function.
+The Ivy function then entails the <em>superset</em> of all backend features.
+However, this is not always totally possible, and in some cases certain framework-specific features must be sacrificed, but usually it’s possible to implement a very generalized function which covers most of the unique features among the corresponding functions in each framework.</p>
+<p>We strive to implement the superset for primary, compositional and mixed functions.
+In many cases compositional functions do not actually have corresponding backend-specific functions, but this is not always the case.
+For example, <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.linear()</span></code> is a fully compositional function, but <code class="xref py py-func docutils literal notranslate"><span class="pre">torch.nn.functional.linear()</span></code> also exists.
+We should therefore make sure the compositional <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.linear()</span></code> function includes all behaviours supported by <code class="xref py py-func docutils literal notranslate"><span class="pre">torch.nn.functional.linear()</span></code>.</p>
+</section>
+<section id="a-non-duplicate-superset">
+<h2>A Non-Duplicate Superset<a class="headerlink" href="#a-non-duplicate-superset" title="Permalink to this heading">#</a></h2>
+<p>It would be easy to assume that implementing the superset simply means adding all arguments from all related functions into the Ivy function.
+However, this is <strong>not</strong> the case for a few reasons.
+Firstly, different functions might have different argument names for the same behaviour.
+Looking at the functions <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.concatenate.html">numpy.concatenate</a> and <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.cat.html">torch.cat</a>, we of course do not want to add both of the arguments <code class="code docutils literal notranslate"><span class="pre">axis</span></code> and <code class="code docutils literal notranslate"><span class="pre">dim</span></code> to <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.concat()</span></code>, as these both represent exactly the same thing: the dimemsion/axis along which to concatenate.
+In this case, the argument is <a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.concat.html">covered</a> in the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a> and so we opt for <code class="code docutils literal notranslate"><span class="pre">axis</span></code>.
+In cases where there are differences between the backend argument names, and the function or argument is not in the standard, then it is up to us to determine which argument name to use.</p>
+</section>
+<section id="what-is-not-the-superset">
+<h2>What is not the Superset?<a class="headerlink" href="#what-is-not-the-superset" title="Permalink to this heading">#</a></h2>
+<p>We’ve already explained that we should not duplicate arguments in the Ivy function when striving for the superset.
+Does this mean, provided that the proposed argument is not a duplicate, that we should always add this backend-specific argument to the Ivy function?
+The answer is <strong>no</strong>.
+When determining the superset, we are only concerned with the pure <strong>mathematics</strong> of the function, and nothing else.
+For example, the <code class="code docutils literal notranslate"><span class="pre">name</span></code> argument is common to many TensorFlow functions, such as <a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/concat">tf.concat</a>, and is used for uniquely identifying parts of the compiled computation graph during logging and debugging.
+This has nothing to do with the mathematics of the function, and so is <em>not</em> included in the superset considerations when implementing Ivy functions.
+Similarly, in NumPy the argument <code class="code docutils literal notranslate"><span class="pre">subok</span></code> controls whether subclasses of the <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> class should be permitted, which is included in many functions, such as <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.astype.html">numpy.ndarray.astype</a>.
+Finally, in JAX the argument <code class="code docutils literal notranslate"><span class="pre">precision</span></code> is quite common, which controls the precision of the return values, as used in <a class="reference external" href="https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.conv.html">jax.lax.conv</a> for example.
+Similarly, the functions <code class="xref py py-func docutils literal notranslate"><span class="pre">jacfwd()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">jacrev()</span></code> in JAX are actually mathematically identical, and these functions differ <em>only</em> in their underlying algorithm, either forward mode or reverse mode.</p>
+<p>None of the above arguments or function variants are included in our superset considerations, as again they are not relating to the pure mathematics, and instead relate to framework, hardware or algorithmic specifics.
+Given the abstraction layer that Ivy operates at, Ivy is fundamentally unable to control under-the-hood specifics such as those mentioned above.
+However, this is by design, and the central benefit of Ivy is the ability to abstract many different runtimes and algorithms under the same banner, unified by their shared fundamental mathematics.</p>
+<p>A special case is the NumPy <code class="code docutils literal notranslate"><span class="pre">order</span></code> argument which controls the low-level memory layout of the array.
+Although it normally has no effect on the mathematics of a function, in certain manipulation routines like <code class="code docutils literal notranslate"><span class="pre">reshape</span></code>, <code class="code docutils literal notranslate"><span class="pre">flatten</span></code> and <code class="code docutils literal notranslate"><span class="pre">ravel</span></code>, order determines the way the elements are read and placed into the reshaped array.
+Therefore, ivy supports <code class="code docutils literal notranslate"><span class="pre">order</span></code> for these functions and any remaining logic surrounding order is handled in the NumPy frontend.</p>
+<p>Regarding the <strong>only mathematics</strong> rule regarding the superset considerations, there are two exceptions to this, which are the handling of data type and device arguments.
+Neither of these relate to the pure mathematics of the function.
+However, as is discussed below, we always strive to implement Ivy functions such that they support as many data types and devices as possible.</p>
+</section>
+<section id="when-the-superset-is-too-much">
+<h2>When the Superset is Too Much<a class="headerlink" href="#when-the-superset-is-too-much" title="Permalink to this heading">#</a></h2>
+<p>Despite this general approach, the total superset is not always actually strived for, especially in cases where the behaviour can very easily be replicated by a simple composition of other functions, or where the extra behaviour is redundant as it is already covered by another function.</p>
+<p>As an example, many pointwise functions in NumPy support the <code class="code docutils literal notranslate"><span class="pre">where</span></code> argument, which enables a mask array to be specified, with the function then only evaluated at elements for which the <code class="code docutils literal notranslate"><span class="pre">where</span></code> array is <code class="code docutils literal notranslate"><span class="pre">True</span></code>.
+This inclusion of this feature in NumPy is totally understandable, compositions of NumPy functions are never compiled into computation graphs which span multiple operations, and therefore a good way to maximize efficiency of NumPy code is to minimize the number of unique NumPy functions which are called, each of which are implemented with very high efficiency in <code class="code docutils literal notranslate"><span class="pre">C</span></code>.
+In this case, the inclusion of <code class="code docutils literal notranslate"><span class="pre">where</span></code> as an argument also prevents unnecessary values from being computed in the first place, only to then be masked out in the immediately subsequent operation.
+For these reasons, calling <code class="code docutils literal notranslate"><span class="pre">np.absolute(x,</span> <span class="pre">where=mask)</span></code> is much more efficient than calling <code class="code docutils literal notranslate"><span class="pre">np.where(mask,</span> <span class="pre">np.absolute(x),</span> <span class="pre">np.empty_like(x))</span></code> in NumPy.
+<code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.logical_and()</span></code> is another example where the superset is too much, as we explain in the extra examples given at the end of this section.</p>
+<p>However, other frameworks are able to compile compositions of python operations directly to computation graphs in low-level languages, and are also able to intelligently fuse operations into combined kernels, via libraries such as <a class="reference external" href="https://github.com/NVIDIA/TensorRT">TensorRT</a>.
+This removes the need for highly general function signatures such as those found in NumPy.
+Instead, a compositional approach is preferred, where each function in Python generally serves a particular and non-overlapping purpose.
+This helps to keep things more clean and clear at the Python level, without sacrificing efficiency at the lower level.</p>
+</section>
+<section id="balancing-generalization-with-efficiency">
+<h2>Balancing Generalization with Efficiency<a class="headerlink" href="#balancing-generalization-with-efficiency" title="Permalink to this heading">#</a></h2>
+<p>Sometimes, the simplest way to implement superset behaviour comes at the direct expense of runtime efficiency.
+We explore this through the examples of <code class="xref py py-func docutils literal notranslate"><span class="pre">softplus()</span></code>.</p>
+<p><strong>ivy.softplus</strong></p>
+<p>When looking at the <code class="xref py py-func docutils literal notranslate"><span class="pre">softplus()</span></code> (or closest equivalent) implementations for <a class="reference external" href="https://lets-unify.ai/ivy/functional/ivy/activations/softplus/softplus_functional.html">Ivy</a>, <a class="reference external" href="https://jax.readthedocs.io/en/latest/_autosummary/jax.nn.softplus.html">JAX</a>, <a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/math/softplus">TensorFlow</a>, and <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.functional.softplus.html">PyTorch</a>, we can see that torch is the only framework which supports the inclusion of the <code class="code docutils literal notranslate"><span class="pre">beta</span></code> and <code class="code docutils literal notranslate"><span class="pre">threshold</span></code> arguments, which are added for improved numerical stability.
+We can also see that numpy does not support a <code class="xref py py-func docutils literal notranslate"><span class="pre">softplus()</span></code> function at all.
+Ivy should also support the <code class="code docutils literal notranslate"><span class="pre">beta</span></code> and <code class="code docutils literal notranslate"><span class="pre">threshold</span></code> arguments, in order to provide the generalized superset implementation among the backend frameworks.</p>
+<p>Let’s take the tensorflow backend implementation as an example when assessing the necessary changes.
+Without superset behaviour, the implementation is incredibly simple, with only a single tensorflow function called under the hood.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">softplus</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+             <span class="o">/</span><span class="p">,</span>
+             <span class="o">*</span><span class="p">,</span>
+             <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softplus</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The simplest approach would be to implement <code class="xref py py-func docutils literal notranslate"><span class="pre">softplus()</span></code> in each Ivy backend as a simple composition.
+For example, a simple composition in the tensorflow backend would look like the following:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">softplus</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+             <span class="o">/</span><span class="p">,</span>
+             <span class="o">*</span><span class="p">,</span>
+             <span class="n">beta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+             <span class="n">threshold</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
+             <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softplus</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">beta</span><span class="p">))</span> <span class="o">/</span> <span class="n">beta</span>
+    <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">beta</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This approach uses the default argument values used by PyTorch, and it does indeed extend the behaviour correctly.
+However, the implementation now uses <strong>six</strong> tensorflow function calls instead of one, being: <code class="xref py py-func docutils literal notranslate"><span class="pre">__mul__()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">tf.nn.softplus()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">__div__()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">__mul__()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">__gt__()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">tf.where()</span></code> in order of execution.
+If a user doesn’t care about the extra <code class="code docutils literal notranslate"><span class="pre">threshold</span></code> and <code class="code docutils literal notranslate"><span class="pre">beta</span></code> arguments, then a 6× increase in backend functions is a heavy price to pay efficiency-wise.</p>
+<p>Therefore, we should in general adopt a different approach when implementing superset behaviour.
+We should still implement the superset, but keep this extended behaviour as optional as possible, with maximal efficiency and minimal intrusion in the case that this extended behaviour is not required.
+The following would be a much better solution:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">softplus</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+             <span class="o">/</span><span class="p">,</span>
+             <span class="o">*</span><span class="p">,</span>
+             <span class="n">beta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+             <span class="n">threshold</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+             <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">beta</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">beta</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">x_beta</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">beta</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softplus</span><span class="p">(</span><span class="n">x_beta</span><span class="p">))</span> <span class="o">/</span> <span class="n">beta</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">x_beta</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softplus</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">threshold</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">x_beta</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">res</span>
+</pre></div>
+</div>
+<p>You will notice that this implementation involves more lines of code, but this should not be confused with added complexity.
+All Ivy code should be graph compiled for efficiency, and in this case all the <code class="code docutils literal notranslate"><span class="pre">if</span></code> and <code class="code docutils literal notranslate"><span class="pre">else</span></code> statements are removed, and all that remains is the backend functions which were executed.
+This new implementation will be compiled to a graph of either one, three, four or six functions depending on the values of <code class="code docutils literal notranslate"><span class="pre">beta</span></code> and <code class="code docutils literal notranslate"><span class="pre">threshold</span></code>, while the previous implementation would <em>always</em> compile to six functions.</p>
+<p>This does mean we do not adopt the default values used by PyTorch, but that’s okay.
+Implementing the superset does not mean adopting the same default values for arguments, it simply means equipping the Ivy function with the capabilities to execute the superset of behaviours.</p>
+</section>
+<section id="more-examples">
+<h2>More Examples<a class="headerlink" href="#more-examples" title="Permalink to this heading">#</a></h2>
+<p>We now take a look at some examples, and explain our rational for deciding upon the function signature that we should use in Ivy.
+The first three examples are more-or-less superset examples, while the last example involves a deliberate decision to not implement the full superset, for some of the reasons explained above.</p>
+<p><strong>ivy.linspace</strong></p>
+<p>When looking at the <code class="xref py py-func docutils literal notranslate"><span class="pre">linspace()</span></code> (or closest equivalent) implementations for <a class="reference external" href="https://lets-unify.ai/ivy/functional/ivy/creation/linspace/linspace_functional.html">Ivy</a>, <a class="reference external" href="https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.linspace.html">JAX</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.linspace.html">NumPy</a>, <a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/linspace">TensorFlow</a>, and <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.linspace.html">PyTorch</a>, we can see that torch does not support arrays for the <code class="code docutils literal notranslate"><span class="pre">start</span></code> and <code class="code docutils literal notranslate"><span class="pre">end</span></code> arguments, while JAX, numpy and tensorflow all do.
+Likewise, Ivy also supports arrays for the <code class="code docutils literal notranslate"><span class="pre">start</span></code> and <code class="code docutils literal notranslate"><span class="pre">stop</span></code> arguments, and in doing so provides the generalized superset implementation among the backend frameworks.</p>
+<p><strong>ivy.eye</strong></p>
+<p>When looking at the <code class="xref py py-func docutils literal notranslate"><span class="pre">eye()</span></code> (or closest equivalent) implementations for <a class="reference external" href="https://lets-unify.ai/ivy/functional/ivy/creation/eye/eye_functional.html">Ivy</a>, <a class="reference external" href="https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.eye.html">JAX</a>, <a class="reference external" href="https://numpy.org/devdocs/reference/generated/numpy.eye.html">NumPy</a>, <a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/eye">TensorFlow</a>, and <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.eye.html">PyTorch</a>, we can see that tensorflow is the only framework which supports a <code class="code docutils literal notranslate"><span class="pre">batch_shape</span></code> argument.
+Likewise, Ivy also supports a <code class="code docutils literal notranslate"><span class="pre">batch_shape</span></code> argument, and in doing so provides the generalized superset implementation among the backend frameworks.</p>
+<p><strong>ivy.scatter_nd</strong></p>
+<p>When looking at the <code class="xref py py-func docutils literal notranslate"><span class="pre">scatter_nd()</span></code> (or closest equivalent) implementations for <a class="reference external" href="https://lets-unify.ai/ivy/functional/ivy/general/scatter_nd/scatter_nd_functional.html">Ivy</a>, <a class="reference external" href="https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.ndarray.at.html#jax.numpy.ndarray.at">JAX</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ufunc.at.html">NumPy</a>, <a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/scatter_nd">TensorFlow</a>, and <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.scatter.html">PyTorch</a>, we can see that torch only supports scattering along a single dimension, while all other frameworks support scattering across multiple dimensions at once.
+Likewise, Ivy also supports scattering across multiple dimensions at once, and in doing so provides the generalized superset implementation among the backend frameworks.</p>
+<p><strong>ivy.logical_and</strong></p>
+<p>When looking at the <code class="xref py py-func docutils literal notranslate"><span class="pre">logical_and()</span></code> (or closest equivalent) implementations for <a class="reference external" href="https://lets-unify.ai/ivy/functional/ivy/elementwise/logical_and/logical_and_functional.html">Ivy</a>, <a class="reference external" href="https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.logical_and.html">JAX</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.logical_and.html">NumPy</a>, <a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/math/logical_and">TensorFlow</a>, and <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.logical_and.html">PyTorch</a>, we can see that numpy and torch support the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument for performing inplace updates, while JAX and tensorflow do not.
+With regards to the supported data types, JAX, numpy and torch support numeric arrays, while tensorflow supports only boolean arrays.
+With regards to both of these points, Ivy provides the generalized superset implementation among the backend frameworks, with support for the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument and also support for both numeric and boolean arrays in the input.</p>
+<p>However, as discussed above, <code class="xref py py-func docutils literal notranslate"><span class="pre">np.logical_and()</span></code> also supports the <code class="code docutils literal notranslate"><span class="pre">where</span></code> argument, which we opt to <strong>not</strong> support in Ivy.
+This is because the behaviour can easily be created as a composition like so <code class="code docutils literal notranslate"><span class="pre">ivy.where(mask,</span> <span class="pre">ivy.logical_and(x,</span> <span class="pre">y),</span> <span class="pre">ivy.zeros_like(mask))</span></code>, and we prioritize the simplicity, clarity, and function uniqueness in Ivy’s API in this case, which comes at the cost of reduced runtime efficiency for some functions when using a NumPy backend.
+However, in future releases our automatic graph compilation and graph simplification processes will alleviate these minor inefficiencies entirely from the final computation graph, by fusing multiple operations into one at the API level where possible.</p>
+<p><strong>Round Up</strong></p>
+<p>This should have hopefully given you a good feel what should and should not be included when deciding how to design a new Ivy function.
+In many cases, there is not a clear right and wrong answer, and we arrive at the final decision via open discussion.
+If you find yourself proposing the addition of a new function in Ivy, then we will most likely have this discussion on your Pull Request!</p>
+<p>If you have any questions, please feel free to reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/1018954266322419732">superset behavior channel</a> or in the <a class="reference external" href="https://discord.com/channels/799879767196958751/1028296822386610196">superset behavior forum</a>!</p>
+<p><strong>Video</strong></p>
+<iframe width="420" height="315"
+src="https://www.youtube.com/embed/_D6xER3H4NU" class="video">
+</iframe></section>
+</section>
+
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="function_types.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Function Types</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="backend_setting.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Backend Setting</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item"><nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributing</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../contributing/setting_up.html">Setting Up</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/the_basics.html">The Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/building_the_docs.html">Building the Docs</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="navigating_the_code.html">Navigating the Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_types.html">Function Types</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Superset Behaviour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend_setting.html">Backend Setting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arrays.html">Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="containers.html">Containers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_types.html">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devices.html">Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inplace_updates.html">Inplace Updates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formatting.html">Formatting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_arguments.html">Function Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstrings.html">Docstrings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="array_api_tests.html">Array API Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_frontends.html">Ivy Frontends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exception_handling.html">Exception Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="continuous_integration.html">Continuous Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/open_tasks.html">Open Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/applied_libraries.html">Applied Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/helpful_resources.html">Helpful Resources</a></li>
+</ul>
+</div>
+</nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#extending-the-standard">Extending the Standard</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-the-superset">What is the Superset?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-non-duplicate-superset">A Non-Duplicate Superset</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-not-the-superset">What is not the Superset?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#when-the-superset-is-too-much">When the Superset is Too Much</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#balancing-generalization-with-efficiency">Balancing Generalization with Efficiency</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#more-examples">More Examples</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            <div class="bd-footer-content__inner"></div>
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="copyright">
+    
+      © Copyright 2020-2023, Ivy Team.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+  <p class="sphinx-version">
+    Created using <a href="https://sphinx-doc.org/">Sphinx</a> 6.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

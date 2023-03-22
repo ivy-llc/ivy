@@ -1,0 +1,17 @@
+Losses
+======
+
+
+
+.. automodule:: ivy.data_classes.container.losses
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+    :private-members:
+
+
+
+
+
+.. discussion-links:: ivy.data_classes.container.losses

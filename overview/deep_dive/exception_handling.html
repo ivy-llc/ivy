@@ -1,0 +1,1093 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Exception Handling &#8212; Ivy Documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d" />
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'overview/deep_dive/exception_handling';</script>
+    <link rel="icon" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Continuous Integration" href="continuous_integration.html" />
+    <link rel="prev" title="Ivy Frontend Tests" href="ivy_frontends_tests.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  <div class="navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo.png?raw=true" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo_dark.png?raw=true" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item"><div></div></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/unifyai/ivy" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/letsunifyai" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-twitter"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item"><div></div></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/unifyai/ivy" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/letsunifyai" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-twitter"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item"><nav class="bd-docs-nav bd-links"
+  aria-label="Section Navigation">
+    <div class="bd-toc-item navbar-nav">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../related_work.html">Related Work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../contributing.html">Contributing</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../contributing/setting_up.html">Setting Up</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing/the_basics.html">The Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing/building_the_docs.html">Building the Docs</a></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="navigating_the_code.html">Navigating the Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="function_types.html">Function Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="superset_behaviour.html">Superset Behaviour</a></li>
+<li class="toctree-l3"><a class="reference internal" href="backend_setting.html">Backend Setting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="arrays.html">Arrays</a></li>
+<li class="toctree-l3"><a class="reference internal" href="containers.html">Containers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="data_types.html">Data Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="devices.html">Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="inplace_updates.html">Inplace Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="formatting.html">Formatting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="function_arguments.html">Function Arguments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="docstrings.html">Docstrings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="array_api_tests.html">Array API Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ivy_frontends.html">Ivy Frontends</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
+<li class="toctree-l3 current active has-children"><a class="current reference internal" href="#">Exception Handling</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+
+
+
+
+
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="continuous_integration.html">Continuous Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing/open_tasks.html">Open Tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing/applied_libraries.html">Applied Libraries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing/helpful_resources.html">Helpful Resources</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="navigating_the_code.html">Navigating the Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_types.html">Function Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="superset_behaviour.html">Superset Behaviour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend_setting.html">Backend Setting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arrays.html">Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="containers.html">Containers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_types.html">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devices.html">Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inplace_updates.html">Inplace Updates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formatting.html">Formatting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_arguments.html">Function Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstrings.html">Docstrings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="array_api_tests.html">Array API Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_frontends.html">Ivy Frontends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
+<li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">Exception Handling</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
+
+
+
+
+
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="continuous_integration.html">Continuous Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.control_flow_ops.html">Control flow ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.experimental.html">Experimental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.utility.html">Utility</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Data classes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/data_classes/ivy.data_classes.array.html">Array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/data_classes/ivy.data_classes.container.html">Container</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Framework classes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.helpers.html">Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.sequential.html">Sequential</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Nested array</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/nested-array/nested_array/ivy.nested_array.nested_array.html">Nested array</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Utils</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.backend.html">Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.dynamic_import.html">Dynamic import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.inspection.html">Inspection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.verbosity.html">Verbosity</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Testing</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.available_frameworks.html">Available frameworks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.function_testing.html">Function testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.globals.html">Globals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.hypothesis_helpers.html">Hypothesis helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.structs.html">Structs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.test_parameter_flags.html">Test parameter flags</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.testing_helpers.html">Testing helpers</a></li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links">
+    <div class="bd-toc-item navbar-nav">
+        <p aria-level="2" class="caption" role="heading">
+            <span class="caption-text">Docs</span>
+        </p>
+        <ul class="nav bd-sidenav">
+            <li class="toctree-l1">
+                <a class="reference external" href="/ivy">
+                    Ivy
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/mech">
+                    Ivy mech
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/vision">
+                    Ivy vision
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/robot">
+                    Ivy robot
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/gym">
+                    Ivy gym
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/memory">
+                    Ivy memory
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/builder">
+                    Ivy builder
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/models">
+                    Ivy models
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/ecosystem">
+                    Ivy ecosystem
+                </a>
+            </li>
+            </ul>
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumbs">
+  <ul class="bd-breadcrumbs" role="navigation" aria-label="Breadcrumb">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../contributing.html" class="nav-link">Contributing</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../deep_dive.html" class="nav-link">Deep Dive</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">Exception Handling</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="exception-handling">
+<h1>Exception Handling<a class="headerlink" href="#exception-handling" title="Permalink to this heading">#</a></h1>
+<p>As Ivy is unifying multiple backends, various issues are seen during exception handling:</p>
+<ol class="arabic simple">
+<li><p>each backend throws their own exceptions</p></li>
+<li><p>exceptions thrown are backend-specific, therefore inconsistent</p></li>
+</ol>
+<p>To unify the handling of exceptions and assertions, Ivy includes a custom exception class and decorator, which are explained further in the following sub-sections.</p>
+<section id="ivy-exception-class">
+<h2>Ivy Exception Class<a class="headerlink" href="#ivy-exception-class" title="Permalink to this heading">#</a></h2>
+<p>Firstly, Ivy’s base exception class is <code class="code docutils literal notranslate"><span class="pre">IvyException</span></code> class, which inherits from the Python <code class="code docutils literal notranslate"><span class="pre">Exception</span></code> class.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/exceptions.py</span>
+<span class="k">class</span> <span class="nc">IvyException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In cases where an exception class for a specific purpose is required, we inherit from the <code class="code docutils literal notranslate"><span class="pre">IvyException</span></code> class.
+For example, the <code class="code docutils literal notranslate"><span class="pre">IvyBackendException</span></code> class is created to unify backend exceptions.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/exceptions.py</span>
+<span class="k">class</span> <span class="nc">IvyBackendException</span><span class="p">(</span><span class="n">IvyException</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">messages</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_default</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;numpy&quot;</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="k">else</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_delimiter</span> <span class="o">=</span> <span class="s2">&quot;: &quot;</span>
+        <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">messages</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_default</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_delimiter</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_default</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>In some Array API tests, <code class="code docutils literal notranslate"><span class="pre">IndexError</span></code> and <code class="code docutils literal notranslate"><span class="pre">ValueError</span></code> are explicitly tested to ensure that the functions are behaving correctly.
+Thus, the <code class="code docutils literal notranslate"><span class="pre">IvyError</span></code> class unifies these special cases.
+This is to reduce repetition and the creation of similar exception classes.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/exceptions.py</span>
+<span class="k">class</span> <span class="nc">IvyError</span><span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="n">IvyException</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">messages</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_default</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;numpy&quot;</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="k">else</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_delimiter</span> <span class="o">=</span> <span class="s2">&quot;: &quot;</span>
+        <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">messages</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_default</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_delimiter</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_default</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="configurable-mode-for-stack-trace">
+<h2>Configurable Mode for Stack Trace<a class="headerlink" href="#configurable-mode-for-stack-trace" title="Permalink to this heading">#</a></h2>
+<p>Due to the transpilation nature of Ivy, user can code in the frontend framework
+which they are familiar with, then run their code with another backend
+framework. For instance, someone who is familiar with NumPy can run their code
+with a JAX backend via Ivy’s NumPy frontend. Given their total lack of
+familiarity of certain backend frameworks (which is JAX in the above scenario),
+they might not want to see stack traces which go right down through Ivy
+functions and through JAX functions.</p>
+<p>Therefore, options are made available for the stack traces to either truncate
+at the frontend or ivy level, or in other cases, no truncation at all.</p>
+<p>Let’s look at the 3 different modes with example of <code class="code docutils literal notranslate"><span class="pre">ivy.all</span></code> below!</p>
+<ol class="arabic simple">
+<li><p>Full</p></li>
+</ol>
+<p>This is the default mode and keeps the complete stack traces. All <code class="code docutils literal notranslate"><span class="pre">numpy</span></code>
+frontend, ivy specific and native <code class="code docutils literal notranslate"><span class="pre">jax</span></code> stack traces are displayed.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>  &gt;&gt;&gt; ivy.functional.frontends.numpy.all(ivy.array([1,2,3]), axis=2)
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/exceptions.py&quot;, line 118, in new_fn
+    return fn(*args, **kwargs)
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/func_wrapper.py&quot;, line 413, in new_fn
+    return fn(*args, **kwargs)
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/func_wrapper.py&quot;, line 347, in new_fn
+    return fn(*args, **kwargs)
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/func_wrapper.py&quot;, line 124, in new_fn
+    return fn(*new_args, **new_kwargs)
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/func_wrapper.py&quot;, line 186, in new_fn
+    ret = fn(*args, **kwargs)
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/functional/backends/jax/utility.py&quot;, line 18, in all
+    return jnp.all(x, axis, keepdims=keepdims)
+  File &quot;/Users/julia/Documents/Ivy/venv/lib/python3.9/site-packages/jax/_src/numpy/reductions.py&quot;, line 219, in all
+    return _reduce_all(a, axis=_ensure_optional_axes(axis), out=out,
+  File &quot;/Users/julia/Documents/Ivy/venv/lib/python3.9/site-packages/jax/_src/numpy/reductions.py&quot;, line 213, in _reduce_all
+    return _reduction(a, &quot;all&quot;, np.all, lax.bitwise_and, True, preproc=_cast_to_bool,
+  File &quot;/Users/julia/Documents/Ivy/venv/lib/python3.9/site-packages/jax/_src/numpy/reductions.py&quot;, line 80, in _reduction
+    pos_dims, dims = _reduction_dims(a, axis)
+  File &quot;/Users/julia/Documents/Ivy/venv/lib/python3.9/site-packages/jax/_src/numpy/reductions.py&quot;, line 113, in _reduction_dims
+    canon_axis = tuple(_canonicalize_axis_allow_named(x, np.ndim(a))
+  File &quot;/Users/julia/Documents/Ivy/venv/lib/python3.9/site-packages/jax/_src/numpy/reductions.py&quot;, line 113, in &lt;genexpr&gt;
+    canon_axis = tuple(_canonicalize_axis_allow_named(x, np.ndim(a))
+  File &quot;/Users/julia/Documents/Ivy/venv/lib/python3.9/site-packages/jax/_src/numpy/reductions.py&quot;, line 106, in _canonicalize_axis_allow_named
+    return maybe_named_axis(x, lambda i: _canonicalize_axis(i, rank), lambda name: name)
+  File &quot;/Users/julia/Documents/Ivy/venv/lib/python3.9/site-packages/jax/_src/numpy/reductions.py&quot;, line 106, in &lt;lambda&gt;
+    return maybe_named_axis(x, lambda i: _canonicalize_axis(i, rank), lambda name: name)
+
+During the handling of the above exception, another exception occurred:
+
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/functional/frontends/numpy/func_wrapper.py&quot;, line 295, in new_fn
+    ret = fn(*args, **kwargs)
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/functional/frontends/numpy/func_wrapper.py&quot;, line 262, in new_fn
+    return fn(*ivy_args, **ivy_kwargs)
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/functional/frontends/numpy/func_wrapper.py&quot;, line 354, in new_fn
+    ret = fn(*args, **kwargs)
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/functional/frontends/numpy/logic/truth_value_testing.py&quot;, line 20, in all
+    ret = ivy.all(a, axis=axis, keepdims=keepdims, out=out)
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/func_wrapper.py&quot;, line 82, in new_fn
+    return fn(*args, **kwargs)
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/exceptions.py&quot;, line 121, in new_fn
+    raise ivy.exceptions.IvyError(fn.__name__, str(e))
+
+IvyError: jax: all: axis 2 is out of bounds for array of dimension 1
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Frontend-only</p></li>
+</ol>
+<p>This option displays only frontend-related stack traces. If compared with the
+stack traces in the <code class="code docutils literal notranslate"><span class="pre">full</span></code> mode above, the <code class="code docutils literal notranslate"><span class="pre">jax</span></code> related traces
+are pruned. Only the <code class="code docutils literal notranslate"><span class="pre">numpy</span></code> frontend related errors are shown.
+A message is also displayed to inform that the traces are truncated and
+the instructions to switch it back to the <code class="code docutils literal notranslate"><span class="pre">full</span></code> mode is included.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; ivy.set_exception_trace_mode(&#39;frontend&#39;)
+&gt;&gt;&gt; ivy.functional.frontends.numpy.all(ivy.array([1,2,3]), axis=2)
+&lt;stack trace is truncated to frontend specific files, call `ivy.set_exception_trace_mode(&#39;full&#39;)` to view the full trace&gt;
+
+During the handling of the above exception, another exception occurred:
+
+&lt;stack trace is truncated to frontend specific files, call `ivy.set_exception_trace_mode(&#39;full&#39;)` to view the full trace&gt;
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/functional/frontends/numpy/func_wrapper.py&quot;, line 295, in new_fn
+    ret = fn(*args, **kwargs)
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/functional/frontends/numpy/func_wrapper.py&quot;, line 262, in new_fn
+    return fn(*ivy_args, **ivy_kwargs)
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/functional/frontends/numpy/func_wrapper.py&quot;, line 354, in new_fn
+    ret = fn(*args, **kwargs)
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/functional/frontends/numpy/logic/truth_value_testing.py&quot;, line 20, in all
+    ret = ivy.all(a, axis=axis, keepdims=keepdims, out=out)
+
+IvyError: jax: all: axis 2 is out of bounds for array of dimension 1
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Ivy specific</p></li>
+</ol>
+<p>This option displays only ivy-related stack traces. If compared to the different
+stack traces modes above, the ivy backend <code class="code docutils literal notranslate"><span class="pre">jax</span></code> related
+traces (which were hidden in the <code class="code docutils literal notranslate"><span class="pre">frontend</span></code> mode) are available again
+and the ivy frontend <code class="code docutils literal notranslate"><span class="pre">numpy</span></code> related traces remain visible.
+However, the native <code class="code docutils literal notranslate"><span class="pre">jax</span></code> traces remain hidden because they are not
+ivy-specific.
+A message is also displayed to inform that the traces are truncated and the
+instructions to switch it back to the <code class="code docutils literal notranslate"><span class="pre">full</span></code> mode is included.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; ivy.set_exception_trace_mode(&#39;ivy&#39;)
+&gt;&gt;&gt; ivy.functional.frontends.numpy.all(ivy.array([1,2,3]), axis=2)
+&lt;stack trace is truncated to ivy specific files, call `ivy.set_exception_trace_mode(&#39;full&#39;)` to view the full trace&gt;
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/exceptions.py&quot;, line 118, in new_fn
+    return fn(*args, **kwargs)
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/func_wrapper.py&quot;, line 413, in new_fn
+    return fn(*args, **kwargs)
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/func_wrapper.py&quot;, line 347, in new_fn
+    return fn(*args, **kwargs)
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/func_wrapper.py&quot;, line 124, in new_fn
+    return fn(*new_args, **new_kwargs)
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/func_wrapper.py&quot;, line 186, in new_fn
+    ret = fn(*args, **kwargs)
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/functional/backends/jax/utility.py&quot;, line 18, in all
+    return jnp.all(x, axis, keepdims=keepdims)
+
+During the handling of the above exception, another exception occurred:
+
+&lt;stack trace is truncated to ivy specific files, call `ivy.set_exception_trace_mode(&#39;full&#39;)` to view the full trace&gt;
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/functional/frontends/numpy/func_wrapper.py&quot;, line 295, in new_fn
+    ret = fn(*args, **kwargs)
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/functional/frontends/numpy/func_wrapper.py&quot;, line 262, in new_fn
+    return fn(*ivy_args, **ivy_kwargs)
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/functional/frontends/numpy/func_wrapper.py&quot;, line 354, in new_fn
+    ret = fn(*args, **kwargs)
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/functional/frontends/numpy/logic/truth_value_testing.py&quot;, line 20, in all
+    ret = ivy.all(a, axis=axis, keepdims=keepdims, out=out)
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/func_wrapper.py&quot;, line 82, in new_fn
+    return fn(*args, **kwargs)
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/exceptions.py&quot;, line 121, in new_fn
+    raise ivy.exceptions.IvyError(fn.__name__, str(e))
+
+IvyError: jax: all: axis 2 is out of bounds for array of dimension 1
+</pre></div>
+</div>
+</section>
+<section id="ivy-func-wrapper-pruning">
+<h2>Ivy <code class="code docutils literal notranslate"><span class="pre">func_wrapper</span></code> Pruning<a class="headerlink" href="#ivy-func-wrapper-pruning" title="Permalink to this heading">#</a></h2>
+<p>Due to the wrapping operations in Ivy, a long list of less informative
+<code class="code docutils literal notranslate"><span class="pre">func_wrapper</span></code> traces is often seen in the stack.
+Including all of these wrapper functions in the stack trace can be very
+unwieldy, thus they can be prevented entirely by setting
+<code class="code docutils literal notranslate"><span class="pre">ivy.set_show_func_wrapper_trace_mode(False)</span></code>.
+Examples are shown below to demonstrate the combination of this mode and the
+3 different stack traces mode explained above.</p>
+<ol class="arabic simple">
+<li><p>Full</p></li>
+</ol>
+<p>The <code class="code docutils literal notranslate"><span class="pre">func_wrapper</span></code> related traces have been hidden. All other traces
+such as ivy-specific, frontend-related and the native traces remain visible.
+A message is displayed as well to the user so that they are aware of the
+pruning. The instructions to recover the <code class="code docutils literal notranslate"><span class="pre">func_wrapper</span></code> traces are
+shown too.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; ivy.set_show_func_wrapper_trace_mode(False)
+&gt;&gt;&gt; ivy.functional.frontends.numpy.all(ivy.array([1,2,3]), axis=2)
+&lt;func_wrapper.py stack trace is squashed, call `ivy.set_show_func_wrapper_trace_mode(True)` in order to view this&gt;
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/exceptions.py&quot;, line 118, in new_fn
+    return fn(*args, **kwargs)
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/functional/backends/jax/utility.py&quot;, line 18, in all
+    return jnp.all(x, axis, keepdims=keepdims)
+  File &quot;/Users/julia/Documents/Ivy/venv/lib/python3.9/site-packages/jax/_src/numpy/reductions.py&quot;, line 219, in all
+    return _reduce_all(a, axis=_ensure_optional_axes(axis), out=out,
+  File &quot;/Users/julia/Documents/Ivy/venv/lib/python3.9/site-packages/jax/_src/numpy/reductions.py&quot;, line 213, in _reduce_all
+    return _reduction(a, &quot;all&quot;, np.all, lax.bitwise_and, True, preproc=_cast_to_bool,
+  File &quot;/Users/julia/Documents/Ivy/venv/lib/python3.9/site-packages/jax/_src/numpy/reductions.py&quot;, line 80, in _reduction
+    pos_dims, dims = _reduction_dims(a, axis)
+  File &quot;/Users/julia/Documents/Ivy/venv/lib/python3.9/site-packages/jax/_src/numpy/reductions.py&quot;, line 113, in _reduction_dims
+    canon_axis = tuple(_canonicalize_axis_allow_named(x, np.ndim(a))
+  File &quot;/Users/julia/Documents/Ivy/venv/lib/python3.9/site-packages/jax/_src/numpy/reductions.py&quot;, line 113, in &lt;genexpr&gt;
+    canon_axis = tuple(_canonicalize_axis_allow_named(x, np.ndim(a))
+  File &quot;/Users/julia/Documents/Ivy/venv/lib/python3.9/site-packages/jax/_src/numpy/reductions.py&quot;, line 106, in _canonicalize_axis_allow_named
+    return maybe_named_axis(x, lambda i: _canonicalize_axis(i, rank), lambda name: name)
+  File &quot;/Users/julia/Documents/Ivy/venv/lib/python3.9/site-packages/jax/_src/numpy/reductions.py&quot;, line 106, in &lt;lambda&gt;
+    return maybe_named_axis(x, lambda i: _canonicalize_axis(i, rank), lambda name: name)
+
+During the handling of the above exception, another exception occurred:
+
+&lt;func_wrapper.py stack trace is squashed, call `ivy.set_show_func_wrapper_trace_mode(True)` in order to view this&gt;
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/functional/frontends/numpy/logic/truth_value_testing.py&quot;, line 20, in all
+    ret = ivy.all(a, axis=axis, keepdims=keepdims, out=out)
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/exceptions.py&quot;, line 121, in new_fn
+    raise ivy.exceptions.IvyError(fn.__name__, str(e))
+
+IvyError: jax: all: axis 2 is out of bounds for array of dimension 1
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Frontend-only</p></li>
+</ol>
+<p>In the frontend-only stack trace mode, the ivy backend wrapping traces were
+hidden but the frontend wrappers were still visible. By configuring the func
+wrapper trace mode, the frontend wrappers will also be hidden. This can be
+observed from the example below.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; ivy.set_exception_trace_mode(&#39;frontend&#39;)
+&gt;&gt;&gt; ivy.set_show_func_wrapper_trace_mode(False)
+&gt;&gt;&gt; ivy.functional.frontends.numpy.all(ivy.array([1,2,3]), axis=2)
+&lt;stack trace is truncated to frontend specific files, call `ivy.set_exception_trace_mode(&#39;full&#39;)` to view the full trace&gt;
+&lt;func_wrapper.py stack trace is squashed, call `ivy.set_show_func_wrapper_trace_mode(True)` in order to view this&gt;
+
+During the handling of the above exception, another exception occurred:
+
+&lt;stack trace is truncated to frontend specific files, call `ivy.set_exception_trace_mode(&#39;full&#39;)` to view the full trace&gt;
+&lt;func_wrapper.py stack trace is squashed, call `ivy.set_show_func_wrapper_trace_mode(True)` in order to view this&gt;
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/functional/frontends/numpy/logic/truth_value_testing.py&quot;, line 20, in all
+    ret = ivy.all(a, axis=axis, keepdims=keepdims, out=out)
+
+IvyError: jax: all: axis 2 is out of bounds for array of dimension 1
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Ivy specific</p></li>
+</ol>
+<p>As the wrappers occur in <code class="code docutils literal notranslate"><span class="pre">ivy</span></code> itself, all backend and frontend wrappers
+remain visible in the ivy-specific mode. By hidding the func wrapper traces,
+the stack becomes cleaner and displays the ivy backend and frontend
+exception messages only.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; ivy.set_exception_trace_mode(&#39;frontend&#39;)
+&gt;&gt;&gt; ivy.set_show_func_wrapper_trace_mode(False)
+&gt;&gt;&gt; ivy.functional.frontends.numpy.all(ivy.array([1,2,3]), axis=2)
+&lt;stack trace is truncated to ivy specific files, call `ivy.set_exception_trace_mode(&#39;full&#39;)` to view the full trace&gt;
+&lt;func_wrapper.py stack trace is squashed, call `ivy.set_show_func_wrapper_trace_mode(True)` in order to view this&gt;
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/exceptions.py&quot;, line 118, in new_fn
+    return fn(*args, **kwargs)
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/functional/backends/jax/utility.py&quot;, line 18, in all
+    return jnp.all(x, axis, keepdims=keepdims)
+
+During the handling of the above exception, another exception occurred:
+
+&lt;stack trace is truncated to ivy specific files, call `ivy.set_exception_trace_mode(&#39;full&#39;)` to view the full trace&gt;
+&lt;func_wrapper.py stack trace is squashed, call `ivy.set_show_func_wrapper_trace_mode(True)` in order to view this&gt;
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/functional/frontends/numpy/logic/truth_value_testing.py&quot;, line 20, in all
+    ret = ivy.all(a, axis=axis, keepdims=keepdims, out=out)
+  File &quot;/Users/julia/Documents/Ivy/ivy/ivy/exceptions.py&quot;, line 121, in new_fn
+    raise ivy.exceptions.IvyError(fn.__name__, str(e))
+
+IvyError: jax: all: axis 2 is out of bounds for array of dimension 1
+</pre></div>
+</div>
+</section>
+<section id="handle-exceptions-decorator">
+<h2>&#64;handle_exceptions Decorator<a class="headerlink" href="#handle-exceptions-decorator" title="Permalink to this heading">#</a></h2>
+<p>To ensure that all backend exceptions are caught properly, a decorator is used to handle functions in the <code class="code docutils literal notranslate"><span class="pre">try/except</span></code> block.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/exceptions.py</span>
+<span class="k">def</span> <span class="nf">handle_exceptions</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">_print_traceback_history</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyError</span><span class="p">(</span><span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">_print_traceback_history</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyBackendException</span><span class="p">(</span><span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+
+    <span class="n">new_fn</span><span class="o">.</span><span class="n">handle_exceptions</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="n">new_fn</span>
+</pre></div>
+</div>
+<p>The decorator is then added to each function for wrapping.
+Let’s look at an example of <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.all()</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/ivy/utility.py</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">all</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>When a backend throws an exception, it will be caught in the decorator and an <code class="code docutils literal notranslate"><span class="pre">IvyBackendException</span></code> or <code class="code docutils literal notranslate"><span class="pre">IvyError</span></code> will be raised.
+This ensures that all exceptions are consistent.</p>
+<p>Let’s look at the comparison of before and after adding the decorator.</p>
+<p><strong>without decorator</strong></p>
+<p>In NumPy,</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; x = ivy.array([0,0,1])
+&gt;&gt;&gt; ivy.all(x, axis=2)
+&lt;error_stack&gt;
+numpy.AxisError: axis 2 is out of bounds for array of dimension 1
+</pre></div>
+</div>
+<p>In PyTorch,</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; x = ivy.array([0,0,1])
+&gt;&gt;&gt; ivy.all(x, axis=2)
+&lt;error_stack&gt;
+IndexError: Dimension out of range (expected to be in range of [-1, 0], but got 2)
+</pre></div>
+</div>
+<p>The errors raised are different across backends, therefore confusing and inconsistent.</p>
+<p><strong>with decorator</strong></p>
+<p>In NumPy,</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; x = ivy.array([0,0,1])
+&gt;&gt;&gt; ivy.all(x, axis=2)
+&lt;error_stack&gt;
+ivy.exceptions.IvyError: numpy: all: axis 2 is out of bounds for array of dimension 1
+</pre></div>
+</div>
+<p>In PyTorch,</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">&lt;error_stack&gt;</span>
+<span class="go">ivy.exceptions.IvyError: torch: all: Dimension out of range (expected to be in range of [-1, 0], but got 2)</span>
+</pre></div>
+</div>
+<p>The errors are unified into an <code class="code docutils literal notranslate"><span class="pre">IvyError</span></code>, with the current backend and function stated to provide clearer information.
+The message string is inherited from the native exception.</p>
+</section>
+<section id="assertion-function">
+<h2>Assertion Function<a class="headerlink" href="#assertion-function" title="Permalink to this heading">#</a></h2>
+<p>There are often conditions or limitations needed to ensure that a function is working correctly.</p>
+<p>Inconsistency is observed such as some functions:</p>
+<ol class="arabic simple">
+<li><p>use <code class="code docutils literal notranslate"><span class="pre">assert</span></code> for checks and throw <code class="code docutils literal notranslate"><span class="pre">AssertionError</span></code>, or</p></li>
+<li><p>use <code class="code docutils literal notranslate"><span class="pre">if/elif/else</span></code> blocks and raise <code class="code docutils literal notranslate"><span class="pre">Exception</span></code>, <code class="code docutils literal notranslate"><span class="pre">ValueError</span></code>, etc.</p></li>
+</ol>
+<p>To unify the behaviours, our policy is to use conditional blocks and raise <code class="code docutils literal notranslate"><span class="pre">IvyException</span></code> whenever a check is required.
+Moreover, to reduce code redundancy, conditions which are commonly used are collected as helper functions with custom parameters in <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/assertions.py</span></code>.
+This allows them to be reused and promotes cleaner code.</p>
+<p>Let’s look at an example!</p>
+<p><strong>Helper: check_less</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/assertions.py</span>
+<span class="k">def</span> <span class="nf">check_less</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">allow_equal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+<span class="c1"># less_equal</span>
+<span class="k">if</span> <span class="n">allow_equal</span> <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">x1</span> <span class="o">&gt;</span> <span class="n">x2</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+        <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> must be lesser than or equal to </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">message</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">else</span> <span class="n">message</span>
+    <span class="p">)</span>
+<span class="c1"># less</span>
+<span class="k">elif</span> <span class="ow">not</span> <span class="n">allow_equal</span> <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">x1</span> <span class="o">&gt;=</span> <span class="n">x2</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+        <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> must be lesser than </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span> <span class="k">if</span> <span class="n">message</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="k">else</span> <span class="n">message</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>ivy.set_split_factor</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/ivy/device.py</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">set_split_factor</span><span class="p">(</span>
+    <span class="n">factor</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_less</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">factor</span><span class="p">,</span> <span class="n">allow_equal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">global</span> <span class="n">split_factors</span>
+    <span class="n">device</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">device</span><span class="p">,</span> <span class="n">default_device</span><span class="p">())</span>
+    <span class="n">split_factors</span><span class="p">[</span><span class="n">device</span><span class="p">]</span> <span class="o">=</span> <span class="n">factor</span>
+</pre></div>
+</div>
+<p>Instead of coding a conditional block and raising an exception if the conditions are not met, a helper function is used to simplify the logic and increase code readability.</p>
+<p><strong>Round Up</strong></p>
+<p>This should have hopefully given you a good feel for how function wrapping is applied to functions in Ivy.</p>
+<p>If you have any questions, please feel free to reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/1028267924043092068">exception handling channel</a> or in the <a class="reference external" href="https://discord.com/channels/799879767196958751/1028297940168626257">exception handling forum</a>!</p>
+<p><strong>Video</strong></p>
+<iframe width="420" height="315"
+src="https://www.youtube.com/embed/eTc24eG9P_s" class="video">
+</iframe></section>
+</section>
+
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="ivy_frontends_tests.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Ivy Frontend Tests</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="continuous_integration.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Continuous Integration</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item"><nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributing</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../contributing/setting_up.html">Setting Up</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/the_basics.html">The Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/building_the_docs.html">Building the Docs</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="navigating_the_code.html">Navigating the Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_types.html">Function Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="superset_behaviour.html">Superset Behaviour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend_setting.html">Backend Setting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arrays.html">Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="containers.html">Containers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_types.html">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devices.html">Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inplace_updates.html">Inplace Updates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formatting.html">Formatting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_arguments.html">Function Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstrings.html">Docstrings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="array_api_tests.html">Array API Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_frontends.html">Ivy Frontends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Exception Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="continuous_integration.html">Continuous Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/open_tasks.html">Open Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/applied_libraries.html">Applied Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/helpful_resources.html">Helpful Resources</a></li>
+</ul>
+</div>
+</nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ivy-exception-class">Ivy Exception Class</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configurable-mode-for-stack-trace">Configurable Mode for Stack Trace</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ivy-func-wrapper-pruning">Ivy <code class="code docutils literal notranslate"><span class="pre">func_wrapper</span></code> Pruning</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#handle-exceptions-decorator">@handle_exceptions Decorator</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#assertion-function">Assertion Function</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            <div class="bd-footer-content__inner"></div>
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="copyright">
+    
+      © Copyright 2020-2023, Ivy Team.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+  <p class="sphinx-version">
+    Created using <a href="https://sphinx-doc.org/">Sphinx</a> 6.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

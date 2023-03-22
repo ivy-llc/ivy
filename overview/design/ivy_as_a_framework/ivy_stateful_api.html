@@ -1,0 +1,1047 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Ivy Stateful API &#8212; Ivy Documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d" />
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/clipboard.min.js"></script>
+    <script src="../../../_static/copybutton.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'overview/design/ivy_as_a_framework/ivy_stateful_api';</script>
+    <link rel="icon" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Ivy Array" href="ivy_array.html" />
+    <link rel="prev" title="Ivy Container" href="ivy_container.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  <div class="navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo.png?raw=true" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo_dark.png?raw=true" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item"><div></div></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/unifyai/ivy" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/letsunifyai" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-twitter"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item"><div></div></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/unifyai/ivy" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/letsunifyai" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-twitter"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item"><nav class="bd-docs-nav bd-links"
+  aria-label="Section Navigation">
+    <div class="bd-toc-item navbar-nav">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../background.html">Background</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../design.html">Design</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../building_blocks.html">Building Blocks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ivy_as_a_transpiler.html">Ivy as a Transpiler</a></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../ivy_as_a_framework.html">Ivy as a Framework</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="ivy_container.html">Ivy Container</a></li>
+<li class="toctree-l3 current active has-children"><a class="current reference internal" href="#">Ivy Stateful API</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+
+
+
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ivy_array.html">Ivy Array</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../related_work.html">Related Work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../deep_dive.html">Deep Dive</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../glossary.html">Glossary</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.control_flow_ops.html">Control flow ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.experimental.html">Experimental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.utility.html">Utility</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Data classes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/data_classes/ivy.data_classes.array.html">Array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/data_classes/ivy.data_classes.container.html">Container</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Framework classes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/framework/stateful/ivy.stateful.activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/framework/stateful/ivy.stateful.converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/framework/stateful/ivy.stateful.helpers.html">Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/framework/stateful/ivy.stateful.initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/framework/stateful/ivy.stateful.layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/framework/stateful/ivy.stateful.module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/framework/stateful/ivy.stateful.norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/framework/stateful/ivy.stateful.optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/framework/stateful/ivy.stateful.sequential.html">Sequential</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Nested array</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/nested-array/nested_array/ivy.nested_array.nested_array.html">Nested array</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Utils</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/utilities/utils/ivy.utils.assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/utilities/utils/ivy.utils.backend.html">Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/utilities/utils/ivy.utils.dynamic_import.html">Dynamic import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/utilities/utils/ivy.utils.exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/utilities/utils/ivy.utils.inspection.html">Inspection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/utilities/utils/ivy.utils.verbosity.html">Verbosity</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Testing</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/testing/helpers/ivy_tests.test_ivy.helpers.assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/testing/helpers/ivy_tests.test_ivy.helpers.available_frameworks.html">Available frameworks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/testing/helpers/ivy_tests.test_ivy.helpers.function_testing.html">Function testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/testing/helpers/ivy_tests.test_ivy.helpers.globals.html">Globals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/testing/helpers/ivy_tests.test_ivy.helpers.hypothesis_helpers.html">Hypothesis helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/testing/helpers/ivy_tests.test_ivy.helpers.structs.html">Structs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/testing/helpers/ivy_tests.test_ivy.helpers.test_parameter_flags.html">Test parameter flags</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/testing/helpers/ivy_tests.test_ivy.helpers.testing_helpers.html">Testing helpers</a></li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links">
+    <div class="bd-toc-item navbar-nav">
+        <p aria-level="2" class="caption" role="heading">
+            <span class="caption-text">Docs</span>
+        </p>
+        <ul class="nav bd-sidenav">
+            <li class="toctree-l1">
+                <a class="reference external" href="/ivy">
+                    Ivy
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/mech">
+                    Ivy mech
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/vision">
+                    Ivy vision
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/robot">
+                    Ivy robot
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/gym">
+                    Ivy gym
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/memory">
+                    Ivy memory
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/builder">
+                    Ivy builder
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/models">
+                    Ivy models
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/ecosystem">
+                    Ivy ecosystem
+                </a>
+            </li>
+            </ul>
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumbs">
+  <ul class="bd-breadcrumbs" role="navigation" aria-label="Breadcrumb">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../design.html" class="nav-link">Design</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../ivy_as_a_framework.html" class="nav-link">Ivy as a Framework</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">Ivy Stateful API</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="ivy-stateful-api">
+<h1>Ivy Stateful API<a class="headerlink" href="#ivy-stateful-api" title="Permalink to this heading">#</a></h1>
+<p>Here we explain how Ivy’s stateful API builds on the functional API and the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> class to provide other convenient classes in the form of optimizers, network layers and custom trainable modules, which help get your ML projects up and running very quickly!</p>
+<p>So, without further ado, let’s walk through what the stateful API has to offer!</p>
+<section id="modules">
+<h2>Modules<a class="headerlink" href="#modules" title="Permalink to this heading">#</a></h2>
+<p>The most helpful stateful Ivy class is perhaps the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Module</span></code>.
+This can be used to create custom trainable layers or entire networks.
+Manually defined trainable variables must be specified in the <code class="xref py py-meth docutils literal notranslate"><span class="pre">_create_variables()</span></code> method.
+For example, we can create a linear layer by deriving from <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Module</span></code> like so:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Linear</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_channels</span><span class="p">,</span> <span class="n">output_channels</span><span class="p">,</span>
+                 <span class="n">with_bias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span> <span class="o">=</span> <span class="n">input_channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span> <span class="o">=</span> <span class="n">output_channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_w_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">output_channels</span><span class="p">,</span> <span class="n">input_channels</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_b_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">output_channels</span><span class="p">,)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_with_bias</span> <span class="o">=</span> <span class="n">with_bias</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">):</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span>
+                <span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_w_shape</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="n">dev</span><span class="p">)}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_bias</span><span class="p">:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="n">v</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span>
+                        <span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_b_shape</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="n">dev</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">v</span>
+
+    <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span>
+          <span class="n">inputs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">w</span><span class="p">,</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">b</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_bias</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For simplicity, this is slightly different to the builtin <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Linear</span></code> in a couple of ways, as we will explain in the Initializer section below.</p>
+<p>All <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Module</span></code> instances have an attribute v (short for variables), which stores all of the trainable variables in the module in an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>.
+For our example above, the hierarchical structure of these variables is the same as that defined in the method <code class="xref py py-meth docutils literal notranslate"><span class="pre">_create_variables()</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">linear</span> <span class="o">=</span> <span class="n">Linear</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">linear</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+
+<span class="p">{</span>
+    <span class="n">b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]),</span>
+    <span class="n">w</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="o">-</span><span class="mf">0.729</span><span class="p">,</span> <span class="mf">0.396</span><span class="p">],</span>
+                  <span class="p">[</span><span class="o">-</span><span class="mf">1.</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.764</span><span class="p">],</span>
+                  <span class="p">[</span><span class="o">-</span><span class="mf">0.872</span><span class="p">,</span> <span class="mf">0.211</span><span class="p">],</span>
+                  <span class="p">[</span><span class="mf">0.439</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.644</span><span class="p">]])</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This is all well and good for defining a single layer, but manually defining all variables in <code class="code docutils literal notranslate"><span class="pre">_create_variables</span></code> for very complex networks would be a total nightmare.</p>
+<p>To overcome this issue, modules can be nested up to an arbitrary depth.
+This means we can very easily create more complex networks as compositions of other sub-modules or layers.
+For example, we can create a simple fully connected network with our linear layers.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">FC</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear0</span> <span class="o">=</span> <span class="n">Linear</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear1</span> <span class="o">=</span> <span class="n">Linear</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear0</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear1</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>In this case, we don’t specify any variables manually using <code class="code docutils literal notranslate"><span class="pre">_create_variables</span></code>.
+This is because all variables in the network reside in the linear layers.
+These variables are all detected automatically.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fc</span> <span class="o">=</span> <span class="n">FC</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fc</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+
+<span class="p">{</span>
+    <span class="n">linear0</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">b</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ivy</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">Array</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">]),</span>
+        <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ivy</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">Array</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+    <span class="p">},</span>
+    <span class="n">linear1</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+        <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ivy</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">Array</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">64</span><span class="p">])</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Not only are variables detected automatically for <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Module</span></code> instances which are direct attributes of the top-level class, as above, but also if they are contained within any nested structure which is itself an attribute of the top-level class, such as lists, tuples or dicts.
+These all work up to an arbitrary nested depth.
+Check out some of the different ways of defining network layers and how this impacts the variable structure below.</p>
+<p>As a list:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">FC</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="p">[</span><span class="n">Linear</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span> <span class="n">Linear</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">x</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="mi">1</span><span class="p">](</span><span class="n">x</span><span class="p">))</span>
+
+<span class="n">fc</span> <span class="o">=</span> <span class="n">FC</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fc</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+
+<span class="p">{</span>
+    <span class="n">linear</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">v0</span><span class="p">:</span> <span class="p">{</span>
+            <span class="n">b</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ivy</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">Array</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">]),</span>
+            <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ivy</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">Array</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+        <span class="p">},</span>
+        <span class="n">v1</span><span class="p">:</span> <span class="p">{</span>
+            <span class="n">b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+            <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ivy</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">Array</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">64</span><span class="p">])</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>As a tuple:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">FC</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="p">(</span><span class="n">Linear</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span> <span class="n">Linear</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">x</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="mi">1</span><span class="p">](</span><span class="n">x</span><span class="p">))</span>
+
+<span class="n">fc</span> <span class="o">=</span> <span class="n">FC</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fc</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+
+<span class="p">{</span>
+    <span class="n">linear</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">v0</span><span class="p">:</span> <span class="p">{</span>
+            <span class="n">b</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ivy</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">Array</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">]),</span>
+            <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ivy</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">Array</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+        <span class="p">},</span>
+        <span class="n">v1</span><span class="p">:</span> <span class="p">{</span>
+            <span class="n">b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+            <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ivy</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">Array</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">64</span><span class="p">])</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>As a dict:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">FC</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;key0&#39;</span><span class="p">:</span> <span class="n">Linear</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span>
+                       <span class="s1">&#39;key1&#39;</span><span class="p">:</span> <span class="n">Linear</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">1</span><span class="p">)}</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="s1">&#39;key0&#39;</span><span class="p">](</span><span class="n">x</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="s1">&#39;key1&#39;</span><span class="p">](</span><span class="n">x</span><span class="p">))</span>
+
+<span class="n">fc</span> <span class="o">=</span> <span class="n">FC</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fc</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+
+<span class="p">{</span>
+    <span class="n">linear</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">key0</span><span class="p">:</span> <span class="p">{</span>
+            <span class="n">b</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ivy</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">Array</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">]),</span>
+            <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ivy</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">Array</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+        <span class="p">},</span>
+        <span class="n">key1</span><span class="p">:</span> <span class="p">{</span>
+            <span class="n">b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+            <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ivy</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">Array</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">64</span><span class="p">])</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>As a nested list:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">FC</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="p">[[</span><span class="n">Linear</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span> <span class="n">Linear</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">)],</span>
+                       <span class="n">Linear</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">linear</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">linear</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="mi">1</span><span class="p">](</span><span class="n">x</span><span class="p">))</span>
+
+<span class="n">fc</span> <span class="o">=</span> <span class="n">FC</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fc</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+
+<span class="p">{</span>
+    <span class="n">linear</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">v0</span><span class="p">:</span> <span class="p">{</span>
+            <span class="n">v0</span><span class="p">:</span> <span class="p">{</span>
+                <span class="n">b</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ivy</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">Array</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">]),</span>
+                <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ivy</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">Array</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+            <span class="p">},</span>
+            <span class="n">v1</span><span class="p">:</span> <span class="p">{</span>
+                <span class="n">b</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ivy</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">Array</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">]),</span>
+                <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ivy</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">Array</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">])</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="n">v1</span><span class="p">:</span> <span class="p">{</span>
+            <span class="n">b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+            <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ivy</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">Array</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">64</span><span class="p">])</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Duplicates are also handled correctly, if for example a layer is stored both as a direct attribute and also within a list:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">FC</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear0</span> <span class="o">=</span> <span class="n">Linear</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear1</span> <span class="o">=</span> <span class="n">Linear</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear3</span> <span class="o">=</span> <span class="n">Linear</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">linear0</span><span class="p">,</span>
+                       <span class="bp">self</span><span class="o">.</span><span class="n">linear1</span><span class="p">,</span>
+                       <span class="n">Linear</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">)]</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">x</span><span class="p">))</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="mi">1</span><span class="p">](</span><span class="n">x</span><span class="p">))</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">[</span><span class="mi">2</span><span class="p">](</span><span class="n">x</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear3</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="n">fc</span> <span class="o">=</span> <span class="n">FC</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fc</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+
+<span class="p">{</span>
+    <span class="n">linear</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">v0</span><span class="p">:</span> <span class="p">{</span>
+            <span class="n">b</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ivy</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">Array</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">]),</span>
+            <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ivy</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">Array</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+        <span class="p">},</span>
+        <span class="n">v1</span><span class="p">:</span> <span class="p">{</span>
+            <span class="n">b</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ivy</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">Array</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">]),</span>
+            <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ivy</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">Array</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">])</span>
+        <span class="p">},</span>
+        <span class="n">v2</span><span class="p">:</span> <span class="p">{</span>
+            <span class="n">b</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ivy</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">Array</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">]),</span>
+            <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ivy</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">Array</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">])</span>
+        <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="n">linear3</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+        <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ivy</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">Array</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">64</span><span class="p">])</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>While the examples above all use the functional API for calling the ReLU and Sigmoid activation functions, we can also call these using the stateful API like so:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">FC</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear0</span> <span class="o">=</span> <span class="n">Linear</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear1</span> <span class="o">=</span> <span class="n">Linear</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">relu</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ReLU</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sigmoid</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Sigmoid</span><span class="p">()</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear0</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear1</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>It may seem counter intuitive to implement the activation as an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Module</span></code>, as there are no hidden trainable weights.
+However, for networks where modules are directly chained together, and all outputs from the preceding module are fed as inputs to the subsequent module, then we can use the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Sequential</span></code> class.
+This can simplify the construction of our small fully connected network even further.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fc</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+        <span class="n">Linear</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+        <span class="n">Linear</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">Sigmoid</span><span class="p">())</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">fc</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+
+<span class="p">{</span>
+    <span class="n">submodules</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">v0</span><span class="p">:</span> <span class="p">{</span>
+            <span class="n">b</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ivy</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">Array</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">]),</span>
+            <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ivy</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">Array</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+        <span class="p">},</span>
+        <span class="n">v2</span><span class="p">:</span> <span class="p">{</span>
+            <span class="n">b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+            <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ivy</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">Array</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">64</span><span class="p">])</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Given that the weights of our network are stored in an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>, and the gradients returned from <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.execute_with_gradients()</span></code> are also stored in an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>, all operations are applied recursively to every variable at all leaves.
+Therefore, we can train the network in a few lines of code like so:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x_in</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>
+<span class="n">target</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">])</span>
+<span class="n">lr</span> <span class="o">=</span> <span class="mf">0.001</span>
+
+<span class="k">def</span> <span class="nf">loss_fn</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">((</span><span class="n">out</span> <span class="o">-</span> <span class="n">target</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">loss</span><span class="p">,</span> <span class="n">grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span>
+        <span class="n">loss_fn</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">v</span> <span class="o">-</span> <span class="n">grads</span> <span class="o">*</span> <span class="n">lr</span>
+</pre></div>
+</div>
+</section>
+<section id="initializers">
+<h2>Initializers<a class="headerlink" href="#initializers" title="Permalink to this heading">#</a></h2>
+<p>In the examples above, we defined how the trainable weights should be initialized directly in the <code class="code docutils literal notranslate"><span class="pre">_create_variables</span></code> method.
+However, it would be better if we could decouple the initialization scheme from the layer implementation.
+This is where the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Initializer</span></code> class comes in.
+The actual implementation for the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Linear</span></code> layer exposed in the Ivy stateful API is as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/stateful/layers.py</span>
+<span class="k">class</span> <span class="nc">Linear</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_channels</span><span class="p">,</span> <span class="n">output_channels</span><span class="p">,</span>
+                 <span class="n">weight_initializer</span><span class="o">=</span><span class="n">GlorotUniform</span><span class="p">(),</span>
+                 <span class="n">bias_initializer</span><span class="o">=</span><span class="n">Zeros</span><span class="p">(),</span> <span class="n">with_bias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span> <span class="o">=</span> <span class="n">input_channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span> <span class="o">=</span> <span class="n">output_channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_w_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">output_channels</span><span class="p">,</span> <span class="n">input_channels</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_b_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">output_channels</span><span class="p">,)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_w_init</span> <span class="o">=</span> <span class="n">weight_initializer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_b_init</span> <span class="o">=</span> <span class="n">bias_initializer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_with_bias</span> <span class="o">=</span> <span class="n">with_bias</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">):</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">_w_shape</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">,</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span><span class="p">)}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_bias</span><span class="p">:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="n">v</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_b_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span>
+              <span class="bp">self</span><span class="o">.</span><span class="n">_b_shape</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">v</span>
+
+    <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span>
+          <span class="n">inputs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">w</span><span class="p">,</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">b</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_bias</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Initializer</span></code> class has a single abstract method, <code class="code docutils literal notranslate"><span class="pre">create_variables(var_shape,</span> <span class="pre">dev,</span> <span class="pre">fan_out=None,</span> <span class="pre">fan_in=None,</span> <span class="pre">*args,</span> <span class="pre">**kwargs)</span></code>.
+Check out the <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/ivy/stateful/initializers.py">code</a> or <a class="reference external" href="https://lets-unify.ai/ivy/neural_net_stateful/initializers.html">docs</a> for more details.
+The default initializer for the weights is <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.GlorotUniform</span></code> and for this bias is <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Zeros</span></code>.
+Let’s take a quick look at what these look like.
+<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.GlorotUniform</span></code> derives from a more general <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Uniform</span></code> initializer class, and is then simply implemented as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/stateful/initializers.py</span>
+<span class="k">class</span> <span class="nc">GlorotUniform</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Uniform</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">numerator</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">fan_mode</span><span class="o">=</span><span class="s1">&#39;fan_sum&#39;</span><span class="p">,</span> <span class="n">power</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">gain</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Zeros</span></code> derives from a more general <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Constant</span></code> initializer class, and is then simply implemented as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/stateful/initializers.py</span>
+<span class="k">class</span> <span class="nc">Zeros</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Constant</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">constant</span><span class="o">=</span><span class="mf">0.</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The initializers are not stateful, and so adding them to the “stateful API” is a slight misnomer.
+However, the dedicated initializer class helps us to decouple initialization schemes from layer implementations, which are themselves stateful.
+Given that their application is entirely specific to stateful <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Module</span></code> instances, they still belong in the stateful API.</p>
+</section>
+<section id="optimizers">
+<h2>Optimizers<a class="headerlink" href="#optimizers" title="Permalink to this heading">#</a></h2>
+<p>Recapping the example given above, we saw that <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Module</span></code> instances can be trained like so:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x_in</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>
+<span class="n">target</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">])</span>
+<span class="n">lr</span> <span class="o">=</span> <span class="mf">0.001</span>
+
+<span class="k">def</span> <span class="nf">loss_fn</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">((</span><span class="n">out</span> <span class="o">-</span> <span class="n">target</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">loss</span><span class="p">,</span> <span class="n">grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span>
+        <span class="n">loss_fn</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">v</span> <span class="o">-</span> <span class="n">grads</span> <span class="o">*</span> <span class="n">lr</span>
+</pre></div>
+</div>
+<p>However, what if we want to do something more complex than vanilla gradient descent? What about ADAM or other stateful optimizers such as LARS and LAMB? This is where the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Optimizer</span></code> class comes in.</p>
+<p>Let’s take the class <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Adam</span></code> as an example.
+The implementation is as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/stateful/optimizers.py</span>
+<span class="k">class</span> <span class="nc">Adam</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Optimizer</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span>
+                 <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-07</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">compile_on_next_step</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">Optimizer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">compile_on_next_step</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_beta1</span> <span class="o">=</span> <span class="n">beta1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_beta2</span> <span class="o">=</span> <span class="n">beta2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span> <span class="o">=</span> <span class="n">epsilon</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mw</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vw</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_first_pass</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_should_compile</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="c1"># Custom Step</span>
+
+    <span class="k">def</span> <span class="nf">_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_first_pass</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mw</span> <span class="o">=</span> <span class="n">grads</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_vw</span> <span class="o">=</span> <span class="n">grads</span> <span class="o">**</span> <span class="mi">2</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_first_pass</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">new_v</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">adam_update</span><span class="p">(</span>
+            <span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lr</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lr</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lr</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_count</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_beta1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_beta2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inplace</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_stop_gradients</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">new_v</span>
+
+    <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mw</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">mw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vw</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">vw</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">({</span><span class="s1">&#39;mw&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mw</span><span class="p">,</span> <span class="s1">&#39;vw&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vw</span><span class="p">})</span>
+</pre></div>
+</div>
+<p>By changing only a couple of lines, we can use this optimizer to train our network like so:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x_in</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>
+<span class="n">target</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">])</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="mf">0.001</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">loss_fn</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">((</span><span class="n">out</span> <span class="o">-</span> <span class="n">target</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">loss</span><span class="p">,</span> <span class="n">grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span>
+        <span class="n">loss_fn</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Round Up</strong></p>
+<p>That should hopefully be enough to get you started with Ivy’s stateful API 😊</p>
+<p>Please reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> if you have any questions!</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="ivy_container.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Ivy Container</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="ivy_array.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Ivy Array</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item"><nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Design</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../building_blocks.html">Building Blocks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ivy_as_a_transpiler.html">Ivy as a Transpiler</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../ivy_as_a_framework.html">Ivy as a Framework</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="ivy_container.html">Ivy Container</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Ivy Stateful API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_array.html">Ivy Array</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#modules">Modules</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#initializers">Initializers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimizers">Optimizers</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            <div class="bd-footer-content__inner"></div>
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="copyright">
+    
+      © Copyright 2020-2023, Ivy Team.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+  <p class="sphinx-version">
+    Created using <a href="https://sphinx-doc.org/">Sphinx</a> 6.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

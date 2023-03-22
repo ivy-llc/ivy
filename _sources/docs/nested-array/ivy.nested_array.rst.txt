@@ -1,0 +1,14 @@
+﻿nested_array
+============
+
+.. This is a placeholder so the include directive removes what's before it
+.. REMOVE_BEFORE_HERE
+.. autosummary::
+   :toctree: nested_array
+   :template: top_level_module.rst
+   :caption: ivy.nested_array
+   :substitute-caption:
+   :hide-table:
+   :fix-directory:
+
+   ivy.nested_array.nested_array

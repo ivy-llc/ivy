@@ -1,0 +1,15 @@
+Norms
+=====
+
+
+
+.. automodule:: ivy.stateful.norms
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+
+
+.. discussion-links:: ivy.stateful.norms

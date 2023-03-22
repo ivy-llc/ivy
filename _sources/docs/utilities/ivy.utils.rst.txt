@@ -1,0 +1,19 @@
+﻿utils
+=====
+
+.. This is a placeholder so the include directive removes what's before it
+.. REMOVE_BEFORE_HERE
+.. autosummary::
+   :toctree: utils
+   :template: top_level_module.rst
+   :caption: ivy.utils
+   :substitute-caption:
+   :hide-table:
+   :fix-directory:
+
+   ivy.utils.assertions
+   ivy.utils.backend
+   ivy.utils.dynamic_import
+   ivy.utils.exceptions
+   ivy.utils.inspection
+   ivy.utils.verbosity

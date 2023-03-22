@@ -1,0 +1,15 @@
+Device
+======
+
+
+
+.. automodule:: ivy.functional.ivy.device
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+
+
+.. discussion-links:: ivy.functional.ivy.device

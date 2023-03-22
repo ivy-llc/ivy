@@ -1,0 +1,64 @@
+﻿Array
+=====
+
+.. autosummary::
+   :toctree: array
+   :template: data_module.rst
+   :hide-table:
+   :recursive:
+
+   ivy.data_classes.array.activations
+
+   ivy.data_classes.array.conversions
+
+   ivy.data_classes.array.creation
+
+   ivy.data_classes.array.data_type
+
+   ivy.data_classes.array.device
+
+   ivy.data_classes.array.elementwise
+
+   ivy.data_classes.array.experimental
+
+   ivy.data_classes.array.general
+
+   ivy.data_classes.array.gradients
+
+   ivy.data_classes.array.image
+
+   ivy.data_classes.array.layers
+
+   ivy.data_classes.array.linear_algebra
+
+   ivy.data_classes.array.losses
+
+   ivy.data_classes.array.manipulation
+
+   ivy.data_classes.array.norms
+
+   ivy.data_classes.array.random
+
+   ivy.data_classes.array.searching
+
+   ivy.data_classes.array.set
+
+   ivy.data_classes.array.sorting
+
+   ivy.data_classes.array.statistical
+
+   ivy.data_classes.array.utility
+
+   ivy.data_classes.array.wrapping
+
+
+.. automodule:: ivy.data_classes.array.array
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+
+
+.. discussion-links:: ivy.data_classes.array.array

@@ -1,0 +1,712 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>What does Ivy Add? &#8212; Ivy Documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d" />
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'overview/related_work/what_does_ivy_add';</script>
+    <link rel="icon" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Extensions" href="../extensions.html" />
+    <link rel="prev" title="ML-Unifying Companies" href="ml_unifying_companies.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  <div class="navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo.png?raw=true" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo_dark.png?raw=true" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item"><div></div></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/unifyai/ivy" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/letsunifyai" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-twitter"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item"><div></div></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/unifyai/ivy" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/letsunifyai" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-twitter"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item"><nav class="bd-docs-nav bd-links"
+  aria-label="Section Navigation">
+    <div class="bd-toc-item navbar-nav">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html">Design</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../related_work.html">Related Work</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="api_standards.html">API Standards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wrapper_frameworks.html">Wrapper Frameworks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frameworks.html">Frameworks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graph_tracers.html">Graph Tracers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exchange_formats.html">Exchange Formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="compiler_infrastructure.html">Compiler Infrastructure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_vendor_compiler_frameworks.html">Multi-Vendor Compiler Frameworks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vendor_specific_apis.html">Vendor-Specific APIs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vendor_specific_compilers.html">Vendor-Specific Compilers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ml_unifying_companies.html">ML-Unifying Companies</a></li>
+<li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">What does Ivy Add?</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+
+
+
+
+
+
+
+
+
+
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deep_dive.html">Deep Dive</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.control_flow_ops.html">Control flow ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.experimental.html">Experimental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.utility.html">Utility</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Data classes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/data_classes/ivy.data_classes.array.html">Array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/data_classes/ivy.data_classes.container.html">Container</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Framework classes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.helpers.html">Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.sequential.html">Sequential</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Nested array</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/nested-array/nested_array/ivy.nested_array.nested_array.html">Nested array</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Utils</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.backend.html">Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.dynamic_import.html">Dynamic import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.inspection.html">Inspection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.verbosity.html">Verbosity</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Testing</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.available_frameworks.html">Available frameworks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.function_testing.html">Function testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.globals.html">Globals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.hypothesis_helpers.html">Hypothesis helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.structs.html">Structs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.test_parameter_flags.html">Test parameter flags</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.testing_helpers.html">Testing helpers</a></li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links">
+    <div class="bd-toc-item navbar-nav">
+        <p aria-level="2" class="caption" role="heading">
+            <span class="caption-text">Docs</span>
+        </p>
+        <ul class="nav bd-sidenav">
+            <li class="toctree-l1">
+                <a class="reference external" href="/ivy">
+                    Ivy
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/mech">
+                    Ivy mech
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/vision">
+                    Ivy vision
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/robot">
+                    Ivy robot
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/gym">
+                    Ivy gym
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/memory">
+                    Ivy memory
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/builder">
+                    Ivy builder
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/models">
+                    Ivy models
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/ecosystem">
+                    Ivy ecosystem
+                </a>
+            </li>
+            </ul>
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumbs">
+  <ul class="bd-breadcrumbs" role="navigation" aria-label="Breadcrumb">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../related_work.html" class="nav-link">Related Work</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">What does Ivy Add?</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="what-does-ivy-add">
+<span id="rworks-what-does-ivy-add"></span><h1>What does Ivy Add?<a class="headerlink" href="#what-does-ivy-add" title="Permalink to this heading">#</a></h1>
+<section id="api-standards">
+<h2>API Standards<a class="headerlink" href="#api-standards" title="Permalink to this heading">#</a></h2>
+<p>Ivy fully adheres to the <a class="reference external" href="https://data-apis.org/array-api">Array API Standard</a>, and we are strongly aligned with their unification vision.
+Ivy is entirely complimentary to the standard, implementing all of the functions defined by the standard, and populating each of them with implementations supporting a variety of frameworks.</p>
+<p>Further into the future, we have quite lofty ambitions for Ivy to extend beyond the Python realm, and to help build the bedrock of a more general, language-agnostic, purely mathematical standardized Array API.
+Given that the function signatures at the Array API level are very much mathematically bound, it is certainly possible to define this purely mathematical, language-agnostic Array API, using the Array API Standard as a starting point.
+In this light, the current release of Ivy would simply be the “Python backend” of Ivy, which itself of course would contain the same framework-specific backends itself, but just pushed one level further down the backend hierarchy.
+In future, we hope that it will be possible to use this mathematical API as an intermediate representation which would enable transpilations between frameworks in <em>different</em> languages.
+For example, transpiling from <a class="reference external" href="https://pytorch.org/">PyTorch</a> to the <a class="reference external" href="https://fluxml.ai/">Flux</a> framework written in <a class="reference external" href="https://julialang.org/">Julia</a> would be a great feature.
+However, for the time being we are focusing exclusively on Python, in order to mitigate the risk of “biting off more than we can chew”!</p>
+</section>
+<section id="wrapper-frameworks">
+<h2>Wrapper Frameworks<a class="headerlink" href="#wrapper-frameworks" title="Permalink to this heading">#</a></h2>
+<p>Ivy is itself a Python Wrapper Framework.
+The biggest difference between Ivy and all others listed in the <a class="reference internal" href="wrapper_frameworks.html#wrapper-frameworks"><span class="std std-ref">Wrapper Frameworks</span></a> section is that Ivy supports transpilations between frameworks, while all other frameworks only enable the creation of entirely new code which itself is framework-agnostic.
+There are also other more subtle differences.
+For example, Ivy includes both a low level fully functional API and a high level stateful API, offering both low level control and high level convenience.
+In contrast, <a class="reference external" href="https://eagerpy.jonasrauber.de/">EagerPy</a> and <a class="reference external" href="http://tensorly.org/">TensorLy</a> both only include functional APIs, <a class="reference external" href="https://thinc.ai/">Thinc</a> only includes a high level stateful API, and <a class="reference external" href="https://neuropod.ai/">NeuroPod</a> only supports an even higher level wrapper for deployment.
+Similar to Ivy, <a class="reference external" href="https://keras.io/">Keras</a> did also support both functional and stateful APIs, but since version 2.4 it only supports <a class="reference external" href="https://www.tensorflow.org/">TensorFlow</a> as a backend.</p>
+</section>
+<section id="frameworks">
+<h2>Frameworks<a class="headerlink" href="#frameworks" title="Permalink to this heading">#</a></h2>
+<p>Ivy wraps the standalone ML frameworks in Python, and enables transpilations between the various frameworks and framework versions.
+It therefore extends what is possible in any of the specific individual frameworks in isolation.</p>
+</section>
+<section id="graph-tracers">
+<h2>Graph Tracers<a class="headerlink" href="#graph-tracers" title="Permalink to this heading">#</a></h2>
+<p>Ivy’s <span class="xref std std-ref">Graph Compiler</span> exhibits similar properties to many of the framework-specific graph tracers.
+Ivy’s graph compiler employs function tracing for computing the graph, and uses this graph as an intermediate representation during the transpilation process.
+Of all the graph tracers, Ivy’s graph compiler is most similar to <a class="reference external" href="https://pytorch.org/docs/stable/fx.html">torch.fx</a>.
+This is because <code class="code docutils literal notranslate"><span class="pre">torch.fx</span></code> also operates entirely in Python, without deferring to lower level languages for tracing and extracting the computation graph or the intermediate representation.
+The main difference is that Ivy’s graph compiler is fully framework-agnostic; Ivy’s compiler is able to compile graphs from any framework, while framework-specific compilers are of course bound to their particular framework.</p>
+</section>
+<section id="exchange-formats">
+<h2>Exchange Formats<a class="headerlink" href="#exchange-formats" title="Permalink to this heading">#</a></h2>
+<p>The neural network exchange formats have particular relevance to Ivy, given their utility for sharing networks between frameworks.
+For example, models can be exported to the <a class="reference external" href="https://onnx.ai/">ONNX</a> format from <a class="reference external" href="https://www.tensorflow.org/">TensorFlow</a>, and then the ONNX model can be loaded into <a class="reference external" href="https://pytorch.org/">PyTorch</a>.
+This could be seen as a form of transpilation, which is one of the central goals of Ivy.
+However, there are some important differences between Ivy’s approach and that of exchange formats.
+Firstly, Ivy requires no third-party “buy in” whatsoever.
+We take the initiative of wrapping the functional APIs of each framework and each framework version ourselves, such that Ivy can transpile between any framework and version without any need for the existing frameworks to put their own time and effort into supporting Ivy.
+Additionally, Ivy also enables transpilations for training, not only for deployment.
+For example, Ivy enables users to fine-tune or retrain <a class="reference external" href="https://jax.readthedocs.io/">JAX</a> models using their <a class="reference external" href="https://pytorch.org/">PyTorch</a> training pipeline, something which the exchange formats do not enable.
+Finally, Ivy exhaustively supports the full range of array processing functions available in all frameworks, which again the exchange formats do not do.
+This makes it much more broadly applicable to a wider range of applications, spanning from cutting edge deep learning to more conventional machine learning, general numerical computing and data analytics.</p>
+</section>
+<section id="compiler-infrastructure">
+<h2>Compiler Infrastructure<a class="headerlink" href="#compiler-infrastructure" title="Permalink to this heading">#</a></h2>
+<p>Compiler infrastructure is essential in order to enable arbitrary frameworks to support arbitrary hardware targets.
+<a class="reference external" href="https://mlir.llvm.org/">MLIR</a>, for example, has hugely simplified <a class="reference external" href="https://www.tensorflow.org/">TensorFlow</a>’s workflow for supporting various hardware vendors in a scalable manner, with minimal code duplication.
+However, while infrastructure such as MLIR at the compiler level is essential for framework developers, in its current form it cannot easily be used to guide the creation of tools which enable code transpilations between the user facing functions higher up the ML stack.
+The intermediate representations used by the compiler infrastructure sit further down the stack, closer to the compilers and to the hardware.
+Transpilation between frameworks requires an IR that sits between the functional APIs of the frameworks themselves, in the way that Ivy does, and this is not really the purpose of these compiler infrastructure IRs.
+Ivy’s unification goals are therefore complimentary to the unifying goals of the various compiler infrastructure efforts.</p>
+</section>
+<section id="multi-vendor-compiler-frameworks">
+<h2>Multi-Vendor Compiler Frameworks<a class="headerlink" href="#multi-vendor-compiler-frameworks" title="Permalink to this heading">#</a></h2>
+<p>Multi-vendor compiler frameworks sit a bit further down the stack still, and can optionally make use of the compiler infrastructure as scaffolding.
+Likewise, these greatly simplify the complex task of enabling models from any framework to be deployed on any hardware, but they do nothing to address the challenge of running code from one framework inside another framework at training time, which is the central problem Ivy addresses.
+Therefore, again these efforts are complimentary to Ivy’s high-level unification goals.</p>
+</section>
+<section id="vendor-specific-apis">
+<h2>Vendor-Specific APIs<a class="headerlink" href="#vendor-specific-apis" title="Permalink to this heading">#</a></h2>
+<p>Likewise, vendor-specific APIs sit even further down the stack.
+These enable custom operations to be defined for execution on the specified hardware, and they form an essential part of the stack.
+However, again they do nothing to address the challenge of running code from one framework inside another framework at training time, which is the central problem Ivy addresses.</p>
+</section>
+<section id="vendor-specific-compilers">
+<h2>Vendor-Specific Compilers<a class="headerlink" href="#vendor-specific-compilers" title="Permalink to this heading">#</a></h2>
+<p>Finally, vendor-specific compilers sit at the very bottom of the stack as far as our diagram is concerned (ignoring assembly languages, byte code etc.).
+These are essential for converting models into instructions which the specific hardware can actually understand, and they also of course form a critical part of the stack.
+However, again they do nothing to address the challenge of running code from one framework inside another framework at training time, which is the central problem Ivy addresses.</p>
+</section>
+<section id="ml-unifying-companies">
+<h2>ML-Unifying Companies<a class="headerlink" href="#ml-unifying-companies" title="Permalink to this heading">#</a></h2>
+<p>The ML-unifying companies <a class="reference external" href="https://quansight.com/">Quansight</a>, <a class="reference external" href="https://octoml.ai/">OctoML</a> and <a class="reference external" href="https://www.modular.com/">Modular</a> are/were directly involved with the <a class="reference external" href="https://data-apis.org/array-api">Array API Standard</a>, <a class="reference external" href="https://tvm.apache.org/">Apache TVM</a> and <a class="reference external" href="https://mlir.llvm.org/">MLIR</a> respectively, as explained in the <a class="reference internal" href="#ml-unifying-companies"><span class="std std-ref">ML-Unifying Companies</span></a> section.
+For the same reasons that Ivy as a framework is complementary to these three frameworks, Ivy as a company is also complementary to these three companies.
+Firstly, we are adhering to the <a class="reference external" href="https://data-apis.org/array-api">Array API Standard</a> defined by Quansight.
+In essence they have written the standard and we have implemented it, which is pretty much as complementary as it gets.
+Similarly, OctoML makes it easy for anyone to <em>deploy</em> their model anywhere, while Ivy makes it easy for anyone to mix and match any code from any frameworks and versions to <em>train</em> their model anywhere.
+Again very complementary objectives.
+Finally, Modular will perhaps make it possible for developers to make changes at various levels of the stack when creating ML models using their “”, and this would also be a great addition to the field.
+Compared to Modular which focuses on the lower levels of the stack, Ivy instead unifies the ML frameworks at the functional API level, enabling code conversions to and from the user-facing APIs themselves, without diving into any of the lower level details.
+All of these features are entirely complementary, and together would form a powerful suite of unifying tools for ML practitioners.</p>
+<p><strong>Round Up</strong></p>
+<p>If you have any questions, please feel free to reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/1034436036371157083">related work channel</a> or in the <a class="reference external" href="https://discord.com/channels/799879767196958751/1034436085587120149">related work forum</a>!</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="ml_unifying_companies.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">ML-Unifying Companies</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../extensions.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Extensions</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item"><nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Related Work</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="api_standards.html">API Standards</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wrapper_frameworks.html">Wrapper Frameworks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="frameworks.html">Frameworks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graph_tracers.html">Graph Tracers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exchange_formats.html">Exchange Formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compiler_infrastructure.html">Compiler Infrastructure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_vendor_compiler_frameworks.html">Multi-Vendor Compiler Frameworks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vendor_specific_apis.html">Vendor-Specific APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vendor_specific_compilers.html">Vendor-Specific Compilers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ml_unifying_companies.html">ML-Unifying Companies</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">What does Ivy Add?</a></li>
+</ul>
+</div>
+</nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#api-standards">API Standards</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#wrapper-frameworks">Wrapper Frameworks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#frameworks">Frameworks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#graph-tracers">Graph Tracers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exchange-formats">Exchange Formats</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#compiler-infrastructure">Compiler Infrastructure</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-vendor-compiler-frameworks">Multi-Vendor Compiler Frameworks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vendor-specific-apis">Vendor-Specific APIs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vendor-specific-compilers">Vendor-Specific Compilers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ml-unifying-companies">ML-Unifying Companies</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            <div class="bd-footer-content__inner"></div>
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="copyright">
+    
+      © Copyright 2020-2023, Ivy Team.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+  <p class="sphinx-version">
+    Created using <a href="https://sphinx-doc.org/">Sphinx</a> 6.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

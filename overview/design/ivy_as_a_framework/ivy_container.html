@@ -1,0 +1,1223 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Ivy Container &#8212; Ivy Documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d" />
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/clipboard.min.js"></script>
+    <script src="../../../_static/copybutton.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'overview/design/ivy_as_a_framework/ivy_container';</script>
+    <link rel="icon" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Ivy Stateful API" href="ivy_stateful_api.html" />
+    <link rel="prev" title="Ivy as a Framework" href="../ivy_as_a_framework.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  <div class="navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo.png?raw=true" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo_dark.png?raw=true" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item"><div></div></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/unifyai/ivy" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/letsunifyai" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-twitter"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item"><div></div></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/unifyai/ivy" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/letsunifyai" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-twitter"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item"><nav class="bd-docs-nav bd-links"
+  aria-label="Section Navigation">
+    <div class="bd-toc-item navbar-nav">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../background.html">Background</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../design.html">Design</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../building_blocks.html">Building Blocks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ivy_as_a_transpiler.html">Ivy as a Transpiler</a></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../ivy_as_a_framework.html">Ivy as a Framework</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l3 current active has-children"><a class="current reference internal" href="#">Ivy Container</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ivy_stateful_api.html">Ivy Stateful API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ivy_array.html">Ivy Array</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../related_work.html">Related Work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../deep_dive.html">Deep Dive</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../glossary.html">Glossary</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.control_flow_ops.html">Control flow ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.experimental.html">Experimental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/functional/ivy/ivy.functional.ivy.utility.html">Utility</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Data classes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/data_classes/ivy.data_classes.array.html">Array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/data_classes/ivy.data_classes.container.html">Container</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Framework classes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/framework/stateful/ivy.stateful.activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/framework/stateful/ivy.stateful.converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/framework/stateful/ivy.stateful.helpers.html">Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/framework/stateful/ivy.stateful.initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/framework/stateful/ivy.stateful.layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/framework/stateful/ivy.stateful.module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/framework/stateful/ivy.stateful.norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/framework/stateful/ivy.stateful.optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/framework/stateful/ivy.stateful.sequential.html">Sequential</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Nested array</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/nested-array/nested_array/ivy.nested_array.nested_array.html">Nested array</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Utils</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/utilities/utils/ivy.utils.assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/utilities/utils/ivy.utils.backend.html">Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/utilities/utils/ivy.utils.dynamic_import.html">Dynamic import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/utilities/utils/ivy.utils.exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/utilities/utils/ivy.utils.inspection.html">Inspection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/utilities/utils/ivy.utils.verbosity.html">Verbosity</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Testing</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/testing/helpers/ivy_tests.test_ivy.helpers.assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/testing/helpers/ivy_tests.test_ivy.helpers.available_frameworks.html">Available frameworks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/testing/helpers/ivy_tests.test_ivy.helpers.function_testing.html">Function testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/testing/helpers/ivy_tests.test_ivy.helpers.globals.html">Globals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/testing/helpers/ivy_tests.test_ivy.helpers.hypothesis_helpers.html">Hypothesis helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/testing/helpers/ivy_tests.test_ivy.helpers.structs.html">Structs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/testing/helpers/ivy_tests.test_ivy.helpers.test_parameter_flags.html">Test parameter flags</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/testing/helpers/ivy_tests.test_ivy.helpers.testing_helpers.html">Testing helpers</a></li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links">
+    <div class="bd-toc-item navbar-nav">
+        <p aria-level="2" class="caption" role="heading">
+            <span class="caption-text">Docs</span>
+        </p>
+        <ul class="nav bd-sidenav">
+            <li class="toctree-l1">
+                <a class="reference external" href="/ivy">
+                    Ivy
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/mech">
+                    Ivy mech
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/vision">
+                    Ivy vision
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/robot">
+                    Ivy robot
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/gym">
+                    Ivy gym
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/memory">
+                    Ivy memory
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/builder">
+                    Ivy builder
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/models">
+                    Ivy models
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/ecosystem">
+                    Ivy ecosystem
+                </a>
+            </li>
+            </ul>
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumbs">
+  <ul class="bd-breadcrumbs" role="navigation" aria-label="Breadcrumb">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../design.html" class="nav-link">Design</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../ivy_as_a_framework.html" class="nav-link">Ivy as a Framework</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">Ivy Container</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="ivy-container">
+<h1>Ivy Container<a class="headerlink" href="#ivy-container" title="Permalink to this heading">#</a></h1>
+<p>Here, we explain how the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> class saves you a ton of time and cleans up code in almost all aspects of your ML workflow.
+So without further ado, let’s dive in!</p>
+<p>Firstly, Dictionaries are an incredibly powerful and useful data type in Python.
+They enable a clean, readable and efficient-access (via hashing) storage of arbitrarily hierarchical data.</p>
+<p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> class can be seen as a souped-up Dict, with many useful features built on top.
+It’s the backbone of most high level operations in Ivy.</p>
+<p>Let’s walk through some of the most important features of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>!</p>
+<section id="construction">
+<h2>Construction<a class="headerlink" href="#construction" title="Permalink to this heading">#</a></h2>
+<p>A container can be constructed in a number of ways.
+All construction approaches below result in identical <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ivy</span>
+
+ <span class="n">dct</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+        <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">]),</span>
+              <span class="s1">&#39;d&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.</span><span class="p">])}}</span>
+
+<span class="c1"># via dict</span>
+<span class="n">cnt</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">dct</span><span class="p">)</span>
+
+<span class="c1"># via keyword</span>
+<span class="n">cnt</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+                    <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">]),</span>
+                                    <span class="n">d</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.</span><span class="p">])))</span>
+
+<span class="c1"># combos</span>
+<span class="n">cnt</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+                    <span class="n">b</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">]),</span>
+                       <span class="s1">&#39;d&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.</span><span class="p">])})</span>
+
+<span class="n">cnt</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+                     <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">]),</span>
+                                        <span class="n">d</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.</span><span class="p">]))})</span>
+</pre></div>
+</div>
+</section>
+<section id="representation">
+<h2>Representation<a class="headerlink" href="#representation" title="Permalink to this heading">#</a></h2>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> prints the hierarchical structure to the terminal in a very intuitive manner, much more so than native Python Dicts.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">dct</span><span class="p">)</span>
+
+<span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">]),</span> <span class="s1">&#39;d&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.</span><span class="p">])}}</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">cnt</span><span class="p">)</span>
+
+<span class="p">{</span>
+    <span class="n">a</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+    <span class="n">b</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">c</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">]),</span>
+        <span class="n">d</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.</span><span class="p">])</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>If the container holds very large arrays, then their shapes are printed instead.
+Again, this does not happen with native Python Dicts.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dct</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span>
+       <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)),</span>
+             <span class="s1">&#39;d&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">2</span><span class="p">))}}</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">dct</span><span class="p">)</span>
+
+<span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]]),</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]]),</span> <span class="s1">&#39;d&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]])}}</span>
+
+<span class="n">cnt</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">dct</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">cnt</span><span class="p">)</span>
+
+ <span class="p">{</span>
+     <span class="n">a</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ivy</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">Array</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span>
+     <span class="n">b</span><span class="p">:</span> <span class="p">{</span>
+         <span class="n">c</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ivy</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">Array</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1000</span><span class="p">]),</span>
+         <span class="n">d</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">ivy</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">Array</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+     <span class="p">}</span>
+ <span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="recursive-methods">
+<h2>Recursive Methods<a class="headerlink" href="#recursive-methods" title="Permalink to this heading">#</a></h2>
+<p>All methods in Ivy’s functional API are implemented as recursive methods on the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>.
+This means you can easily map a single method to all arrays in the container with a single line.</p>
+<p>Starting with the following container:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cnt</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">]),</span>
+                     <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">]),</span>
+                           <span class="s1">&#39;d&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">])}})</span>
+</pre></div>
+</div>
+<p>We can compute the mean of each sub-array:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">cnt</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+
+<span class="p">{</span>
+     <span class="n">a</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mf">1.</span><span class="p">),</span>
+     <span class="n">b</span><span class="p">:</span> <span class="p">{</span>
+         <span class="n">c</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mf">4.3333335</span><span class="p">),</span>
+         <span class="n">d</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mf">5.6666665</span><span class="p">)</span>
+     <span class="p">}</span>
+ <span class="p">}</span>
+</pre></div>
+</div>
+<p>Or we can flip each sub-array:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">cnt</span><span class="o">.</span><span class="n">flip</span><span class="p">())</span>
+
+ <span class="p">{</span>
+     <span class="n">a</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]),</span>
+     <span class="n">b</span><span class="p">:</span> <span class="p">{</span>
+         <span class="n">c</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">5.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">]),</span>
+         <span class="n">d</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">])</span>
+     <span class="p">}</span>
+ <span class="p">}</span>
+</pre></div>
+</div>
+<p>There are about 200 such functions for the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> class in total, check out the <a class="reference external" href="https://github.com/unifyai/ivy/tree/master/ivy/container">code</a> or <a class="reference external" href="https://lets-unify.ai/ivy/core/container.html">docs</a> to see what they are!</p>
+</section>
+<section id="built-ins">
+<h2>Built-ins<a class="headerlink" href="#built-ins" title="Permalink to this heading">#</a></h2>
+<p>All built-in methods also apply recursively.
+For example, performing a gradient update step for a set of network weights can be done in one line.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">weights</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span>
+       <span class="p">{</span><span class="s1">&#39;linear&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.2</span><span class="p">]),</span>
+                   <span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">2.3</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">])}})</span>
+
+<span class="n">grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span>
+       <span class="p">{</span><span class="s1">&#39;linear&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.4</span><span class="p">]),</span>
+                   <span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.9</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">2.1</span><span class="p">])}})</span>
+
+<span class="n">lr</span> <span class="o">=</span> <span class="mf">0.1</span>
+
+<span class="n">new_weights</span> <span class="o">=</span> <span class="n">weights</span> <span class="o">-</span> <span class="n">grads</span> <span class="o">*</span> <span class="n">lr</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">new_weights</span><span class="p">)</span>
+
+ <span class="p">{</span>
+     <span class="n">linear</span><span class="p">:</span> <span class="p">{</span>
+         <span class="n">b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.06</span><span class="p">]),</span>
+         <span class="n">w</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.31</span><span class="p">,</span> <span class="mf">2.24</span><span class="p">,</span> <span class="mf">0.69</span><span class="p">])</span>
+     <span class="p">}</span>
+ <span class="p">}</span>
+</pre></div>
+</div>
+<p>Check out the section below on Ivy’s stateful API to see how the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> is used for storing all network weights in <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Module</span></code> instances!</p>
+</section>
+<section id="access">
+<h2>Access<a class="headerlink" href="#access" title="Permalink to this heading">#</a></h2>
+<p>The keys in an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> can be set and accessed by using either class attributes or keys in the dictionary.
+Both of these setting and accessing approaches are equivalent under the hood.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cnt</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">])})</span>
+
+<span class="n">cnt</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">])</span>
+<span class="n">cnt</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">cnt</span><span class="p">)</span>
+
+ <span class="p">{</span>
+     <span class="n">a</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+     <span class="n">b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">]),</span>
+     <span class="n">c</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.</span><span class="p">])</span>
+ <span class="p">}</span>
+
+<span class="k">assert</span> <span class="n">cnt</span><span class="o">.</span><span class="n">c</span> <span class="ow">is</span> <span class="n">cnt</span><span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Nested keys can also be set in one line, using either ‘/’ or ‘.’ as a delimiter.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cnt</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">])})</span>
+<span class="n">cnt</span><span class="p">[</span><span class="s1">&#39;b/c&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">])</span>
+<span class="n">cnt</span><span class="p">[</span><span class="s1">&#39;d.e.f&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">cnt</span><span class="p">)</span>
+
+ <span class="p">{</span>
+     <span class="n">a</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+     <span class="n">b</span><span class="p">:</span> <span class="p">{</span>
+         <span class="n">c</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">])</span>
+     <span class="p">},</span>
+     <span class="n">d</span><span class="p">:</span> <span class="p">{</span>
+         <span class="n">e</span><span class="p">:</span> <span class="p">{</span>
+             <span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.</span><span class="p">])</span>
+         <span class="p">}</span>
+     <span class="p">}</span>
+ <span class="p">}</span>
+</pre></div>
+</div>
+<p>One of the key benefits of using properties under the hood is the autocomplete support this introduces.
+Class attributes can be auto-completed when pressing tab midway through typing.
+This is not possible with Dicts.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cnt</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">({</span><span class="s1">&#39;agent&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;total_speed&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">])}})</span>
+<span class="n">cnt</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">total_height</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">])</span>
+<span class="n">cnt</span><span class="p">[</span><span class="s1">&#39;agent/total_width&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.</span><span class="p">])</span>
+
+<span class="n">cnt</span><span class="o">.</span><span class="n">age</span> <span class="o">-&gt;</span> <span class="n">tab</span>
+<span class="n">cnt</span><span class="o">.</span><span class="n">agent</span>
+<span class="n">cnt</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">tot</span> <span class="o">-&gt;</span> <span class="n">tab</span>
+<span class="n">cnt</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">total_</span> <span class="o">-&gt;</span> <span class="n">tab</span>
+
+<span class="n">cnt</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">total_height</span>  <span class="n">cnt</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">total_speed</span>   <span class="n">cnt</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">total_width</span>
+
+<span class="n">cnt</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">total_h</span> <span class="o">-&gt;</span> <span class="n">tab</span>
+<span class="n">cnt</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">total_height</span>
+
+<span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="saving-and-loading">
+<h2>Saving and Loading<a class="headerlink" href="#saving-and-loading" title="Permalink to this heading">#</a></h2>
+<p>Saving and loading to disk can be done in one of many ways, with each being suited to different data types in the container.</p>
+<p>For example, if the container mainly contains arrays (such as the weights of a network), then one of the following can be used.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">weights</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span>
+       <span class="p">{</span><span class="s1">&#39;linear&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.2</span><span class="p">]]),</span>
+                   <span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">2.3</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">]])}})</span>
+
+<span class="c1"># save and load as hdf5</span>
+<span class="n">weights</span><span class="o">.</span><span class="n">cont_to_disk_as_hdf5</span><span class="p">(</span><span class="s1">&#39;weights.hdf5&#39;</span><span class="p">)</span>
+<span class="n">loaded</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">cont_from_disk_as_hdf5</span><span class="p">(</span><span class="s1">&#39;weights.hdf5&#39;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">cont_identical</span><span class="p">(</span>
+       <span class="p">[</span><span class="n">loaded</span><span class="p">,</span> <span class="n">weights</span><span class="p">],</span> <span class="n">same_arrays</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># save and load as pickled</span>
+<span class="n">weights</span><span class="o">.</span><span class="n">cont_to_disk_as_pickled</span><span class="p">(</span><span class="s1">&#39;weights.pickled&#39;</span><span class="p">)</span>
+<span class="n">loaded</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">cont_from_disk_as_pickled</span><span class="p">(</span><span class="s1">&#39;weights.pickled&#39;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">cont_identical</span><span class="p">(</span>
+       <span class="p">[</span><span class="n">loaded</span><span class="p">,</span> <span class="n">weights</span><span class="p">],</span> <span class="n">same_arrays</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Alternatively, if the container mainly stored experiment configuration data, then the following can be used.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">config</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span>
+       <span class="p">{</span><span class="s1">&#39;loading&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;batch_size&#39;</span><span class="p">:</span> <span class="mi">16</span><span class="p">,</span>
+                    <span class="s1">&#39;dir&#39;</span><span class="p">:</span> <span class="s1">&#39;/dataset/images&#39;</span><span class="p">},</span>
+        <span class="s1">&#39;training&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;dropout&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                     <span class="s1">&#39;lr&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
+                     <span class="s1">&#39;optim&#39;</span><span class="p">:</span> <span class="s1">&#39;ADAM&#39;</span><span class="p">}})</span>
+
+<span class="c1"># save and load as json</span>
+<span class="n">config</span><span class="o">.</span><span class="n">cont_to_disk_as_json</span><span class="p">(</span><span class="s1">&#39;config.json&#39;</span><span class="p">)</span>
+
+<span class="c1"># config.json contents -------------#</span>
+<span class="c1"># {                                 #</span>
+<span class="c1">#     &quot;loading&quot;: {                  #</span>
+<span class="c1">#         &quot;batch_size&quot;: 16,         #</span>
+<span class="c1">#         &quot;dir&quot;: &quot;/dataset/images&quot;  #</span>
+<span class="c1">#     },                            #</span>
+<span class="c1">#     &quot;training&quot;: {                 #</span>
+<span class="c1">#         &quot;dropout&quot;: true,          #</span>
+<span class="c1">#         &quot;lr&quot;: 0.1,                #</span>
+<span class="c1">#         &quot;optim&quot;: &quot;ADAM&quot;           #</span>
+<span class="c1">#     }                             #</span>
+<span class="c1"># }                                 #</span>
+<span class="c1"># ----------------------------------#</span>
+
+<span class="n">loaded</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">cont_from_disk_as_json</span><span class="p">(</span><span class="s1">&#39;config.json&#39;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="p">(</span><span class="n">config</span> <span class="o">==</span> <span class="n">loaded</span><span class="p">)</span><span class="o">.</span><span class="n">cont_all_true</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="comparisons">
+<h2>Comparisons<a class="headerlink" href="#comparisons" title="Permalink to this heading">#</a></h2>
+<p>Comparing differences between containers can be achieved on a per-leaf basis.
+This is useful for debugging and also comparing configurations between runs.
+For example, consider a case where two containers of arrays should be identical at all levels.
+We can then very quickly find conflicting leaves.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cnt0</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+                  <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">])})</span>
+<span class="n">cnt1</span> <span class="o">=</span> <span class="n">cnt0</span><span class="o">.</span><span class="n">cont_deep_copy</span><span class="p">()</span>
+<span class="n">cnt1</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">cont_diff</span><span class="p">(</span><span class="n">cnt0</span><span class="p">,</span> <span class="n">cnt1</span><span class="p">))</span>
+
+<span class="p">{</span>
+    <span class="n">a</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+    <span class="n">b</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">diff_0</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">]),</span>
+        <span class="n">diff_1</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">])</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Or perhaps we saved JSON configuration files to disk for two different experiment runs, and then want to quickly see their differences.
+The <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.cont_diff()</span></code> method will also detect differences in the hierarchical structure and key name differences.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">config0</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span>
+       <span class="p">{</span><span class="s1">&#39;batch_size&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+        <span class="s1">&#39;lr&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
+        <span class="s1">&#39;optim&#39;</span><span class="p">:</span> <span class="s1">&#39;ADAM&#39;</span><span class="p">})</span>
+
+<span class="n">config1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span>
+       <span class="p">{</span><span class="s1">&#39;batch_size&#39;</span><span class="p">:</span> <span class="mi">16</span><span class="p">,</span>
+        <span class="s1">&#39;dropout&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
+        <span class="s1">&#39;lr&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">})</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">cont_diff</span><span class="p">(</span><span class="n">config0</span><span class="p">,</span> <span class="n">config1</span><span class="p">))</span>
+
+<span class="p">{</span>
+    <span class="n">batch_size</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">diff_0</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+        <span class="n">diff_1</span><span class="p">:</span> <span class="mi">16</span>
+    <span class="p">},</span>
+    <span class="n">dropout</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">diff_1</span><span class="p">:</span> <span class="mf">0.5</span>
+    <span class="p">},</span>
+    <span class="n">lr</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">optim</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">diff_0</span><span class="p">:</span> <span class="n">ADAM</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.cont_diff()</span></code> method can be applied to arbitrarily many containers at once in a single call, not just two as in the examples above.</p>
+</section>
+<section id="customized-representations">
+<h2>Customized Representations<a class="headerlink" href="#customized-representations" title="Permalink to this heading">#</a></h2>
+<p>Not only does <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> print to the terminal in a very intuitive manner, but there are also helper functions to fully control this representation.
+This is very helpful when debugging networks with huge numbers of parameters with a deep hierarchical structure for example.</p>
+<p>If our networks weights go many levels deep in the nested hierarchy, we might not want to see all of them when printing our container to screen.
+Consider the following nested structure.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">weights</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span>
+    <span class="p">{</span><span class="s1">&#39;decoder&#39;</span><span class="p">:</span>
+         <span class="p">{</span><span class="s1">&#39;l0&#39;</span><span class="p">:</span>
+              <span class="p">{</span><span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+               <span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]])},</span>
+          <span class="s1">&#39;l1&#39;</span><span class="p">:</span>
+              <span class="p">{</span><span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+               <span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]])}},</span>
+     <span class="s1">&#39;encoder&#39;</span><span class="p">:</span>
+         <span class="p">{</span><span class="s1">&#39;l0&#39;</span><span class="p">:</span>
+              <span class="p">{</span><span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+               <span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]])},</span>
+          <span class="s1">&#39;l1&#39;</span><span class="p">:</span>
+              <span class="p">{</span><span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+               <span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]])}},</span>
+     <span class="s1">&#39;l0&#39;</span><span class="p">:</span>
+         <span class="p">{</span><span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+          <span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]])},</span>
+     <span class="s1">&#39;l1&#39;</span><span class="p">:</span>
+         <span class="p">{</span><span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+          <span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]])}})</span>
+</pre></div>
+</div>
+<p>We can clip the depth of the printed container in order to make the structure of the root keys clearer.
+All nested structures below this depth are truncated into single keys with a “__” delimiter appending all keys below this depth.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">weights</span><span class="o">.</span><span class="n">cont_flatten_key_chains</span><span class="p">(</span><span class="n">above_height</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="p">{</span>
+    <span class="n">decoder__l0</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+        <span class="n">w</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]])</span>
+    <span class="p">},</span>
+    <span class="n">decoder__l1</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+        <span class="n">w</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]])</span>
+    <span class="p">},</span>
+    <span class="n">encoder__l0</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+        <span class="n">w</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]])</span>
+    <span class="p">},</span>
+    <span class="n">encoder__l1</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+        <span class="n">w</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]])</span>
+    <span class="p">},</span>
+    <span class="n">l0</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+        <span class="n">w</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]])</span>
+    <span class="p">},</span>
+    <span class="n">l1</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+        <span class="n">w</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]])</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Likewise, we can clip the height of the printed container in order to make the structure of the leaf keys clearer.
+All nested structures above this height are truncated into single keys with a “__” delimiter appending all keys above this height.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">weights</span><span class="o">.</span><span class="n">cont_flatten_key_chains</span><span class="p">(</span><span class="n">below_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="p">{</span>
+    <span class="n">decoder</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">l0__b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+        <span class="n">l0__w</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]]),</span>
+        <span class="n">l1__b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+        <span class="n">l1__w</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]])</span>
+    <span class="p">},</span>
+    <span class="n">encoder</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">l0__b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+        <span class="n">l0__w</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]]),</span>
+        <span class="n">l1__b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+        <span class="n">l1__w</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]])</span>
+    <span class="p">},</span>
+    <span class="n">l0</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+        <span class="n">w</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]])</span>
+    <span class="p">},</span>
+    <span class="n">l1</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span>
+        <span class="n">w</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]])</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>These are very useful methods when stepping through code and debugging complex nested structures such as the weights of a network.</p>
+<p>There are also methods: <code class="code docutils literal notranslate"><span class="pre">cont_with_print_limit</span></code> for controlling the printable size of arrays before the shape is instead displayed, <code class="code docutils literal notranslate"><span class="pre">cont_with_key_length_limit</span></code> for setting the maximum key length before string clipping, <code class="code docutils literal notranslate"><span class="pre">cont_with_print_indent</span></code> for controlling the nested indent, and many more.
+Check out the <a class="reference external" href="https://lets-unify.ai/ivy/core/container.html">docs</a> for more details!</p>
+</section>
+<section id="use-cases">
+<h2>Use Cases<a class="headerlink" href="#use-cases" title="Permalink to this heading">#</a></h2>
+<p>We’ll now just go through a few of the different use cases for the Ivy Container.
+The container is not limited to these use cases though, the container is the right choice whenever you are storing nested data!</p>
+</section>
+<section id="compartmentalization">
+<h2>Compartmentalization<a class="headerlink" href="#compartmentalization" title="Permalink to this heading">#</a></h2>
+<p>The most obvious use case for the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> class is to compartmentalize inputs into a useful structure.
+For example, without better foresight, we could untidily implement a function <code class="code docutils literal notranslate"><span class="pre">update_agent</span></code> as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">normalize_img</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
+    <span class="n">img_max</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reduce_max</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+    <span class="n">img_min</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reduce_min</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+    <span class="n">img_range</span> <span class="o">=</span> <span class="n">img_max</span> <span class="o">-</span> <span class="n">img_min</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">img</span> <span class="o">-</span> <span class="n">img_min</span><span class="p">)</span> <span class="o">/</span> <span class="n">img_range</span>
+
+<span class="k">def</span> <span class="nf">update_agent</span><span class="p">(</span><span class="n">agent_position</span><span class="p">,</span> <span class="n">agent_velocity</span><span class="p">,</span>
+                 <span class="n">agent_cam_front_rgb</span><span class="p">,</span> <span class="n">agent_cam_front_depth</span><span class="p">,</span>
+                 <span class="n">agent_cam_rear_rgb</span><span class="p">,</span> <span class="n">agent_cam_rear_depth</span><span class="p">,</span>
+                 <span class="n">agent_cam_lidar</span><span class="p">):</span>
+
+    <span class="c1"># update agent state</span>
+    <span class="n">agent_position</span> <span class="o">+=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">])</span>
+    <span class="n">agent_velocity</span> <span class="o">-=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
+
+    <span class="c1"># normalize images</span>
+    <span class="n">agent_cam_front_rgb</span> <span class="o">=</span> <span class="n">normalize_img</span><span class="p">(</span><span class="n">agent_cam_front_rgb</span><span class="p">)</span>
+    <span class="n">agent_cam_front_depth</span> <span class="o">=</span> <span class="n">normalize_img</span><span class="p">(</span><span class="n">agent_cam_front_depth</span><span class="p">)</span>
+    <span class="n">agent_cam_rear_rgb</span> <span class="o">=</span> <span class="n">normalize_img</span><span class="p">(</span><span class="n">agent_cam_rear_rgb</span><span class="p">)</span>
+    <span class="n">agent_cam_rear_depth</span> <span class="o">=</span> <span class="n">normalize_img</span><span class="p">(</span><span class="n">agent_cam_rear_depth</span><span class="p">)</span>
+    <span class="n">agent_cam_lidar</span> <span class="o">=</span> <span class="n">normalize_img</span><span class="p">(</span><span class="n">agent_cam_lidar</span><span class="p">)</span>
+
+    <span class="c1"># return</span>
+    <span class="k">return</span> <span class="n">agent_position</span><span class="p">,</span> <span class="n">agent_velocity</span><span class="p">,</span> <span class="n">agent_cam_front_rgb</span><span class="p">,</span>\
+           <span class="n">agent_cam_front_depth</span><span class="p">,</span> <span class="n">agent_cam_rear_rgb</span><span class="p">,</span>\
+           <span class="n">agent_cam_rear_depth</span><span class="p">,</span> <span class="n">agent_cam_lidar</span>
+</pre></div>
+</div>
+<p>Our code will be much cleaner if we do something like the following, particularly if there are many additional similar functions performing operations on the agent and the images:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Cameras</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">front_rgb</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">front_depth</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+                 <span class="n">rear_rgb</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">rear_depth</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+                 <span class="n">lidar</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                         <span class="n">front</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;rgb&#39;</span><span class="p">:</span> <span class="n">front_rgb</span><span class="p">,</span>
+                                <span class="s1">&#39;depth&#39;</span><span class="p">:</span> <span class="n">front_depth</span><span class="p">},</span>
+                         <span class="n">rear</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;rgb&#39;</span><span class="p">:</span> <span class="n">rear_rgb</span><span class="p">,</span>
+                               <span class="s1">&#39;depth&#39;</span><span class="p">:</span> <span class="n">rear_depth</span><span class="p">},</span>
+                         <span class="n">lidar</span><span class="o">=</span><span class="n">lidar</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">Agent</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+                 <span class="n">velocity</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">cams</span><span class="p">:</span> <span class="n">Cameras</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">,</span>
+                         <span class="n">velocity</span><span class="o">=</span><span class="n">velocity</span><span class="p">,</span> <span class="n">cams</span><span class="o">=</span><span class="n">cams</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">update_agent</span><span class="p">(</span><span class="n">agent</span><span class="p">:</span> <span class="n">Agent</span><span class="p">):</span>
+
+    <span class="c1"># update agent state</span>
+    <span class="n">agent</span><span class="o">.</span><span class="n">position</span> <span class="o">+=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">])</span>
+    <span class="n">agent</span><span class="o">.</span><span class="n">velocity</span> <span class="o">-=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
+
+    <span class="c1"># normalize images</span>
+    <span class="n">cam_max</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">cams</span><span class="o">.</span><span class="n">reduce_max</span><span class="p">()</span>
+    <span class="n">cam_min</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">cams</span><span class="o">.</span><span class="n">reduce_min</span><span class="p">()</span>
+    <span class="n">cam_range</span> <span class="o">=</span> <span class="n">cam_max</span> <span class="o">-</span> <span class="n">cam_min</span>
+    <span class="n">agent</span><span class="o">.</span><span class="n">cams</span> <span class="o">=</span> <span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">cams</span> <span class="o">-</span> <span class="n">cam_min</span><span class="p">)</span> <span class="o">/</span> <span class="n">cam_range</span>
+</pre></div>
+</div>
+<p>Of course, this argument holds for the use of custom classes or built-in containers (Python list, dict, tuple etc.), and isn’t only relevant for the Ivy container.
+However the recursive methods of the Ivy Container make things even more convenient, such as where we recursively normalize all five images in the final four lines of the <code class="code docutils literal notranslate"><span class="pre">update_agent</span></code> method.</p>
+</section>
+<section id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this heading">#</a></h2>
+<p>As briefly alluded to when explaining the <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.cont_diff()</span></code> method, the container class is also the ideal data type for storing experiment configurations.
+Configurations can either first be stored to disk as a JSON file and then loaded into the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> for recursive comparisons to see differences between experiments, or the config can be specified in the code and then saved to disk as a JSON to keep a permanent log afterwards.</p>
+</section>
+<section id="data-loading">
+<h2>Data loading<a class="headerlink" href="#data-loading" title="Permalink to this heading">#</a></h2>
+<p>The container can also be used for data loading.
+Our example uses single threaded loading, but incorporating multiprocessing with Queues is also pretty straightforward.</p>
+<p>To start with, let’s assume we have an image Dataset saved to disk with separate images for a front camera and a rear camera for each point in time.</p>
+<p>We can then load this Dataset with a configurable batch size like so, and we can easily iterate between each item in the batch.
+This is useful if we need to recursively unroll the entire batch in the time dimension for example.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">DataLoader</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cnt</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span>
+            <span class="nb">dict</span><span class="p">(</span><span class="n">imgs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;front&#39;</span><span class="p">:</span> <span class="s1">&#39;images/front/img_</span><span class="si">{}</span><span class="s1">.png&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;rear&#39;</span><span class="p">:</span> <span class="s1">&#39;images/rear/img_</span><span class="si">{}</span><span class="s1">.png&#39;</span><span class="p">}))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dataset_size</span> <span class="o">=</span> <span class="mi">8</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_batch_size</span> <span class="o">=</span> <span class="n">batch_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_count</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">cnt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cnt</span><span class="o">.</span><span class="n">cont_copy</span><span class="p">()</span>
+
+        <span class="c1"># image filenames</span>
+        <span class="n">img_fnames</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">cont_list_stack</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">cnt</span><span class="o">.</span><span class="n">imgs</span><span class="o">.</span><span class="n">cont_map</span><span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">fname</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">fname</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_count</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span>
+            <span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_batch_size</span><span class="p">)],</span> <span class="mi">0</span>
+        <span class="p">)</span>
+
+        <span class="c1"># load from disk</span>
+        <span class="n">loaded_imgs</span> <span class="o">=</span> <span class="n">img_fnames</span><span class="o">.</span><span class="n">cont_map</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">fnames</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+                 <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">fnames</span><span class="p">],</span> <span class="mi">0</span>
+            <span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">()</span>
+
+        <span class="c1"># update count</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_count</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_count</span> <span class="o">%=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dataset_size</span>
+
+        <span class="c1"># return batch</span>
+        <span class="n">cnt</span><span class="o">.</span><span class="n">imgs</span> <span class="o">=</span> <span class="n">loaded_imgs</span>
+        <span class="k">return</span> <span class="n">cnt</span>
+
+<span class="n">loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">batch</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">loader</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">batch</span><span class="o">.</span><span class="n">imgs</span><span class="o">.</span><span class="n">front</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">batch</span><span class="o">.</span><span class="n">imgs</span><span class="o">.</span><span class="n">rear</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">batch_slice</span> <span class="ow">in</span> <span class="n">batch</span><span class="o">.</span><span class="n">unstack</span><span class="p">(</span><span class="mi">0</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="n">batch_slice</span><span class="o">.</span><span class="n">imgs</span><span class="o">.</span><span class="n">front</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">batch_slice</span><span class="o">.</span><span class="n">imgs</span><span class="o">.</span><span class="n">rear</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="network-weights">
+<h2>Network weights<a class="headerlink" href="#network-weights" title="Permalink to this heading">#</a></h2>
+<p>Finally, the Ivy Containers can also be used for storing network weights.
+In fact, as is discussed in the documentation for the Ivy stateful API, this is how the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Module</span></code> class stores all trainable variables in the model.
+The following code is possible thanks to the recursive operation of the container, which applies the gradient update to all variable arrays in the container recursively.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyModel</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear0</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear0</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear1</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">MyModel</span><span class="p">()</span>
+<span class="n">x_in</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>
+<span class="n">target</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">])</span>
+<span class="n">lr</span> <span class="o">=</span> <span class="mf">0.001</span>
+
+<span class="k">def</span> <span class="nf">loss_fn</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">((</span><span class="n">out</span> <span class="o">-</span> <span class="n">target</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">loss</span><span class="p">,</span> <span class="n">grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span>
+      <span class="n">loss_fn</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">v</span> <span class="o">-</span> <span class="n">lr</span> <span class="o">*</span> <span class="n">grads</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;step </span><span class="si">{}</span><span class="s1"> loss </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+      <span class="n">step</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+
+<span class="p">{</span>
+    <span class="n">linear0</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">b</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">]),</span>
+        <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">64</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+    <span class="p">},</span>
+    <span class="n">linear1</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">b</span><span class="p">:</span> <span class="n">tensor</span><span class="p">([</span><span class="o">-</span><span class="mf">0.0145</span><span class="p">],</span> <span class="n">grad_fn</span><span class="o">=&lt;</span><span class="n">AddBackward0</span><span class="o">&gt;</span><span class="p">),</span>
+        <span class="n">w</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">64</span><span class="p">])</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Round Up</strong></p>
+<p>That should hopefully be enough to get you started with the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> class 😊</p>
+<p>Please reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> if you have any questions!</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../ivy_as_a_framework.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Ivy as a Framework</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="ivy_stateful_api.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Ivy Stateful API</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item"><nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Design</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../building_blocks.html">Building Blocks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ivy_as_a_transpiler.html">Ivy as a Transpiler</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../ivy_as_a_framework.html">Ivy as a Framework</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Ivy Container</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_stateful_api.html">Ivy Stateful API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_array.html">Ivy Array</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#construction">Construction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#representation">Representation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#recursive-methods">Recursive Methods</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#built-ins">Built-ins</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#access">Access</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#saving-and-loading">Saving and Loading</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparisons">Comparisons</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#customized-representations">Customized Representations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#use-cases">Use Cases</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#compartmentalization">Compartmentalization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration">Configuration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-loading">Data loading</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#network-weights">Network weights</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            <div class="bd-footer-content__inner"></div>
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="copyright">
+    
+      © Copyright 2020-2023, Ivy Team.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+  <p class="sphinx-version">
+    Created using <a href="https://sphinx-doc.org/">Sphinx</a> 6.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

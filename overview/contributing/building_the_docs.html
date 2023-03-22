@@ -1,0 +1,875 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Building the Docs &#8212; Ivy Documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d" />
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'overview/contributing/building_the_docs';</script>
+    <link rel="icon" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Deep Dive" href="../deep_dive.html" />
+    <link rel="prev" title="The Basics" href="the_basics.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  <div class="navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo.png?raw=true" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo_dark.png?raw=true" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item"><div></div></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/unifyai/ivy" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/letsunifyai" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-twitter"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item"><div></div></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/unifyai/ivy" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/letsunifyai" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-twitter"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item"><nav class="bd-docs-nav bd-links"
+  aria-label="Section Navigation">
+    <div class="bd-toc-item navbar-nav">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../related_work.html">Related Work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../contributing.html">Contributing</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="setting_up.html">Setting Up</a></li>
+<li class="toctree-l2"><a class="reference internal" href="the_basics.html">The Basics</a></li>
+<li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">Building the Docs</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+
+
+
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive.html">Deep Dive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="open_tasks.html">Open Tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applied_libraries.html">Applied Libraries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="helpful_resources.html">Helpful Resources</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../deep_dive.html">Deep Dive</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.control_flow_ops.html">Control flow ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.experimental.html">Experimental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.utility.html">Utility</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Data classes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/data_classes/ivy.data_classes.array.html">Array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/data_classes/ivy.data_classes.container.html">Container</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Framework classes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.helpers.html">Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.sequential.html">Sequential</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Nested array</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/nested-array/nested_array/ivy.nested_array.nested_array.html">Nested array</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Utils</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.backend.html">Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.dynamic_import.html">Dynamic import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.inspection.html">Inspection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.verbosity.html">Verbosity</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Testing</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.available_frameworks.html">Available frameworks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.function_testing.html">Function testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.globals.html">Globals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.hypothesis_helpers.html">Hypothesis helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.structs.html">Structs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.test_parameter_flags.html">Test parameter flags</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.testing_helpers.html">Testing helpers</a></li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links">
+    <div class="bd-toc-item navbar-nav">
+        <p aria-level="2" class="caption" role="heading">
+            <span class="caption-text">Docs</span>
+        </p>
+        <ul class="nav bd-sidenav">
+            <li class="toctree-l1">
+                <a class="reference external" href="/ivy">
+                    Ivy
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/mech">
+                    Ivy mech
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/vision">
+                    Ivy vision
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/robot">
+                    Ivy robot
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/gym">
+                    Ivy gym
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/memory">
+                    Ivy memory
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/builder">
+                    Ivy builder
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/models">
+                    Ivy models
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/ecosystem">
+                    Ivy ecosystem
+                </a>
+            </li>
+            </ul>
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumbs">
+  <ul class="bd-breadcrumbs" role="navigation" aria-label="Breadcrumb">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../contributing.html" class="nav-link">Contributing</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">Building the Docs</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="building-the-docs">
+<h1>Building the Docs<a class="headerlink" href="#building-the-docs" title="Permalink to this heading">#</a></h1>
+<blockquote>
+<div><p>⚠️ <strong>Deprecated</strong>: This documentation is for the old Ivy doc-builder, this
+<a class="reference external" href="https://github.com/unifyai/doc-builder/pull/15">PR</a> has changed the current behavior
+of the doc-builder. We will update this documentation soon.</p>
+</div></blockquote>
+<section id="building-the-docs-with-docker">
+<h2>Building the Docs with Docker<a class="headerlink" href="#building-the-docs-with-docker" title="Permalink to this heading">#</a></h2>
+<ol class="arabic">
+<li><p>Build the docker image using the doc-builder Dockerfile</p></li>
+<li><p>Clone or pull the <code class="code docutils literal notranslate"><span class="pre">unifyai/doc-builder</span></code> repository</p></li>
+<li><p>Change to the doc-builder folder</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cd doc-builder
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Build the docker image using the following command</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p>For Windows and MacOS users:</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>docker build -t unifyai/doc-builder:latest -f Dockerfile .
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>For Ubuntu users:</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>docker build --build-arg user=&lt;your-user-name&gt; --build-arg uid=&lt;your-uid&gt;  -t unifyai/doc-builder:latest -f Dockerfile .
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+</div></blockquote>
+</li>
+<li><p>Build the docs using the image:</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p>Clone or pull the <code class="code docutils literal notranslate"><span class="pre">unifyai/ivy</span></code> repository.</p></li>
+<li><p>Change to the docs folder</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cd ivy\docs
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Build the docs using <code class="code docutils literal notranslate"><span class="pre">make_docs.sh</span></code></p>
+<blockquote>
+<div><ol class="arabic">
+<li><p>For Windows users</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>sh make_docs.sh
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>For MacOS users</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>bash make_docs.sh root
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>For Ubuntu users</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>./make_docs.sh
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+</div></blockquote>
+</li>
+</ol>
+</div></blockquote>
+</li>
+</ol>
+</section>
+<section id="dockerless-doc-building">
+<h2>Dockerless Doc-building<a class="headerlink" href="#dockerless-doc-building" title="Permalink to this heading">#</a></h2>
+<p>To build the Ivy documentation locally, we will need to clone both the <code class="code docutils literal notranslate"><span class="pre">unifyai/doc-builder</span></code> and <code class="code docutils literal notranslate"><span class="pre">unifyai/ivy</span></code> repositories.
+After cloning repos, we need to create a virtual environment using either <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html">miniconda</a> or <a class="reference external" href="https://docs.python.org/3/library/venv.html">venv</a>:</p>
+<section id="using-miniconda">
+<h3>Using miniconda<a class="headerlink" href="#using-miniconda" title="Permalink to this heading">#</a></h3>
+<ol class="arabic">
+<li><p>Install <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html">miniconda</a></p></li>
+<li><p>Open conda terminal</p></li>
+<li><p>Create the environment by running the command (<code class="code docutils literal notranslate"><span class="pre">ivy_dev</span></code> is the name of the environment)</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>conda create --name ivy_dev python=3.8.10
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Activate the environment by:</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>conda activate ivy_dev
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+</section>
+<section id="using-venv">
+<h3>Using venv<a class="headerlink" href="#using-venv" title="Permalink to this heading">#</a></h3>
+<p>This is a built-in package and doesn’t require explicit installation.</p>
+<ol class="arabic">
+<li><p>Open your terminal/cmd in the directory where you would like to have the folder with the environment files</p></li>
+<li><p>Create the environment by running the command below with a new environment name. We named it <code class="code docutils literal notranslate"><span class="pre">ivy_dev</span></code> like above.</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python -m venv ivy_dev
+</pre></div>
+</div>
+<p>Try <code class="code docutils literal notranslate"><span class="pre">python3</span></code> if <code class="code docutils literal notranslate"><span class="pre">python</span></code> doesn’t work.</p>
+</div></blockquote>
+</li>
+<li><p>Activate the created environment by running (in the same working directory as the environment folder)</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ivy_dev\Scripts\activate.bat
+</pre></div>
+</div>
+<p>(on Windows)</p>
+<p>OR</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>source ivy_dev/bin/activate
+</pre></div>
+</div>
+<p>(on Mac/Linux)</p>
+</div></blockquote>
+</li>
+</ol>
+</section>
+<section id="id1">
+<h3>Building the docs<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h3>
+<p>After setting up the virtual environment, we can build the documentation locally.
+Move to the <code class="code docutils literal notranslate"><span class="pre">ivy/docs</span></code> folder in a terminal and execute the following command to build the docs from inside the virtual environment.</p>
+<ol class="arabic">
+<li><p>For Windows users</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>sh make_docs_without_docker.sh
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>For MacOS users</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>bash make_docs_without_docker.sh &lt;path to doc-builder folder relative to current folder i.e. ivy/docs&gt;
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>For Ubuntu users</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>bash make_docs_without_docker.sh &lt;path to doc-builder folder relative to current folder i.e. ivy/docs&gt;
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+<p>Assuming that we cloned the <code class="code docutils literal notranslate"><span class="pre">doc-builder</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy</span></code> repositories in the same folder, we can run <code class="code docutils literal notranslate"><span class="pre">make_docs_without_docker.sh</span></code> as follows:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>bash make_docs_without_docker.sh ../../doc-builder/
+</pre></div>
+</div>
+<p>You will now see the <cite>build</cite> folder where you can find generated <cite>html</cite> files.
+You can open them using any preferred browser and see how your changes affected the documentation pages.</p>
+</section>
+</section>
+<section id="working-of-the-documentation-building-pipeline">
+<h2>Working of the Documentation Building Pipeline<a class="headerlink" href="#working-of-the-documentation-building-pipeline" title="Permalink to this heading">#</a></h2>
+<p>Following are the files involved in the documentation building pipeline:</p>
+<section id="make-docs-sh">
+<h3>make_docs.sh:<a class="headerlink" href="#make-docs-sh" title="Permalink to this heading">#</a></h3>
+<p>This file exists in the docs folder of the project for which documentation is to be generated.
+It uses the unifyai/doc-builder:latest image and creates a container for documentation building.</p>
+</section>
+<section id="entrypoint-sh">
+<h3>entrypoint.sh:<a class="headerlink" href="#entrypoint-sh" title="Permalink to this heading">#</a></h3>
+<p>This is the first file involved in the documentation building pipeline.
+It installs the requirements, synchronizes the container’s folder with the project’s build folder.
+It is responsible for executing the rest of the pipeline as it runs the <code class="code docutils literal notranslate"><span class="pre">_make_docs.sh</span></code> and <code class="code docutils literal notranslate"><span class="pre">remove_docs.sh</span></code> files.</p>
+</section>
+<section id="id2">
+<h3>_make_docs.sh:<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h3>
+<div class="line-block">
+<div class="line">This file contains commands for executing files involved in generation of the documentation. _ at the start is to indicate that this is a privately accessed file.</div>
+<div class="line">This file fulfils the following purpose</div>
+<div class="line">1. It deletes any previously generated documentation in the <code class="code docutils literal notranslate"><span class="pre">autogenerated_source</span></code> folder and the <code class="code docutils literal notranslate"><span class="pre">build</span></code> folder.</div>
+<div class="line">2. Then it executes the <code class="code docutils literal notranslate"><span class="pre">generate_src_rst_files.py`</span></code> file, followed by the <code class="code docutils literal notranslate"><span class="pre">sphinx-build.py</span></code> file.</div>
+<div class="line">3. Then it deletes all files of format <code class="code docutils literal notranslate"><span class="pre">X.png</span></code> from the <code class="code docutils literal notranslate"><span class="pre">build/_images`</span></code> folder.</div>
+<div class="line">4. Lastly, it executes the <code class="code docutils literal notranslate"><span class="pre">correct_built_html_files.py</span></code> file.</div>
+</div>
+</section>
+<section id="generate-src-rst-files-py">
+<h3>generate_src_rst_files.py:<a class="headerlink" href="#generate-src-rst-files-py" title="Permalink to this heading">#</a></h3>
+<div class="line-block">
+<div class="line">This file is the first stage of documentation generation. It involves the use of code docstrings and project structure to generate rst files for the project.</div>
+<div class="line"><br /></div>
+<div class="line">The <code class="code docutils literal notranslate"><span class="pre">main</span></code> function does the following:</div>
+<div class="line">1. It looks for the submodules to be skipped, stepped into and processed out of order.</div>
+<div class="line">2. It reads the configuration from the <code class="code docutils literal notranslate"><span class="pre">partial_source/conf.py</span></code> file.</div>
+<div class="line">3. It deletes any previously generated documentation in the <code class="code docutils literal notranslate"><span class="pre">autogenerated_source</span></code> folder.</div>
+<div class="line">4. It copies files from the <code class="code docutils literal notranslate"><span class="pre">partial_source/images</span></code> folder to the <code class="code docutils literal notranslate"><span class="pre">build/_images</span></code> folder.</div>
+<div class="line">5. It calls the <code class="code docutils literal notranslate"><span class="pre">create_rst_files</span></code> function.</div>
+<div class="line"><br /></div>
+<div class="line">The <code class="code docutils literal notranslate"><span class="pre">create_rst_files</span></code> function does the following:</div>
+<div class="line">1. Lists all files in the current folder.</div>
+<div class="line">2. Filters out the submodules to be skipped.</div>
+<div class="line">3. Recursively accesses all submodules.</div>
+<div class="line">4. For every submodule, it creates a directory structure.</div>
+<div class="line">5. Every python module will be represented with a folder which will contain rst files for all its functions and a rst file which will use these files to generate the overall markup for the module.</div>
+<div class="line">6. Writing the rst files involves extracting function and class names using the <code class="code docutils literal notranslate"><span class="pre">get_functions_and_classes</span></code> function, followed by their doctrings.</div>
+<div class="line">7. A README.rst file is generated for every module and is named as module_name.rst using the <code class="code docutils literal notranslate"><span class="pre">copy_readme_to_rst</span></code> function.</div>
+<div class="line">8. The Table of Contents(TOC) tree is generated for the module according to the order followed and is appended to the rst file using the <code class="code docutils literal notranslate"><span class="pre">append_toctree_to_rst</span></code>.</div>
+<div class="line">9. An index.rst file is generated for the root directory using the <code class="code docutils literal notranslate"><span class="pre">create_index_rst</span></code> function.</div>
+<div class="line">10. If a module is to be stepped into, then this folder structure is not generated for it.</div>
+</div>
+</section>
+<section id="sphinx-build-py">
+<h3>sphinx-build.py<a class="headerlink" href="#sphinx-build-py" title="Permalink to this heading">#</a></h3>
+<p>This file is used to generate the HTML files for the documentation using the rst files generated previously.</p>
+</section>
+<section id="correct-built-html-files-py">
+<h3>correct_built_html_files.py<a class="headerlink" href="#correct-built-html-files-py" title="Permalink to this heading">#</a></h3>
+<p>This file is used for further processing on the HTML files generated by Sphinx.
+This involves replacing 3.14 with π, updating paths according to current folder, and updating namespaces in the code in the documentation.</p>
+</section>
+<section id="remove-files-sh">
+<h3>remove_files.sh<a class="headerlink" href="#remove-files-sh" title="Permalink to this heading">#</a></h3>
+<p>All files involved in the generation of documentation are removed by executing these commands.</p>
+<p><strong>Round Up</strong></p>
+<p>This should have hopefully given you a good understanding of the basics for
+building the docs locally.</p>
+<p>If you have any questions, please feel free to reach out on <a class="reference external" href="https://discord.gg/ZVQdvbzNQJ">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/982733967998484520">doc building channel</a>!</p>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="the_basics.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">The Basics</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../deep_dive.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Deep Dive</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item"><nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributing</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="setting_up.html">Setting Up</a></li>
+<li class="toctree-l1"><a class="reference internal" href="the_basics.html">The Basics</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Building the Docs</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/navigating_the_code.html">Navigating the Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/function_types.html">Function Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/superset_behaviour.html">Superset Behaviour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/backend_setting.html">Backend Setting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/arrays.html">Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/containers.html">Containers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/data_types.html">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/devices.html">Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/inplace_updates.html">Inplace Updates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/formatting.html">Formatting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/function_arguments.html">Function Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/docstrings.html">Docstrings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/array_api_tests.html">Array API Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/ivy_frontends.html">Ivy Frontends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/exception_handling.html">Exception Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/continuous_integration.html">Continuous Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="open_tasks.html">Open Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applied_libraries.html">Applied Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpful_resources.html">Helpful Resources</a></li>
+</ul>
+</div>
+</nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-the-docs-with-docker">Building the Docs with Docker</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dockerless-doc-building">Dockerless Doc-building</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-miniconda">Using miniconda</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-venv">Using venv</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Building the docs</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#working-of-the-documentation-building-pipeline">Working of the Documentation Building Pipeline</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#make-docs-sh">make_docs.sh:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#entrypoint-sh">entrypoint.sh:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">_make_docs.sh:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#generate-src-rst-files-py">generate_src_rst_files.py:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sphinx-build-py">sphinx-build.py</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#correct-built-html-files-py">correct_built_html_files.py</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#remove-files-sh">remove_files.sh</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            <div class="bd-footer-content__inner"></div>
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="copyright">
+    
+      © Copyright 2020-2023, Ivy Team.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+  <p class="sphinx-version">
+    Created using <a href="https://sphinx-doc.org/">Sphinx</a> 6.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

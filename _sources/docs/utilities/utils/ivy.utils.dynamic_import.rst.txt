@@ -1,0 +1,15 @@
+Dynamic import
+==============
+
+
+
+.. automodule:: ivy.utils.dynamic_import
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+
+
+.. discussion-links:: ivy.utils.dynamic_import

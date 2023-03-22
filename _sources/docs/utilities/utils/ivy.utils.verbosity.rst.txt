@@ -1,0 +1,15 @@
+Verbosity
+=========
+
+
+
+.. automodule:: ivy.utils.verbosity
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+
+
+.. discussion-links:: ivy.utils.verbosity

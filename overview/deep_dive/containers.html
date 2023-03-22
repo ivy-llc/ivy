@@ -1,0 +1,968 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Containers &#8212; Ivy Documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d" />
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'overview/deep_dive/containers';</script>
+    <link rel="icon" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Data Types" href="data_types.html" />
+    <link rel="prev" title="Arrays" href="arrays.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  <div class="navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo.png?raw=true" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo_dark.png?raw=true" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item"><div></div></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/unifyai/ivy" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/letsunifyai" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-twitter"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item"><div></div></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/unifyai/ivy" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/letsunifyai" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-twitter"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item"><nav class="bd-docs-nav bd-links"
+  aria-label="Section Navigation">
+    <div class="bd-toc-item navbar-nav">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../related_work.html">Related Work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../contributing.html">Contributing</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../contributing/setting_up.html">Setting Up</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing/the_basics.html">The Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing/building_the_docs.html">Building the Docs</a></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="navigating_the_code.html">Navigating the Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="function_types.html">Function Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="superset_behaviour.html">Superset Behaviour</a></li>
+<li class="toctree-l3"><a class="reference internal" href="backend_setting.html">Backend Setting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="arrays.html">Arrays</a></li>
+<li class="toctree-l3 current active has-children"><a class="current reference internal" href="#">Containers</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+
+
+
+
+
+
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="data_types.html">Data Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="devices.html">Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="inplace_updates.html">Inplace Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="formatting.html">Formatting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="function_arguments.html">Function Arguments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="docstrings.html">Docstrings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="array_api_tests.html">Array API Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ivy_frontends.html">Ivy Frontends</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exception_handling.html">Exception Handling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="continuous_integration.html">Continuous Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing/open_tasks.html">Open Tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing/applied_libraries.html">Applied Libraries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing/helpful_resources.html">Helpful Resources</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="navigating_the_code.html">Navigating the Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_types.html">Function Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="superset_behaviour.html">Superset Behaviour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend_setting.html">Backend Setting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arrays.html">Arrays</a></li>
+<li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">Containers</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
+
+
+
+
+
+
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="data_types.html">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devices.html">Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inplace_updates.html">Inplace Updates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formatting.html">Formatting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_arguments.html">Function Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstrings.html">Docstrings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="array_api_tests.html">Array API Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_frontends.html">Ivy Frontends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exception_handling.html">Exception Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="continuous_integration.html">Continuous Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.control_flow_ops.html">Control flow ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.experimental.html">Experimental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.utility.html">Utility</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Data classes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/data_classes/ivy.data_classes.array.html">Array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/data_classes/ivy.data_classes.container.html">Container</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Framework classes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.helpers.html">Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.sequential.html">Sequential</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Nested array</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/nested-array/nested_array/ivy.nested_array.nested_array.html">Nested array</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Utils</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.backend.html">Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.dynamic_import.html">Dynamic import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.inspection.html">Inspection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.verbosity.html">Verbosity</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Testing</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.available_frameworks.html">Available frameworks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.function_testing.html">Function testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.globals.html">Globals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.hypothesis_helpers.html">Hypothesis helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.structs.html">Structs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.test_parameter_flags.html">Test parameter flags</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.testing_helpers.html">Testing helpers</a></li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links">
+    <div class="bd-toc-item navbar-nav">
+        <p aria-level="2" class="caption" role="heading">
+            <span class="caption-text">Docs</span>
+        </p>
+        <ul class="nav bd-sidenav">
+            <li class="toctree-l1">
+                <a class="reference external" href="/ivy">
+                    Ivy
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/mech">
+                    Ivy mech
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/vision">
+                    Ivy vision
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/robot">
+                    Ivy robot
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/gym">
+                    Ivy gym
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/memory">
+                    Ivy memory
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/builder">
+                    Ivy builder
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/models">
+                    Ivy models
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/ecosystem">
+                    Ivy ecosystem
+                </a>
+            </li>
+            </ul>
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumbs">
+  <ul class="bd-breadcrumbs" role="navigation" aria-label="Breadcrumb">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../contributing.html" class="nav-link">Contributing</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../deep_dive.html" class="nav-link">Deep Dive</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">Containers</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="containers">
+<h1>Containers<a class="headerlink" href="#containers" title="Permalink to this heading">#</a></h1>
+<p>The <a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L52">ivy.Container</a> inherits from <a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L51">dict</a>, and is useful for storing nested data.
+For example, the container is equally suitable for storing batches of training data, or for storing the weights of a network.</p>
+<p>The methods of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> class are more varied than those of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code>.
+All methods of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> are instance methods, and almost all of them directly wrap a function in the functional API.</p>
+<p>For the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>, there are also methods which are specific to the container itself, for performing nested operations on the leaves of the container for example.
+In addition, there are also static methods.
+Overall, this results in the following five mutually exclusive groups of <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> methods.
+Each of these are explained in the following sub-sections.</p>
+<ol class="arabic simple">
+<li><p>Container instance methods</p></li>
+<li><p>Container static methods</p></li>
+<li><p>API instance methods</p></li>
+<li><p>API special methods</p></li>
+<li><p>API static methods</p></li>
+</ol>
+<section id="container-instance-methods">
+<h2>Container Instance Methods<a class="headerlink" href="#container-instance-methods" title="Permalink to this heading">#</a></h2>
+<p>Container instance methods are methods which are specific to the container itself.
+A few examples include <a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L3070">ivy.Container.cont_map</a> which is used for mapping a function to all leaves of the container, <a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L1592">ivy.Container.cont_all_true</a> which determines if all container leaves evaluate to boolean <cite>True</cite>, and <a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L2043">ivy.Container.cont_to_iterator</a> which returns an iterator for traversing the leaves of the container.</p>
+<p>There are many more examples, check out the abstract <a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L51">ContainerBase</a> class to see some more!</p>
+</section>
+<section id="container-static-methods">
+<h2>Container Static Methods<a class="headerlink" href="#container-static-methods" title="Permalink to this heading">#</a></h2>
+<p>Container static methods are also methods which are specific to containers, but which generally operate across <em>multiple</em> containers rather than a single container.
+This underpins the decision to not bind these method to a single container instance, and instead implement them as <em>static</em> methods.</p>
+<p>A few examples include <a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L623">ivy.Container.cont_multi_map</a> which is used for mapping a function to all leaves of <em>multiple</em> containers with the same nested structure, <a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L427">ivy.Container.cont_diff</a> which displays the difference in nested structure between multiple containers, and <a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L741">ivy.Container.cont_common_key_chains</a> which returns the nested structure that is common to all containers.</p>
+<p>There are many more examples, check out the abstract <a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L51">ContainerBase</a> class to see some more!</p>
+</section>
+<section id="api-static-methods">
+<h2>API Static Methods<a class="headerlink" href="#api-static-methods" title="Permalink to this heading">#</a></h2>
+<p>Unlike the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> class, the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> also implements <strong>all nestable functions</strong> in the functional API as <em>static</em> methods.
+The main reason for this is to support the <em>nestable</em> property of all functions in the API, which is explained in detail in the <a class="reference internal" href="function_types.html#function-types"><span class="std std-ref">Function Types</span></a> section.</p>
+<p>To recap, what this means is that every function can arbitrarily accept <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances for <strong>any</strong> of the arguments, and in such cases the function will automatically be mapped to the leaves of this container.
+When multiple containers are passed, this mapping is only applied to their shared nested structure, with the mapping applied to each of these leaves.</p>
+<p>In such cases, the function in the functional API defers to this <em>static</em> <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> implementation.
+Under the hood, <a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L162">ivy.Container.cont_multi_map_in_function</a> enables us to pass in arbitrary combinations of containers and non-containers, and perform the correct mapping across the leaves.
+Internally, <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.cont_multi_map_in_function()</span></code> calls <a href="#id4"><span class="problematic" id="id5">`ivy.Container.multi_map`_</span></a>.
+In cases where there are no containers passed, <a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L162">ivy.Container.cont_multi_map_in_function</a> will simply call the function once on the non-container arguments provided.</p>
+<p>A few examples of <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> API static methods are <a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/elementwise.py#L324">ivy.Container.static_add</a>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/elementwise.py#L7285">ivy.Container.static_tan</a> and <a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/manipulation.py#L835">ivy.Container.static_roll</a>.</p>
+<p>As with <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code>, given the simple set of rules which underpin how these static methods should all be implemented, if a source-code implementation is not found, then this <a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/__init__.py#L709">static method is added</a> programmatically.
+This serves as a helpful backup in cases where some static methods are accidentally missed out.</p>
+<p>The benefit of the source code implementations is that this makes the code much more readable, with important methods not being entirely absent from the code.
+It also enables other helpful perks, such as auto-completions in the IDE etc.</p>
+</section>
+<section id="api-instance-methods">
+<h2>API Instance Methods<a class="headerlink" href="#api-instance-methods" title="Permalink to this heading">#</a></h2>
+<p>The <em>API</em> instance methods serve a similar purpose to the instance methods of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> class.
+They enable functions in Ivy’s functional API to be called as instance methods on the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> class.
+The difference is that with the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>, the API function is applied recursively to all the leaves of the container.
+The <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance methods should <strong>exactly match</strong> the instance methods of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code>, both in terms of the methods implemented and the argument which <code class="code docutils literal notranslate"><span class="pre">self</span></code> replaces in the function being called.
+This means <code class="code docutils literal notranslate"><span class="pre">self</span></code> should always replace the first array argument in the function.
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/1dba30aae5c087cd8b9ffe7c4b42db1904160873/ivy/container/elementwise.py#L158">ivy.Container.add</a> is a good example.</p>
+<p>However, as with the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> class, it’s important to bear in mind that this is <em>not necessarily the first argument</em>, although in most cases it will be.
+We also <strong>do not</strong> set the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument to <code class="code docutils literal notranslate"><span class="pre">self</span></code> for instance methods.
+If the only array argument is the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument, then we do not implement this instance method.
+For example, we do not implement an instance method for <a class="reference external" href="https://github.com/unifyai/ivy/blob/1dba30aae5c087cd8b9ffe7c4b42db1904160873/ivy/functional/ivy/creation.py#L116">ivy.zeros</a>.</p>
+<p>Under the hood, every <em>instance</em> method calls the corresponding <em>static</em> method.
+For example, <a class="reference external" href="https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L92">ivy.Container.add</a> calls <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_add()</span></code>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/elementwise.py#L7347">ivy.Container.tan</a> calls <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_tan()</span></code>, and <a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/manipulation.py#L927">ivy.Container.roll</a> calls <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_roll()</span></code>.</p>
+<p>As is the case for <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code>, the organization of these instance methods follows the same organizational structure as the files in the functional API.
+The <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> class <a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L52">inherits</a> from many category-specific array classes, such as <a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/elementwise.py#L9">ContainerWithElementwise</a>, each of which implement the category-specific instance methods.</p>
+<p>Again, as with <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code>, given the simple set of rules which underpin how these instance methods should all be implemented, if a source-code implementation is not found, then this <a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/__init__.py#L683">instance method is added</a> programmatically.
+Again, this serves as a helpful backup in cases where some static methods are accidentally missed out.</p>
+<p>Again, the benefit of the source code implementations is that this makes the code much more readable, with important methods not being entirely absent from the code.
+It also enables other helpful perks, such as auto-completions in the IDE etc.</p>
+</section>
+<section id="api-special-methods">
+<h2>API Special Methods<a class="headerlink" href="#api-special-methods" title="Permalink to this heading">#</a></h2>
+<p>All non-operator special methods are implemented in <a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L51">ContainerBase</a>, which is the abstract base class for all containers.
+These special methods include <a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L3629">__repr__</a> which controls how the container is printed in the terminal, <a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L3860">__getattr__</a> that primarily enables keys in the underlying <code class="code docutils literal notranslate"><span class="pre">dict</span></code> to be queried as attributes, whereas if no attribute, item or method is found which matches the name provided on the container itself, then the leaves will also be recursively traversed, searching for the attribute.
+If it turns out to be a callable function on the leaves, then it will call the function on each leaf and update the leaves with the returned results, for more detailed explanation with examples, see code block below.
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L3882">__setattr__</a> that enables attribute setting to update the underlying <code class="code docutils literal notranslate"><span class="pre">dict</span></code>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L3934">__getitem__</a> that enables the underlying <code class="code docutils literal notranslate"><span class="pre">dict</span></code> to be queried via a chain of keys, <a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L3976">__setitem__</a> that enables the underlying <code class="code docutils literal notranslate"><span class="pre">dict</span></code> to be set via a chain of keys, <a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L3996">__contains__</a> that enables us to check for chains of keys in the underlying <code class="code docutils literal notranslate"><span class="pre">dict</span></code>, and <a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L4004">__getstate__</a> and <a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L4019">__setstate__</a> which combined enable the container to be pickled and unpickled.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">]),</span> <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">]]),</span> <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">a</span><span class="p">:</span> <span class="p">[</span>
+        <span class="mi">1</span>
+    <span class="p">],</span>
+    <span class="n">b</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">a</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">1</span><span class="p">,</span>
+            <span class="mi">1</span>
+        <span class="p">],</span>
+        <span class="n">b</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">3</span>
+        <span class="p">]</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">ndim</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">a</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">b</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">a</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">b</span><span class="p">:</span> <span class="mi">1</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+
+<span class="n">num_dims</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="fm">__len__</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">num_dims</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">a</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">b</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">a</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">b</span><span class="p">:</span> <span class="mi">1</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+<span class="c1"># doesn&#39;t work because Python in low-level C has restriction on return type of `len` to be `int`</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">num_dims</span><span class="o">.</span><span class="n">real</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">a</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">b</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">a</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">b</span><span class="p">:</span> <span class="mi">1</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="nb">bin</span><span class="p">(</span><span class="n">num_dims</span><span class="p">))</span>
+<span class="c1"># doesn&#39;t work because some Python built-in functions have enforce on input argument types</span>
+
+<span class="c1"># external method flexibility enables positional and keyword arguments to be passed into the attribute</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">l1</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">c1</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">l1</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">l2</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="fm">__getattr__</span><span class="p">(</span><span class="s2">&quot;count&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="p">{</span>
+    <span class="n">c1</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">l1</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">l2</span><span class="p">:</span> <span class="mi">0</span>
+    <span class="p">},</span>
+    <span class="n">l1</span><span class="p">:</span> <span class="mi">1</span>
+<span class="p">}</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="c1"># doesn&#39;t work since essentially the argument 1 won&#39;t be passed to `__getattr__`</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="fm">__getattr__</span><span class="p">(</span><span class="s2">&quot;__add__&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">10</span><span class="p">]))</span>
+<span class="p">{</span>
+    <span class="n">c1</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">l1</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">3</span><span class="p">,</span>
+            <span class="mi">2</span><span class="p">,</span>
+            <span class="mi">1</span><span class="p">,</span>
+            <span class="mi">10</span>
+        <span class="p">],</span>
+        <span class="n">l2</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">4</span><span class="p">,</span>
+            <span class="mi">5</span><span class="p">,</span>
+            <span class="mi">6</span><span class="p">,</span>
+            <span class="mi">10</span>
+        <span class="p">]</span>
+    <span class="p">},</span>
+    <span class="n">l1</span><span class="p">:</span> <span class="p">[</span>
+        <span class="mi">1</span><span class="p">,</span>
+        <span class="mi">2</span><span class="p">,</span>
+        <span class="mi">3</span><span class="p">,</span>
+        <span class="mi">10</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>As for the special methods which are <a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L133">implemented</a> in the main <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> class, they all make calls to the corresponding standard operator functions.</p>
+<p>As a result, the operator functions will make use of the special methods of the lefthand passed input objects if available, otherwise it will make use of the reverse special method of the righthand operand.
+For instance, if the lefthand operand at any given leaf of the container in an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code>, then the operator function will make calls to the special methods of this array object.
+As explained in the <a class="reference internal" href="arrays.html#arrays"><span class="std std-ref">Arrays</span></a> section of the Deep Dive, these special methods will in turn call the corresponding functions from the ivy functional API.</p>
+<p>Examples include <a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L191">__add__</a>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L290">__sub__</a>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L389">__mul__</a> and <a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L399">__truediv__</a> which will make calls to <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.add()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.subtract()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.multiply()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.divide()</span></code> respectively if the lefthand operand is an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> object.
+Otherwise, these special methods will be called on whatever objects are at the leaves of the container, such as int, float, <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> etc.</p>
+</section>
+<section id="nestable-functions">
+<h2>Nestable Functions<a class="headerlink" href="#nestable-functions" title="Permalink to this heading">#</a></h2>
+<p>As introduced in the <a class="reference internal" href="function_types.html#function-types"><span class="std std-ref">Function Types</span></a> section, most functions in Ivy are <em>nestable</em>, which means that they can accept <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances in place of <strong>any</strong> of the arguments.</p>
+<p>Here, we expand on this explanation.
+Please check out the explanation in the <a class="reference internal" href="function_types.html#function-types"><span class="std std-ref">Function Types</span></a> section first.</p>
+<p><strong>Explicitly Nestable Functions</strong></p>
+<p>The <em>nestable</em> behaviour is added to any function which is decorated with the <a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/func_wrapper.py#L429">handle_nestable</a> wrapper.
+This wrapper causes the function to be applied at each leaf of any containers passed in the input.
+More information on this can be found in the <a class="reference external" href="https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/docs/partial_source/deep_dive/function_wrapping.rst">Function Wrapping</a> section of the Deep Dive.</p>
+<p>Additionally, any nestable function which returns multiple arrays, will return the same number of containers for it’s container counterpart.
+This property makes the function symmetric with regards to the input-output behavior, irrespective of whether <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances are based used.
+Any argument in the input can be replaced with a container without changing the number of inputs, and the presence or absence of ivy.Container instances in the input should not change the number of return values of the function.
+In other words, if containers are detected in the input, then we should return a separate container for each array that the function would otherwise return.</p>
+<p>The current implementation checks if the leaves of the container have a list of arrays.
+If they do, this container is then unstacked to multiple containers(as many as the number of arrays), which are then returned inside a list.</p>
+<p><strong>Implicitly Nestable Functions</strong></p>
+<p><em>Compositional</em> functions are composed of other nestable functions, and hence are already <strong>implicitly nestable</strong>.
+So, we do not need to explicitly wrap it at all.</p>
+<p>Let’s take the function <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.cross_entropy()</span></code> as an example.
+The internally called functions are: <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.clip()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.log()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.sum()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.negative()</span></code>, each of which are themselves <em>nestable</em>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">cross_entropy</span><span class="p">(</span>
+    <span class="n">true</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">pred</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="n">pred</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">epsilon</span><span class="p">)</span>
+    <span class="n">log_pred</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">negative</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">log_pred</span> <span class="o">*</span> <span class="n">true</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">),</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Therefore, when passing an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance in the input, each internal function will, in turn, correctly handle the container, and return a new container with the correct operations having been performed.
+This makes it very easy and intuitive to debug the code, as the code is stepped through chronologically.
+In effect, all leaves of the input container are being processed concurrently, during the computation steps of the <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.cross_entropy()</span></code> function.</p>
+<p>However, what if we had added the <a class="reference external" href="https://github.com/unifyai/ivy/blob/5f58c087906a797b5cb5603714d5e5a532fc4cd4/ivy/func_wrapper.py#L407">handle_nestable</a> wrapping as a decorator directly to the function <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.cross_entropy()</span></code>?</p>
+<p>In this case, the <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.cross_entropy()</span></code> function would itself be called multiple times, on each of the leaves of the container.
+The functions <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.clip()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.log()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.sum()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.negative()</span></code> would each only consume and return arrays, and debugging the <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.cross_entropy()</span></code> function would then become less intuitively chronological, with each leaf of the input container now processed sequentially, rather than concurrently.</p>
+<p>Therefore, our approach is to <strong>not</strong> wrap any compositional functions which are already <em>implicitly nestable</em> as a result of the <em>nestable</em> functions called internally.</p>
+<p>There may be some compositional functions which are not implicitly nestable for some reason, and in such cases adding the explicit <a class="reference external" href="https://github.com/unifyai/ivy/blob/5f58c087906a797b5cb5603714d5e5a532fc4cd4/ivy/func_wrapper.py#L407">handle_nestable</a> wrapping may be necessary.
+One such example is the <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.linear()</span></code> function which is not implicitly nestable despite being compositional. This is because of the use of special functions like <code class="xref py py-func docutils literal notranslate"><span class="pre">__len__()</span></code> which is not nestable and can’t be made nestable.
+But we should try to avoid this, in order to make the flow of computation as intuitive to the user as possible.</p>
+<p>When compiling the code, the computation graph is <strong>identical</strong> in either case, and there will be no implications on performance whatsoever.
+The implicit nestable solution may be slightly less efficient in eager mode, as the leaves of the container are traversed multiple times rather than once, but if performance is of concern then the code should always be compiled in any case.
+The distinction is only really relevant when stepping through and debugging with eager mode execution, and for the reasons outlined above, the preference is to keep compositional implicitly nestable where possible.</p>
+<p><strong>Shared Nested Structure</strong></p>
+<p>When the nested structures of the multiple containers are <em>shared</em> but not <em>identical</em>, then the behaviour of the nestable function is a bit different.
+Containers have <em>shared</em> nested structures if all unique leaves in any of the containers are children of a nested structure which is shared by all other containers.</p>
+<p>Take the example below, the nested structures of containers <code class="code docutils literal notranslate"><span class="pre">x</span></code> and <code class="code docutils literal notranslate"><span class="pre">y</span></code> are shared but not identical.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">},</span> <span class="n">d</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;e&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">:</span> <span class="mi">9</span><span class="p">})</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The shared key chains (chains of keys, used for indexing the container) are <code class="code docutils literal notranslate"><span class="pre">a</span></code> and <code class="code docutils literal notranslate"><span class="pre">d</span></code>.
+The key chains unique to <code class="code docutils literal notranslate"><span class="pre">x</span></code> are <code class="code docutils literal notranslate"><span class="pre">a/b</span></code>, <code class="code docutils literal notranslate"><span class="pre">a/c</span></code>, <code class="code docutils literal notranslate"><span class="pre">d/e</span></code> and <code class="code docutils literal notranslate"><span class="pre">d/f</span></code>.
+The unique key chains all share the same base structure as all other containers (in this case only one other container, <code class="code docutils literal notranslate"><span class="pre">y</span></code>).
+Therefore, the containers <code class="code docutils literal notranslate"><span class="pre">x</span></code> and <code class="code docutils literal notranslate"><span class="pre">y</span></code> have shared nested structure.</p>
+<p>When calling <em>nestable</em> functions on containers with non-identical structure, then the shared leaves of the shallowest container are broadcast to the leaves of the deepest container.</p>
+<p>It’s helpful to look at an example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">x</span> <span class="o">/</span> <span class="n">y</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">a</span><span class="p">:</span> <span class="p">{</span>
+      <span class="n">b</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+      <span class="n">c</span><span class="p">:</span> <span class="mf">2.0</span>
+    <span class="p">},</span>
+    <span class="n">d</span><span class="p">:</span> <span class="p">{</span>
+      <span class="n">e</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span>
+      <span class="n">f</span><span class="p">:</span> <span class="mf">3.0</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>In this case, the integer at <code class="code docutils literal notranslate"><span class="pre">y.a</span></code> is broadcast to the leaves <code class="code docutils literal notranslate"><span class="pre">x.a.b</span></code> and <code class="code docutils literal notranslate"><span class="pre">x.a.c</span></code>, and the integer at <code class="code docutils literal notranslate"><span class="pre">y.d</span></code> is broadcast to the leaves <code class="code docutils literal notranslate"><span class="pre">x.d.e</span></code> and <code class="code docutils literal notranslate"><span class="pre">x.d.f</span></code>.</p>
+<p>Another example of containers with shared nested structure is given below:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">},</span> <span class="n">d</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;e&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">})</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;g&#39;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">}},</span> <span class="n">d</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;e&#39;</span><span class="p">:</span> <span class="mi">13</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">:</span> <span class="mi">14</span><span class="p">})</span>
+</pre></div>
+</div>
+<p>Adding these containers together would result in the following:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">+</span> <span class="n">z</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">a</span><span class="p">:</span> <span class="p">{</span>
+      <span class="n">b</span><span class="p">:</span> <span class="mi">14</span><span class="p">,</span>
+      <span class="n">c</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">g</span><span class="p">:</span> <span class="mi">17</span><span class="p">,</span>
+        <span class="n">h</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span>
+      <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="n">d</span><span class="p">:</span> <span class="p">{</span>
+      <span class="n">e</span><span class="p">:</span> <span class="mi">22</span><span class="p">,</span>
+      <span class="n">f</span><span class="p">:</span> <span class="mi">25</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>An example of containers which <strong>do not</strong> have shared nested structure is given below:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">},</span> <span class="n">d</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;e&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">})</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;g&#39;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">}},</span> <span class="n">d</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;e&#39;</span><span class="p">:</span> <span class="mi">13</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">:</span> <span class="mi">14</span><span class="p">})</span>
+</pre></div>
+</div>
+<p>This is for three reasons, (a) the key chain <code class="code docutils literal notranslate"><span class="pre">g</span></code> is not shared by any container other than <code class="code docutils literal notranslate"><span class="pre">y</span></code>, (b) the key chain <code class="code docutils literal notranslate"><span class="pre">d/f</span></code> for <code class="code docutils literal notranslate"><span class="pre">x</span></code> is not present in <code class="code docutils literal notranslate"><span class="pre">z</span></code> despite <code class="code docutils literal notranslate"><span class="pre">d</span></code> not being a non-leaf node in <code class="code docutils literal notranslate"><span class="pre">z</span></code>, and likewise the key chain <code class="code docutils literal notranslate"><span class="pre">d/g</span></code> for <code class="code docutils literal notranslate"><span class="pre">z</span></code> is not present in <code class="code docutils literal notranslate"><span class="pre">x</span></code> despite <code class="code docutils literal notranslate"><span class="pre">d</span></code> not being a non-leaf node in <code class="code docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<p><strong>Round Up</strong></p>
+<p>This should have hopefully given you a good feel for containers, and how these are handled in Ivy.</p>
+<p>If you have any questions, please feel free to reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/982738042886422598">containers channel</a> or in the <a class="reference external" href="https://discord.com/channels/799879767196958751/1028297229980668015">containers forum</a>!</p>
+<p><strong>Video</strong></p>
+<iframe width="420" height="315"
+src="https://www.youtube.com/embed/oHcoYFi2rvI" class="video">
+</iframe></section>
+</section>
+
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="arrays.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Arrays</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="data_types.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Data Types</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item"><nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributing</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../contributing/setting_up.html">Setting Up</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/the_basics.html">The Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/building_the_docs.html">Building the Docs</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="navigating_the_code.html">Navigating the Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_types.html">Function Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="superset_behaviour.html">Superset Behaviour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend_setting.html">Backend Setting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arrays.html">Arrays</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Containers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_types.html">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devices.html">Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inplace_updates.html">Inplace Updates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formatting.html">Formatting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_arguments.html">Function Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstrings.html">Docstrings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="array_api_tests.html">Array API Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_frontends.html">Ivy Frontends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exception_handling.html">Exception Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="continuous_integration.html">Continuous Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/open_tasks.html">Open Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/applied_libraries.html">Applied Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/helpful_resources.html">Helpful Resources</a></li>
+</ul>
+</div>
+</nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#container-instance-methods">Container Instance Methods</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#container-static-methods">Container Static Methods</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#api-static-methods">API Static Methods</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#api-instance-methods">API Instance Methods</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#api-special-methods">API Special Methods</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nestable-functions">Nestable Functions</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            <div class="bd-footer-content__inner"></div>
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="copyright">
+    
+      © Copyright 2020-2023, Ivy Team.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+  <p class="sphinx-version">
+    Created using <a href="https://sphinx-doc.org/">Sphinx</a> 6.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

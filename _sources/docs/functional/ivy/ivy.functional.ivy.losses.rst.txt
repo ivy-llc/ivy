@@ -1,0 +1,15 @@
+Losses
+======
+
+
+
+.. automodule:: ivy.functional.ivy.losses
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+
+
+.. discussion-links:: ivy.functional.ivy.losses

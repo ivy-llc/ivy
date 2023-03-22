@@ -1,0 +1,1043 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Data Types &#8212; Ivy Documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d" />
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'overview/deep_dive/data_types';</script>
+    <link rel="icon" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Devices" href="devices.html" />
+    <link rel="prev" title="Containers" href="containers.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  <div class="navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo.png?raw=true" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo_dark.png?raw=true" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item"><div></div></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/unifyai/ivy" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/letsunifyai" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-twitter"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item"><div></div></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/unifyai/ivy" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/letsunifyai" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-twitter"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item"><nav class="bd-docs-nav bd-links"
+  aria-label="Section Navigation">
+    <div class="bd-toc-item navbar-nav">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../related_work.html">Related Work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../contributing.html">Contributing</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../contributing/setting_up.html">Setting Up</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing/the_basics.html">The Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing/building_the_docs.html">Building the Docs</a></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="navigating_the_code.html">Navigating the Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="function_types.html">Function Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="superset_behaviour.html">Superset Behaviour</a></li>
+<li class="toctree-l3"><a class="reference internal" href="backend_setting.html">Backend Setting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="arrays.html">Arrays</a></li>
+<li class="toctree-l3"><a class="reference internal" href="containers.html">Containers</a></li>
+<li class="toctree-l3 current active has-children"><a class="current reference internal" href="#">Data Types</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+
+
+
+
+
+
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="devices.html">Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="inplace_updates.html">Inplace Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="formatting.html">Formatting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="function_arguments.html">Function Arguments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="docstrings.html">Docstrings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="array_api_tests.html">Array API Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ivy_frontends.html">Ivy Frontends</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exception_handling.html">Exception Handling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="continuous_integration.html">Continuous Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing/open_tasks.html">Open Tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing/applied_libraries.html">Applied Libraries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing/helpful_resources.html">Helpful Resources</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="navigating_the_code.html">Navigating the Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_types.html">Function Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="superset_behaviour.html">Superset Behaviour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend_setting.html">Backend Setting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arrays.html">Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="containers.html">Containers</a></li>
+<li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">Data Types</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
+
+
+
+
+
+
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="devices.html">Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inplace_updates.html">Inplace Updates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formatting.html">Formatting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_arguments.html">Function Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstrings.html">Docstrings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="array_api_tests.html">Array API Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_frontends.html">Ivy Frontends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exception_handling.html">Exception Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="continuous_integration.html">Continuous Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.control_flow_ops.html">Control flow ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.experimental.html">Experimental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.utility.html">Utility</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Data classes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/data_classes/ivy.data_classes.array.html">Array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/data_classes/ivy.data_classes.container.html">Container</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Framework classes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.helpers.html">Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.sequential.html">Sequential</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Nested array</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/nested-array/nested_array/ivy.nested_array.nested_array.html">Nested array</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Utils</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.backend.html">Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.dynamic_import.html">Dynamic import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.inspection.html">Inspection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.verbosity.html">Verbosity</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Testing</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.available_frameworks.html">Available frameworks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.function_testing.html">Function testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.globals.html">Globals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.hypothesis_helpers.html">Hypothesis helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.structs.html">Structs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.test_parameter_flags.html">Test parameter flags</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.testing_helpers.html">Testing helpers</a></li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links">
+    <div class="bd-toc-item navbar-nav">
+        <p aria-level="2" class="caption" role="heading">
+            <span class="caption-text">Docs</span>
+        </p>
+        <ul class="nav bd-sidenav">
+            <li class="toctree-l1">
+                <a class="reference external" href="/ivy">
+                    Ivy
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/mech">
+                    Ivy mech
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/vision">
+                    Ivy vision
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/robot">
+                    Ivy robot
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/gym">
+                    Ivy gym
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/memory">
+                    Ivy memory
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/builder">
+                    Ivy builder
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/models">
+                    Ivy models
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/ecosystem">
+                    Ivy ecosystem
+                </a>
+            </li>
+            </ul>
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumbs">
+  <ul class="bd-breadcrumbs" role="navigation" aria-label="Breadcrumb">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../contributing.html" class="nav-link">Contributing</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../deep_dive.html" class="nav-link">Deep Dive</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">Data Types</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="data-types">
+<h1>Data Types<a class="headerlink" href="#data-types" title="Permalink to this heading">#</a></h1>
+<p>The data types supported by Ivy are as follows:</p>
+<ul class="simple">
+<li><p>int8</p></li>
+<li><p>int16</p></li>
+<li><p>int32</p></li>
+<li><p>int64</p></li>
+<li><p>uint8</p></li>
+<li><p>uint16</p></li>
+<li><p>uint32</p></li>
+<li><p>uint64</p></li>
+<li><p>bfloat16</p></li>
+<li><p>float16</p></li>
+<li><p>float32</p></li>
+<li><p>float64</p></li>
+<li><p>bool</p></li>
+</ul>
+<p>Note that Ivy does not currently support complex data types, these will hopefully be added in a future implementation.</p>
+<p>The supported data types are all defined at <a class="reference external" href="https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L225">import time</a>, with each of these set as an <a class="reference external" href="https://github.com/unifyai/ivy/blob/48c70bce7ff703d817e130a17f63f02209be08ec/ivy/__init__.py#L65">ivy.Dtype</a> instance.
+The <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Dtype</span></code> class derives from <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, and has simple logic in the constructor to verify that the string formatting is correct.
+All data types can be queried as attributes of the <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy</span></code> namespace, such as <code class="docutils literal notranslate"><span class="pre">ivy.float32</span></code> etc.</p>
+<p>In addition, <em>native</em> data types are <a class="reference external" href="https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L241">also specified</a> at import time.
+Likewise, these are all <em>initially</em> set as <a class="reference external" href="https://github.com/unifyai/ivy/blob/48c70bce7ff703d817e130a17f63f02209be08ec/ivy/__init__.py#L65">ivy.Dtype</a> instances.</p>
+<p>There is also an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeDtype</span></code> class defined, but this is initially set as an <a class="reference external" href="https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L38">empty class</a>.</p>
+<p>The following <a class="reference external" href="https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L256">tuples</a> are also defined: <code class="docutils literal notranslate"><span class="pre">all_dtypes</span></code>, <code class="docutils literal notranslate"><span class="pre">all_numeric_dtypes</span></code>, <code class="docutils literal notranslate"><span class="pre">all_int_dtypes</span></code>, <code class="docutils literal notranslate"><span class="pre">all_float_dtypes</span></code>.
+These each contain all possible data types which fall into the corresponding category.
+Each of these tuples is also replicated in a new set of four <a class="reference external" href="https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L303">valid tuples</a> and a set of four <a class="reference external" href="https://github.com/unifyai/ivy/blob/9c2eb725387152d721040d8638c8f898541a9da4/ivy/__init__.py#L309">invalid tuples</a>.
+When no backend is set, all data types are assumed to be valid, and so the invalid tuples are all empty, and the valid tuples are set as equal to the original four <em>“all”</em> tuples.</p>
+<p>However, when a backend is set, then some of these are updated.
+Firstly, the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeDtype</span></code> is replaced with the backend-specific <a class="reference external" href="https://github.com/unifyai/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/functional/backends/torch/__init__.py#L14">data type class</a>.
+Secondly, each of the native data types are replaced with the <a class="reference external" href="https://github.com/unifyai/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/functional/backends/torch/__init__.py#L16">true native data types</a>.
+Thirdly, the <a class="reference external" href="https://github.com/unifyai/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/functional/backends/torch/__init__.py#L29">valid data types</a> are updated.
+Finally, the <a class="reference external" href="https://github.com/unifyai/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/functional/backends/torch/__init__.py#L56">invalid data types</a> are updated.</p>
+<p>This leaves each of the data types unmodified, for example <code class="docutils literal notranslate"><span class="pre">ivy.float32</span></code> will still reference the  <a class="reference external" href="https://github.com/unifyai/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/__init__.py#L225">original definition</a> in <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/ivy/__init__.py</span></code>,
+whereas <code class="docutils literal notranslate"><span class="pre">ivy.native_float32</span></code> will now reference the <a class="reference external" href="https://github.com/unifyai/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/functional/backends/torch/__init__.py#L16">new definition</a> in <code class="xref py py-mod docutils literal notranslate"><span class="pre">/ivy/functional/backends/backend/__init__.py</span></code>.</p>
+<p>The tuples <code class="docutils literal notranslate"><span class="pre">all_dtypes</span></code>, <code class="docutils literal notranslate"><span class="pre">all_numeric_dtypes</span></code>, <code class="docutils literal notranslate"><span class="pre">all_int_dtypes</span></code> and <code class="docutils literal notranslate"><span class="pre">all_float_dtypes</span></code> are also left unmodified.
+Importantly, we must ensure that unsupported data types are removed from the <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy</span></code> namespace.
+For example, torch supports <code class="docutils literal notranslate"><span class="pre">uint8</span></code>, but does not support <code class="docutils literal notranslate"><span class="pre">uint16</span></code>, <code class="docutils literal notranslate"><span class="pre">uint32</span></code> or <code class="docutils literal notranslate"><span class="pre">uint64</span></code>.
+Therefore, after setting a torch backend via <code class="code docutils literal notranslate"><span class="pre">ivy.set_backend('torch')</span></code>, we should no longer be able to access <code class="docutils literal notranslate"><span class="pre">ivy.uint16</span></code>.
+This is <a class="reference external" href="https://github.com/unifyai/ivy/blob/a594075390532d2796a6b649785b93532aee5c9a/ivy/backend_handler.py#L194">handled</a> in <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.set_backend()</span></code>.</p>
+<section id="data-type-module">
+<h2>Data Type Module<a class="headerlink" href="#data-type-module" title="Permalink to this heading">#</a></h2>
+<p>The <a class="reference external" href="https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py">data_type.py</a> module provides a variety of functions for working with data types.
+A few examples include <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.astype()</span></code> which copies an array to a specified data type, <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.broadcast_to()</span></code> which broadcasts an array to a specified shape, and <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.result_type()</span></code> which returns the dtype that results from applying the type promotion rules to the arguments.</p>
+<p>Many functions in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">data_type.py</span></code> module are <em>convenience</em> functions, which means that they do not directly modify arrays, as explained in the <a class="reference internal" href="function_types.html#function-types"><span class="std std-ref">Function Types</span></a> section.</p>
+<p>For example, the following are all convenience functions:
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L246">ivy.can_cast</a>, which determines if one data type can be cast to another data type according to type-promotion rules, <a class="reference external" href="https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L1096">ivy.dtype</a>, which gets the data type for the input array, <a class="reference external" href="https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L1555">ivy.set_default_dtype</a>, which sets the global default data dtype, and <a class="reference external" href="https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L879">ivy.default_dtype</a>, which returns the correct data type to use.</p>
+<p><a class="reference external" href="https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L879">ivy.default_dtype</a> is arguably the most important function.
+Any function in the functional API that receives a <code class="docutils literal notranslate"><span class="pre">dtype</span></code> argument will make use of this function, as explained below.</p>
+</section>
+<section id="data-type-promotion">
+<h2>Data Type Promotion<a class="headerlink" href="#data-type-promotion" title="Permalink to this heading">#</a></h2>
+<p>In order to ensure that the same data type is always returned when operations are performed on arrays with different data types, regardless of which backend framework is set, Ivy has it’s own set of data type promotion rules and corresponding  functions.
+These rules build directly on top of the <a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/type_promotion.html">rules</a> outlined in the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>.</p>
+<p>The rules are simple: all data type promotions in Ivy should adhere to this <a class="reference external" href="https://github.com/unifyai/ivy/blob/db96e50860802b2944ed9dabacd8198608699c7c/ivy/__init__.py#L366">promotion table</a>,
+which is the union of the Array API Standard <a class="reference external" href="https://github.com/unifyai/ivy/blob/db96e50860802b2944ed9dabacd8198608699c7c/ivy/__init__.py#L223">promotion table</a> and an extra <a class="reference external" href="https://github.com/unifyai/ivy/blob/db96e50860802b2944ed9dabacd8198608699c7c/ivy/__init__.py#L292">promotion table</a>.</p>
+<p>In order to ensure adherence to this promotion table, many backend functions make use of the functions <a class="reference external" href="https://github.com/unifyai/ivy/blob/db96e50860802b2944ed9dabacd8198608699c7c/ivy/functional/ivy/data_type.py#L1804">ivy.promote_types</a>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/db96e50860802b2944ed9dabacd8198608699c7c/ivy/functional/ivy/data_type.py#L1940">ivy.type_promote_arrays</a>, or <a class="reference external" href="https://github.com/unifyai/ivy/blob/db96e50860802b2944ed9dabacd8198608699c7c/ivy/functional/ivy/data_type.py#L2085">ivy.promote_types_of_inputs</a>.
+These functions: promote data types in the inputs and return the new data types, promote the data types of the arrays in the input and return new arrays, and promote the data types of the numeric or array values inputs and return new type promoted values, respectively.</p>
+<p>For an example of how some of these functions are used, the implementations for <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.add()</span></code> in each backend framework are as follows:</p>
+<p>JAX:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
+    <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">JaxArray</span><span class="p">],</span>
+    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">JaxArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">JaxArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JaxArray</span><span class="p">:</span>
+    <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">promote_types_of_inputs</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>NumPy:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@_handle_0_dim_output</span>
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
+    <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">promote_types_of_inputs</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>TensorFlow:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
+    <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">],</span>
+    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">]:</span>
+    <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">promote_types_of_inputs</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">experimental</span><span class="o">.</span><span class="n">numpy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>PyTorch:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
+    <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
+    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+    <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">promote_types_of_inputs</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>It’s important to always make use of the Ivy promotion functions as opposed to backend-specific promotion functions such as <code class="xref py py-func docutils literal notranslate"><span class="pre">jax.numpy.promote_types()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.promote_types()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">tf.experimental.numpy.promote_types()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">torch.promote_types()</span></code>, as these will generally have promotion rules which will subtly differ from one another and from Ivy’s unified promotion rules.</p>
+<p>On the other hand, each frontend framework has its own set of rules for how data types should be promoted, and their own type promoting functions <code class="xref py py-func docutils literal notranslate"><span class="pre">promote_types_frontend_name()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">promote_types_of_frontend_name_inputs()</span></code> in <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/frontends/frontend_name/__init__.py</span></code>.
+We should always use these functions in any frontend implementation, to ensure we follow exactly the same promotion rules as the frontend framework uses.</p>
+<p>It should be noted that data type promotion is only used for unifying data types of inputs to a common one for performing various mathematical operations.
+Examples shown above demonstrate the usage of the <code class="docutils literal notranslate"><span class="pre">add</span></code> operation.
+As different data types cannot be simply summed, they are promoted to the least common type, according to the presented promotion table.
+This ensures that functions always return specific and expected values, independently of the specified backend.</p>
+<p>However, data promotion is never used for increasing the accuracy or precision of computations.
+This is a required condition for all operations, even if the upcasting can help to avoid numerical instabilities caused by underflow or overflow.</p>
+<p>Assume that an algorithm is required to compute an inverse of a nearly singular matrix, that is defined in <code class="docutils literal notranslate"><span class="pre">float32</span></code> data type.
+It is likely that this operation can produce numerical instabilities and generate <code class="docutils literal notranslate"><span class="pre">inf</span></code> or <code class="docutils literal notranslate"><span class="pre">nan</span></code> values.
+Temporary upcasting the input matrix to <code class="docutils literal notranslate"><span class="pre">float64</span></code> for computing an inverse and then downcasting the matrix back to <code class="docutils literal notranslate"><span class="pre">float32</span></code> may help to produce a stable result.
+However, temporary upcasting and subsequent downcasting can not be performed as this is not expected by the user.
+Whenever the user defines data with a specific data type, they expect a certain memory footprint.</p>
+<p>The user expects specific behaviour and memory constraints whenever they specify and use concrete data types, and those decisions should be respected.
+Therefore, Ivy does not upcast specific values to improve the stability or precision of the computation.</p>
+</section>
+<section id="arguments-in-other-functions">
+<h2>Arguments in other Functions<a class="headerlink" href="#arguments-in-other-functions" title="Permalink to this heading">#</a></h2>
+<p>All <code class="docutils literal notranslate"><span class="pre">dtype</span></code> arguments are keyword-only.
+All creation functions include the <code class="docutils literal notranslate"><span class="pre">dtype</span></code> argument, for specifying the data type of the created array.
+Some other non-creation functions also support the <code class="docutils literal notranslate"><span class="pre">dtype</span></code> argument, such as <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.prod()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.sum()</span></code>, but most functions do not include it.
+The non-creation functions which do support it are generally functions that involve a compounding reduction across the array, which could result in overflows, and so an explicit <code class="docutils literal notranslate"><span class="pre">dtype</span></code> argument is useful to handling such cases.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">dtype</span></code> argument is handled in the <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L249">infer_dtype</a> wrapper, for all functions which have the decorator <code class="code docutils literal notranslate"><span class="pre">&#64;infer_dtype</span></code>.
+This function calls <a class="reference external" href="https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L879">ivy.default_dtype</a> in order to determine the correct data type.
+As discussed in the <a class="reference internal" href="function_wrapping.html#function-wrapping"><span class="std std-ref">Function Wrapping</span></a> section, this is applied to all applicable functions dynamically during <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/backend_handler.py#L204">backend setting</a>.</p>
+<p>Overall, <a class="reference external" href="https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L879">ivy.default_dtype</a> infers the data type as follows:</p>
+<ol class="arabic simple">
+<li><p>if the <code class="docutils literal notranslate"><span class="pre">dtype</span></code> argument is provided, use this directly</p></li>
+<li><p>otherwise, if an array is present in the arguments, set <code class="docutils literal notranslate"><span class="pre">arr</span></code> to this array.
+This will then be used to infer the data type by calling <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.dtype()</span></code> on the array</p></li>
+<li><p>otherwise, if a <em>relevant</em> scalar is present in the arguments, set <code class="docutils literal notranslate"><span class="pre">arr</span></code> to this scalar and derive the data type from this by calling either <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.default_int_dtype()</span></code> or <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.default_float_dtype()</span></code> depending on whether the scalar is an int or float.
+This will either return the globally set default int data type or globally set default float data type (settable via <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.set_default_int_dtype()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.set_default_float_dtype()</span></code> respectively).
+An example of a <em>relevant</em> scalar is <code class="docutils literal notranslate"><span class="pre">start</span></code> in the function <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.arange()</span></code>, which is used to set the starting value of the returned array.
+Examples of <em>irrelevant</em> scalars which should <strong>not</strong> be used for determining the data type are <code class="docutils literal notranslate"><span class="pre">axis</span></code>, <code class="docutils literal notranslate"><span class="pre">axes</span></code>, <code class="docutils literal notranslate"><span class="pre">dims</span></code> etc. which must be integers, and control other configurations of the function being called, with no bearing at all on the data types used by that function.</p></li>
+<li><p>otherwise, if no arrays or relevant scalars are present in the arguments, then use the global default data type, which can either be an int or float data type.
+This is settable via <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.set_default_dtype()</span></code>.</p></li>
+</ol>
+<p>For the majority of functions which defer to <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L249">infer_dtype</a> for handling the data type, these steps will have been followed and the <code class="docutils literal notranslate"><span class="pre">dtype</span></code> argument will be populated with the correct value before the backend-specific implementation is even entered into.
+Therefore, whereas the <code class="docutils literal notranslate"><span class="pre">dtype</span></code> argument is listed as optional in the ivy API at <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>, the argument is listed as required in the backend-specific implementations at <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/category_name.py</span></code>.</p>
+<p>Let’s take a look at the function <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.zeros()</span></code> as an example.</p>
+<p>The implementation in <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/ivy/creation.py</span></code> has the following signature:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@outputs_to_ivy_arrays</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@infer_dtype</span>
+<span class="nd">@infer_device</span>
+<span class="k">def</span> <span class="nf">zeros</span><span class="p">(</span>
+    <span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>Whereas the backend-specific implementations in <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/statistical.py</span></code>
+all list <code class="docutils literal notranslate"><span class="pre">dtype</span></code> as required.</p>
+<p>Jax:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">zeros</span><span class="p">(</span>
+    <span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">jnp</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+    <span class="n">device</span><span class="p">:</span> <span class="n">jaxlib</span><span class="o">.</span><span class="n">xla_extension</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JaxArray</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>NumPy:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">zeros</span><span class="p">(</span>
+    <span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+    <span class="n">device</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>TensorFlow:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">zeros</span><span class="p">(</span>
+    <span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">DType</span><span class="p">,</span>
+    <span class="n">device</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">]:</span>
+</pre></div>
+</div>
+<p>PyTorch:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">zeros</span><span class="p">(</span>
+    <span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+    <span class="n">device</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>This makes it clear that these backend-specific functions are only entered into once the correct <code class="docutils literal notranslate"><span class="pre">dtype</span></code> has been determined.</p>
+<p>However, the <code class="docutils literal notranslate"><span class="pre">dtype</span></code> argument for functions which don’t have the <code class="code docutils literal notranslate"><span class="pre">&#64;infer_dtype</span></code> decorator are <strong>not</strong> handled by <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L249">infer_dtype</a>, and so these defaults must be handled by the backend-specific implementations themselves.</p>
+<p>One reason for not adding <code class="code docutils literal notranslate"><span class="pre">&#64;infer_dtype</span></code> to a function is because it includes <em>relevant</em> scalar arguments for inferring the data type from.
+<a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L249">infer_dtype</a> is not able to correctly handle such cases, and so the dtype handling is delegated to the backend-specific implementations.</p>
+<p>For example <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.full()</span></code> doesn’t have the <code class="code docutils literal notranslate"><span class="pre">&#64;infer_dtype</span></code> decorator even though it has a <code class="docutils literal notranslate"><span class="pre">dtype</span></code> argument because of the <em>relevant</em> <code class="docutils literal notranslate"><span class="pre">fill_value</span></code> which cannot be correctly handled by <a class="reference external" href="https://github.com/unifyai/ivy/blob/1eb841cdf595e2bb269fce084bd50fb79ce01a69/ivy/func_wrapper.py#L249">infer_dtype</a>.</p>
+<p>The PyTorch-specific implementation is as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">full</span><span class="p">(</span>
+    <span class="n">shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+    <span class="n">fill_value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">dtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">device</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">full</span><span class="p">(</span>
+        <span class="n">shape_to_tuple</span><span class="p">(</span><span class="n">shape</span><span class="p">),</span>
+        <span class="n">fill_value</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">default_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">item</span><span class="o">=</span><span class="n">fill_value</span><span class="p">,</span> <span class="n">as_native</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+        <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<p>The implementations for all other backends follow a similar pattern to this PyTorch implementation, where the <code class="docutils literal notranslate"><span class="pre">dtype</span></code> argument is optional and <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.default_dtype()</span></code> is called inside the backend-specific implementation.</p>
+</section>
+<section id="supported-and-unsupported-data-types">
+<h2>Supported and Unsupported Data Types<a class="headerlink" href="#supported-and-unsupported-data-types" title="Permalink to this heading">#</a></h2>
+<p>Some backend functions (implemented in <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/backends/</span></code>) make use of the decorators <code class="xref py py-attr docutils literal notranslate"><span class="pre">&#64;with_supported_dtypes</span></code> or <code class="xref py py-attr docutils literal notranslate"><span class="pre">&#64;with_unsupported_dtypes</span></code>, which flag the data types which this particular function does and does not support respectively for the associated backend.
+Only one of these decorators can be specified for any given function.
+In the case of <code class="xref py py-attr docutils literal notranslate"><span class="pre">&#64;with_supported_dtypes</span></code> it is assumed that all unmentioned data types are unsupported, and in the case of <code class="xref py py-attr docutils literal notranslate"><span class="pre">&#64;with_unsupported_dtypes</span></code> it is assumed that all unmentioned data types are supported.</p>
+<p>The decorators take two arguments, a dictionary with the unsupported dtypes mapped to the corresponding  version of the backend framework and the current version of the backend framework on the user’s system.
+Based on that, the version specific unsupported dtypes and devices are set for the given function everytime the function is called.</p>
+<p>For Backend Functions:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@with_unsupported_dtypes</span><span class="p">({</span><span class="s2">&quot;1.11.0 and below&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,)},</span> <span class="n">backend_version</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">expm1</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">_cast_for_unary_op</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">expm1</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>and for frontend functions we add the corresponding framework string as the second argument instead of the version.</p>
+<p>For Frontend Functions:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@with_unsupported_dtypes</span><span class="p">({</span><span class="s2">&quot;1.11.0 and below&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,</span> <span class="s2">&quot;bfloat16&quot;</span><span class="p">)},</span> <span class="s2">&quot;torch&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">trace</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+    <span class="k">if</span> <span class="s2">&quot;int&quot;</span> <span class="ow">in</span> <span class="nb">input</span><span class="o">.</span><span class="n">dtype</span><span class="p">:</span>
+        <span class="nb">input</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;int64&quot;</span><span class="p">)</span>
+    <span class="n">target_type</span> <span class="o">=</span> <span class="s2">&quot;int64&quot;</span> <span class="k">if</span> <span class="s2">&quot;int&quot;</span> <span class="ow">in</span> <span class="nb">input</span><span class="o">.</span><span class="n">dtype</span> <span class="k">else</span> <span class="nb">input</span><span class="o">.</span><span class="n">dtype</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="nb">input</span><span class="p">),</span> <span class="n">target_type</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For compositional functions, the supported and unsupported data types can then be inferred automatically using the helper functions <a class="reference external" href="https://github.com/unifyai/ivy/blob/9e71fc2b589bf8f6b7a0762602723ac084bb5d9e/ivy/functional/ivy/data_type.py#L1370">function_supported_dtypes</a> and <a class="reference external" href="https://github.com/unifyai/ivy/blob/9e71fc2b589bf8f6b7a0762602723ac084bb5d9e/ivy/functional/ivy/data_type.py#L1407">function_unsupported_dtypes</a> respectively, which traverse the abstract syntax tree of the compositional function and evaluate the relevant attributes for each primary function in the composition.
+The same approach applies for most stateful methods, which are themselves compositional.</p>
+<p>It is also possible to add supported and unsupported dtypes as a combination of both class and individual dtypes. The allowed dtype classes are: <code class="docutils literal notranslate"><span class="pre">valid</span></code>, <code class="docutils literal notranslate"><span class="pre">numeric</span></code>, <code class="docutils literal notranslate"><span class="pre">float</span></code>, <code class="docutils literal notranslate"><span class="pre">integer</span></code>, and <code class="docutils literal notranslate"><span class="pre">unsigned</span></code>.</p>
+<p>For example, using the decorator:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@with_unsupported_dtypes</span><span class="p">{{</span><span class="s2">&quot;1.11.0 and below&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;unsigned&quot;</span><span class="p">,</span> <span class="s2">&quot;bfloat16&quot;</span><span class="p">,</span> <span class="s2">&quot;float16&quot;</span><span class="p">)},</span> <span class="n">backend_version</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>would consider all the unsigned integer dtypes (<code class="docutils literal notranslate"><span class="pre">uint8</span></code>, <code class="docutils literal notranslate"><span class="pre">uint16</span></code>, <code class="docutils literal notranslate"><span class="pre">uint32</span></code>, <code class="docutils literal notranslate"><span class="pre">uint64</span></code>), <code class="docutils literal notranslate"><span class="pre">bfloat16</span></code> and <code class="docutils literal notranslate"><span class="pre">float16</span></code> as unsupported for the function.</p>
+<p>In order to get the supported and unsupported devices and dtypes for a function, the corresponding documentation of that function for that specific framework can be referred.
+However, sometimes new unsupported dtypes are discovered while testing too.
+So it is suggested to explore it both ways.</p>
+<p>It should be noted that <code class="xref py py-attr docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code> is different from <code class="docutils literal notranslate"><span class="pre">ivy.invalid_dtypes</span></code> which consists of all the data types that every function of that particular backend does not support, and so if a certain <code class="docutils literal notranslate"><span class="pre">dtype</span></code> is already present in the <code class="docutils literal notranslate"><span class="pre">ivy.invalid_dtypes</span></code> then we should not add it to the <code class="xref py py-attr docutils literal notranslate"><span class="pre">&#64;with_unsupported_dtypes</span></code> decorator.</p>
+<p>Sometimes, it might be possible to support a natively unsupported data type by either
+casting to a supported data type and then casting back, or explicitly handling these
+data types without deferring to a backend function at all.</p>
+<p>An example of the former is <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.logical_not()</span></code> with a tensorflow backend:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">logical_not</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">]:</span>
+    <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">bool</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>An example of the latter is <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.abs()</span></code> with a tensorflow backend:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">abs</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="s2">&quot;uint&quot;</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">x</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In some cases, the lack of support for a particular data type by the backend function might be more difficult to handle correctly.
+For example, in many cases casting to another data type will result in a loss of precision, input range, or both.
+In such cases, the best solution is to simply add the data type to the <code class="xref py py-attr docutils literal notranslate"><span class="pre">&#64;with_unsupported_dtypes</span></code> decorator, rather than trying to implement a long and complex patch to achieve the desired behaviour.</p>
+<p>Some cases where a data type is not supported are very subtle.
+For example, <code class="docutils literal notranslate"><span class="pre">uint8</span></code> is not supported for <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.prod()</span></code> with a torch backend, despite <code class="xref py py-func docutils literal notranslate"><span class="pre">torch.prod()</span></code> handling <code class="docutils literal notranslate"><span class="pre">torch.uint8</span></code> types in the input totally fine.</p>
+<p>The reason for this is that the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a> mandates that <code class="xref py py-func docutils literal notranslate"><span class="pre">prod()</span></code> upcasts the unsigned integer return to have the same number of bits as the default integer data type.
+By default, the default integer data type in Ivy is <code class="docutils literal notranslate"><span class="pre">int32</span></code>, and so we should return an array of type <code class="docutils literal notranslate"><span class="pre">uint32</span></code> despite the input arrays being of type <code class="docutils literal notranslate"><span class="pre">uint8</span></code>.
+However, torch does not support <code class="docutils literal notranslate"><span class="pre">uint32</span></code>, and so we cannot fully adhere to the requirements of the standard for <code class="docutils literal notranslate"><span class="pre">uint8</span></code> inputs.
+Rather than breaking this rule and returning arrays of type <code class="docutils literal notranslate"><span class="pre">uint8</span></code> only with a torch backend, we instead opt to remove official support entirely for this combination of data type, function and backend framework.
+This will avoid all of the potential confusion that could arise if we were to have inconsistent and unexpected outputs when using officially supported data types in Ivy.</p>
+</section>
+<section id="backend-data-type-bugs">
+<h2>Backend Data Type Bugs<a class="headerlink" href="#backend-data-type-bugs" title="Permalink to this heading">#</a></h2>
+<p>In some cases, the lack of support might just be a bug which will likely be resolved in a future release of the framework.
+In these cases, as well as adding to the <code class="xref py py-attr docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code> attribute, we should also add a <code class="code docutils literal notranslate"><span class="pre">#ToDo</span></code> comment in the implementation, explaining that the support of the data type will be added as soon as the bug is fixed, with a link to an associated open issue in the framework repos included in the comment.</p>
+<p>For example, the following code throws an error when <code class="docutils literal notranslate"><span class="pre">dtype</span></code> is <code class="docutils literal notranslate"><span class="pre">torch.int32</span></code> but not when it is <code class="docutils literal notranslate"><span class="pre">torch.int64</span></code>.
+This is tested with torch version <code class="docutils literal notranslate"><span class="pre">1.12.1</span></code>, which is the latest stable release at the time of writing.
+This is a <a class="reference external" href="https://github.com/pytorch/pytorch/issues/84530">known bug</a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dtype</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">int32</span>  <span class="c1"># or torch.int64</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">tensordot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+</pre></div>
+</div>
+<p>Despite <code class="docutils literal notranslate"><span class="pre">torch.int32</span></code> working correctly with <code class="xref py py-func docutils literal notranslate"><span class="pre">torch.tensordot()</span></code> in the vast majority of cases, our solution is to still add <code class="code docutils literal notranslate"><span class="pre">&quot;int32&quot;</span></code> into the <code class="xref py py-attr docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code> attribute, which will prevent the unit tests from failing in the CI.
+We also add the following comment above the <code class="xref py py-attr docutils literal notranslate"><span class="pre">unsupported_dtypes</span></code> attribute:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ToDo: re-add int32 support once</span>
+<span class="c1"># (https://github.com/pytorch/pytorch/issues/84530) is fixed</span>
+<span class="nd">@with_unsupported_dtypes</span><span class="p">({</span><span class="s2">&quot;1.11.0 and below&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;int32&quot;</span><span class="p">,)},</span> <span class="n">backend_version</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Similarly, the following code throws an error for torch version <code class="docutils literal notranslate"><span class="pre">1.11.0</span></code>
+but not <code class="docutils literal notranslate"><span class="pre">1.12.1</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bfloat16</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Writing short-lived patches for these temporary issues would add unwarranted complexity to the backend implementations, and introduce the risk of forgetting about the patch, needlessly bloating the codebase with redundant code.
+In such cases, we can explicitly flag which versions support which data types like so:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@with_unsupported_dtypes</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">&quot;1.11.0 and below&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;uint8&quot;</span><span class="p">,</span> <span class="s2">&quot;bfloat16&quot;</span><span class="p">,</span> <span class="s2">&quot;float16&quot;</span><span class="p">),</span> <span class="s2">&quot;1.12.1&quot;</span><span class="p">:</span> <span class="p">()},</span> <span class="n">backend_version</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">cumsum</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">exclusive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">reverse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">dtype</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>In the above example the <code class="code docutils literal notranslate"><span class="pre">torch.cumsum</span></code> function undergoes changes in the unsupported dtypes from one version to another.
+Starting from version <code class="code docutils literal notranslate"><span class="pre">1.12.1</span></code> it doesn’t have any unsupported dtypes.
+The decorator assigns the version specific unsupported dtypes to the function and if the current version is not found in the dictionary, then it defaults to the behaviour of the last known version.</p>
+<p>The same workflow has been implemented for <code class="code docutils literal notranslate"><span class="pre">supported_dtypes</span></code>, <code class="code docutils literal notranslate"><span class="pre">unsupported_devices</span></code> and <code class="code docutils literal notranslate"><span class="pre">supported_devices</span></code>.</p>
+<p>The slight downside of this approach is that there is less data type coverage for each version of each backend, but taking responsibility for patching this support for all versions would substantially inflate the implementational requirements for ivy, and so we have decided to opt out of this responsibility!</p>
+</section>
+<section id="superset-data-type-support">
+<h2>Superset Data Type Support<a class="headerlink" href="#superset-data-type-support" title="Permalink to this heading">#</a></h2>
+<p>As explained in the superset section of the Deep Dive, we generally go for the superset of behaviour for all Ivy functions, and data type support is no exception.
+Some backends like tensorflow do not support integer array inputs for certain functions.
+For example <code class="xref py py-func docutils literal notranslate"><span class="pre">tensorflow.cos()</span></code> only supports non-integer values.
+However, backends like torch and JAX support integer arrays as inputs.
+To ensure that integer types are supported in Ivy when a tensorflow backend is set, we simply promote any integer array passed to the function to the default float dtype.
+As with all superset design decisions, this behavior makes it much easier to support all frameworks in our frontends, without the need for lots of extra logic for handling integer array inputs for the frameworks which support it natively.</p>
+<p><strong>Round Up</strong></p>
+<p>This should have hopefully given you a good feel for data types, and how these are handled in Ivy.</p>
+<p>If you have any questions, please feel free to reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/982738078445760532">data types channel</a> or in the <a class="reference external" href="https://discord.com/channels/799879767196958751/1028297299799060490">data types forum</a>!</p>
+<p><strong>Video</strong></p>
+<iframe width="420" height="315"
+src="https://www.youtube.com/embed/2qOBzQdLXn4" class="video">
+</iframe></section>
+</section>
+
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="containers.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Containers</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="devices.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Devices</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item"><nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributing</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../contributing/setting_up.html">Setting Up</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/the_basics.html">The Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/building_the_docs.html">Building the Docs</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="navigating_the_code.html">Navigating the Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_types.html">Function Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="superset_behaviour.html">Superset Behaviour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend_setting.html">Backend Setting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arrays.html">Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="containers.html">Containers</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devices.html">Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inplace_updates.html">Inplace Updates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formatting.html">Formatting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_arguments.html">Function Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstrings.html">Docstrings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="array_api_tests.html">Array API Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_frontends.html">Ivy Frontends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exception_handling.html">Exception Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="continuous_integration.html">Continuous Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/open_tasks.html">Open Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/applied_libraries.html">Applied Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/helpful_resources.html">Helpful Resources</a></li>
+</ul>
+</div>
+</nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-type-module">Data Type Module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-type-promotion">Data Type Promotion</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#arguments-in-other-functions">Arguments in other Functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#supported-and-unsupported-data-types">Supported and Unsupported Data Types</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#backend-data-type-bugs">Backend Data Type Bugs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#superset-data-type-support">Superset Data Type Support</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            <div class="bd-footer-content__inner"></div>
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="copyright">
+    
+      © Copyright 2020-2023, Ivy Team.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+  <p class="sphinx-version">
+    Created using <a href="https://sphinx-doc.org/">Sphinx</a> 6.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

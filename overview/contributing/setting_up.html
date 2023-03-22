@@ -1,0 +1,1140 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Setting Up &#8212; Ivy Documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d" />
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'overview/contributing/setting_up';</script>
+    <link rel="icon" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="The Basics" href="the_basics.html" />
+    <link rel="prev" title="Contributing" href="../contributing.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  <div class="navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo.png?raw=true" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo_dark.png?raw=true" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item"><div></div></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/unifyai/ivy" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/letsunifyai" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-twitter"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item"><div></div></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/unifyai/ivy" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/letsunifyai" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-twitter"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item"><nav class="bd-docs-nav bd-links"
+  aria-label="Section Navigation">
+    <div class="bd-toc-item navbar-nav">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../related_work.html">Related Work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../contributing.html">Contributing</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">Setting Up</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+
+
+
+
+
+
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="the_basics.html">The Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="building_the_docs.html">Building the Docs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive.html">Deep Dive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="open_tasks.html">Open Tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applied_libraries.html">Applied Libraries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="helpful_resources.html">Helpful Resources</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../deep_dive.html">Deep Dive</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.control_flow_ops.html">Control flow ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.experimental.html">Experimental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.utility.html">Utility</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Data classes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/data_classes/ivy.data_classes.array.html">Array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/data_classes/ivy.data_classes.container.html">Container</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Framework classes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.helpers.html">Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.sequential.html">Sequential</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Nested array</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/nested-array/nested_array/ivy.nested_array.nested_array.html">Nested array</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Utils</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.backend.html">Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.dynamic_import.html">Dynamic import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.inspection.html">Inspection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.verbosity.html">Verbosity</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Testing</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.available_frameworks.html">Available frameworks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.function_testing.html">Function testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.globals.html">Globals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.hypothesis_helpers.html">Hypothesis helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.structs.html">Structs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.test_parameter_flags.html">Test parameter flags</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.testing_helpers.html">Testing helpers</a></li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links">
+    <div class="bd-toc-item navbar-nav">
+        <p aria-level="2" class="caption" role="heading">
+            <span class="caption-text">Docs</span>
+        </p>
+        <ul class="nav bd-sidenav">
+            <li class="toctree-l1">
+                <a class="reference external" href="/ivy">
+                    Ivy
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/mech">
+                    Ivy mech
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/vision">
+                    Ivy vision
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/robot">
+                    Ivy robot
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/gym">
+                    Ivy gym
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/memory">
+                    Ivy memory
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/builder">
+                    Ivy builder
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/models">
+                    Ivy models
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/ecosystem">
+                    Ivy ecosystem
+                </a>
+            </li>
+            </ul>
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumbs">
+  <ul class="bd-breadcrumbs" role="navigation" aria-label="Breadcrumb">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../contributing.html" class="nav-link">Contributing</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">Setting Up</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="setting-up">
+<h1>Setting Up<a class="headerlink" href="#setting-up" title="Permalink to this heading">#</a></h1>
+<p>We’re really happy you’d like to learn how to contribute towards Ivy 🙂</p>
+<p>This page explains the main steps to get started!</p>
+<section id="forking-and-cloning-the-repo">
+<h2>Forking and cloning the repo<a class="headerlink" href="#forking-and-cloning-the-repo" title="Permalink to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p>You first need to fork the Ivy repository from the repository page here <a class="reference external" href="https://github.com/unifyai/ivy">repo</a> by using the fork button on the top right. This creates a copy of Ivy repository in your GitHub account.</p></li>
+<li><p>Clone your forked repo to your local machine.</p></li>
+</ol>
+<p>Depending on your preferred mode of cloning, any of the below should work:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git clone --recurse-submodules git@github.com:YOUR_USERNAME/ivy.git
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git clone --recurse-submodules https://github.com/YOUR_USERNAME/ivy.git
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>gh repo clone YOUR_USERNAME/ivy your_folder -- --recurse-submodules
+</pre></div>
+</div>
+<p>Then add Ivy original repository as upstream, to easily sync with latest changes.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git remote add upstream https://github.com/unifyai/ivy.git
+</pre></div>
+</div>
+</section>
+<section id="pycharm">
+<h2>PyCharm<a class="headerlink" href="#pycharm" title="Permalink to this heading">#</a></h2>
+<p><a class="reference external" href="https://www.jetbrains.com/pycharm/">Pycharm</a> is the main IDE of choice for our development team.
+However, you are of course welcome to use whatever Integrated Development Environment (IDE) you’re most familiar with.
+If you do decide to use PyCharm, you should make sure to check whether you are eligible for a <a class="reference external" href="https://www.jetbrains.com/community/education/#students">free student licence</a>.
+Many people seem to miss this option, so we thought we would add an explicit reminder here in the setting up guide!</p>
+<p><strong>Important Points</strong></p>
+<ol class="arabic simple">
+<li><p>Once you don’t have a student account, the student license will expire and you won’t be able to access PyCharm Professional.</p></li>
+<li><p>To continue using PyCharm Professional, you can use the trial version making a jetbrains account but that would be only valid for 1 month.</p></li>
+<li><p>After the trial expires you have to buy the paid version of PyCharm Professional.</p></li>
+</ol>
+<p>For questions, please reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/942114831039856730">pycharm channel</a>!</p>
+</section>
+<section id="virtual-environments-no-docker">
+<h2>Virtual environments - No Docker<a class="headerlink" href="#virtual-environments-no-docker" title="Permalink to this heading">#</a></h2>
+<p>Due to the rapid pace of updates in Ivy, it is strongly suggested for developers to use the latest ivy package from GitHub source, as explained below.
+This is to ensure the contributors’ code and examples are as aligned and in accordance with the latest as possible.
+The stable version of Ivy from PyPI maybe used for personal projects and experiments but avoided in development, for now.
+If you want to use the stable version, you are welcome to use the docker container or pip install ivy-core.</p>
+<p>Below is a guide to creating your own virtual environment.
+The benefit of creating a python environment is the ability to install certain packages for a project and then other packages (perhaps different versions) in a new environment for another project.
+This makes it very easy to keep track of installed packages and their versions.</p>
+<p>Below is a guide for setting up a developing environment for Ivy.</p>
+<p>You can either use <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html">miniconda</a> or <a class="reference external" href="https://docs.python.org/3/library/venv.html">venv</a>:</p>
+<section id="using-miniconda">
+<h3>Using miniconda<a class="headerlink" href="#using-miniconda" title="Permalink to this heading">#</a></h3>
+<ol class="arabic">
+<li><p>Install <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html">miniconda</a></p></li>
+<li><p>Open conda terminal</p></li>
+<li><p>Create the environment by running the command (<code class="code docutils literal notranslate"><span class="pre">ivy_dev</span></code> is the name of the environment)</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>conda create --name ivy_dev python=3.8.10
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Activate the environment by:</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>conda activate ivy_dev
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Now install ivy package from GitHub by running:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>pip install git+https://github.com/unifyai/ivy.git
+</pre></div>
+</div>
+</li>
+<li><p>Setup the interpreter from you environment in Pycharm by:</p>
+<ol class="loweralpha simple">
+<li><p>Going to settings -&gt; project -&gt; Python Interpreter</p></li>
+<li><p>Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.</p></li>
+<li><p>Choosing “conda environment” from the left panel.</p></li>
+</ol>
+<blockquote>
+<div><p>Choose existing environment and select the drop down and you should find the path python in the environment.</p>
+</div></blockquote>
+</li>
+</ol>
+<p>If you don’t find path to you created python environment, you can run <code class="code docutils literal notranslate"><span class="pre">where</span> <span class="pre">python</span></code> in conda command line while the environment is activate and it should give the path which can be added manually.</p>
+</section>
+<section id="using-venv">
+<h3>Using venv<a class="headerlink" href="#using-venv" title="Permalink to this heading">#</a></h3>
+<p>This is a builtin package and doesn’t require explicit installation.</p>
+<ol class="arabic">
+<li><p>Open your terminal/cmd in the directory where you would like to have the folder with the environment files.</p></li>
+<li><p>Create the environment by running the command below with a new environment name.
+We named it <code class="code docutils literal notranslate"><span class="pre">ivy_dev</span></code> like above.</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python -m venv ivy_dev
+</pre></div>
+</div>
+<p>Try <code class="code docutils literal notranslate"><span class="pre">python3</span></code> if <code class="code docutils literal notranslate"><span class="pre">python</span></code> doesn’t work.</p>
+</div></blockquote>
+</li>
+<li><p>Activate the created environment by running (in the same working directory as the environment folder):</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ivy_dev\Scripts\activate.bat
+</pre></div>
+</div>
+<p>(on Windows)</p>
+<p>OR</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>source ivy_dev/bin/activate
+</pre></div>
+</div>
+<p>(on Mac/Linux)</p>
+</div></blockquote>
+</li>
+<li><p>Now install ivy package from GitHub by running:</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>pip install git+https://github.com/unifyai/ivy.git
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Setup the interpreter from you environment in Pycharm by:</p>
+<ol class="loweralpha simple">
+<li><p>Going to settings -&gt; project -&gt; Python Interpreter</p></li>
+<li><p>Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.</p></li>
+<li><p>Choosing “virtualenv environment” from the left panel</p></li>
+</ol>
+<blockquote>
+<div><p>Choose existing environment and add the path to python.</p>
+</div></blockquote>
+</li>
+</ol>
+<p>The path to python can be found by <code class="code docutils literal notranslate"><span class="pre">where</span> <span class="pre">python</span></code> on Windows and <code class="code docutils literal notranslate"><span class="pre">which</span> <span class="pre">python</span></code> in Linux/Mac OS.</p>
+<p>Note: You may tick “Make available to all projects” so you will be able to find the interpreter from the conda/venv environment in any future projects.</p>
+<p>To make sure you have all the packages for running tests available change the directory to <code class="code docutils literal notranslate"><span class="pre">ivy/ivy_tests/test_array_api</span></code> in your cloned fork using the <code class="code docutils literal notranslate"><span class="pre">cd</span></code> command and run the command below (while your <code class="code docutils literal notranslate"><span class="pre">ivy_dev</span></code> environment is active):</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>pip install -r requirements.txt
+</pre></div>
+</div>
+</div></blockquote>
+<p>This will install packages required for running the tests in Array API suite.</p>
+<p>Here are the visual guides for setting up a <a class="reference external" href="https://www.jetbrains.com/help/pycharm/creating-virtual-environment.html#0">virtualenv environment</a> OR <a class="reference external" href="https://www.jetbrains.com/help/pycharm/conda-support-creating-conda-virtual-environment.html">conda environment</a> in pycharm from JetBrains.</p>
+</section>
+</section>
+<section id="docker-interpreter-with-pycharm">
+<h2>Docker Interpreter with PyCharm<a class="headerlink" href="#docker-interpreter-with-pycharm" title="Permalink to this heading">#</a></h2>
+<p>Setting up and using the same remote python interpreter provided as a docker container helps make sure we are all using the same packages (same environment) and helps to mitigate any potential version conflicts etc.</p>
+<p>In addition, it makes it possible to use modules not yet available for a particular operating system, such as <code class="code docutils literal notranslate"><span class="pre">jaxlib</span></code> on a Windows machine.</p>
+<p>Below, we provide instructions for setting up a docker interpreter for <a class="reference external" href="https://www.jetbrains.com/pycharm/">Pycharm</a>, which, as mentioned above, is the IDE of choice for our development team:</p>
+<section id="windows">
+<h3>Windows<a class="headerlink" href="#windows" title="Permalink to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>Install <a class="reference external" href="https://www.docker.com/products/docker-desktop">Docker Desktop</a></p></li>
+<li><p>Install <a class="reference external" href="https://docs.microsoft.com/en-us/windows/wsl/install">WSL 2</a>.
+For most, it will only require running the command <code class="code docutils literal notranslate"><span class="pre">wsl</span> <span class="pre">--install</span></code> in powershell admin mode.
+Visit the link if it doesn’t.</p></li>
+<li><p>Get the latest Docker Image for Ivy by:</p>
+<ol class="loweralpha simple">
+<li><p>Running Docker desktop.</p></li>
+<li><p>Opening cmd, and running the command: <code class="code docutils literal notranslate"><span class="pre">docker</span> <span class="pre">pull</span> <span class="pre">unifyai/ivy:latest</span></code></p></li>
+</ol>
+</li>
+<li><p>Install <a class="reference external" href="https://www.jetbrains.com/pycharm/">Pycharm Professional Version</a>, make sure to only install the Professional version of PyCharm, not the Community version.</p></li>
+<li><p>Open pycharm with your cloned Ivy repository.
+Add the remote python interpreter by:</p>
+<ol class="loweralpha simple">
+<li><p>Going to the settings -&gt; Build, Execution, Deployment -&gt; Docker
+Click the “+” on top left and it should add a docker connection.</p></li>
+<li><p>Going to settings -&gt; project -&gt; Python Interpreter</p></li>
+<li><p>Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.</p></li>
+<li><p>Choosing “Docker” from the left panel.
+Type python3 (with the number) in python interpreter path and press ok.</p></li>
+<li><p>Opening “Edit Run/Debug configurations” dialog -&gt; “Edit Configurations…” and making sure that “Working directory” is empty in case of getting the “Can’t run process: the working directory ‘ivy’ is invalid, it needs to be an absolute path” error.</p></li>
+</ol>
+</li>
+</ol>
+<p>Once these steps are finished, your interpreter should be set up correctly!
+If Docker’s latest version causes error, try using an earlier version by visiting <a class="reference external" href="https://docs.docker.com/desktop/release-notes/">Docker release note</a>.
+For some Windows users, it might be necessary to enable virtualisation from the BIOS setup.</p>
+<p><strong>Video</strong></p>
+<iframe width="420" height="315"
+src="https://www.youtube.com/embed/7I_46c2AvJg" class="video" allowfullscreen="true">
+</iframe></section>
+<section id="macos">
+<h3>MacOS<a class="headerlink" href="#macos" title="Permalink to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>Install <a class="reference external" href="https://www.docker.com/products/docker-desktop">Docker Desktop</a>.</p></li>
+<li><p>Get the latest Docker Image for Ivy by:</p>
+<ol class="loweralpha simple">
+<li><p>Running Docker desktop.</p></li>
+<li><p>Opening terminal, and running the command: <code class="code docutils literal notranslate"><span class="pre">docker</span> <span class="pre">pull</span> <span class="pre">unifyai/ivy:latest</span></code></p></li>
+</ol>
+</li>
+<li><p>Install <a class="reference external" href="https://www.jetbrains.com/pycharm/">Pycharm Professional Version</a></p></li>
+<li><p>Open pycharm with your cloned Ivy repository.
+Add the remote python interpreter by:</p>
+<ol class="loweralpha simple">
+<li><p>Going to the settings -&gt; Build, Execution, Deployment -&gt; Docker.
+Click the “+” on top left and it should add a docker connection.</p></li>
+<li><p>Going to settings -&gt; project -&gt; Python Interpreter</p></li>
+<li><p>Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.</p></li>
+<li><p>Choosing “On Docker” from the dropdown menu.</p></li>
+<li><p>Choosing “Docker” from the “Docker server” dropdown menu, choosing “Pull” if you want to use a remote interpreter, and using <code class="code docutils literal notranslate"><span class="pre">unifyai/ivy:latest</span></code> as the image tag.</p></li>
+<li><p>If you don’t want to use a remote interpreter, choose “Build” and use the suitable Dockerfile; then choosing <code class="code docutils literal notranslate"><span class="pre">docker/Dockerfile</span></code> to be the Dockerfile.</p></li>
+<li><p>Clicking next and navigating to system interpreter tab from the menu on the left.</p></li>
+<li><p>Choosing the built interpreter from the dropdown menu.</p></li>
+</ol>
+</li>
+</ol>
+<p>Once these steps are finished, your interpreter should be set up correctly!
+If Docker’s latest version causes error, try using an earlier version by visiting <a class="reference external" href="https://docs.docker.com/desktop/release-notes/">Docker release note</a>.</p>
+<p><strong>Important Note</strong></p>
+<p>When setting up on an M1 Mac, you would have to update the Dockerfile to install libraries from <code class="code docutils literal notranslate"><span class="pre">requirements/optional_m1_1.txt</span></code> and <code class="code docutils literal notranslate"><span class="pre">requirements/optional_m1_2.txt</span></code> instead of <code class="code docutils literal notranslate"><span class="pre">requirements/optional.txt</span></code>.</p>
+<p><strong>Video</strong></p>
+<iframe width="420" height="315"
+src="https://www.youtube.com/embed/5BxizBIC-GQ" class="video" allowfullscreen="true">
+</iframe></section>
+<section id="ubuntu">
+<h3>Ubuntu<a class="headerlink" href="#ubuntu" title="Permalink to this heading">#</a></h3>
+<ol class="arabic">
+<li><p>Install Docker by running the commands below one by one in the Linux terminal.
+You may visit <a class="reference external" href="https://docs.docker.com/engine/install/ubuntu/">Docker Ubuntu Installation Page</a> for the details.</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>sudo apt-get update
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>sudo apt-get install \
+ca-certificates \
+curl \
+gnupg \
+lsb-release
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>sudo mkdir -p /etc/apt/keyrings
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>echo \
+&quot;deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+$(lsb_release -cs) stable&quot; | sudo tee /etc/apt/sources.list.d/docker.list &gt; /dev/null
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>sudo apt-get update
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Get the latest Docker Image for Ivy by:</p>
+<ol class="loweralpha simple">
+<li><p>Opening terminal and running <code class="code docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">start</span> <span class="pre">docker</span></code></p></li>
+<li><p>Running the command: <code class="code docutils literal notranslate"><span class="pre">docker</span> <span class="pre">pull</span> <span class="pre">unifyai/ivy:latest</span></code></p></li>
+</ol>
+<p>Note: If you get permission related errors please visit the simple steps at <a class="reference external" href="https://docs.docker.com/engine/install/linux-postinstall/">Linux post-installation page</a>.</p>
+</li>
+<li><p>Install Pycharm Professional Version.
+You may use Ubuntu Software for this.</p></li>
+<li><p>Open pycharm with your cloned Ivy repository.
+Add the remote python interpreter by:</p>
+<ol class="loweralpha simple">
+<li><p>Going to the settings -&gt; Build, Execution, Deployment -&gt; Docker.
+Click the “+” on top left and it should add a docker connection.</p></li>
+<li><p>Going to settings -&gt; project -&gt; Python Interpreter</p></li>
+<li><p>Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.</p></li>
+<li><p>Choosing “Docker” from the left panel.
+Type python3 (with the number) in python interpreter path and press ok.</p></li>
+</ol>
+</li>
+</ol>
+<p>For questions, please reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/942114744691740772">docker channel</a>!</p>
+<p><strong>Video</strong></p>
+<iframe width="420" height="315"
+src="https://www.youtube.com/embed/UHeSnZu0pAI" class="video" allowfullscreen="true">
+</iframe></section>
+<section id="setting-up-testing">
+<h3>Setting Up Testing<a class="headerlink" href="#setting-up-testing" title="Permalink to this heading">#</a></h3>
+<p>There are a couple of options to choose from when running ivy tests in PyCharm.
+To run a single unit test, e.g. <cite>test_abs</cite>, you can avail of the context menu in the PyCharm code editor by pressing the green ▶️ symbol which appears to the left of <cite>def test_abs(</cite>.</p>
+<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/setting_up_testing/pycharm_test_run_1.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/setting_up_testing/pycharm_test_run_1.png?raw=true" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/setting_up_testing/pycharm_test_run_1.png?raw=true" style="width: 420px;" /></a>
+<p>You can then click ‘Run pytest for…’ or ‘Debug pytest for…’.
+Keyboard shortcuts for running the rest are displayed also.
+These screenshots are from a Mac, hence the shortcut for running a test is <code class="code docutils literal notranslate"><span class="pre">ctrl</span> <span class="pre">-</span> <span class="pre">shift</span> <span class="pre">-</span> <span class="pre">R</span></code>.</p>
+<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/setting_up_testing/pycharm_test_run_2.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/setting_up_testing/pycharm_test_run_2.png?raw=true" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/setting_up_testing/pycharm_test_run_2.png?raw=true" style="width: 420px;" /></a>
+<p>The test run should pop up in a window at the bottom of the screen (or elsewhere, depending on your settings).</p>
+<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/setting_up_testing/pycharm_test_run_3.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/setting_up_testing/pycharm_test_run_3.png?raw=true" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/setting_up_testing/pycharm_test_run_3.png?raw=true" style="width: 420px;" /></a>
+<p>To run all the tests in a file, press <code class="code docutils literal notranslate"><span class="pre">ctrl</span></code> - right click (on Mac) on the <code class="code docutils literal notranslate"><span class="pre">test_elementwise.py</span></code> open tab.
+A menu will appear in which you can find ‘Run pytest in test_elementwise.py…’</p>
+<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/setting_up_testing/pycharm_run_all_1.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/setting_up_testing/pycharm_run_all_1.png?raw=true" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/setting_up_testing/pycharm_run_all_1.png?raw=true" style="width: 420px;" /></a>
+<p>Click this and you should see a progress bar of all the tests running in the file.</p>
+<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/setting_up_testing/pycharm_run_all_2.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/setting_up_testing/pycharm_run_all_2.png?raw=true" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/setting_up_testing/pycharm_run_all_2.png?raw=true" style="width: 420px;" /></a>
+<p>It is also possible to run the entire set of ivy tests or the array api test suite using pre-written shell scripts that can be run from the ‘Terminal’ tab in PyCharm.
+There are a number of such shell scripts in <a class="reference external" href="https://github.com/unifyai/ivy/tree/f71a414417646e1dfecb5de27fb555f80333932c/run_tests_CLI">ivy/run_tests_CLI</a>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>run_ivy_core_test.py
+run_ivy_nn_test.py
+run_ivy_stateful_test.py
+<span class="hll">run_tests.sh
+</span><span class="hll">test_array_api.sh
+</span>test_dependencies.py
+test_dependencies.sh
+<span class="hll">test_ivy_core.sh
+</span><span class="hll">test_ivy_nn.sh
+</span><span class="hll">test_ivy_stateful.sh
+</span></pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">run_tests.sh</span></code> is run by typing <code class="code docutils literal notranslate"><span class="pre">./run_tests_CLI/run_tests.sh</span></code> in the <code class="code docutils literal notranslate"><span class="pre">/ivy</span></code> directory.
+This runs all tests in <code class="code docutils literal notranslate"><span class="pre">ivy/ivy_tests</span></code>.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">test_array_api.sh</span></code> is run by typing <code class="code docutils literal notranslate"><span class="pre">./test_array_api.sh</span> <span class="pre">[backend]</span> <span class="pre">test_[submodule]</span></code>.
+This runs all array-api tests for a certain submodule in a certain backend.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">test_ivy_core.sh</span></code> is run by typing <code class="code docutils literal notranslate"><span class="pre">./run_tests_CLI/test_ivy_core.sh</span> <span class="pre">[backend]</span> <span class="pre">test_[submodule]</span></code> in the ivy directory.
+This runs all ivy tests for a certain submodule in a certain backend in <code class="code docutils literal notranslate"><span class="pre">test_ivy/test_functional/test_core</span></code>.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">test_ivy_nn.sh</span></code>, <code class="code docutils literal notranslate"><span class="pre">test_ivy_stateful.sh</span></code> are run in a similar manner to <code class="code docutils literal notranslate"><span class="pre">test_ivy_core.sh</span></code>.
+Make sure to check the submodule names in the source code before running.</p></li>
+</ul>
+<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/setting_up_testing/pycharm_run_array_api_tests.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/setting_up_testing/pycharm_run_array_api_tests.png?raw=true" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/setting_up_testing/pycharm_run_array_api_tests.png?raw=true" style="width: 420px;" /></a>
+<p>If you wish to run tests of all submodules of <cite>ivy_core</cite>, <cite>ivy_nn</cite> or <cite>ivy_stateful</cite>, there are <code class="code docutils literal notranslate"><span class="pre">.py</span></code> available in <code class="code docutils literal notranslate"><span class="pre">run_tests_CLI</span></code>.
+All are run like: <code class="code docutils literal notranslate"><span class="pre">python</span> <span class="pre">run_tests_CLI/run_ivy_nn_test.py</span> <span class="pre">1</span></code>, where 1 = numpy, 2 = torch, 3 = jax, and 4 = tensorflow.</p>
+</section>
+<section id="more-detailed-hypothesis-logs">
+<h3>More Detailed Hypothesis Logs<a class="headerlink" href="#more-detailed-hypothesis-logs" title="Permalink to this heading">#</a></h3>
+<p>For testing, we use the <a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/#">Hypothesis</a> module for data generation.
+During testing, if Hypothesis detects an error, it will do its best to find the simplest values that are causing the error.
+However, when using PyCharm, if Hypothesis detects two or more distinct errors, it will return the number of errors found and not return much more information.
+This is because PyCharm by default turns off headers and summary’s while running tests.
+To get more detailed information on errors in the code, we recommend doing the following:</p>
+<ol class="arabic">
+<li><p>Going to the settings -&gt; Advanced</p></li>
+<li><p>Using the search bar to search for ‘Pytest’</p></li>
+<li><p>Make sure that the checkbox for ‘Pytest: do not add “–no-header –no-summary -q”’ is checked.</p>
+<blockquote>
+<div><ol class="loweralpha">
+<li><a class="reference internal image-reference" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/more_detailed_hypothesis_logs/detailed_hypothesis_setting.png?raw=true"><img alt="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/more_detailed_hypothesis_logs/detailed_hypothesis_setting.png?raw=true" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/more_detailed_hypothesis_logs/detailed_hypothesis_setting.png?raw=true" style="width: 420px;" /></a>
+</li>
+</ol>
+</div></blockquote>
+</li>
+</ol>
+<p>Now, if Hypothesis detects an error in the code it will return more detailed information on each of the failing examples:</p>
+<a class="reference internal image-reference" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/more_detailed_hypothesis_logs/detailed_hypothesis_example.png?raw=true"><img alt="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/more_detailed_hypothesis_logs/detailed_hypothesis_example.png?raw=true" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/more_detailed_hypothesis_logs/detailed_hypothesis_example.png?raw=true" style="width: 420px;" /></a>
+<p>For questions, please reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/942114744691740772">docker channel</a>!</p>
+<p><strong>“Empty Suite” error fix:</strong></p>
+<p>Click on the “green arrow button” from where you run the function in PyCharm. Open “Modify Run Configuration…”, under “Target:” on the right side click on “…” it’ll open a new window, manually add the path to the specific function, For instance, for stateful -&gt; “test_stateful.test_submodule_name.test_function_name” and for functional -&gt; “test_submodule_name.test_function_name”, the function will pop up below, select that, click on “Apply” then “OK”. Now, do not run the test from the “green arrow button” in the left panel, run it from above where there is a “green arrow button” on the left side of the “debugger button” making sure you’ve selected the latest modified configuration of that specific test you want to run.</p>
+</section>
+</section>
+<section id="setting-up-for-free">
+<h2>Setting up for Free<a class="headerlink" href="#setting-up-for-free" title="Permalink to this heading">#</a></h2>
+<p>Visual Studio Code is a recommended free alternative to setting up, especially if you’re not eligible for a student license with PyCharm Professional.
+The most easiest and the most efficient way would be using Visual Studio Code with the Docker extension.
+You’ll hopefully be done with this in no time.
+The steps to be followed are listed below:</p>
+<section id="id6">
+<h3>Windows<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>Install <a class="reference external" href="https://www.docker.com/products/docker-desktop">Docker Desktop</a></p></li>
+<li><p>Install <a class="reference external" href="https://code.visualstudio.com/">Visual Studio Code here</a></p></li>
+<li><p>Open Docker desktop, make sure it’s running while following the process below.
+You can close the Docker desktop window afterwards, Docker will continue to run in the background.</p></li>
+<li><p>Open Visual Studio Code, open the Ivy repo folder and follow the steps listed below:</p>
+<ol class="loweralpha simple">
+<li><p>At the bottom right a window will pop up asking for “Dev Containers” extension, install that.
+In case the window doesn’t pop up, search for the “Dev Containers” extension in the Visual Studio Code and install that.</p></li>
+<li><p>Install the “Docker” extension for Visual Studio Code, you’ll easily find that searching “docker” in the extensions tab.</p></li>
+<li><p>Once done, restart Visual Studio Code, at the bottom left corner there would be an icon similar to “ &gt;&lt; “ overlapped on each other.</p></li>
+<li><p>Clicking on that will open a bar at the top which will give you an option “Open Folder in Container…”, click on that.</p></li>
+<li><p>You’ll be inside the container now, where you can locally run the tests that you’ve modified by running the command, “pytest test_file_path::test_fn_name”. Opening the container may take a long time, as the Docker image is very large (5+ GB).</p></li>
+</ol>
+</li>
+</ol>
+</section>
+<section id="id8">
+<h3>Ubuntu<a class="headerlink" href="#id8" title="Permalink to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>Install <a class="reference external" href="https://docs.docker.com/engine/install/ubuntu/">Docker Engine</a></p></li>
+<li><p>Install <a class="reference external" href="https://code.visualstudio.com/">Visual Studio Code</a></p></li>
+<li><p>Clone your fork of the Ivy repository.</p></li>
+<li><p>Open Visual Studio Code, open the Ivy repo folder and following the steps listed below:</p>
+<ol class="loweralpha simple">
+<li><p>Install the <code class="code docutils literal notranslate"><span class="pre">Dev</span> <span class="pre">Containers</span></code> and <code class="code docutils literal notranslate"><span class="pre">Docker</span></code> extensions.</p></li>
+<li><p>Open the <code class="code docutils literal notranslate"><span class="pre">.devcontainer/devcontainer.json</span></code> file.</p></li>
+<li><p>Add a comma (<code class="code docutils literal notranslate"><span class="pre">,</span></code>) to the end entry <code class="code docutils literal notranslate"><span class="pre">&quot;postCreateCommand&quot;:</span> <span class="pre">&quot;bash</span> <span class="pre">.devcontainer/post_create_commands.sh&quot;</span></code>, making it <code class="code docutils literal notranslate"><span class="pre">&quot;postCreateCommand&quot;:</span> <span class="pre">&quot;bash</span> <span class="pre">.devcontainer/post_create_commands.sh&quot;,</span></code>.</p></li>
+<li><p>Add in the line <code class="code docutils literal notranslate"><span class="pre">&quot;postStartCommand&quot;:</span> <span class="pre">&quot;git</span> <span class="pre">config</span> <span class="pre">--global</span> <span class="pre">--add</span> <span class="pre">safe.directory</span> <span class="pre">${containerWorkspaceFolder}&quot;</span></code> on the line immediately after the <code class="code docutils literal notranslate"><span class="pre">postCreateCommand</span></code> line.</p></li>
+<li><p>Click the remote explorer icon in the bottom left. It looks roughly like “&gt;&lt;” overlapped on each other.</p></li>
+<li><p>Click <code class="code docutils literal notranslate"><span class="pre">Reopen</span> <span class="pre">in</span> <span class="pre">Container</span></code> in the dropdown menu.</p></li>
+<li><p>You’ll be inside the container now, where you can locally run the tests running the command, <code class="code docutils literal notranslate"><span class="pre">pytest</span> <span class="pre">test_fle_path::test_fn_name</span></code>. Opening the container may take a long time, as the Docker image is very large (5+ GB).</p></li>
+</ol>
+</li>
+</ol>
+<p><strong>Important Note</strong></p>
+<p>For windows users, the file path should be entered with “/” (forward-slashes), for other OS it would be the regular “\” (back-slashes).</p>
+</section>
+<section id="github-codespaces">
+<h3>GitHub Codespaces<a class="headerlink" href="#github-codespaces" title="Permalink to this heading">#</a></h3>
+<p>It can be headache to install Docker and setup the PyCharm development environment, especially on recent ARM architectures like the new M1 Macs.
+Instead, we could make use of the GitHub Codespaces feature provided; this feature creates a VM (Virtual Machine) on the Azure cloud (means no local computation) with same configuration as defined by <code class="code docutils literal notranslate"><span class="pre">ivy/Dockerfile</span></code>.
+Since it’s a VM, we no longer have to worry about installing the right packages, modules etc., making it platform agnostic (just like ivy :P).
+We can develop as we usually do on Visual Studio Code with all your favourite extensions and themes available in Codespaces too.
+With all the computations being done on cloud, we could contribute to Ivy using unsupported hardware, old/slow systems, even from your iPad as long as you have Visual Studio code or a browser installed.
+How cool is that ?!</p>
+<p><strong>Important Note</strong></p>
+<p>There are several versions of GitHub.
+If you are using the free one you will have <em>limited</em> access to GitHub Codespaces, you can read the exact quotas available <a class="reference external" href="https://docs.github.com/en/billing/managing-billing-for-github-codespaces/about-billing-for-github-codespaces#monthly-included-storage-and-core-hours-for-personal-accounts">here</a>.</p>
+<p><strong>Pre-requisites</strong></p>
+<ol class="arabic simple">
+<li><p>Before we setup GitHub Codespaces, we need to have Visual Studio Code installed (you can get it from <a class="reference external" href="https://code.visualstudio.com/">here</a>).</p></li>
+<li><p>Once Visual Studio Code is installed, head over to the extension page (it’s icon is on the left pane), and search “Codespaces” and then install the extension locally.</p></li>
+</ol>
+<a class="reference internal image-reference" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/extension_install.png?raw=true"><img alt="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/extension_install.png?raw=true" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/extension_install.png?raw=true" style="width: 420px;" /></a>
+<p>Now we are ready to begin!</p>
+<p><strong>Setting up Codespaces</strong></p>
+<p>Just follow the steps outlined below:</p>
+<ol class="arabic simple">
+<li><p>Go to your fork of <code class="code docutils literal notranslate"><span class="pre">ivy</span></code>, and then click on the green “Code” dropdown, go to Codespaces tab, and then click on “create codespace on master”.</p></li>
+</ol>
+<a class="reference internal image-reference" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/fork_create_codespace.png?raw=true"><img alt="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/fork_create_codespace.png?raw=true" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/fork_create_codespace.png?raw=true" style="width: 420px;" /></a>
+<p>2. This will open up a new tab, where you click on “Open this codespaces on VS code desktop”.
+Give the relevant permissions to the browser to open up Visual Studio Code.</p>
+<a class="reference internal image-reference" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/open_vscode_desktop.png?raw=true"><img alt="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/open_vscode_desktop.png?raw=true" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/open_vscode_desktop.png?raw=true" style="width: 420px;" /></a>
+<p>3. Once visual studio code opens up, it will start building the remote container.
+In order to view the logs while the container is being built, you may click on “Building Codespace…” on the bottom right box.
+Please be patient while container is being built, it may take upto 10-15 minutes, but it’s a one-time process.
+Any subsequent connections to your ivy codespace will launch in 10-12 seconds.</p>
+<a class="reference internal image-reference" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/building_codespace.png?raw=true"><img alt="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/building_codespace.png?raw=true" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/building_codespace.png?raw=true" style="width: 420px;" /></a>
+<p>Log of container being built would look like below:</p>
+<a class="reference internal image-reference" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/log_codespace.png?raw=true"><img alt="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/log_codespace.png?raw=true" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/log_codespace.png?raw=true" style="width: 420px;" /></a>
+<ol class="arabic simple" start="4">
+<li><p>Once the container is built, you would see the following output log saying “Finished configuring codespace”.</p></li>
+</ol>
+<a class="reference internal image-reference" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/codespace_built.png?raw=true"><img alt="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/codespace_built.png?raw=true" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/codespace_built.png?raw=true" style="width: 420px;" /></a>
+<p>5. That’s it, you have just setup GitHub codespaces and can start developing Ivy.
+The configuration files installs all the required packages, extensions for you to get started quickly.</p>
+<p><strong>Opening an existing Codespace</strong></p>
+<p>If you have already setup codespaces, refer to the following to open your previously setup codespaces environment.</p>
+<p>There are 3 ways to connect your existing codespaces, you can use any of the approaches mentioned below.</p>
+<p>1. Go to your fork of ivy, click on the green coloured dropdown “Code”, go to codespaces tab, then select your codespace.
+This will open up a new tab, from there either you can develop on the browser itself, or click on “Open this codespaces on VS code desktop” to open up visual studio code application and develop from there.</p>
+<a class="reference internal image-reference" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/existing_codespace_fork.png?raw=true"><img alt="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/existing_codespace_fork.png?raw=true" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/existing_codespace_fork.png?raw=true" style="width: 420px;" /></a>
+<p>2. Other way to connect is to open up visual studio code application.
+There is a good chance that you would see <code class="code docutils literal notranslate"><span class="pre">ivy</span> <span class="pre">[Codespaces]</span></code> or <code class="code docutils literal notranslate"><span class="pre">ivy</span> <span class="pre">[vscode-remote]</span></code> on your recently opened projects.
+If you click either of those, it will open up your codespace.</p>
+<a class="reference internal image-reference" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/recent_projects.png?raw=true"><img alt="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/recent_projects.png?raw=true" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/recent_projects.png?raw=true" style="width: 420px;" /></a>
+<p>3. If in any case it doesn’t show your codespace on recent projects, go to “Remote Connection Explorer” extension tab on the left pane, from there make sure you have selected “Github Codespaces” on the top-left dropdown.
+Once you find your codespace, right click on it and then select “Connect to codespace in current window”.</p>
+<a class="reference internal image-reference" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/connect_existing.png?raw=true"><img alt="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/connect_existing.png?raw=true" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/connect_existing.png?raw=true" style="width: 420px;" /></a>
+<p><strong>Troubleshooting</strong></p>
+<p>Sometimes, visual studio code is not able to select the python interpreter.
+However, you can do that manually if that ever happens.
+Open up any python file, then click on the bottom right where it is written “Select Python Interpreter”.
+From there, select <code class="code docutils literal notranslate"><span class="pre">Python</span> <span class="pre">3.8.10</span> <span class="pre">64-bit</span> <span class="pre">usr/bin/python3</span></code>.</p>
+<p><strong>Setting Up Testing</strong></p>
+<p>The steps are as following to setup testing on VS Code when using a new Codespace.</p>
+<ol class="arabic simple">
+<li><p>Under the flask Icon in the toolbar select “Configure Python Tests” and select PyTest as the test framework.</p></li>
+</ol>
+<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/vs_code_testing_setup/vs_testing_01.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/vs_code_testing_setup/vs_testing_01.png?raw=true" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/vs_code_testing_setup/vs_testing_01.png?raw=true" style="width: 420px;" /></a>
+<ol class="arabic simple" start="2">
+<li><p>Select ivy_tests as the root directory for testing.</p></li>
+</ol>
+<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/vs_code_testing_setup/vs_testing_02.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/vs_code_testing_setup/vs_testing_02.png?raw=true" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/vs_code_testing_setup/vs_testing_02.png?raw=true" style="width: 420px;" /></a>
+<ol class="arabic simple" start="3">
+<li><p>Configure the _array_module.py file in the array_api_tests to be set to one of the supported frameworks.</p></li>
+</ol>
+<a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/vs_code_testing_setup/vs_testing_03.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/vs_code_testing_setup/vs_testing_03.png?raw=true" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/vs_code_testing_setup/vs_testing_03.png?raw=true" style="width: 420px;" /></a>
+<ol class="arabic simple" start="4">
+<li><p>Following all of this you should refresh the test suite and you should now be able to run tests right from VS Code!</p></li>
+</ol>
+<p>Note: Currently you do not need to comment out the <code class="code docutils literal notranslate"><span class="pre">conftest.py</span></code> file in the <code class="code docutils literal notranslate"><span class="pre">array_api_tests</span></code> directory.</p>
+<p><strong>Video</strong></p>
+<iframe width="420" height="315"
+src="https://www.youtube.com/embed/8rDcMMIl8dM" class="video" allowfullscreen="true">
+</iframe></section>
+</section>
+<section id="pre-commit">
+<h2>Pre-Commit<a class="headerlink" href="#pre-commit" title="Permalink to this heading">#</a></h2>
+<p>In addition to the docker interpreter, our development team also make use of the <code class="code docutils literal notranslate"><span class="pre">pre-commit</span></code> PyPI <a class="reference external" href="https://pypi.org/project/pre-commit/">package</a>.</p>
+<p>Check out their <a class="reference external" href="https://pre-commit.com/">page</a> for more details.</p>
+<p>In a nutshell, this enables us to add pre-commit hooks which check for lint errors before a commit is accepted, and then also (in most cases) automatically make the necessary fixes.
+If the lint tests fail when a commit is attempted, then the commit will not succeed, and the problematic lines are printed to the terminal.
+Fixes are then applied automatically where possible.
+To proceed with the commit, the modified files must be re-added using git, and the commit will then succeed on the next attempt.</p>
+<p>In order to install and properly set up pre-commit, these steps should be followed:</p>
+<ol class="arabic simple">
+<li><p>Run <code class="code docutils literal notranslate"><span class="pre">python3</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pre-commit</span></code></p></li>
+<li><p>Enter into your cloned ivy folder, for example <code class="code docutils literal notranslate"><span class="pre">cd</span> <span class="pre">~/ivy</span></code></p></li>
+<li><p>Run <code class="code docutils literal notranslate"><span class="pre">pre-commit</span> <span class="pre">install</span></code></p></li>
+</ol>
+<p>That’s it! Now when you make a commit, the pre-commit hooks will all be run correctly, as explained above.</p>
+<p>For questions, please reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/982725464110034944">pre-commit channel</a>!</p>
+<p><strong>Round Up</strong></p>
+<p>This should have hopefully given you a good understanding of how to get things properly set up.</p>
+<p>If you have any questions, please feel free to reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a>  in the <a class="reference external" href="https://discord.com/channels/799879767196958751/942114831039856730">pycharm channel</a>, <a class="reference external" href="https://discord.com/channels/799879767196958751/942114744691740772">docker channel</a>, <a class="reference external" href="https://discord.com/channels/799879767196958751/982725464110034944">pre-commit channel</a>, <a class="reference external" href="https://discord.com/channels/799879767196958751/942114789642080317">pip packages channel</a> depending on the question!</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../contributing.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Contributing</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="the_basics.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">The Basics</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item"><nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributing</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Setting Up</a></li>
+<li class="toctree-l1"><a class="reference internal" href="the_basics.html">The Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_the_docs.html">Building the Docs</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/navigating_the_code.html">Navigating the Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/function_types.html">Function Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/superset_behaviour.html">Superset Behaviour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/backend_setting.html">Backend Setting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/arrays.html">Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/containers.html">Containers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/data_types.html">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/devices.html">Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/inplace_updates.html">Inplace Updates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/formatting.html">Formatting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/function_arguments.html">Function Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/docstrings.html">Docstrings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/array_api_tests.html">Array API Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/ivy_frontends.html">Ivy Frontends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/exception_handling.html">Exception Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../deep_dive/continuous_integration.html">Continuous Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="open_tasks.html">Open Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applied_libraries.html">Applied Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpful_resources.html">Helpful Resources</a></li>
+</ul>
+</div>
+</nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#forking-and-cloning-the-repo">Forking and cloning the repo</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pycharm">PyCharm</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#virtual-environments-no-docker">Virtual environments - No Docker</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-miniconda">Using miniconda</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-venv">Using venv</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#docker-interpreter-with-pycharm">Docker Interpreter with PyCharm</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#windows">Windows</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#macos">MacOS</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ubuntu">Ubuntu</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-testing">Setting Up Testing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#more-detailed-hypothesis-logs">More Detailed Hypothesis Logs</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-for-free">Setting up for Free</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">Windows</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">Ubuntu</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#github-codespaces">GitHub Codespaces</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pre-commit">Pre-Commit</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            <div class="bd-footer-content__inner"></div>
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="copyright">
+    
+      © Copyright 2020-2023, Ivy Team.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+  <p class="sphinx-version">
+    Created using <a href="https://sphinx-doc.org/">Sphinx</a> 6.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

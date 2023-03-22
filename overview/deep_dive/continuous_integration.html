@@ -1,0 +1,1007 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Continuous Integration &#8212; Ivy Documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=12da95d707ffb74b382d" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d" />
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'overview/deep_dive/continuous_integration';</script>
+    <link rel="icon" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Open Tasks" href="../contributing/open_tasks.html" />
+    <link rel="prev" title="Exception Handling" href="exception_handling.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  <div class="navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo.png?raw=true" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo_dark.png?raw=true" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item"><div></div></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/unifyai/ivy" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/letsunifyai" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-twitter"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item"><div></div></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/unifyai/ivy" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/letsunifyai" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-twitter"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item"><nav class="bd-docs-nav bd-links"
+  aria-label="Section Navigation">
+    <div class="bd-toc-item navbar-nav">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../related_work.html">Related Work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extensions.html">Extensions</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../contributing.html">Contributing</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../contributing/setting_up.html">Setting Up</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing/the_basics.html">The Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing/building_the_docs.html">Building the Docs</a></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="navigating_the_code.html">Navigating the Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="function_types.html">Function Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="superset_behaviour.html">Superset Behaviour</a></li>
+<li class="toctree-l3"><a class="reference internal" href="backend_setting.html">Backend Setting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="arrays.html">Arrays</a></li>
+<li class="toctree-l3"><a class="reference internal" href="containers.html">Containers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="data_types.html">Data Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="devices.html">Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="inplace_updates.html">Inplace Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="formatting.html">Formatting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="function_arguments.html">Function Arguments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="docstrings.html">Docstrings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="array_api_tests.html">Array API Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ivy_frontends.html">Ivy Frontends</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exception_handling.html">Exception Handling</a></li>
+<li class="toctree-l3 current active has-children"><a class="current reference internal" href="#">Continuous Integration</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+
+
+
+
+
+
+
+
+
+
+
+
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing/open_tasks.html">Open Tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing/applied_libraries.html">Applied Libraries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing/helpful_resources.html">Helpful Resources</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="navigating_the_code.html">Navigating the Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_types.html">Function Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="superset_behaviour.html">Superset Behaviour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend_setting.html">Backend Setting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arrays.html">Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="containers.html">Containers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_types.html">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devices.html">Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inplace_updates.html">Inplace Updates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formatting.html">Formatting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_arguments.html">Function Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstrings.html">Docstrings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="array_api_tests.html">Array API Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_frontends.html">Ivy Frontends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exception_handling.html">Exception Handling</a></li>
+<li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">Continuous Integration</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
+
+
+
+
+
+
+
+
+
+
+
+
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.control_flow_ops.html">Control flow ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.experimental.html">Experimental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/functional/ivy/ivy.functional.ivy.utility.html">Utility</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Data classes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/data_classes/ivy.data_classes.array.html">Array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/data_classes/ivy.data_classes.container.html">Container</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Framework classes</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.helpers.html">Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/framework/stateful/ivy.stateful.sequential.html">Sequential</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Nested array</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/nested-array/nested_array/ivy.nested_array.nested_array.html">Nested array</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Utils</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.backend.html">Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.dynamic_import.html">Dynamic import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.inspection.html">Inspection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/utilities/utils/ivy.utils.verbosity.html">Verbosity</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Testing</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.available_frameworks.html">Available frameworks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.function_testing.html">Function testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.globals.html">Globals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.hypothesis_helpers.html">Hypothesis helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.structs.html">Structs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.test_parameter_flags.html">Test parameter flags</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/testing/helpers/ivy_tests.test_ivy.helpers.testing_helpers.html">Testing helpers</a></li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links">
+    <div class="bd-toc-item navbar-nav">
+        <p aria-level="2" class="caption" role="heading">
+            <span class="caption-text">Docs</span>
+        </p>
+        <ul class="nav bd-sidenav">
+            <li class="toctree-l1">
+                <a class="reference external" href="/ivy">
+                    Ivy
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/mech">
+                    Ivy mech
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/vision">
+                    Ivy vision
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/robot">
+                    Ivy robot
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/gym">
+                    Ivy gym
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/memory">
+                    Ivy memory
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/builder">
+                    Ivy builder
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/models">
+                    Ivy models
+                </a>
+            </li>
+            <li class="toctree-l1">
+                <a class="reference external" href="/ecosystem">
+                    Ivy ecosystem
+                </a>
+            </li>
+            </ul>
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumbs">
+  <ul class="bd-breadcrumbs" role="navigation" aria-label="Breadcrumb">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../contributing.html" class="nav-link">Contributing</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../deep_dive.html" class="nav-link">Deep Dive</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">Continuous Integration</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="continuous-integration">
+<h1>Continuous Integration<a class="headerlink" href="#continuous-integration" title="Permalink to this heading">#</a></h1>
+<p>We follow the practice of Continuous Integration (CI), in order to regularly build and test code at Ivy.
+This makes sure that:</p>
+<ol class="arabic simple">
+<li><p>Developers get feedback on their code soon, and Errors in the Code are detected quickly. ✅</p></li>
+<li><p>The developer can easily debug the code when finding the source of an error, and rollback changes in case of Issues. 🔍</p></li>
+</ol>
+<p>In order to incorporate Continuous Integration in the Ivy Repository, we follow a three-fold technique, which involves:</p>
+<ol class="arabic simple">
+<li><p>Commit Triggered Testing</p></li>
+<li><p>Periodic Testing</p></li>
+<li><p>Manual Testing</p></li>
+</ol>
+<img alt="CI Overview" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/CI.png?raw=true" />
+<p>We use GitHub Actions in order to implement and automate the process of testing. GitHub Actions allow implementing custom workflows that can build the code in the repository and run the tests. All the workflows used by Ivy are defined in the <a class="reference external" href="https://github.com/unifyai/ivy/tree/master/.github/workflows">.github/workflows</a> directory.</p>
+<section id="commit-push-pr-triggered-testing">
+<h2>Commit (Push/PR) Triggered Testing<a class="headerlink" href="#commit-push-pr-triggered-testing" title="Permalink to this heading">#</a></h2>
+<p>The following Tests are triggered in case of a Commit (Push/PR) made to the Ivy Repository:</p>
+<ol class="arabic simple">
+<li><p>Ivy Tests (A small subset)</p></li>
+<li><p>Array API Tests</p></li>
+</ol>
+</section>
+<section id="ivy-tests">
+<h2>Ivy Tests<a class="headerlink" href="#ivy-tests" title="Permalink to this heading">#</a></h2>
+<p>A test is defined as the triplet of (submodule, function, backend). We follow the following notation to identify each test:
+<code class="code docutils literal notranslate"><span class="pre">submodule::function,backend</span></code></p>
+<p>For example, <code class="code docutils literal notranslate"><span class="pre">ivy_tests/test_ivy/test_frontends/test_torch/test_tensor.py::test_torch_instance_arctan_,numpy</span></code></p>
+<p>The Number of such Ivy tests running on the Repository (without taking any Framework/Python Versioning into account) is 7284 (as of writing this documentation), and we are adding tests daily. Therefore, triggering all the tests on each commit is neither desirable (as it will consume a huge lot of Compute Resources, as well take a large amount of time to run) nor feasible (as Each Job in Github Actions has a time Limit of 360 Minutes, and a Memory Limit as well).</p>
+<p>Further, When we consider versioning, for a single Python version, and ~40 frontend and backend versions, the tests would shoot up to 40 * 40 * 7284 = 11,654,400, and we obviously don’t have resources as well as time to run those many tests on each commit.</p>
+<p>Thus, We need to prune the tests that run on each push to the Github Repository. The ideal situation, here, is to trigger only the tests that are impacted by the changes made in a push. The tests that are not impacted by the changes made in a push, are wasteful to trigger, as their results don’t change (keeping the same Hypothesis Configuration). For example, Consider the <a class="reference external" href="https://github.com/unifyai/ivy/commit/29cc90dda9e9a8d64789ed28e6eab0f41257a435">commit</a></p>
+<p>The commit changes the <code class="code docutils literal notranslate"><span class="pre">_reduce_loss</span></code> function and the <code class="code docutils literal notranslate"><span class="pre">binary_cross_entropy</span></code> functions in the ivy/functional/ivy/losses.py file. The only tests that must be triggered (for all 4 backends) are:</p>
+<p><code class="code docutils literal notranslate"><span class="pre">ivy_tests/test_ivy/test_functional/test_nn/test_losses.py::test_binary_cross_entropy_with_logits</span></code>
+<code class="code docutils literal notranslate"><span class="pre">ivy_tests/test_ivy/test_functional/test_nn/test_losses.py::test_cross_entropy</span></code>
+<code class="code docutils literal notranslate"><span class="pre">ivy_tests/test_ivy/test_functional/test_nn/test_losses.py::test_binary_cross_entropy</span></code>
+<code class="code docutils literal notranslate"><span class="pre">ivy_tests/test_ivy/test_functional/test_nn/test_losses.py::test_sparse_cross_entropy</span></code>
+<code class="code docutils literal notranslate"><span class="pre">ivy_tests/test_ivy/test_frontends/test_torch/test_loss_functions.py::test_torch_binary_cross_entropy</span></code>
+<code class="code docutils literal notranslate"><span class="pre">ivy_tests/test_ivy/test_frontends/test_torch/test_loss_functions.py::test_torch_cross_entropy</span></code></p>
+<p>Ivy’s Functional API functions <code class="code docutils literal notranslate"><span class="pre">binary_cross_entropy_with_logits</span></code>, <code class="code docutils literal notranslate"><span class="pre">test_cross_entropy</span></code>, <code class="code docutils literal notranslate"><span class="pre">test_binary_cross_entropy</span></code>, <code class="code docutils literal notranslate"><span class="pre">test_sparse_cross_entropy</span></code>, are precisely the ones impacted by the changes in the commit, and since the torch Frontend Functions torch_binary_cross_entropy, and torch_cross_entropy are wrapping these, the corresponding frontend tests are also impacted. No other Frontend function calls these underneath and hence are not triggered.</p>
+<p>How do we (or at least try to) achieve this?</p>
+</section>
+<section id="implementation">
+<h2>Implementation<a class="headerlink" href="#implementation" title="Permalink to this heading">#</a></h2>
+</section>
+<section id="a-top-down-view">
+<h2>A Top-Down View<a class="headerlink" href="#a-top-down-view" title="Permalink to this heading">#</a></h2>
+<p>In order to implement this, we use the magic of Test Coverage!
+Test Coverage refers to finding statements (lines) in your code that are executed (or could have been executed), on running a particular test.</p>
+<p>We use the Python Coverage Package (<a class="reference external" href="https://coverage.readthedocs.io/en/7.0.0/">https://coverage.readthedocs.io/en/7.0.0/</a>) for determining the Test Coverage of our tests.</p>
+<p>The way it works is by running a particular pytest, and then logging each line (of our code) that was executed (or could have been executed) by the test.</p>
+<p>Computing Test Coverage for all Ivy tests, allows us to find, for each line of code, which tests affect the same. We create a Dictionary (Mapping) to store this information as follows (The actual Mapping we prepare is a bit different from this design, but we will follow this for now due to Pedagogical Purposes):</p>
+<img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/Mapping.png?raw=true" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/Mapping.png?raw=true" />
+<p>The dictionary thus stores a list for each file f1 … fm. The list is a sequence encapsulating the lines of the file. Each index of the list contains a set of tests, which are mapped to the corresponding line in the file.</p>
+<p>So Yeah, Given this Mapping for a commit, We can just follow the below procedure:
+Find the files which are changed in the commit, and check for lines that are added/deleted/updated in the file.
+Determine the Tests that impact the lines, and trigger just those tests, and no other.</p>
+<p>But, there’s a fundamental issue here, Computing the Mapping requires determining the coverage for all tests, which involves running all the tests. Doesn’t this sound cyclical? After all, We are doing all this to avoid running all the tests.</p>
+<p>Now assume that you had some way to update the Mapping for a commit from the previous Mapping without having to run all the tests. Then, Given the Mapping for a single commit, we could follow this to determine and run the relevant tests for each commit as follows:</p>
+<img alt="Intelligent Testing Roadmap" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/ITRoadmap.png?raw=true" />
+<p>This is exactly what we do in order to implement Intelligent Testing. The “Update Mapping” Logic works as follows for each changed file:</p>
+<ol class="arabic simple">
+<li><p>For each deleted line, we remove the corresponding entry from the list corresponding to the file in the Mapping.</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tests_file</span> <span class="o">=</span> <span class="n">tests</span><span class="p">[</span><span class="n">file_name</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">deleted</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+   <span class="k">if</span> <span class="n">line</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">tests_file</span><span class="p">):</span>
+       <span class="k">del</span> <span class="n">tests_file</span><span class="p">[</span><span class="n">line</span><span class="p">]</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>For each line added, we compute the tests as an intersection of the set of tests on the line above and below the line.</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">added</span><span class="p">:</span>
+   <span class="n">top</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+   <span class="n">bottom</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+   <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">line</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">tests_file</span><span class="p">):</span>
+       <span class="n">top</span> <span class="o">=</span> <span class="n">tests_file</span><span class="p">[</span><span class="n">line</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+   <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">line</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">tests_file</span><span class="p">):</span>
+       <span class="n">bottom</span> <span class="o">=</span> <span class="n">tests_file</span><span class="p">[</span><span class="n">line</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+   <span class="n">tests_line</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+   <span class="k">if</span> <span class="n">top</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">bottom</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+       <span class="n">tests_line</span> <span class="o">=</span> <span class="n">top</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">bottom</span><span class="p">)</span>
+   <span class="k">elif</span> <span class="n">top</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+       <span class="n">tests_line</span> <span class="o">=</span> <span class="n">top</span>
+   <span class="k">elif</span> <span class="n">bottom</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+       <span class="n">tests_line</span> <span class="o">=</span> <span class="n">bottom</span>
+   <span class="n">tests_file</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">tests_line</span><span class="p">)</span>
+<span class="n">tests</span><span class="p">[</span><span class="n">file_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">tests_file</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Finally, For newly added tests, we compute the coverage of the new tests (limited to 10 per commit), and update the Mapping correspondingly.</p></li>
+</ol>
+<p>Once the Mapping has been updated, the “Determine &amp; Run Tests” Logic works as follows:</p>
+<ol class="arabic simple">
+<li><p>For each deleted line, we collect the tests corresponding to the line as:</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">deleted</span><span class="p">:</span>
+   <span class="n">tests_to_run</span> <span class="o">=</span> <span class="n">determine_tests_line</span><span class="p">(</span><span class="n">tests_file</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">tests_to_run</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>For each line updated, we collect the tests corresponding to the line as:</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">updated</span><span class="p">:</span>
+   <span class="n">tests_to_run</span> <span class="o">=</span> <span class="n">determine_tests_line</span><span class="p">(</span><span class="n">tests_file</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">tests_to_run</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>For each line added, we collect the tests corresponding to the line as:</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">added</span><span class="p">:</span>
+   <span class="n">tests_to_run</span> <span class="o">=</span> <span class="n">determine_tests_line</span><span class="p">(</span><span class="n">tests_file</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">tests_to_run</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p>Further, All the new tests added in a commit are collected (up to a max limit of 10, any more tests added are taken up in subsequent commits).</p></li>
+<li><p>Finally, All the collected tests are triggered by the run_tests.py script, and the corresponding entry in the MongoDB Database is updated with the Test Result (Details on this in the Dashboard Section below).</p></li>
+</ol>
+</section>
+<section id="storing-and-retrieving-the-mapping">
+<h2>Storing (and retrieving) the Mapping<a class="headerlink" href="#storing-and-retrieving-the-mapping" title="Permalink to this heading">#</a></h2>
+<p>As we see in the overview section, we compute a mapping of lines to tests, for each commit to the Ivy Repository. This mapping has to be stored somewhere, in order to be used by a future commit to determine the corresponding mapping (and therefore, trigger the required tests). Therefore, we need a mechanism to store and retrieve the Mapping.
+We use the unifyai/Mapping GitHub Repository for this purpose. We use a GitHub Repository for the following Reasons:
+#. Unlike Specialized Databases (like Google Cloud), we need not store any specialized secrets to access the Database (separately for reading and writing), and no separate API Keys are required for updating the DB, saving us from exposing our secret key Files (from GitHub Actions). In fact, We just except for a single SSH Deploy Key (secrets.SSH_DEPLOY_KEY) required for pushing the DB.
+#. The Repository is a Public Repository, and thus can be read by anyone, while the push can be restricted. This makes it helpful to expose the Mapping to run tests on the PRs, while allowing only the Push Commits to update the Mapping.
+#. We don’t need to make any specialized API Calls to Read/Write/Update the Mapping (Cloning and Pushing to the Repo suffices).
+#. Finally, It saves us from a Massive Race Condition Issue (which we highlight below).</p>
+<p>A GitHub Repository is not the best DB, obviously, with its own set of constraints (ex. 100 MB Space Limit), but works well enough for our requirements.</p>
+</section>
+<section id="cloning-and-pushing-to-the-repository">
+<h2>Cloning and Pushing to the Repository<a class="headerlink" href="#cloning-and-pushing-to-the-repository" title="Permalink to this heading">#</a></h2>
+<p>For Push triggered testing (intelligent-tests.yml Workflow), we use the SSH Cloning Method in order to felicitate the clone and push commands to the Repository, as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="o">./</span><span class="n">ivy</span><span class="o">/</span><span class="n">clone_mapping</span><span class="o">.</span><span class="n">sh</span> <span class="n">master</span>
+<span class="n">Determine</span> <span class="ow">and</span> <span class="n">Run</span> <span class="n">Tests</span><span class="p">,</span> <span class="ow">and</span> <span class="n">Update</span> <span class="n">the</span> <span class="n">Mapping</span> <span class="o">...</span>
+<span class="n">git</span> <span class="n">add</span> <span class="o">.</span>
+<span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">m</span> <span class="s2">&quot;Update Mapping&quot;</span>
+<span class="n">git</span> <span class="n">push</span> <span class="n">origin</span> <span class="n">master</span>
+</pre></div>
+</div>
+<p>The clone_mapping file works as follows:
+It creates a Directory called .ssh in the HOME folder of the VM hosted by GitHub, and copies the Deploy Key into the deploy_key file within the folder. Further, it adds github.com to the list of SSH Known Hosts.
+Now, that the SSH key of the Runner has permissions to push and clone the Mapping repository, it simply calls the git clone command. It does so with fetch depth set to 1, in order to just clone the latest commit, and no other.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>USER_EMAIL=&quot;rashul.chutani@gmail.com&quot;
+USER_NAME=&quot;Rashul Chutani&quot;
+TARGET_BRANCH=$1
+GITHUB_SERVER=&quot;github.com&quot;
+mkdir --parents &quot;$HOME/.ssh&quot;
+DEPLOY_KEY_FILE=&quot;$HOME/.ssh/deploy_key&quot;
+echo &quot;${SSH_DEPLOY_KEY}&quot; &gt; &quot;$DEPLOY_KEY_FILE&quot;
+chmod 600 &quot;$DEPLOY_KEY_FILE&quot;
+
+SSH_KNOWN_HOSTS_FILE=&quot;$HOME/.ssh/known_hosts&quot;
+ssh-keyscan -H &quot;$GITHUB_SERVER&quot; &gt; &quot;$SSH_KNOWN_HOSTS_FILE&quot;
+
+export GIT_SSH_COMMAND=&quot;ssh -i &quot;$DEPLOY_KEY_FILE&quot; -o UserKnownHostsFile=$SSH_KNOWN_HOSTS_FILE&quot;
+
+# Setup git
+git config --global user.email &quot;$USER_EMAIL&quot;
+git config --global user.name &quot;$USER_NAME&quot;
+
+git clone --single-branch --depth 1 --branch &quot;$TARGET_BRANCH&quot; git@github.com:unifyai/Mapping.git
+</pre></div>
+</div>
+<p>In case of, Pull Requests, we do not have access to <code class="code docutils literal notranslate"><span class="pre">SSH_DEPLOY_KEY</span></code> secret (and we don’t even want to give PRs that access), and thus we don’t use the SSH Clone Methodology and instead use the HTTP Clone Method, as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="o">-</span><span class="n">b</span> <span class="n">master1</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">unifyai</span><span class="o">/</span><span class="n">Mapping</span><span class="o">.</span><span class="n">git</span> <span class="o">--</span><span class="n">depth</span> <span class="mi">1</span>
+<span class="n">Determine</span> <span class="ow">and</span> <span class="n">Run</span> <span class="n">the</span> <span class="n">Tests</span> <span class="o">...</span>
+</pre></div>
+</div>
+<p>PRs should not update the Mapping on the Repository, and thus no Push is required in case of PRs.</p>
+</section>
+<section id="implementational-nitty-gritties">
+<h2>Implementational Nitty Gritties<a class="headerlink" href="#implementational-nitty-gritties" title="Permalink to this heading">#</a></h2>
+<section id="storage-space-unifyai-mapping">
+<h3>Storage Space (unifyai/Mapping)<a class="headerlink" href="#storage-space-unifyai-mapping" title="Permalink to this heading">#</a></h3>
+<p>The GitHub Repository allows only storing 100 MB of files per commit. The current design of the mapping takes a huge space as test names are long strings and are stored repeatedly for each line that is impacted by the tests. In order to reduce the space requirement for storing the Mapping, we restructure the Mapping as follows:</p>
+<img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/Mapping2.png?raw=true" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/Mapping2.png?raw=true" />
+<p>We include the <code class="code docutils literal notranslate"><span class="pre">index_mapping</span></code> and the <code class="code docutils literal notranslate"><span class="pre">test_mapping</span></code> fields, which map indices to tests and tests to indices, respectively. This allows us to just store the test index for each line in the Mapping, reducing the storage requirement significantly.</p>
+</section>
+<section id="determine-test-coverage-workflow">
+<h3>Determine Test Coverage Workflow<a class="headerlink" href="#determine-test-coverage-workflow" title="Permalink to this heading">#</a></h3>
+<p>Since each of our Update Mapping routine is not precisely correct, the Mapping would keep aggregating incorrections as commits keep coming to the GitHub Repository. In order to prevent this snowball effect from running completely irrelevant tests on each commit, we need to recalibrate the Mapping periodically. This is done by the Determine Test Coverage Workflow (implemented in det-test-coverage.yml).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">name</span><span class="p">:</span> <span class="n">determine</span><span class="o">-</span><span class="n">test</span><span class="o">-</span><span class="n">coverage</span>
+<span class="n">on</span><span class="p">:</span>
+ <span class="n">workflow_dispatch</span><span class="p">:</span>
+ <span class="n">schedule</span><span class="p">:</span>
+   <span class="o">-</span> <span class="n">cron</span><span class="p">:</span> <span class="s2">&quot;30 20 * * 6&quot;</span>
+</pre></div>
+</div>
+<p>Notice that the workflow triggers every Saturday Night at 8.30 PM (Fun Fact: It’s just my gut feeling that there are relatively lesser commits on the Repository on a Saturday Night, and we get access to the Resources quickly, LoL!).</p>
+<p>The workflow runs all the Ivy tests, determines their coverage, computes the Mapping, and pushes it to the unifyai/Mapping Repository.</p>
+</section>
+<section id="multiple-runners">
+<h3>Multiple Runners<a class="headerlink" href="#multiple-runners" title="Permalink to this heading">#</a></h3>
+<p>The Determine Test Coverage workflow takes about ~60 hours to complete if run with a single runner. The GitHub Action rules don’t allow running a single Job for more than 6 hours. Further, Determining the Coverage</p>
+<p>Therefore, we need to split the Workflow based on the Tests (into 32 runners). Each runner caters to its own subset of tests, and is responsible for determining the coverage for only those tests, and creates the Mapping based on these tests.</p>
+<p>Therefore, we have 32 branches (master1, master2, …, master32), on the unifyai/Mapping Repository, and also 32 runners on the intelligent-tests and intelligent-tests-pr Workflows.</p>
+<p>Everything sounds good, but Can you think of a potential Race Condition here?</p>
+</section>
+<section id="race-condition">
+<h3>Race Condition<a class="headerlink" href="#race-condition" title="Permalink to this heading">#</a></h3>
+<p>The Synchronized Object here is the unifyai/Mapping Repository, and is accessed
+through push (Write) and pull (Read) to the Repository.
+The Determine Test Coverage Workflow and the Intelligent Tests Workflow can run concurrently, while both of them write to the Mapping Repository.
+Consider the following Case for Runner 2:</p>
+<ol class="arabic simple">
+<li><p>The Determine Test Coverage workflow has been running, and is about to complete for Runner 2. Meanwhile, a commit made on the master triggers the intelligent-tests workflow.</p></li>
+<li><p>The runner 2 in the intelligent-tests workflow, pulls the Mapping from the master2 branch of unifyai/Mapping repository, and starts running the determined tests (based on changes made in the commit).</p></li>
+<li><p>The det-test-coverage workflow completes for runner2, which makes a push to the corresponding branch in the unifyai/Mapping Repository.</p></li>
+<li><p>The runner 2 in the intelligent-tests workflow also completes, and pushes the updated repository</p></li>
+</ol>
+<p>Thus, in the end, the push from the det-test-coverage would be completely ignored, and the system would not be recalibrated.
+Further, For some other Runner(s), the final push may be done by the Determine Test Coverage Workflow, and thus, the test distribution in itself might be corrupted (Overlapping Tests and Missing Tests).</p>
+<p>We handle the Race Condition as follows:</p>
+<ol class="arabic simple">
+<li><p>The Intelligent Tests workflow is allowed to push to the repository only when there is no merge conflict, while the Determine Test Coverage Workflow makes a force push (-f) push.</p></li>
+<li><p>Therefore, when the above situation occurs, the Push from Intelligent Tests workflow is discarded, while the recalibration push stays in place, and leads to consistency among runners, as well as, corrects the Coverage.</p></li>
+</ol>
+</section>
+</section>
+<section id="array-api-tests">
+<h2>Array API Tests<a class="headerlink" href="#array-api-tests" title="Permalink to this heading">#</a></h2>
+<p>The <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/.github/workflows/test-array-api.yml">test-array-api.yml</a> workflow runs the Array API Tests.
+Other than being triggered on push and pull requests with the required labels, It can also be manually dispatched from the <a class="reference external" href="https://github.com/unifyai/ivy/actions">Actions</a> Tab.</p>
+<p>The Workflow runs the Array API Tests for each backend and submodule pair.
+More details about the Array API Tests are available <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/array_api_tests.rst.html">here</a>.</p>
+</section>
+<section id="periodic-testing">
+<h2>Periodic Testing<a class="headerlink" href="#periodic-testing" title="Permalink to this heading">#</a></h2>
+<p>In order to make sure that none of the Ivy Tests are left ignored for a long time, and to decouple the rate of testing to the rate of committing to the repository, we implement periodic testing on the Ivy Repository.
+The Test Ivy Cron Workflow (Link here) is responsible for implementing this behavior by running Ivy tests every hour. In Each Run, It triggers 150 Ivy Tests, cycling through all of the tests.
+This number of 150 is chosen in order to make sure that the Action completes in 1 hour most of the time.
+The Test Results update the corresponding cell on the Dashboards.</p>
+</section>
+<section id="manually-dispatched-workflows">
+<h2>Manually Dispatched Workflows<a class="headerlink" href="#manually-dispatched-workflows" title="Permalink to this heading">#</a></h2>
+<p>In order to trigger any particular test for any reason (maybe Intelligent Testing missed the Test), you can
+follow the following steps:</p>
+<ol class="arabic simple">
+<li><p>Visit <a class="reference external" href="https://github.com/unifyai/ivy/actions/workflows/manual-tests.yml">GitHub Actions</a></p></li>
+<li><p>Click on Run Workflow</p></li>
+<li><p>Add the Name of the test as: <code class="code docutils literal notranslate"><span class="pre">ivy_tests/test_ivy/test_frontends/test_torch/test_tensor.py::test_torch_instance_arctan_</span></code></p></li>
+<li><p>If you want the test to be triggered for a particular Backend, append it with a “,” as: <code class="code docutils literal notranslate"><span class="pre">ivy_tests/test_ivy/test_frontends/test_torch/test_tensor.py::test_torch_instance_arctan_,tensorflow</span></code></p></li>
+<li><p>Check the result there and then itself, or wait (for ~20 minutes) for the dashboard to update.</p></li>
+</ol>
+<p>Manual Tests are also available for PRs.
+You can also run the Manual Tests Workflow on a Fork Repository (while reviewing PRs), as follows:</p>
+<p>1. Visit <a class="github reference external" href="https://github.com/RashulChutani/ivy/actions/workflows/manual-tests-pr.yml">RashulChutani/ivy</a> by going to the
+“Actions” Tab on the Fork, and selecting the manual-tests-pr workflow from the left pane.
+2. Trigger the Workflow by following Steps 2-4 described above.</p>
+<p>This might take some time to run as the Fork may have limited runners.</p>
+</section>
+<section id="ci-pipeline">
+<h2>CI Pipeline ➡️<a class="headerlink" href="#ci-pipeline" title="Permalink to this heading">#</a></h2>
+<p>The below subsections provide the roadmap for running workflows and interpreting results in case a push or a pull request is made to the repository.</p>
+<section id="push">
+<h3>Push<a class="headerlink" href="#push" title="Permalink to this heading">#</a></h3>
+<p>Whenever a push is made to the repository, a variety of workflows are triggered automatically (as described above).
+This can be seen on the GitHub Repository Page, with the commit message followed by a yellow dot, indicating that some workflows have been queued to run following this commit, as shown below:</p>
+<img alt="Push" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/push.png?raw=true" />
+<p>Clicking on the yellow dot (🟡) (which changes to a tick (✔) or cross (❌), when the tests have been completed) yields a view of the test-suite results as shown below:</p>
+<img alt="Test-Suite" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/push1.png?raw=true" />
+<p>Click on the “Details” link corresponding to the failing tests, in order to identify the cause of the failure.
+It redirects to the Actions Tab, showing details of the failure, as shown below:</p>
+<img alt="Workflow Result" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/push2.png?raw=true" />
+<p>Click on the corresponding section, as given below, in order to see the logs of the failing tests:￼</p>
+<ol class="arabic simple">
+<li><p><strong>Array API Tests</strong>: Run Array Api Tests</p></li>
+<li><p><strong>Intelligent Tests</strong>: Run Tests</p></li>
+</ol>
+<p>You can ignore the other sections of the Workflow, as they are for book-keeping and implementation purposes.
+You can also directly refer to the Dashboard (Updated Every ~20 minutes), to check the result of your test.</p>
+</section>
+<section id="pull-request">
+<h3>Pull Request<a class="headerlink" href="#pull-request" title="Permalink to this heading">#</a></h3>
+<p>In case of a pull request, the test suite is available on the Pull Request Page on Github, as shown below:</p>
+<img alt="PR Test-Suite" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/pull-request1.png?raw=true" />
+<p>Clicking on the “Details” link redirects to the Action Log.
+The rest of the procedure remains the same as given in the Push section above.</p>
+</section>
+</section>
+<section id="dashboard">
+<h2>Dashboard<a class="headerlink" href="#dashboard" title="Permalink to this heading">#</a></h2>
+<p>In order to view the status of the tests, at any point in time, we maintain a dashboard containing the results of the latest Workflow that ran each test.
+The Dashboards are available on the <code class="code docutils literal notranslate"><span class="pre">dashboard</span></code> branch of the Ivy Repository.
+The status badges are clickable, and will take you directly to the Action log of the latest workflow that ran the corresponding test.</p>
+<p><strong>Round Up</strong></p>
+<p>This should have hopefully given you a good feel for how function wrapping is applied to functions in Ivy.</p>
+<p>If you have any questions, please feel free to reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/982737993028755496">continuous integration channel</a>
+or in the <a class="reference external" href="https://discord.com/channels/799879767196958751/982737993028755496">continuous integration forum</a>!</p>
+<p><strong>Video</strong></p>
+<iframe width="420" height="315"
+src="https://www.youtube.com/embed/eO268nc8WH4" class="video">
+</iframe></section>
+</section>
+
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="exception_handling.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Exception Handling</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../contributing/open_tasks.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Open Tasks</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item"><nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributing</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../contributing/setting_up.html">Setting Up</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/the_basics.html">The Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/building_the_docs.html">Building the Docs</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="navigating_the_code.html">Navigating the Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_types.html">Function Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="superset_behaviour.html">Superset Behaviour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend_setting.html">Backend Setting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arrays.html">Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="containers.html">Containers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_types.html">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devices.html">Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inplace_updates.html">Inplace Updates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_wrapping.html">Function Wrapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formatting.html">Formatting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="function_arguments.html">Function Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstrings.html">Docstrings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docstring_examples.html">Docstring Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="array_api_tests.html">Array API Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_tests.html">Ivy Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_frontends.html">Ivy Frontends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exception_handling.html">Exception Handling</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Continuous Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/open_tasks.html">Open Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/applied_libraries.html">Applied Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/helpful_resources.html">Helpful Resources</a></li>
+</ul>
+</div>
+</nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#commit-push-pr-triggered-testing">Commit (Push/PR) Triggered Testing</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ivy-tests">Ivy Tests</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation">Implementation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-top-down-view">A Top-Down View</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#storing-and-retrieving-the-mapping">Storing (and retrieving) the Mapping</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cloning-and-pushing-to-the-repository">Cloning and Pushing to the Repository</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implementational-nitty-gritties">Implementational Nitty Gritties</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#storage-space-unifyai-mapping">Storage Space (unifyai/Mapping)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#determine-test-coverage-workflow">Determine Test Coverage Workflow</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multiple-runners">Multiple Runners</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#race-condition">Race Condition</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#array-api-tests">Array API Tests</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#periodic-testing">Periodic Testing</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#manually-dispatched-workflows">Manually Dispatched Workflows</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ci-pipeline">CI Pipeline ➡️</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#push">Push</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pull-request">Pull Request</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dashboard">Dashboard</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            <div class="bd-footer-content__inner"></div>
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=12da95d707ffb74b382d"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=12da95d707ffb74b382d"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="copyright">
+    
+      © Copyright 2020-2023, Ivy Team.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+  <p class="sphinx-version">
+    Created using <a href="https://sphinx-doc.org/">Sphinx</a> 6.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
