@@ -605,6 +605,10 @@ from ivy.functional.frontends.numpy.mathematical_functions.extrema_finding impor
     _fmax,
 )
 
+from ivy.functional.frontends.numpy.creation_routines.building_matrices import (
+    _vander
+)
+
 # initializing ufuncs #
 # ---------------------#
 
@@ -675,4 +679,4 @@ real = ufunc("_real")
 divmod = ufunc("_divmod")
 fmax = ufunc("_fmax")
 ldexp = ufunc("_ldexp")
-
+vander = ufunc("_vander")
