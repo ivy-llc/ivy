@@ -1046,8 +1046,13 @@ def _strided_slice_helper(draw):
         )  # maximum one ellipse
     )
     begin, end, strides = [], [], []
+<<<<<<< HEAD
     n_omit = np.random.randint(0, ndims)
     sub_shape = shape[:-n_omit]
+=======
+    n_omit = draw(st.integers(min_value=0, max_value=ndims - 1))
+    sub_shape = shape[: len(shape) - n_omit]
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     for i in sub_shape:
         begin += [draw(st.integers(min_value=0, max_value=i - 1))]
         end += [
@@ -1058,9 +1063,15 @@ def _strided_slice_helper(draw):
             )
         ]
         if begin[-1] < end[-1]:
+<<<<<<< HEAD
             strides += [draw(st.integers(min_value=1))]
         else:
             strides += [draw(st.integers(max_value=-1))]
+=======
+            strides += [draw(st.integers(min_value=1, max_value=i))]
+        else:
+            strides += [draw(st.integers(max_value=-1, min_value=-i))]
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     return dtype, x, np.array(begin), np.array(end), np.array(strides), masks
 
 
@@ -1097,15 +1108,44 @@ def test_tensorflow_strided_slice(
             shrink_axis_mask=masks[4],
         )
     except Exception as e:
+<<<<<<< HEAD
         if hasattr(e, "message"):
             if "only stride 1 allowed on non-range indexing" in e.message:
                 assume(False)
+=======
+        if (
+            hasattr(e, "message")
+            and "only stride 1 allowed on non-range indexing" in e.message
+        ):
+            assume(False)
+        raise e
+
+
+@st.composite
+def _slice_helper(draw):
+    dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=1,
+            ret_shape=True,
+        ),
+    )
+    begin, size = [], []
+    for i in shape:
+        begin += [draw(st.integers(min_value=0, max_value=i - 1))]
+        size += [draw(st.integers(min_value=0, max_value=i - begin[-1]))]
+    return dtype, x, np.array(begin), np.array(size)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
 
 # slice
 @handle_frontend_test(
     fn_tree="tensorflow.slice",
+<<<<<<< HEAD
     dtype_x_params=_strided_slice_helper(),
+=======
+    dtype_x_params=_slice_helper(),
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     test_with_out=st.just(False),
 )
 def test_tensorflow_slice(
@@ -1116,6 +1156,7 @@ def test_tensorflow_slice(
     fn_tree,
     on_device,
 ):
+<<<<<<< HEAD
     dtype, x, begin, end, strides, masks = dtype_x_params
     try:
         helpers.test_frontend_function(
@@ -1132,6 +1173,19 @@ def test_tensorflow_slice(
         if hasattr(e, "message"):
             if "only stride 1 allowed on non-range indexing" in e.message:
                 assume(False)
+=======
+    dtype, x, begin, size = dtype_x_params
+    helpers.test_frontend_function(
+        input_dtypes=dtype + 3 * ["int64"],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input_=x[0],
+        begin=begin,
+        size=size,
+    )
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
 
 @st.composite
@@ -1545,7 +1599,11 @@ def test_tensorflow_split(
         valid_axis=True,
         force_int_axis=True,
     ),
+<<<<<<< HEAD
     repeats=helpers.ints(min_value=1, max_value=5)
+=======
+    repeats=helpers.ints(min_value=1, max_value=5),
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 )
 def test_tensorflow_repeat(
     *,
@@ -1566,7 +1624,11 @@ def test_tensorflow_repeat(
         on_device=on_device,
         input=x[0],
         repeats=repeats,
+<<<<<<< HEAD
         axis=axis
+=======
+        axis=axis,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     )
 
 

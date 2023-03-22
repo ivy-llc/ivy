@@ -75,8 +75,13 @@ def rot90(
     m: torch.Tensor,
     /,
     *,
+<<<<<<< HEAD
     k: Optional[int] = 1,
     axes: Optional[Tuple[int, int]] = (0, 1),
+=======
+    k: int = 1,
+    axes: Tuple[int, int] = (0, 1),
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.rot90(m, k, axes)
@@ -87,8 +92,13 @@ def top_k(
     k: int,
     /,
     *,
+<<<<<<< HEAD
     axis: Optional[int] = -1,
     largest: Optional[bool] = True,
+=======
+    axis: int = -1,
+    largest: bool = True,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[Tuple[torch.Tensor, torch.Tensor]] = None,
 ) -> Tuple[torch.Tensor, torch.Tensor]:
     topk_res = NamedTuple(
@@ -135,9 +145,15 @@ def flatten(
     x: torch.Tensor,
     /,
     *,
+<<<<<<< HEAD
     start_dim: Optional[int] = 0,
     end_dim: Optional[int] = -1,
     order: Optional[str] = "C",
+=======
+    start_dim: int = 0,
+    end_dim: int = -1,
+    order: str = "C",
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     ivy.utils.assertions.check_elem_in_list(order, ["C", "F"])

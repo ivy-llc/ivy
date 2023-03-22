@@ -28,7 +28,11 @@ def concat(
     xs: Union[Tuple[torch.Tensor, ...], List[torch.Tensor]],
     /,
     *,
+<<<<<<< HEAD
     axis: Optional[int] = 0,
+=======
+    axis: int = 0,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis is None:
@@ -50,11 +54,21 @@ def expand_dims(
     x: torch.Tensor,
     /,
     *,
+<<<<<<< HEAD
+=======
+    copy: Optional[bool] = None,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     axis: Union[int, Sequence[int]] = 0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     out_shape = _calculate_out_shape(axis, x.shape)
     # torch.reshape since it can operate on contiguous and non_contiguous tensors
+<<<<<<< HEAD
+=======
+    if copy:
+        newarr = torch.clone(x)
+        return newarr.reshape(out_shape)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     return x.reshape(out_shape)
 
 
@@ -62,6 +76,10 @@ def flip(
     x: torch.Tensor,
     /,
     *,
+<<<<<<< HEAD
+=======
+    copy: Optional[bool] = None,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -77,6 +95,12 @@ def flip(
     else:
         new_axis = new_axis
     new_axis = [item + num_dims if item < 0 else item for item in new_axis]
+<<<<<<< HEAD
+=======
+    if copy:
+        newarr = torch.clone(x)
+        return torch.flip(newarr, new_axis)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     return torch.flip(x, new_axis)
 
 
@@ -85,8 +109,17 @@ def permute_dims(
     /,
     axes: Tuple[int, ...],
     *,
+<<<<<<< HEAD
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+=======
+    copy: Optional[bool] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if copy:
+        newarr = torch.clone(x)
+        return torch.permute(newarr, axes)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     return torch.permute(x, axes)
 
 
@@ -96,8 +129,13 @@ def reshape(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     copy: Optional[bool] = None,
+<<<<<<< HEAD
     order: Optional[str] = "C",
     allowzero: Optional[bool] = True,
+=======
+    order: str = "C",
+    allowzero: bool = True,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     ivy.utils.assertions.check_elem_in_list(order, ["C", "F"])
@@ -139,6 +177,10 @@ def squeeze(
     /,
     axis: Union[int, Sequence[int]],
     *,
+<<<<<<< HEAD
+=======
+    copy: Optional[bool] = None,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(axis, int):
@@ -151,9 +193,22 @@ def squeeze(
             raise ivy.utils.exceptions.IvyException(
                 f"Expected size of axis to be 1 but was {x.shape[axis]}"
             )
+<<<<<<< HEAD
         return torch.squeeze(x, axis)
     if axis is None:
         return torch.squeeze(x)
+=======
+        if copy:
+            newarr = torch.clone(x)
+            return torch.squeeze(newarr, axis)
+        return torch.squeeze(x, axis)
+    if axis is None:        
+        if copy:
+            newarr = torch.clone(x)
+            return torch.squeeze(newarr)
+        return torch.squeeze(x)
+    newarr = torch.clone(x)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     if isinstance(axis, tuple):
         axis = list(axis)
     normalise_axis = [
@@ -170,7 +225,16 @@ def squeeze(
                 "but found dimension size {}".format(-dim, dim, shape)
             )
         else:
+<<<<<<< HEAD
             x = torch.squeeze(x, i)
+=======
+            if copy:
+                newarr = torch.squeeze(newarr, i)
+            else:
+                x = torch.squeeze(x, i)
+    if copy:
+        return newarr
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     return x
 
 
@@ -195,6 +259,10 @@ def split(
     x: torch.Tensor,
     /,
     *,
+<<<<<<< HEAD
+=======
+    copy: Optional[bool] = None,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     num_or_size_splits: Optional[Union[int, List[int]]] = None,
     axis: int = 0,
     with_remainder: bool = False,
@@ -206,6 +274,12 @@ def split(
                     num_or_size_splits
                 )
             )
+<<<<<<< HEAD
+=======
+        if copy:
+            newarr = torch.clone(x)
+            return [newarr]
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         return [x]
     dim_size: int = x.shape[axis]
     if num_or_size_splits is None:
@@ -230,6 +304,12 @@ def split(
             )
     elif isinstance(num_or_size_splits, list):
         num_or_size_splits = tuple(num_or_size_splits)
+<<<<<<< HEAD
+=======
+    if copy:
+        newarr = torch.clone(x)
+        return list(torch.split(newarr, num_or_size_splits, axis))
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     return list(torch.split(x, num_or_size_splits, axis))
 
 
@@ -239,7 +319,11 @@ def repeat(
     /,
     repeats: Union[int, Iterable[int]],
     *,
+<<<<<<< HEAD
     axis: int = None,
+=======
+    axis: Optional[int] = None,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if len(x.shape) == 0 and axis in [0, -1]:
@@ -249,7 +333,15 @@ def repeat(
 
 
 def tile(
+<<<<<<< HEAD
     x: torch.Tensor, /, repeats: Sequence[int], *, out: Optional[torch.Tensor] = None
+=======
+    x: torch.Tensor, 
+    /, 
+    repeats: Sequence[int], 
+    *, 
+    out: Optional[torch.Tensor] = None
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 ) -> torch.Tensor:
     if isinstance(repeats, torch.Tensor):
         repeats = repeats.detach().cpu().numpy().tolist()
@@ -286,8 +378,22 @@ def zero_pad(
 
 
 def swapaxes(
+<<<<<<< HEAD
     x: torch.Tensor, axis0: int, axis1: int, /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
+=======
+    x: torch.Tensor, 
+    axis0: int, 
+    axis1: int, 
+    /, 
+    *, 
+    copy: Optional[bool] = None,
+    out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    if copy:
+        newarr = torch.clone(x)
+        return torch.transpose(newarr, axis0, axis1)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     return torch.transpose(x, axis0, axis1)
 
 
@@ -316,11 +422,32 @@ clip.support_native_out = True
 
 
 def unstack(
+<<<<<<< HEAD
     x: torch.Tensor, /, *, axis: int = 0, keepdims: bool = False
 ) -> List[torch.Tensor]:
     if x.shape == ():
         return [x]
     ret = list(torch.unbind(x, axis))
+=======
+    x: torch.Tensor, 
+    /, 
+    *, 
+    copy: Optional[bool] = None,
+    axis: int = 0, 
+    keepdims: bool = False
+) -> List[torch.Tensor]:
+    if x.shape == ():
+        if copy:
+            newarr = torch.clone(x)
+            return [newarr]
+        return [x]
+    ret = None
+    if copy:
+        newarr = torch.clone(x)
+        ret = list(torch.unbind(x, axis))
+    else:
+        ret = list(torch.unbind(x, axis))
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     if keepdims:
         return [r.unsqueeze(axis) for r in ret]
     return ret

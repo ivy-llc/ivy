@@ -12,6 +12,11 @@ from . import backend_version
 
 
 def abs(x: Union[float, JaxArray], /, *, out: Optional[JaxArray] = None) -> JaxArray:
+<<<<<<< HEAD
+=======
+    if "bool" in str(x.dtype):
+        return x
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     # jnp.where is used for consistent gradients
     return jnp.where(x != 0, jnp.absolute(x), 0)
 
@@ -29,14 +34,23 @@ def add(
     x2: Union[float, JaxArray],
     /,
     *,
+<<<<<<< HEAD
     alpha: Optional[Union[int, float]] = 1,
+=======
+    alpha: Union[int, float] = 1,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if alpha not in (1, None):
+<<<<<<< HEAD
         ivy.set_array_mode(False)
         x2 = multiply(x2, alpha)
         ivy.unset_array_mode()
+=======
+        with ivy.ArrayMode(False):
+            x2 = multiply(x2, alpha)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     return jnp.add(x1, x2)
 
 
@@ -154,7 +168,11 @@ def divide(
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     ret = jax.numpy.divide(x1, x2)
+<<<<<<< HEAD
     if ivy.is_float_dtype(x1.dtype):
+=======
+    if ivy.is_float_dtype(x1.dtype) or ivy.is_complex_dtype(x1.dtype):
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         ret = jnp.asarray(ret, dtype=x1.dtype)
     else:
         ret = jnp.asarray(ret, dtype=ivy.default_float_dtype(as_native=True))

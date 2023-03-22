@@ -18,7 +18,11 @@ def median(
     /,
     *,
     axis: Optional[Union[Tuple[int], int]] = None,
+<<<<<<< HEAD
     keepdims: Optional[bool] = False,
+=======
+    keepdims: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Compute the median along the specified axis.
@@ -62,7 +66,11 @@ def nanmean(
     /,
     *,
     axis: Optional[Union[Tuple[int], int]] = None,
+<<<<<<< HEAD
     keepdims: Optional[bool] = False,
+=======
+    keepdims: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -152,8 +160,13 @@ def quantile(
     /,
     *,
     axis: Optional[Union[Sequence[int], int]] = None,
+<<<<<<< HEAD
     keepdims: Optional[bool] = False,
     interpolation: Optional[str] = "linear",
+=======
+    keepdims: bool = False,
+    interpolation: str = "linear",
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Compute the q-th quantile of the data along the specified axis.
@@ -233,7 +246,11 @@ def corrcoef(
     /,
     *,
     y: Optional[ivy.Array] = None,
+<<<<<<< HEAD
     rowvar: Optional[bool] = True,
+=======
+    rowvar: bool = True,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     return ivy.current_backend().corrcoef(x, y=y, rowvar=rowvar, out=out)
@@ -248,8 +265,13 @@ def nanmedian(
     /,
     *,
     axis: Optional[Union[Tuple[int], int]] = None,
+<<<<<<< HEAD
     keepdims: Optional[bool] = False,
     overwrite_input: Optional[bool] = False,
+=======
+    keepdims: bool = False,
+    overwrite_input: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """ivy.Array instance method variant of ivy.nanmedian. This method simply
@@ -307,7 +329,11 @@ def bincount(
     /,
     *,
     weights: Optional[ivy.Array] = None,
+<<<<<<< HEAD
     minlength: Optional[int] = 0,
+=======
+    minlength: int = 0,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     return ivy.current_backend(x).bincount(

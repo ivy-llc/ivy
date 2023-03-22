@@ -10,6 +10,7 @@ jobs:
           path: ivy
           persist-credentials: false
 
+<<<<<<< HEAD
       - name: Checkout 🛎️Ivy Doc Builder
         uses: actions/checkout@v2
         with:
@@ -25,6 +26,12 @@ jobs:
           bash make_docs.sh root
           sudo touch .nojekyll
           sudo cp .nojekyll build/
+=======
+      - name: Build Docs
+        run: |
+          cd ivy/docs
+          bash make_docs.sh
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
           cd ../..
 
       - name: Deploy 🚀

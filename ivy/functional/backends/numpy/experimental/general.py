@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 from typing import Optional
+=======
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 import numpy as np
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
@@ -10,8 +13,13 @@ def isin(
     test_elements: np.ndarray,
     /,
     *,
+<<<<<<< HEAD
     assume_unique: Optional[bool] = False,
     invert: Optional[bool] = False,
+=======
+    assume_unique: bool = False,
+    invert: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 ) -> np.ndarray:
     return np.isin(
         elements,

@@ -7,6 +7,10 @@ import math
 
 # local
 import ivy
+<<<<<<< HEAD
+=======
+from ivy.func_wrapper import handle_mixed_function
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.random import RNG
 from ivy.functional.ivy.layers import _handle_padding
@@ -291,9 +295,15 @@ def dct(
     x: JaxArray,
     /,
     *,
+<<<<<<< HEAD
     type: Optional[Literal[1, 2, 3, 4]] = 2,
     n: Optional[int] = None,
     axis: Optional[int] = -1,
+=======
+    type: Literal[1, 2, 3, 4] = 2,
+    n: Optional[int] = None,
+    axis: int = -1,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     norm: Optional[Literal["ortho"]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
@@ -366,8 +376,13 @@ def fft(
     dim: int,
     /,
     *,
+<<<<<<< HEAD
     norm: Optional[str] = "backward",
     n: Union[int, Tuple[int]] = None,
+=======
+    norm: str = "backward",
+    n: Optional[Union[int, Tuple[int]]] = None,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if not isinstance(dim, int):
@@ -451,8 +466,13 @@ def ifft(
     x: JaxArray,
     dim: int,
     *,
+<<<<<<< HEAD
     norm: Optional[str] = "backward",
     n: Union[int, Tuple[int]] = None,
+=======
+    norm: str = "backward",
+    n: Optional[Union[int, Tuple[int]]] = None,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if not isinstance(dim, int):
@@ -479,11 +499,29 @@ def ifft(
     return jnp.fft.ifft(x, n, dim, norm)
 
 
+<<<<<<< HEAD
+=======
+@handle_mixed_function(
+    lambda *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # noqa: E501
+        not align_corners
+        and mode
+        not in [
+            "area",
+            "nearest",
+            "tf_area",
+            "mitchellcubic",
+            "gaussian",
+        ]
+        and recompute_scale_factor
+    )
+)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 def interpolate(
     x: JaxArray,
     size: Union[Sequence[int], int],
     /,
     *,
+<<<<<<< HEAD
     mode: Union[
         Literal[
             "linear",
@@ -503,10 +541,31 @@ def interpolate(
     scale_factor: Optional[Union[Sequence[int], int]] = None,
     align_corners: Optional[bool] = None,
     antialias: Optional[bool] = False,
+=======
+    mode: Literal[
+        "linear",
+        "bilinear",
+        "trilinear",
+        "nearest",
+        "area",
+        "nearest_exact",
+        "tf_area",
+        "bicubic",
+        "mitchellcubic",
+        "lanczos3",
+        "lanczos5",
+        "gaussian",
+    ] = "linear",
+    scale_factor: Optional[Union[Sequence[int], int]] = None,
+    recompute_scale_factor: Optional[bool] = None,
+    align_corners: Optional[bool] = None,
+    antialias: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[JaxArray] = None,
 ):
     dims = len(x.shape) - 2
     size = _get_size(scale_factor, size, dims, x.shape)
+<<<<<<< HEAD
     if align_corners or mode in [
         "area",
         "nearest",
@@ -521,6 +580,8 @@ def interpolate(
             align_corners=align_corners,
             antialias=antialias,
         )
+=======
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     mode = (
         "nearest"
         if mode == "nearest-exact"

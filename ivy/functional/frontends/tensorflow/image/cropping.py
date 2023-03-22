@@ -47,10 +47,21 @@ def resize(image,
             new_height = int(new_width / aspect_ratio)
     else:
         new_height, new_width = size
+<<<<<<< HEAD
     image = ivy.interpolate(
         image,
         (new_height, new_width),
         mode="tf_area" if method == "area" else method,
+=======
+    if method == 'bicubic':
+        method = 'bicubic_tensorflow'
+    elif method == 'area':
+        method = 'tf_area'
+    image = ivy.interpolate(
+        image,
+        (new_height, new_width),
+        mode=method,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         align_corners=False,
         antialias=antialias)
     if unsqueezed:

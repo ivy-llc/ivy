@@ -7,17 +7,40 @@ import os
 import re
 import shutil
 import sys
+<<<<<<< HEAD
 
 import numpy as np
 import pynvml
 import psutil
 from hypothesis import strategies as st, assume
 
+=======
+import warnings
+
+import numpy as np
+import psutil
+from hypothesis import strategies as st, assume
+
+try:
+    import pynvml
+except ImportError:
+    warnings.warn(
+        "pynvml installation was not found in the environment,\
+         functionalities of the Ivy's device module will be limited.\
+         Please install pynvml if you wish to use GPUs with Ivy."
+    )
+    # nvidia-ml-py (pynvml) is not installed in CPU Dockerfile.
+
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 # local
 import ivy
 from ivy.functional.ivy.gradients import _variable
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
+<<<<<<< HEAD
+=======
+from ivy.functional.ivy.device import _get_nvml_gpu_handle
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
 
 # Helpers #
@@ -30,7 +53,11 @@ def _ram_array_and_clear_test(metric_fn, size=10000000):
     # Measure usage before creating array
     before = metric_fn()
     # Create an array of floats, by default with 10 million elements (40 MB)
+<<<<<<< HEAD
     arr = ivy.ones((size,), dtype="float32", device="cpu")
+=======
+    arr = ivy.random_normal(shape=(size,), dtype="float32", device="cpu")
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     during = metric_fn()
     # Check that the memory usage has increased
     assert before < during
@@ -490,8 +517,14 @@ def test_total_mem_on_dev():
         if "cpu" in device:
             assert ivy.total_mem_on_dev(device) == psutil.virtual_memory().total / 1e9
         elif "gpu" in device:
+<<<<<<< HEAD
             gpu_mem = pynvml.nvmlDeviceGetMemoryInfo(device)
             assert ivy.total_mem_on_dev(device) == gpu_mem / 1e9
+=======
+            handle = _get_nvml_gpu_handle(device)
+            gpu_mem = pynvml.nvmlDeviceGetMemoryInfo(handle)
+            assert ivy.total_mem_on_dev(device) == gpu_mem.total / 1e9
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
 
 @handle_test(fn_tree="used_mem_on_dev")
@@ -591,7 +624,11 @@ def test_function_unsupported_devices(
 # ---------------#
 
 
+<<<<<<< HEAD
 # clear_mem_on_dev
+=======
+# clear_cached_mem_on_dev
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 # used_mem_on_dev # working fine for cpu
 # percent_used_mem_on_dev # working fine for cpu
 # dev_util # working fine for cpu

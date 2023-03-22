@@ -25,7 +25,11 @@ def sinc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.sinc(x)
 
 
+<<<<<<< HEAD
 @with_unsupported_dtypes({"0.3.14 and below": ("bfloat16",)}, backend_version)
+=======
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 def fmod(
     x1: JaxArray,
     x2: JaxArray,
@@ -63,8 +67,13 @@ def trapz(
     /,
     *,
     x: Optional[JaxArray] = None,
+<<<<<<< HEAD
     dx: Optional[float] = 1.0,
     axis: Optional[int] = -1,
+=======
+    dx: float = 1.0,
+    axis: int = -1,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.trapz(y, x=x, dx=dx, axis=axis)
@@ -113,7 +122,11 @@ def count_nonzero(
     /,
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
+<<<<<<< HEAD
     keepdims: Optional[bool] = False,
+=======
+    keepdims: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
@@ -130,7 +143,11 @@ def nansum(
     *,
     axis: Optional[Union[Tuple[int, ...], int]] = None,
     dtype: Optional[jnp.dtype] = None,
+<<<<<<< HEAD
     keepdims: Optional[bool] = False,
+=======
+    keepdims: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if isinstance(axis, list):
@@ -154,9 +171,15 @@ def isclose(
     b: JaxArray,
     /,
     *,
+<<<<<<< HEAD
     rtol: Optional[float] = 1e-05,
     atol: Optional[float] = 1e-08,
     equal_nan: Optional[bool] = False,
+=======
+    rtol: float = 1e-05,
+    atol: float = 1e-08,
+    equal_nan: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
@@ -166,8 +189,13 @@ def nan_to_num(
     x: JaxArray,
     /,
     *,
+<<<<<<< HEAD
     copy: Optional[bool] = True,
     nan: Optional[Union[float, int]] = 0.0,
+=======
+    copy: bool = True,
+    nan: Union[float, int] = 0.0,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     posinf: Optional[Union[float, int]] = None,
     neginf: Optional[Union[float, int]] = None,
     out: Optional[JaxArray] = None,
@@ -213,9 +241,15 @@ def allclose(
     x2: JaxArray,
     /,
     *,
+<<<<<<< HEAD
     rtol: Optional[float] = 1e-05,
     atol: Optional[float] = 1e-08,
     equal_nan: Optional[bool] = False,
+=======
+    rtol: float = 1e-05,
+    atol: float = 1e-08,
+    equal_nan: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[JaxArray] = None,
 ) -> bool:
     return jnp.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
@@ -262,7 +296,11 @@ def angle(
     z: JaxArray,
     /,
     *,
+<<<<<<< HEAD
     deg: Optional[bool] = False,
+=======
+    deg: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.angle(z, deg=deg)
@@ -332,9 +370,15 @@ def gradient(
     x: JaxArray,
     /,
     *,
+<<<<<<< HEAD
     spacing: Optional[Union[int, list, tuple]] = 1,
     axis: Optional[Union[int, list, tuple]] = None,
     edge_order: Optional[int] = 1,
+=======
+    spacing: Union[int, list, tuple] = 1,
+    axis: Optional[Union[int, list, tuple]] = None,
+    edge_order: int = 1,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 ) -> Union[JaxArray, List[JaxArray]]:
     f = jnp.asarray(x)
     N = f.ndim  # number of dimensions
@@ -527,7 +571,11 @@ def real(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 
 def conj(
+<<<<<<< HEAD
     x: Union[JaxArray],
+=======
+    x: JaxArray,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     /,
     *,
     out: Optional[JaxArray] = None,

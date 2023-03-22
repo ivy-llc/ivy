@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 h5py==3.7.0
 pytest==7.1.2
 networkx==2.8.4
@@ -12,3 +13,19 @@ tensorflow-macos==2.9.1 # mod_name=tensorflow_macos
 tensorflow-addons==0.17.1 # mod_name=tensorflow_addons
 tensorflow-probability==0.17.0 # mod_name=tensorflow_probability
 torch==1.11.0
+=======
+h5py
+pytest
+networkx
+hypothesis
+pymongo
+redis
+matplotlib
+opencv-python # mod_name=cv2
+jax
+jaxlib
+tensorflow-macos # mod_name=tensorflow_macos
+tensorflow-addons # mod_name=tensorflow_addons
+tensorflow-probability # mod_name=tensorflow_probability
+torch
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead

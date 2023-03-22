@@ -98,6 +98,7 @@ def softmax(input, dim=None, _stacklevel=3, dtype=None):
     },
     "torch",
 )
+<<<<<<< HEAD
 def gelu(
     input,
 ):  # , *, approximate="none"): ToDo: approximate is added in in PyTorch 1.12.1
@@ -106,6 +107,17 @@ def gelu(
     # else:
     # approximate = True
     return ivy.gelu(input, approximate=False)
+=======
+def gelu(input, *, approximate="none"):
+    if approximate == "none":
+        return ivy.gelu(input, approximate=False)
+    elif approximate == "tanh":
+        return ivy.gelu(input, approximate=True)
+    else:
+        raise ivy.utils.exceptions.IvyException(
+            "`approximate` argument must be either 'none' or 'tanh'."
+        )
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
 
 @to_ivy_arrays_and_back
@@ -125,7 +137,11 @@ def tanh(input):
     "torch",
 )
 def logsigmoid(input):
+<<<<<<< HEAD
     return ivy.negative(ivy.softplus(ivy.negative(input)))
+=======
+    return ivy.logsigmoid(input)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
 
 @to_ivy_arrays_and_back
@@ -244,6 +260,10 @@ def softshrink(input, lambd=0.5):
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+<<<<<<< HEAD
+=======
+@to_ivy_arrays_and_back
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 def silu(input, inplace=False):
     ret = ivy.multiply(input, ivy.sigmoid(input))
     if inplace:

@@ -156,7 +156,10 @@ class NestedSequence(Protocol[_T_co]):
 
 @outputs_to_ivy_arrays
 @handle_out_argument
+<<<<<<< HEAD
 @infer_dtype
+=======
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 @infer_device
 @handle_nestable
 @handle_array_like_without_promotion
@@ -165,7 +168,11 @@ def arange(
     start: Number,
     /,
     stop: Optional[Number] = None,
+<<<<<<< HEAD
     step: Optional[Number] = 1,
+=======
+    step: Number = 1,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -1563,7 +1570,11 @@ array = asarray
 def copy_array(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
+<<<<<<< HEAD
     to_ivy_array: Optional[bool] = True,
+=======
+    to_ivy_array: bool = True,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Copy an array.
@@ -1824,10 +1835,17 @@ def logspace(
     num: int,
     *,
     base: float = 10.0,
+<<<<<<< HEAD
     axis: Optional[int] = 0,
     endpoint: bool = True,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
+=======
+    axis: int = 0,
+    endpoint: bool = True,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Generates a certain number of evenly-spaced values in log space, in an interval

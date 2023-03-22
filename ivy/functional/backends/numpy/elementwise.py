@@ -46,9 +46,14 @@ def add(
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if alpha not in (1, None):
+<<<<<<< HEAD
         ivy.set_array_mode(False)
         x2 = multiply(x2, alpha)
         ivy.unset_array_mode()
+=======
+        with ivy.ArrayMode(False):
+            x2 = multiply(x2, alpha)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     return np.add(x1, x2, out=out)
 
 
@@ -232,7 +237,11 @@ def divide(
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     ret = np.divide(x1, x2, out=out)
+<<<<<<< HEAD
     if ivy.is_float_dtype(x1):
+=======
+    if ivy.is_float_dtype(x1.dtype) or ivy.is_complex_dtype(x1.dtype):
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         ret = np.asarray(ret, dtype=x1.dtype)
     else:
         ret = np.asarray(ret, dtype=ivy.default_float_dtype(as_native=True))

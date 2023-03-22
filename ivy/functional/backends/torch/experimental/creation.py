@@ -17,7 +17,11 @@ import ivy
 def triu_indices(
     n_rows: int,
     n_cols: Optional[int] = None,
+<<<<<<< HEAD
     k: Optional[int] = 0,
+=======
+    k: int = 0,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     /,
     *,
     device: torch.device,
@@ -53,9 +57,15 @@ def hamming_window(
     window_length: int,
     /,
     *,
+<<<<<<< HEAD
     periodic: Optional[bool] = True,
     alpha: Optional[float] = 0.54,
     beta: Optional[float] = 0.46,
+=======
+    periodic: bool = True,
+    alpha: float = 0.54,
+    beta: float = 0.46,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -74,7 +84,11 @@ def hamming_window(
 def vorbis_window(
     window_length: torch.tensor,
     *,
+<<<<<<< HEAD
     dtype: Optional[torch.dtype] = torch.float32,
+=======
+    dtype: torch.dtype = torch.float32,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
     return torch.tensor(
@@ -98,7 +112,11 @@ def hann_window(
     size: int,
     /,
     *,
+<<<<<<< HEAD
     periodic: Optional[bool] = True,
+=======
+    periodic: bool = True,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
@@ -118,7 +136,11 @@ hann_window.support_native_out = False
 def tril_indices(
     n_rows: int,
     n_cols: Optional[int] = None,
+<<<<<<< HEAD
     k: Optional[int] = 0,
+=======
+    k: int = 0,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     /,
     *,
     device: torch.device,

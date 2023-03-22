@@ -19,4 +19,9 @@ psutil
 termcolor
 colorama
 packaging
+<<<<<<< HEAD
 nvidia-ml-py<=11.495.46 # mod_name=pynvml
+=======
+nvidia-ml-py<=11.495.46 # mod_name=pynvml
+paddle-bfloat
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead

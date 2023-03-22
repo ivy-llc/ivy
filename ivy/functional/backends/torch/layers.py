@@ -7,11 +7,34 @@ import torch
 
 # local
 import ivy
+<<<<<<< HEAD
 from ivy.func_wrapper import with_unsupported_dtypes
+=======
+from ivy.func_wrapper import with_unsupported_dtypes, handle_mixed_function
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 from . import backend_version
 from ivy.functional.ivy.layers import _handle_padding, _deconv_length
 
 
+<<<<<<< HEAD
+=======
+@with_unsupported_dtypes(
+    {"1.11.0 and below": ("float16", "bfloat16", "complex")},
+    backend_version,
+)
+@handle_mixed_function(lambda x, weight, **kwargs: weight.ndim == 2)
+def linear(
+        x: torch.Tensor,
+        weight: torch.Tensor,
+        /,
+        *,
+        bias: Optional[torch.Tensor] = None,
+        out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.nn.functional.linear(x, weight, bias)
+
+
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 def _pad_before_conv(x, filters, strides, padding, dims, dilations):
     dilations = [dilations] * dims if isinstance(dilations, int) else dilations
     strides = [strides] * dims if isinstance(strides, int) else strides
@@ -193,8 +216,13 @@ def conv2d_transpose(
     /,
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+<<<<<<< HEAD
     data_format: Optional[str] = "NHWC",
     dilations: Optional[Union[int, Tuple[int, int]]] = 1,
+=======
+    data_format: str = "NHWC",
+    dilations: Union[int, Tuple[int, int]] = 1,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[torch.Tensor] = None,
 ):
     if data_format == "NHWC":
@@ -241,8 +269,13 @@ def depthwise_conv2d(
     padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
+<<<<<<< HEAD
     data_format: Optional[str] = "NHWC",
     dilations: Optional[Union[int, Tuple[int, int]]] = 1,
+=======
+    data_format: str = "NHWC",
+    dilations: Union[int, Tuple[int, int]] = 1,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     strides = [strides] * 2 if isinstance(strides, int) else strides
@@ -274,8 +307,13 @@ def conv3d(
     padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
+<<<<<<< HEAD
     data_format: Optional[str] = "NDHWC",
     dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
+=======
+    data_format: str = "NDHWC",
+    dilations: Union[int, Tuple[int, int, int]] = 1,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[torch.Tensor] = None,
 ):
     if data_format == "NDHWC":
@@ -301,8 +339,13 @@ def conv3d_transpose(
     /,
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+<<<<<<< HEAD
     data_format: Optional[str] = "NDHWC",
     dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
+=======
+    data_format: str = "NDHWC",
+    dilations: Union[int, Tuple[int, int, int]] = 1,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if data_format == "NDHWC":
@@ -344,6 +387,7 @@ def conv_general_dilated(
     padding: Union[str, Sequence[Tuple[int, int]]],
     /,
     *,
+<<<<<<< HEAD
     dims: Optional[int] = 2,
     data_format: Optional[str] = "channel_last",
     feature_group_count: Optional[int] = 1,
@@ -353,6 +397,13 @@ def conv_general_dilated(
     dilations: Optional[
         Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
     ] = 1,
+=======
+    dims: int = 2,
+    data_format: str = "channel_last",
+    feature_group_count: int = 1,
+    x_dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     bias: Optional[torch.Tensor] = None,
     out: Optional[torch.Tensor] = None,
 ):
@@ -401,6 +452,7 @@ def conv_general_transpose(
     padding: str,
     /,
     *,
+<<<<<<< HEAD
     dims: Optional[int] = 2,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: Optional[str] = "NDHWC",
@@ -408,6 +460,13 @@ def conv_general_transpose(
         Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
     ] = 1,
     feature_group_count: Optional[int] = 1,
+=======
+    dims: int = 2,
+    output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    data_format: str = "NDHWC",
+    dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+    feature_group_count: int = 1,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     bias: Optional[torch.Tensor] = None,
     out: Optional[torch.Tensor] = None,
 ):

@@ -4,8 +4,14 @@ from hypothesis import strategies as st, assume
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+<<<<<<< HEAD
 from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers import \
     _interp_args
+=======
+from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers import (
+    _interp_args,
+)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
 
 @st.composite
@@ -78,6 +84,7 @@ def test_tensorflow_extract_patches(
 
 @handle_frontend_test(
     fn_tree="tensorflow.image.resize",
+<<<<<<< HEAD
     dtype_x_mode=_interp_args(mode_list=[
         "bilinear",
         "nearest",
@@ -89,18 +96,40 @@ def test_tensorflow_extract_patches(
         "gaussian"]),
     antialias=st.booleans(),
     preserve_aspect_ratio=st.booleans(),
+=======
+    dtype_x_mode=_interp_args(
+        mode_list=[
+            "bilinear",
+            "nearest",
+            "area",
+            "bicubic",
+            "lanczos3",
+            "lanczos5",
+            "mitchellcubic",
+            "gaussian",
+        ]
+    ),
+    antialias=st.booleans(),
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     test_with_out=st.just(False),
 )
 def test_tensorflow_resize(
     dtype_x_mode,
     antialias,
+<<<<<<< HEAD
     preserve_aspect_ratio,
+=======
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
+<<<<<<< HEAD
     input_dtype, x, mode, size, align_corners, _ = dtype_x_mode
+=======
+    input_dtype, x, mode, size, _, _, preserve = dtype_x_mode
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     try:
         helpers.test_frontend_function(
             input_dtypes=input_dtype,
@@ -108,6 +137,7 @@ def test_tensorflow_resize(
             test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
+<<<<<<< HEAD
             rtol_=1e-01,
             atol_=1e-01,
             x=x[0],
@@ -124,3 +154,20 @@ def test_tensorflow_resize(
                 or "Input and output sizes should be greater than 0" in e.message
             ):
                 assume(False)
+=======
+            rtol=1e-01,
+            atol=1e-01,
+            image=x[0],
+            size=size,
+            method=mode,
+            antialias=antialias,
+            preserve_aspect_ratio=preserve,
+        )
+    except Exception as e:
+        if hasattr(e, "message") and (
+            "output dimensions must be positive" in e.message
+            or "Input and output sizes should be greater than 0" in e.message
+        ):
+            assume(False)
+        raise e
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead

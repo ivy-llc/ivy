@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 from typing import Optional, Union
+=======
+from typing import Union
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 import ivy
 from ivy.func_wrapper import (
     to_native_arrays_and_back,
@@ -15,8 +19,13 @@ def isin(
     test_elements: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+<<<<<<< HEAD
     assume_unique: Optional[bool] = False,
     invert: Optional[bool] = False,
+=======
+    assume_unique: bool = False,
+    invert: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 ) -> ivy.Array:
     """Tests if each element of elements is in test_elements.
 

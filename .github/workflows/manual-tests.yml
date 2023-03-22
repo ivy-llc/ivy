@@ -57,7 +57,11 @@ jobs:
 
   run_tests_cpu:
     if: ${{ github.event.inputs.gpu == 'false' }}
+<<<<<<< HEAD
     runs-on: ubuntu-latest-16-cores
+=======
+    runs-on: ubuntu-latest
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     steps:
       - name: Checkout Ivy 🛎
         uses: actions/checkout@v2

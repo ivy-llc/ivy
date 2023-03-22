@@ -14,6 +14,10 @@ importlib_module_path = "ivy.utils._importlib"
 importlib_abs_import_fn = "_absolute_import"
 importlib_from_import_fn = "_from_import"
 _unmodified_ivy_path = sys.modules["ivy"].__path__[0].rpartition("/")[0]
+<<<<<<< HEAD
+=======
+_compiled_modules_cache = {}
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
 
 def _retrive_local_modules():
@@ -159,6 +163,7 @@ class ImportTransformer(ast.NodeTransformer):
         self.include_ivy_import = False
 
     def visit_Import(self, node):
+<<<<<<< HEAD
         if isinstance(node, ast.Module):
             self.generic_visit(node)
             return node
@@ -180,6 +185,21 @@ class ImportTransformer(ast.NodeTransformer):
                 return _parse_absolute_fromimport(node)
             else:
                 return _parse_relative_fromimport(node)
+=======
+        ret, should_impersonate = _parse_import(node)
+        if should_impersonate and not self.include_ivy_import:
+            self.include_ivy_import = True
+        return ret
+
+    def visit_ImportFrom(self, node):
+        self.include_ivy_import = True
+        if node.level == 0:
+            if node.module is not None and node.module == "__future__":
+                self.insert_index = 1
+            return _parse_absolute_fromimport(node)
+        else:
+            return _parse_relative_fromimport(node)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
     def impersonate_import(self, tree: ast.Module):
         if self.include_ivy_import:
@@ -210,7 +230,11 @@ class IvyPathFinder(MetaPathFinder):
         if path is None or path == "":
             path = [_unmodified_ivy_path]
         if "." in fullname:
+<<<<<<< HEAD
             *parents, name = fullname.split(".")
+=======
+            *_, name = fullname.split(".")
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         else:
             name = fullname
         for entry in path:
@@ -237,6 +261,7 @@ class IvyLoader(Loader):
         self.filename = filename
 
     def exec_module(self, module):
+<<<<<<< HEAD
         with open(self.filename) as f:
             data = f.read()
 
@@ -250,6 +275,23 @@ class IvyLoader(Loader):
             exec(
                 compile(ast_tree, filename=self.filename, mode="exec"), module.__dict__
             )
+=======
+        if self.filename in _compiled_modules_cache:
+            compiled_obj = _compiled_modules_cache[self.filename]
+        else:
+            with open(self.filename) as f:
+                data = f.read()
+
+            ast_tree = parse(data)
+            transformer = ImportTransformer()
+            transformer.visit(ast_tree)
+            transformer.impersonate_import(ast_tree)
+            ast.fix_missing_locations(ast_tree)
+            compiled_obj = compile(ast_tree, filename=self.filename, mode="exec")
+            _compiled_modules_cache[self.filename] = compiled_obj
+        try:
+            exec(compiled_obj, module.__dict__)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         except Exception as e:
             print(e)
             traceback.print_exc()

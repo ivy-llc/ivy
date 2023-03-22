@@ -3,7 +3,15 @@ from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
 import sys
 import jsonpickle
 import importlib
+<<<<<<< HEAD
 from ivy_tests.test_ivy.helpers.testing_helpers import _import_fn, _get_supported_devices_dtypes, _import_method, _get_method_supported_devices_dtypes
+=======
+from ivy_tests.test_ivy.helpers.testing_helpers import (
+    _import_fn,
+    _get_supported_devices_dtypes,
+    _get_method_supported_devices_dtypes,
+)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
 
 def available_frameworks():
@@ -60,6 +68,7 @@ class NativeClass:
         self._native_class = native_class
 
 
+<<<<<<< HEAD
 def _get_fn_dtypes(framework,fn_tree,type, device=None,kind="valid"):
     if type=='1':
         callable_fn, fn_name, fn_mod = _import_fn(fn_tree)
@@ -74,17 +83,37 @@ def _get_fn_dtypes(framework,fn_tree,type, device=None,kind="valid"):
         class_module_path, class_name = (
             class_tree[:split_index],
             class_tree[split_index + 1:],
+=======
+def _get_fn_dtypes(framework, fn_tree, type, device=None, kind="valid"):
+    if type == "1":
+        callable_fn, fn_name, fn_mod = _import_fn(fn_tree)
+        supported_device_dtypes = _get_supported_devices_dtypes(fn_name, fn_mod)
+        return supported_device_dtypes[framework][device][kind]
+    else:
+        method_name, class_tree, split_index = type
+
+        class_module_path, class_name = (
+            class_tree[:split_index],
+            class_tree[split_index + 1 :],
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         )
         class_module = importlib.import_module(class_module_path)
         supported_device_dtypes = _get_method_supported_devices_dtypes(
             method_name, class_module, class_name
         )
+<<<<<<< HEAD
         return supported_device_dtypes[framework][
             device
         ][kind]
 
 
 def _get_type_dict(framework,fn_tree,type, device=None,kind="valid"):
+=======
+        return supported_device_dtypes[framework][device][kind]
+
+
+def _get_type_dict(framework, fn_tree, type, device=None, kind="valid"):
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     if kind == "valid":
         return framework.valid_dtypes
     elif kind == "numeric":
@@ -117,6 +146,7 @@ def _get_type_dict(framework,fn_tree,type, device=None,kind="valid"):
         raise RuntimeError("{} is an unknown kind!".format(kind))
 
 
+<<<<<<< HEAD
 def dtype_handler(framework,type):
     if type=='1a':
         type=jsonpickle.loads(input())
@@ -134,6 +164,25 @@ def dtype_handler(framework,type):
         framework = importlib.import_module("ivy.functional.backends." + framework)
     dtypes = retrieval_fn(framework,fn_tree,type,device,kind)
     dtypes = jsonpickle.dumps(dtypes,kind)
+=======
+def dtype_handler(framework, type):
+    if type == "1a":
+        type = jsonpickle.loads(input())
+
+    z = input()
+    retrieval_fn = globals()[z]
+    z = input()
+    kind = z
+    z = input()
+    device = z
+    z = input()
+    fn_tree = z
+
+    if retrieval_fn.__name__ == "_get_type_dict":
+        framework = importlib.import_module("ivy.functional.backends." + framework)
+    dtypes = retrieval_fn(framework, fn_tree, type, device, kind)
+    dtypes = jsonpickle.dumps(dtypes, kind)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     print(dtypes)
 
 
@@ -206,7 +255,11 @@ def test_frontend_method():
     )
     try:
         tensorflow = importlib.import_module("tensorflow")
+<<<<<<< HEAD
     except:
+=======
+    except:  # noqa: E722
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         tensorflow = None
     if ivy.current_backend_str() == "tensorflow" and isinstance(
         frontend_ret, getattr(tensorflow, "TensorShape", None)
@@ -240,6 +293,7 @@ if __name__ == "__main__":
 
     try:
         ivy.set_backend(arg_lis[2].split("/")[0])
+<<<<<<< HEAD
     except:
         raise Exception(f"lalalalal {fw_lis}")
     import numpy
@@ -248,11 +302,26 @@ if __name__ == "__main__":
         numpy.dtype("bfloat16")
     except:
         import paddle_bfloat
+=======
+    except:  # noqa: E722
+        raise Exception(f"lalalalal {fw_lis}")
+    import numpy
+
+    try:
+        # check numpy bfloat16 enabled or not
+        numpy.dtype("bfloat16")
+    except:  # noqa: E722
+        import paddle_bfloat  # noqa: F401
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
     while j:
         try:
             z = input()
+<<<<<<< HEAD
             if z == '1' or z == '1a':
+=======
+            if z == "1" or z == "1a":
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
                 dtype_handler(arg_lis[2].split("/")[0], z)
                 continue
             if z == "2":
@@ -299,8 +368,13 @@ if __name__ == "__main__":
             )
 
             frontend_ret = frontend_fw.__dict__[func](*args_frontend, **kwargs_frontend)
+<<<<<<< HEAD
             if isinstance(frontend_ret,tuple) or isinstance(frontend_ret,list):
                 frontend_ret=ivy.nested_map(frontend_ret,ivy.to_numpy)
+=======
+            if isinstance(frontend_ret, tuple) or isinstance(frontend_ret, list):
+                frontend_ret = ivy.nested_map(frontend_ret, ivy.to_numpy)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
             else:
                 frontend_ret = ivy.to_numpy(frontend_ret)
             frontend_ret = jsonpickle.dumps(frontend_ret)

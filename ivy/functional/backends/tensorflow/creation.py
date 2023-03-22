@@ -80,7 +80,11 @@ def asarray(
     /,
     *,
     copy: Optional[bool] = None,
+<<<<<<< HEAD
     dtype: tf.DType = None,
+=======
+    dtype: Optional[tf.DType] = None,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -384,7 +388,11 @@ array = asarray
 def copy_array(
     x: Union[tf.Tensor, tf.Variable],
     *,
+<<<<<<< HEAD
     to_ivy_array: Optional[bool] = True,
+=======
+    to_ivy_array: bool = True,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if to_ivy_array:

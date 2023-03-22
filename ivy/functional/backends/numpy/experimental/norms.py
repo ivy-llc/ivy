@@ -5,7 +5,17 @@ from .. import backend_version
 
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
+<<<<<<< HEAD
 def l2_normalize(x: np.ndarray, /, *, axis: int = None, out=None) -> np.ndarray:
+=======
+def l2_normalize(
+    x: np.ndarray,
+    /,
+    *,
+    axis: Optional[int] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     if axis is None:
         denorm = np.linalg.norm(x.flatten(), 2, axis)
     else:
@@ -21,12 +31,21 @@ def instance_norm(
     scale: Optional[np.ndarray] = None,
     bias: Optional[np.ndarray] = None,
     eps: float = 1e-05,
+<<<<<<< HEAD
     momentum: Optional[float] = 0.1,
     data_format: str = "NCHW",
     running_mean: Optional[np.ndarray] = None,
     running_stddev: Optional[np.ndarray] = None,
     affine: Optional[bool] = True,
     track_running_stats: Optional[bool] = False,
+=======
+    momentum: float = 0.1,
+    data_format: str = "NCHW",
+    running_mean: Optional[np.ndarray] = None,
+    running_stddev: Optional[np.ndarray] = None,
+    affine: bool = True,
+    track_running_stats: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[np.ndarray] = None,
 ):
     if scale is not None:
@@ -68,7 +87,16 @@ def instance_norm(
 
 
 def lp_normalize(
+<<<<<<< HEAD
     x: np.ndarray, /, *, p: float = 2, axis: int = None, out=None
+=======
+    x: np.ndarray,
+    /,
+    *,
+    p: float = 2,
+    axis: Optional[int] = None,
+    out: Optional[np.ndarray] = None,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 ) -> np.ndarray:
     if axis is None:
         denorm = np.linalg.norm(x.flatten(), axis=axis, ord=p)

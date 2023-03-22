@@ -87,6 +87,7 @@ def reshape(input, shape):
 
 
 @to_ivy_arrays_and_back
+<<<<<<< HEAD
 def as_strided(input, size, stride, storage_offset=None):
     ind = ivy.array([0], dtype=ivy.int64)
     for i, (size_i, stride_i) in enumerate(zip(size, stride)):
@@ -99,6 +100,8 @@ def as_strided(input, size, stride, storage_offset=None):
 
 
 @to_ivy_arrays_and_back
+=======
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 def squeeze(input, dim):
     if isinstance(dim, int) and input.ndim > 0:
         if input.shape[dim] > 1:
@@ -282,3 +285,11 @@ def where(condition, input=None, other=None):
     if not ivy.exists(input) and not ivy.exists(other):
         return nonzero(condition, as_tuple=True)
     return ivy.where(condition, input, other)
+<<<<<<< HEAD
+=======
+
+
+@to_ivy_arrays_and_back
+def conj(input):
+    return ivy.conj(input)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead

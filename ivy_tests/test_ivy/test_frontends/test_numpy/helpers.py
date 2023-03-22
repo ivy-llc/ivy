@@ -115,10 +115,17 @@ def _test_frontend_function_ignoring_unitialized(*args, **kwargs):
             frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
             frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
     except Exception as e:
+<<<<<<< HEAD
         ivy.unset_backend()
         raise e
     # set backend back to original
     ivy.unset_backend()
+=======
+        ivy.previous_backend()
+        raise e
+    # set backend back to original
+    ivy.previous_backend()
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
     # get flattened arrays from returned value
     ret_np_flat = helpers.flatten_fw_and_to_np(ret=ret, fw=kwargs["frontend"])

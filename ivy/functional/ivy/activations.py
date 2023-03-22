@@ -23,7 +23,11 @@ from ivy.utils.exceptions import handle_exceptions
 
 @handle_exceptions
 def deserialize(
+<<<<<<< HEAD
     name: Union[str, None], /, *, custom_objects=Union[ivy.Dict, None]
+=======
+    name: Union[str, None], /, *, custom_objects: Optional[ivy.Dict] = None
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 ) -> Union[Callable, None]:
     """Returns activation function given a string identifier.
 
@@ -157,7 +161,11 @@ def gelu(
 
 @handle_exceptions
 def get(
+<<<<<<< HEAD
     name: Union[str, None], /, *, custom_objects=Union[ivy.Dict, None]
+=======
+    name: Union[str, None], /, *, custom_objects: Optional[ivy.Dict] = None
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 ) -> Union[Callable, None]:
     """Returns activation function given a string identifier.
 

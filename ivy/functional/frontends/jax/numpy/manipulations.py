@@ -42,6 +42,16 @@ def reshape(a, newshape, order="C"):
 
 
 @to_ivy_arrays_and_back
+<<<<<<< HEAD
+=======
+def resize(a, new_shape):
+    a = ivy.array(a)
+    resized_a = ivy.reshape(a, new_shape)
+    return resized_a
+
+
+@to_ivy_arrays_and_back
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 def moveaxis(a, source, destination):
     return ivy.moveaxis(a, source, destination)
 
@@ -144,10 +154,23 @@ def atleast_2d(*arys):
 
 
 @to_ivy_arrays_and_back
+<<<<<<< HEAD
 def block(arr, block_size):
     if isinstance(arr, ivy.Array):
         arr_blocks = ivy.reshape(arr,
                                  ivy.concat([ivy.shape(arr)[:-1], [-1, block_size]], 0))
+=======
+def tril(m, k=0):
+    return ivy.tril(m, k=k)
+
+
+@to_ivy_arrays_and_back
+def block(arr, block_size):
+    if isinstance(arr, ivy.Array):
+        arr_blocks = ivy.reshape(
+            arr, ivy.concat([ivy.shape(arr)[:-1], [-1, block_size]], 0)
+        )
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         return arr_blocks
 
 
@@ -157,6 +180,14 @@ def squeeze(a, axis=None):
 
 
 @to_ivy_arrays_and_back
+<<<<<<< HEAD
+=======
+def rot90(m, k=1, axes=(0, 1)):
+    return ivy.rot90(m, k=k, axes=axes)
+
+
+@to_ivy_arrays_and_back
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 def split(ary, indices_or_sections, axis=0):
     if isinstance(indices_or_sections, (list, tuple)):
         indices_or_sections = (
@@ -183,11 +214,27 @@ def array_split(ary, indices_or_sections, axis=0):
 
 
 @to_ivy_arrays_and_back
+<<<<<<< HEAD
+=======
+def tile(A, reps):
+    return ivy.tile(A, reps)
+
+
+@to_ivy_arrays_and_back
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 def dsplit(ary, indices_or_sections):
     return ivy.dsplit(ary, indices_or_sections)
 
 
 @to_ivy_arrays_and_back
+<<<<<<< HEAD
+=======
+def dstack(tup, dtype=None):
+    return ivy.dstack(tup)
+
+
+@to_ivy_arrays_and_back
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 def vsplit(ary, indices_or_sections):
     return ivy.vsplit(ary, indices_or_sections)
 
@@ -200,3 +247,16 @@ def hsplit(ary, indices_or_sections):
 @to_ivy_arrays_and_back
 def roll(a, shift, axis=None):
     return ivy.roll(a, shift, axis=axis)
+<<<<<<< HEAD
+=======
+
+
+@to_ivy_arrays_and_back
+def row_stack(tup):
+    if len(ivy.shape(tup[0])) == 1:
+        xs = []
+        for t in tup:
+            xs += [ivy.reshape(t, (1, ivy.shape(t)[0]))]
+        return ivy.concat(xs, axis=0)
+    return ivy.concat(tup, axis=0)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead

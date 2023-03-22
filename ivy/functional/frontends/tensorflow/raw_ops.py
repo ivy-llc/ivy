@@ -11,12 +11,18 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
 from ivy.func_wrapper import with_unsupported_dtypes
 
 
+<<<<<<< HEAD
 @to_ivy_arrays_and_back
 def AddN(*, inputs, name="AddN"):
     return ivy.sum(inputs, dtype=inputs.dtype, axis=0)
 
 AddN = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add_n))
 
+=======
+AddN = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add_n))
+
+
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 @to_ivy_arrays_and_back
 def Acos(*, x, name="Acos"):
     return ivy.acos(x)
@@ -65,6 +71,19 @@ def ApproximateEqual(
 
 
 @to_ivy_arrays_and_back
+<<<<<<< HEAD
+=======
+def Angle(
+    *,
+    input,
+    Tout=ivy.float32,
+    name="Angle",
+):
+    return ivy.astype(ivy.angle(input), Tout)
+
+
+@to_ivy_arrays_and_back
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 def ArgMin(*, input, dimension, output_type=None, name=None):
     output_type = to_ivy_dtype(output_type)
     if output_type in ["int32", "int64"]:
@@ -649,3 +668,36 @@ def LinSpace(*, start, stop, num, name=None):
 
 
 Roll = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.roll))
+<<<<<<< HEAD
+=======
+
+
+@to_ivy_arrays_and_back
+def CumulativeLogsumexp(
+    x, axis, exclusive=False, reverse=False, name="CumulativeLogsumexp"
+):
+    return ivy.astype(
+        ivy.CumulativeLogsumexp(x, axis, exclusive=exclusive, reverse=reverse),
+        input.dtype,
+    )
+
+
+@to_ivy_arrays_and_back
+def Complex(real, imag, Tout=ivy.complex64, name="Complex"):
+    return ivy.Complex(real, imag, Tout=Tout)
+
+
+@to_ivy_arrays_and_back
+def AccumulateNV2(inputs, shape, name="AccumulateNV2"):
+    return ivy.AccumulateNV2(inputs, shape)
+
+
+@to_ivy_arrays_and_back
+def DebugGradientIdentity(input, name="DebugGradientIdentity"):
+    return ivy.DebugGradientIdentity(input)
+
+
+@to_ivy_arrays_and_back
+def Real(input, Tout=ivy.float32, name="Real"):
+    return ivy.Real(input, Tout=Tout)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead

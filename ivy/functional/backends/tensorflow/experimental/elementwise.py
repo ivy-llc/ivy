@@ -36,7 +36,11 @@ def lcm(
     return tf.math.abs(tf.experimental.numpy.lcm(x1, x2))
 
 
+<<<<<<< HEAD
 @with_unsupported_dtypes({"2.9.1 and below": ("unsigned",)}, backend_version)
+=======
+@with_unsupported_dtypes({"2.9.1 and below": ("unsigned", "complex")}, backend_version)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 def fmod(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -84,8 +88,13 @@ def trapz(
     /,
     *,
     x: Optional[Union[tf.Tensor, tf.Variable]] = None,
+<<<<<<< HEAD
     dx: Optional[float] = 1.0,
     axis: Optional[int] = -1,
+=======
+    dx: float = 1.0,
+    axis: int = -1,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tfp.math.trapz(y, x=x, dx=dx, axis=axis, name=None)
@@ -142,7 +151,11 @@ def count_nonzero(
     /,
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
+<<<<<<< HEAD
     keepdims: Optional[bool] = False,
+=======
+    keepdims: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     dtype: Optional[tf.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -152,14 +165,24 @@ def count_nonzero(
         a, axis=axis, keepdims=keepdims, dtype=dtype, name=None
     )
 
+<<<<<<< HEAD
 
+=======
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("complex",)}, backend_version
+)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 def nansum(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
     axis: Optional[Union[Tuple[int, ...], int]] = None,
     dtype: Optional[tf.DType] = None,
+<<<<<<< HEAD
     keepdims: Optional[bool] = False,
+=======
+    keepdims: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     np_math_ops.enable_numpy_methods_on_tensor()
@@ -185,9 +208,15 @@ def isclose(
     b: Union[tf.Tensor, tf.Variable],
     /,
     *,
+<<<<<<< HEAD
     rtol: Optional[float] = 1e-05,
     atol: Optional[float] = 1e-08,
     equal_nan: Optional[bool] = False,
+=======
+    rtol: float = 1e-05,
+    atol: float = 1e-08,
+    equal_nan: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.isclose(
@@ -199,8 +228,13 @@ def nan_to_num(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+<<<<<<< HEAD
     copy: Optional[bool] = True,
     nan: Optional[Union[float, int]] = 0.0,
+=======
+    copy: bool = True,
+    nan: Union[float, int] = 0.0,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     posinf: Optional[Union[float, int]] = None,
     neginf: Optional[Union[float, int]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
@@ -270,9 +304,15 @@ def allclose(
     x2: Union[tf.Tensor, tf.Variable],
     /,
     *,
+<<<<<<< HEAD
     rtol: Optional[float] = 1e-05,
     atol: Optional[float] = 1e-08,
     equal_nan: Optional[bool] = False,
+=======
+    rtol: float = 1e-05,
+    atol: float = 1e-08,
+    equal_nan: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> bool:
     return tf.experimental.numpy.allclose(
@@ -412,9 +452,15 @@ def gradient(
     x: tf.Tensor,
     /,
     *,
+<<<<<<< HEAD
     spacing: Optional[Union[int, list, tuple]] = 1,
     axis: Optional[Union[int, list, tuple]] = None,
     edge_order: Optional[int] = 1,
+=======
+    spacing: Union[int, list, tuple] = 1,
+    axis: Optional[Union[int, list, tuple]] = None,
+    edge_order: int = 1,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 ) -> Union[tf.Tensor, List[tf.Tensor]]:
     """https://github.com/numpy/numpy/blob/v1.23.0/numpy/lib/
     function_base.py#L969-L1312

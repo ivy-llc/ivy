@@ -109,6 +109,10 @@ def broadcast_arrays(*arrays: np.ndarray) -> List[np.ndarray]:
     return np.broadcast_arrays(*arrays)
 
 
+<<<<<<< HEAD
+=======
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 def broadcast_to(
     x: np.ndarray,
     /,

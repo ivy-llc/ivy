@@ -3,8 +3,11 @@ from typing import Any
 import itertools
 import string
 
+<<<<<<< HEAD
 import numpy as np
 
+=======
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 # local
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
@@ -533,4 +536,10 @@ def select(pred, on_true, on_false):
 # top_k
 @to_ivy_arrays_and_back
 def top_k(operand, k):
+<<<<<<< HEAD
     return ivy.astype(ivy.top_k(operand, k), np.int64)
+=======
+    values, indices = ivy.top_k(operand, k, axis=-1)
+    indices = ivy.astype(indices, ivy.int32, copy=False)
+    return [values, indices]
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead

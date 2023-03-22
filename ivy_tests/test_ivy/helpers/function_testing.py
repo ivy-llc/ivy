@@ -433,13 +433,21 @@ def test_function(
                     out=out_from_gt,
                 )
         except Exception as e:
+<<<<<<< HEAD
             ivy.unset_backend()
+=======
+            ivy.previous_backend()
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
             raise e
         fw_list = gradient_unsupported_dtypes(fn=ivy.__dict__[fn_name])
         gt_returned_array = isinstance(ret_from_gt, ivy.Array)
         if gt_returned_array:
             ret_from_gt_device = ivy.dev(ret_from_gt)
+<<<<<<< HEAD
         ivy.unset_backend()
+=======
+        ivy.previous_backend()
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     # gradient test
     fw = ivy.current_backend_str()
     if (
@@ -753,7 +761,11 @@ def test_frontend_function(
                 frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
 
         except Exception as e:
+<<<<<<< HEAD
             ivy.unset_backend()
+=======
+            ivy.previous_backend()
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
             raise e
 
     else:
@@ -817,9 +829,15 @@ def test_frontend_function(
                 )
                 frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
             # unset frontend framework from backend
+<<<<<<< HEAD
             ivy.unset_backend()
         except Exception as e:
             ivy.unset_backend()
+=======
+            ivy.previous_backend()
+        except Exception as e:
+            ivy.previous_backend()
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
             raise e
 
     ret_np_flat = flatten_and_to_np(ret=ret)
@@ -951,7 +969,11 @@ def gradient_test(
             ret_grad_idxs=ret_grad_idxs,
         )
         grads_np_from_gt_flat = flatten_and_to_np(ret=grads_from_gt)
+<<<<<<< HEAD
         ivy.unset_backend()
+=======
+        ivy.previous_backend()
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
     assert len(grads_np_flat) == len(
         grads_np_from_gt_flat
@@ -1305,7 +1327,11 @@ def test_method(
         gt_returned_array = isinstance(ret_from_gt, ivy.Array)
         if gt_returned_array:
             ret_from_gt_device = ivy.dev(ret_from_gt)
+<<<<<<< HEAD
         ivy.unset_backend()
+=======
+        ivy.previous_backend()
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     # gradient test
 
     if isinstance(ground_truth_backend, list):
@@ -1685,7 +1711,11 @@ def test_frontend_method(
             frontend_ret_idxs = ivy.nested_argwhere(frontend_ret, ivy.is_native_array)
             frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
             frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
+<<<<<<< HEAD
         ivy.unset_backend()
+=======
+        ivy.previous_backend()
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
     # assuming value test will be handled manually in the test function
     if not test_values:
@@ -1869,8 +1899,11 @@ def get_ret_and_flattened_np_array(fn, *args, test_compile: bool = False, **kwar
     def map_fn(x):
         if _is_frontend_array(x):
             return x.ivy_array
+<<<<<<< HEAD
         if isinstance(x, ivy.functional.frontends.numpy.ndarray):
             return x.ivy_array
+=======
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         elif ivy.is_native_array(x):
             return ivy.to_ivy(x)
         return x

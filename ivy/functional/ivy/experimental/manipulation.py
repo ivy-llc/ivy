@@ -31,9 +31,15 @@ def flatten(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+<<<<<<< HEAD
     start_dim: Optional[int] = 0,
     end_dim: Optional[int] = -1,
     order: Optional[str] = "C",
+=======
+    start_dim: int = 0,
+    end_dim: int = -1,
+    order: str = "C",
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Flattens input by reshaping it into a one-dimensional tensor.
@@ -465,8 +471,13 @@ def rot90(
     m: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+<<<<<<< HEAD
     k: Optional[int] = 1,
     axes: Optional[Tuple[int, int]] = (0, 1),
+=======
+    k: int = 1,
+    axes: Tuple[int, int] = (0, 1),
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Rotate an array by 90 degrees in the plane specified by axes.
@@ -546,7 +557,11 @@ def top_k(
     /,
     *,
     axis: Optional[int] = None,
+<<<<<<< HEAD
     largest: Optional[bool] = True,
+=======
+    largest: bool = True,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[tuple] = None,
 ) -> Tuple[ivy.Array, ivy.NativeArray]:
     """Returns the `k` largest elements of the given input array along a given axis.
@@ -751,14 +766,24 @@ def _get_stats(padded, axis, width_pair, length_pair, stat_func):
         right_length = max_length
     left_slice = _slice_at_axis(slice(left_index, left_index + left_length), axis)
     left_chunk = ivy.array(padded[left_slice])
+<<<<<<< HEAD
     left_stat = stat_func(left_chunk, axis=axis, keepdims=True).astype(left_chunk.dtype)
+=======
+    left_stat = stat_func(left_chunk, axis=axis, keepdims=True)
+    left_stat = ivy.round(left_stat) if 'int' in left_chunk.dtype else left_stat
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     if left_length == right_length == max_length:
         return left_stat, left_stat
     right_slice = _slice_at_axis(slice(right_index - right_length, right_index), axis)
     right_chunk = ivy.array(padded[right_slice])
+<<<<<<< HEAD
     right_stat = stat_func(right_chunk, axis=axis, keepdims=True).astype(
         right_chunk.dtype
     )
+=======
+    right_stat = stat_func(right_chunk, axis=axis, keepdims=True)
+    right_stat = ivy.round(right_stat) if 'int' in right_chunk.dtype else right_stat
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     return left_stat, right_stat
 
 
@@ -927,6 +952,7 @@ def _check_arguments(
         message="the pad_widths must be greater or equal to zero",
     )
     if mode in ["maximum", "mean", "median", "minimum"]:
+<<<<<<< HEAD
         if stat_length is None:
             raise ivy.utils.exceptions.IvyException(
                 "stat_length is required for mode: " + mode
@@ -951,6 +977,17 @@ def _check_arguments(
             )
         else:
             _check_tuple_arg(end_values, "end_values", b_float=True)
+=======
+        _check_tuple_arg(stat_length, "stat_length")
+        ivy.utils.assertions.check_true(
+            all(element[1] > 0 for element in ivy.ndenumerate(stat_length)),
+            message="the stat lengths must be greater than zero",
+        )
+    elif mode == "constant":
+        _check_tuple_arg(constant_values, "constant_values", b_float=True)
+    elif mode == "linear_ramp":
+        _check_tuple_arg(end_values, "end_values", b_float=True)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     ivy.utils.assertions.check_true(
         reflect_type in ["even", "odd"],
         message="the provided reflect_type is not supported",
@@ -967,6 +1004,7 @@ def pad(
     pad_width: Union[Iterable[Tuple[int]], int],
     /,
     *,
+<<<<<<< HEAD
     mode: Optional[
         Union[
             Literal[
@@ -989,6 +1027,28 @@ def pad(
     constant_values: Optional[Union[Iterable[Tuple[Number]], Number]] = None,
     end_values: Optional[Union[Iterable[Tuple[Number]], Number]] = None,
     reflect_type: Optional[Literal["even", "odd"]] = "even",
+=======
+    mode: Union[
+        Literal[
+            "constant",
+            "edge",
+            "linear_ramp",
+            "maximum",
+            "mean",
+            "median",
+            "minimum",
+            "reflect",
+            "symmetric",
+            "wrap",
+            "empty",
+        ],
+        Callable,
+    ] = "constant",
+    stat_length: Union[Iterable[Tuple[int]], int] = 1,
+    constant_values: Union[Iterable[Tuple[Number]], Number] = 0,
+    end_values: Union[Iterable[Tuple[Number]], Number] = 0,
+    reflect_type: Literal["even", "odd"] = "even",
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     **kwargs: Optional[Any],
 ) -> ivy.Array:
     """Pads an array.

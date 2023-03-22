@@ -131,3 +131,15 @@ def sort(
     if out == x:
         x = ivy.sort(x, out=x)
     return x
+<<<<<<< HEAD
+=======
+
+
+def flatnonzero(a):
+    return ivy.nonzero(ivy.reshape(a, (-1,)))
+
+
+@to_ivy_arrays_and_back
+def sort_complex(a):
+    return ivy.sort(a)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead

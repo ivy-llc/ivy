@@ -1,6 +1,10 @@
 # global
 import jax.numpy as jnp
+<<<<<<< HEAD
 from typing import Optional
+=======
+from typing import Optional, Literal, Union, List
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
 # local
 import ivy
@@ -43,9 +47,15 @@ def searchsorted(
     v: JaxArray,
     /,
     *,
+<<<<<<< HEAD
     side="left",
     sorter=None,
     ret_dtype=jnp.int64,
+=======
+    side: Literal["left", "right"] = "left",
+    sorter: Optional[Union[JaxArray, List[int]]] = None,
+    ret_dtype: jnp.dtype = jnp.int64,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     assert ivy.is_int_dtype(ret_dtype), ValueError(

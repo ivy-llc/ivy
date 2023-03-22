@@ -17,7 +17,10 @@ else:
 use = ivy.utils.backend.ContextManager(_module_in_memory)
 
 NativeArray = torch.Tensor
+<<<<<<< HEAD
 NativeVariable = torch.Tensor
+=======
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 NativeDevice = torch.device
 NativeDtype = torch.dtype
 NativeShape = torch.Size
@@ -77,6 +80,11 @@ valid_numeric_dtypes_dict = {
         ivy.float16,
         ivy.float32,
         ivy.float64,
+<<<<<<< HEAD
+=======
+        ivy.complex64,
+        ivy.complex128,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     )
 }
 

@@ -6,26 +6,52 @@ COPY ../docker/multiversion_framework_directory.py .
 COPY ../docker/multiversion_testing_requirements.txt .
 COPY ../docker/run_multiversion_framework_directory.sh .
 
+<<<<<<< HEAD
 
 
 
 # Install miniconda
 ENV CONDA_DIR /opt/miniconda
+=======
+ARG fw
+
+
+# Install miniconda
+ENV CONDA_DIR /opt/miniconda/
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
 RUN apt clean && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get update && \
+<<<<<<< HEAD
     apt-get install -y wget
 
 RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-py38_22.11.1-1-Linux-x86_64.sh -O ~/miniconda.sh && \
+=======
+    apt-get install -y wget && \
+    wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
      /bin/bash ~/miniconda.sh -b -p /opt/miniconda
 
 
 ENV PATH=$CONDA_DIR/bin:$PATH
+<<<<<<< HEAD
 RUN conda env create -f multicondaenv.yml
 
 RUN pip3 install --no-cache-dir --no-deps -r multiversion_testing_requirements.txt --target=/opt/miniconda/envs/multienv/lib/python3.8/site-packages
 RUN ./run_multiversion_framework_directory.sh
+=======
+RUN conda create --name multienv python==3.8.0 &&\
+    /opt/miniconda/envs/multienv/bin/python -m pip install --no-cache-dir   -r multiversion_testing_requirements.txt  &&\
+    /opt/miniconda/envs/multienv/bin/python -m pip uninstall torch -y&&\
+    /opt/miniconda/envs/multienv/bin/python -m pip uninstall numpy -y&&\
+    /opt/miniconda/envs/multienv/bin/python -m pip uninstall tensorflow -y
+
+
+ENV PATH=/opt/miniconda/envs/multienv/bin:$PATH
+RUN /opt/miniconda/envs/multienv/bin/python  multiversion_framework_directory.py $fw
+
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 # Make RUN commands use the new environment:
 SHELL ["conda", "run", "-n", "multienv", "/bin/bash", "-c"]
 

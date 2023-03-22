@@ -1,7 +1,11 @@
 """Collection of gradient Ivy functions."""
 
 # global
+<<<<<<< HEAD
 from typing import Sequence, Union, Optional, Tuple
+=======
+from typing import Sequence, Union, Optional, Tuple, Callable
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 import numpy as np
 import itertools
 
@@ -160,6 +164,7 @@ def _set_duplicates(xs, duplicate_index_chains):
     """Setting the duplicates in the nested structure to
     have the same reference
     """
+<<<<<<< HEAD
     originals = [
         [key_chains[0]] * (len(key_chains) - 1) for key_chains in duplicate_index_chains
     ]
@@ -167,6 +172,25 @@ def _set_duplicates(xs, duplicate_index_chains):
     duplicates = [list(index_chains[1:]) for index_chains in duplicate_index_chains]
     nullifying_index_chains = (
         [index_chain.split("/") for index_chain in list(itertools.chain(*duplicates))]
+=======
+    originals = list(
+        map(
+            lambda key_chains: [key_chains[0]] * (len(key_chains) - 1),
+            duplicate_index_chains,
+        )
+    )
+    originals = ivy.multi_index_nest(xs, list(itertools.chain(*originals)))
+    duplicates = list(
+        map(lambda index_chains: list(index_chains[1:]), duplicate_index_chains)
+    )
+    nullifying_index_chains = (
+        list(
+            map(
+                lambda index_chain: index_chain.split("/"),
+                list(itertools.chain(*duplicates)),
+            )
+        )
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         if isinstance(xs, ivy.Container)
         else list(itertools.chain(*duplicates))
     )
@@ -227,7 +251,11 @@ _check_if_empty = (
 
 
 _idxs_to_str = lambda idxs: [
+<<<<<<< HEAD
     "_".join([str(x) for x in idxs[i]]) for i in range(len(idxs))
+=======
+    "_".join(list(map(lambda x: str(x), idxs[i]))) for i in range(len(idxs))
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 ]
 
 
@@ -323,7 +351,11 @@ class GradientTracking:
 # noinspection PyShadowingNames
 @handle_exceptions
 @handle_array_function
+<<<<<<< HEAD
 def with_grads(*, with_grads: bool = None) -> bool:
+=======
+def with_grads(*, with_grads: Optional[bool] = None) -> bool:
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     """
     Enter a nested code space where gradients are computed. This method
     adds the with_grads component to the global list with_grads_stack
@@ -374,14 +406,21 @@ def with_grads(*, with_grads: bool = None) -> bool:
 # noinspection PyShadowingNames
 @handle_exceptions
 @handle_array_function
+<<<<<<< HEAD
 def set_with_grads(with_grads: bool):
     """
     Enter a nested code space where gradients are computed. This method
     adds the with_grads component to the global list with_grads_stack
+=======
+def set_with_grads(with_grads: bool) -> None:
+    """
+    This method adds the with_grads component to the global list with_grads_stack
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
     Parameters
     ----------
     with_grads
+<<<<<<< HEAD
         Boolean value denoting whether the current code block has gradient
         computation enabled or not.
         'True' or 'False' or 'None' (Default value = None)
@@ -395,6 +434,10 @@ def set_with_grads(with_grads: bool):
         representing the parent of the current nested code block. If with_grads_stack
         is empty, it returns True by default.
         If with_grads is neither None nor boolean, it will raise an IvyException
+=======
+        Boolean value denoting whether to compute gradients or not.
+        'True' or 'False'
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
     Examples
     --------
@@ -420,15 +463,26 @@ def set_with_grads(with_grads: bool):
 
 @handle_exceptions
 @handle_array_function
+<<<<<<< HEAD
 def unset_with_grads():
     """
     Enter a nested code space where gradients are computed. This method
     deletes the with_grads component from the global list with_grads_stack
+=======
+def unset_with_grads() -> None:
+    """
+    This method deletes the last with_grads component from the global list
+    with_grads_stack
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
     Returns
     -------
     ret
+<<<<<<< HEAD
         Remove and return item at index (default last).
+=======
+        Remove and return last item in with_grads_stack (if possible).
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
     Examples
     --------
@@ -440,11 +494,14 @@ def unset_with_grads():
     >>> ivy.set_with_grads(True)
     >>> ivy.unset_with_grads()
     Returns last deleted value
+<<<<<<< HEAD
 
     >>> ivy.set_with_grads(False)
     >>> ivy.unset_with_grads()
     Raises IndexError if list is empty or index is out of range.
 
+=======
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     """
     global with_grads_stack
     if with_grads_stack:
@@ -613,7 +670,11 @@ execute_with_gradients.computes_gradients = True
 
 
 @handle_exceptions
+<<<<<<< HEAD
 def value_and_grad(func):
+=======
+def value_and_grad(func: Callable) -> Callable:
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     """
     Create a function that evaluates both func and the gradient of func.
 
@@ -647,7 +708,11 @@ value_and_grad.computes_gradients = True
 
 
 @handle_exceptions
+<<<<<<< HEAD
 def jac(func):
+=======
+def jac(func: Callable) -> Callable:
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     """Call function func, and return func's Jacobian partial derivatives.
 
     Parameters
@@ -681,7 +746,11 @@ jac.computes_gradients = True
 
 
 @handle_exceptions
+<<<<<<< HEAD
 def grad(func):
+=======
+def grad(func: Callable) -> Callable:
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     """Call function func, and return func's gradients.
 
     Parameters

@@ -52,7 +52,11 @@ def cross(
     axisa: int = -1,
     axisb: int = -1,
     axisc: int = -1,
+<<<<<<< HEAD
     axis: int = None,
+=======
+    axis: Optional[int] = None,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
 
@@ -117,7 +121,11 @@ def eigh(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+<<<<<<< HEAD
     UPLO: Optional[str] = "L",
+=======
+    UPLO: str = "L",
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Tuple[Union[tf.Tensor, tf.Variable]]:
 
@@ -145,7 +153,11 @@ def eigvalsh(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+<<<<<<< HEAD
     UPLO: Optional[str] = "L",
+=======
+    UPLO: str = "L",
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if UPLO not in ("L", "U"):
@@ -289,8 +301,13 @@ def matrix_norm(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+<<<<<<< HEAD
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
     axis: Optional[Tuple[int, int]] = (-2, -1),
+=======
+    ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",
+    axis: Tuple[int, int] = (-2, -1),
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -706,8 +723,13 @@ def vector_norm(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
+<<<<<<< HEAD
     keepdims: Optional[bool] = False,
     ord: Optional[Union[int, float, Literal[inf, -inf]]] = 2,
+=======
+    keepdims: bool = False,
+    ord: Union[int, float, Literal[inf, -inf]] = 2,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     dtype: Optional[DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:

@@ -497,10 +497,27 @@ def atan(x, name=None):
 def log(x, name=None):
     return ivy.log(x)
 
+<<<<<<< HEAD
 @to_ivy_arrays_and_back
 def add_n(x, name=None):
     return ivy.add_n(x)
+=======
+
+@to_ivy_arrays_and_back
+def add_n(inputs, name=None):
+    return ivy.sum(inputs, dtype=inputs.dtype, axis=0)
+
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
 @to_ivy_arrays_and_back
 def floormod(x, y, name=None):
     return ivy.remainder(x, y)
+<<<<<<< HEAD
+=======
+
+
+@to_ivy_arrays_and_back
+def greater(x, y, name=None):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.greater(x, y)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead

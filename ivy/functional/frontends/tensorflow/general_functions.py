@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+=======
+# global
+from builtins import slice as py_slice
+
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
@@ -249,6 +255,13 @@ def transpose(a, perm=None, conjugate=False, name="transpose"):
     return ivy.permute_dims(a, axes=perm)
 
 
+<<<<<<< HEAD
+=======
+def _num_to_bit_list(value, num_dims):
+    return list(map(int, "{:0{size}b}".format(value, size=num_dims)))[::-1]
+
+
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 @to_ivy_arrays_and_back
 def strided_slice(
     input_,
@@ -263,6 +276,7 @@ def strided_slice(
     var=None,
     name=None,
 ):
+<<<<<<< HEAD
     def num_to_bit_list(number):
         return list(map(int, "{:0{size}b}".format(number, size=len(input_.shape))))
 
@@ -285,23 +299,63 @@ def strided_slice(
             if new_axis_mask[i]:
                 full_slice += (ivy.newaxis,)
             else:
+=======
+    begin_mask, end_mask, ellipsis_mask, new_axis_mask, shrink_axis_mask = list(
+        map(
+            _num_to_bit_list,
+            [begin_mask, end_mask, ellipsis_mask, new_axis_mask, shrink_axis_mask],
+            [len(input_.shape)] * 5,
+        )
+    )
+    ivy.assertions.check_true(
+        sum(ellipsis_mask) <= 1,
+        message="Only one non-zero bit is allowed in ellipsis_mask.",
+    )
+    begin, end = map(lambda x: ivy.array(x) if isinstance(x, int) else x, [begin, end])
+    strides = [1] * len(input_.shape) if strides is None else strides
+
+    full_slice = ()
+    new_dims = ()
+    for i, _ in enumerate(input_.shape):
+        if ellipsis_mask[i]:
+            full_slice += (...,)
+        else:
+            if new_axis_mask[i]:
+                new_dims += (i,)
+            else:
+                strides_i = int(strides[i])
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
                 if not begin_mask[i] or shrink_axis_mask[i]:
                     begin_i = int(begin[i])
                 else:
                     begin_i = None
                 if shrink_axis_mask[i]:
+<<<<<<< HEAD
                     end_i = begin_i + 1
+=======
+                    end_i = begin_i + int(strides_i > 0)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
                 elif end_mask[i]:
                     end_i = None
                 else:
                     end_i = int(end[i])
+<<<<<<< HEAD
                 full_slice += (slice(begin_i, end_i, int(strides[i])),)
     return input_[full_slice]
+=======
+                full_slice += (py_slice(begin_i, end_i, strides_i),)
+    ret = input_[full_slice] if full_slice else input_
+    return ivy.expand_dims(ret, axis=new_dims)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
 
 @to_ivy_arrays_and_back
 def slice(input_, begin, size, name=None):
+<<<<<<< HEAD
     return strided_slice(input_, begin, begin + size, [1] * len(size))
+=======
+    return strided_slice(input_, begin, begin + size)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
 
 @to_ivy_arrays_and_back

@@ -26,6 +26,11 @@ def test_dtype_instances():
         assert ivy.exists(ivy.uint64)
     assert ivy.exists(ivy.float32)
     assert ivy.exists(ivy.float64)
+<<<<<<< HEAD
+=======
+    assert ivy.exists(ivy.complex64)
+    assert ivy.exists(ivy.complex128)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     assert ivy.exists(ivy.bool)
 
 

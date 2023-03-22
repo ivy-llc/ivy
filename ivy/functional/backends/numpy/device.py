@@ -25,7 +25,11 @@ def as_native_dev(device: str, /):
     return "cpu"
 
 
+<<<<<<< HEAD
 def clear_mem_on_dev(device: str, /):
+=======
+def clear_cached_mem_on_dev(device: str, /):
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     return None
 
 

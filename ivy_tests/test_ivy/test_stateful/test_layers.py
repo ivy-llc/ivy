@@ -8,7 +8,11 @@ from hypothesis import strategies as st, assume
 import ivy
 from ivy.functional.ivy.layers import _deconv_length
 from ivy.functional.ivy.gradients import _variable
+<<<<<<< HEAD
 from ivy.container import Container
+=======
+from ivy.data_classes.container import Container
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers.assertions import assert_same_type_and_shape
 from ivy_tests.test_ivy.helpers import handle_method

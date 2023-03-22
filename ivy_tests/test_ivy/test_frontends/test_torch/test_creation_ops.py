@@ -32,6 +32,7 @@ def _start_stop_step(draw):
     return start, stop, step
 
 
+<<<<<<< HEAD
 @st.composite
 def _as_strided_helper(draw):
     x_dtype, x, shape = draw(
@@ -60,6 +61,8 @@ def _as_strided_helper(draw):
     return x_dtype, x, size, stride, offset
 
 
+=======
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 # full
 @handle_frontend_test(
     fn_tree="torch.full",
@@ -546,6 +549,7 @@ def _heaviside_helper(draw):
     return input_dtype, data, values
 
 
+<<<<<<< HEAD
 # heaviside
 @handle_frontend_test(
     fn_tree="torch.heaviside",
@@ -569,6 +573,34 @@ def test_torch_heaviside(
         values=values[0],
         on_device=on_device,
     )
+=======
+@st.composite
+def _as_strided_helper(draw):
+    x_dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            min_num_dims=1,
+            ret_shape=True,
+        )
+    )
+    ndim = len(shape)
+    numel = x[0].size
+    offset = draw(st.integers(min_value=0, max_value=numel - 1))
+    numel = numel - offset
+    size = draw(
+        helpers.get_shape(
+            min_num_dims=ndim,
+            max_num_dims=ndim,
+        ).filter(lambda s: math.prod(s) <= numel)
+    )
+    stride = draw(
+        helpers.get_shape(
+            min_num_dims=ndim,
+            max_num_dims=ndim,
+        ).filter(lambda s: all(numel // s_i >= size[i] for i, s_i in enumerate(s)))
+    )
+    return x_dtype, x, size, stride, offset
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
 
 # as_strided
@@ -598,6 +630,38 @@ def test_torch_as_strided(
             storage_offset=offset,
         )
     except Exception as e:
+<<<<<<< HEAD
         if hasattr(e, "message"):
             if "out of bounds for storage of size" in e.message:
                 assume(False)
+=======
+        if hasattr(e, "message") and "out of bounds for storage of size" in e.message:
+            assume(False)
+        else:
+            raise e
+
+
+# heaviside
+@handle_frontend_test(
+    fn_tree="torch.heaviside",
+    dtype_and_input=_heaviside_helper(),
+)
+def test_torch_heaviside(
+    *,
+    dtype_and_input,
+    test_flags,
+    fn_tree,
+    on_device,
+    frontend,
+):
+    input_dtype, data, values = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        input=data[0],
+        values=values[0],
+        on_device=on_device,
+    )
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead

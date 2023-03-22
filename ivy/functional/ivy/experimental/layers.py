@@ -439,9 +439,15 @@ def dct(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+<<<<<<< HEAD
     type: Optional[Literal[1, 2, 3, 4]] = 2,
     n: Optional[int] = None,
     axis: Optional[int] = -1,
+=======
+    type: Literal[1, 2, 3, 4] = 2,
+    n: Optional[int] = None,
+    axis: int = -1,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     norm: Optional[Literal["ortho"]] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
@@ -537,7 +543,11 @@ def fft(
     dim: int,
     /,
     *,
+<<<<<<< HEAD
     norm: Optional[str] = "backward",
+=======
+    norm: str = "backward",
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     n: Optional[Union[int, Tuple[int]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -724,7 +734,11 @@ def ifft(
     x: Union[ivy.Array, ivy.NativeArray],
     dim: int,
     *,
+<<<<<<< HEAD
     norm: Optional[str] = "backward",
+=======
+    norm: str = "backward",
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     n: Optional[Union[int, Tuple[int]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -851,7 +865,11 @@ def dft(
     inverse: bool = False,
     onesided: bool = False,
     dft_length: Optional[Union[int, Tuple[int]]] = None,
+<<<<<<< HEAD
     norm: Optional[str] = "backward",
+=======
+    norm: str = "backward",
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -1107,6 +1125,7 @@ def _lanczos_kernel(radius, x):
     return ivy.where(ivy.bitwise_and(x >= radius, x < -radius), 0.0, out)
 
 
+<<<<<<< HEAD
 def compute_weight_mat(
     input_size, output_size, scale, align_corners, kernel_fn, antialias: bool
 ):
@@ -1120,6 +1139,48 @@ def compute_weight_mat(
         x = ivy.abs(sample_f[None, :] - ivy.arange(input_size)[:, None]) / (
             kernel_scale
         )
+=======
+def _dim_scale_factor(input_size, output_size, align_corners, scales):
+    if align_corners:
+        if output_size > 1:
+            dim_scale_factor = (input_size - 1) / (output_size - 1)
+        else:
+            dim_scale_factor = 0.0
+    else:
+        dim_scale_factor = (
+            input_size / (input_size * scales)
+            if scales is not None
+            else input_size / output_size
+        )
+    return dim_scale_factor
+
+
+def compute_weight_mat(
+    input_size,
+    output_size,
+    scale,
+    align_corners,
+    kernel_fn,
+    antialias: bool,
+    dim_scale_factor,
+):
+    inv_scale = 1.0 / scale
+    kernel_scale = ivy.maximum(inv_scale, 1.0) if antialias else 1.0
+    if not align_corners:
+        sample_f = (ivy.arange(output_size) + 0.5) * dim_scale_factor - 0.5
+        x = (
+            ivy.abs(
+                ivy.expand_dims(sample_f)
+                - ivy.expand_dims(ivy.arange(input_size), axis=-1)
+            )
+            / kernel_scale
+        )
+    else:
+        sample_f = ivy.arange(output_size) * dim_scale_factor
+        x = ivy.abs(
+            ivy.expand_dims(sample_f) - ivy.expand_dims(ivy.arange(input_size), axis=-1)
+        ) / (kernel_scale)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     weights = kernel_fn(x)
     total_weight_sum = ivy.sum(weights, axis=0, keepdims=True)
     weights = ivy.where(
@@ -1129,7 +1190,13 @@ def compute_weight_mat(
     )
     input_size_minus_0_5 = input_size if align_corners else input_size - 0.5
     return ivy.where(
+<<<<<<< HEAD
         ivy.logical_and(sample_f >= -0.5, sample_f <= input_size_minus_0_5)[None, :],
+=======
+        ivy.expand_dims(
+            ivy.logical_and(sample_f >= -0.5, sample_f <= input_size_minus_0_5)
+        ),
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         weights,
         0,
     )
@@ -1142,6 +1209,7 @@ def interpolate(
     size: Union[Sequence[int], int],
     /,
     *,
+<<<<<<< HEAD
     mode: Union[
         Literal[
             "linear",
@@ -1161,6 +1229,26 @@ def interpolate(
     scale_factor: Optional[Union[Sequence[int], int]] = None,
     align_corners: Optional[bool] = None,
     antialias: Optional[bool] = False,
+=======
+    mode: Literal[
+        "linear",
+        "bilinear",
+        "trilinear",
+        "nearest",
+        "area",
+        "nearest_exact",
+        "tf_area",
+        "bicubic",
+        "mitchellcubic",
+        "lanczos3",
+        "lanczos5",
+        "gaussian",
+    ] = "linear",
+    scale_factor: Optional[Union[Sequence[int], int]] = None,
+    recompute_scale_factor: Optional[bool] = None,
+    align_corners: Optional[bool] = None,
+    antialias: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -1246,6 +1334,22 @@ def interpolate(
     input_shape = ivy.shape(x)
     dims = len(input_shape) - 2
     size = _get_size(scale_factor, size, dims, x.shape)
+<<<<<<< HEAD
+=======
+    if recompute_scale_factor:
+        scale_factor = None
+    elif scale_factor is not None:
+        scale_factor = (
+            [scale_factor] * dims
+            if isinstance(scale_factor, (int, float))
+            else scale_factor
+        )
+        scale_factor = (
+            [scale_factor[0]] * dims
+            if isinstance(scale_factor, (list, tuple)) and len(scale_factor) != dims
+            else [scale_factor] * dims
+        )
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     spatial_dims = [2 + i for i in range(dims)]
     scale = [ivy.divide(size[i], input_shape[spatial_dims[i]]) for i in range(dims)]
     if mode in [
@@ -1276,8 +1380,19 @@ def interpolate(
         for i, d in enumerate(spatial_dims):
             m = input_shape[d]
             n = output_shape[d]
+<<<<<<< HEAD
             w = compute_weight_mat(
                 m, n, scale[i], align_corners, kernel_func, antialias
+=======
+            dim_scale_factor = _dim_scale_factor(
+                m,
+                n,
+                align_corners,
+                scale_factor[i] if scale_factor is not None else None,
+            )
+            w = compute_weight_mat(
+                m, n, scale[i], align_corners, kernel_func, antialias, dim_scale_factor
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
             ).astype(x.dtype)
             operands.append(w)
         ret = ivy.einsum(equation, x, *operands)
@@ -1394,12 +1509,20 @@ def interpolate(
         x = ivy.pad(x, ((0, 0), (0, 0), padding, padding), mode="reflect")
         x = ivy.conv2d(
             x,
+<<<<<<< HEAD
             kernel.unsqueeze(-1).unsqueeze(-1),
+=======
+            ivy.expand_dims(ivy.expand_dims(kernel, axis=-1), axis=-1),
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
             1,
             ((0, 0), (0, 0)),
             data_format="NCHW",
         )
+<<<<<<< HEAD
         return interpolate(x, size=size, mode="bicubic", align_corners=True)
+=======
+        return interpolate(x, size, mode="bicubic", align_corners=True)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     elif mode == "tf_area":
         ret = _tf_area_interpolate(x, size, dims)
     return ivy.astype(ret, ivy.dtype(x), out=out)
@@ -1409,6 +1532,12 @@ def _get_size(scale_factor, size, dims, x_shape):
     if scale_factor is not None:
         if isinstance(scale_factor, (float, int)):
             scale_factor = [scale_factor] * dims
+<<<<<<< HEAD
+=======
+        elif isinstance(scale_factor, (tuple, list)) and len(scale_factor) != dims:
+            scale_factor = [scale_factor[0]] * dims
+
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         size = tuple(
             [int(math.floor(x_shape[2 + i] * scale_factor[i])) for i in range(dims)]
         )
@@ -1592,6 +1721,12 @@ def adaptive_avg_pool2d(
             f"Got {len(input.shape)}D input, but only 3D and 4D inputs are supported.",
         )
 
+<<<<<<< HEAD
+=======
+    if isinstance(output_size, int):
+        output_size = (output_size, output_size)
+
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     if all(i_s % o_s == 0 for i_s, o_s in zip(input.shape[-2:], output_size)):
         stride = tuple(i_s // o_s for i_s, o_s in zip(input.shape[-2:], output_size))
         kernel_size = tuple(

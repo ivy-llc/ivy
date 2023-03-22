@@ -1,13 +1,22 @@
 name: test-ivy-cron-multi-version
 on:
   workflow_dispatch:
+<<<<<<< HEAD
   schedule:
     - cron: '20 * * * *'
+=======
+#  schedule:
+#    - cron: '20 * * * *'
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 permissions:
   actions: read
 jobs:
   run-nightly-tests:
+<<<<<<< HEAD
     runs-on: ubuntu-latest-16-cores
+=======
+    runs-on: ubuntu-latest
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     steps:
       - name: Checkout 🛎️Ivy
         uses: actions/checkout@v2

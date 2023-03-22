@@ -119,4 +119,9 @@ def shuffle(
 ) -> np.ndarray:
     if seed:
         np.random.seed(seed)
+<<<<<<< HEAD
+=======
+    if len(x.shape) == 0:
+        return x
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     return np.random.permutation(x)

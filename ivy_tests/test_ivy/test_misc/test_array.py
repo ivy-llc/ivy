@@ -14,7 +14,11 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_first_matrix_and_dtype,
     _get_second_matrix_and_dtype,
 )
+<<<<<<< HEAD
 from ivy.array import Array
+=======
+from ivy.data_classes.array import Array
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
 
 # getitem and setitem helper

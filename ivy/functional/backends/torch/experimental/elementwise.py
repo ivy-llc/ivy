@@ -28,7 +28,11 @@ lcm.support_native_out = True
 
 
 @with_unsupported_dtypes(
+<<<<<<< HEAD
     {"2.9.1 and below": ("bfloat16",)},
+=======
+    {"2.9.1 and below": ("bfloat16", "complex")},
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     backend_version,
 )
 def fmod(
@@ -87,7 +91,11 @@ def trapz(
     *,
     x: Optional[torch.Tensor] = None,
     dx: Optional[float] = None,
+<<<<<<< HEAD
     axis: Optional[int] = -1,
+=======
+    axis: int = -1,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if x is None:
@@ -157,7 +165,11 @@ def count_nonzero(
     /,
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
+<<<<<<< HEAD
     keepdims: Optional[bool] = False,
+=======
+    keepdims: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -176,23 +188,38 @@ def count_nonzero(
         return x
     if isinstance(axis, tuple):
         for d in sorted(axis):
+<<<<<<< HEAD
             x = x.unsqueeze(d)
         return x
     elif isinstance(axis, int):
         return x.unsqueeze(axis)
+=======
+            x = x.unsqueeze(d - 1)
+        return x
+    elif isinstance(axis, int):
+        return x.unsqueeze(axis - 1)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     return x
 
 
 count_nonzero.support_native_out = False
 
 
+<<<<<<< HEAD
+=======
+@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 def nansum(
     x: torch.Tensor,
     /,
     *,
     axis: Optional[Union[Tuple[int, ...], int]] = None,
     dtype: Optional[torch.dtype] = None,
+<<<<<<< HEAD
     keepdims: Optional[bool] = False,
+=======
+    keepdims: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     dtype = ivy.as_native_dtype(dtype)
@@ -221,9 +248,15 @@ def isclose(
     b: torch.Tensor,
     /,
     *,
+<<<<<<< HEAD
     rtol: Optional[float] = 1e-05,
     atol: Optional[float] = 1e-08,
     equal_nan: Optional[bool] = False,
+=======
+    rtol: float = 1e-05,
+    atol: float = 1e-08,
+    equal_nan: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
@@ -267,8 +300,13 @@ def nan_to_num(
     x: torch.Tensor,
     /,
     *,
+<<<<<<< HEAD
     copy: Optional[bool] = True,
     nan: Optional[Union[float, int]] = 0.0,
+=======
+    copy: bool = True,
+    nan: Union[float, int] = 0.0,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     posinf: Optional[Union[float, int]] = None,
     neginf: Optional[Union[float, int]] = None,
     out: Optional[torch.Tensor] = None,
@@ -353,9 +391,15 @@ def allclose(
     x2: torch.Tensor,
     /,
     *,
+<<<<<<< HEAD
     rtol: Optional[float] = 1e-05,
     atol: Optional[float] = 1e-08,
     equal_nan: Optional[bool] = False,
+=======
+    rtol: float = 1e-05,
+    atol: float = 1e-08,
+    equal_nan: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[torch.Tensor] = None,
 ) -> bool:
     ret = torch.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
@@ -410,9 +454,15 @@ def gradient(
     x: torch.Tensor,
     /,
     *,
+<<<<<<< HEAD
     spacing: Optional[Union[int, list, tuple]] = 1,
     axis: Optional[Union[int, list, tuple]] = None,
     edge_order: Optional[int] = 1,
+=======
+    spacing: Union[int, list, tuple] = 1,
+    axis: Optional[Union[int, list, tuple]] = None,
+    edge_order: int = 1,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 ) -> Union[torch.Tensor, List[torch.Tensor]]:
     if axis is None:
         axis = tuple(range(len(x.shape)))

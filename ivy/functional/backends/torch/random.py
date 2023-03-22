@@ -25,7 +25,11 @@ def random_uniform(
     shape: Optional[Union[torch.Tensor, ivy.NativeShape, Sequence[int]]] = None,
     dtype: torch.dtype,
     device: torch.device,
+<<<<<<< HEAD
     seed=None,
+=======
+    seed: Optional[int] = None,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     shape = _check_bounds_and_get_shape(low, high, shape)
@@ -126,6 +130,11 @@ def shuffle(
     seed: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+<<<<<<< HEAD
+=======
+    if len(x.shape) == 0:
+        return x
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     batch_size = x.shape[0]
     if seed:
         torch.manual_seed(seed)

@@ -30,6 +30,7 @@ class ContextManager:
         set_backend(self.module)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+<<<<<<< HEAD
         unset_backend()
 
 
@@ -55,6 +56,27 @@ _backend_reverse_dict["ivy.functional.backends.numpy"] = "numpy"
 _backend_reverse_dict["ivy.functional.backends.jax"] = "jax"
 _backend_reverse_dict["ivy.functional.backends.tensorflow"] = "tensorflow"
 _backend_reverse_dict["ivy.functional.backends.torch"] = "torch"
+=======
+        previous_backend()
+
+
+_backends_subpackage_path = "ivy.functional.backends"
+_backend_dict = dict()
+_backend_reverse_dict = dict()
+
+for backend in os.listdir(
+    os.path.join(
+        ivy.__path__[0].rpartition(os.path.sep)[0],  # type: ignore
+        _backends_subpackage_path.replace(".", os.path.sep),
+    )
+):
+    if backend.startswith("__"):
+        continue
+    backend_path = f"{_backends_subpackage_path}.{backend}"
+    _backend_dict[backend] = backend_path
+    _backend_reverse_dict[backend_path] = backend
+
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
 # Backend Getting/Setting #
 # ----------------------- #
@@ -70,6 +92,17 @@ def prevent_access_locally(fn):
     return new_fn
 
 
+<<<<<<< HEAD
+=======
+@functools.lru_cache
+def _get_backend_for_arg(arg_module_name):
+    for backend in _backend_dict:
+        if backend in arg_module_name:
+            module_name = _backend_dict[backend]
+            return importlib.import_module(module_name)
+
+
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 def _determine_backend_from_args(args):
     """Return the appropriate Ivy backend, given some arguments.
 
@@ -113,9 +146,13 @@ def _determine_backend_from_args(args):
                 return lib
     else:
         # check if the class module of the arg is in _array_types
+<<<<<<< HEAD
         if args.__class__.__module__ in _array_types:
             module_name = _array_types[args.__class__.__module__]
             return importlib.import_module(module_name)
+=======
+        return _get_backend_for_arg(args.__class__.__module__)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
 
 def fn_name_from_version_specific_fn_name(name, version):
@@ -388,7 +425,11 @@ def convert_from_numpy_to_target_backend(variable_ids, numpy_objs):
         if isinstance(obj, ivy.Container):
             obj.cont_inplace_update(new_data)
         else:
+<<<<<<< HEAD
             obj._data = new_data.data
+=======
+            obj.data = new_data.data
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
 
 @prevent_access_locally
@@ -436,7 +477,11 @@ def set_backend(backend: str, dynamic: bool = False):
     if isinstance(backend, str):
         temp_stack = list()
         while backend_stack:
+<<<<<<< HEAD
             temp_stack.append(unset_backend())
+=======
+            temp_stack.append(previous_backend())
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         backend = importlib.import_module(_backend_dict[backend])
         for fw in reversed(temp_stack):
             backend_stack.append(fw)
@@ -533,7 +578,11 @@ def get_backend(backend: Optional[str] = None):
 
 
 @prevent_access_locally
+<<<<<<< HEAD
 def unset_backend():
+=======
+def previous_backend():
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     """Unsets the current global backend, and adjusts the ivy dict such that either
     a previously set global backend is then used as the backend, otherwise we return
     to Ivy's implementations.
@@ -546,7 +595,11 @@ def unset_backend():
     Examples
     --------
     Torch is the last set backend hence is the backend used in the first examples.
+<<<<<<< HEAD
     However, as seen in the example after, if `unset_backend` is called before
+=======
+    However, as seen in the example after, if `previous_backend` is called before
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     `ivy.native_array` then tensorflow will become the current backend and any
     torch backend implementations in the Ivy dict will be swapped with the
     tensorflow implementation::
@@ -559,7 +612,11 @@ def unset_backend():
 
     >>> ivy.set_backend("tensorflow")
     >>> ivy.set_backend("torch")
+<<<<<<< HEAD
     >>> ivy.unset_backend()
+=======
+    >>> ivy.previous_backend()
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     >>> x = ivy.native_array([1])
     >>> print(type(x))
     <class'tensorflow.python.framework.ops.EagerTensor'>
@@ -597,9 +654,15 @@ def unset_backend():
 
 
 @prevent_access_locally
+<<<<<<< HEAD
 def clear_backend_stack():
     while backend_stack:
         unset_backend()
+=======
+def unset_backend():
+    while backend_stack:
+        previous_backend()
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
 
 @prevent_access_locally
@@ -626,7 +689,14 @@ def choose_random_backend(excluded=None):
 
 # noinspection PyProtectedMember
 @prevent_access_locally
+<<<<<<< HEAD
 def with_backend(backend: str):
+=======
+def with_backend(backend: str, cached: bool = False):
+    # Use already compiled object
+    if cached and backend in compiled_backends.keys():
+        return compiled_backends[backend][-1]
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     # TODO do error handling if finder fails
     finder = ast_helpers.IvyPathFinder()
     sys.meta_path.insert(0, finder)
@@ -646,5 +716,12 @@ def with_backend(backend: str):
     _importlib.path_hooks.remove(finder)
     sys.meta_path.remove(finder)
     _importlib._clear_cache()
+<<<<<<< HEAD
     compiled_backends[f"{ivy_pack.backend}_{id(ivy_pack)}"] = ivy_pack
+=======
+    try:
+        compiled_backends[backend].append(ivy_pack)
+    except KeyError:
+        compiled_backends[backend] = [ivy_pack]
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     return ivy_pack

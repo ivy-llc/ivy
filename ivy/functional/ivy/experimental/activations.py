@@ -24,7 +24,11 @@ def logit(
     /,
     *,
     eps: Optional[float] = None,
+<<<<<<< HEAD
     out: Optional["ivy.Array"] = None,
+=======
+    out: Optional[ivy.Array] = None,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 ) -> ivy.Array:
     """
     Computes the logit of x, i.e. logit(x) = log(x / (1 - x)).
@@ -71,7 +75,11 @@ def prelu(
     slope: Union[float, ivy.NativeArray, ivy.Array],
     /,
     *,
+<<<<<<< HEAD
     out: Optional["ivy.Array"] = None,
+=======
+    out: Optional[ivy.Array] = None,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 ) -> ivy.Array:
     """
     Prelu takes input data (Array) and slope array as input,
@@ -127,7 +135,11 @@ def thresholded_relu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+<<<<<<< HEAD
     threshold: Optional[Union[int, float]] = 0,
+=======
+    threshold: Union[int, float] = 0,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Applies the rectified linear unit function with custom threshold.
@@ -284,3 +296,53 @@ def batch_norm(
         training=training,
         eps=eps,
     )
+<<<<<<< HEAD
+=======
+
+
+@handle_out_argument
+@handle_nestable
+@to_native_arrays_and_back
+@handle_exceptions
+@handle_array_like_without_promotion
+def logsigmoid(
+    input: Union[ivy.NativeArray, ivy.Array],
+) -> ivy.Array:
+    """
+    Applies element-wise Log-sigmoid of x i.e. logsigmoid(x) = log(1 / (1 + exp(-x)).
+
+    Parameters
+    ----------
+    input
+        Input array.
+
+    Returns
+    -------
+        Array with same shape as input with Log-sigmoid applied to every element.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([-1., 0., 1.])
+    >>> z = x.logsigmoid()
+    >>> print(z)
+    ivy.array([-1.31326175, -0.69314718, -0.31326169])
+
+    >>> x = ivy.array([1.5, 0.7, -2.4])
+    >>> z = x.logsigmoid()
+    >>> print(z)
+    ivy.array([-0.20141329, -0.40318608, -2.48683619])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.2, 0.6]))
+    >>> x = ivy.logsigmoid(x)
+    >>> print(x)
+    {
+        a: ivy.array([-0.31326169, -1.46328247]),
+        b: ivy.array([-0.59813893, -0.43748799])
+    }
+    """
+    return ivy.current_backend(input).logsigmoid(input)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead

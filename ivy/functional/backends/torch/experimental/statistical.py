@@ -9,6 +9,7 @@ from . import backend_version
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
 def median(
+<<<<<<< HEAD
     input: torch.tensor,
     /,
     *,
@@ -16,6 +17,15 @@ def median(
     keepdims: Optional[bool] = False,
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
+=======
+    input: torch.Tensor,
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    keepdims: bool = False,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     return quantile(
         input,
         0.5,
@@ -33,7 +43,11 @@ def nanmean(
     /,
     *,
     axis: Optional[Union[int, Tuple[int]]] = None,
+<<<<<<< HEAD
     keepdims: Optional[bool] = False,
+=======
+    keepdims: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -47,6 +61,7 @@ nanmean.support_native_out = True
     {"1.11.0 and below": ("bfloat16", "bfloat32", "float16")}, backend_version
 )
 def quantile(
+<<<<<<< HEAD
     a: torch.tensor,
     q: Union[torch.tensor, float],
     /,
@@ -58,6 +73,19 @@ def quantile(
 ) -> torch.tensor:
     temp = a.to(torch.float64)
     if isinstance(q, torch.tensor):
+=======
+    a: torch.Tensor,
+    q: Union[torch.Tensor, float],
+    /,
+    *,
+    axis: Optional[Union[Sequence[int], int]] = None,
+    keepdims: bool = False,
+    interpolation: str = "linear",
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    temp = a.to(torch.float64)
+    if isinstance(q, torch.Tensor):
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         qt = q.to(torch.float64)
     else:
         qt = q
@@ -85,8 +113,13 @@ def corrcoef(
     /,
     *,
     y: Optional[torch.Tensor] = None,
+<<<<<<< HEAD
     rowvar: Optional[bool] = True,
     out: Optional[torch.tensor] = None,
+=======
+    rowvar: bool = True,
+    out: Optional[torch.Tensor] = None,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 ) -> torch.Tensor:
     if y is None:
         xarr = x
@@ -99,6 +132,7 @@ def corrcoef(
 
 
 def nanmedian(
+<<<<<<< HEAD
     input: torch.tensor,
     /,
     *,
@@ -107,6 +141,16 @@ def nanmedian(
     overwrite_input: Optional[bool] = False,
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
+=======
+    input: torch.Tensor,
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    keepdims: bool = False,
+    overwrite_input: bool = False,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     return torch.nanmedian(
         input, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out
     )
@@ -138,7 +182,11 @@ def bincount(
     /,
     *,
     weights: Optional[torch.Tensor] = None,
+<<<<<<< HEAD
     minlength: Optional[int] = 0,
+=======
+    minlength: int = 0,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if weights is None:

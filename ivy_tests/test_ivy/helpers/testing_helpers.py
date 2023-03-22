@@ -1,6 +1,13 @@
 # general
+<<<<<<< HEAD
 import importlib
 import inspect
+=======
+import pytest
+import importlib
+import inspect
+import functools
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 from typing import List
 
 from hypothesis import given, strategies as st
@@ -189,7 +196,11 @@ def _get_method_supported_devices_dtypes(
                 ivy, devices_and_dtypes[device]
             )
         supported_device_dtypes[b] = organized_dtypes
+<<<<<<< HEAD
         ivy.unset_backend()
+=======
+        ivy.previous_backend()
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     return supported_device_dtypes
 
 
@@ -238,7 +249,11 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
                 ivy, devices_and_dtypes[device]
             )
         supported_device_dtypes[b] = organized_dtypes
+<<<<<<< HEAD
         ivy.unset_backend()
+=======
+        ivy.previous_backend()
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     return supported_device_dtypes
 
 
@@ -347,7 +362,20 @@ def handle_test(
             for key in filtered_args:
                 _given_kwargs[key] = possible_arguments[key]
             # Wrap the test with the @given decorator
+<<<<<<< HEAD
             wrapped_test = given(**_given_kwargs)(test_fn)
+=======
+
+            hypothesis_test_fn = given(**_given_kwargs)(test_fn)
+
+            @functools.wraps(hypothesis_test_fn)
+            def wrapped_test(*args, **kwargs):
+                try:
+                    hypothesis_test_fn(*args, **kwargs)
+                except ivy.utils.exceptions.IvyNotImplementedException:
+                    pytest.skip("Function not implemented in backend.")
+
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         else:
             wrapped_test = test_fn
 
@@ -553,7 +581,19 @@ def handle_method(
                 # extend Hypothesis given kwargs with our strategies
                 _given_kwargs[key] = possible_arguments[key]
 
+<<<<<<< HEAD
             wrapped_test = given(**_given_kwargs)(test_fn)
+=======
+            hypothesis_test_fn = given(**_given_kwargs)(test_fn)
+
+            @functools.wraps(hypothesis_test_fn)
+            def wrapped_test(*args, **kwargs):
+                try:
+                    hypothesis_test_fn(*args, **kwargs)
+                except ivy.utils.exceptions.IvyNotImplementedException:
+                    pytest.skip("Function not implemented in backend.")
+
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         else:
             wrapped_test = test_fn
 

@@ -1,5 +1,6 @@
 import ast
 import inspect
+<<<<<<< HEAD
 
 
 
@@ -13,6 +14,25 @@ import importlib
 from ivy_tests.test_ivy.helpers.testing_helpers import _import_fn, _get_supported_devices_dtypes, _import_method, _get_method_supported_devices_dtypes
 # import paddle_bfloat
 
+=======
+from ivy_tests.test_ivy.helpers.function_testing import _is_frontend_array
+from ivy_tests import config
+
+# from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
+import sys
+import jsonpickle
+import importlib
+from ivy_tests.test_ivy.helpers.testing_helpers import (
+    _import_fn,
+    _get_supported_devices_dtypes,
+    _import_method,
+    _get_method_supported_devices_dtypes,
+)
+
+# import paddle_bfloat
+
+
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 def _lstrip_lines(source: str) -> str:
     source = source.lstrip().split("\n")
 
@@ -31,7 +51,10 @@ def _lstrip_lines(source: str) -> str:
     return source
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 def _get_functions_from_string(func_names, module):
     ret = set()
     # We only care about the functions in the ivy or the same module
@@ -82,8 +105,11 @@ def _get_function_list(func):
     return names
 
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 def get_ret_and_flattened_np_array(fn, *args, **kwargs):
     """
     Runs func with args and kwargs, and returns the result along with its flattened
@@ -127,13 +153,20 @@ def gradient_unsupported_dtypes(*, fn):
     return out
 
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 def flatten_and_to_np(*, ret):
     # flatten the return
     ret_flat = flatten(ret=ret)
     return [ivy.to_numpy(x) for x in ret_flat]
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 def flatten(*, ret):
     """Returns a flattened numpy version of the arrays in ret."""
     if not isinstance(ret, tuple):
@@ -143,17 +176,32 @@ def flatten(*, ret):
     if len(ret_idxs) == 0:
         ret_idxs = ivy.nested_argwhere(ret, ivy.isscalar)
         ret_flat = ivy.multi_index_nest(ret, ret_idxs)
+<<<<<<< HEAD
         ret_flat = [
             ivy.asarray(x, dtype=ivy.Dtype(str(numpy.asarray(x).dtype))) for x in ret_flat
         ]
+=======
+        temp = []
+        for x in ret_flat:
+            temp.append(ivy.asarray(x, dtype=ivy.Dtype(str(numpy.asarray(x).dtype))))
+        ret_flat = temp
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     else:
         ret_flat = ivy.multi_index_nest(ret, ret_idxs)
     return ret_flat
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 def as_cont(*, x):
     """Returns x as an Ivy Container, containing x at all its leaves."""
     return ivy.Container({"a": x, "b": {"c": x, "d": x}})
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 def create_args_kwargs(
     *,
     args_np,
@@ -205,6 +253,7 @@ def create_args_kwargs(
     return args, kwargs, len(arg_np_vals), args_idxs, kwargs_idxs
 
 
+<<<<<<< HEAD
 
 
 
@@ -218,12 +267,22 @@ def _get_fn_dtypes(framework,fn_tree,type, device=None,kind="valid"):
         ][kind]
     else:
         method_tree=fn_tree
+=======
+def _get_fn_dtypes(framework, fn_tree, type, device=None, kind="valid"):
+    if type == "1":
+        callable_fn, fn_name, fn_mod = _import_fn(fn_tree)
+        supported_device_dtypes = _get_supported_devices_dtypes(fn_name, fn_mod)
+        return supported_device_dtypes[framework][device][kind]
+    else:
+        method_tree = fn_tree
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         callable_method, method_name, _, class_name, method_mod = _import_method(
             method_tree
         )
         supported_device_dtypes = _get_method_supported_devices_dtypes(
             method_name, method_mod, class_name
         )
+<<<<<<< HEAD
         return supported_device_dtypes[framework][
             device
         ][kind]
@@ -232,6 +291,12 @@ def _get_fn_dtypes(framework,fn_tree,type, device=None,kind="valid"):
 
 
 def _get_type_dict(framework,fn_tree,type, device=None,kind="valid"):
+=======
+        return supported_device_dtypes[framework][device][kind]
+
+
+def _get_type_dict(framework, fn_tree, type, device=None, kind="valid"):
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     if kind == "valid":
         return framework.valid_dtypes
     elif kind == "numeric":
@@ -263,6 +328,7 @@ def _get_type_dict(framework,fn_tree,type, device=None,kind="valid"):
     else:
         raise RuntimeError("{} is an unknown kind!".format(kind))
 
+<<<<<<< HEAD
 def dtype_handler(framework,type):
     global temp_store
     temp_store=[]
@@ -279,6 +345,25 @@ def dtype_handler(framework,type):
         framework = importlib.import_module("ivy.functional.backends." + framework)
 
     dtypes = retrieval_fn(framework,fn_tree,type,device,kind)
+=======
+
+def dtype_handler(framework, type):
+    global temp_store
+    temp_store = []
+    z = input()
+    retrieval_fn = globals()[z]
+    z = input()
+    kind = z
+    z = input()
+    device = z
+    z = input()
+    fn_tree = z
+
+    if retrieval_fn.__name__ == "_get_type_dict":
+        framework = importlib.import_module("ivy.functional.backends." + framework)
+
+    dtypes = retrieval_fn(framework, fn_tree, type, device, kind)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
     dtypes = jsonpickle.dumps(dtypes)
     print(dtypes)
@@ -289,7 +374,14 @@ def make_json_pickable(s):
     # s = s.replace("jax._src.device_array.reconstruct_device_array", "jax.numpy.array")
     return s
 
+<<<<<<< HEAD
 temp_store=[] # for ins_gt
+=======
+
+temp_store = []  # for ins_gt
+
+
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 def check_unsupported_dtype(*, fn, input_dtypes, all_as_kwargs_np):
     """Checks whether a function does not support the input data types or the output
     data type.
@@ -335,7 +427,10 @@ def check_unsupported_dtype(*, fn, input_dtypes, all_as_kwargs_np):
 
 
 def gradient_test():
+<<<<<<< HEAD
 
+=======
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     def grad_fn(all_args):
         args, kwargs, i = all_args
         ret = (
@@ -344,6 +439,10 @@ def gradient_test():
             else fn[i](*args, **kwargs)
         )
         return ivy.nested_map(ret, ivy.mean, include_derived=True)
+<<<<<<< HEAD
+=======
+
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     args_np = jsonpickle.loads(make_json_pickable(input()))
     arg_np_vals = jsonpickle.loads(make_json_pickable(input()))
     args_idxs = jsonpickle.loads(make_json_pickable(input()))
@@ -354,9 +453,14 @@ def gradient_test():
     test_flags = jsonpickle.loads(make_json_pickable(input()))
     fn = jsonpickle.loads(make_json_pickable(input()))
     all_as_kwargs_np = jsonpickle.loads(make_json_pickable(input()))
+<<<<<<< HEAD
     grad_fnn=jsonpickle.loads(make_json_pickable(input()))
     xs_grad_idxs=jsonpickle.loads(make_json_pickable(input()))
     ret_grad_idxs=jsonpickle.loads(make_json_pickable(input()))
+=======
+    grad_fnn = jsonpickle.loads(make_json_pickable(input()))  # noqa: F841
+    ret_grad_idxs = jsonpickle.loads(make_json_pickable(input()))
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     global temp_store
     if not temp_store and isinstance(fn, list):
         raise Exception("trouble for ins_gt")
@@ -379,12 +483,20 @@ def gradient_test():
         kwarg_np_vals=kwarg_np_vals,
         kwargs_idxs=kwargs_idxs,
         input_dtypes=input_dtypes,
+<<<<<<< HEAD
         test_flags=test_flags
+=======
+        test_flags=test_flags,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     )
     _, grads_from_gt = ivy.execute_with_gradients(
         grad_fn,
         [args, kwargs, 1],
+<<<<<<< HEAD
         xs_grad_idxs=xs_grad_idxs,
+=======
+        xs_grad_idxs=xs_grad_idxs,  # noqa: F821
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         ret_grad_idxs=ret_grad_idxs,
     )
     grads_np_from_gt_flat = flatten_and_to_np(ret=grads_from_gt)
@@ -400,7 +512,11 @@ def method_test():
     con_kwargs_idxs = jsonpickle.loads(make_json_pickable(input()))
     init_input_dtypes = jsonpickle.loads(make_json_pickable(input()))
     init_flags = jsonpickle.loads(make_json_pickable(input()))
+<<<<<<< HEAD
     args_gt_constructor, kwargs_gt_constructor, _, _, _  = create_args_kwargs(
+=======
+    args_gt_constructor, kwargs_gt_constructor, _, _, _ = create_args_kwargs(
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         args_np=args_np_constructor,
         arg_np_vals=con_arg_np_vals,
         args_idxs=con_args_idxs,
@@ -408,7 +524,11 @@ def method_test():
         kwargs_idxs=con_kwargs_idxs,
         kwarg_np_vals=con_kwarg_np_vals,
         input_dtypes=init_input_dtypes,
+<<<<<<< HEAD
        test_flags=init_flags
+=======
+        test_flags=init_flags,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     )
 
     args_np = jsonpickle.loads(make_json_pickable(input()))
@@ -422,7 +542,11 @@ def method_test():
     class_name = jsonpickle.loads(make_json_pickable(input()))
     method_name = jsonpickle.loads(make_json_pickable(input()))
     method_input_dtypes = jsonpickle.loads(make_json_pickable(input()))
+<<<<<<< HEAD
     v_np=jsonpickle.loads(make_json_pickable(input()))
+=======
+    v_np = jsonpickle.loads(make_json_pickable(input()))
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     args_gt_method, kwargs_gt_method, _, _, _ = create_args_kwargs(
         args_np=args_np,
         arg_np_vals=arg_np_vals,
@@ -431,10 +555,17 @@ def method_test():
         kwargs_idxs=kwargs_idxs,
         kwarg_np_vals=kwarg_np_vals,
         input_dtypes=input_dtypes,
+<<<<<<< HEAD
         test_flags=method_flags
     )
     ins_gt = ivy.__dict__[class_name](*args_gt_constructor, **kwargs_gt_constructor)
     temp_store.append([ins_gt,method_name])
+=======
+        test_flags=method_flags,
+    )
+    ins_gt = ivy.__dict__[class_name](*args_gt_constructor, **kwargs_gt_constructor)
+    temp_store.append([ins_gt, method_name])
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     # ToDo : remove this when the handle_method can properly compute unsupported dtypes
     if any(
         dtype in ivy.function_unsupported_dtypes(ins_gt.__getattribute__(method_name))
@@ -456,10 +587,19 @@ def method_test():
             fw_list[k] = []
         fw_list[k].extend(v)
 
+<<<<<<< HEAD
     print(jsonpickle.dumps([ret_np_from_gt_flat,fw_list2]))
 
 if __name__ == "__main__":
     from ivy.functional.ivy.gradients import _variable
+=======
+    print(jsonpickle.dumps([ret_np_from_gt_flat, fw_list2]))
+
+
+if __name__ == "__main__":
+    from ivy.functional.ivy.gradients import _variable
+
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     arg_lis = sys.argv
     fw_lis = []
     for i in arg_lis[1:]:
@@ -469,6 +609,7 @@ if __name__ == "__main__":
         else:
             fw_lis.append(i)
     config.allow_global_framework_imports(fw=fw_lis)
+<<<<<<< HEAD
 
     j = 1
     import ivy
@@ -505,6 +646,37 @@ if __name__ == "__main__":
             with_out=test_flags.with_out
 
 
+=======
+    j = 1
+    import ivy
+
+    ivy.set_backend(arg_lis[2].split("/")[0])
+    import numpy
+
+    while j:
+        try:
+            z = input()
+            if z == "1" or z == "1a":
+                dtype_handler(arg_lis[2].split("/")[0], z)
+                continue
+            if z == "2":
+                gradient_test()
+                continue
+            if z == "3":
+                method_test()
+                continue
+
+            args_np = jsonpickle.loads(make_json_pickable(z))
+            arg_np_vals = jsonpickle.loads(make_json_pickable(input()))
+            args_idxs = jsonpickle.loads(make_json_pickable(input()))
+            kwargs_np = jsonpickle.loads(make_json_pickable(input()))
+            kwargs_idxs = jsonpickle.loads(make_json_pickable(input()))
+            kwarg_np_vals = jsonpickle.loads(make_json_pickable(input()))
+            input_dtypes = jsonpickle.loads(make_json_pickable(input()))
+            test_flags = jsonpickle.loads(make_json_pickable(input()))
+            fn_name = jsonpickle.loads(make_json_pickable(input()))
+            with_out = test_flags.with_out
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
             args, kwargs, _, _, _ = create_args_kwargs(
                 args_np=args_np,
                 arg_np_vals=arg_np_vals,
@@ -513,10 +685,15 @@ if __name__ == "__main__":
                 kwargs_idxs=kwargs_idxs,
                 kwarg_np_vals=kwarg_np_vals,
                 input_dtypes=input_dtypes,
+<<<<<<< HEAD
                 test_flags=test_flags
             )
 
 
+=======
+                test_flags=test_flags,
+            )
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
             ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
                 ivy.__dict__[fn_name], *args, **kwargs
             )
@@ -527,17 +704,31 @@ if __name__ == "__main__":
                     else ret_from_gt
                 )
                 out_from_gt = ivy.nested_map(
+<<<<<<< HEAD
                     test_ret_from_gt, ivy.zeros_like, to_mutable=True, include_derived=True
+=======
+                    test_ret_from_gt,
+                    ivy.zeros_like,
+                    to_mutable=True,
+                    include_derived=True,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
                 )
                 ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
                     ivy.__dict__[fn_name], *args, **kwargs, out=out_from_gt
                 )
             fw_list = gradient_unsupported_dtypes(fn=ivy.__dict__[fn_name])
 
+<<<<<<< HEAD
             ground_output=jsonpickle.dumps([ivy.to_numpy(ret_from_gt),ret_np_from_gt_flat,fw_list])
             print(ground_output)
 
 
+=======
+            ground_output = jsonpickle.dumps(
+                [ivy.to_numpy(ret_from_gt), ret_np_from_gt_flat, fw_list]
+            )
+            print(ground_output)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         except EOFError:
             continue
         except Exception as e:

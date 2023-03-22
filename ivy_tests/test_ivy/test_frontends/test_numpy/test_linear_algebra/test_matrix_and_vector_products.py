@@ -167,3 +167,36 @@ def test_numpy_tensordot(
         b=b,
         axes=axes,
     )
+<<<<<<< HEAD
+=======
+
+
+# kron
+@handle_frontend_test(
+    fn_tree="numpy.kron",
+    dtype_and_x=helpers.dtype_and_values(
+        num_arrays=2,
+        allow_inf=True,
+        allow_nan=True,
+        shared_dtype=True,
+    ),
+)
+def test_numpy_kron(
+    *,
+    dtype_and_x,
+    frontend,
+    fn_tree,
+    on_device,
+    test_flags,
+):
+    dtypes, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_flags=test_flags,
+        a=xs[0],
+        b=xs[1],
+    )
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead

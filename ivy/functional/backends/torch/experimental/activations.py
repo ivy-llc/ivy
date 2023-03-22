@@ -10,7 +10,17 @@ from . import backend_version
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+<<<<<<< HEAD
 def logit(x: torch.Tensor, /, *, eps: Optional[float] = None, out=None):
+=======
+def logit(
+    x: torch.Tensor,
+    /,
+    *,
+    eps: Optional[float] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     return torch.logit(x, eps=eps, out=out)
 
 
@@ -55,3 +65,11 @@ def batch_norm(
     return torch.nn.functional.batch_norm(
         x, mean, variance, weight=scale, bias=offset, training=training, eps=eps
     )
+<<<<<<< HEAD
+=======
+
+
+@with_unsupported_dtypes({"1.13.0 and below": ("float16", "bfloat16")}, backend_version)
+def logsigmoid(input: torch.Tensor) -> torch.Tensor:
+    return torch.nn.functional.logsigmoid(input)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead

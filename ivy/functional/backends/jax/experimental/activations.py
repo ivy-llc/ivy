@@ -8,7 +8,17 @@ from jax import lax
 import ivy
 
 
+<<<<<<< HEAD
 def logit(x: JaxArray, /, *, eps: Optional[float] = None, out=None):
+=======
+def logit(
+    x: JaxArray,
+    /,
+    *,
+    eps: Optional[float] = None,
+    out: Optional[JaxArray] = None,
+):
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     if eps is None:
         x = jnp.where(jnp.logical_or(x > 1, x < 0), jnp.nan, x)
     else:
@@ -36,7 +46,11 @@ def thresholded_relu(
     x: JaxArray,
     /,
     *,
+<<<<<<< HEAD
     threshold: Optional[Union[int, float]] = 0,
+=======
+    threshold: Union[int, float] = 0,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.where(x > threshold, x, 0).astype(x.dtype)
@@ -68,3 +82,10 @@ def batch_norm(
     ).astype(x.dtype)
 
     return jnp.transpose(ret, (0, ndims - 1, *range(1, ndims - 1)))
+<<<<<<< HEAD
+=======
+
+
+def logsigmoid(input: JaxArray) -> JaxArray:
+    return jax.nn.log_sigmoid(input)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead

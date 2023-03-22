@@ -231,3 +231,18 @@ def cross(a, b, name=None):
 @to_ivy_arrays_and_back
 def svd(a, /, *, full_matrices=False, compute_uv=True, name=None):
     return ivy.svd(a, compute_uv=compute_uv, full_matrices=full_matrices)
+<<<<<<< HEAD
+=======
+
+
+@to_ivy_arrays_and_back
+def lu_matrix_inverse(lower_upper, perm, validate_args=False, name=None):
+    return ivy.lu_matrix_inverse(
+        ivy.lu_reconstruct(lower_upper, perm), validate_args=validate_args, name=name
+    )
+
+
+@to_ivy_arrays_and_back
+def einsum(equation, *inputs, **kwargs):
+    return tf_frontend.einsum(equation, *inputs, **kwargs)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead

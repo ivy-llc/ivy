@@ -51,7 +51,11 @@ def cross(
     axisa: int = -1,
     axisb: int = -1,
     axisc: int = -1,
+<<<<<<< HEAD
     axis: int = None,
+=======
+    axis: Optional[int] = None,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
 
@@ -93,7 +97,11 @@ def diagonal(
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def eigh(
+<<<<<<< HEAD
     x: torch.Tensor, /, *, UPLO: Optional[str] = "L", out: Optional[torch.Tensor] = None
+=======
+    x: torch.Tensor, /, *, UPLO: str = "L", out: Optional[torch.Tensor] = None
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 ) -> Tuple[torch.Tensor]:
     result_tuple = NamedTuple(
         "eigh", [("eigenvalues", torch.Tensor), ("eigenvectors", torch.Tensor)]
@@ -107,7 +115,11 @@ eigh.support_native_out = True
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def eigvalsh(
+<<<<<<< HEAD
     x: torch.Tensor, /, *, UPLO: Optional[str] = "L", out: Optional[torch.Tensor] = None
+=======
+    x: torch.Tensor, /, *, UPLO: str = "L", out: Optional[torch.Tensor] = None
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 ) -> torch.Tensor:
     return torch.linalg.eigvalsh(x, UPLO=UPLO, out=out)
 
@@ -193,8 +205,13 @@ def matrix_norm(
     x: torch.Tensor,
     /,
     *,
+<<<<<<< HEAD
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
     axis: Optional[Tuple[int, int]] = (-2, -1),
+=======
+    ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",
+    axis: Tuple[int, int] = (-2, -1),
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -255,8 +272,18 @@ def matrix_transpose(
     return torch.swapaxes(x, -1, -2)
 
 
+<<<<<<< HEAD
 def outer(
     x1: torch.Tensor, x2: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
+=======
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
+def outer(
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return torch.outer(x1, x2, out=out)
@@ -286,7 +313,11 @@ def tensorsolve(
     x2: torch.Tensor,
     /,
     *,
+<<<<<<< HEAD
     axes: Union[int, Tuple[List[int], List[int]]] = None,
+=======
+    axes: Optional[Union[int, Tuple[List[int], List[int]]]] = None,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.linalg.tensorsolve(x1, x2, dims=axes)
@@ -462,8 +493,13 @@ def vector_norm(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
+<<<<<<< HEAD
     keepdims: Optional[bool] = False,
     ord: Optional[Union[int, float, Literal[inf, -inf]]] = 2,
+=======
+    keepdims: bool = False,
+    ord: Union[int, float, Literal[inf, -inf]] = 2,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:

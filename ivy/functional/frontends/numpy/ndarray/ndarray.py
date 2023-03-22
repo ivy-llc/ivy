@@ -262,7 +262,14 @@ class ndarray:
             return np_frontend.ravel(self._ivy_array, order="F")
         else:
             return np_frontend.ravel(self._ivy_array, order="C")
+<<<<<<< HEAD
 
+=======
+    
+    def fill(self, num):
+        return np_frontend.fill(self._ivy_array, num)
+    
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     def repeat(self, repeats, axis=None):
         return np_frontend.repeat(self._ivy_array, repeats, axis=axis)
 
@@ -442,3 +449,9 @@ class ndarray:
                 else ivy.to_list(value)
             )
         self._ivy_array[key] = value
+<<<<<<< HEAD
+=======
+    
+    def __mod__(self, value, /):
+        return np_frontend.mod(self._ivy_array, value, out=self)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead

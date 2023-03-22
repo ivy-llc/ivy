@@ -4,6 +4,10 @@
 ARG UBUNTU_VERSION=20.04
 ARG CUDA=11.2
 FROM nvidia/cuda:${CUDA}.1-base-ubuntu${UBUNTU_VERSION} as base
+<<<<<<< HEAD
+=======
+WORKDIR /ivy
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
 # For TensorFlow #
 # ---------------#
@@ -119,7 +123,11 @@ COPY requirements/optional_gpu.txt .
 RUN pip3 install --no-cache-dir -r optional_gpu.txt
 
 # Install jax cuda after optional_gpu.txt, otherwise cpu version will override
+<<<<<<< HEAD
 RUN pip install --no-cache-dir jaxlib==0.3.14+cuda11.cudnn82 -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+=======
+RUN pip install --no-cache-dir jaxlib -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
 COPY run_tests_CLI/test_dependencies.py .
 RUN python3 test_dependencies.py -fp requirements.txt,optional_gpu.txt && \

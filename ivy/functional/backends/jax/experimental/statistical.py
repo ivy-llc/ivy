@@ -8,7 +8,11 @@ def median(
     /,
     *,
     axis: Optional[Union[Tuple[int], int]] = None,
+<<<<<<< HEAD
     keepdims: Optional[bool] = False,
+=======
+    keepdims: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if isinstance(axis, list):
@@ -26,7 +30,11 @@ def nanmean(
     /,
     *,
     axis: Optional[Union[int, Tuple[int]]] = None,
+<<<<<<< HEAD
     keepdims: Optional[bool] = False,
+=======
+    keepdims: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
@@ -51,8 +59,13 @@ def quantile(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
+<<<<<<< HEAD
     interpolation: Optional[str] = "linear",
     keepdims: Optional[bool] = False,
+=======
+    interpolation: str = "linear",
+    keepdims: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
 
@@ -69,7 +82,11 @@ def corrcoef(
     /,
     *,
     y: Optional[JaxArray] = None,
+<<<<<<< HEAD
     rowvar: Optional[bool] = True,
+=======
+    rowvar: bool = True,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.corrcoef(x, y=y, rowvar=rowvar)
@@ -80,8 +97,13 @@ def nanmedian(
     /,
     *,
     axis: Optional[Union[Tuple[int], int]] = None,
+<<<<<<< HEAD
     keepdims: Optional[bool] = False,
     overwrite_input: Optional[bool] = False,
+=======
+    keepdims: bool = False,
+    overwrite_input: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.nanmedian(
@@ -94,7 +116,11 @@ def bincount(
     /,
     *,
     weights: Optional[JaxArray] = None,
+<<<<<<< HEAD
     minlength: Optional[int] = 0,
+=======
+    minlength: int = 0,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if weights is not None:

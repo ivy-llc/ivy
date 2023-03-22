@@ -11,8 +11,17 @@ from . import backend_version
 
 
 def logit(
+<<<<<<< HEAD
     x: Union[tf.Tensor, tf.Variable], /, *, eps: Optional[float] = None, out=None
 ):
+=======
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    eps: Optional[float] = None,
+    out: Optional[Tensor] = None,
+) -> Tensor:
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     x_dtype = x.dtype
     if eps is None:
         x = tf.where(tf.math.logical_or(x > 1, x < 0), ivy.nan, x)
@@ -26,7 +35,11 @@ def thresholded_relu(
     x: Tensor,
     /,
     *,
+<<<<<<< HEAD
     threshold: Optional[Union[int, float]] = 0,
+=======
+    threshold: Union[int, float] = 0,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[Tensor] = None,
 ) -> Tensor:
     return tf.where(x > threshold, x, 0)
@@ -56,3 +69,10 @@ def batch_norm(
     x = tf.transpose(x, perm=(0, *range(2, ndims), 1))
     ret = tf.nn.batch_normalization(x, mean, variance, offset, scale, eps)
     return tf.transpose(ret, perm=(0, ndims - 1, *range(1, ndims - 1)))
+<<<<<<< HEAD
+=======
+
+
+def logsigmoid(input: Tensor) -> Tensor:
+    return tf.math.log_sigmoid(input)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead

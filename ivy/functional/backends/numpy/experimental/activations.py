@@ -7,7 +7,17 @@ import numpy as np
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 
 
+<<<<<<< HEAD
 def logit(x: np.ndarray, /, *, eps: Optional[float] = None, out=None):
+=======
+def logit(
+    x: np.ndarray,
+    /,
+    *,
+    eps: Optional[float] = None,
+    out: Optional[np.ndarray] = None,
+):
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     x_dtype = x.dtype
     if eps is None:
         x = np.where(np.logical_or(x > 1, x < 0), np.nan, x)
@@ -24,7 +34,11 @@ def thresholded_relu(
     x: np.ndarray,
     /,
     *,
+<<<<<<< HEAD
     threshold: Optional[Union[int, float]] = 0,
+=======
+    threshold: Union[int, float] = 0,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.where(x > threshold, x, 0).astype(x.dtype)
@@ -65,3 +79,11 @@ def batch_norm(
         offset - mean * inv if offset is not None else -mean * inv
     ).astype(x.dtype)
     return np.transpose(ret, (0, ndims - 1, *range(1, ndims - 1)))
+<<<<<<< HEAD
+=======
+
+
+@_scalar_output_to_0d_array
+def logsigmoid(input: np.ndarray) -> np.ndarray:
+    return -(np.log1p(np.exp(-(input))))
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead

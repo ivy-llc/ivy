@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 torch-scatter==2.0.9 # torch_scatter requires a prior existing installation of torch, hence 2 optional files
 scipy==1.8.1
 dm-haiku==0.0.6 # mod_name=haiku
@@ -5,3 +6,13 @@ protobuf==3.19.4
 pydriller
 tqdm
 coverage
+=======
+torch-scatter # torch_scatter requires a prior existing installation of torch, hence 2 optional files
+functorch
+scipy
+dm-haiku # mod_name=haiku
+protobuf
+pydriller
+tqdm
+coverage
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead

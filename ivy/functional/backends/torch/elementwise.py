@@ -291,7 +291,11 @@ def divide(
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     ret = torch.div(x1, x2)
+<<<<<<< HEAD
     if ivy.is_float_dtype(x1.dtype):
+=======
+    if ivy.is_float_dtype(x1.dtype) or ivy.is_complex_dtype(x1.dtype):
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         ret = ivy.astype(ret, x1.dtype, copy=False)
     else:
         ret = ivy.astype(ret, ivy.default_float_dtype(as_native=True), copy=False)
@@ -521,6 +525,11 @@ def abs(
     x: Union[float, torch.Tensor], /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     x = _cast_for_unary_op(x)
+<<<<<<< HEAD
+=======
+    if x.dtype is torch.bool:
+        return x
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     return torch.abs(x, out=out)
 
 

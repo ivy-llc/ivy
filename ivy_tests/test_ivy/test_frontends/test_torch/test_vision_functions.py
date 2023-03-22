@@ -162,7 +162,10 @@ def test_torch_pad(
     fn_tree="torch.nn.functional.interpolate",
     dtype_and_input_and_other=_interp_args(
         mode_list=["linear", "bilinear", "trilinear", "nearest", "area"],
+<<<<<<< HEAD
         scale_factor=True,
+=======
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     ),
     number_positional_args=st.just(2),
 )

@@ -3,7 +3,15 @@
 # local
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
+<<<<<<< HEAD
 from ivy.func_wrapper import with_unsupported_dtypes
+=======
+from ivy.functional.frontends.numpy.creation_routines.from_existing_data import (
+    array as np_frontend_array,
+)
+from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_supported_dtypes
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
 
 class Tensor:
@@ -255,6 +263,13 @@ class Tensor:
         self._ivy_array = self.log().ivy_array
         return self
 
+<<<<<<< HEAD
+=======
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def log2(self):
+        return torch_frontend.log2(self._ivy_array)
+
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     def amax(self, dim=None, keepdim=False):
         return torch_frontend.amax(self._ivy_array, dim=dim, keepdim=keepdim)
 
@@ -281,6 +296,14 @@ class Tensor:
     def bitwise_or(self, other, *, out=None):
         return torch_frontend.bitwise_or(self._ivy_array, other)
 
+<<<<<<< HEAD
+=======
+    @with_supported_dtypes({"1.11.0 and below": ("integer",)}, "torch")
+    def bitwise_or_(self, other, *, out=None):
+        self._ivy_array = self.bitwise_or(other, out=out).ivy_array
+        return self
+
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     def contiguous(self, memory_format=None):
         return torch_frontend.tensor(self.ivy_array)
 
@@ -662,6 +685,14 @@ class Tensor:
     def sqrt(self):
         return torch_frontend.sqrt(self._ivy_array)
 
+<<<<<<< HEAD
+=======
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+    def sqrt_(self):
+        self._ivy_array = self.sqrt().ivy_array
+        return self
+
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     def where(self, condition, other):
         # TODO: replace with torch_frontend.where when it's added
         return torch_frontend.tensor(ivy.where(condition, self._ivy_array, other))
@@ -691,7 +722,11 @@ class Tensor:
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def numpy(self):
+<<<<<<< HEAD
         return ivy.to_numpy(self._ivy_array)
+=======
+        return np_frontend_array(self._ivy_array)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def sigmoid(self):
@@ -723,6 +758,17 @@ class Tensor:
     def unbind(self, dim=0):
         return torch_frontend.unbind(self._ivy_array, dim=dim)
 
+<<<<<<< HEAD
+=======
+    def bitwise_and_(self, other):
+        self.ivy_array = self.bitwise_and(other).ivy_array
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+    def atan2_(self, other):
+        self._ivy_array = self.atan2(other).ivy_array
+        return self
+
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     # Special Methods #
     # -------------------#
 
@@ -837,6 +883,12 @@ class Tensor:
     def __invert__(self):
         return torch_frontend.bitwise_not(self._ivy_array)
 
+<<<<<<< HEAD
+=======
+    def __and__(self, other):
+        return torch_frontend.bitwise_and(self, other)
+
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     # Method aliases
     absolute, absolute_ = abs, abs_
     ndimension = dim

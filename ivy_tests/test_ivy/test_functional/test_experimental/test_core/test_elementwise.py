@@ -82,7 +82,11 @@ def test_lcm(
 @handle_test(
     fn_tree="functional.ivy.experimental.fmod",
     dtype_and_x=helpers.dtype_and_values(
+<<<<<<< HEAD
         available_dtypes=helpers.get_dtypes("numeric"),
+=======
+        available_dtypes=helpers.get_dtypes("valid"),
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         num_arrays=2,
         shared_dtype=False,
         large_abs_safety_factor=6,
@@ -110,7 +114,11 @@ def test_fmod(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
+<<<<<<< HEAD
         ground_truth_backend="numpy",
+=======
+        ground_truth_backend="jax",
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         fw=backend_fw,
         fn_name=fn_name,
         x1=x[0],
@@ -787,6 +795,11 @@ def test_allclose(
     equal_nan,
     test_flags,
     backend_fw,
+<<<<<<< HEAD
+=======
+    fn_name,
+    on_device,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
@@ -795,7 +808,12 @@ def test_allclose(
         ground_truth_backend=ground_truth_backend,
         test_flags=test_flags,
         fw=backend_fw,
+<<<<<<< HEAD
         fn_name="allclose",
+=======
+        fn_name=fn_name,
+        on_device=on_device,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         x1=x[0],
         x2=x[1],
         rtol=rtol,
@@ -821,6 +839,10 @@ def test_fix(
     test_flags,
     backend_fw,
     fn_name,
+<<<<<<< HEAD
+=======
+    on_device,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
@@ -830,6 +852,10 @@ def test_fix(
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
+<<<<<<< HEAD
+=======
+        on_device=on_device,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         x=x[0],
     )
 
@@ -939,6 +965,11 @@ def test_diff(
 def test_zeta(
     dtype_and_x,
     test_flags,
+<<<<<<< HEAD
+=======
+    fn_name,
+    on_device,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     ground_truth_backend,
     backend_fw,
 ):
@@ -948,7 +979,12 @@ def test_zeta(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
+<<<<<<< HEAD
         fn_name="zeta",
+=======
+        on_device=on_device,
+        fn_name=fn_name,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         rtol_=1e-02,
         atol_=1e-02,
         x=x[0],

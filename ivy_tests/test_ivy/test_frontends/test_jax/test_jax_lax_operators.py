@@ -2284,17 +2284,25 @@ def test_jax_lax_select(
         min_dim_size=4,
         max_dim_size=10,
     ),
+<<<<<<< HEAD
     axis=helpers.ints(min_value=-1, max_value=0),
     k=helpers.ints(min_value=1, max_value=4),
     largest=st.booleans(),
+=======
+    k=helpers.ints(min_value=1, max_value=4),
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     test_with_out=st.just(False),
 )
 def test_jax_lax_top_k(
     *,
     dtype_and_x,
+<<<<<<< HEAD
     axis,
     k,
     largest,
+=======
+    k,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     on_device,
     fn_tree,
     frontend,
@@ -2309,6 +2317,10 @@ def test_jax_lax_top_k(
         on_device=on_device,
         operand=x[0],
         k=k,
+<<<<<<< HEAD
         axis=axis,
         largest=largest,
+=======
+        # test_values=False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     )

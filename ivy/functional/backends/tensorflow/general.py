@@ -44,7 +44,11 @@ def _parse_index(indices, ndims):
 
 
 def is_native_array(x, /, *, exclusive=False):
+<<<<<<< HEAD
     if isinstance(x, tf.Tensor) or isinstance(x, tf.Variable):
+=======
+    if isinstance(x, (tf.Tensor, tf.Variable)):
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         if exclusive and isinstance(x, tf.Variable):
             return False
         return True
@@ -119,8 +123,13 @@ def gather(
     indices: Union[tf.Tensor, tf.Variable],
     /,
     *,
+<<<<<<< HEAD
     axis: Optional[int] = -1,
     batch_dims: Optional[int] = 0,
+=======
+    axis: int = -1,
+    batch_dims: int = 0,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     axis = axis % len(params.shape)
@@ -134,7 +143,11 @@ def gather_nd(
     indices: Union[tf.Tensor, tf.Variable],
     /,
     *,
+<<<<<<< HEAD
     batch_dims: Optional[int] = 0,
+=======
+    batch_dims: int = 0,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     ivy.utils.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
@@ -196,8 +209,16 @@ def inplace_update(
     /,
     *,
     ensure_in_backend: bool = False,
+<<<<<<< HEAD
 ) -> ivy.Array:
     if ivy.is_array(x) and ivy.is_array(val):
+=======
+    keep_input_dtype: bool = False,
+) -> ivy.Array:
+    if ivy.is_array(x) and ivy.is_array(val):
+        if keep_input_dtype:
+            val = ivy.astype(val, x.dtype)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         (x_native, val_native), _ = ivy.args_to_native(x, val)
         if _is_variable(x_native):
             x_native.assign(val_native)
@@ -253,7 +274,11 @@ def inplace_variables_supported():
     return True
 
 
+<<<<<<< HEAD
 def multiprocessing(context=None):
+=======
+def multiprocessing(context: Optional[str] = None):
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     return (
         _multiprocessing if context is None else _multiprocessing.get_context(context)
     )
@@ -563,7 +588,11 @@ def shape(
 def vmap(
     func: Callable,
     in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
+<<<<<<< HEAD
     out_axes: Optional[int] = 0,
+=======
+    out_axes: int = 0,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 ) -> Callable:
     @ivy.to_native_arrays_and_back
     def _vmap(*args, **kwargs):

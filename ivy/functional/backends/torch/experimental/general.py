@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 from typing import Optional
+=======
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 import torch
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
@@ -10,8 +13,13 @@ def isin(
     test_elements: torch.tensor,
     /,
     *,
+<<<<<<< HEAD
     assume_unique: Optional[bool] = False,
     invert: Optional[bool] = False,
+=======
+    assume_unique: bool = False,
+    invert: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 ) -> torch.tensor:
     return torch.isin(
         elements,

@@ -11,7 +11,11 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_second_matrix_and_dtype,
     _get_dtype_value1_value2_axis_for_tensordot,
 )
+<<<<<<< HEAD
 
+=======
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_elementwise import ldexp_args
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
 # absolute
 @handle_frontend_test(
@@ -47,6 +51,10 @@ def test_jax_numpy_absolute(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
+<<<<<<< HEAD
+=======
+        shared_dtype=True,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     ),
     test_with_out=st.just(False),
 )
@@ -70,6 +78,47 @@ def test_jax_numpy_add(
     )
 
 
+<<<<<<< HEAD
+=======
+# angle
+@handle_frontend_test(
+    fn_tree="jax.numpy.angle",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float64"],
+        min_value=-5,
+        max_value=5,
+        max_dim_size=5,
+        max_num_dims=5,
+        min_dim_size=1,
+        min_num_dims=1,
+        allow_inf=False,
+        allow_nan=False,
+    ),
+    deg=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_angle(
+    *,
+    dtype_and_x,
+    deg,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, z = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        z=z[0],
+        deg=deg,
+    )
+
+
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 # diff
 @st.composite
 def _get_dtype_input_and_vector(draw):
@@ -123,9 +172,13 @@ def test_jax_numpy_diff(
 @handle_frontend_test(
     fn_tree="jax.numpy.ediff1d",
     dtype_and_x=helpers.dtype_and_values(
+<<<<<<< HEAD
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
         max_num_dims=1
+=======
+        available_dtypes=helpers.get_dtypes("float"), min_num_dims=1, max_num_dims=1
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     ),
     to_end=helpers.ints(
         min_value=-1,
@@ -211,12 +264,15 @@ def test_jax_numpy_arctan2(
     )
 
 
+<<<<<<< HEAD
 @st.composite
 def _get_pooling_mode(draw):
     mode = draw(st.sampled_from(["full", "valid", "same"]))
     return mode
 
 
+=======
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 # convolve
 @handle_frontend_test(
     fn_tree="jax.numpy.convolve",
@@ -227,8 +283,14 @@ def _get_pooling_mode(draw):
         max_num_dims=1,
         min_value=-1e04,
         max_value=1e04,
+<<<<<<< HEAD
     ),
     mode=_get_pooling_mode(),
+=======
+        shared_dtype=True,
+    ),
+    mode=st.sampled_from(["valid", "same", "full"]),
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 )
 def test_jax_numpy_convolve(
     *,
@@ -2437,6 +2499,10 @@ def test_jax_numpy_conj(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
+<<<<<<< HEAD
+=======
+        shared_dtype=True,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     ),
     test_with_out=st.just(False),
 )
@@ -2458,3 +2524,86 @@ def test_jax_numpy_subtract(
         x1=x[0],
         x2=x[0],
     )
+<<<<<<< HEAD
+=======
+
+
+# around
+@handle_frontend_test(
+    fn_tree="jax.numpy.around",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_jax_numpy_around(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+    )
+
+
+# frexp
+@handle_frontend_test(
+    fn_tree="jax.numpy.frexp",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=1,
+        max_value=100,
+    ),
+)
+def test_jax_numpy_frexp(
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# ldexp
+@handle_frontend_test(
+    fn_tree="jax.numpy.ldexp",
+    dtype_and_x=ldexp_args(),
+)
+def test_jax_numpy_ldexp(
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=x[0],
+        x2=x[1],
+    )
+
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead

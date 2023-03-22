@@ -22,7 +22,11 @@ def concat(
     xs: Union[Tuple[np.ndarray, ...], List[np.ndarray]],
     /,
     *,
+<<<<<<< HEAD
     axis: Optional[int] = 0,
+=======
+    axis: int = 0,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     is_tuple = type(xs) is tuple
@@ -48,9 +52,19 @@ def expand_dims(
     x: np.ndarray,
     /,
     *,
+<<<<<<< HEAD
     axis: Union[int, Sequence[int]] = 0,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+=======
+    copy: Optional[bool] = None,
+    axis: Union[int, Sequence[int]] = 0,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if copy:
+        newarr = x.copy()
+        return np.expand_dims(newarr, axis)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     return np.expand_dims(x, axis)
 
 
@@ -58,23 +72,52 @@ def flip(
     x: np.ndarray,
     /,
     *,
+<<<<<<< HEAD
+=======
+    copy: Optional[bool] = None,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     num_dims = len(x.shape)
     if not num_dims:
+<<<<<<< HEAD
+=======
+        if copy:
+            newarr = x.copy()
+            return newarr
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         return x
     if axis is None:
         axis = list(range(num_dims))
     if type(axis) is int:
         axis = [axis]
     axis = [item + num_dims if item < 0 else item for item in axis]
+<<<<<<< HEAD
+=======
+    if copy:
+        newarr = x.copy()
+        return np.flip(newarr, axis)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     return np.flip(x, axis)
 
 
 def permute_dims(
+<<<<<<< HEAD
     x: np.ndarray, /, axes: Tuple[int, ...], *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
+=======
+    x: np.ndarray, 
+    /, 
+    axes: Tuple[int, ...], 
+    *, 
+    copy: Optional[bool] = None,
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    if copy:
+        newarr = x.copy()
+        return np.transpose(newarr, axes)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     return np.transpose(x, axes)
 
 
@@ -84,8 +127,13 @@ def reshape(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     copy: Optional[bool] = None,
+<<<<<<< HEAD
     order: Optional[str] = "C",
     allowzero: Optional[bool] = True,
+=======
+    order: str = "C",
+    allowzero: bool = True,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ivy.utils.assertions.check_elem_in_list(order, ["C", "F"])
@@ -116,6 +164,10 @@ def squeeze(
     /,
     axis: Union[int, Sequence[int]],
     *,
+<<<<<<< HEAD
+=======
+    copy: Optional[bool] = None,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if isinstance(axis, list):
@@ -126,6 +178,12 @@ def squeeze(
         raise ivy.utils.exceptions.IvyException(
             "tried to squeeze a zero-dimensional input by axis {}".format(axis)
         )
+<<<<<<< HEAD
+=======
+    if copy:
+        newarr = x.copy()
+        return np.squeeze(newarr, axis=axis)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     return np.squeeze(x, axis=axis)
 
 
@@ -150,6 +208,10 @@ def split(
     x: np.ndarray,
     /,
     *,
+<<<<<<< HEAD
+=======
+    copy: Optional[bool] = None,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
     axis: int = 0,
     with_remainder: bool = False,
@@ -161,6 +223,12 @@ def split(
                     num_or_size_splits
                 )
             )
+<<<<<<< HEAD
+=======
+        if copy:
+            newarr = x.copy()
+            return [newarr]
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         return [x]
     if num_or_size_splits is None:
         num_or_size_splits = x.shape[axis]
@@ -174,6 +242,12 @@ def split(
             ]
     if isinstance(num_or_size_splits, (list, tuple)):
         num_or_size_splits = np.cumsum(num_or_size_splits[:-1])
+<<<<<<< HEAD
+=======
+    if copy:
+        newarr = x.copy()
+        return np.split(newarr, num_or_size_splits, axis)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     return np.split(x, num_or_size_splits, axis)
 
 
@@ -183,14 +257,26 @@ def repeat(
     /,
     repeats: Union[int, List[int]],
     *,
+<<<<<<< HEAD
     axis: int = None,
+=======
+    axis: Optional[int] = None,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.repeat(x, repeats, axis)
 
 
 def tile(
+<<<<<<< HEAD
     x: np.ndarray, /, repeats: Sequence[int], *, out: Optional[np.ndarray] = None
+=======
+    x: np.ndarray, 
+    /, 
+    repeats: Sequence[int], 
+    *, 
+    out: Optional[np.ndarray] = None
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 ) -> np.ndarray:
     return np.tile(x, repeats)
 
@@ -213,17 +299,52 @@ def zero_pad(
 
 
 def swapaxes(
+<<<<<<< HEAD
     x: np.ndarray, axis0: int, axis1: int, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
+=======
+    x: np.ndarray, 
+    axis0: int, 
+    axis1: int, 
+    /, 
+    *, 
+    copy: Optional[bool] = None,
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    if copy:
+        newarr = x.copy()
+        return np.swapaxes(newarr, axis0, axis1)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     return np.swapaxes(x, axis0, axis1)
 
 
 def unstack(
+<<<<<<< HEAD
     x: np.ndarray, /, *, axis: int = 0, keepdims: bool = False
 ) -> List[np.ndarray]:
     if x.shape == ():
         return [x]
     x_split = np.split(x, x.shape[axis], axis)
+=======
+    x: np.ndarray, 
+    /, 
+    *, 
+    copy: Optional[bool] = None,
+    axis: int = 0, 
+    keepdims: bool = False
+) -> List[np.ndarray]:
+    if x.shape == ():
+        if copy:
+            newarr = x.copy()
+            return [newarr]
+        return [x]
+    x_split = None
+    if copy:
+        newarr = x.copy()
+        x_split = np.split(newarr, newarr.shape[axis], axis)
+    else:
+        x_split = np.split(x, x.shape[axis], axis)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     if keepdims:
         return x_split
     return [np.squeeze(item, axis) for item in x_split]

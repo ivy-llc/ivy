@@ -6,15 +6,36 @@ import gc
 import abc
 import math
 import psutil
+<<<<<<< HEAD
 import pynvml
+=======
+import warnings
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 import types
 from typing import Type, Optional, Tuple
 
 # noinspection PyUnresolvedReferences
 try:
+<<<<<<< HEAD
     pynvml.nvmlInit()
 except pynvml.NVMLError:
     pass
+=======
+    import pynvml
+
+    try:
+        pynvml.nvmlInit()
+    except pynvml.NVMLError:
+        pass
+except ImportError:
+    warnings.warn(
+        "pynvml installation was not found in the environment,\
+         functionalities of the Ivy's device module will be limited.\
+         Please install pynvml if you wish to use GPUs with Ivy."
+    )
+    # nvidia-ml-py (pynvml) is not installed in CPU Dockerfile.
+
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 from typing import Union, Callable, Iterable, Any
 
 # local
@@ -81,10 +102,19 @@ class DefaultDevice:
         ivy.set_default_device(self._dev)
         return self
 
+<<<<<<< HEAD
     def __exit__(self,
                  exc_type: Optional[Type[BaseException]],
                  exc_val: Optional[Type[BaseException]],
                  exc_tb: Optional[types.TracebackType]) -> Union[ivy.Device, str]:
+=======
+    def __exit__(
+        self,
+        exc_type: Optional[Type[BaseException]],
+        exc_val: Optional[Type[BaseException]],
+        exc_tb: Optional[types.TracebackType],
+    ) -> Union[ivy.Device, str]:
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         """
         Exit the runtime context related to the specified device.
 
@@ -212,7 +242,13 @@ def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int
 @handle_nestable
 @handle_exceptions
 def print_all_ivy_arrays_on_dev(
+<<<<<<< HEAD
     *, device: Union[ivy.Device, ivy.NativeDevice] = None, attr_only: bool = True
+=======
+    *,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    attr_only: bool = True,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 ) -> None:
     """
     Prints the shape and dtype for all ivy arrays which are currently alive on the
@@ -253,6 +289,10 @@ def print_all_ivy_arrays_on_dev(
 
 @handle_nestable
 @handle_exceptions
+<<<<<<< HEAD
+=======
+@to_native_arrays_and_back
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 def dev(
     x: Union[ivy.Array, ivy.NativeArray], /, *, as_native: bool = False
 ) -> Union[ivy.Device, ivy.NativeDevice]:
@@ -362,23 +402,38 @@ def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> ivy.NativeD
 
 
 @handle_exceptions
+<<<<<<< HEAD
 def clear_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> None:
+=======
+def clear_cached_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> None:
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     """Clear memory cache on target device.
 
     Parameters
     ----------
     device
+<<<<<<< HEAD
         The device string to convert to native device handle.
+=======
+        The device string to convert to native device handle or native device handle.
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
     Examples
     --------
     >>> import torch
     >>> ivy.set_backend("torch")
     >>> device = torch.device("cuda")
+<<<<<<< HEAD
     >>> ivy.clear_mem_on_dev(device)
 
     """
     ivy.current_backend(None).clear_mem_on_dev(device)
+=======
+    >>> ivy.clear_cached_mem_on_dev(device)
+
+    """
+    ivy.current_backend().clear_cached_mem_on_dev(device)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
 
 @handle_exceptions
@@ -458,6 +513,7 @@ def used_mem_on_dev(
     0.525205504
 
     """
+<<<<<<< HEAD
     ivy.clear_mem_on_dev(device)
     if "gpu" in device:
         ivy.utils.assertions.check_false(
@@ -465,6 +521,16 @@ def used_mem_on_dev(
             "process-specific GPU queries are currently not supported",
         )
         handle = _get_nvml_gpu_handle(device)
+=======
+    ivy.clear_cached_mem_on_dev(device)
+    if "gpu" in device:
+        handle = _get_nvml_gpu_handle(device)
+        if process_specific:
+            pid = os.getpid()
+            for process in pynvml.nvmlDeviceGetComputeRunningProcesses(handle):
+                if process.pid == pid:
+                    return process.usedGpuMemory / 1e9
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         info = pynvml.nvmlDeviceGetMemoryInfo(handle)
         return info.used / 1e9
     elif device == "cpu":
@@ -518,6 +584,7 @@ def percent_used_mem_on_dev(
     0.7095597456708771
 
     """
+<<<<<<< HEAD
     ivy.clear_mem_on_dev(device)
     if "gpu" in device:
         ivy.utils.assertions.check_false(
@@ -526,6 +593,17 @@ def percent_used_mem_on_dev(
         )
         handle = _get_nvml_gpu_handle(device)
         info = pynvml.nvmlDeviceGetMemoryInfo(handle)
+=======
+    ivy.clear_cached_mem_on_dev(device)
+    if "gpu" in device:
+        handle = _get_nvml_gpu_handle(device)
+        info = pynvml.nvmlDeviceGetMemoryInfo(handle)
+        if process_specific:
+            pid = os.getpid()
+            for process in pynvml.nvmlDeviceGetComputeRunningProcesses(handle):
+                if process.pid == pid:
+                    return (process.usedGpuMemory / info.total) * 100
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         return (info.used / info.total) * 100
     elif device == "cpu":
         vm = psutil.virtual_memory()
@@ -668,10 +746,17 @@ def tpu_is_available() -> bool:
 # noinspection PyShadowingNames
 @handle_exceptions
 def default_device(
+<<<<<<< HEAD
     device: Union[ivy.Device, ivy.NativeDevice] = None,
     /,
     *,
     item: Union[list, tuple, dict, ivy.Array, ivy.NativeArray] = None,
+=======
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    /,
+    *,
+    item: Optional[Union[list, tuple, dict, ivy.Array, ivy.NativeArray]] = None,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     as_native: bool = None,
 ) -> Union[ivy.Device, ivy.NativeDevice]:
     """Returns the input device or the default device.
@@ -844,7 +929,14 @@ def to_device(
 
 
 @handle_exceptions
+<<<<<<< HEAD
 def split_factor(device: Union[ivy.Device, ivy.NativeDevice] = None, /) -> float:
+=======
+def split_factor(
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    /,
+) -> float:
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     """
     Get a device's global split factor, which can be used to scale the device's
     batch splitting chunk sizes across the codebase.
@@ -882,7 +974,11 @@ def split_factor(device: Union[ivy.Device, ivy.NativeDevice] = None, /) -> float
 
 @handle_exceptions
 def set_split_factor(
+<<<<<<< HEAD
     factor: float, /, *, device: Union[ivy.Device, ivy.NativeDevice] = None
+=======
+    factor: float, /, *, device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 ) -> None:
     """Set the global split factor for a given device, which can be used to scale batch
     splitting chunk sizes for the device across the codebase.
@@ -934,12 +1030,21 @@ def split_func_call(
     mode: str,
     /,
     *,
+<<<<<<< HEAD
     max_chunk_size: int = None,
     chunk_size: int = None,
     input_axes: Union[int, Iterable[int]] = 0,
     output_axes: Union[int, Iterable[int]] = None,
     stop_gradients: bool = False,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
+=======
+    max_chunk_size: Optional[int] = None,
+    chunk_size: Optional[int] = None,
+    input_axes: Union[int, Iterable[int]] = 0,
+    output_axes: Optional[Union[int, Iterable[int]]] = None,
+    stop_gradients: bool = False,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 ) -> Union[ivy.Array, ivy.NativeArray]:
     """Call a function by splitting its inputs along a given axis, and calling the
     function in chunks, rather than feeding the entire input array at once. This can be
@@ -1110,7 +1215,11 @@ def _get_devices(fn, complement=True):
 
 @handle_nestable
 @handle_exceptions
+<<<<<<< HEAD
 def function_supported_devices(fn: Callable, recurse=True) -> Tuple:
+=======
+def function_supported_devices(fn: Callable, recurse: bool = True) -> Tuple:
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     """Returns the supported devices of the current backend's function.
 
     Parameters
@@ -1148,7 +1257,11 @@ def function_supported_devices(fn: Callable, recurse=True) -> Tuple:
 
 @handle_nestable
 @handle_exceptions
+<<<<<<< HEAD
 def function_unsupported_devices(fn: Callable, recurse=True) -> Tuple:
+=======
+def function_unsupported_devices(fn: Callable, recurse: bool = True) -> Tuple:
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     """Returns the unsupported devices of the current backend's function.
 
     Parameters

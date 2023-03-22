@@ -172,7 +172,11 @@ def cross(
     axisa: int = -1,
     axisb: int = -1,
     axisc: int = -1,
+<<<<<<< HEAD
     axis: int = None,
+=======
+    axis: Optional[int] = None,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """The cross product of 3-element vectors. If x1 and x2 are multi-dimensional
@@ -568,7 +572,11 @@ def eigh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+<<<<<<< HEAD
     UPLO: Optional[str] = "L",
+=======
+    UPLO: str = "L",
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[ivy.Array] = None,
 ) -> Tuple[Union[ivy.Array, ivy.NativeArray]]:
     """Returns an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of
@@ -633,7 +641,11 @@ def eigvalsh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+<<<<<<< HEAD
     UPLO: Optional[str] = "L",
+=======
+    UPLO: str = "L",
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Return the eigenvalues of a symmetric matrix (or a stack of symmetric matrices) x.
@@ -1024,8 +1036,13 @@ def matrix_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+<<<<<<< HEAD
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
     axis: Optional[Tuple[int, int]] = (-2, -1),
+=======
+    ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",
+    axis: Tuple[int, int] = (-2, -1),
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -1102,7 +1119,12 @@ def matrix_norm(
 
     Examples
     --------
+<<<<<<< HEAD
     With :class:'ivy.Array' inputs:
+=======
+    With :class:`ivy.Array` inputs:
+    
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     >>> x = ivy.array([[1., 2.], [3., 4.]])
     >>> y = ivy.matrix_norm(x)
     >>> print(y)
@@ -1130,7 +1152,12 @@ def matrix_norm(
     >>> print(x)
     ivy.array([10.5 ,  2.05])
 
+<<<<<<< HEAD
     With :class:'ivy.Container' input:
+=======
+    With :class:`ivy.Container` input:
+
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     >>> x = ivy.Container(a=ivy.array([[0.666, 9.11], \
                                        [42.69, 9.23]]), \
                           b=ivy.array([[1.1, 2.2, 3.3], \
@@ -1142,7 +1169,12 @@ def matrix_norm(
         b: ivy.array(6.6000004)
     }
 
+<<<<<<< HEAD
     With multiple :class:'ivy:Container' inputs:
+=======
+    With multiple :class:`ivy:Container` inputs:
+    
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     >>> x = ivy.Container(a=ivy.arange(12, dtype=float).reshape((3, 2, 2)), \
                           b=ivy.arange(8, dtype=float).reshape((2, 2, 2))) 
     >>> ord = ivy.Container(a=1, b=float('inf'))
@@ -2370,8 +2402,13 @@ def vector_norm(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
+<<<<<<< HEAD
     keepdims: Optional[bool] = False,
     ord: Optional[Union[int, float, Literal[inf, -inf]]] = 2,
+=======
+    keepdims: bool = False,
+    ord: Union[int, float, Literal[inf, -inf]] = 2,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -2703,7 +2740,11 @@ def lu_factor(
     A: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+<<<<<<< HEAD
     pivot: Optional[bool] = True,
+=======
+    pivot: bool = True,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
     """

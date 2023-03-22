@@ -51,7 +51,10 @@ def x_and_linear(draw, dtypes):
     dtype_x_weight_bias=x_and_linear(
         dtypes=helpers.get_dtypes("numeric", full=False),
     ),
+<<<<<<< HEAD
     ground_truth_backend="jax",
+=======
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 )
 def test_linear(
     *,

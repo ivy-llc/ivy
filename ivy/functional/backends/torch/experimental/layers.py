@@ -5,7 +5,11 @@ import math
 
 # local
 import ivy
+<<<<<<< HEAD
 from ivy.func_wrapper import with_unsupported_dtypes
+=======
+from ivy.func_wrapper import with_unsupported_dtypes, handle_mixed_function
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 from . import backend_version
 from ivy.functional.ivy.layers import _handle_padding
 
@@ -319,9 +323,15 @@ def dct(
     x: torch.Tensor,
     /,
     *,
+<<<<<<< HEAD
     type: Optional[Literal[1, 2, 3, 4]] = 2,
     n: Optional[int] = None,
     axis: Optional[int] = -1,
+=======
+    type: Literal[1, 2, 3, 4] = 2,
+    n: Optional[int] = None,
+    axis: int = -1,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     norm: Optional[Literal["ortho"]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.tensor:
@@ -418,7 +428,11 @@ def fft(
     dim: int,
     /,
     *,
+<<<<<<< HEAD
     norm: Optional[str] = "backward",
+=======
+    norm: str = "backward",
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     n: Union[int, Tuple[int]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -511,7 +525,11 @@ def ifft(
     x: torch.Tensor,
     dim: int,
     *,
+<<<<<<< HEAD
     norm: Optional[str] = "backward",
+=======
+    norm: str = "backward",
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     n: Union[int, Tuple[int]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -545,7 +563,11 @@ def embedding(
     /,
     *,
     max_norm: Optional[int] = None,
+<<<<<<< HEAD
     out=None,
+=======
+    out: Optional[torch.Tensor] = None,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 ) -> torch.Tensor:
     return torch.nn.functional.embedding(indices, weights, max_norm=max_norm)
 
@@ -553,6 +575,7 @@ def embedding(
 embedding.support_native_out = False
 
 
+<<<<<<< HEAD
 def interpolate(
     x: torch.Tensor,
     size: Union[Sequence[int], int],
@@ -580,12 +603,18 @@ def interpolate(
     out: Optional[torch.Tensor] = None,
 ):
     if mode in [
+=======
+@handle_mixed_function(
+    lambda *args, mode="linear", **kwargs: mode
+    not in [
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         "tf_area",
         "bicubic_tensorflow",
         "mitchellcubic",
         "lanczos3",
         "lanczos5",
         "gaussian",
+<<<<<<< HEAD
     ]:
         return ivy.functional.experimental.interpolate(
             x,
@@ -595,6 +624,35 @@ def interpolate(
             antialias=antialias,
             scale_factor=scale_factor,
         )
+=======
+    ]
+)
+def interpolate(
+    x: torch.Tensor,
+    size: Union[Sequence[int], int],
+    /,
+    *,
+    mode: Literal[
+        "linear",
+        "bilinear",
+        "trilinear",
+        "nearest",
+        "area",
+        "nearest_exact",
+        "tf_area",
+        "bicubic",
+        "mitchellcubic",
+        "lanczos3",
+        "lanczos5",
+        "gaussian",
+    ] = "linear",
+    scale_factor: Optional[Union[Sequence[int], int]] = None,
+    recompute_scale_factor: Optional[bool] = None,
+    align_corners: Optional[bool] = None,
+    antialias: bool = False,
+    out: Optional[torch.Tensor] = None,
+):
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     return torch.nn.functional.interpolate(
         x,
         size=size,
@@ -602,6 +660,10 @@ def interpolate(
         align_corners=align_corners,
         antialias=antialias,
         scale_factor=scale_factor,
+<<<<<<< HEAD
+=======
+        recompute_scale_factor=recompute_scale_factor,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     )
 
 

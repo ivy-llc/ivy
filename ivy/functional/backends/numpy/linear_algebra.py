@@ -40,7 +40,11 @@ def cross(
     axisa: int = -1,
     axisb: int = -1,
     axisc: int = -1,
+<<<<<<< HEAD
     axis: int = None,
+=======
+    axis: Optional[int] = None,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.cross(a=x1, b=x2, axisa=axisa, axisb=axisb, axisc=axisc, axis=axis)
@@ -66,7 +70,11 @@ def diagonal(
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def eigh(
+<<<<<<< HEAD
     x: np.ndarray, /, *, UPLO: Optional[str] = "L", out: Optional[np.ndarray] = None
+=======
+    x: np.ndarray, /, *, UPLO: str = "L", out: Optional[np.ndarray] = None
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 ) -> Tuple[np.ndarray]:
     result_tuple = NamedTuple(
         "eigh", [("eigenvalues", np.ndarray), ("eigenvectors", np.ndarray)]
@@ -77,7 +85,11 @@ def eigh(
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def eigvalsh(
+<<<<<<< HEAD
     x: np.ndarray, /, *, UPLO: Optional[str] = "L", out: Optional[np.ndarray] = None
+=======
+    x: np.ndarray, /, *, UPLO: str = "L", out: Optional[np.ndarray] = None
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 ) -> np.ndarray:
     return np.linalg.eigvalsh(x, UPLO=UPLO)
 
@@ -148,8 +160,13 @@ def matrix_norm(
     x: np.ndarray,
     /,
     *,
+<<<<<<< HEAD
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
     axis: Optional[Tuple[int, int]] = (-2, -1),
+=======
+    ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",
+    axis: Tuple[int, int] = (-2, -1),
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     keepdims: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
@@ -248,8 +265,18 @@ def matrix_transpose(
     return np.swapaxes(x, -1, -2)
 
 
+<<<<<<< HEAD
 def outer(
     x1: np.ndarray, x2: np.ndarray, /, *, out: Optional[np.ndarray] = None
+=======
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
+def outer(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.outer(x1, x2, out=out)
@@ -349,7 +376,11 @@ def tensorsolve(
     x2: np.ndarray,
     /,
     *,
+<<<<<<< HEAD
     axes: Union[int, Tuple[List[int], List[int]]] = None,
+=======
+    axes: Optional[Union[int, Tuple[List[int], List[int]]]] = None,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.linalg.tensorsolve(x1, x2, axes=axes)
@@ -410,8 +441,13 @@ def vector_norm(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
+<<<<<<< HEAD
     keepdims: Optional[bool] = False,
     ord: Optional[Union[int, float, Literal[inf, -inf]]] = 2,
+=======
+    keepdims: bool = False,
+    ord: Union[int, float, Literal[inf, -inf]] = 2,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     dtype: Optional[np.dtype] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:

@@ -89,29 +89,44 @@ def test_set_backend(backend, array_type):
 
 
 @pytest.mark.parametrize(("backend"), available_frameworks())
+<<<<<<< HEAD
 def test_unset_backend(backend):
     if not ivy.backend_stack:
         assert ivy.unset_backend() is None
+=======
+def test_previous_backend(backend):
+    if not ivy.backend_stack:
+        assert ivy.previous_backend() is None
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
     ivy.set_backend(backend)
     stack_before_unset = []
     func_address_before_unset = id(ivy.sum)
     stack_before_unset.extend(ivy.backend_stack)
 
+<<<<<<< HEAD
     unset_backend = ivy.unset_backend()
+=======
+    previous_backend = ivy.previous_backend()
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     stack_after_unset = ivy.backend_stack
     # check that the function id has changed as inverse=True.
     ivy.utils.assertions.check_equal(
         func_address_before_unset, id(ivy.sum), inverse=True
     )
     ivy.utils.assertions.check_equal(
+<<<<<<< HEAD
         unset_backend, importlib.import_module(_backend_dict[backend])
+=======
+        previous_backend, importlib.import_module(_backend_dict[backend])
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     )
     ivy.utils.assertions.check_greater(len(stack_before_unset), len(stack_after_unset))
 
     # checking a previously set backend is still set
     ivy.set_backend(backend)
     ivy.set_backend("numpy")
+<<<<<<< HEAD
     ivy.unset_backend()
     ivy.utils.assertions.check_equal(ivy.current_backend_str(), backend)
 
@@ -121,6 +136,17 @@ def test_clear_backend_stack():
         ivy.set_backend(backend_str)
 
     ivy.clear_backend_stack()
+=======
+    ivy.previous_backend()
+    ivy.utils.assertions.check_equal(ivy.current_backend_str(), backend)
+
+
+def test_unset_backend():
+    for backend_str in available_frameworks():
+        ivy.set_backend(backend_str)
+
+    ivy.unset_backend()
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     ivy.utils.assertions.check_equal(ivy.backend_stack, [])
 
 
@@ -130,7 +156,11 @@ def test_clear_backend_stack():
 )
 def test_current_backend(backend, array_type):
     # test backend inference from arguments when stack clear
+<<<<<<< HEAD
     ivy.clear_backend_stack()
+=======
+    ivy.unset_backend()
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     assert ivy.current_backend(array_type) is importlib.import_module(
         _backend_dict[backend]
     )
@@ -191,7 +221,11 @@ def test_dynamic_backend_all_combos(middle_backend, end_backend):
     )
 
     # clear the backend stack after initialization of inputs
+<<<<<<< HEAD
     ivy.clear_backend_stack()
+=======
+    ivy.unset_backend()
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
     # set dynamic_backend to false for all objects
     ivy_cont.dynamic_backend = False
@@ -260,7 +294,11 @@ def test_dynamic_backend_setter():
     a.dynamic_backend = False
 
     # clear the backend stack after initialization of inputs
+<<<<<<< HEAD
     ivy.clear_backend_stack()
+=======
+    ivy.unset_backend()
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
     ivy.set_backend("tensorflow", dynamic=True)
     assert type(a.data) == type_a
@@ -274,7 +312,11 @@ def test_dynamic_backend_setter():
 
 def test_variables():
     # clear the backend stack
+<<<<<<< HEAD
     ivy.clear_backend_stack()
+=======
+    ivy.unset_backend()
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
     ivy.set_backend("tensorflow", dynamic=True)
 

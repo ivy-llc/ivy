@@ -3,6 +3,10 @@ import math
 
 import numpy as np
 from hypothesis import assume, strategies as st
+<<<<<<< HEAD
+=======
+import hypothesis.extra.numpy as nph
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
 # local
 import ivy
@@ -1084,3 +1088,68 @@ def test_diff(
         prepend=prepend[0],
         append=append[0],
     )
+<<<<<<< HEAD
+=======
+
+
+@handle_frontend_test(
+    fn_tree="torch.broadcast_shapes",
+    shapes=nph.mutually_broadcastable_shapes(
+        num_shapes=4, min_dims=1, max_dims=5, min_side=1, max_side=5
+    ),
+    test_with_out=st.just(False),
+)
+def test_torch_broadcast_shapes(
+    *,
+    shapes,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    shape, _ = shapes
+    shapes = {f"shape{i}": shape[i] for i in range(len(shape))}
+    test_flags.num_positional_args = len(shapes)
+    ret, frontend_ret = helpers.test_frontend_function(
+        input_dtypes=["int64"],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        **shapes,
+        test_values=False,
+    )
+    assert ret == frontend_ret
+
+
+# atleast_2d
+@handle_frontend_test(
+    fn_tree="torch.atleast_2d",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=helpers.ints(min_value=1, max_value=10),
+    ),
+    test_with_out=st.just(False),
+)
+def test_torch_atleast_2d(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, arrays = dtype_and_x
+    arys = {}
+    for i, (array, idtype) in enumerate(zip(arrays, input_dtype)):
+        arys["arrs{}".format(i)] = array
+    test_flags.num_positional_args = len(arys)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        **arys,
+    )
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead

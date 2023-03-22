@@ -70,8 +70,13 @@ def rot90(
     m: JaxArray,
     /,
     *,
+<<<<<<< HEAD
     k: Optional[int] = 1,
     axes: Optional[Tuple[int, int]] = (0, 1),
+=======
+    k: int = 1,
+    axes: Tuple[int, int] = (0, 1),
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if isinstance(axes, list):
@@ -84,8 +89,13 @@ def top_k(
     k: int,
     /,
     *,
+<<<<<<< HEAD
     axis: Optional[int] = -1,
     largest: Optional[bool] = True,
+=======
+    axis: int = -1,
+    largest: bool = True,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[Tuple[JaxArray, JaxArray]] = None,
 ) -> Tuple[JaxArray, JaxArray]:
     if not largest:
@@ -141,6 +151,7 @@ def pad(
     pad_width: Union[Sequence[Sequence[int]], JaxArray, int],
     /,
     *,
+<<<<<<< HEAD
     mode: Optional[
         Union[
             Literal[
@@ -163,6 +174,28 @@ def pad(
     constant_values: Optional[Union[Sequence[Sequence[Number]], Number]] = 0,
     end_values: Optional[Union[Sequence[Sequence[Number]], Number]] = 0,
     reflect_type: Optional[Literal["even", "odd"]] = "even",
+=======
+    mode: Union[
+        Literal[
+            "constant",
+            "edge",
+            "linear_ramp",
+            "maximum",
+            "mean",
+            "median",
+            "minimum",
+            "reflect",
+            "symmetric",
+            "wrap",
+            "empty",
+        ],
+        Callable,
+    ] = "constant",
+    stat_length: Union[Sequence[Sequence[int]], int] = 1,
+    constant_values: Union[Sequence[Sequence[Number]], Number] = 0,
+    end_values: Union[Sequence[Sequence[Number]], Number] = 0,
+    reflect_type: Literal["even", "odd"] = "even",
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     **kwargs: Optional[Any],
 ) -> JaxArray:
     pad_width = _to_nested_tuple(pad_width)
@@ -170,7 +203,11 @@ def pad(
     constant_values = _to_nested_tuple(constant_values)
     end_values = _to_nested_tuple(end_values)
     input_dtype = input.dtype
+<<<<<<< HEAD
     if jnp.issubdtype(input_dtype, jnp.integer):
+=======
+    if jnp.issubdtype(input_dtype, jnp.integer) and mode in ["mean", "median"]:
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         input = input.astype(jnp.float64)
     if callable(mode):
         ret = jnp.pad(
@@ -213,8 +250,13 @@ def pad(
             pad_width,
             mode=mode,
         )
+<<<<<<< HEAD
     if jnp.issubdtype(input_dtype, jnp.integer):
         ret = jnp.floor(ret).astype(input_dtype)
+=======
+    if jnp.issubdtype(input_dtype, jnp.integer) and mode in ["mean", "median"]:
+        ret = jnp.round(ret).astype(input_dtype)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     return ret
 
 

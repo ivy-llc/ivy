@@ -4,7 +4,11 @@ from typing import Union, Optional, Tuple, Literal, Sequence
 import tensorflow as tf
 
 # local
+<<<<<<< HEAD
 from ivy.func_wrapper import with_unsupported_dtypes
+=======
+from ivy.func_wrapper import with_unsupported_dtypes, handle_mixed_function
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 from .. import backend_version
 import ivy
 from ivy.functional.ivy.layers import _handle_padding
@@ -179,9 +183,15 @@ def dct(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+<<<<<<< HEAD
     type: Optional[Literal[1, 2, 3, 4]] = 2,
     n: Optional[int] = None,
     axis: Optional[int] = -1,
+=======
+    type: Literal[1, 2, 3, 4] = 2,
+    n: Optional[int] = None,
+    axis: int = -1,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     norm: Optional[Literal["ortho"]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> tf.Tensor:
@@ -238,7 +248,11 @@ def fft(
     dim: int,
     /,
     *,
+<<<<<<< HEAD
     norm: Optional[str] = "backward",
+=======
+    norm: str = "backward",
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     n: Union[int, Tuple[int]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -342,7 +356,11 @@ def ifft(
     x: Union[tf.Tensor, tf.Variable],
     dim: int,
     *,
+<<<<<<< HEAD
     norm: Optional[str] = "backward",
+=======
+    norm: str = "backward",
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     n: Union[int, Tuple[int]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -404,6 +422,22 @@ def embedding(
     return tf.nn.embedding_lookup(weights, indices, max_norm=max_norm)
 
 
+<<<<<<< HEAD
+=======
+@handle_mixed_function(
+    lambda x,
+    *args,
+    mode="linear",
+    scale_factor=None,
+    recompute_scale_factor=None,
+    align_corners=None,
+    **kwargs: (
+        not align_corners and (len(x.shape) - 2) < 2
+    )
+    and mode not in ["nearest", "area"]
+    and recompute_scale_factor
+)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 def interpolate(
     x: Union[tf.Tensor, tf.Variable],
     size: Union[Sequence[int], int],
@@ -426,12 +460,19 @@ def interpolate(
         ]
     ] = "linear",
     scale_factor: Optional[Union[Sequence[int], int]] = None,
+<<<<<<< HEAD
     align_corners: Optional[bool] = None,
     antialias: Optional[bool] = False,
+=======
+    recompute_scale_factor: Optional[bool] = None,
+    align_corners: Optional[bool] = None,
+    antialias: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
     dims = len(x.shape) - 2
     size = _get_size(scale_factor, size, dims, x.shape)
+<<<<<<< HEAD
     if align_corners or dims > 2 or mode in ["nearest", "area"]:
         return ivy.functional.experimental.interpolate(
             x,
@@ -440,6 +481,8 @@ def interpolate(
             align_corners=align_corners,
             antialias=antialias,
         )
+=======
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     remove_dim = False
     if mode in ["linear", "tf_area", "lanczos3", "lanczos5", "nearest-exact"]:
         if dims == 1:

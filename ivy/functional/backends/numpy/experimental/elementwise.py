@@ -37,6 +37,10 @@ lcm.support_native_out = True
 
 
 @_scalar_output_to_0d_array
+<<<<<<< HEAD
+=======
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 def fmod(
     x1: np.ndarray,
     x2: np.ndarray,
@@ -109,8 +113,13 @@ def trapz(
     /,
     *,
     x: Optional[np.ndarray] = None,
+<<<<<<< HEAD
     dx: Optional[float] = 1.0,
     axis: Optional[int] = -1,
+=======
+    dx: float = 1.0,
+    axis: int = -1,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.trapz(y, x=x, dx=dx, axis=axis)
@@ -170,7 +179,11 @@ def count_nonzero(
     /,
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
+<<<<<<< HEAD
     keepdims: Optional[bool] = False,
+=======
+    keepdims: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     dtype: Optional[np.dtype] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
@@ -191,7 +204,11 @@ def nansum(
     *,
     axis: Optional[Union[Tuple[int, ...], int]] = None,
     dtype: Optional[np.dtype] = None,
+<<<<<<< HEAD
     keepdims: Optional[bool] = False,
+=======
+    keepdims: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if isinstance(axis, list):
@@ -221,9 +238,15 @@ def isclose(
     b: np.ndarray,
     /,
     *,
+<<<<<<< HEAD
     rtol: Optional[float] = 1e-05,
     atol: Optional[float] = 1e-08,
     equal_nan: Optional[bool] = False,
+=======
+    rtol: float = 1e-05,
+    atol: float = 1e-08,
+    equal_nan: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ret = np.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
@@ -239,7 +262,11 @@ def angle(
     z: np.ndarray,
     /,
     *,
+<<<<<<< HEAD
     deg: Optional[bool] = False,
+=======
+    deg: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
 
@@ -266,8 +293,13 @@ def nan_to_num(
     x: np.ndarray,
     /,
     *,
+<<<<<<< HEAD
     copy: Optional[bool] = True,
     nan: Optional[Union[float, int]] = 0.0,
+=======
+    copy: bool = True,
+    nan: Union[float, int] = 0.0,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     posinf: Optional[Union[float, int]] = None,
     neginf: Optional[Union[float, int]] = None,
     out: Optional[np.ndarray] = None,
@@ -341,9 +373,15 @@ def allclose(
     x2: np.ndarray,
     /,
     *,
+<<<<<<< HEAD
     rtol: Optional[float] = 1e-05,
     atol: Optional[float] = 1e-08,
     equal_nan: Optional[bool] = False,
+=======
+    rtol: float = 1e-05,
+    atol: float = 1e-08,
+    equal_nan: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[np.ndarray] = None,
 ) -> bool:
     return np.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
@@ -408,9 +446,15 @@ def gradient(
     x: np.ndarray,
     /,
     *,
+<<<<<<< HEAD
     spacing: Optional[Union[int, list, tuple]] = 1,
     axis: Optional[Union[int, list, tuple]] = None,
     edge_order: Optional[int] = 1,
+=======
+    spacing: Union[int, list, tuple] = 1,
+    axis: Optional[Union[int, list, tuple]] = None,
+    edge_order: int = 1,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 ) -> Union[np.ndarray, List[np.ndarray]]:
     if type(spacing) in (int, float):
         return np.gradient(x, spacing, axis=axis, edge_order=edge_order)
@@ -454,9 +498,13 @@ def frexp(
     x: np.ndarray,
     /,
     *,
+<<<<<<< HEAD
     out: Optional[Union[Tuple[np.ndarray, np.ndarray], Tuple[None, None]]] = (
         None,
         None,
     ),
+=======
+    out: Union[Tuple[np.ndarray, np.ndarray], Tuple[None, None]] = (None, None),
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 ) -> Tuple[np.ndarray, np.ndarray]:
     return np.frexp(x, out=out)

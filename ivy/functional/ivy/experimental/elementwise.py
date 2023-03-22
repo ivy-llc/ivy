@@ -263,8 +263,13 @@ def trapz(
     /,
     *,
     x: Optional[ivy.Array] = None,
+<<<<<<< HEAD
     dx: Optional[float] = 1.0,
     axis: Optional[int] = -1,
+=======
+    dx: float = 1.0,
+    axis: int = -1,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Integrate along the given axis using the composite trapezoidal rule.
@@ -444,7 +449,11 @@ def count_nonzero(
     /,
     *,
     axis: Optional[Union[int, Tuple[int, ...]]] = None,
+<<<<<<< HEAD
     keepdims: Optional[bool] = False,
+=======
+    keepdims: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
@@ -501,7 +510,11 @@ def nansum(
     *,
     axis: Optional[Union[Tuple[int, ...], int]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+<<<<<<< HEAD
     keepdims: Optional[bool] = False,
+=======
+    keepdims: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -595,9 +608,15 @@ def isclose(
     b: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+<<<<<<< HEAD
     rtol: Optional[float] = 1e-05,
     atol: Optional[float] = 1e-08,
     equal_nan: Optional[bool] = False,
+=======
+    rtol: float = 1e-05,
+    atol: float = 1e-08,
+    equal_nan: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -657,7 +676,11 @@ def angle(
     z: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+<<<<<<< HEAD
     deg: Optional[bool] = False,
+=======
+    deg: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -676,8 +699,13 @@ def angle(
     -------
     ret
         Returns an array of angles for each complex number in the input.
+<<<<<<< HEAD
         If def is False(default), angle is calculated in radian and if
         def is True, then angle is calculated in degrees.
+=======
+        If deg is False(default), angle is calculated in radian and if
+        deg is True, then angle is calculated in degrees.
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
     Examples
     --------
@@ -738,8 +766,13 @@ def nan_to_num(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+<<<<<<< HEAD
     copy: Optional[bool] = True,
     nan: Optional[Union[float, int]] = 0.0,
+=======
+    copy: bool = True,
+    nan: Union[float, int] = 0.0,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     posinf: Optional[Union[float, int]] = None,
     neginf: Optional[Union[float, int]] = None,
     out: Optional[ivy.Array] = None,
@@ -956,9 +989,15 @@ def allclose(
     b: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+<<<<<<< HEAD
     rtol: Optional[float] = 1e-05,
     atol: Optional[float] = 1e-08,
     equal_nan: Optional[bool] = False,
+=======
+    rtol: float = 1e-05,
+    atol: float = 1e-08,
+    equal_nan: bool = False,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[ivy.Array] = None,
 ) -> bool:
     """
@@ -1145,8 +1184,13 @@ def gradient(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+<<<<<<< HEAD
     spacing: Optional[Union[int, list, tuple]] = 1,
     edge_order: Optional[int] = 1,
+=======
+    spacing: Union[int, list, tuple] = 1,
+    edge_order: int = 1,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     axis: Optional[Union[int, list, tuple]] = None,
 ) -> Union[ivy.Array, List[ivy.Array]]:
     """Calculates gradient of x with respect to (w.r.t.) spacing

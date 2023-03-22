@@ -6,6 +6,17 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 
 
 @to_ivy_arrays_and_back
+<<<<<<< HEAD
+=======
+def angle(z, deg=False):
+    angle = ivy.angle(z, deg=deg)
+    if deg and len(z.shape) == 0:
+        angle = ivy.astype(angle, ivy.float64)
+    return angle
+
+
+@to_ivy_arrays_and_back
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 def _imag(val):
     return ivy.imag(val)
 

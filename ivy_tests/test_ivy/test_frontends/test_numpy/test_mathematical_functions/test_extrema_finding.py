@@ -132,8 +132,12 @@ def test_numpy_amax(
     keepdims,
 ):
     if initial is None and np.all(where) is not True:
+<<<<<<< HEAD
         assume(initial is inf)
 
+=======
+        assume(initial is +inf)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     input_dtypes, x, axis = dtype_x_axis
     where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
         where=where,

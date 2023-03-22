@@ -19,3 +19,12 @@ dm-haiku # unpinned mod_name=haiku
 pydriller
 tqdm
 coverage
+<<<<<<< HEAD
+=======
+scikit-learn
+pandas
+pyspark
+paddlepaddle
+mxnet
+autoflake # for backend generation
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead

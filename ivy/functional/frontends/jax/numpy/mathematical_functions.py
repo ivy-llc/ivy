@@ -22,6 +22,14 @@ def add(x1, x2):
 
 
 @to_ivy_arrays_and_back
+<<<<<<< HEAD
+=======
+def angle(z, deg=False):
+    return ivy.angle(z, deg=deg)
+
+
+@to_ivy_arrays_and_back
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 def diff(a, n=1, axis=-1, prepend=None, append=None):
     return ivy.diff(a, n=n, axis=axis, prepend=prepend, append=append, out=None)
 
@@ -179,7 +187,11 @@ def ceil(x):
 @to_ivy_arrays_and_back
 def float_power(x1, x2):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
+<<<<<<< HEAD
     return ivy.float_power(x1, x2)
+=======
+    return ivy.float_power(x1, x2).astype(x1.dtype, copy=False)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
 
 @to_ivy_arrays_and_back
@@ -503,3 +515,25 @@ def conj(x, /):
 def subtract(x1, x2):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.subtract(x1, x2)
+<<<<<<< HEAD
+=======
+
+
+@to_ivy_arrays_and_back
+def around(a, decimals=0, out=None):
+    factor = ivy.pow(10, decimals)
+    a = ivy.multiply(a, factor)
+    a = ivy.round(a)
+    a = ivy.divide(a, factor)
+    return a
+
+
+@to_ivy_arrays_and_back
+def frexp(x, /):
+    return ivy.frexp(x)
+
+@to_ivy_arrays_and_back
+def ldexp(x1, x2, /):
+    return ivy.ldexp(x1, x2)
+
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead

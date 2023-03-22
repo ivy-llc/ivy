@@ -14,6 +14,10 @@ from ivy.functional.ivy.creation import (
     NestedSequence,
     SupportsBufferProtocol,
 )
+<<<<<<< HEAD
+=======
+from .data_type import as_native_dtype
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
 
 # Array API Standard #
@@ -30,6 +34,11 @@ def arange(
     device: str,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+<<<<<<< HEAD
+=======
+    if dtype:
+        dtype = as_native_dtype(dtype)
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     res = _to_device(np.arange(start, stop, step, dtype=dtype), device=device)
     if not dtype:
         if res.dtype == np.float64:
@@ -228,7 +237,11 @@ array = asarray
 def copy_array(
     x: np.ndarray,
     *,
+<<<<<<< HEAD
     to_ivy_array: Optional[bool] = True,
+=======
+    to_ivy_array: bool = True,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if to_ivy_array:

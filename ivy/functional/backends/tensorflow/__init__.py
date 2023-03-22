@@ -29,7 +29,10 @@ else:
 use = ivy.utils.backend.ContextManager(_module_in_memory)
 
 NativeArray = Tensor
+<<<<<<< HEAD
 NativeVariable = Tensor
+=======
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 NativeDevice = str
 NativeDtype = DType
 NativeShape = TensorShape
@@ -99,6 +102,11 @@ valid_numeric_dtypes_dict = {
         ivy.float16,
         ivy.float32,
         ivy.float64,
+<<<<<<< HEAD
+=======
+        ivy.complex64,
+        ivy.complex128,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     )
 }
 

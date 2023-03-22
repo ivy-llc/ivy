@@ -59,8 +59,13 @@ def rot90(
     m: Union[tf.Tensor, tf.Variable],
     /,
     *,
+<<<<<<< HEAD
     k: Optional[int] = 1,
     axes: Optional[Tuple[int, int]] = (0, 1),
+=======
+    k: int = 1,
+    axes: Tuple[int, int] = (0, 1),
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Union[tf.Tensor, tf.Variable] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.rot90(m, k, axes)
@@ -71,8 +76,13 @@ def top_k(
     k: int,
     /,
     *,
+<<<<<<< HEAD
     axis: Optional[int] = -1,
     largest: Optional[bool] = True,
+=======
+    axis: int = -1,
+    largest: bool = True,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[Tuple[tf.Tensor, tf.Tensor]] = None,
 ) -> Tuple[tf.Tensor, tf.Tensor]:
     if not largest:

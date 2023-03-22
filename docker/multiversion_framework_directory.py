@@ -1,6 +1,10 @@
 # flake8: noqa
 import os
 import subprocess
+<<<<<<< HEAD
+=======
+import sys
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
 
 def directory_generator(req, base="/opt/miniconda/fw/"):
@@ -14,11 +18,16 @@ def directory_generator(req, base="/opt/miniconda/fw/"):
 def install_pkg(path, pkg, base="fw/"):
     if pkg.split("==")[0] == "torch":
         subprocess.run(
+<<<<<<< HEAD
             f"pip3 install {pkg} --default-timeout=100 -f https://download.pytorch.org/whl/torch_stable.html --target={path}",
+=======
+            f"pip3 install {pkg} --default-timeout=100 -f https://download.pytorch.org/whl/cpu --target={path} --no-cache-dir",
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
             shell=True,
         )
     elif pkg.split("==")[0] == "jaxlib":
         subprocess.run(
+<<<<<<< HEAD
             f"pip3 install {pkg} --default-timeout=100 -f https://storage.googleapis.com/jax-releases/jax_releases.html  --target={path}",
             shell=True,
         )
@@ -46,3 +55,24 @@ directory_generator(tensorflow_req)
 directory_generator(jax_req)
 directory_generator(numpy_req)
 directory_generator(jaxlib_req)
+=======
+            f"pip3 install {pkg} --default-timeout=100 -f https://storage.googleapis.com/jax-releases/jax_releases.html  --target={path} --no-cache-dir",
+            shell=True,
+        )
+    elif pkg.split("==")[0] == "tensorflow":
+        subprocess.run(
+            f"pip3 install tensorflow-cpu=={pkg.split('==')[1]} --default-timeout=100  --target={path} --no-cache-dir", shell=True
+        )
+    else:
+        subprocess.run(
+            f"pip3 install {pkg} --default-timeout=100  --target={path} --no-cache-dir", shell=True
+        )
+
+
+if __name__=="__main__":
+    arg_lis=sys.argv
+    directory_generator(arg_lis[1:])
+
+
+
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead

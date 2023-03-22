@@ -8,7 +8,11 @@ from typing import Optional, List, Tuple, Dict
 
 # local
 import ivy
+<<<<<<< HEAD
 from ivy.container import Container
+=======
+from ivy.data_classes.container import Container
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 from ivy.func_wrapper import _get_first_array
 from ivy.stateful.helpers import ModuleHelpers
 from ivy.stateful.converters import ModuleConverters
@@ -109,9 +113,17 @@ class Module(ModuleConverters, ModuleHelpers):
         self._track_submod_call_order = False
         self.expected_submod_rets = None
         self.submod_dict = dict()
+<<<<<<< HEAD
         backend = ivy.with_backend("numpy")
         self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=backend)
         self.submod_call_order = ivy.Container(alphabetical_keys=False, ivyh=backend)
+=======
+        with ivy.utils.backend.ContextManager("numpy") as backend:
+            self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=backend)
+            self.submod_call_order = ivy.Container(
+                alphabetical_keys=False, ivyh=backend
+            )
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         self._sub_mods = set()
         self._dtype = dtype
         self._args = args
@@ -504,7 +516,11 @@ class Module(ModuleConverters, ModuleHelpers):
                 ivy.set_backend(self._target)
             self.compile(args=args, kwargs=kwargs)
             if self._target:
+<<<<<<< HEAD
                 ivy.unset_backend()
+=======
+                ivy.previous_backend()
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
         if self._module_graph:
             # we need `v` in kwargs, since this is a compiled call
@@ -512,9 +528,17 @@ class Module(ModuleConverters, ModuleHelpers):
             return self._module_graph(*args, v=v, **kwargs)
 
         with_grads = ivy.with_grads(with_grads=with_grads)
+<<<<<<< HEAD
         backend = ivy.with_backend("numpy")
         self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=backend)
         self.submod_call_order = ivy.Container(alphabetical_keys=False, ivyh=backend)
+=======
+        with ivy.utils.backend.ContextManager("numpy") as backend:
+            self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=backend)
+            self.submod_call_order = ivy.Container(
+                alphabetical_keys=False, ivyh=backend
+            )
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
         self._set_submod_flags(
             track_submod_rets,
             submod_depth,

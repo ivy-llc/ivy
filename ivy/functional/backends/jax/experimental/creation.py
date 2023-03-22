@@ -16,7 +16,11 @@ import ivy
 def triu_indices(
     n_rows: int,
     n_cols: Optional[int] = None,
+<<<<<<< HEAD
     k: Optional[int] = 0,
+=======
+    k: int = 0,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     /,
     *,
     device: jaxlib.xla_extension.Device,
@@ -30,7 +34,11 @@ def triu_indices(
 def vorbis_window(
     window_length: JaxArray,
     *,
+<<<<<<< HEAD
     dtype: Optional[jnp.dtype] = jnp.float32,
+=======
+    dtype: jnp.dtype = jnp.float32,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.array(
@@ -51,7 +59,11 @@ def hann_window(
     size: int,
     /,
     *,
+<<<<<<< HEAD
     periodic: Optional[bool] = True,
+=======
+    periodic: bool = True,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
@@ -76,7 +88,11 @@ def kaiser_window(
 def tril_indices(
     n_rows: int,
     n_cols: Optional[int] = None,
+<<<<<<< HEAD
     k: Optional[int] = 0,
+=======
+    k: int = 0,
+>>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
     /,
     *,
     device: jaxlib.xla_extension.Device,
