@@ -1,2 +1,4 @@
 /.quarto/
+/docs/
 .idea/*
+**/.ipynb_checkpoints/*

@@ -1,4 +1,5 @@
 // self-defined globals //
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
 
 // ivy colors
 $ivy-green: #43ae43;
@@ -7,7 +8,7 @@ $ivy-light-grey: #f9f9f8;
 
 // gradient borders
 $ivy-green-gradient-border: linear-gradient(to right, $ivy-green, $ivy-grey) 1;
-$ivy-gradient-border-ending-point: 15%;
+$ivy-gradient-border-ending-point: 0;
 $ivy-gradient-border-space-below-title: 3%;
 
 // media screen size
@@ -16,7 +17,7 @@ $rwd-screen-size: 640px;
 // configure default globals //
 
 // font
-$font-family-sans-serif: helvetica;
+// $font-family-sans-serif: helvetica;
 
 // color
 $link-color: $ivy-green;
@@ -34,10 +35,15 @@ $code-block-border-left-size: 3px;
 $btn-code-copy-color-active: $ivy-green;
 
 // sidebar
-$sidebar-bg: $ivy-grey;
+$sidebar-bg: white;
 $sidebar-fg: black;
 
 /*-- scss:rules --*/
+
+* {
+    font-size: 100%;
+    font-family: 'Inter';
+}
 
 a {
     color: $ivy-green;
@@ -46,21 +52,21 @@ a {
 
 p {
     font-size: medium;
-    padding: 1% 0;
+    padding: 0 0;
 }
 
 h1 {
     padding-bottom: $ivy-gradient-border-space-below-title;
     margin-right: $ivy-gradient-border-ending-point;
-    border-bottom: 2px solid;
+    border-bottom: 2px solid $ivy-green;
     border-image: $ivy-green-gradient-border;
     text-transform: capitalize;
 }
 
 h2 {
-    padding-bottom: $ivy-gradient-border-space-below-title;
+    // padding-bottom: $ivy-gradient-border-space-below-title;
     margin-right: $ivy-gradient-border-ending-point;
-    border-bottom: 1px solid;
+    border-bottom: 2px solid $ivy-green;
     border-image: $ivy-green-gradient-border;
     text-transform: capitalize;
 }
@@ -81,21 +87,21 @@ h3 {
 
 @media screen and (min-width: $rwd-screen-size) {
     .rwd-gallery-layout {
-        grid-template-columns: 50% 50%;
+        grid-template-columns: 33% 33% 33%;
     }
 }
 
 .notebook-grid-gallery {
     display: grid;
-    grid-row-gap: 2%;
+    row-gap: 0.5em;
     grid-auto-rows: 1fr;
     margin: 2% 0;
 }
 
 .notebook-card {
     color: black;
-    border-radius: 20px;
-    border: 2px solid $ivy-light-grey;
+    border-radius: 10px;
+    border: 2px solid $ivy-grey;
     background-color: $ivy-grey;
     margin: auto 2%;
     padding: 5% 5%;
@@ -104,21 +110,36 @@ h3 {
 
 .notebook-card:hover {
     border: 2px solid $ivy-green;
-    border-radius: 20px;
-    background-color: $ivy-light-grey;
 }
 
 .notebook-card-title {
-    font-size: x-large;
+    font-size: medium;
     font-weight: 500;
+}
+
+.notebook-card-body {
+    font-size: small;
 }
 
 .notebook-card-title-border {
     margin: $ivy-gradient-border-space-below-title $ivy-gradient-border-ending-point 2% 0;
-    border-bottom: 2px solid;
+    border-bottom: 2px solid $ivy-green;
     border-image: $ivy-green-gradient-border;
 }
 
 #colab-button .quarto-figure .figure p {
     text-align: left;
+}
+
+.quarto-sidebar {
+    padding-right: 2em;
+    padding-left: 0;
+}
+
+.quarto-listing {
+    padding-bottom: 0;
+}
+
+.nav-link {
+    font-size: small;
 }

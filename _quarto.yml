@@ -5,22 +5,30 @@ project:
     - "scripts/deepmind_perceiver_io.py"
 
 website:
+  title: "Tutorials and Examples - Ivy"
+  favicon: "assets/img/ivy_logo_only.png"
+  
   page-navigation: true
+
   sidebar:
+    style: "floating"
+    border: true
     logo: "assets/img/ivy_logo.png"
     collapse-level: 1
-    contents: 
-      - auto: "*unify_existing_code/"
-      - auto: "*compilation_of_various_models/"
-      - auto: "*temp_demos/"
+    contents:
+      - quickstart.ipynb
+      - auto: "*learn_the_basics/"
+      - auto: "*guides/"
+      - auto: "*examples_and_demos/"
 
 format:
   html:
+    toc: true
     theme: assets/css/custom.scss
     page-layout: full
     code-overflow: scroll
     jupyter: python3
-    monobackgroundcolor: "#f9f9f8"
+    monobackgroundcolor: "#ffffff"
     execute:
       echo: true
       output: true

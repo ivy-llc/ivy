@@ -1,30 +1,42 @@
 ---
-listing: 
-    - id: unify-existing-code
-      template: assets/ejs/gallery.ejs
-      contents: unify_existing_code
+listing:
 
-    - id: temp-demos
+    - id: learn-the-basics
       template: assets/ejs/gallery.ejs
-      contents: temp_demos
-    
-    - id: compilation-of-various-models
+      contents: learn_the_basics
+      sort: path
+
+    - id: guides
       template: assets/ejs/gallery.ejs
-      contents: compilation_of_various_models
+      contents: guides
+      sort: path
+
+    - id: examples-and-demos
+      template: assets/ejs/gallery.ejs
+      contents: examples_and_demos
+      sort: path
 ---
 
-# Tutorials and Demos
+## Tutorials and Examples
 
-[//]: # "ToDo: page description"
+Welcome to Ivy's tutorials webpage! Our goal is to provide you with a comprehensive learning experience on a variety of topics. We have organized our tutorials into three main sections to help you find exactly what you need. 
 
-### Unify Existing Code 
-:::{#unify-existing-code}
+If you are in a rush, you can jump straight into the **[Quickstart](quickstart.ipynb)**, a quick and general introduction to Ivy's features and capabilities!
+
+- In the **Learn the basics** section, you will find basic and to the point tutorials to help you get started with Ivy.
+
+- The **Guides** section includes more involved tutorials for those who want to dive deeper into the framework. 
+
+- Finally, in the **Examples and Demos** section, you will find start-to-finish projects and applications that showcase real-world applications of Ivy. Whether you're a beginner or an advanced user, we've got you covered!
+
+### Learn the basics
+:::{#learn-the-basics}
 :::
 
-### Compilation of Various Models
-:::{#compilation-of-various-models}
+### Guides 
+:::{#guides}
 :::
 
-### Temp Demos 
-:::{#temp-demos}
+### Examples and Demos
+:::{#examples-and-demos}
 :::
