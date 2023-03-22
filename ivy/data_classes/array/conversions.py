@@ -36,13 +36,12 @@ def _to_ivy(x: Any) -> Any:
         return x
 
 
-backends = ("numpy", "jax", "torch", "tensorflow")
-
-
 def _convert_other_native(x):
-    new_backends = (
-        ivy.with_backend(back) for back in backends if back != ivy.current_backend_str()
-    )
+    backends = ("numpy", "jax", "torch", "tensorflow")
+    curent_backend = ivy.current_backend_str()
+    new_backends = [
+        ivy.with_backend(back) for back in backends if back != curent_backend
+    ]
     for backend in new_backends:
         if backend.is_native_array(x):
             return backend.Array(x)
