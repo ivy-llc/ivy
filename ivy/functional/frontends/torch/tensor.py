@@ -865,6 +865,9 @@ class Tensor:
 
     def __and__(self, other):
         return torch_frontend.bitwise_and(self, other)
+    
+    def reciprocal(self):
+        return torch_frontend.reciprocal(self.ivy_array)
 
     # Method aliases
     absolute, absolute_ = abs, abs_
