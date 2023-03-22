@@ -21,7 +21,7 @@ jobs:
         run: |
           cd ivy
           rm -rf .gitignore
-          bash docs/make_docs_without_docker.sh ../ivy_doc_builder
+          bash docs/make_docs_without_docker.sh ivy_doc_builder
           sudo touch .nojekyll
           sudo cp .nojekyll docs/build/
           cd ..
