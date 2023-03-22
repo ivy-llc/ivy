@@ -449,7 +449,7 @@ Here is an example of how it works for ``ivy.functional.ivy.creation``:
     
     This should have hopefully given you an overview of the 
     creation submodule, if you have any questions, please feel free to reach out on 
-    our [discord](https://discord.gg/ZVQdvbzNQJ) in the [creation channel](*https://discord.com/channels/799879767196958751/{{channel_id}}*) or in
+    our [discord](\https://discord.gg/ZVQdvbzNQJ) in the [creation channel](*https://discord.com/channels/799879767196958751/{{channel_id}}*) or in
     the [creation forum]({{forum_link}})!
 
 4. Then we resolve the ``{{forum_link}}`` template string.
@@ -458,7 +458,7 @@ Here is an example of how it works for ``ivy.functional.ivy.creation``:
     
     This should have hopefully given you an overview of the 
     creation submodule, if you have any questions, please feel free to reach out on 
-    our [discord](https://discord.gg/ZVQdvbzNQJ) in the [creation channel](https://discord.com/channels/799879767196958751/{{channel_id}}) or in
+    our [discord](\https://discord.gg/ZVQdvbzNQJ) in the [creation channel](\https://discord.com/channels/799879767196958751/{{channel_id}}) or in
     the [creation forum](*https://discord.com/channels/799879767196958751/{{forum_id}}*)!
 
 5. We finally resolve ``{{channel_id}}`` and ``{{forum_id}}`` template strings.
@@ -467,8 +467,8 @@ Here is an example of how it works for ``ivy.functional.ivy.creation``:
     
     This should have hopefully given you an overview of the 
     creation submodule, if you have any questions, please feel free to reach out on 
-    our [discord](https://discord.gg/ZVQdvbzNQJ) in the [creation channel](https://discord.com/channels/799879767196958751/1000043690254946374) or in
-    the [creation forum](https://discord.com/channels/799879767196958751/1028298816526499912)!
+    our [discord](\https://discord.gg/ZVQdvbzNQJ) in the [creation channel](\https://discord.com/channels/799879767196958751/1000043690254946374) or in
+    the [creation forum](\https://discord.com/channels/799879767196958751/1028298816526499912)!
 
 6. After that we render the node paragraph as if it's a Markdown text resulting this:
 
