@@ -5734,3 +5734,51 @@ def test_torch_special_and(
         frontend=frontend,
         on_device=on_device,
     )
+
+    
+# reciprocal
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="reciprocal",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_instance_reciprocal(
+    dtype_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        atol=1e-6,  # setting a tolerance level for floating-point comparisons
+        rtol=1e-6,
+        # defining test cases with known inputs and expected outputs
+        test_cases=[
+            {
+                "input": {"data": np.array([1.0, 2.0, 3.0])},
+                "expected_output": np.array([1.0, 0.5, 1/3]),
+            },
+            {
+                "input": {"data": np.array([-1.0, -2.0, -3.0])},
+                "expected_output": np.array([-1.0, -0.5, -1/3]),
+            },
+            {
+                "input": {"data": np.array([0.0])},
+                "expected_output": np.array([np.inf]),
+            },
+        ],
+    )
