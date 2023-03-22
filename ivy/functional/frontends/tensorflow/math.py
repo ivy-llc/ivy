@@ -49,6 +49,16 @@ def asinh(x, name="asinh"):
     return ivy.asinh(x)
 
 
+@to_ivy_arrays_and_back
+def atanh(x, name="atanh"):
+    return ivy.atanh(x)
+
+
+@to_ivy_arrays_and_back
+def acosh(x, name="acosh"):
+    return ivy.acosh(x)
+
+
 @handle_tf_dtype
 @to_ivy_arrays_and_back
 def confusion_matrix(
