@@ -124,9 +124,9 @@ Contents
 Ivy as a transpiler
 -------------------
 
-Ivy's transpiler allows you to use code from any other framework (or from any other version of the same framework!) in your own code, by just adding one line of code. Under the hood, Ivy traces a computational graph and leverages the frontends and backends to link one framework to another. 
+Ivy's transpiler allows you to use code from any other framework (or from any other version of the same framework!) in your own code by just adding one line of code. Under the hood, Ivy traces a computational graph and leverages the frontends and backends to link one framework to another.
 
-This way, Ivy makes all ML-related projects available for you, independently of the framework you want to use to research, develop, or deploy systems. Feel free to head over to the docs for the full API reference, but the functions you'd most likely wanto to use are:
+This way, Ivy makes all ML-related projects available for you, independently of the framework you want to use to research, develop, or deploy systems. Feel free to head over to the docs for the full API reference, but the functions you'd most likely want to use are:
 
 .. code-block:: python
 
@@ -139,10 +139,10 @@ This way, Ivy makes all ML-related projects available for you, independently of 
     # Converts framework-specific code to Ivy
     ivy.unify()
 
-These functions can be used eagerly or lazily. If you pass the necessary arguments for function tracing, the compilation/transpilation step will happen instantly (eagerly). Otherwise, the compilation/transpilation will happen only when the returned function is first invoked.
+These functions can be used eagerly or lazily. If you pass the necessary arguments for function tracing, the compilation/transpilation step will happen instantly (eagerly). Otherwise, the compilation/transpilation will only happen when the returned function is first invoked.
 
 .. code-block:: python
-    
+
     import ivy
     ivy.set_backend("jax")
 
@@ -153,21 +153,21 @@ These functions can be used eagerly or lazily. If you pass the necessary argumen
     x1 = ivy.array([1., 2.])
 
 .. code-block:: python
-    
+
     # Arguments are available -> transpilation happens eagerly
     eager_graph = ivy.transpile(test_fn, to="torch", args=(x1,))
-    
+
     # eager_graph is now torch code and runs efficiently
     ret = eager_graph(x1)
 
 .. code-block:: python
-    
+
     # Arguments are not available -> transpilation happens lazily
     lazy_graph = ivy.transpile(test_fn, to="torch")
-    
+
     # The transpiled graph is initialized, transpilation will happen here
     ret = lazy_graph(x1)
-    
+
     # lazy_graph is now torch code and runs efficiently
     ret = lazy_graph(x1)
 
@@ -176,14 +176,14 @@ If you want to learn more, you can find more information in the `Ivy as a transp
 When should I use Ivy as a transpiler?
 ######################################
 
-If you want to use building blocks published in other frameworks (neural networks, layers, array computing libraries, training pipelines...), you want to integrate code developed in various frameworks, or maybe straight up move code from one framework to another, the transpiler is definitely the tool 🔧 for the job! As the output of transpilation is native code in the target framework, you can use the converted code just as if it was code originally developed in that framework, appliying framework-specific optimizations or tools, instantly exposing your project to all of the unique perks of a different framework.
+If you want to use building blocks published in other frameworks (neural networks, layers, array computing libraries, training pipelines, etc.), integrate code developed in various frameworks, or straight up move code from one framework to another; the transpiler is the tool 🔧 for the job! As the output of transpilation is native code in the target framework, you can use the converted code just as if it was initially developed in that framework, applying framework-specific optimizations or tools, instantly exposing your project to all of the unique perks of a different framework.
 
 Ivy as a framework
 -------------------
 
-The Ivy framework is built on top of various essential components, mainly the `Backend Handler`_, which manages what framework is being used behind the scenes and the `Backend Functional APIs`_, which provide framework-specific implementations of the Ivy functions. Likewise, classes such as :code:`ivy.Container` or :code:`ivy.Array` are also available, facilitating the use of structured data and array-like objects (learn more about them `here! <https://lets-unify.ai/ivy/overview/design/ivy_as_a_framework.html>`_). 
+The Ivy framework is built on top of various essential components, mainly the `Backend Handler`_, which manages what framework is being used behind the scenes, and the `Backend Functional APIs`_, which provide framework-specific implementations of the Ivy functions. Likewise, classes such as :code:`ivy.Container` or :code:`ivy.Array` are also available, facilitating the use of structured data and array-like objects (learn more about them `here! <https://lets-unify.ai/ivy/overview/design/ivy_as_a_framework.html>`_).
 
-All of the functionalities in Ivy are exposed through the :code:`Ivy functional API` and the :code:`Ivy stateful API`. All functions in the `Functional API <https://lets-unify.ai/ivy/overview/design/building_blocks.html#ivy-functional-api>`_ are **Framework Agnostic Functions**, which mean that we can use them like this:
+Ivy's functionalities are exposed through the :code:`Ivy functional API` and the :code:`Ivy stateful API`. All functions in the `Functional API <https://lets-unify.ai/ivy/overview/design/building_blocks.html#ivy-functional-api>`_ are **Framework-Agnostic Functions**, meaning we can use them like this:
 
 .. code-block:: python
 
@@ -201,10 +201,9 @@ All of the functionalities in Ivy are exposed through the :code:`Ivy functional 
     np_mse    = mse_loss(np.ones((5,)), np.ones((5,)))
     torch_mse = mse_loss(torch.ones((5,)), torch.ones((5,)))
 
-In the example above we show how Ivy's functions are compatible with tensors from different frameworks.
-This is the same for ALL Ivy functions. They can accept tensors from any framework and return the correct result.
+The previous example above shows how Ivy's functions are compatible with tensors from different frameworks. All ivy functions can accept tensors from any framework and return the correct result.
 
-The `Ivy Stateful API <https://lets-unify.ai/ivy/overview/design/ivy_as_a_framework/ivy_stateful_api.html>`_, on the other hand, allows you to define trainable modules and layers, which you can use alone or as a part of any other framework code!
+On the other hand, the `Ivy Stateful API <https://lets-unify.ai/ivy/overview/design/ivy_as_a_framework/ivy_stateful_api.html>`_ allows you to define trainable modules and layers, which you can use alone or as a part of any other framework code!
 
 .. code-block:: python
 
@@ -221,8 +220,7 @@ The `Ivy Stateful API <https://lets-unify.ai/ivy/overview/design/ivy_as_a_framew
             return ivy.sigmoid(self.linear1(x))
 
 
-If we put it all toghether, we'll have something like this. This example uses PyTorch as the backend,
-but this can easily be changed to your favorite framework, such as TensorFlow, or JAX.
+If we put it all together, we'll have something like this. This example uses PyTorch as the backend, but you can easily change this to your favorite framework, such as TensorFlow or JAX.
 
 .. code-block:: python
 
@@ -256,13 +254,13 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
     print('Finished training!')
 
 
-Last but not least, we are also working on specific extension totally written in Ivy and therefore usable within any framework, 
-covering topics like `Mechanics`_, `Computer Vision`_, `Robotics`_, a `Reinforcement Learning Gym`_, `Memory`_ and implementation of various `Models`_ or `Builder tools`_ with trainers, data loaders and more!
+Last but not least, we are also working on a specific extension totally written in Ivy and, therefore, usable within any framework,
+covering topics like `Mechanics`_, `Computer Vision`_, `Robotics`_, `Reinforcement Learning Gym`_, `Memory`_, and implementation of various `Models`_ or `Builder tools`_ with trainers, data loaders, and more!
 
 .. raw:: html
 
     <br/>
-    <div align="center">
+    <div style="align:center">
     <a href="https://github.com/unifyai/mech">
         <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_mech.png">
     </a>
@@ -292,7 +290,7 @@ As always, you can find more information about `Ivy as a framework in the docs! 
 When should I use Ivy as a framework?
 ######################################
 
-As Ivy supports multiple backends, writing code in Ivy breaks you free from framework limitations. If you want to publish highly flexible code for everyone to use, independently of the framework they are using, or you plan to develop ML-related tools and want them to be interoperable with not only the already existing frameworks, but also with future frameworks, then Ivy is for you!
+As Ivy supports multiple backends, writing code in Ivy frees you from framework limitations. If you want to publish highly flexible code for everyone to use, independently of the framework they are using, or you plan to develop ML-related tools and want them to be interoperable with the already existing frameworks and future frameworks, then Ivy is for you!
 
 Setting up Ivy
 --------------
@@ -333,7 +331,7 @@ If you are working on a GPU device, you can pull from:
 Installing from source
 ######################
 
-Obviously, you can also install Ivy from source if you want to take advantage of the latest changes, but we can't ensure that everything will work as expected :sweat_smile:
+You can also install Ivy from source if you want to take advantage of the latest changes, but we can't ensure that everything will work as expected :sweat_smile:
 
 .. code-block:: bash
 
@@ -347,8 +345,7 @@ or alternatively, for the last step:
 
     python3 -m pip install --user -e .
 
-If you want to set up testing and various frameworks it's probably best to check out the `Contributing - Setting Up <https://lets-unify.ai/ivy/overview/contributing/setting_up.html#setting-up>`_ page, where OS-specific and IDE-specific instructions and video tutorials to do so are available!
-
+Suppose you want to set up testing and various frameworks. In that case, it's probably best to check out the `Contributing - Setting Up <https://lets-unify.ai/ivy/overview/contributing/setting_up.html#setting-up>`_ page, where OS-specific and IDE-specific instructions and video tutorials are available!
 
 Using Ivy
 #########
