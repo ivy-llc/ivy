@@ -334,6 +334,11 @@ def broadcast_shapes(*shapes):
 
 
 @to_ivy_arrays_and_back
+def atleast_2d(*tensors):
+    return ivy.atleast_2d(*tensors)
+
+
+@to_ivy_arrays_and_back
 def kron(input, other, *, out=None):
     input, other = promote_types_of_torch_inputs(input, other)
     return ivy.kron(input, other, out=out)
