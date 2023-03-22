@@ -140,7 +140,7 @@ def is_native_array(
     x: Union[ivy.Array, ivy.NativeArray], /, *, exclusive: bool = False
 ) -> bool:
     """
-    Determines whether the input x is a Native Array.
+    Determines whether the input x is an :class:`ivy.NativeArray` instance.
 
     Parameters
     ----------
@@ -153,7 +153,7 @@ def is_native_array(
     Returns
     -------
     ret
-        Boolean, whether or not x is a native array.
+        Boolean, whether or not x is an :class:`ivy.NativeArray`.
 
     Examples
     --------
@@ -2654,6 +2654,7 @@ def inplace_update(
     /,
     *,
     ensure_in_backend: bool = False,
+    keep_input_dtype: bool = False,
 ) -> ivy.Array:
     """
     Perform in-place update for the input array. This will always be performed on
@@ -2672,6 +2673,9 @@ def inplace_update(
         Whether or not to ensure that the `ivy.NativeArray` is also inplace updated.
         In cases where it should be, backends which do not natively support inplace
         updates will raise an exception.
+    keep_input_dtype
+        Whether or not to preserve `x` data type after the update, otherwise `val`
+        data type will be applied. Defaults to False.
 
     Returns
     -------
@@ -2722,7 +2726,10 @@ def inplace_update(
 
     """
     return current_backend(x).inplace_update(
-        x, val, ensure_in_backend=ensure_in_backend
+        x,
+        val,
+        ensure_in_backend=ensure_in_backend,
+        keep_input_dtype=keep_input_dtype,
     )
 
 

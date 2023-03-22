@@ -60,3 +60,7 @@ def batch_norm(
     x = tf.transpose(x, perm=(0, *range(2, ndims), 1))
     ret = tf.nn.batch_normalization(x, mean, variance, offset, scale, eps)
     return tf.transpose(ret, perm=(0, ndims - 1, *range(1, ndims - 1)))
+
+
+def logsigmoid(input: Tensor) -> Tensor:
+    return tf.math.log_sigmoid(input)
