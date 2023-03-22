@@ -1168,7 +1168,7 @@ def test_torch_atleast_3d(
 ):
     input_dtype, arrays = dtype_and_x
     arys = {}
-    for i, (array, idtype) in enumerate(zip(arrays, input_dtype)):
+    for i, array in enumerate(arrays):
         arys["arrs{}".format(i)] = array
     test_flags.num_positional_args = len(arys)
     helpers.test_frontend_function(
