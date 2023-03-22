@@ -2701,6 +2701,14 @@ def inplace_update(
     >>> print(x)
     ivy.array([0])
 
+    With :class:`ivy.Array` input and default backend set as `numpy`:
+
+    >>> x = ivy.array([1, 2, 3], dtype=ivy.float32)
+    >>> y = ivy.array([0, 0, 0], dtype=ivy.int32)
+    >>> ivy.inplace_update(x, y, keep_input_dtype=True)
+    >>> print(x, x.dtype)
+    ivy.array([0., 0., 0.]) float32
+
     With :class:`ivy.Container` instances:, and backend set as `torch`:
 
     >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))
