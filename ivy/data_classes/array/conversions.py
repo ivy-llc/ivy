@@ -31,12 +31,26 @@ def _to_ivy(x: Any) -> Any:
     if ivy.is_native_array(x):
         return ivy.Array(x)
     try:
-        return _convert_other_native(x)
+        return _convert_other_native_to_ivy(x)
     except Exception:
         return x
 
 
-def _convert_other_native(x):
+def _convert_other_native_to_ivy(x):
+    """
+    Converts the input x to an ivy.Array instance, if it is a native array type
+    """
+    backend = _backend_that_supports(x)
+    if backend is not None:
+        np_arr = backend.to_numpy(x)
+        return ivy.Array(np_arr)
+    return x
+
+
+def _backend_that_supports(x):
+    """
+    Returns the first backend that supports the input x, or None if none do.
+    """
     backends = ("numpy", "jax", "torch", "tensorflow")
     curent_backend = ivy.current_backend_str()
     new_backends = [
@@ -44,8 +58,8 @@ def _convert_other_native(x):
     ]
     for backend in new_backends:
         if backend.is_native_array(x):
-            return backend.Array(x)
-    return x
+            return backend
+    return None
 
 
 # Wrapped #
