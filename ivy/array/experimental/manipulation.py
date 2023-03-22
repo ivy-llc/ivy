@@ -832,3 +832,46 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             Output Array
         """
         return ivy.expand(self._data, shape, out=out)
+
+    @handle_view
+    def ConcatFromSequence(
+        self: ivy.Array,
+        /,
+        x: Union[
+            Tuple[Union[ivy.Array, ivy.NativeArray]],
+            List[Union[ivy.Array, ivy.NativeArray]],
+        ],
+        *,
+        axis: int = 0,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        This method simply wraps the function, and so the docstring for ivy.hsplit also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Array input.
+        arrays
+            Sequence of arrays to concatenate.
+        axis
+            The axis along which the arrays will be joined.
+        out
+            Optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Output Array
+        """
+        if axis == 0:
+            return ivy.ConcatFromSequence([self._data] + x, axis=axis, out=out)
+        elif axis == 1:
+            if not isinstance(x, (tuple, list)):
+                x = [x]
+            if isinstance(x, tuple):
+                x = (self._data,) + x
+            else:
+                x = [self._data] + x
+            return ivy.ConcatFromSequence(x, axis=axis, out=out)

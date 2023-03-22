@@ -271,3 +271,21 @@ def expand(
 
 
 expand.support_native_out = False
+
+
+def ConcatFromSequence(
+    x: Union[Tuple[torch.Tensor, ...], List[torch.Tensor]],
+    /,
+    *,
+    axis: int = 0,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    is_tuple = type(x) is tuple
+    if is_tuple:
+        x = list(x)
+    if axis == 0:
+        ret = torch.cat(x, dim=axis)
+        return ret
+    elif axis == 1:
+        ret = torch.stack(x, dim=axis)
+        return ret

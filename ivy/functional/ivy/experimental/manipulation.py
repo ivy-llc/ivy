@@ -18,6 +18,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     handle_view,
+    handle_array_function,
 )
 from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
@@ -752,13 +753,13 @@ def _get_stats(padded, axis, width_pair, length_pair, stat_func):
     left_slice = _slice_at_axis(slice(left_index, left_index + left_length), axis)
     left_chunk = ivy.array(padded[left_slice])
     left_stat = stat_func(left_chunk, axis=axis, keepdims=True)
-    left_stat = ivy.round(left_stat) if 'int' in left_chunk.dtype else left_stat
+    left_stat = ivy.round(left_stat) if "int" in left_chunk.dtype else left_stat
     if left_length == right_length == max_length:
         return left_stat, left_stat
     right_slice = _slice_at_axis(slice(right_index - right_length, right_index), axis)
     right_chunk = ivy.array(padded[right_slice])
     right_stat = stat_func(right_chunk, axis=axis, keepdims=True)
-    right_stat = ivy.round(right_stat) if 'int' in right_chunk.dtype else right_stat
+    right_stat = ivy.round(right_stat) if "int" in right_chunk.dtype else right_stat
     return left_stat, right_stat
 
 
@@ -1557,6 +1558,39 @@ def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     (3, 3)
     """
     return ivy.current_backend().broadcast_shapes(*shapes)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_function
+def ConcatFromSequence(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: int = 0,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Concatenates arrays if axis = 0 and stacks arrays if axis = 1.
+
+    Parameters
+    ----------
+    ary
+        Array input.
+    axis
+        Axis in order to decide whether to concatenate or stack.
+
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Output Array
+    """
+    return current_backend(x).ConcatFromSequence(x, axis=axis, out=out)
 
 
 @handle_view

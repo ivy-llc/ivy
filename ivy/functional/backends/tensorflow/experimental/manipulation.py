@@ -234,3 +234,25 @@ def expand(
         if dim < 0:
             shape[i] = x.shape[i]
     return tf.broadcast_to(x, shape)
+
+
+def ConcatFromSequence(
+    x: Union[Tuple[tf.Tensor, ...], List[tf.Tensor]],
+    /,
+    *,
+    axis: int = 0,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    is_tuple = type(x) is tuple
+    if is_tuple:
+        x = list(x)
+    highest_dtype = x[0].dtype
+    for i in x:
+        highest_dtype = ivy.as_native_dtype(ivy.promote_types(highest_dtype, i.dtype))
+
+    if axis == 0:
+        ret = tf.concat(x, axis=axis)
+        return ret
+    elif axis == 1:
+        ret = tf.stack(x, axis=axis)
+        return ret

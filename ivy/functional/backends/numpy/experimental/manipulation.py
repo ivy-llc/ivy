@@ -324,3 +324,21 @@ def expand(
 
 
 expand.support_native_out = False
+
+
+def ConcatFromSequence(
+    x: Union[Tuple[np.ndarray, ...], List[np.ndarray]],
+    /,
+    *,
+    axis: int = 0,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    is_tuple = type(x) is tuple
+    if is_tuple:
+        x = list(x)
+    if axis == 0:
+        ret = np.concatenate(x, axis=axis)
+        return ret
+    elif axis == 1:
+        ret = np.stack(x, axis=axis)
+        return ret

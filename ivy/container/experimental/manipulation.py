@@ -2342,3 +2342,178 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
         """
         return self.static_expand(self, shape, out=out)
+
+    @staticmethod
+    def static_ConcatFromSequence(
+        x: Union[
+            Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+            List[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+        ],
+        /,
+        *,
+        axis: int = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.ConcatFromSequence. This method
+        simply wraps the function, and so the docstring for ivy.ConcatFromSequence
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Container with leaves to join. Each array leavve must have the same shape.
+        axis
+            axis along which the array leaves will be joined. More details can be found
+            in the docstring for ivy.ConcatFromSequence.
+
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an output container with the results.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
+        >>> z = ivy.Container.static_ConcatFromSequence(x,axis = 1)
+        >>> print(z)
+        {
+            a: ivy.array([[0, 2],
+                        [1, 3]]),
+            b: ivy.array([[4],
+                        [5]])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
+        >>> y = ivy.Container(a=ivy.array([[3, 2], [1,0]]), b=ivy.array([[1, 0]]))
+        >>> z = ivy.Container.static_ConcatFromSequence([x,y])
+        >>> print(z)
+        {
+            a: ivy.array([[0, 1],
+                          [2, 3],
+                          [3, 2],
+                          [1, 0]]),
+            b: ivy.array([[4, 5],
+                          [1, 0]])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
+        >>> y = ivy.Container(a=ivy.array([[3, 2], [1,0]]), b=ivy.array([[1, 0]]))
+        >>> z = ivy.Container.static_ConcatFromSequence([x,y],axis=1)
+        >>> print(z)
+        {
+            a: ivy.array([[[0, 1],
+                        [3, 2]],
+                        [[2, 3],
+                        [1, 0]]]),
+            b: ivy.array([[[4, 5],
+                        [1, 0]]])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "ConcatFromSequence",
+            x,
+            axis=axis,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def ConcatFromSequence(
+        self: ivy.Container,
+        /,
+        x: Union[
+            Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+            List[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+        ],
+        *,
+        axis: int = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.stack. This method
+        simply wraps the function, and so the docstring for ivy.stack
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Container with leaves to join with leaves of other arrays/containers.
+             Each array leave must have the same shape.
+        x
+            Container with other leaves to join.
+            Each array leave must have the same shape.
+        axis
+            axis along which the array leaves will be joined. More details can be found
+            in the docstring for ivy.stack.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an output container with the results.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
+        >>> y = ivy.Container(a=ivy.array([[3, 2], [1,0]]), b=ivy.array([[1, 0]]))
+        >>> z = ivy.Container.static_ConcatFromSequence([x,y],axis=1)
+        >>> print(z)
+        {
+            a: ivy.array([[[0, 1],
+                        [3, 2]],
+                        [[2, 3],
+                        [1, 0]]]),
+            b: ivy.array([[[4, 5],
+                        [1, 0]]])
+        }
+        """
+        new_x = x.cont_copy() if ivy.is_ivy_container(x) else x.copy()
+        new_x.insert(0, self.cont_copy())
+        return self.static_stack(
+            new_x,
+            axis=axis,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )

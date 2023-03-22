@@ -298,3 +298,21 @@ def expand(
         if dim < 0:
             shape[i] = x.shape[i]
     return jnp.broadcast_to(x, tuple(shape))
+
+
+def ConcatFromSequence(
+    x: Union[Tuple[JaxArray, ...], List[JaxArray]],
+    /,
+    *,
+    axis: int = 0,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    is_tuple = type(x) is tuple
+    if is_tuple:
+        x = list(x)
+    if axis == 0:
+        ret = jnp.concatenate(x, axis=axis)
+        return ret
+    elif axis == 1:
+        ret = jnp.stack(x, axis=axis)
+        return ret
