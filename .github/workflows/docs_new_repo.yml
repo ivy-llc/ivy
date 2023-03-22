@@ -8,7 +8,6 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: unifyai/ivy
-          path: ivy
           persist-credentials: false
 
       - name: Checkout 🛎️Ivy Doc Builder
@@ -32,7 +31,7 @@ jobs:
         with:
           branch: master
           repository-name: unifyai/ivy-docs
-          folder: ivy/docs/build
+          folder: docs/build
           target-folder: .
           clean: false
           git-config-name: ivy-seed
