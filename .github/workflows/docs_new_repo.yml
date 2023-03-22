@@ -25,8 +25,6 @@ jobs:
           bash docs/make_docs_without_docker.sh ivy_doc_builder
           sudo touch .nojekyll
           sudo cp .nojekyll docs/build/
-          chmod a+x docs/build/*
-          # git commit -am "add permission to deploy"
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4.4.1
