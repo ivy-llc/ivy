@@ -2,6 +2,7 @@
 # flake8: noqa
 import os
 import copy
+import random
 from typing import Union, List
 import numpy as np
 import types
@@ -334,8 +335,11 @@ def test_function(
             if hasattr(ivy.__dict__[fn_name], "out_index")
             else ret
         )
+        # defining random dtype for out array
+        out_dtype = random.choice([ivy.int32, ivy.float32, ivy.complex64])
+        zeros_fn = lambda x: ivy.zeros_like(x, dtype=out_dtype)
         out = ivy.nested_map(
-            test_ret, ivy.zeros_like, to_mutable=True, include_derived=True
+            test_ret, zeros_fn, to_mutable=True, include_derived=True
         )
         if instance_method:
             ret, ret_np_flat = get_ret_and_flattened_np_array(
@@ -421,7 +425,7 @@ def test_function(
                 )
                 out_from_gt = ivy.nested_map(
                     test_ret_from_gt,
-                    ivy.zeros_like,
+                    zeros_fn,
                     to_mutable=True,
                     include_derived=True,
                 )
