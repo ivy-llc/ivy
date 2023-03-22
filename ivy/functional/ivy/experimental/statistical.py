@@ -313,3 +313,73 @@ def bincount(
     return ivy.current_backend(x).bincount(
         x, weights=weights, minlength=minlength, out=out
     )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def nanquantile(
+    a: ivy.Array,
+    q: Union[ivy.Array, float],
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: bool = False,
+    interpolation: str = "linear",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Compute the qth quantile of the data along the specified axis,
+    while ignoring NaN values.
+    Parameters
+    ----------
+    a
+        Input array, containing NaN values to be ignored
+    q
+        Input array of float.
+        Quantile or sequence of quantiles to compute, which must be between
+        0 and 1 inclusive.
+    axis
+        Axis or axes along which the quantiles are computed. The default is
+        to compute the quantile(s) along a flattened version of the array.
+    keepdims
+        If this is set to True, the axes which are reduced are left in the result
+        as dimensions with size one. With this option, the result will broadcast
+        correctly against the original array a.
+    interpolation (method)
+        {'nearest', 'linear', 'lower', 'higher', 'midpoint'}. Default value: 'linear'.
+        This specifies the interpolation method to use when the desired quantile lies
+        between two data points i < j:
+        - linear: i + (j - i) * fraction, where fraction is the fractional part of the
+        index surrounded by i and j.
+        - lower: i.
+        - higher: j.
+        - nearest: i or j, whichever is nearest.
+        - midpoint: (i + j) / 2. linear and midpoint interpolation do not work with
+        integer dtypes.
+    out
+        Alternative output array in which to place the result.
+    Returns
+    -------
+    ret
+        quantile –If q is a single percentile and axis=None, then > result is a scalar.
+        If multiple quantiles are given, first axis of the result corresponds to the
+        quantiles.The other axes are the axes that remain after the reduction of a.
+    Examples
+    --------
+    >>> a = ivy.array([[10., ivy.nan, 4.],[ 3., 2., 1.]])
+    >>> q = ivy.array(0.5)
+    >>> ivy.nanquantile(a, q)
+    ivy.array(3.0)
+    >>> ivy.nanquantile(a, q, axis=0)
+    ivy.array([6.5, 2. , 2.5])
+    >>> ivy.nanquantile(a, q, axis=1)
+    ivy.array([[7.],[2.]])
+    >>> ivy.nanquantile(a, q, axis=1, keepdims=True)
+    ivy.array([[7.],
+               [2.]])
+    """
+
+    return ivy.current_backend(a).nanquantile(
+        a, q, axis=axis, keepdims=keepdims, interpolation=interpolation, out=out
+    )
