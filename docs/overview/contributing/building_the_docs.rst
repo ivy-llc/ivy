@@ -7,6 +7,11 @@ Building the Docs
 .. _`miniconda`: https://docs.conda.io/en/latest/miniconda.html
 .. _`venv`: https://docs.python.org/3/library/venv.html
 
+
+   ⚠️ **Deprecated**: This documentation is for the old Ivy doc-builder, this 
+   `PR <https://github.com/unifyai/doc-builder/pull/15>`_ has changed the current behavior
+   of the doc-builder. We will update this documentation soon.
+
 Building the Docs with Docker
 -----------------------------
 
