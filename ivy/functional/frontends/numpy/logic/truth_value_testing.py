@@ -70,8 +70,10 @@ def isrealobj(x: any):
 
 
 @to_ivy_arrays_and_back
-def iscomplexobj(a):
-    for ele in a:
+def iscomplexobj(x):
+    if x.ndim == 0:
+        return ivy.is_complex_dtype(ivy.dtype(x))
+    for ele in x:
         if ivy.is_complex_dtype(ivy.dtype(ele)):
             return True
         else:
