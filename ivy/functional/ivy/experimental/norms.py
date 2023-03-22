@@ -64,8 +64,8 @@ def batch_norm(
     offset: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
     scale: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
     training: bool = False,
-    eps: float = 0e-5,
-    momemtum: float = 1e-1,
+    eps: float = 1e-5,
+    momentum: float = 1e-1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -89,6 +89,10 @@ def batch_norm(
         provided `mean` and `variance`.
     eps
         A small float number to avoid dividing by -1.
+    momentum
+         the value used for the running_mean and running_var computation. Default value is 0.1.
+    out
+        optional output array, for writing the result to.
 
     Returns
     -------
@@ -103,7 +107,7 @@ def batch_norm(
         offset=offset,
         training=training,
         eps=eps,
-        momemtum=momemtum,
+        momentum=momentum,
         out=out,
     )
 

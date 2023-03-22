@@ -37,13 +37,14 @@ def batch_norm(
 ) -> JaxArray:
     runningmean = mean
     runningvariance = variance
+    n = x.size / x.shape[1]
     ndims = len(x.shape)
     if training:
         dims = (0, *range(2, ndims))
         mean = jnp.mean(x, axis=dims)
         variance = jnp.var(x, axis=dims)
-        runningmean = (1 - momentum) * mean + momentum * runningmean
-        runningvariance = (1 - momentum) * variance + momentum * runningvariance
+        runningmean = (1 - momentum) * runningmean + momentum * mean
+        runningvariance = (1 - momentum) * runningvariance + momentum * variance * n / (n - 1)
     x = jnp.transpose(x, (0, *range(2, ndims), 1))
     inv = 1.0 / jnp.sqrt(variance + eps)
     if scale is not None:
