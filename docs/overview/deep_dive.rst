@@ -100,3 +100,4 @@ We're excited for you to get involved! 🦾
    deep_dive/ivy_frontends_tests.rst
    deep_dive/exception_handling.rst
    deep_dive/continuous_integration.rst
+   deep_dive/building_the_docs_pipline.rst
