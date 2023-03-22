@@ -132,6 +132,8 @@ def test_numpy_isfortran(
     fn_tree,
     test_flags,
 ):
+    if ivy.current_backend() != "numpy":
+        return
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
