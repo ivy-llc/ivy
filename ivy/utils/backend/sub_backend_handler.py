@@ -26,7 +26,7 @@ original_backend_dict = None
 def set_sub_backend(sub_backend_str: str):
     if ivy.backend == "none":
         print("You must set a backend first:")
-        print(available_sub_backends())
+        available_sub_backends()
         return
 
     if ivy.current_backend_str() not in _backend_to_sub_backends_dict.keys():
