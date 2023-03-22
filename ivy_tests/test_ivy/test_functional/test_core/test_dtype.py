@@ -20,7 +20,7 @@ def test_dtype_instances():
     assert ivy.exists(ivy.int32)
     assert ivy.exists(ivy.int64)
     assert ivy.exists(ivy.uint8)
-    if ivy.current_backend_str() != "torch":
+    if ivy.current_backend_str() not in ["torch", "paddle"]:
         assert ivy.exists(ivy.uint16)
         assert ivy.exists(ivy.uint32)
         assert ivy.exists(ivy.uint64)
@@ -886,6 +886,7 @@ _composition_1.test_unsupported_dtypes = {
         "complex64",
         "complex128",
     ),
+    "paddle": ("uint16","uint32","uint64","bfloat16",),
 }
 
 
@@ -899,6 +900,7 @@ _composition_2.test_unsupported_dtypes = {
     "jax": ("complex64", "complex128"),
     "tensorflow": ("complex64", "complex128"),
     "torch": ("uint16", "uint32", "uint64", "float16", "complex64", "complex128"),
+    "paddle": ("uint16","uint32","uint64","bfloat16",),
 }
 
 
