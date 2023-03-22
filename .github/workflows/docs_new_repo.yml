@@ -27,6 +27,7 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           branch: master
           repository-name: unifyai/ivy-docs
           folder: docs/build
