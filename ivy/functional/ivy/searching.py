@@ -13,6 +13,16 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
 )
+#new imports
+from ivy.core.container import Container
+from ivy.core.array import Array
+from ivy.core.backend import get_backend, Backend
+from ivy.core.type_util import get_array_module
+from ivy.core.number import Number
+
+
+
+
 
 
 # Array API Standard #
@@ -280,7 +290,37 @@ def nonzero(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
+    """
 
+    # check input type and get backend
+    if isinstance(x, Container):
+        raise NotImplementedError('`nonzero` does not support `ivy.Container` input.')
+    backend: Backend = get_backend(x)
+
+    # get array module and check if x is zero-dimensional
+    am = get_array_module(x)
+    if am.ndim(x) == 0:
+        raise ValueError('`nonzero` does not support zero-dimensional input.')
+
+    # get non-zero indices
+    nonzero_indices = am.nonzero(x)
+
+    # return as tuple or array depending on as_tuple flag
+    if as_tuple:
+        return tuple([backend.array(arr.tolist(), dtype='int32') for arr in nonzero_indices])
+    else:
+        ret = backend.concatenate([arr.reshape(-1, 1) for arr in nonzero_indices], axis=1)
+        if size is not None:
+            current_size = am.shape(ret)[0]
+            if current_size < size:
+                num_to_fill = size - current_size
+                fill_arr = backend.full((num_to_fill, am.ndim(x)), fill_value, dtype='int32')
+                ret = backend.concatenate([ret, fill_arr], axis=0)
+            elif current_size > size:
+                ret = ret[:size]
+        return ret
+
+    """""
     Functional Examples
     -------------------
 
@@ -363,7 +403,6 @@ def nonzero(
     return current_backend(x).nonzero(
         x, as_tuple=as_tuple, size=size, fill_value=fill_value
     )
-
 
 @to_native_arrays_and_back
 @handle_out_argument
