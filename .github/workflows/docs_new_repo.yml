@@ -1,11 +1,7 @@
 name: docs_new_repo
 on: [push, pull_request]
 permissions: 
-  actions: write
   contents: write
-  deployments: write
-  id-token: write
-  pages: write
 jobs:
   update-docs:
     runs-on: ubuntu-latest
@@ -29,6 +25,8 @@ jobs:
           bash docs/make_docs_without_docker.sh ivy_doc_builder
           sudo touch .nojekyll
           sudo cp .nojekyll docs/build/
+          chmod a+x docs/build/*
+          # git commit -am "add permission to deploy"
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4.4.1
