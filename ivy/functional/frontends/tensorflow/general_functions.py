@@ -283,10 +283,10 @@ def strided_slice(
         lambda x: ivy.array(x) if isinstance(x, int) else x,
         [begin, end, strides]
     )
-    num_defined = len(begin.shape)
+    num_defined = len(begin)
     strides = ivy.repeat(ivy.array(1), num_defined) if strides is None else strides
     ivy.assertions.check_true(
-        num_defined == len(end.shape) == len(strides.shape),
+        num_defined == len(end) == len(strides),
         message="`begin`, `end`, and `strides` are expected to have the same length",
     )
     begin, end, strides = map(
@@ -299,7 +299,7 @@ def strided_slice(
         raise ValueError("Multiple ellipses are not allowed.")
     elif len(ellipsis_indices) == 1:
         ellipsis_index = ellipsis_indices[0]
-        num_missing = input_rank - len(begin) + 1
+        num_missing = input_rank - len(begin)
         if ellipsis_index >= len(begin):
             begin = begin + [0] * num_missing
             end = end + input_shape[ellipsis_index:ellipsis_index + num_missing]
@@ -309,23 +309,28 @@ def strided_slice(
             end = end[:ellipsis_index] + input_shape[ellipsis_index:ellipsis_index + num_missing] + end[ellipsis_index:]
             strides = strides[:ellipsis_index] + [1] * num_missing + strides[ellipsis_index:]
 
+    new_axis_indices = [i for i, v in enumerate(new_axis_mask) if v]
+    ret = ivy.expand_dims(input_, axis=new_axis_indices)
+
     full_slice = []
-    new_dims = []
-    for i, s in enumerate(input_shape):
-        if new_axis_mask[i]:
-            new_dims.append(i)
-            full_slice.append(py_slice(None))
-        else:
-            b = begin[i] if not begin_mask[i] else None
-            e = end[i] if not end_mask[i] else None
-            if shrink_axis_mask[i]:
-                if b is not None:
-                    e = b + 1 if strides[i] > 0 else b - 1
-                else:
-                    e = 1 if strides[i] > 0 else input_rank - 2
-            full_slice.append(py_slice(b, e, strides[i]))
-    ret = input_[tuple(full_slice)]
-    return ivy.expand_dims(ret, axis=new_dims)
+    for i, _ in enumerate(begin):
+        b = begin[i] if not begin_mask[i] else None
+        e = end[i] if not end_mask[i] else None
+        if shrink_axis_mask[i]:
+            if b is not None:
+                e = b + 1 if strides[i] > 0 else b - 1
+            else:
+                e = 1 if strides[i] > 0 else input_rank - 2
+        full_slice.append(py_slice(b, e, strides[i]))
+    ret = ret if full_slice is None else ret[tuple(full_slice)]
+    shrink_indices = [i for i, v in enumerate(shrink_axis_mask) if v]
+    try:
+        ret = ivy.squeeze(ret, axis=shrink_indices) if ret.size else ret
+    except Exception as e:
+        if hasattr(e, 'message') and "has size not equal to one" in e.message:
+            pass
+        raise e
+    return ret
 
 
 @to_ivy_arrays_and_back
