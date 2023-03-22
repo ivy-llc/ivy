@@ -1131,7 +1131,7 @@ def _dim_scale_factor(input_size, output_size, align_corners, scales):
     return dim_scale_factor
 
 
-def _mitchell_cubic_kernel(x, B, C):
+def _mitchell_cubic_kernel(x, B=1/3, C=1/3):
     x = abs(x)
     if x < 1:
         return ((12 - 9 * B - 6 * C) * (x ** 3) + (-18 + 12 * B + 6 * C) * (x ** 2) +
@@ -1143,7 +1143,7 @@ def _mitchell_cubic_kernel(x, B, C):
         return 0
 
 
-def _mitchell_cubic_weights(kernel_size, scale, B, C):
+def _mitchell_cubic_weights(kernel_size, scale, B=1/3, C=1/3):
     kernel = ivy.zeros(kernel_size)
     for i in range(kernel_size):
         x = (i - kernel_size // 2) / scale
@@ -1151,19 +1151,25 @@ def _mitchell_cubic_weights(kernel_size, scale, B, C):
     return kernel / kernel.sum()
 
 
+def _slice_at_axis(sl, axis):
+    return (slice(None),) * axis + (sl,) + (...,)
+
+
 def _convolve(image, kernel, axis):
-    pad_width = [(0, 0) if i != axis else (kernel.shape[0] // 2, kernel.shape[0] // 2) for i in range(image.ndim)]
+    kernel_size = kernel.shape[0]
+    pad_width = [(0, 0) if i != axis else (kernel_size // 2, kernel_size // 2)
+                 for i in range(image.ndim)]
     padded = ivy.pad(image, pad_width, mode='reflect')
     result = ivy.empty_like(image)
     for i in range(image.shape[axis]):
-        result.take(indices=i, axis=axis, out=result)[:, :] = ivy.sum(
-            padded.take(indices=range(i, i + kernel.shape[0]), axis=axis) * kernel[:, ivy.newaxis],
-            axis=0,
+        result[_slice_at_axis(slice(i, i + 1, 1), axis)] = ivy.sum(
+            padded[_slice_at_axis(slice(i, i + kernel_size, 1), axis)] *
+            kernel[:, ivy.newaxis],
         )
     return result
 
 
-def _gaussian_kernel(kernel_size, scale, sigma):
+def _gaussian_kernel(kernel_size, scale, sigma=1):
     kernel = ivy.zeros(kernel_size)
     center = kernel_size // 2
     for i in range(kernel_size):
@@ -1172,7 +1178,7 @@ def _gaussian_kernel(kernel_size, scale, sigma):
     return kernel / kernel.sum()
 
 
-def compute_weight_mat(
+def _compute_weight_mat(
     input_size,
     output_size,
     scale,
@@ -1320,10 +1326,8 @@ def interpolate(
             equation = "ijkl,km,ln->ijmn"
         elif mode == "trilinear" or dims == 3:
             equation = "ijklm,kn,lo,mp->ijnop"
-
         if mode == "bicubic_tensorflow":
             kernel_func = lambda inputs: _cubic_kernel(inputs)
-
         if mode == "lanczos3":
             kernel_func = lambda inputs: _lanczos_kernel(3, inputs)
         elif mode == "lanczos5":
@@ -1339,7 +1343,7 @@ def interpolate(
                 align_corners,
                 scale_factor[i] if scale_factor is not None else None,
             )
-            w = compute_weight_mat(
+            w = _compute_weight_mat(
                 m, n, scale[i], align_corners, kernel_func, antialias, dim_scale_factor
             ).astype(x.dtype)
             operands.append(w)
@@ -1432,31 +1436,24 @@ def interpolate(
                             ivy.multi_dot((mat_l, mat_m, mat_r)), 0
                         )
     elif mode in ["mitchellcubic", "gaussian"]:
-        new_h, new_w = x.shape[2:4]
-        c, h, w, c = x.shape[1:]
-
-        scale_h = size[0] / x.shape[2]
-        scale_w = size[1] / x.shape[3]
-
+        new_h, new_w = size
+        n, c, h, w = x.shape
+        scale_h, scale_w = new_h / h, new_w / w
         kernel_size_h, kernel_size_w = int(4 * scale_h) + 1, int(4 * scale_w) + 1
-
         if mode == "mitchellcubic":
-            B = 1/3
-            C = 1/3
-            kernel_h = _mitchell_cubic_weights(kernel_size_h, scale_h, B, C).reshape(-1, 1)
-            kernel_w = _mitchell_cubic_weights(kernel_size_w, scale_w, B, C).reshape(1, -1)
+            kernel_h = _mitchell_cubic_weights(kernel_size_h, scale_h)
+            kernel_w = _mitchell_cubic_weights(kernel_size_w, scale_w)
         else:
-            sigma = 1
-            kernel_h = _gaussian_kernel(kernel_size_h, scale_h, sigma).reshape(-1, 1)
-            kernel_w = _gaussian_kernel(kernel_size_w, scale_w, sigma).reshape(1, -1)
-
-        ret = ivy.empty((new_h, new_w, c), dtype=x.dtype)
-
-        for i in range(c):
-            temp = _convolve(x[:, :, i], kernel_w, axis=1)
-            temp = _convolve(temp, kernel_h, axis=0)
-            ret[:, :, i] = temp[int(ivy.round(ivy.linspace(0, h - 1, new_h)))][
-                               :, ivy.round(ivy.linspace(0, w - 1, new_w)).astype(int)]
+            kernel_h = _gaussian_kernel(kernel_size_h, scale_h)
+            kernel_w = _gaussian_kernel(kernel_size_w, scale_w)
+        ret = ivy.empty((n, c, new_h, new_w), dtype=x.dtype)
+        for b in range(n):
+            for i in range(c):
+                temp = _convolve(x[b, i, ...], kernel_w, axis=1)
+                temp = _convolve(temp, kernel_h, axis=0)
+                h_indexes = ivy.round(ivy.linspace(0, h - 1, new_h)).astype(int)
+                w_indexes = ivy.round(ivy.linspace(0, w - 1, new_w)).astype(int)
+                ret[b, i, ...] = ivy.array(temp.to_numpy()[..., h_indexes, w_indexes])
     elif mode == "tf_area":
         ret = _tf_area_interpolate(x, size, dims)
     return ivy.astype(ret, ivy.dtype(x), out=out)
