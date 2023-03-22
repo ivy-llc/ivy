@@ -399,5 +399,6 @@ def corrcoef(x, y=None, bias=None, ddof=None, rowvar=True, *, dtype=None):
         if y is None:
             return ivy.corrcoef(ivy.astype(x, dtype), y=y, rowvar=rowvar)
         else:
-            return ivy.corrcoef(ivy.astype(x, dtype), y=ivy.astype(y, dtype), rowvar=rowvar)
+            return ivy.corrcoef(ivy.astype(x, dtype),
+                                y=ivy.astype(y, dtype), rowvar=rowvar)
     return ivy.corrcoef(x.astype(ivy.float64), y=y, rowvar=rowvar)
