@@ -28,7 +28,7 @@ lcm.support_native_out = True
 
 
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("bfloat16",)},
+    {"2.9.1 and below": ("bfloat16", "complex")},
     backend_version,
 )
 def fmod(
