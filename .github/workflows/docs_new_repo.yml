@@ -1,7 +1,11 @@
 name: docs_new_repo
 on: [push, pull_request]
 permissions: 
+  actions: write
   contents: write
+  deployments: write
+  id-token: write
+  pages: write
 jobs:
   update-docs:
     runs-on: ubuntu-latest
