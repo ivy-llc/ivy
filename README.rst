@@ -139,7 +139,7 @@ This way, Ivy makes all ML-related projects available for you, independently of 
     # Converts framework-specific code to Ivy
     ivy.unify()
 
-These functions can be used eagerly or lazily. If you pass the neccesary arguments for function tracing, the compilation/transpilation step will happen instantly (eagerly). Otherwise, the compilation/transpilation will happen only when the returned function is first invoked.
+These functions can be used eagerly or lazily. If you pass the necessary arguments for function tracing, the compilation/transpilation step will happen instantly (eagerly). Otherwise, the compilation/transpilation will happen only when the returned function is first invoked.
 
 .. code-block:: python
     
