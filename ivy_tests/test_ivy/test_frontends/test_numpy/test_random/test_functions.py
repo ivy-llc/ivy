@@ -324,3 +324,45 @@ def test_numpy_shuffle(
         test_values=False,
         x=x[0],
     )
+
+
+# gamma
+@handle_frontend_test(
+    fn_tree="numpy.random.gamma",
+    input_dtypes=helpers.get_dtypes("float", index=2),
+    alpha=st.floats(allow_nan=False,
+                    allow_infinity=False,
+                    width=32,
+                    exclude_min=True,
+                    min_value=0),
+    beta=st.floats(allow_nan=False,
+                   allow_infinity=False,
+                   width=32,
+                   exclude_min=True,
+                   min_value=0),
+    size=st.tuples(
+        st.integers(min_value=2, max_value=5),
+        st.integers(min_value=2, max_value=5)
+    ),
+)
+def test_numpy_gamma(
+        input_dtypes,
+        size,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
+        alpha,
+        beta
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        alpha=alpha,
+        beta=beta,
+        size=size,
+    )
