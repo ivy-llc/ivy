@@ -125,3 +125,22 @@ def bincount(
 
 
 bincount.support_native_out = False
+
+
+def nanquantile(
+    a: np.ndarray,
+    q: Union[float, np.ndarray],
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: bool = False,
+    # interpolation param is deprecated since version 1.22.0
+    # replaced by method keyword argument
+    interpolation: str = "linear",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    # NumPy nanquantile method returns a scalar or ndarray with dtype=float64
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return np.nanquantile(
+        a, q, axis=axis, method=interpolation, keepdims=keepdims, out=out
+    ).astype(a.dtype)

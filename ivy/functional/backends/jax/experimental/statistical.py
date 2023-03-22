@@ -103,3 +103,21 @@ def bincount(
     else:
         ret = jnp.bincount(x, minlength=minlength).astype(x.dtype)
     return ret
+
+
+def nanquantile(
+    a: JaxArray,
+    q: Union[float, JaxArray],
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    # interpolation param is deprecated since version 1.22.0
+    # replaced by method keyword argument
+    interpolation: str = "linear",
+    keepdims: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return jnp.nanquantile(
+        a, q, axis=axis, method=interpolation, keepdims=keepdims, out=out
+    )
