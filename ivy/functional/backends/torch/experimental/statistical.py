@@ -151,3 +151,37 @@ def bincount(
 
 
 bincount.support_native_out = False
+
+
+def nanquantile(
+    a: torch.Tensor,
+    q: Union[torch.Tensor, float],
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: bool = False,
+    interpolation: str = "linear",
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    temp = a.to(torch.float64)
+    if isinstance(q, torch.Tensor):
+        qt = q.to(torch.float64)
+    else:
+        qt = q
+    if isinstance(axis, list) or isinstance(axis, tuple):
+        dimension = len(a.size())
+        for x in axis:
+            axis1 = x
+            for axis2 in range(x + 1, dimension):
+                temp = torch.transpose(temp, axis1, axis2)
+                axis1 = axis2
+        temp = torch.flatten(temp, start_dim=dimension - len(axis))
+        return torch.nanquantile(
+            temp, qt, dim=-1, keepdim=keepdims, interpolation=interpolation, out=out
+        )
+    return torch.nanquantile(
+        temp, qt, dim=axis, keepdim=keepdims, interpolation=interpolation, out=out
+    )
+
+
+nanquantile.support_native_out = True
