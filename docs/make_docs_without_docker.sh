@@ -56,6 +56,6 @@ sphinx-build -v -b html docs docs/build || error_exit
 touch docs/build/.nojekyll
 
 # Move the build to docs.old
-mv docs/build docs.old/build || error_exit
+# mv docs/build docs.old/build || error_exit
 
 # cleanup
