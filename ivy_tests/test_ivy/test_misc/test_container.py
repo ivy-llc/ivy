@@ -3450,3 +3450,6 @@ def test_container_inplace(on_device):
             assert func(container0, value) == container0_copy  # values
             assert id(container0_copy) == id_before_op  # container ids
             assert og_ids == op_ids  # value ids
+
+
+# TODO: Test non-inplace operator functions like __add__ and __matmul__
