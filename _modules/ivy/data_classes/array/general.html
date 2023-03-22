@@ -1588,6 +1588,14 @@ document.write(`
 <span class="sd">        &gt;&gt;&gt; print(x)</span>
 <span class="sd">        ivy.array([0])</span>
 
+<span class="sd">        With :class:`ivy.Array` input and default backend set as `numpy`:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([1, 2, 3], dtype=ivy.float32)</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.array([0, 0, 0], dtype=ivy.int32)</span>
+<span class="sd">        &gt;&gt;&gt; x.inplace_update(y, keep_input_dtype=True)</span>
+<span class="sd">        &gt;&gt;&gt; print(x, x.dtype)</span>
+<span class="sd">        ivy.array([0., 0., 0.]) float32</span>
+
 <span class="sd">        With :class:`ivy.Array` input and default backend set as `torch`:</span>
 
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
