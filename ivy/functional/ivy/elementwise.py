@@ -2346,73 +2346,73 @@ def less_equal(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes the truth value of x1_i <= x2_i for each element x1_i of the input array
-    x1 with the respective element x2_i of the input array x2.
+        x1 with the respective element x2_i of the input array x2.
 
-    Parameters
-    ----------
-    x1
-        first input array. May have any data type.
-    x2
-        second input array. Must be compatible with x1 (with Broadcasting). May have any
-        data type.
-<<<<<<< HEAD
-=======
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
->>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
+        Parameters
+        ----------
+        x1
+            first input array. May have any data type.
+        x2
+            second input array. Must be compatible with x1 (with Broadcasting). May have any
+            data type.
+    <<<<<<< HEAD
+    =======
+        out
+            optional output array, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+    >>>>>>> a3fa5ae9c4567371f82de20b15479e535a867ead
 
-    Returns
-    -------
-     ret
-        an array containing the element-wise results. The returned array must have a
-        data type of bool.
+        Returns
+        -------
+         ret
+            an array containing the element-wise results. The returned array must have a
+            data type of bool.
 
 
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.less_equal.html>`_ # noqa
-    in the standard.
+        This function conforms to the `Array API Standard
+        <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+        `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.less_equal.html>`_ # noqa
+        in the standard.
 
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments
+        Both the description and the type hints above assumes an array input for simplicity,
+        but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+        instances in place of any of the arguments
 
-    Examples
-    --------
-    With :class:`ivy.Array` input:
+        Examples
+        --------
+        With :class:`ivy.Array` input:
 
-    >>> x = ivy.less_equal(ivy.array([1,2,3]),ivy.array([2,2,2]))
-    >>> print(x)
-    ivy.array([True, True,  False])
+        >>> x = ivy.less_equal(ivy.array([1,2,3]),ivy.array([2,2,2]))
+        >>> print(x)
+        ivy.array([True, True,  False])
 
-    >>> x = ivy.array([[10.1, 2.3, -3.6]])
-    >>> y = ivy.array([[4.8], [5.2], [6.1]])
-    >>> shape = (3,3)
-    >>> fill_value = False
-    >>> z = ivy.full(shape, fill_value)
-    >>> ivy.less_equal(x, y, out=z)
-    >>> print(z)
-    ivy.array([[False, True, True],
-       [ False, True, True],
-       [ False, True, True]])
+        >>> x = ivy.array([[10.1, 2.3, -3.6]])
+        >>> y = ivy.array([[4.8], [5.2], [6.1]])
+        >>> shape = (3,3)
+        >>> fill_value = False
+        >>> z = ivy.full(shape, fill_value)
+        >>> ivy.less_equal(x, y, out=z)
+        >>> print(z)
+        ivy.array([[False, True, True],
+           [ False, True, True],
+           [ False, True, True]])
 
-    >>> x = ivy.array([[[1.1], [3.2], [-6.3]]])
-    >>> y = ivy.array([[8.4], [2.5], [1.6]])
-    >>> ivy.less_equal(x, y, out=x)
-    >>> print(x)
-    ivy.array([[[True],[False],[True]]])
+        >>> x = ivy.array([[[1.1], [3.2], [-6.3]]])
+        >>> y = ivy.array([[8.4], [2.5], [1.6]])
+        >>> ivy.less_equal(x, y, out=x)
+        >>> print(x)
+        ivy.array([[[True],[False],[True]]])
 
-    With :class:`ivy.Container` input:
+        With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([4, 5, 6]),b=ivy.array([2, 3, 4]))
-    >>> y = ivy.Container(a=ivy.array([1, 2, 3]),b=ivy.array([5, 6, 7]))
-    >>> z = ivy.less_equal(x, y)
-    >>> print(z)
-    {
-        a: ivy.array([False, False, False]),
-        b: ivy.array([True, True, True])
-    }
+        >>> x = ivy.Container(a=ivy.array([4, 5, 6]),b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([1, 2, 3]),b=ivy.array([5, 6, 7]))
+        >>> z = ivy.less_equal(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([False, False, False]),
+            b: ivy.array([True, True, True])
+        }
 
     """
     return ivy.current_backend(x1, x2).less_equal(x1, x2, out=out)

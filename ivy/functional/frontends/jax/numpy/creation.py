@@ -65,11 +65,9 @@ def asarray(a, dtype=None, order=None):
     return array(a, dtype=dtype, order=order)
 
 
-
 @to_ivy_arrays_and_back
 def copy(a, order=None):
     return array(a, order=order)
-
 
 
 @handle_jax_dtype
@@ -109,12 +107,10 @@ def full_like(a, fill_value, dtype=None, shape=None):
     return ivy.full_like(a, fill_value, dtype=dtype)
 
 
-
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def identity(n, dtype=None):
     return ivy.eye(n, dtype=dtype)
-
 
 
 @to_ivy_arrays_and_back
@@ -137,10 +133,17 @@ def full(shape, fill_value, dtype=None):
     return ivy.full(shape, fill_value, dtype=dtype)
 
 
-
 @handle_jax_dtype
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16", )}, 'jax')
+@with_unsupported_dtypes(
+    {
+        "0.3.14 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "jax",
+)
 def logspace(start, stop, num=50, endpoint=True, base=10.0, dtype=None, axis=0):
     if not endpoint:
         interval = (stop - start) / num
@@ -148,10 +151,17 @@ def logspace(start, stop, num=50, endpoint=True, base=10.0, dtype=None, axis=0):
     return ivy.logspace(start, stop, num, base=base, axis=axis, dtype=dtype)
 
 
-
 @handle_jax_dtype
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16", )}, 'jax')
+@with_unsupported_dtypes(
+    {
+        "0.3.14 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "jax",
+)
 def linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis=0):
     ret = ivy.linspace(start, stop, num, axis=axis, endpoint=endpoint, dtype=dtype)
     if retstep:
@@ -170,8 +180,3 @@ def single(x):
 @to_ivy_arrays_and_back
 def double(x):
     return ivy.astype(x, ivy.double, copy=False)
-
-
-
-
-
