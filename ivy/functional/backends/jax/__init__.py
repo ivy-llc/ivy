@@ -1,6 +1,5 @@
 # global
 import sys
-from types import SimpleNamespace
 from packaging import version
 from jax.config import config
 import jaxlib
@@ -242,4 +241,4 @@ try:
     from .sub_backends import *
 
 except ImportError:
-    sub_backends = SimpleNamespace()
+    pass

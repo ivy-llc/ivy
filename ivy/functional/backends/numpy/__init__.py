@@ -1,6 +1,5 @@
 # global
 import sys
-from types import SimpleNamespace
 import numpy as np
 
 # local
@@ -197,4 +196,4 @@ try:
     from .sub_backends import *
 
 except ImportError:
-    sub_backends = SimpleNamespace()
+    pass
