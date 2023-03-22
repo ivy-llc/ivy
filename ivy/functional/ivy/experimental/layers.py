@@ -1453,7 +1453,7 @@ def interpolate(
                 temp = _convolve(temp, kernel_h, axis=0)
                 h_indexes = ivy.round(ivy.linspace(0, h - 1, new_h)).astype(int)
                 w_indexes = ivy.round(ivy.linspace(0, w - 1, new_w)).astype(int)
-                ret[b, i, ...] = ivy.array(temp.to_numpy()[..., h_indexes, w_indexes])
+                ret[b, i, ...] = ivy.array(temp.to_numpy()[h_indexes, w_indexes])
     elif mode == "tf_area":
         ret = _tf_area_interpolate(x, size, dims)
     return ivy.astype(ret, ivy.dtype(x), out=out)
