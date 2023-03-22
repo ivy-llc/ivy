@@ -327,9 +327,8 @@ def strided_slice(
     try:
         ret = ivy.squeeze(ret, axis=shrink_indices) if ret.size else ret
     except Exception as e:
-        if hasattr(e, 'message') and "has size not equal to one" in e.message:
-            pass
-        raise e
+        if not (hasattr(e, 'message') and "has size not equal to one" in e.message):
+            raise e
     return ret
 
 
