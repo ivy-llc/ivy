@@ -633,7 +633,7 @@ def test_jax_numpy_isfinite(
 
 # isin
 @handle_frontend_test(
-    fn_tree="numpy.isin",
+    fn_tree="jax.numpy.isin",
     dtypes_values=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes(),
         num_arrays=2,
