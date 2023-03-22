@@ -2,15 +2,15 @@ import ivy
 import ivy.functional.frontends.torch as torch_frontend
 
 def no_grad():
-    return ivy.with_grads(with_grads=False)
+    return ivy.with_grads(with_grads = False)
 
 
 def enable_grad():
-    return ivy.with_grads(with_grads=True)
+    return ivy.with_grads(with_grads = True)
 
 
 def set_grad_enabled(mode=True):
-    return ivy.with_grads(mode)
+    return ivy.with_grads(with_grads = mode)
 
 """
 def is_grad_enabled():
