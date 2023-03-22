@@ -83,3 +83,9 @@ def shuffle(x, /):
     if isinstance(x, int):
         x = ivy.arange(x)
     return ivy.shuffle(x)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def gamma(alpha, beta, /, size=None):
+    return ivy.gamma(alpha, beta, shape=size)
