@@ -54,16 +54,22 @@ def instance_norm(
     offset: Optional[Union[tf.Tensor, tf.Variable]] = None,
     training: bool = False,
     eps: float = 1e-5,
+    momentum: float = 1e-1,
+    out: Optional[tf.Tensor] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    ndims = len(x.shape)
-    if training:
-        dims = (*range(2, ndims),)
-        mean = tf.math.reduce_mean(x, axis=dims)
-        variance = tf.math.reduce_variance(x, axis=dims)
-    x = tf.transpose(x, perm=(*range(2, ndims), 1, 0))
-    ret = tf.nn.batch_normalization(x, mean, variance, offset, scale, eps)
-    return tf.transpose(ret, perm=(ndims - 1, ndims - 2, *range(0, ndims - 2)))
+    # Instance Norm with (N,C,H,W) is the same as BatchNorm with (1, N * C, H, W)
+    xnormalized, runningmean, runningvariance = \
+        batch_norm(tf.reshape(x, (1, -1, *x.shape[2:])),
+                   mean,
+                   variance,
+                   scale=scale,
+                   offset=offset,
+                   training=training,
+                   eps=eps,
+                   momentum=momentum,
+                   out=out)
 
+    return tf.reshape(xnormalized, x.shape), runningmean, runningvariance
 
 def lp_normalize(
     x: Union[tf.Tensor, tf.Variable],
