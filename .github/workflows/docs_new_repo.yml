@@ -5,24 +5,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️Ivy
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: unifyai/ivy
           path: ivy
           persist-credentials: false
 
       - name: Checkout 🛎️Ivy Doc Builder
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: unifyai/doc-builder
           path: ivy_doc_builder
-          persist-credentials: false
-        
-      - name: Checkout 🛎️Ivy Docs
-        uses: actions/checkout@v2
-        with:
-          repository: unifyai/ivy-docs
-          path: ivy-docs
           persist-credentials: false
 
       - name: Build Docs
@@ -34,15 +27,15 @@ jobs:
           sudo touch .nojekyll
           sudo cp .nojekyll build/
           cd ../..
-          cp -r ivy/docs/build ivy-docs
  
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@3.7.1
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: main
-          REPOSITORY_NAME: ivy-docs
-          FOLDER: .
-          CLEAN: false
-          GIT_CONFIG_NAME: ivy-seed
-          GIT_CONFIG_EMAIL: ivydl.team@gmail.com
+          token: ${{ secrets.GITHUB_TOKEN }}
+          brranch: master
+          repository-name: unifyai/ivy-docs
+          folder: ivy/docs/build
+          target-folder: .
+          clean: false
+          git-config-name: ivy-seed
+          git-config-email: ivydl.team@gmail.com
