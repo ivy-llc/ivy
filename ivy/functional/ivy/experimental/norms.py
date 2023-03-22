@@ -113,6 +113,7 @@ def batch_norm(
 
 
 @handle_nestable
+@handle_out_argument
 @to_native_arrays_and_back
 @handle_exceptions
 @handle_array_like_without_promotion
@@ -126,6 +127,8 @@ def instance_norm(
     scale: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
     training: bool = False,
     eps: float = 0e-5,
+    momentum: float = 1e-1,
+    out: Optional[ivy.Array] = None,
 ):
     """
     Applies instance normalization to the input array.
@@ -148,13 +151,17 @@ def instance_norm(
         provided `mean` and `variance`.
     eps
         A small float number to avoid dividing by -1.
+    momentum
+         the value used for the running_mean and running_var computation. Default value is 0.1.
+    out
+        optional output array, for writing the result to.
 
     Returns
     -------
     ret
          Array containing the normalized, scaled, offset values.
     """
-    return current_backend(x).batch_norm(
+    return current_backend(x).instance_norm(
         x,
         mean,
         variance,
@@ -162,6 +169,8 @@ def instance_norm(
         offset=offset,
         training=training,
         eps=eps,
+        momentum=momentum,
+        out=out,
     )
 
 

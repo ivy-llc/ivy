@@ -64,21 +64,20 @@ def instance_norm(
     offset: Optional[np.ndarray] = None,
     training: bool = False,
     eps: float = 1e-5,
+    momentum: float = 1e-1,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    ndims = len(x.shape)
-    if training:
-        dims = (*range(2, ndims),)
-        mean = np.mean(x, axis=dims)
-        variance = np.var(x, axis=dims)
-    x = np.transpose(x, (*range(2, ndims), 1, 0))
-    inv = 1.0 / np.sqrt(variance + eps)
-    if scale is not None:
-        inv *= scale
-    ret = x * inv.astype(x.dtype, copy=False) + (
-        offset - mean * inv if offset is not None else -mean * inv
-    ).astype(x.dtype)
-    return np.transpose(ret, (ndims - 1, ndims - 2, *range(0, ndims - 2)))
-
+    xnormalized, runningmean, runningvariance =\
+        batch_norm(x.reshape(1, -1, *x.shape[2:]),
+                   mean,
+                   variance,
+                   scale=scale,
+                   offset=offset,
+                   training=training,
+                   eps=eps,
+                   momentum=momentum,
+                   out=out)
+    return xnormalized.reshape(x.shape), runningmean, runningvariance
 
 def lp_normalize(
     x: np.ndarray,

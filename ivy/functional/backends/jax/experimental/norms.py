@@ -69,22 +69,21 @@ def instance_norm(
     offset: Optional[JaxArray] = None,
     training: bool = False,
     eps: float = 1e-5,
+    momentum: float = 1e-1,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    ndims = len(x.shape)
-    if training:
-        dims = (*range(2, ndims),)
-        mean = jnp.mean(x, axis=dims)
-        variance = jnp.var(x, axis=dims)
-    x = jnp.transpose(x, (*range(2, ndims), 1, 0))
-    inv = 1.0 / jnp.sqrt(variance + eps)
-    if scale is not None:
-        inv *= scale
-
-    ret = x * inv.astype(x.dtype) + (
-        offset - mean * inv if offset is not None else -mean * inv
-    ).astype(x.dtype)
-
-    return jnp.transpose(ret, (ndims - 1, ndims - 2, *range(0, ndims - 2)))
+    # Instance Norm with (N,C,H,W) is the same as BatchNorm with (1, N * C, H, W)
+    xnormalized, runningmean, runningvariance =\
+        batch_norm(x.reshape(1, -1, *x.shape[2:]),
+                   mean,
+                   variance,
+                   scale=scale,
+                   offset=offset,
+                   training=training,
+                   eps=eps,
+                   momentum=momentum,
+                   out=out)
+    return xnormalized.reshape(x.shape), runningmean, runningvariance
 
 
 @with_unsupported_dtypes({"0.3.14 and below": ("float16",)}, backend_version)
