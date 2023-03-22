@@ -536,6 +536,7 @@ and take a look at the <a class="reference external" href="https://lets-unify.ai
 </div>
 <p>These functions can be used eagerly or lazily. If you pass the necessary arguments for function tracing, the compilation/transpilation step will happen instantly (eagerly). Otherwise, the compilation/transpilation will happen only when the returned function is first invoked.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">import</span> <span class="nn">jax</span>
 <span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="s2">&quot;jax&quot;</span><span class="p">)</span>
 
 <span class="c1"># Simple JAX function to transpile</span>
@@ -546,14 +547,14 @@ and take a look at the <a class="reference external" href="https://lets-unify.ai
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Arguments are available -&gt; transpilation happens eagerly</span>
-<span class="n">eager_graph</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">transpile</span><span class="p">(</span><span class="n">test_fn</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="s2">&quot;torch&quot;</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">x1</span><span class="p">,))</span>
+<span class="n">eager_graph</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">transpile</span><span class="p">(</span><span class="n">test_fn</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="s2">&quot;jax&quot;</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="s2">&quot;torch&quot;</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">x1</span><span class="p">,))</span>
 
 <span class="c1"># eager_graph is now torch code and runs efficiently</span>
 <span class="n">ret</span> <span class="o">=</span> <span class="n">eager_graph</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Arguments are not available -&gt; transpilation happens lazily</span>
-<span class="n">lazy_graph</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">transpile</span><span class="p">(</span><span class="n">test_fn</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
+<span class="n">lazy_graph</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">transpile</span><span class="p">(</span><span class="n">test_fn</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="s2">&quot;jax&quot;</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
 
 <span class="c1"># The transpiled graph is initialized, transpilation will happen here</span>
 <span class="n">ret</span> <span class="o">=</span> <span class="n">lazy_graph</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span>
@@ -630,7 +631,7 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
 <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
     <span class="n">loss</span><span class="p">,</span> <span class="n">grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span><span class="n">loss_fn</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
     <span class="n">model</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;step </span><span class="si">{}</span><span class="s1"> loss </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">step</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Step: </span><span class="si">{}</span><span class="s1"> --- Loss: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">step</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()))</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Finished training!&#39;</span><span class="p">)</span>
 </pre></div>
@@ -835,6 +836,8 @@ pip<span class="w"> </span>install<span class="w"> </span>--user<span class="w">
        <details>
           <summary>From Tensorflow</summary><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;SM_FRAMEWORK&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;tf.keras&quot;</span>
 <span class="kn">import</span> <span class="nn">segmentation_models</span> <span class="k">as</span> <span class="nn">sm</span>
 
 <span class="c1"># transpile sm from tensorflow to torch</span>
@@ -1205,6 +1208,8 @@ pip<span class="w"> </span>install<span class="w"> </span>--user<span class="w">
 <details>
    <summary>From TensorFlow</summary><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">import</span> <span class="nn">jax</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;SM_FRAMEWORK&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;tf.keras&quot;</span>
 <span class="kn">import</span> <span class="nn">segmentation_models</span> <span class="k">as</span> <span class="nn">sm</span>
 
 <span class="c1"># transpile sm from tensorflow to jax</span>
@@ -1302,6 +1307,8 @@ pip<span class="w"> </span>install<span class="w"> </span>--user<span class="w">
 <details>
    <summary>From TensorFlow</summary><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;SM_FRAMEWORK&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;tf.keras&quot;</span>
 <span class="kn">import</span> <span class="nn">segmentation_models</span> <span class="k">as</span> <span class="nn">sm</span>
 
 <span class="c1"># transpile sm from tensorflow to numpy</span>
