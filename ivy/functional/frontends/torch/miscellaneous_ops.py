@@ -334,5 +334,10 @@ def broadcast_shapes(*shapes):
 
 
 @to_ivy_arrays_and_back
+def atleast_2d(*tensors):
+    return ivy.atleast_2d(*tensors)
+
+
+@to_ivy_arrays_and_back
 def atleast_3d(*tensors):
     return ivy.atleast_3d(*tensors)
