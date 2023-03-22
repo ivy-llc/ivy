@@ -469,7 +469,7 @@ document.write(`
 
 
 <div class="viewcode-block" id="available_frameworks"><a class="viewcode-back" href="../../../../docs/testing/helpers/ivy_tests.test_ivy.helpers.available_frameworks.html#ivy_tests.test_ivy.helpers.available_frameworks.available_frameworks">[docs]</a><span class="k">def</span> <span class="nf">available_frameworks</span><span class="p">():</span>
-    <span class="n">available_frameworks_lis</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;numpy&quot;</span><span class="p">,</span> <span class="s2">&quot;jax&quot;</span><span class="p">,</span> <span class="s2">&quot;tensorflow&quot;</span><span class="p">,</span> <span class="s2">&quot;torch&quot;</span><span class="p">]</span>
+    <span class="n">available_frameworks_lis</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;numpy&quot;</span><span class="p">,</span> <span class="s2">&quot;jax&quot;</span><span class="p">,</span> <span class="s2">&quot;tensorflow&quot;</span><span class="p">,</span> <span class="s2">&quot;torch&quot;</span><span class="p">,</span> <span class="s2">&quot;paddle&quot;</span><span class="p">]</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">jax</span>
 
@@ -490,6 +490,13 @@ document.write(`
         <span class="k">assert</span> <span class="n">torch</span><span class="p">,</span> <span class="s2">&quot;torch is imported to see if the user has it installed&quot;</span>
     <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
         <span class="n">available_frameworks_lis</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">paddle</span>
+
+        <span class="k">assert</span> <span class="n">paddle</span><span class="p">,</span> <span class="s2">&quot;Paddle is imported to see if the user has it installed&quot;</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="n">available_frameworks_lis</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;paddle&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">available_frameworks_lis</span></div>
 
 
@@ -502,6 +509,8 @@ document.write(`
         <span class="n">g_truth</span> <span class="o">=</span> <span class="s2">&quot;torch&quot;</span>
     <span class="k">elif</span> <span class="s2">&quot;jax&quot;</span> <span class="ow">in</span> <span class="n">available_framework_lis</span><span class="p">:</span>
         <span class="n">g_truth</span> <span class="o">=</span> <span class="s2">&quot;jax&quot;</span>
+    <span class="k">elif</span> <span class="s2">&quot;paddle&quot;</span> <span class="ow">in</span> <span class="n">available_framework_lis</span><span class="p">:</span>
+        <span class="n">g_truth</span> <span class="o">=</span> <span class="s2">&quot;paddle&quot;</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">g_truth</span> <span class="o">=</span> <span class="s2">&quot;numpy&quot;</span>
     <span class="k">return</span> <span class="n">g_truth</span></div>
