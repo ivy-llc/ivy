@@ -293,7 +293,7 @@ def test_empty(
     ivy.set_backend("tensorflow")
     assert res.shape == res_np.shape
     assert res.dtype == res_np.dtype
-    ivy.unset_backend()
+    ivy.previous_backend()
 
 
 # empty_like
@@ -338,7 +338,7 @@ def test_empty_like(
     ivy.set_backend("tensorflow")
     assert res.shape == res_np.shape
     assert res.dtype == res_np.dtype
-    ivy.unset_backend()
+    ivy.previous_backend()
 
 
 # eye
