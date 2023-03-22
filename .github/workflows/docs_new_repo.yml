@@ -25,6 +25,7 @@ jobs:
           bash docs/make_docs_without_docker.sh ivy_doc_builder
           sudo touch .nojekyll
           sudo cp .nojekyll docs/build/
+          git remote set-url origin https://github.com/unifyai/ivy-docs.git
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4.4.1
