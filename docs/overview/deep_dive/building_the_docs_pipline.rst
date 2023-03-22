@@ -59,7 +59,7 @@ The Docker image
 The Docker image `unifyai/doc-builder <https://hub.docker.com/r/unifyai/doc-builder>`_
 works as a wrapper around the ``make_docs_without_docker.sh`` script. It basically run
 the script on the ``/project`` folder, located in the container `like this 
-<https://github.com/unifyai/doc-builder/blob/master/Dockerfile#L20>`_.
+<https://github.com/unifyai/doc-builder/blob/master/Dockerfile#L20>`_:
 
 .. code-block:: bash
 
@@ -324,7 +324,7 @@ and the file structure of the generated docs will be:
             bar.rst
 
 The problem resides that now we include ``module.rst`` in ``index.rst``. So if we wanted
-to visuallize what the ``index.rst`` will look like, we will have this:
+to visualize what the ``index.rst`` will look like, we will have this:
 
 .. code-block:: rst
 
@@ -351,10 +351,10 @@ the directory that has been skipped by the ``include`` directive.
     with multiple directories with the same name.
 
     If you get ``Could not find a single candidate for <> while fixing toctree path.`` 
-    exception, this is probably its cause.
+    warning, this is probably its cause.
 
-``substitute-caption``
-""""""""""""""""""""""
+``:substitute-caption:``
+""""""""""""""""""""""""
 
 This option looks into the caption of the ``autosummary`` directive, and replace the 
 values found in ``ivy_toctree_caption_map``. This useful because in the 
@@ -429,54 +429,54 @@ Here is an example of how it works for ``ivy.functional.ivy.creation``:
 
    The result will be like this:
 
-   This should have hopefully given you an overview of the 
-   *creation* submodule, if you have any questions, please feel free to reach out on 
-   our [discord]({{discord_link}}) in the [*creation* channel]({{channel_link}}) or in
-   the [*creation* forum]({{forum_link}})!
+    This should have hopefully given you an overview of the 
+    *creation* submodule, if you have any questions, please feel free to reach out on 
+    our [discord]({{discord_link}}) in the [*creation* channel]({{channel_link}}) or in
+    the [*creation* forum]({{forum_link}})!
 
 2. Then we resolve the ``{{discord_link}}`` template string.
 
    The result will be like this:
     
-   This should have hopefully given you an overview of the 
-   creation submodule, if you have any questions, please feel free to reach out on 
-   our [discord](*https://discord.gg/ZVQdvbzNQJ*) in the [creation channel]({{channel_link}}) or in
-   the [creation forum]({{forum_link}})!
+    This should have hopefully given you an overview of the 
+    creation submodule, if you have any questions, please feel free to reach out on 
+    our [discord](*https://discord.gg/ZVQdvbzNQJ*) in the [creation channel]({{channel_link}}) or in
+    the [creation forum]({{forum_link}})!
 
 3. Then we resolve the ``{{channel_link}}`` template string.
 
    The result will be like this:
     
-   This should have hopefully given you an overview of the 
-   creation submodule, if you have any questions, please feel free to reach out on 
-   our [discord](https://discord.gg/ZVQdvbzNQJ) in the [creation channel](*https://discord.com/channels/799879767196958751/{{channel_id}}*) or in
-   the [creation forum]({{forum_link}})!
+    This should have hopefully given you an overview of the 
+    creation submodule, if you have any questions, please feel free to reach out on 
+    our [discord](https://discord.gg/ZVQdvbzNQJ) in the [creation channel](*https://discord.com/channels/799879767196958751/{{channel_id}}*) or in
+    the [creation forum]({{forum_link}})!
 
 4. Then we resolve the ``{{forum_link}}`` template string.
 
    The result will be like this:
     
-   This should have hopefully given you an overview of the 
-   creation submodule, if you have any questions, please feel free to reach out on 
-   our [discord](https://discord.gg/ZVQdvbzNQJ) in the [creation channel](https://discord.com/channels/799879767196958751/{{channel_id}}) or in
-   the [creation forum](*https://discord.com/channels/799879767196958751/{{forum_id}}*)!
+    This should have hopefully given you an overview of the 
+    creation submodule, if you have any questions, please feel free to reach out on 
+    our [discord](https://discord.gg/ZVQdvbzNQJ) in the [creation channel](https://discord.com/channels/799879767196958751/{{channel_id}}) or in
+    the [creation forum](*https://discord.com/channels/799879767196958751/{{forum_id}}*)!
 
 5. We finally resolve ``{{channel_id}}`` and ``{{forum_id}}`` template strings.
 
    The result will be like this:
     
-   This should have hopefully given you an overview of the 
-   creation submodule, if you have any questions, please feel free to reach out on 
-   our [discord](https://discord.gg/ZVQdvbzNQJ) in the [creation channel](https://discord.com/channels/799879767196958751/1000043690254946374) or in
-   the [creation forum](https://discord.com/channels/799879767196958751/1028298816526499912)!
+    This should have hopefully given you an overview of the 
+    creation submodule, if you have any questions, please feel free to reach out on 
+    our [discord](https://discord.gg/ZVQdvbzNQJ) in the [creation channel](https://discord.com/channels/799879767196958751/1000043690254946374) or in
+    the [creation forum](https://discord.com/channels/799879767196958751/1028298816526499912)!
 
 6. After that we render the node paragraph as if it's a Markdown text resulting this:
 
-   This should have hopefully given you an overview of the 
-   creation submodule, if you have any questions, please feel free to reach out on 
-   our `discord <https://discord.gg/ZVQdvbzNQJ>`_ in the `creation channel 
-   <https://discord.com/channels/799879767196958751/1000043690254946374>`_ or in the
-   `creation forum <https://discord.com/channels/799879767196958751/1028298816526499912>`_!
+    This should have hopefully given you an overview of the 
+    creation submodule, if you have any questions, please feel free to reach out on 
+    our `discord <https://discord.gg/ZVQdvbzNQJ>`_ in the `creation channel 
+    <https://discord.com/channels/799879767196958751/1000043690254946374>`_ or in the
+    `creation forum <https://discord.com/channels/799879767196958751/1028298816526499912>`_!
 
 All of the above template strings can be customized using the configuration, so feel free
 to change them to your liking.
