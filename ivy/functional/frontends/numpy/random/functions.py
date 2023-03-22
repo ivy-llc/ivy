@@ -83,3 +83,25 @@ def shuffle(x, /):
     if isinstance(x, int):
         x = ivy.arange(x)
     return ivy.shuffle(x)
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def choice(a, size=1,/,*,replace=True,p=None):
+    total_numbers_to_generate = size if (size is not None) else 1
+    flag_reshape=False
+    if not ivy.is_array(a):
+        a = ivy.arange(a)
+    input_size = len(a)
+    if not ivy.isscalar(size):
+        total_numbers_to_generate = int(ivy.prod(size))
+        flag_reshape = True
+    if p is None:
+        p = ivy.array([1/input_size] * input_size)
+    elif not ivy.is_array(p):
+        p = ivy.array([p]*input_size)
+    raw = ivy.multinomial(input_size,total_numbers_to_generate,probs=p,replace=replace)
+    result = ivy.get_item(a,raw)
+    if flag_reshape:
+        result = ivy.reshape(result, size)
+    return result
+

@@ -324,3 +324,40 @@ def test_numpy_shuffle(
         test_values=False,
         x=x[0],
     )
+
+
+
+# choice
+@handle_frontend_test(
+    fn_tree="numpy.random.choice",
+    input_dtypes=helpers.get_dtypes("valid"),
+    a = helpers.ints(min_value=10, max_value=20) ,
+    size=st.tuples(
+        st.integers(min_value=1, max_value=3), st.integers(min_value=1, max_value=3)),
+    p = helpers.floats(min_value=0, max_value=1,exclude_min=True,exclude_max=True,allow_nan=False,allow_inf=False),
+    repl = st.booleans(),
+    )
+def test_numpy_choice(
+    input_dtypes,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    a,
+    size,
+    p,
+    repl,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        a=a,
+        size=size,
+        p=p,
+        replace = repl,
+    )
+
