@@ -1042,17 +1042,33 @@ def test_torch_matmul(
     )
 
 
+@st.composite
+def _get_norm_dtype_values_axis(draw):
+    input_dtype = draw(helpers.get_dtypes("float"))
+
+    input_vector = draw(
+        helpers.array_values(
+            dtype=input_dtype[0],
+            shape=draw(helpers.ints(min_value=1, max_value=3)),
+            min_value=-1e04,
+            max_value=1e04,
+        )
+    )
+
+    axis = draw(helpers.ints(min_value=0, max_value=len(input_vector.shape) - 1))
+
+    if axis == 0:
+        input_vector = input_vector.reshape((1, -1))
+        axis = None
+
+    return input_dtype, input_vector, axis
+
+
 @handle_frontend_test(
     fn_tree="torch.linalg.norm",
-    dtype_values_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
-        valid_axis=True,
-        min_value=-1e04,
-        max_value=1e04,
-    ),
+    dtype_values_axis=_get_norm_dtype_values_axis(),
     kd=st.booleans(),
     ord=helpers.ints(min_value=1, max_value=2),
-    test_with_out=st.just(False),
 )
 def test_torch_norm(
     *,
@@ -1075,6 +1091,4 @@ def test_torch_norm(
         ord=ord,
         dim=axis,
         keepdim=kd,
-        rtol=1e-03,
-        atol=1e-06,
     )

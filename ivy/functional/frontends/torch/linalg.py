@@ -204,6 +204,8 @@ def norm(input, ord=2, dim=None, keepdim=False, *, out=None):
         return ivy.vector_norm(input, ord=ord, axis=dim, keepdims=keepdim, out=out)
     elif isinstance(dim, tuple):
         return ivy.matrix_norm(input, ord=ord, axis=dim, keepdims=keepdim, out=out)
+    elif dim is None and ord is None:
+        return ivy.vector_norm(input, ord=2, axis=-1, keepdims=keepdim, out=out)
     elif dim is None and ord is not None:
         return ivy.vector_norm(input, ord=ord, axis=dim, keepdims=keepdim, out=out)
     else:
