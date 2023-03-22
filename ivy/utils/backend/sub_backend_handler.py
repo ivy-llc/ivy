@@ -1,7 +1,6 @@
 import os
-import sys
 import importlib
-from types import ModuleType, FunctionType, SimpleNamespace
+from types import ModuleType, FunctionType
 
 import ivy
 from ivy.func_wrapper import _wrap_function
