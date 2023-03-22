@@ -31,7 +31,7 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          brranch: master
+          branch: master
           repository-name: unifyai/ivy-docs
           folder: ivy/docs/build
           target-folder: .
