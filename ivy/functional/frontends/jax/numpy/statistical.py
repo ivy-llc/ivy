@@ -400,3 +400,17 @@ def std(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=Non
             where, std_a, ivy.default(out, ivy.zeros_like(std_a)), out=out
         )
     return ivy.astype(std_a, ivy.as_ivy_dtype(dtype), copy=False)
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+def nanmean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    if dtype is None:
+        dtype = "float32" if ivy.is_int_dtype(a) else a.dtype
+    if ivy.is_array(where):
+        where = ivy.array(where, dtype=ivy.bool)
+        a = ivy.where(where, a, ivy.full_like(a, ivy.nan), out=out)
+    ret = ivy.nanmean(a, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
+    return ret
+
