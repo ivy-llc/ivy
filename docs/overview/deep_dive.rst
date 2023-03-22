@@ -72,6 +72,9 @@ We're excited for you to get involved! 🦾
 |
 | (t) :ref:`Continuous Integration` 🔁
 | Ivy Tests running on the Repository
+|
+| (u) :ref:`Building the Docs Pipeline` 📚
+| How are we building our docs
 .. toctree::
    :hidden:
    :maxdepth: -1
