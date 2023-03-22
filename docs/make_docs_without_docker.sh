@@ -58,4 +58,4 @@ touch docs/build/.nojekyll
 # Move the build to docs.old
 mv docs/build docs.old/build || error_exit
 
-cleanup
+# cleanup
