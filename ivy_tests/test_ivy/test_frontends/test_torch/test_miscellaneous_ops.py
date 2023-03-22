@@ -1159,7 +1159,6 @@ def test_torch_atleast_2d(
         num_arrays=2,
     ),
     side=st.sampled_from(["left", "right"]),
-    # dtype_x_v_side_sorter=_search_sorted_values(),
     out_int32=st.booleans(),
     right=st.just(False),
     test_with_out=st.just(False),
@@ -1175,11 +1174,9 @@ def test_torch_searchsorted(
     on_device,
 ):
     input_dtypes, xs = dtype_x_v
-    # pick a random boolean
     use_sorter = st.booleans()
     if use_sorter:
         sorter = np.argsort(xs[0])
-        # cast sorter to int64
         sorter = np.array(sorter, dtype=np.int64)
     else:
         xs[0] = np.sort(xs[0])
