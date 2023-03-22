@@ -28,7 +28,6 @@ def diag(v, k=0):
     return ivy.diag(v, k=k)
 
 
-@handle_numpy_dtype
 @to_ivy_arrays_and_back
 def vander(x, N=None, increasing=False):
     return ivy.vander(x, N=N, increasing=increasing)

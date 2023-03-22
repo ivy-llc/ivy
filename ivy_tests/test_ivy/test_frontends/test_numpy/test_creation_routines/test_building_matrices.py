@@ -130,3 +130,29 @@ def test_numpy_diag(
         v=x[0],
         k=k,
     )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.vander",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric")),
+    N=helpers.ints(min_value=3, max_value=10),
+    test_with_out=st.just(False),
+)
+def test_numpy_vander(
+    fn_tree,
+    dtype_and_x,
+    N,
+    frontend,
+    test_flags,
+    on_device
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        fn_tree=fn_tree,
+        input_dtypes=input_dtype,
+        x=x[0],
+        N=N,
+        frontend=frontend,
+        test_flags=test_flags,
+        on_device=on_device
+    )
