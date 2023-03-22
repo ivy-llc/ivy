@@ -35,13 +35,14 @@ def batch_norm(
 ) -> np.ndarray:
     runningmean = mean
     runningvariance = variance
+    n = x.size / x.shape[1]
     ndims = len(x.shape)
     if training:
         dims = (0, *range(2, ndims))
         mean = np.mean(x, axis=dims)
         variance = np.var(x, axis=dims)
-        runningmean = (1 - momentum) * mean + momentum * runningmean
-        runningvariance = (1 - momentum) * variance + momentum * runningvariance
+        runningmean = (1 - momentum) * runningmean + momentum * mean
+        runningvariance = (1 - momentum) * runningvariance + momentum * variance * n / (n - 1)
     x = np.transpose(x, (0, *range(2, ndims), 1))
     inv = 1.0 / np.sqrt(variance + eps)
     if scale is not None:

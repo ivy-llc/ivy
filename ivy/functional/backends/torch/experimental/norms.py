@@ -38,17 +38,19 @@ def batch_norm(
     variance.requires_grad = False
     scale.requires_grad = False
     offset.requires_grad = False
+    runningmean = mean.clone()
+    runningvariance = variance.clone()
     result = torch.nn.functional.batch_norm(
         x,
-        mean,
-        variance,
+        runningmean,
+        runningvariance,
         weight=scale,
         bias=offset,
         training=training,
         eps=eps,
         momentum=momentum,
     )
-    return result, mean, variance
+    return result, runningmean, runningvariance
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)

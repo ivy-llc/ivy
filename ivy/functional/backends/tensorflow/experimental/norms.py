@@ -31,12 +31,13 @@ def batch_norm(
     ndims = len(x.shape)
     runningmean = mean
     runningvariance = variance
+    n = tf.cast(tf.divide(tf.size(x), tf.shape(x)[1]), x.dtype)
     if training:
         dims = (0, *range(2, ndims))
         mean = tf.math.reduce_mean(x, axis=dims)
         variance = tf.math.reduce_variance(x, axis=dims)
-        runningmean = (1 - momentum) * mean + momentum * runningmean
-        runningvariance = (1 - momentum) * variance + momentum * runningvariance
+        runningmean = (1 - momentum) * runningmean + momentum * mean
+        runningvariance = (1 - momentum) * runningvariance + momentum * variance * n / (n - 1)
     x = tf.transpose(x, perm=(0, *range(2, ndims), 1))
     ret = tf.nn.batch_normalization(x, mean, variance, offset, scale, eps)
     result = tf.transpose(ret, perm=(0, ndims - 1, *range(1, ndims - 1)))
