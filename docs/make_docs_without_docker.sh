@@ -50,7 +50,7 @@ rsync -rav $1/docs/ docs/ || error_exit
 rm -rf docs/partial_source/conf.py
 cp docs/conf.py docs/partial_source/conf.py
 
-sphinx-build -v html docs docs/build || error_exit
+sphinx-build -v -b html docs docs/build || error_exit
 
 # Disable Jekyll in GitHub pages
 touch docs/build/.nojekyll
