@@ -137,7 +137,7 @@ def gamma(
     beta: Union[float, ivy.NativeArray, ivy.Array],
     /,
     *,
-    shape: Union[float, ivy.NativeArray, ivy.Array],
+    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     seed: Optional[int] = None,
@@ -171,7 +171,7 @@ def gamma(
         Returns an array filled with random values sampled from a gamma distribution.
     """
     return ivy.current_backend().gamma(
-        shape, alpha, beta, device=device, dtype=dtype, seed=seed, out=out
+        alpha, beta, shape=shape, device=device, dtype=dtype, seed=seed, out=out
     )
 
 
