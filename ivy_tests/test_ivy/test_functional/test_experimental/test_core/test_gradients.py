@@ -36,7 +36,7 @@ def test_bind_custom_gradient_function(
     ret_gt, grad_gt = ivy.execute_with_gradients(func, x)
     ret_np_from_gt = helpers.flatten_and_to_np(ret=ret_gt)
     grad_np_from_gt = helpers.flatten_and_to_np(ret=grad_gt)
-    ivy.unset_backend()
+    ivy.previous_backend()
     for ret, ret_from_gt in zip(ret_np, ret_np_from_gt):
         assert np.allclose(ret, ret_from_gt)
     for grad, grad_from_gt in zip(grad_np, grad_np_from_gt):

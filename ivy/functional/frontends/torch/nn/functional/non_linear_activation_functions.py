@@ -126,7 +126,7 @@ def tanh(input):
     "torch",
 )
 def logsigmoid(input):
-    return ivy.negative(ivy.softplus(ivy.negative(input)))
+    return ivy.logsigmoid(input)
 
 
 @to_ivy_arrays_and_back
