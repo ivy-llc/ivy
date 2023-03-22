@@ -302,6 +302,45 @@ def unique_values(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([1, 2, 3, 3, 4, 4, 4, 5])
+    >>> y = ivy.unique_values(x)
+    >>> print(y)
+    ivy.array([1, 2, 3, 4, 5])
+
+    >>> x = ivy.array([[1, 2, 3], [3, 4, 4], [5, 5, 5]])
+    >>> y = ivy.unique_values(x)
+    >>> print(y)
+    ivy.array([1, 2, 3, 4, 5])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0, 1, 3 , 2 , 1 , 0]))
+    >>> y = ivy.unique_values(x)
+    >>> print(y)
+    {
+        a: ivy.array([0, 1, 2, 3])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 3. , 2. , 1. , 0.]),b=ivy.array([1, 2, 1, 3, 4, 1, 3]))
+    >>> y = ivy.unique_values(x)
+    >>> print(y)
+    {
+        a: ivy.array([0., 1., 2., 3.]),
+        b: ivy.array([1, 2, 3, 4])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([[1, 2, 3], [3, 4, 4], [5, 5, 5]]),b=ivy.array([[1, 2], [1, 3], [4, 1],[3, 2]]))
+    >>> y = ivy.unique_values(x)
+    >>> print(y)
+    {
+        a: ivy.array([1, 2, 3, 4, 5]),
+        b: ivy.array([1, 2, 3, 4])
+    }
+
     """
     return ivy.current_backend(x).unique_values(x, out=out)
 
