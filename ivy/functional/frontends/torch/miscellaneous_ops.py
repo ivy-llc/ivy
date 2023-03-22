@@ -352,10 +352,6 @@ def searchsorted(
         )
     if right:
         side = "right"
-
-    # if sorter is not None:
-    #     sorter = ivy.astype(sorter, "int32")
-
     ret = ivy.searchsorted(sorted_sequence, values, side=side, out=out, sorter=sorter)
     if out_int32:
         ret = ivy.astype(ret, "int32")
