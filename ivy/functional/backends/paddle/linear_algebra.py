@@ -12,18 +12,36 @@ from ivy import inf
 from ivy.utils.exceptions import IvyNotImplementedException
 from . import backend_version
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from .elementwise import _elementwise_helper
 
 # Array API Standard #
 # -------------------#
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+    {
+        "2.4.2 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "uint8",
+                "uint16",
+                "bfloat16",
+                "float16",
+                "complex64",
+                "complex128",
+                "bool",
+            )
+        }
+    },
+    backend_version,
 )
 def cholesky(
     x: paddle.Tensor, /, *, upper: bool = False, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    paddle.linalg.cholesky(x, upper=upper)
+    return paddle.linalg.cholesky(x, upper=upper)
 
 
 @with_unsupported_device_and_dtypes(
@@ -40,21 +58,54 @@ def cross(
     axis: int = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    def _cross(x1, x2, axisa, axisb, axisc, axis):
+        if axis is not None:
+            return paddle.cross(x1, x2, axis=axis)
+        x1 = paddle.moveaxis(x1, axisa, 1)
+        x2 = paddle.moveaxis(x2, axisb, 1)
+        ret = paddle.cross(x1, x2)
+        return paddle.moveaxis(ret, 1, axisc)
 
-    if axis is not None:
-        return paddle.cross(x1, x2, axis=axis)
-    x1 = paddle.moveaxis(x1, axisa, 1)
-    x2 = paddle.moveaxis(x2, axisb, 1)
-    ret = paddle.cross(x1, x2)
-    return paddle.moveaxis(ret, 1, axisc)
+    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    if x1.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+        paddle.complex64,
+        paddle.complex128,
+        paddle.bool,
+    ]:
+        if paddle.is_complex(x1):
+            return _cross(
+                x1.real(), x2.real(), axisa, axisb, axisc, axis
+            ) + 1j * _cross(x1.real(), x2.real(), axisa, axisb, axisc, axis)
+        return _cross(
+            x1.cast(ivy.default_float_dtype()),
+            x2.cast(ivy.default_float_dtype()),
+            axisa,
+            axisb,
+            axisc,
+            axis,
+        ).cast(ret_dtype)
+    return _cross(x1, x2, axisa, axisb, axisc, axis)
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "complex64", "complex128")}}, backend_version
 )
 def det(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    return paddle.linalg.det(x)
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.int32,
+        paddle.int64,
+        paddle.uint8,
+        paddle.float16,
+        paddle.bool,
+    ]:
+        return paddle.linalg.det(x.cast(ivy.default_float_dtype())).squeeze().cast(x.dtype)
+    return paddle.linalg.det(x).squeeze()
 
 
 @with_unsupported_device_and_dtypes(
@@ -69,6 +120,15 @@ def diagonal(
     axis2: int = -1,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16, paddle.complex64, paddle.complex128]:
+        if paddle.is_complex(x):
+            return (
+                paddle.diagonal(x.real(), offset=offset, axis1=axis1, axis2=axis2)
+                + 1j * paddle.diagonal(x.imag(), offset=offset, axis1=axis1, axis2=axis2)
+            )
+        return paddle.diagonal(x.cast(ivy.default_float_dtype()), offset=offset, axis1=axis1, axis2=axis2).cast(
+            x.dtype
+        )
     return paddle.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
 
 
@@ -165,12 +225,16 @@ def matrix_norm(
 
     if ord == -float("inf"):
         ret = paddle.min(
-            paddle.sum(paddle.abs(x), axis=axis[1], keepdim=True), axis=axis, keepdim=keepdims
+            paddle.sum(paddle.abs(x), axis=axis[1], keepdim=True),
+            axis=axis,
+            keepdim=keepdims,
         )
 
     elif ord == -1:
         ret = paddle.min(
-            paddle.sum(paddle.abs(x), axis=axis[0], keepdim=True), axis=axis, keepdim=keepdims
+            paddle.sum(paddle.abs(x), axis=axis[0], keepdim=True),
+            axis=axis,
+            keepdim=keepdims,
         )
     elif ord == -2:
         ret = paddle.min(paddle.linalg.svd(x)[1], axis=axis, keepdim=keepdims)
@@ -183,15 +247,21 @@ def matrix_norm(
         ret = paddle.linalg.norm(x, p=ord, axis=axis, keepdim=keepdims)
     elif ord == float("inf"):
         ret = paddle.max(
-            paddle.sum(paddle.abs(x), axis=axis[1], keepdim=True), axis=axis, keepdim=keepdims
+            paddle.sum(paddle.abs(x), axis=axis[1], keepdim=True),
+            axis=axis,
+            keepdim=keepdims,
         )
 
     elif ord == 1:
         ret = paddle.max(
-            paddle.sum(paddle.abs(x), axis=axis[0], keepdim=True), axis=axis, keepdim=keepdims
+            paddle.sum(paddle.abs(x), axis=axis[0], keepdim=True),
+            axis=axis,
+            keepdim=keepdims,
         )
     elif ord == 2:
-        ret = paddle.max(paddle.linalg.svd(x)[1].unsqueeze(-1), axis=axis[1], keepdim=keepdims)
+        ret = paddle.max(
+            paddle.linalg.svd(x)[1].unsqueeze(-1), axis=axis[1], keepdim=keepdims
+        )
     if _expand_dims:
         ret = paddle.squeeze(ret, axis=0)
     return ret
@@ -489,18 +559,30 @@ def vector_norm(
     ret_scalar = False
     dtype = dtype if dtype is not None else x.dtype
     if x.ndim == 0:
-        x = ivy.to_native(ivy.expand_dims(x,axis=0))
+        x = ivy.to_native(ivy.expand_dims(x, axis=0))
         ret_scalar = True
-    
-    if x.dtype in [paddle.int8, paddle.int16, paddle.int32, paddle.int64, paddle.uint8, paddle.float16, paddle.complex64, paddle.complex128, paddle.bool]:
+
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.int32,
+        paddle.int64,
+        paddle.uint8,
+        paddle.float16,
+        paddle.complex64,
+        paddle.complex128,
+        paddle.bool,
+    ]:
         if paddle.is_complex(x):
             x = ivy.to_native(ivy.abs(x))
             ret = paddle.norm(x, p=ord, axis=axis, keepdim=keepdims).astype(dtype)
         else:
-            ret = paddle.norm(x.cast(ivy.default_float_dtype()), p=ord, axis=axis, keepdim=keepdims).astype(dtype)
+            ret = paddle.norm(
+                x.cast(ivy.default_float_dtype()), p=ord, axis=axis, keepdim=keepdims
+            ).astype(dtype)
     else:
         ret = paddle.norm(x, p=ord, axis=axis, keepdim=keepdims).astype(dtype)
-    return ivy.squeeze(ret,axis=-1) if ret_scalar else ret
+    return ivy.squeeze(ret, axis=-1) if ret_scalar else ret
 
 
 # Extra #
