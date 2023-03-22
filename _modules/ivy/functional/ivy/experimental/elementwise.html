@@ -1825,8 +1825,12 @@ document.write(`
 <span class="sd">        Binarized output data</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">xc</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">copy_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
-    <span class="nb">bin</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">xc</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="k">return</span> <span class="nb">bin</span></div>
+    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_bool_dtype</span><span class="p">(</span><span class="n">xc</span><span class="p">)</span> <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;torch&quot;</span><span class="p">:</span>
+        <span class="n">xc</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">xc</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_float_dtype</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_complex_dtype</span><span class="p">(</span><span class="n">xc</span><span class="p">):</span>
+        <span class="n">xc</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">xc</span><span class="p">)</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">xc</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ret</span></div>
 
 
 <div class="viewcode-block" id="conj"><a class="viewcode-back" href="../../../../../docs/functional/ivy/ivy.functional.ivy.experimental.html#ivy.functional.ivy.experimental.conj">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
