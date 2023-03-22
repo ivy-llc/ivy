@@ -143,3 +143,23 @@ def bincount(
         ret = tf.math.bincount(x, minlength=minlength)
         ret = tf.cast(ret, x.dtype)
     return ret
+
+
+def nanquantile(
+    a: Union[tf.Tensor, tf.Variable],
+    q: Union[tf.Tensor, float],
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    interpolation: str = "linear",
+    keepdims: bool = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return tfp.stats.percentile(
+        a,
+        tf.math.multiply(q, 100),
+        axis=axis,
+        interpolation=interpolation,
+        keepdims=keepdims,
+    )
