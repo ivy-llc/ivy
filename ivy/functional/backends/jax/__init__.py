@@ -1,5 +1,6 @@
 # global
 import sys
+from types import SimpleNamespace
 from packaging import version
 from jax.config import config
 import jaxlib
@@ -233,3 +234,12 @@ from . import experimental
 from .experimental import *
 from . import control_flow_ops
 from .control_flow_ops import *
+
+
+# sub-backends
+try:
+    from . import sub_backends
+    from .sub_backends import *
+
+except ImportError:
+    sub_backends = SimpleNamespace()

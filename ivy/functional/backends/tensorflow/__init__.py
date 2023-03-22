@@ -1,6 +1,7 @@
 # global
 import sys
 import logging
+from types import SimpleNamespace
 import tensorflow as tf
 
 for device in tf.config.experimental.list_physical_devices("GPU"):
@@ -207,3 +208,12 @@ from . import experimental
 from .experimental import *
 from . import control_flow_ops
 from .control_flow_ops import *
+
+
+# sub-backends
+try:
+    from . import sub_backends
+    from .sub_backends import *
+
+except ImportError:
+    sub_backends = SimpleNamespace()
