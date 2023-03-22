@@ -3,7 +3,7 @@
 # $1 : Path to the library being documented
 
 # install libraries for the doc-builder
-pip install -r ./requirements.txt || exit 1
+pip install -r ../requirements.txt || exit 1
 
 # Run a prebuild script if exists
 [ -x $1/docs/prebuild.sh ] && $1/docs/prebuild.sh
