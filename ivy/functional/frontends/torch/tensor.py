@@ -269,6 +269,9 @@ class Tensor:
     def amin(self, dim=None, keepdim=False):
         return torch_frontend.amin(self._ivy_array, dim=dim, keepdim=keepdim)
 
+    def angle(self):
+        return torch_frontend.angle(self._ivy_array)
+
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def aminmax(self, dim=None, keepdim=False):
         return torch_frontend.aminmax(self._ivy_array, dim=dim, keepdim=keepdim)
