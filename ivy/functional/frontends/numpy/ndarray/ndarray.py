@@ -230,12 +230,6 @@ class ndarray:
             axis2=axis2,
         )
 
-    def compress(self, value, *, axis=None):
-        return np_frontend.compress(
-            self._ivyArray,
-            value,
-            axis=axis,
-        )
     def sort(self, *, axis=-1, kind=None, order=None):
         return np_frontend.sort(self._ivy_array, axis=axis, kind=kind, order=order)
 
