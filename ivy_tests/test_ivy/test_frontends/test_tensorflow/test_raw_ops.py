@@ -3485,11 +3485,10 @@ def test_tensorflow_BatchMatMul(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        adj_x=adj_X, 
+        adj_x=adj_x, 
         adj_y=adj_y,
         x=x[0],
         y=x[1],
-       
     )  
 
 
@@ -3517,7 +3516,7 @@ def test_tensorflow_BatchMatMulV2(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        adj_x=adj_X, 
+        adj_x=adj_x, 
         adj_y=adj_y,
         x=x[0],
         y=x[1],
