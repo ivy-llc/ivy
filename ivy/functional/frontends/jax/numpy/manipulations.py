@@ -38,28 +38,7 @@ def concatenate(arrays, axis=0, dtype=None):
 
 @to_ivy_arrays_and_back
 def repeat(a, repeats, axis=None, *, total_repeat_length=None):
-    if total_repeat_length is None:
-        total_repeat_length = sum(repeats)
-    if axis is None:
-        a = ravel(a)
-        axis = 0
-    a = ivy.asarray(a)
-    if a.ndim == 0:
-        raise ValueError("Input must be >= 1-d.")
-    if axis < 0:
-        axis = a.ndim + axis
-    if axis >= a.ndim:
-        raise ValueError("Axis must be less than input rank.")
-    if total_repeat_length < sum(repeats):
-        raise ValueError("total_repeat_length must be >= sum(repeats)")
-    if total_repeat_length == sum(repeats):
-        return ivy.repeat(a, repeats, axis)
-    else:
-        repeats = ivy.pad(
-            repeats, (0, total_repeat_length - sum(repeats)), constant_values=0
-        )
-        repeats = repeats[:total_repeat_length]
-        return ivy.repeat(a, repeats, axis)
+    return ivy.repeat(a, repeats, axis=axis)
 
 
 @to_ivy_arrays_and_back

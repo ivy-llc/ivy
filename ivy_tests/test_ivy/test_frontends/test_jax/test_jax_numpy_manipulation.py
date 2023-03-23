@@ -8,7 +8,9 @@ import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
-from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _repeat_helper
+from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import (
+    _repeat_helper,
+)
 from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa
     _get_dtype_values_k_axes_for_rot90,
     _get_split_locations,
@@ -161,10 +163,6 @@ def test_jax_numpy_concat(
         key="axis",
     ),
     repeat=st.one_of(st.integers(1, 10), _repeat_helper()),
-    total_repeat_length=st.one_of(
-        st.none(),
-        st.integers(1, 10),
-    ),
     test_with_out=st.just(False),
 )
 def test_jax_numpy_repeat(
@@ -172,12 +170,12 @@ def test_jax_numpy_repeat(
     dtype_value,
     axis,
     repeat,
-    total_repeat_length,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
+
     value_dtype, value = dtype_value
 
     if not isinstance(repeat, int):
@@ -188,12 +186,6 @@ def test_jax_numpy_repeat(
     if not isinstance(axis, int) and axis is not None:
         axis = axis[0]
 
-    if total_repeat_length is None:
-        if not isinstance(repeat, int):
-            total_repeat_length = sum(repeat[1])
-        else:
-            total_repeat_length = repeat * len(value[0])
-
     helpers.test_frontend_function(
         input_dtypes=value_dtype,
         frontend=frontend,
@@ -203,7 +195,6 @@ def test_jax_numpy_repeat(
         a=value[0],
         repeats=repeat,
         axis=axis,
-        total_repeat_length=total_repeat_length,
     )
 
 
