@@ -18,7 +18,7 @@ from ivy.data_classes.container.base import ContainerBase
 
 class _ContainerWithManipulation(ContainerBase):
     @staticmethod
-    def static_concat(
+    def _static_concat(
         xs: Union[
             Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container], ...],
             List[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
@@ -81,7 +81,7 @@ class _ContainerWithManipulation(ContainerBase):
         )
 
     @staticmethod
-    def static_expand_dims(
+    def _static_expand_dims(
         x: ivy.Container,
         /,
         *,
@@ -235,7 +235,7 @@ class _ContainerWithManipulation(ContainerBase):
         )
 
     @staticmethod
-    def static_split(
+    def _static_split(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -382,7 +382,7 @@ class _ContainerWithManipulation(ContainerBase):
         )
 
     @staticmethod
-    def static_permute_dims(
+    def _static_permute_dims(
         x: ivy.Container,
         /,
         axes: Tuple[int, ...],
@@ -492,7 +492,7 @@ class _ContainerWithManipulation(ContainerBase):
         )
 
     @staticmethod
-    def static_flip(
+    def _static_flip(
         x: ivy.Container,
         /,
         *,
@@ -652,7 +652,7 @@ class _ContainerWithManipulation(ContainerBase):
         )
 
     @staticmethod
-    def static_reshape(
+    def _static_reshape(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
@@ -869,7 +869,7 @@ class _ContainerWithManipulation(ContainerBase):
         )
 
     @staticmethod
-    def static_roll(
+    def _static_roll(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         shift: Union[int, Tuple[int, ...], ivy.Container],
@@ -1039,7 +1039,7 @@ class _ContainerWithManipulation(ContainerBase):
         )
 
     @staticmethod
-    def static_squeeze(
+    def _static_squeeze(
         x: ivy.Container,
         /,
         axis: Union[int, Sequence[int]],
@@ -1189,7 +1189,7 @@ class _ContainerWithManipulation(ContainerBase):
         )
 
     @staticmethod
-    def static_stack(
+    def _static_stack(
         xs: Union[
             Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
             List[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
@@ -1363,7 +1363,7 @@ class _ContainerWithManipulation(ContainerBase):
         )
 
     @staticmethod
-    def static_repeat(
+    def _static_repeat(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         repeats: Union[int, Iterable[int]],
@@ -1460,7 +1460,7 @@ class _ContainerWithManipulation(ContainerBase):
         )
 
     @staticmethod
-    def static_tile(
+    def _static_tile(
         x: ivy.Container,
         /,
         repeats: Iterable[int],
@@ -1570,7 +1570,7 @@ class _ContainerWithManipulation(ContainerBase):
         )
 
     @staticmethod
-    def static_constant_pad(
+    def _static_constant_pad(
         x: ivy.Container,
         /,
         pad_width: Iterable[Tuple[int]],
@@ -1689,7 +1689,7 @@ class _ContainerWithManipulation(ContainerBase):
         )
 
     @staticmethod
-    def static_zero_pad(
+    def _static_zero_pad(
         x: ivy.Container,
         /,
         pad_width: Iterable[Tuple[int]],
@@ -1824,7 +1824,7 @@ class _ContainerWithManipulation(ContainerBase):
         )
 
     @staticmethod
-    def static_swapaxes(
+    def _static_swapaxes(
         x: ivy.Container,
         axis0: int,
         axis1: int,
@@ -1950,7 +1950,7 @@ class _ContainerWithManipulation(ContainerBase):
         )
 
     @staticmethod
-    def static_unstack(
+    def _static_unstack(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -2114,7 +2114,7 @@ class _ContainerWithManipulation(ContainerBase):
         )
 
     @staticmethod
-    def static_clip(
+    def _static_clip(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x_min: Optional[Union[Number, ivy.Array, ivy.NativeArray]] = None,
         x_max: Optional[Union[Number, ivy.Array, ivy.NativeArray]] = None,
