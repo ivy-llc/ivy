@@ -36,5 +36,4 @@ def tril_indices(n, k=0, m=None):
 # unravel_index
 @to_ivy_arrays_and_back
 def unravel_index(indices, shape, order='C'):
-    ret = ivy.unravel_index(indices, shape)
-    return tuple(np.asarray(x, dtype=np.int64) for x in ret)
+    return ivy.unravel_index(indices, shape)
