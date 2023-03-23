@@ -121,9 +121,9 @@ The general workflow for this task is:
 #. Write tests for your function by following the `Ivy Frontend Tests`_ guide
 #. Verify that the tests for your function are passing
 
-If you feel as though there is an ivy function :func:`ivy.<func_name>` clearly missing, which would make your frontend function much simpler to implement, then you should first do the following:
+If you feel as though there is an ivy function :code:`ivy.<func_name>` clearly missing, which would make your frontend function much simpler to implement, then you should first do the following:
 
-#. Create a new issue with the title :func:`ivy.<func_name>`
+#. Create a new issue with the title :code:`ivy.<func_name>`
 #. Add the labels :code:`Suggestion`, :code:`Experimental`, :code:`Ivy API` and :code:`Next Release` to it
 #. Then simply leave this issue open.
 
@@ -136,10 +136,10 @@ After this, you then have two options for how to proceed:
    Once the PR is merged, your sub-task issue will then be closed as normal.
 #. Alternatively, if you do not want to try and implement the frontend function compositionally, or if this is not feasible, then you can simply choose another frontend function to work on.
    You could also choose to work on another open task entirely at this point if you wanted to.
-   For example, you might decide to wait for a member of our team to review your suggested addition :func:`ivy.<func_name>`, and potentially add this to an Ivy Experimental ToDo list issue (see the open task below).
+   For example, you might decide to wait for a member of our team to review your suggested addition :code:`ivy.<func_name>`, and potentially add this to an Ivy Experimental ToDo list issue (see the open task below).
    In either case, you should add the label "Pending other Issue" to the frontend sub-task issue, and leave it open.
-   This issue will then still show up as open in the original frontend ToDo list, helpfully preventing others from working on this problematic frontend function, which depends on the unimplemented :func:`ivy.<func_name>`.
-   Finally, you should add a comment to the issue with the contents: :code:`pending <issue_link>`, which links to the :func:`ivy.<func_name>` issue, making the "Pending other Issue" label more informative.
+   This issue will then still show up as open in the original frontend ToDo list, helpfully preventing others from working on this problematic frontend function, which depends on the unimplemented :code:`ivy.<func_name>`.
+   Finally, you should add a comment to the issue with the contents: :code:`pending <issue_link>`, which links to the :code:`ivy.<func_name>` issue, making the "Pending other Issue" label more informative.
 
 There are a few other points to take note of when working on your chosen frontend function:
 
