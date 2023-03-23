@@ -247,4 +247,4 @@ def einsum(equation, *inputs, **kwargs):
 
 @to_ivy_arrays_and_back
 def diag(x,/,*,k=0,name=None):
-    return ivy.diag(a, k=k)
+    return ivy.diag(x, k=k)
