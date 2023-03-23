@@ -1105,9 +1105,9 @@ def test_hypot(
 
 
 @handle_test(
-    fn_tree="binarizer",
+    fn_tree="functional.ivy.experimental.binarizer",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=helpers.get_dtypes("valid")
     ),
     threshold=helpers.floats(),
     container_flags=st.just([False]),
