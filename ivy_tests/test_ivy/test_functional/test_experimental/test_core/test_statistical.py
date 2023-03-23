@@ -9,122 +9,6 @@ from ivy_tests.test_ivy.helpers import handle_test
 
 # Helpers #
 # ------- #
-@st.composite
-def test_histogramdd_helper(draw):
-    dtype_input = draw(st.sampled_from(draw(helpers.get_dtypes("float"))))
-    bins = draw(
-        helpers.array_values(
-            dtype=dtype_input,
-            shape=(draw(helpers.ints(min_value=1, max_value=10)),),
-            abs_smallest_val=-10,
-            min_value=-10,
-            max_value=10,
-        )
-    )
-    bins = np.asarray(sorted(set(bins)), dtype=dtype_input)
-    if len(bins) == 1:
-        bins = int(abs(bins[0]))
-        if bins == 0:
-            bins = 1
-        if dtype_input in draw(helpers.get_dtypes("unsigned")):
-            range = (
-                draw(
-                    helpers.floats(
-                        min_value=0, max_value=10, exclude_min=False, exclude_max=False
-                    )
-                ),
-                draw(
-                    helpers.floats(
-                        min_value=11, max_value=20, exclude_min=False, exclude_max=False
-                    )
-                ),
-            )
-        else:
-            range = (
-                draw(helpers.floats(min_value=-10, max_value=0)),
-                draw(helpers.floats(min_value=1, max_value=10)),
-            )
-        range = draw(st.sampled_from([range, None]))
-    else:
-        range = None
-    shape = draw(
-        helpers.get_shape(
-            min_num_dims=2, max_num_dims=5, min_dim_size=2, max_dim_size=5
-        )
-    )
-    a = draw(
-        helpers.array_values(
-            dtype=dtype_input,
-            shape=shape,
-            min_value=-20,
-            max_value=20,
-        )
-    )
-    weights = draw(
-        helpers.array_values(
-            dtype=dtype_input,
-            shape=shape,
-            min_value=-20,
-            max_value=20,
-        )
-    )
-    dtype_out = draw(
-        st.sampled_from(
-            draw(
-                helpers.get_castable_dtype(draw(helpers.get_dtypes()), str(dtype_input))
-            )
-        )
-    )
-
-    density = draw(st.booleans())
-    return (
-        a,
-        bins,
-        dtype_out,
-        range,
-        weights,
-        density,
-        dtype_input
-    )
-
-
-@handle_test(
-    fn_tree="functional.ivy.experimental.histogramdd",
-    values=test_histogramdd_helper(),
-    test_gradients=st.just(False),
-)
-def test_histogramdd(
-    *,
-    values,
-    test_flags,
-    backend_fw,
-    fn_name,
-    ground_truth_backend,
-    on_device,
-):
-    (
-        a,
-        bins,
-        dtype,
-        range,
-        weights,
-        density,
-        dtype_input,
-    ) = values
-    helpers.test_function(
-        a=a,
-        bins=bins,
-        range=range,
-        weights=weights,
-        density=density,
-        input_dtypes=[dtype_input],
-        test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
-        ground_truth_backend=ground_truth_backend,
-        on_device=on_device
-    )
-
 
 
 @st.composite
@@ -187,10 +71,6 @@ def statistical_dtype_values(draw, *, function):
         )
         return dtype, values, axis, interpolation, q
     return dtype, values, axis
-
-
-
-
 
 
 @handle_test(
