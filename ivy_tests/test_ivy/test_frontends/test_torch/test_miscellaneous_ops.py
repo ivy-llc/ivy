@@ -1149,6 +1149,53 @@ def test_torch_atleast_2d(
     )
 
 
+@handle_frontend_test(
+    fn_tree="torch.searchsorted",
+    dtype_x_v=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shared_dtype=True,
+        min_num_dims=1,
+        max_num_dims=1,
+        num_arrays=2,
+    ),
+    side=st.sampled_from(["left", "right"]),
+    out_int32=st.booleans(),
+    right=st.just(False),
+    test_with_out=st.just(False),
+)
+def test_torch_searchsorted(
+    dtype_x_v,
+    side,
+    out_int32,
+    right,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, xs = dtype_x_v
+    use_sorter = st.booleans()
+    if use_sorter:
+        sorter = np.argsort(xs[0])
+        sorter = np.array(sorter, dtype=np.int64)
+    else:
+        xs[0] = np.sort(xs[0])
+        sorter = None
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes + ["int64"],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        sorted_sequence=xs[0],
+        values=xs[1],
+        side=side,
+        out_int32=out_int32,
+        right=right,
+        sorter=sorter,
+    )
+
+
 # atleast_3d
 @handle_frontend_test(
     fn_tree="torch.atleast_3d",

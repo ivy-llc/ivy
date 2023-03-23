@@ -82,7 +82,7 @@ def test_lcm(
 @handle_test(
     fn_tree="functional.ivy.experimental.fmod",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
         shared_dtype=False,
         large_abs_safety_factor=6,
@@ -110,7 +110,7 @@ def test_fmod(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        ground_truth_backend="numpy",
+        ground_truth_backend="jax",
         fw=backend_fw,
         fn_name=fn_name,
         x1=x[0],
@@ -1105,9 +1105,9 @@ def test_hypot(
 
 
 @handle_test(
-    fn_tree="binarizer",
+    fn_tree="functional.ivy.experimental.binarizer",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=helpers.get_dtypes("valid")
     ),
     threshold=helpers.floats(),
     container_flags=st.just([False]),
