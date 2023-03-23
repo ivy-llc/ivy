@@ -829,11 +829,77 @@ must have the default array index data type.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.data_classes.container.set._ContainerWithSet.unique_values">
 <span class="sig-name descname"><span class="pre">unique_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/data_classes/container/set.html#_ContainerWithSet.unique_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.data_classes.container.set._ContainerWithSet.unique_values" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></p>
+<dd><p>ivy.Container instance method variant of ivy.unique_values.
+This method simply wraps the function and applies it on the container.
+:type self: <code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>
+:param self: input container
+:type self: ivy.Container
+:type key_chains: <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]]
+:param key_chains: The key-chains to apply or not apply the method to. Default is <cite>None</cite>. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+:type key_chains: list or dict, optional
+:type to_apply: <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>
+:param to_apply: If True, the method will be applied to key_chains, otherwise key_chains (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)</p>
+<blockquote>
+<div><p>will be skipped. Default is <cite>True</cite>.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
+Default is <cite>False</cite>.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
+Default is <cite>False</cite>.</p></li>
+<li><p><strong>out</strong> (<em>ivy.Container</em><em>, </em><em>optional</em>) – The container to return the results in. Default is <cite>None</cite>. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>ivy.Container</em> – The result container with the unique values for each input key-chain.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – If the input container is not an instance of ivy.Container.</p></li>
+<li><p><strong>ValueError</strong> – </p></li>
+<li><p><strong>If the key_chains parameter is not None</strong><strong>, </strong><strong>and it is not a list</strong><strong> or </strong><strong>a dictionary.</strong> – </p></li>
+</ul>
 </dd>
 </dl>
+<p class="rubric">Example</p>
+<p>1. Get the unique values of a container.
+&gt;&gt;&gt; x = ivy.Container(a=[1, 2, 3], b=[2, 2, 3], c=[4, 4, 4])
+&gt;&gt;&gt; y = x.unique_values()
+&gt;&gt;&gt; print(y)
+{</p>
+<blockquote>
+<div><p>‘a’: [1, 2, 3],
+‘b’: [2, 3],
+‘c’: [4]</p>
+</div></blockquote>
+<p>}
+2. Get the unique values of a container along a specific key chain.
+&gt;&gt;&gt; x = ivy.Container(a=[1, 2, 3], b=[2, 2, 3], c=[4, 4, 4])
+&gt;&gt;&gt; y = x.unique_values(key_chains=[“a”, “b”])
+&gt;&gt;&gt; print(y)
+{</p>
+<blockquote>
+<div><p>‘a’: [1, 2, 3],
+‘b’: [2, 3]</p>
+</div></blockquote>
+<p>}
+3. Get the unique values of a container and store them in a new container.
+&gt;&gt;&gt; x = ivy.Container(a=[1, 2, 3], b=[2, 2, 3], c=[4, 4, 4])
+&gt;&gt;&gt; y = ivy.Container()
+&gt;&gt;&gt; y = x.unique_values(out=y)
+&gt;&gt;&gt; print(y)
+{</p>
+<blockquote>
+<div><p>‘a’: [1, 2, 3],
+‘b’: [2, 3],
+‘c’: [4]</p>
+</div></blockquote>
+<p>}</p>
 </dd></dl>
 
 </dd></dl>

@@ -773,6 +773,66 @@ document.write(`
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Container instance method variant of ivy.unique_values.</span>
+<span class="sd">        This method simply wraps the function and applies it on the container.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self : ivy.Container</span>
+<span class="sd">            input container</span>
+<span class="sd">        key_chains : list or dict, optional</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is `None`.</span>
+<span class="sd">        to_apply : bool, optional</span>
+<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">            will be skipped. Default is `True`.</span>
+<span class="sd">        prune_unapplied : bool, optional</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is `False`.</span>
+<span class="sd">        map_sequences : bool, optional</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples).</span>
+<span class="sd">            Default is `False`.</span>
+<span class="sd">        out : ivy.Container, optional</span>
+<span class="sd">            The container to return the results in. Default is `None`.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ivy.Container</span>
+<span class="sd">            The result container with the unique values for each input key-chain.</span>
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If the input container is not an instance of ivy.Container.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">        If the key_chains parameter is not None, and it is not a list or a dictionary.</span>
+<span class="sd">        Example</span>
+<span class="sd">        -------</span>
+<span class="sd">        1. Get the unique values of a container.</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=[1, 2, 3], b=[2, 2, 3], c=[4, 4, 4])</span>
+<span class="sd">        &gt;&gt;&gt; y = x.unique_values()</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            &#39;a&#39;: [1, 2, 3],</span>
+<span class="sd">            &#39;b&#39;: [2, 3],</span>
+<span class="sd">            &#39;c&#39;: [4]</span>
+<span class="sd">        }</span>
+<span class="sd">        2. Get the unique values of a container along a specific key chain.</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=[1, 2, 3], b=[2, 2, 3], c=[4, 4, 4])</span>
+<span class="sd">        &gt;&gt;&gt; y = x.unique_values(key_chains=[&quot;a&quot;, &quot;b&quot;])</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            &#39;a&#39;: [1, 2, 3],</span>
+<span class="sd">            &#39;b&#39;: [2, 3]</span>
+<span class="sd">        }</span>
+<span class="sd">        3. Get the unique values of a container and store them in a new container.</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=[1, 2, 3], b=[2, 2, 3], c=[4, 4, 4])</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container()</span>
+<span class="sd">        &gt;&gt;&gt; y = x.unique_values(out=y)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            &#39;a&#39;: [1, 2, 3],</span>
+<span class="sd">            &#39;b&#39;: [2, 3],</span>
+<span class="sd">            &#39;c&#39;: [4]</span>
+<span class="sd">        }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_unique_values</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">key_chains</span><span class="o">=</span><span class="n">key_chains</span><span class="p">,</span>

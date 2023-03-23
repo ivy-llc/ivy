@@ -511,6 +511,54 @@ document.write(`
 <div class="viewcode-block" id="_ArrayWithSet.unique_values"><a class="viewcode-back" href="../../../../docs/data_classes/array/ivy.data_classes.array.set.html#ivy.data_classes.array.set._ArrayWithSet.unique_values">[docs]</a>    <span class="k">def</span> <span class="nf">unique_values</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the unique elements of an input array `x`.</span>
+<span class="sd">        .. admonition:: Data-dependent output shape</span>
+<span class="sd">            :class: important</span>
+<span class="sd">            The shapes of two of the output arrays for this function depend on the data</span>
+<span class="sd">            values in the input array; hence, array libraries which build computation graphs</span>
+<span class="sd">            (e.g., JAX, Dask, etc.) may find this function difficult to implement without</span>
+<span class="sd">            knowing array values. Accordingly, such libraries may choose to omit this</span>
+<span class="sd">            function. See :ref:`data-dependent-output-shapes` section for more details.</span>
+<span class="sd">        .. note::</span>
+<span class="sd">            Uniqueness should be determined based on value equality (i.e., ``x_i == x_j``).</span>
+<span class="sd">            For input arrays having floating-point data types, value-based equality implies</span>
+<span class="sd">            the following behavior.</span>
+<span class="sd">            -   As ``nan`` values compare as ``False``, ``nan`` values should be considered</span>
+<span class="sd">                distinct.</span>
+<span class="sd">            -   As ``-0`` and ``+0`` compare as ``True``, signed zeros should not be</span>
+<span class="sd">                considered distinct, and the corresponding unique element will be</span>
+<span class="sd">                implementation-dependent (e.g., an implementation could choose to return</span>
+<span class="sd">                ``-0`` if ``-0`` occurs before ``+0``).</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : ivy.Array or ivy.NativeArray</span>
+<span class="sd">            Input array. If `x` has more than one dimension, the function must flatten</span>
+<span class="sd">            `x` and return the unique elements of the flattened array.</span>
+<span class="sd">        out : ivy.Array, optional</span>
+<span class="sd">            Optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">            inputs broadcast to.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ivy.Array</span>
+<span class="sd">            An array containing the set of unique elements in `x`. The returned array must</span>
+<span class="sd">            have the same data type as `x`.</span>
+<span class="sd">            .. note::</span>
+<span class="sd">                The order of unique elements is not specified and may vary between</span>
+<span class="sd">                implementations.</span>
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If `x` is not an instance of `ivy.Array` or `ivy.NativeArray`.</span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; import ivy</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([1, 2, 2, 3, 4, 4, 4])</span>
+<span class="sd">        &gt;&gt;&gt; print(x.unique_values())</span>
+<span class="sd">        ivy.array([1, 2, 3, 4])</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[1, 2], [3, 4]])</span>
+<span class="sd">        &gt;&gt;&gt; print(x.unique_values())</span>
+<span class="sd">        ivy.array([1, 2, 3, 4])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">unique_values</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="_ArrayWithSet.unique_all"><a class="viewcode-back" href="../../../../docs/data_classes/array/ivy.data_classes.array.set.html#ivy.data_classes.array.set._ArrayWithSet.unique_all">[docs]</a>    <span class="k">def</span> <span class="nf">unique_all</span><span class="p">(</span>
