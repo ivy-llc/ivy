@@ -54,14 +54,14 @@ def get_submodule(test_path):
 
 
 def update_individual_test_results(
-    collection,
-    id,
-    submod,
-    backend,
-    test,
-    result,
-    backend_version=None,
-    frontend_version=None,
+        collection,
+        id,
+        submod,
+        backend,
+        test,
+        result,
+        backend_version=None,
+        frontend_version=None,
 ):
     key = submod + "." + backend + "." + test
     if backend_version is not None:
@@ -94,7 +94,10 @@ def run_multiversion_testing():
     db = cluster["Ivy_tests_multi"]
     with open("tests_to_run", "r") as f:
         for line in f:
+            print(line)
             test, backend = line.split(",")
+            backend = backend.strip("\n")
+            print(test, backend)
             coll, submod, test_fn = get_submodule(test)
             print(coll, submod, test_fn)
             frontend_version = None
@@ -102,11 +105,13 @@ def run_multiversion_testing():
                 # This is a frontend test
                 backend, frontend = backend.split(";")
                 frontend_version = "/".join(frontend.split("/")[1:])
-                command = f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:latest /opt/miniconda/envs/multienv/bin/python -m pytest --tb=short {test} --backend={backend} --frontend={frontend}'  # noqa
+                command = f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:base /bin/bash -c "/opt/miniconda/envs/multienv/bin/python docker/multiversion_framework_directory.py {backend} {frontend} numpy/1.23.1; pytest --tb=short {test} --backend={backend} --frontend={frontend}" '  # noqa
+                print(command)
                 ret = os.system(command)
             else:
                 ret = os.system(
-                    f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:latest /opt/miniconda/envs/multienv/bin/python -m pytest --tb=short {test} --backend={backend}'  # noqa
+                    f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:base /opt/miniconda/envs/multienv/bin/python docker/multiversion_framework_directory.py backend {backend}; pytest --tb=short {test} --backend={backend.split("/")[0]}'
+                    # noqa
                 )
             if ret != 0:
                 res = make_clickable(run_id, result_config["failure"])
@@ -162,12 +167,14 @@ if __name__ == "__main__":
             print(coll, submod, test_fn)
             if with_gpu:
                 ret = os.system(
-                    f'docker run --rm --gpus all --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multicuda:latest python3 -m pytest --tb=short --device=gpu:0 -B={backend} {test}'  # noqa
+                    f'docker run --rm --gpus all --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multicuda:latest python3 -m pytest --tb=short --device=gpu:0 -B={backend} {test}'
+                    # noqa
                     # noqa
                 )
             else:
                 ret = os.system(
-                    f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --tb=short {test} --backend {backend}'  # noqa
+                    f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --tb=short {test} --backend {backend}'
+                    # noqa
                     # noqa
                 )
             if ret != 0:
