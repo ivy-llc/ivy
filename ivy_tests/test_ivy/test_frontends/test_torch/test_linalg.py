@@ -336,24 +336,24 @@ def test_torch_eigvals(
     )
 
     """
-    In "ret" we have out eigenvalues calculated with our backend and 
+    In "ret" we have out eigenvalues calculated with our backend and
     in "frontend_ret" are our eigenvalues calculated with the specified frontend
     """
 
     """
-    Depending on the chosen framework there may be small differences between our 
-    extremely small or big eigenvalues (eg: -3.62831993e-33+0.j(numpy) 
-    vs -1.9478e-32+0.j(PyTorch)). 
-    Important is that both are very very close to zero, indicating a 
+    Depending on the chosen framework there may be small differences between our
+    extremely small or big eigenvalues (eg: -3.62831993e-33+0.j(numpy)
+    vs -1.9478e-32+0.j(PyTorch)).
+    Important is that both are very very close to zero, indicating a
     small value(very close to 0) either way.
 
-    To asses the correctness of our calculated eigenvalues for our initial matrix 
+    To asses the correctness of our calculated eigenvalues for our initial matrix
     we sort both numpy arrays and call assert_all_close on their modulus.
     """
 
     """
-    Supports input of float, double, cfloat and cdouble dtypes. 
-    Also supports batches of matrices, and if A is a batch of matrices then the 
+    Supports input of float, double, cfloat and cdouble dtypes.
+    Also supports batches of matrices, and if A is a batch of matrices then the
     output has the same batch dimension
     """
 
@@ -1093,4 +1093,57 @@ def test_torch_matmul(
         other=x[1],
         rtol=1e-03,
         atol=1e-06,
+    )
+
+
+# vander
+@st.composite
+def _vander_helper(draw):
+    # generate input matrix of shape (*, n) and where '*' is one or more
+    # batch dimensions
+    N = draw(helpers.ints(min_value=2, max_value=5))
+    if draw(helpers.floats(min_value=0, max_value=1.)) < 0.5:
+        N = None
+
+    shape = draw(helpers.get_shape(min_num_dims=1,
+                                   max_num_dims=5,
+                                   min_dim_size=2,
+                                   max_dim_size=10))
+    dtype = "float"
+    if draw(helpers.floats(min_value=0, max_value=1.)) < 0.5:
+        dtype = "integer"
+
+    x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=draw(helpers.get_dtypes(dtype)),
+            shape=shape,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+
+    return *x, N
+
+
+@handle_frontend_test(
+    fn_tree="torch.linalg.vander",
+    dtype_and_input=_vander_helper(),
+)
+def test_torch_vander(
+    *,
+    dtype_and_input,
+    frontend,
+    fn_tree,
+    on_device,
+    test_flags,
+):
+    input_dtype, x, N = dtype_and_input
+    test_flags.num_positional_args = 1
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_flags=test_flags,
+        x=x[0], N=N
     )
