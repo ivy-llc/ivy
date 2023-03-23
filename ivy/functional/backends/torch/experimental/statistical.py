@@ -6,6 +6,22 @@ import torch
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
+def histogramdd(
+        input: torch.tensor,
+        /,
+        *,
+        bins: Optional[Union[Tuple[int],int]] = 10,
+        range: Optional[Union[Tuple[int], int]] = None,
+        weights : Optional[Tuple[int]] = None,
+        density: Optional[bool] = None
+) -> Tuple[torch.tensor]:
+    return torch.histogramdd(
+        input,
+        bins,
+        range,
+        weights,
+        density
+    )
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
 def median(

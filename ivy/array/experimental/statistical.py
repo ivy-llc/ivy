@@ -7,6 +7,62 @@ import ivy
 
 
 class _ArrayWithStatisticalExperimental(abc.ABC):
+
+    def histogramdd(
+            self: ivy.Array,
+            /,
+            *,
+            bins: Optional[Union[int, ivy.Array, ivy.NativeArray, str]] = None,
+            weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+            range: Optional[Union[Tuple[int], int]] = None,
+            density: Optional[bool] = False
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.histogramdd. This method simply wraps the
+        function, and so the docstring for ivy.histogramdd also applies to this method
+        with minimal changes.
+        Parameters
+        ----------
+        self
+            input N x D array.
+        bins
+            if ``bins`` is an int, it defines the number of equal-width bins in the
+            given range.
+            if ``bins`` is an array, it defines a monotonically increasing array of bin
+            edges, including the rightmost edge, allowing for non-uniform bin widths.
+        range
+            the lower and upper range of the bins. The first element of the range must
+            be less than or equal to the second.
+        weights
+            each value in ``a`` only contributes its associated weight towards the bin
+            count (instead of 1). Must be of the same shape as a.
+        density
+            if True, the result is the value of the probability density function at the
+            bin, normalized such that the integral over the range of bins is 1.
+
+        Returns
+        -------
+        ret
+            a tuple containing the values of the histogramdd and the bin edges.
+        Both the description and the type hints above assumes an NxD array input.
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+        >>> x = ivy.array([0, 0, 1, 1,2,2,2],[1,1,1,1,2,2])
+        >>> y = ivy.array([0., 0.5, 1., 1.5, 2.])
+        >>> z = ivy.histogramdd(x, bins=y)
+        >>> print(z)
+        (ivy.array(4,3]), ivy.array([0. , 0.5, 1. , 1.5, 2. ]))
+        """
+
+        return ivy.histogramdd(
+            self._data,
+            bins=bins,
+            range=range,
+            weights=weights,
+            density=density
+        )
+
     def median(
         self: ivy.Array,
         /,
