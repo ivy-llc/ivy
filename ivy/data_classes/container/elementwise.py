@@ -8,7 +8,7 @@ from ivy.data_classes.container.base import ContainerBase
 
 class _ContainerWithElementwise(ContainerBase):
     @staticmethod
-    def static_abs(
+    def _static_abs(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -131,7 +131,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_acosh(
+    def _static_acosh(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -258,7 +258,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_acos(
+    def _static_acos(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -321,7 +321,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_add(
+    def _static_add(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -564,7 +564,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_asin(
+    def _static_asin(
         x: ivy.Container,
         /,
         *,
@@ -707,7 +707,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_asinh(
+    def _static_asinh(
         x: ivy.Container,
         /,
         *,
@@ -832,7 +832,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_atan(
+    def _static_atan(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -954,7 +954,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_atan2(
+    def _static_atan2(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -1115,7 +1115,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_atanh(
+    def _static_atanh(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -1240,7 +1240,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_bitwise_and(
+    def _static_bitwise_and(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -1394,7 +1394,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_bitwise_left_shift(
+    def _static_bitwise_left_shift(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -1509,7 +1509,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_bitwise_invert(
+    def _static_bitwise_invert(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -1645,7 +1645,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_cos(
+    def _static_cos(
         x: ivy.Container,
         /,
         *,
@@ -1772,7 +1772,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_bitwise_or(
+    def _static_bitwise_or(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -1916,7 +1916,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_bitwise_right_shift(
+    def _static_bitwise_right_shift(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -2064,7 +2064,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_bitwise_xor(
+    def _static_bitwise_xor(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -2202,7 +2202,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_ceil(
+    def _static_ceil(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -2323,7 +2323,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_cosh(
+    def _static_cosh(
         x: ivy.Container,
         /,
         *,
@@ -2470,7 +2470,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_divide(
+    def _static_divide(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -2622,7 +2622,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_equal(
+    def _static_equal(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -2769,7 +2769,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_exp(
+    def _static_exp(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -2890,7 +2890,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_expm1(
+    def _static_expm1(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -3022,7 +3022,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_floor(
+    def _static_floor(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -3143,7 +3143,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_floor_divide(
+    def _static_floor_divide(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -3306,7 +3306,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_greater(
+    def _static_greater(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -3445,7 +3445,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_greater_equal(
+    def _static_greater_equal(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -3583,7 +3583,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_isfinite(
+    def _static_isfinite(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -3706,7 +3706,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_isinf(
+    def _static_isinf(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -3849,7 +3849,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_isnan(
+    def _static_isnan(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -3976,7 +3976,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_less(
+    def _static_less(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -4115,7 +4115,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_less_equal(
+    def _static_less_equal(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -4264,7 +4264,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_log(
+    def _static_log(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -4397,7 +4397,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_log1p(
+    def _static_log1p(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -4529,7 +4529,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_log2(
+    def _static_log2(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -4632,7 +4632,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_log10(
+    def _static_log10(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -4764,7 +4764,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_logaddexp(
+    def _static_logaddexp(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -4908,7 +4908,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_logical_and(
+    def _static_logical_and(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -5083,7 +5083,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_logical_not(
+    def _static_logical_not(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -5213,7 +5213,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_logical_or(
+    def _static_logical_or(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -5360,7 +5360,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_logical_xor(
+    def _static_logical_xor(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -5507,7 +5507,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_multiply(
+    def _static_multiply(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -5663,7 +5663,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_negative(
+    def _static_negative(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -5788,7 +5788,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_not_equal(
+    def _static_not_equal(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -5937,7 +5937,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_positive(
+    def _static_positive(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -6063,7 +6063,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_pow(
+    def _static_pow(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -6199,7 +6199,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_remainder(
+    def _static_remainder(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -6391,7 +6391,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_round(
+    def _static_round(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -6516,7 +6516,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_sign(
+    def _static_sign(
         x: Union[float, ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -6639,7 +6639,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_sin(
+    def _static_sin(
         x: ivy.Container,
         /,
         *,
@@ -6764,7 +6764,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_sinh(
+    def _static_sinh(
         x,
         /,
         *,
@@ -6907,7 +6907,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_square(
+    def _static_square(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -7030,7 +7030,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_sqrt(
+    def _static_sqrt(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -7157,7 +7157,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_subtract(
+    def _static_subtract(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -7318,7 +7318,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_tan(
+    def _static_tan(
         x: ivy.Container,
         /,
         *,
@@ -7441,7 +7441,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_tanh(
+    def _static_tanh(
         x: ivy.Container,
         /,
         *,
@@ -7565,7 +7565,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_trunc(
+    def _static_trunc(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -7689,7 +7689,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_erf(
+    def _static_erf(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -7808,7 +7808,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_minimum(
+    def _static_minimum(
         x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
@@ -7955,7 +7955,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_maximum(
+    def _static_maximum(
         x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
@@ -8111,7 +8111,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_reciprocal(
+    def _static_reciprocal(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -8229,7 +8229,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_deg2rad(
+    def _static_deg2rad(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -8352,7 +8352,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_rad2deg(
+    def _static_rad2deg(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -8475,7 +8475,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_trunc_divide(
+    def _static_trunc_divide(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -8616,7 +8616,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_isreal(
+    def _static_isreal(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -8739,7 +8739,7 @@ class _ContainerWithElementwise(ContainerBase):
         )
 
     @staticmethod
-    def static_trapz(
+    def _static_trapz(
         y: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
