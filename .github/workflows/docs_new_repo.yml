@@ -25,7 +25,6 @@ jobs:
           #sudo cp .nojekyll docs/build/
           mkdir docs/build
           touch docs/build/index.html
-          echo "HERE"
           echo ${{ secrets.SSH_GH_PAGES }}
 
       - name: Deploy
