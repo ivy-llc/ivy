@@ -8,7 +8,7 @@ from ivy.data_classes.container.base import ContainerBase
 
 class _ContainerWithLosses(ContainerBase):
     @staticmethod
-    def static_cross_entropy(
+    def _static_cross_entropy(
         true: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
@@ -177,7 +177,7 @@ class _ContainerWithLosses(ContainerBase):
         )
 
     @staticmethod
-    def static_binary_cross_entropy(
+    def _static_binary_cross_entropy(
         true: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
@@ -334,7 +334,7 @@ class _ContainerWithLosses(ContainerBase):
         )
 
     @staticmethod
-    def static_sparse_cross_entropy(
+    def _static_sparse_cross_entropy(
         true: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
