@@ -177,3 +177,4 @@ def geomspace(start, stop, num=50, endpoint=True, dtype=None, axis=0):
     if endpoint:
         x[-1] = stop
     return x
+    
