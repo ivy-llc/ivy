@@ -134,25 +134,37 @@ def test_numpy_diag(
 
 @handle_frontend_test(
     fn_tree="numpy.vander",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric")),
-    N=helpers.ints(min_value=3, max_value=10),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.tuples(
+            helpers.ints(min_value=1, max_value=10),
+        ),
+        large_abs_safety_factor=15,
+        small_abs_safety_factor=15,
+        safety_factor_scale="log",
+    ),
+    N=st.integers(min_value=1, max_value=10) | st.none(),
+    increasing=st.booleans(),
     test_with_out=st.just(False),
 )
 def test_numpy_vander(
+    *,
     fn_tree,
     dtype_and_x,
     N,
-    frontend,
+    increasing,
     test_flags,
+    frontend,
     on_device
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        fn_tree=fn_tree,
         input_dtypes=input_dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        frontend=frontend,
+        fn_tree=fn_tree,
         x=x[0],
         N=N,
-        frontend=frontend,
-        test_flags=test_flags,
-        on_device=on_device
+        increasing=increasing,
     )
