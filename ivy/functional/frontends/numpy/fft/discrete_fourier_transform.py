@@ -16,4 +16,3 @@ def ifft2(a, s=None, axis=(-2, -1), norm=None):
     if norm is None:
         norm = "backward"
     return ivy.ifft2(a, axis, norm=norm, s=s)
-
