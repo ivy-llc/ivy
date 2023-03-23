@@ -12,9 +12,10 @@ from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_an
 
 
 def _elementwise_helper(x1, x2):
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    x1, x2 = ivy.broadcast_arrays(x1, x2)
-    return ivy.to_native(x1), ivy.to_native(x2), x1.dtype
+    with ivy.ArrayMode(False):
+        x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+        x1, x2 = ivy.broadcast_arrays(x1, x2)
+    return x1, x2, x1.dtype
 
 
 def _complex_modulus(x):
