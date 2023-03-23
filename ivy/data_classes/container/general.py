@@ -12,7 +12,7 @@ import ivy
 # noinspection PyMissingConstructor
 class _ContainerWithGeneral(ContainerBase):
     @staticmethod
-    def static_is_native_array(
+    def _static_is_native_array(
         x: ivy.Container,
         /,
         *,
@@ -131,7 +131,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_is_ivy_array(
+    def _static_is_ivy_array(
         x: ivy.Container,
         /,
         *,
@@ -245,7 +245,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_is_array(
+    def _static_is_array(
         x: ivy.Container,
         /,
         *,
@@ -366,7 +366,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_clip_vector_norm(
+    def _static_clip_vector_norm(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         max_norm: float,
         /,
@@ -513,7 +513,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_inplace_update(
+    def _static_inplace_update(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         val: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
@@ -542,7 +542,7 @@ class _ContainerWithGeneral(ContainerBase):
             In cases where it should be, backends which do not natively support inplace
             updates will raise an exception.
         keep_input_dtype
-            Whether or not to preserve `x` data type after the update, otherwise `val` 
+            Whether or not to preserve `x` data type after the update, otherwise `val`
             data type will be applied. Defaults to False.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
@@ -612,7 +612,7 @@ class _ContainerWithGeneral(ContainerBase):
             In cases where it should be, backends which do not natively support inplace
             updates will raise an exception.
         keep_input_dtype
-            Whether or not to preserve `x` data type after the update, otherwise `val` 
+            Whether or not to preserve `x` data type after the update, otherwise `val`
             data type will be applied. Defaults to False.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
@@ -661,7 +661,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_inplace_decrement(
+    def _static_inplace_decrement(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         val: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -803,7 +803,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_inplace_increment(
+    def _static_inplace_increment(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         val: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -945,7 +945,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_assert_supports_inplace(
+    def _static_assert_supports_inplace(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -1054,7 +1054,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_all_equal(
+    def _static_all_equal(
         x1: ivy.Container,
         *xs: Iterable[Any],
         equality_matrix: bool = False,
@@ -1232,7 +1232,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_fourier_encode(
+    def _static_fourier_encode(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         max_freq: Union[float, ivy.Array, ivy.NativeArray],
         /,
@@ -1419,7 +1419,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_gather(
+    def _static_gather(
         params: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
@@ -1585,7 +1585,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_has_nans(
+    def _static_has_nans(
         self: ivy.Container,
         /,
         *,
@@ -1675,7 +1675,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_scatter_nd(
+    def _static_scatter_nd(
         indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         updates: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -1868,7 +1868,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_scatter_flat(
+    def _static_scatter_flat(
         indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         updates: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -2009,7 +2009,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_gather_nd(
+    def _static_gather_nd(
         params: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
@@ -2141,7 +2141,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_einops_reduce(
+    def _static_einops_reduce(
         x: ivy.Container,
         pattern: str,
         reduction: str,
@@ -2293,7 +2293,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_einops_repeat(
+    def _static_einops_repeat(
         x: ivy.Container,
         pattern: str,
         /,
@@ -2432,7 +2432,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_value_is_nan(
+    def _static_value_is_nan(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -2588,7 +2588,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_to_numpy(
+    def _static_to_numpy(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -2735,7 +2735,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_to_scalar(
+    def _static_to_scalar(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -2852,7 +2852,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_to_list(
+    def _static_to_list(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -2961,7 +2961,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_stable_divide(
+    def _static_stable_divide(
         numerator: ivy.Container,
         denominator: Union[Number, ivy.Array, ivy.Container],
         /,
@@ -3154,7 +3154,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_stable_pow(
+    def _static_stable_pow(
         base: ivy.Container,
         exponent: Union[Number, ivy.Array, ivy.Container],
         /,
@@ -3262,7 +3262,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_einops_rearrange(
+    def _static_einops_rearrange(
         x: ivy.Container,
         pattern: str,
         /,
@@ -3439,7 +3439,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_clip_matrix_norm(
+    def _static_clip_matrix_norm(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         max_norm: float,
         /,
@@ -3581,7 +3581,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_supports_inplace_updates(
+    def _static_supports_inplace_updates(
         x: ivy.Container,
         /,
         *,
@@ -3699,7 +3699,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_get_num_dims(
+    def _static_get_num_dims(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -3853,7 +3853,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_array_equal(
+    def _static_array_equal(
         x0: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
