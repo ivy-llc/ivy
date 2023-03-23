@@ -10,7 +10,7 @@ from ivy.data_classes.container.base import ContainerBase
 
 class _ContainerWithDevice(ContainerBase):
     @staticmethod
-    def static_dev(x: ivy.Container, /, *, as_native: bool = False) -> ivy.Container:
+    def _static_dev(x: ivy.Container, /, *, as_native: bool = False) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.dev. This method simply
         wraps the function, and so the docstring for ivy.dev also applies to this
@@ -58,7 +58,7 @@ class _ContainerWithDevice(ContainerBase):
         return self.static_dev(self, as_native=as_native)
 
     @staticmethod
-    def static_to_device(
+    def _static_to_device(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         device: Union[ivy.Device, ivy.NativeDevice],
         /,
