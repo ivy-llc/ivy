@@ -20,9 +20,11 @@ jobs:
       - name: Build Docs
         run: |
           rm -rf .gitignore
-          bash docs/make_docs_without_docker.sh ivy_doc_builder
-          sudo touch .nojekyll
-          sudo cp .nojekyll docs/build/
+          #bash docs/make_docs_without_docker.sh ivy_doc_builder
+          #sudo touch .nojekyll
+          #sudo cp .nojekyll docs/build/
+          mkdir docs/build
+          touch docs/build/index.html
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4.4.1
