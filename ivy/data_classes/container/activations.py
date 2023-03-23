@@ -10,7 +10,7 @@ from typing import Optional, Union, List, Dict
 # noinspection PyMissingConstructor
 class _ContainerWithActivations(ContainerBase):
     @staticmethod
-    def static_relu(
+    def _static_relu(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -132,7 +132,7 @@ class _ContainerWithActivations(ContainerBase):
         )
 
     @staticmethod
-    def static_leaky_relu(
+    def _static_leaky_relu(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -260,7 +260,7 @@ class _ContainerWithActivations(ContainerBase):
         )
 
     @staticmethod
-    def static_gelu(
+    def _static_gelu(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -386,7 +386,7 @@ class _ContainerWithActivations(ContainerBase):
         )
 
     @staticmethod
-    def static_sigmoid(
+    def _static_sigmoid(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -505,7 +505,7 @@ class _ContainerWithActivations(ContainerBase):
         )
 
     @staticmethod
-    def static_softmax(
+    def _static_softmax(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -633,7 +633,7 @@ class _ContainerWithActivations(ContainerBase):
         )
 
     @staticmethod
-    def static_softplus(
+    def _static_softplus(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -780,7 +780,7 @@ class _ContainerWithActivations(ContainerBase):
         )
 
     @staticmethod
-    def static_log_softmax(
+    def _static_log_softmax(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -920,7 +920,7 @@ class _ContainerWithActivations(ContainerBase):
         )
 
     @staticmethod
-    def static_mish(
+    def _static_mish(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
