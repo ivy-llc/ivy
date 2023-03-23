@@ -14,7 +14,7 @@ inf = float("inf")
 # noinspection PyMissingConstructor,PyMethodParameters
 class _ContainerWithLinearAlgebra(ContainerBase):
     @staticmethod
-    def static_matmul(
+    def _static_matmul(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -162,7 +162,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_cholesky(
+    def _static_cholesky(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -323,7 +323,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_cross(
+    def _static_cross(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
@@ -482,7 +482,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_det(
+    def _static_det(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -531,7 +531,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_diagonal(
+    def _static_diagonal(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -703,7 +703,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_diag(
+    def _static_diag(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -762,7 +762,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_eigh(
+    def _static_eigh(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -806,7 +806,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_eigvalsh(
+    def _static_eigvalsh(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -946,7 +946,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_inner(
+    def _static_inner(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -990,7 +990,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_inv(
+    def _static_inv(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -1129,7 +1129,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_pinv(
+    def _static_pinv(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -1248,7 +1248,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_matrix_norm(
+    def _static_matrix_norm(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -1426,7 +1426,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_matrix_power(
+    def _static_matrix_power(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         n: int,
         /,
@@ -1470,7 +1470,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_matrix_rank(
+    def _static_matrix_rank(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -1639,7 +1639,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_matrix_transpose(
+    def _static_matrix_transpose(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -1752,7 +1752,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_outer(
+    def _static_outer(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -1899,7 +1899,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_qr(
+    def _static_qr(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -2051,7 +2051,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_slogdet(
+    def _static_slogdet(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -2197,7 +2197,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_solve(
+    def _static_solve(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -2245,7 +2245,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_svd(
+    def _static_svd(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -2390,7 +2390,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_svdvals(
+    def _static_svdvals(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -2430,7 +2430,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_tensordot(
+    def _static_tensordot(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -2478,7 +2478,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_tensorsolve(
+    def _static_tensorsolve(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -2526,7 +2526,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_trace(
+    def _static_trace(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -2697,7 +2697,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_vecdot(
+    def _static_vecdot(
         x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
@@ -2745,7 +2745,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_vector_norm(
+    def _static_vector_norm(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -2973,7 +2973,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_vector_to_skew_symmetric_matrix(
+    def _static_vector_to_skew_symmetric_matrix(
         vector: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -3013,7 +3013,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_vander(
+    def _static_vander(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
