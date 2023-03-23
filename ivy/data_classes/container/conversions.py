@@ -12,7 +12,7 @@ from ivy.data_classes.container.base import ContainerBase
 
 class _ContainerWithConversions(ContainerBase):
     @staticmethod
-    def static_to_native(
+    def _static_to_native(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         nested: bool = False,
         include_derived: Optional[Dict[type, bool]] = None,
@@ -132,7 +132,7 @@ class _ContainerWithConversions(ContainerBase):
         )
 
     @staticmethod
-    def static_to_ivy(
+    def _static_to_ivy(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         nested: bool = False,
         include_derived: Optional[Dict[type, bool]] = None,
