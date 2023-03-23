@@ -31,7 +31,7 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:
           folder: docs/build
-          ssh-key: ${{ secrets.SSH_GH_PAGES }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           branch: master
           git-config-name: ivy-seed
           git-config-email: ivydl.team@gmail.com
