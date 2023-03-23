@@ -1,0 +1,38 @@
+name: docs_new_repo
+on: [push, pull_request]
+permissions: 
+  contents: write
+jobs:
+  update-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v3
+        with:
+          repository: unifyai/ivy
+
+      - name: Checkout 🛎️Ivy Doc Builder
+        uses: actions/checkout@v3
+        with:
+          repository: unifyai/doc-builder
+          path: ivy_doc_builder
+
+      - name: Build Docs
+        run: |
+          rm -rf .gitignore
+          #bash docs/make_docs_without_docker.sh ivy_doc_builder
+          #sudo touch .nojekyll
+          #sudo cp .nojekyll docs/build/
+          mkdir docs/build
+          touch docs/build/index.html
+          echo ${{ secrets.GITHUB_TOKEN }}
+          echo ${{ secrets.SSH_DEPLOY_KEY }}
+          echo ${{ secrets.SSH_GH_PAGES }}
+
+      - name: Deploy
+        uses: s0/git-publish-subdir-action@develop
+        env:
+          REPO: git@github.com:unifyai/ivy-docs.git
+          BRANCH: master
+          FOLDER: docs/build
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_GH_PAGES }}
