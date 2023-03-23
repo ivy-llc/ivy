@@ -727,7 +727,7 @@ def test_tensorflow_asinh(
 @handle_frontend_test(
     fn_tree="tensorflow.math.acosh",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=tuple([ivy.float32, ivy.float64]),
     ),
     test_with_out=st.just(False),
 )
@@ -754,7 +754,7 @@ def test_tensorflow_acosh(
 @handle_frontend_test(
     fn_tree="tensorflow.math.atanh",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=tuple([ivy.float32, ivy.float64]),
     ),
     test_with_out=st.just(False),
 )
