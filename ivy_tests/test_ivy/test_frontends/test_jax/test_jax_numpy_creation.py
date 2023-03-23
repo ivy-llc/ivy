@@ -25,15 +25,15 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     test_with_out=st.just(False),
 )
 def test_jax_numpy_array(
-        *,
-        dtype_and_x,
-        as_list,
-        copy,
-        ndmin,
-        on_device,
-        fn_tree,
-        test_flags,
-        frontend,
+    *,
+    dtype_and_x,
+    as_list,
+    copy,
+    ndmin,
+    on_device,
+    fn_tree,
+    test_flags,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
 
@@ -77,13 +77,13 @@ def test_jax_numpy_array(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_zeros_like(
-        dtype_and_x,
-        dtype,
-        shape,
-        test_flags,
-        frontend,
-        fn_tree,
-        on_device,
+    dtype_and_x,
+    dtype,
+    shape,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -108,15 +108,15 @@ def test_jax_numpy_zeros_like(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_arange(
-        *,
-        start,
-        stop,
-        step,
-        dtype,
-        on_device,
-        fn_tree,
-        test_flags,
-        frontend,
+    *,
+    start,
+    stop,
+    step,
+    dtype,
+    on_device,
+    fn_tree,
+    test_flags,
+    frontend,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -145,13 +145,13 @@ def test_jax_numpy_arange(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_zeros(
-        *,
-        dtypes,
-        shape,
-        on_device,
-        fn_tree,
-        test_flags,
-        frontend,
+    *,
+    dtypes,
+    shape,
+    on_device,
+    fn_tree,
+    test_flags,
+    frontend,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtypes,
@@ -178,12 +178,12 @@ def test_jax_numpy_zeros(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_ones(
-        shape,
-        dtype,
-        test_flags,
-        frontend,
-        fn_tree,
-        on_device,
+    shape,
+    dtype,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -213,13 +213,13 @@ def test_jax_numpy_ones(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_ones_like(
-        dtype_and_x,
-        shape,
-        dtype,
-        test_flags,
-        frontend,
-        fn_tree,
-        on_device,
+    dtype_and_x,
+    shape,
+    dtype,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -248,11 +248,11 @@ def test_jax_numpy_ones_like(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_asarray(
-        dtype_and_a,
-        test_flags,
-        frontend,
-        fn_tree,
-        on_device,
+    dtype_and_a,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     dtype, a = dtype_and_a
     helpers.test_frontend_function(
@@ -280,10 +280,10 @@ def test_jax_numpy_asarray(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_hstack(
-        dtype_and_tup,
-        test_flags,
-        frontend,
-        fn_tree,
+    dtype_and_tup,
+    test_flags,
+    frontend,
+    fn_tree,
 ):
     input_dtype, x = dtype_and_tup
     helpers.test_frontend_function(
@@ -305,15 +305,15 @@ def test_jax_numpy_hstack(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_eye(
-        *,
-        n,
-        m,
-        k,
-        dtypes,
-        on_device,
-        fn_tree,
-        test_flags,
-        frontend,
+    *,
+    n,
+    m,
+    k,
+    dtypes,
+    on_device,
+    fn_tree,
+    test_flags,
+    frontend,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtypes,
@@ -343,12 +343,12 @@ def test_jax_numpy_eye(
     test_with_out=st.just(False),
 )
 def test_numpy_triu(
-        dtype_and_x,
-        k,
-        test_flags,
-        frontend,
-        fn_tree,
-        on_device,
+    dtype_and_x,
+    k,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -376,12 +376,12 @@ def test_numpy_triu(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_empty(
-        shape,
-        dtype,
-        test_flags,
-        frontend,
-        fn_tree,
-        on_device,
+    shape,
+    dtype,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -408,14 +408,14 @@ def test_jax_numpy_empty(
     increasing=st.booleans(),
 )
 def test_jax_numpy_vander(
-        *,
-        dtype_and_x,
-        N,
-        increasing,
-        test_flags,
-        on_device,
-        fn_tree,
-        frontend,
+    *,
+    dtype_and_x,
+    N,
+    increasing,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -437,11 +437,11 @@ def test_jax_numpy_vander(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_full_like(
-        input_fill_dtype,
-        frontend,
-        test_flags,
-        fn_tree,
-        on_device,
+    input_fill_dtype,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x, fill_value, dtype = input_fill_dtype
     helpers.test_frontend_function(
@@ -464,13 +464,13 @@ def test_jax_numpy_full_like(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_identity(
-        *,
-        n,
-        dtypes,
-        on_device,
-        fn_tree,
-        test_flags,
-        frontend,
+    *,
+    n,
+    dtypes,
+    on_device,
+    fn_tree,
+    test_flags,
+    frontend,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtypes,
@@ -489,11 +489,11 @@ def test_jax_numpy_identity(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
 )
 def test_jax_numpy_ndim(
-        dtype_and_x,
-        test_flags,
-        frontend,
-        fn_tree,
-        on_device,
+    dtype_and_x,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -523,13 +523,13 @@ def test_jax_numpy_ndim(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_empty_like(
-        dtype_and_x,
-        shape,
-        dtype,
-        test_flags,
-        frontend,
-        fn_tree,
-        on_device,
+    dtype_and_x,
+    shape,
+    dtype,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -557,12 +557,12 @@ def test_jax_numpy_empty_like(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_full(
-        shape,
-        input_fill_dtype,
-        frontend,
-        test_flags,
-        fn_tree,
-        on_device,
+    shape,
+    input_fill_dtype,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     input_dtype, _, fill_value, dtype = input_fill_dtype
     helpers.test_frontend_function(
@@ -603,14 +603,14 @@ def _get_dtype_and_range(draw, dimension=None):
     test_with_out=st.just(False),
 )
 def test_jax_numpy_logspace(
-        dtype_start_stop,
-        num,
-        base,
-        axis,
-        frontend,
-        test_flags,
-        fn_tree,
-        on_device,
+    dtype_start_stop,
+    num,
+    base,
+    axis,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     input_dtypes, start, stop = dtype_start_stop
     helpers.test_frontend_function(
@@ -639,13 +639,13 @@ def test_jax_numpy_logspace(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_linspace(
-        dtype_start_stop,
-        num,
-        axis,
-        frontend,
-        test_flags,
-        fn_tree,
-        on_device,
+    dtype_start_stop,
+    num,
+    axis,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     input_dtypes, start, stop = dtype_start_stop
     helpers.test_frontend_function(
@@ -678,11 +678,11 @@ def test_jax_numpy_linspace(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_copy(
-        dtype_and_a,
-        frontend,
-        test_flags,
-        fn_tree,
-        on_device,
+    dtype_and_a,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     dtype, a = dtype_and_a
     helpers.test_frontend_function(
@@ -702,11 +702,11 @@ def test_jax_numpy_copy(
         available_dtypes=helpers.get_dtypes("float")),
 )
 def test_jax_numpy_single(
-        dtype_and_x,
-        test_flags,
-        frontend,
-        fn_tree,
-        on_device,
+    dtype_and_x,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -727,13 +727,13 @@ def test_jax_numpy_single(
     test_with_out=st.just(False),
 )
 def test_geomspace(
-        dtype_start_stop,
-        num,
-        endpoint,
-        frontend,
-        test_flags,
-        fn_tree,
-        on_device,
+    dtype_start_stop,
+    num,
+    endpoint,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     input_dtypes, start, stop = dtype_start_stop
     helpers.test_frontend_function(
