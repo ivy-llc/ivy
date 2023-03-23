@@ -605,6 +605,9 @@ class Tensor:
     def cumsum_(self, dim, *, dtype=None):
         self._ivy_array = self.cumsum(dim, dtype).ivy_array
         return self
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def cummax(self, dim, *, out=None):
+        return torch_frontend.cummax(self._ivy_array, dim, out)
 
     def inverse(self):
         return torch_frontend.inverse(self._ivy_array)
