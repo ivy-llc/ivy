@@ -527,3 +527,7 @@ def frexp(x, /):
 def ldexp(x1, x2, /):
     return ivy.ldexp(x1, x2)
 
+#imag
+@to_ivy_arrays_and_back
+def imag(val, /):
+    return ivy.imag(val)

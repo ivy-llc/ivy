@@ -2571,3 +2571,24 @@ def test_jax_numpy_ldexp(
         x2=x[1],
     )
 
+@handle_frontend_test(
+    fn_tree="jax.numpy.imag",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("real_and_complex")),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_imag(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        val=x[0],
+    )
