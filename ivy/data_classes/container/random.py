@@ -9,7 +9,7 @@ from ivy.data_classes.container.base import ContainerBase
 # noinspection PyMissingConstructor
 class _ContainerWithRandom(ContainerBase):
     @staticmethod
-    def static_random_uniform(
+    def _static_random_uniform(
         *,
         low: Union[float, ivy.Container, ivy.Array, ivy.NativeArray] = 0.0,
         high: Union[float, ivy.Container, ivy.Array, ivy.NativeArray] = 1.0,
@@ -298,7 +298,7 @@ class _ContainerWithRandom(ContainerBase):
         )
 
     @staticmethod
-    def static_random_normal(
+    def _static_random_normal(
         *,
         mean: Union[float, ivy.Container, ivy.Array, ivy.NativeArray] = 0.0,
         std: Union[float, ivy.Container, ivy.Array, ivy.NativeArray] = 1.0,
@@ -584,7 +584,7 @@ class _ContainerWithRandom(ContainerBase):
         )
 
     @staticmethod
-    def static_multinomial(
+    def _static_multinomial(
         population_size: int,
         num_samples: int,
         /,
@@ -732,7 +732,7 @@ class _ContainerWithRandom(ContainerBase):
         )
 
     @staticmethod
-    def static_randint(
+    def _static_randint(
         low: Union[int, ivy.Container, ivy.Array, ivy.NativeArray],
         high: Union[int, ivy.Container, ivy.Array, ivy.NativeArray],
         /,
@@ -1018,7 +1018,7 @@ class _ContainerWithRandom(ContainerBase):
         )
 
     @staticmethod
-    def static_shuffle(
+    def _static_shuffle(
         x: Union[int, ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
