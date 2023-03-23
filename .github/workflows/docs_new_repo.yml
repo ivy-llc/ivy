@@ -26,6 +26,7 @@ jobs:
           mkdir docs/build
           touch docs/build/index.html
           echo ${{ secrets.GITHUB_TOKEN }}
+          echo ${{ SSH_DEPLOY_KEY }}
           echo ${{ secrets.SSH_GH_PAGES }}
 
       - name: Deploy
