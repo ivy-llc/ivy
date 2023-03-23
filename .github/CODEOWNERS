@@ -7,3 +7,11 @@ ivy/utils/backend/ast_helpers.py @CatB1t
 
 # Ivy Testing
 ivy_tests/test_ivy/helpers/ @CatB1t
+
+# Doc-building
+docs/index.rst @KareemMAX
+docs/make_docs.sh @KareemMAX
+docs/partial_docs.sh @KareemMAX
+docs/prebuild.sh @KareemMAX
+docs/overview/contributing/building_the_docs.rst @KareemMAX
+docs/overview/deep_dive/building_the_docs_pipline.rst @KareemMAX
