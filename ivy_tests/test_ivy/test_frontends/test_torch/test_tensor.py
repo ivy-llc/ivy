@@ -5695,8 +5695,8 @@ def test_torch_instance_bitwise_and_(
         frontend=frontend,
         on_device=on_device,
     )
-    
-    
+
+
 # __and__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -5734,9 +5734,10 @@ def test_torch_special_and(
         frontend=frontend,
         on_device=on_device,
     )
-    
-    
+
     # bitwise_xor
+
+
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
