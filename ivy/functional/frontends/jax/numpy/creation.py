@@ -173,7 +173,7 @@ def geomspace(start, stop, num=50, endpoint=True, dtype=None, axis=0):
     if dtype is None:
         dtype = start.dtype
     x = ivy.zeros((num,), dtype=dtype)
-    x = ivy.linspace(0, cr * num, num, endpoint=endpoint, dtype=dtype, axis=axis)
+    x = ivy.linspace(0, cr * (num - 1 if endpoint else num), num, endpoint=endpoint, dtype=dtype, axis=axis)
     x = ivy.exp(x)
     x = start * x
     # Include the endpoint if necessary
