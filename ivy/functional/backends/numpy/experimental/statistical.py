@@ -5,6 +5,23 @@ import ivy  # noqa
 from ivy.func_wrapper import with_supported_dtypes
 from . import backend_version
 
+def histogramdd(
+        input: np.ndarray,
+        /,
+        *,
+        bins: Optional[Union[Tuple[int],int]] = 10,
+        range: Optional[Union[Tuple[int], int]] = None,
+        weights : Optional[Tuple[int]] = None,
+        density: Optional[bool] = None
+) -> Tuple[np.ndarray]:
+    return np.histogramdd(
+        input,
+        bins,
+        range,
+        weights,
+        density
+    )
+
 
 def median(
     input: np.ndarray,
