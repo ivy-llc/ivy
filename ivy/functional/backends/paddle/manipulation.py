@@ -152,7 +152,19 @@ def reshape(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+    {"2.4.2 and below": 
+         {"cpu": 
+              ("uint16", 
+               "bfloat16", 
+               "int8", 
+               "int16", 
+               "uint8", 
+               "float16", 
+               "bool"
+               )
+          }
+     }, 
+    backend_version
 )
 def roll(
     x: paddle.Tensor,
@@ -162,7 +174,7 @@ def roll(
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.roll(x, shift, axis)
 
 
 @with_unsupported_device_and_dtypes(
