@@ -10,7 +10,7 @@ from ivy.data_classes.container.base import ContainerBase
 
 class _ContainerWithCreation(ContainerBase):
     @staticmethod
-    def static_arange(
+    def _static_arange(
         start: Number,
         /,
         stop: Optional[Number] = None,
@@ -39,7 +39,7 @@ class _ContainerWithCreation(ContainerBase):
         )
 
     @staticmethod
-    def static_asarray(
+    def _static_asarray(
         x: Union[
             ivy.Array,
             ivy.NativeArray,
@@ -112,7 +112,7 @@ class _ContainerWithCreation(ContainerBase):
         )
 
     @staticmethod
-    def static_zeros(
+    def _static_zeros(
         shape: Union[int, Sequence[int]],
         /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -137,7 +137,7 @@ class _ContainerWithCreation(ContainerBase):
         )
 
     @staticmethod
-    def static_ones(
+    def _static_ones(
         shape: Union[int, Sequence[int]],
         /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -162,7 +162,7 @@ class _ContainerWithCreation(ContainerBase):
         )
 
     @staticmethod
-    def static_full_like(
+    def _static_full_like(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         fill_value: Union[int, float],
@@ -334,7 +334,7 @@ class _ContainerWithCreation(ContainerBase):
         )
 
     @staticmethod
-    def static_ones_like(
+    def _static_ones_like(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -452,7 +452,7 @@ class _ContainerWithCreation(ContainerBase):
         )
 
     @staticmethod
-    def static_zeros_like(
+    def _static_zeros_like(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -570,7 +570,7 @@ class _ContainerWithCreation(ContainerBase):
         )
 
     @staticmethod
-    def static_tril(
+    def _static_tril(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         k: int = 0,
@@ -614,7 +614,7 @@ class _ContainerWithCreation(ContainerBase):
         )
 
     @staticmethod
-    def static_triu(
+    def _static_triu(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         k: int = 0,
@@ -658,7 +658,7 @@ class _ContainerWithCreation(ContainerBase):
         )
 
     @staticmethod
-    def static_empty_like(
+    def _static_empty_like(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -706,7 +706,7 @@ class _ContainerWithCreation(ContainerBase):
         )
 
     @staticmethod
-    def static_eye(
+    def _static_eye(
         n_rows: int,
         n_cols: Optional[int] = None,
         /,
@@ -735,7 +735,7 @@ class _ContainerWithCreation(ContainerBase):
         )
 
     @staticmethod
-    def static_linspace(
+    def _static_linspace(
         start: Union[ivy.Array, ivy.NativeArray, float],
         stop: Union[ivy.Array, ivy.NativeArray, float],
         /,
@@ -799,7 +799,7 @@ class _ContainerWithCreation(ContainerBase):
         )
 
     @staticmethod
-    def static_meshgrid(
+    def _static_meshgrid(
         *arrays: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number]],
         sparse: bool = False,
         indexing: str = "xy",
@@ -841,7 +841,7 @@ class _ContainerWithCreation(ContainerBase):
         )
 
     @staticmethod
-    def static_from_dlpack(
+    def _static_from_dlpack(
         x: Union[ivy.Array, ivy.NativeArray],
         /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -881,7 +881,7 @@ class _ContainerWithCreation(ContainerBase):
         )
 
     @staticmethod
-    def static_native_array(
+    def _static_native_array(
         x: Union[
             ivy.Array,
             ivy.NativeArray,
@@ -936,7 +936,7 @@ class _ContainerWithCreation(ContainerBase):
         )
 
     @staticmethod
-    def static_logspace(
+    def _static_logspace(
         start: Union[ivy.Array, ivy.NativeArray, float, ivy.Container],
         stop: Union[ivy.Array, ivy.NativeArray, float, ivy.Container],
         /,
@@ -1123,7 +1123,7 @@ class _ContainerWithCreation(ContainerBase):
         )
 
     @staticmethod
-    def static_one_hot(
+    def _static_one_hot(
         indices: ivy.Container,
         depth: int,
         /,
