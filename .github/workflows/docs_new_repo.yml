@@ -26,13 +26,10 @@ jobs:
           mkdir docs/build
           touch docs/build/index.html
 
-      - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4.4.1
-        with:
-          folder: docs/build
-          ssh-key: ${{ secrets.SSH_GH_PAGES }}
-          branch: master
-          git-config-name: ivy-seed
-          git-config-email: ivydl.team@gmail.com
-          repository-name: unifyai/ivy-docs
-          clean: false
+      - name: Deploy
+        uses: s0/git-publish-subdir-action@develop
+        env:
+          REPO: git@github.com:unifyai/ivy-docs.git
+          BRANCH: master
+          FOLDER: docs/build
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_GH_PAGES }}
