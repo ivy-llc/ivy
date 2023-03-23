@@ -110,7 +110,7 @@ def run_multiversion_testing():
                 ret = os.system(command)
             else:
                 ret = os.system(
-                    f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:base /opt/miniconda/envs/multienv/bin/python docker/multiversion_framework_directory.py {backend}; pytest --tb=short {test} --backend={backend}'
+                    f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:base /opt/miniconda/envs/multienv/bin/python docker/multiversion_framework_directory.py backend {backend}; pytest --tb=short {test} --backend={backend.split("/")[0]}'
                     # noqa
                 )
             if ret != 0:
