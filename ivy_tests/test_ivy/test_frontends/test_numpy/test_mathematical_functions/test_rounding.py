@@ -78,7 +78,7 @@ def test_numpy_fix(
 
 #floor
 @handle_frontend_test(
-    fn_tree="ivy.floor",
+    fn_tree="numpy.floor",
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[
             lambda: helpers.dtype_and_values(
