@@ -11,7 +11,7 @@ from ivy.data_classes.container.base import ContainerBase
 # noinspection PyMissingConstructor
 class _ContainerWithDataTypes(ContainerBase):
     @staticmethod
-    def static_astype(
+    def _static_astype(
         x: ivy.Container,
         dtype: ivy.Dtype,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -154,7 +154,7 @@ class _ContainerWithDataTypes(ContainerBase):
         )
 
     @staticmethod
-    def static_broadcast_arrays(
+    def _static_broadcast_arrays(
         *arrays: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -305,7 +305,7 @@ class _ContainerWithDataTypes(ContainerBase):
         )
 
     @staticmethod
-    def static_broadcast_to(
+    def _static_broadcast_to(
         x: ivy.Container,
         /,
         shape: Tuple[int, ...],
@@ -424,7 +424,7 @@ class _ContainerWithDataTypes(ContainerBase):
         )
 
     @staticmethod
-    def static_can_cast(
+    def _static_can_cast(
         from_: ivy.Container,
         to: ivy.Dtype,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -539,7 +539,7 @@ class _ContainerWithDataTypes(ContainerBase):
         )
 
     @staticmethod
-    def static_dtype(
+    def _static_dtype(
         x: ivy.Container,
         *,
         as_native: bool = False,
@@ -592,7 +592,7 @@ class _ContainerWithDataTypes(ContainerBase):
         )
 
     @staticmethod
-    def static_default_float_dtype(
+    def _static_default_float_dtype(
         *,
         input: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         float_dtype: Optional[Union[ivy.FloatDtype, ivy.NativeDtype]] = None,
@@ -614,7 +614,7 @@ class _ContainerWithDataTypes(ContainerBase):
         )
 
     @staticmethod
-    def static_default_complex_dtype(
+    def _static_default_complex_dtype(
         *,
         input: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         complex_dtype: Optional[Union[ivy.FloatDtype, ivy.NativeDtype]] = None,
@@ -636,7 +636,7 @@ class _ContainerWithDataTypes(ContainerBase):
         )
 
     @staticmethod
-    def static_function_supported_dtypes(
+    def _static_function_supported_dtypes(
         fn: Callable,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -653,7 +653,7 @@ class _ContainerWithDataTypes(ContainerBase):
         )
 
     @staticmethod
-    def static_function_unsupported_dtypes(
+    def _static_function_unsupported_dtypes(
         fn: Callable,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -670,7 +670,7 @@ class _ContainerWithDataTypes(ContainerBase):
         )
 
     @staticmethod
-    def static_finfo(
+    def _static_finfo(
         type: ivy.Container,
         /,
         *,
@@ -763,7 +763,7 @@ class _ContainerWithDataTypes(ContainerBase):
         )
 
     @staticmethod
-    def static_iinfo(
+    def _static_iinfo(
         type: ivy.Container,
         /,
         *,
@@ -894,7 +894,7 @@ class _ContainerWithDataTypes(ContainerBase):
         )
 
     @staticmethod
-    def static_is_bool_dtype(
+    def _static_is_bool_dtype(
         dtype_in: ivy.Container,
         /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -928,7 +928,7 @@ class _ContainerWithDataTypes(ContainerBase):
         )
 
     @staticmethod
-    def static_is_float_dtype(
+    def _static_is_float_dtype(
         dtype_in: ivy.Container,
         /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -1074,7 +1074,7 @@ class _ContainerWithDataTypes(ContainerBase):
         )
 
     @staticmethod
-    def static_is_int_dtype(
+    def _static_is_int_dtype(
         dtype_in: ivy.Container,
         /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -1108,7 +1108,7 @@ class _ContainerWithDataTypes(ContainerBase):
         )
 
     @staticmethod
-    def static_is_uint_dtype(
+    def _static_is_uint_dtype(
         dtype_in: ivy.Container,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1140,7 +1140,7 @@ class _ContainerWithDataTypes(ContainerBase):
         )
 
     @staticmethod
-    def static_is_complex_dtype(
+    def _static_is_complex_dtype(
         dtype_in: ivy.Container,
         /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -1262,7 +1262,7 @@ class _ContainerWithDataTypes(ContainerBase):
         )
 
     @staticmethod
-    def static_result_type(
+    def _static_result_type(
         *arrays_and_dtypes: ivy.Container,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
