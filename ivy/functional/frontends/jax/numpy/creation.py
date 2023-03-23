@@ -135,7 +135,7 @@ def full(shape, fill_value, dtype=None):
 
 @handle_jax_dtype
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16", )}, 'jax')
+@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16",)}, 'jax')
 def logspace(start, stop, num=50, endpoint=True, base=10.0, dtype=None, axis=0):
     if not endpoint:
         interval = (stop - start) / num
@@ -145,7 +145,7 @@ def logspace(start, stop, num=50, endpoint=True, base=10.0, dtype=None, axis=0):
 
 @handle_jax_dtype
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16", )}, 'jax')
+@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16",)}, 'jax')
 def linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis=0):
     ret = ivy.linspace(start, stop, num, axis=axis, endpoint=endpoint, dtype=dtype)
     if retstep:
@@ -159,3 +159,24 @@ def linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis
 @to_ivy_arrays_and_back
 def single(x):
     return ivy.astype(x, ivy.float32)
+
+
+@to_ivy_arrays_and_back
+def geomspace(start, stop, num=50, endpoint=True, dtype=None, axis=0):
+    # Check if stop < start and swap values if necessary
+    if stop < start:
+        start, stop = stop, start
+    # Compute the common ratio
+    cr = ivy.log(stop / start) / (num - 1 if endpoint else num)
+    r = ivy.exp(cr)
+    # Generate the sequence of values using the common ratio
+    if dtype is None:
+        dtype = start.dtype
+    x = ivy.zeros((num,), dtype=dtype)
+    x = ivy.linspace(0, cr * num, num, endpoint=endpoint, dtype=dtype, axis=axis)
+    x = ivy.exp(x)
+    x = start * x
+    # Include the endpoint if necessary
+    if endpoint:
+        x[-1] = stop
+    return x
