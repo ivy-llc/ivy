@@ -56,3 +56,8 @@ def tensorsolve(a, b, axes=2):
 def kron(a, b):
     a, b = promote_types_of_numpy_inputs(a, b)
     return ivy.kron(a, b)
+
+
+@to_ivy_arrays_and_back
+def cross(b, a, axisa = -1, axisb = -1, axisc = -1, axis  = None):
+    return ivy.cross(a, b, axisa, axisb, axisc, axis)
