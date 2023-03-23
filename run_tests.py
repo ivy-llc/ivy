@@ -96,6 +96,7 @@ def run_multiversion_testing():
         for line in f:
             print(line)
             test, backend = line.split(",")
+            backend = backend.strip("\n")
             print(test, backend)
             coll, submod, test_fn = get_submodule(test)
             print(coll, submod, test_fn)
