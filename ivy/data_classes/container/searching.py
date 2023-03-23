@@ -10,7 +10,7 @@ from ivy.data_classes.container.base import ContainerBase
 # noinspection PyMissingConstructor
 class _ContainerWithSearching(ContainerBase):
     @staticmethod
-    def static_argmax(
+    def _static_argmax(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -133,7 +133,7 @@ class _ContainerWithSearching(ContainerBase):
         )
 
     @staticmethod
-    def static_argmin(
+    def _static_argmin(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -267,7 +267,7 @@ class _ContainerWithSearching(ContainerBase):
         )
 
     @staticmethod
-    def static_nonzero(
+    def _static_nonzero(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -350,7 +350,7 @@ class _ContainerWithSearching(ContainerBase):
         )
 
     @staticmethod
-    def static_where(
+    def _static_where(
         condition: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
@@ -444,7 +444,7 @@ class _ContainerWithSearching(ContainerBase):
     # ----- #
 
     @staticmethod
-    def static_argwhere(
+    def _static_argwhere(
         x: ivy.Container,
         /,
         *,
