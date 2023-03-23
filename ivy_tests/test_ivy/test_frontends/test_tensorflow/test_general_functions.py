@@ -1617,3 +1617,52 @@ def test_tensorflow_unstack(
         value=x[0],
         axis=axis,
     )
+
+
+# reverse    
+@st.composite
+def reverse_helper(draw):
+    dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            min_num_dims=1,
+            max_num_dims=8,
+            ret_shape=True,
+        )
+    )
+    axis_dtype, axis = draw(
+        helpers.dtype_and_values(
+            available_dtypes=["int32", "int64"],
+            min_num_dims=1,
+            max_num_dims=1,
+            min_value=-(len(shape) - 1),
+            max_value=len(shape) - 1,
+            shape=(1,),
+        )
+    )
+    return dtype, x, axis_dtype, axis
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.reverse",
+    dtype_x_axis=reverse_helper(),
+)
+def test_tensorflow_reverse(
+    *,
+    dtype_x_axis,
+    frontend,
+    fn_tree,
+    test_flags,
+    on_device,
+):
+
+    dtype, x, axis_dtype, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype + axis_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensor=x[0],
+        axis=axis[0],
+    )    

@@ -96,6 +96,7 @@ def run_multiversion_testing():
         for line in f:
             print(line)
             test, backend = line.split(",")
+            backend = backend.strip("\n")
             print(test, backend)
             coll, submod, test_fn = get_submodule(test)
             print(coll, submod, test_fn)
@@ -104,7 +105,7 @@ def run_multiversion_testing():
                 # This is a frontend test
                 backend, frontend = backend.split(";")
                 frontend_version = "/".join(frontend.split("/")[1:])
-                command = f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:base /opt/miniconda/envs/multienv/bin/python docker/multiversion_framework_directory.py {backend} {frontend}; pytest --tb=short {test} --backend={backend} --frontend={frontend}'  # noqa
+                command = f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:base "/opt/miniconda/envs/multienv/bin/python docker/multiversion_framework_directory.py {backend} {frontend}; pytest --tb=short {test} --backend={backend} --frontend={frontend}" '  # noqa
                 print(command)
                 ret = os.system(command)
             else:
