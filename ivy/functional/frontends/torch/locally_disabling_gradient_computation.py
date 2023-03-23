@@ -1,24 +1,21 @@
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
+from ivy.functional.ivy.gradients import *
 
 def no_grad():
-    return ivy.with_grads(with_grads = False)
-
+    return GradientTracking(with_grads = False)
 
 def enable_grad():
-    return ivy.with_grads(with_grads = True)
-
+    return GradientTracking(with_grads = True)
 
 def set_grad_enabled(mode=True):
-    return ivy.with_grads(with_grads = mode)
+    return GradientTracking(with_grads = mode)
 
-"""
 def is_grad_enabled():
-    return 
+    return ivy.with_grads()
 
 def inference_mode(mode=True):
-    return 
+    return GradientTracking(with_grads = not(mode)) 
 
 def is_inference_mode_enabled():
-    return
-"""
+    return not(ivy.with_grads())
