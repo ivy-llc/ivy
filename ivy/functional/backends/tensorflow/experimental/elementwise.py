@@ -152,7 +152,9 @@ def count_nonzero(
         a, axis=axis, keepdims=keepdims, dtype=dtype, name=None
     )
 
-
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("complex",)}, backend_version
+)
 def nansum(
     x: Union[tf.Tensor, tf.Variable],
     /,

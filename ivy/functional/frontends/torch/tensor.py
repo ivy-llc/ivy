@@ -863,6 +863,9 @@ class Tensor:
     def __invert__(self):
         return torch_frontend.bitwise_not(self._ivy_array)
 
+    def __and__(self, other):
+        return torch_frontend.bitwise_and(self, other)
+
     # Method aliases
     absolute, absolute_ = abs, abs_
     ndimension = dim
