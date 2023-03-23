@@ -866,3 +866,6 @@ class Tensor:
     # Method aliases
     absolute, absolute_ = abs, abs_
     ndimension = dim
+
+    def bitwise_xor(self, other, *, out=None):
+        return torch_frontend.bitwise_xor(self._ivy_array, other)
