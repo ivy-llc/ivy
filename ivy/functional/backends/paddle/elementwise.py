@@ -48,7 +48,7 @@ def bitwise_xor(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     return paddle.bitwise_xor(x1, x2)
 
 
@@ -162,7 +162,7 @@ def bitwise_and(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     return paddle.bitwise_and(x1, x2)
 
 
@@ -650,7 +650,7 @@ def bitwise_or(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     return paddle.bitwise_or(x1, x2)
 
 
@@ -959,10 +959,8 @@ def bitwise_right_shift(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    ret_dtype = ivy.promote_types(x1.dtype, x2.dtype)
-    x1, x2 = ivy.broadcast_arrays(x1.cast("float64"), x2.cast("float64"))
-
-    return paddle.floor(x1.data / 2**x2.data).astype(ret_dtype)
+    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    return paddle.floor(x1.cast("float64") / 2**x2.cast("float64")).astype(ret_dtype)
 
 
 def bitwise_left_shift(
@@ -972,10 +970,8 @@ def bitwise_left_shift(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    ret_dtype = ivy.promote_types(x1.dtype, x2.dtype)
-    x1, x2 = ivy.broadcast_arrays(x1.cast("float64"), x2.cast("float64"))
-
-    return paddle.floor(x1.data * 2**x2.data).astype(ret_dtype)
+    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    return paddle.floor(x1.cast("float64") * 2**x2.cast("float64")).astype(ret_dtype)
 
 
 # Extra #
