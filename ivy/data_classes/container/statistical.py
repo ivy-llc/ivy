@@ -422,7 +422,7 @@ class _ContainerWithStatistical(ContainerBase):
         )
 
     @staticmethod
-    def static_var(
+    def _static_var(
         x: ivy.Container,
         /,
         *,
@@ -496,7 +496,7 @@ class _ContainerWithStatistical(ContainerBase):
         )
 
     @staticmethod
-    def static_prod(
+    def _static_prod(
         x: ivy.Container,
         /,
         *,
@@ -774,7 +774,7 @@ class _ContainerWithStatistical(ContainerBase):
         )
 
     @staticmethod
-    def static_sum(
+    def _static_sum(
         x: ivy.Container,
         /,
         *,
@@ -977,7 +977,7 @@ class _ContainerWithStatistical(ContainerBase):
     # ----- #
 
     @staticmethod
-    def static_cumsum(
+    def _static_cumsum(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         axis: int = 0,
         exclusive: bool = False,
@@ -1275,7 +1275,7 @@ class _ContainerWithStatistical(ContainerBase):
         )
 
     @staticmethod
-    def static_cumprod(
+    def _static_cumprod(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,

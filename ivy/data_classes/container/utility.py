@@ -9,7 +9,7 @@ from ivy.data_classes.container.base import ContainerBase
 # noinspection PyMissingConstructor
 class _ContainerWithUtility(ContainerBase):
     @staticmethod
-    def static_all(
+    def _static_all(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -175,7 +175,7 @@ class _ContainerWithUtility(ContainerBase):
         )
 
     @staticmethod
-    def static_any(
+    def _static_any(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
