@@ -54,6 +54,7 @@ def expand_dims(
     x: paddle.Tensor,
     /,
     *,
+    copy: Optional[bool] = None,
     axis: Union[int, Sequence[int]] = 0,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
@@ -69,9 +70,12 @@ def flip(
     x: paddle.Tensor,
     /,
     *,
+    copy: Optional[bool] = None,
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if axis is None:
+        axis = list(range(x.ndim))
     if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
         return paddle.flip(x.cast(ivy.default_float_dtype()), axis).cast(x.dtype)
     return paddle.flip(x, axis)
@@ -85,6 +89,7 @@ def permute_dims(
     /,
     axes: Tuple[int, ...],
     *,
+    copy: Optional[bool] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if x.dtype in [paddle.int8, paddle.int16, paddle.uint8]:
@@ -93,11 +98,12 @@ def permute_dims(
 
 
 def _reshape_fortran_paddle(x, shape):
-    if len(x.shape) > 0:
-        x = ivy.to_native(permute_dims(x, list(reversed(range(len(x.shape))))))
-    return ivy.to_native(
-        permute_dims(paddle.reshape(x, shape[::-1]), list(range(len(shape)))[::-1])
-    )
+    with ivy.ArrayMode(False):
+        if len(x.shape) > 0:
+            x = permute_dims(x, list(reversed(range(len(x.shape)))))
+        return permute_dims(
+            paddle.reshape(x, shape[::-1]), list(range(len(shape)))[::-1]
+        )
 
 
 @with_unsupported_device_and_dtypes(
@@ -152,19 +158,12 @@ def reshape(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": 
-         {"cpu": 
-              ("uint16", 
-               "bfloat16", 
-               "int8", 
-               "int16", 
-               "uint8", 
-               "float16", 
-               "bool"
-               )
-          }
-     }, 
-    backend_version
+    {
+        "2.4.2 and below": {
+            "cpu": ("uint16", "bfloat16", "int8", "int16", "uint8", "float16", "bool")
+        }
+    },
+    backend_version,
 )
 def roll(
     x: paddle.Tensor,
@@ -185,6 +184,7 @@ def squeeze(
     /,
     axis: Union[int, Sequence[int]],
     *,
+    copy: Optional[bool] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if isinstance(axis, list):
@@ -253,6 +253,7 @@ def split(
     x: paddle.Tensor,
     /,
     *,
+    copy: Optional[bool] = None,
     num_or_size_splits: Optional[Union[int, List[int]]] = None,
     axis: Optional[int] = 0,
     with_remainder: Optional[bool] = False,
@@ -397,11 +398,18 @@ def zero_pad(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def swapaxes(
-    x: paddle.Tensor, axis0: int, axis1: int, /, *, out: Optional[paddle.Tensor] = None
+    x: paddle.Tensor,
+    axis0: int,
+    axis1: int,
+    /,
+    *,
+    copy: Optional[bool] = None,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     axes = [x for x in range(x.ndim)]
     axes[axis0], axes[axis1] = axes[axis1], axes[axis0]
-    return permute_dims(x, axes)
+    with ivy.ArrayMode(False):
+        return permute_dims(x, axes)
 
 
 @with_unsupported_device_and_dtypes(
@@ -438,7 +446,12 @@ def clip(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def unstack(
-    x: paddle.Tensor, /, *, axis: int = 0, keepdims: bool = False
+    x: paddle.Tensor,
+    /,
+    *,
+    copy: Optional[bool] = None,
+    axis: int = 0,
+    keepdims: bool = False,
 ) -> List[paddle.Tensor]:
     if x.ndim == 0:
         return [x]
