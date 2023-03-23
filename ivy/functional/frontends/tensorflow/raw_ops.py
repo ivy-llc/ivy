@@ -685,7 +685,7 @@ def DebugGradientIdentity(input, name="DebugGradientIdentity"):
 
 @to_ivy_arrays_and_back
 def Real(input, Tout=ivy.float32, name="Real"):
-    return ivy.Real(input, Tout=Tout) 
+    return ivy.Real(input, Tout=Tout)
 
 
 @to_ivy_arrays_and_back
@@ -696,7 +696,7 @@ def BandedTriangularSolve(
     adjoint=False, 
     name="BandedTriangularSolve",
 ):
-   return ivy.BandedTriangularSolve(matrix, rhs, lower=lower, adjoint=adjoint)
+    return ivy.BandedTriangularSolve(matrix, rhs, lower=lower, adjoint=adjoint)
 
 
 @to_ivy_arrays_and_back
@@ -711,4 +711,4 @@ def BatchMatMulV2(x, y, adj_x=False, adj_y=False, name='BatchMatMulV2'):
 
 @to_ivy_arrays_and_back
 def BatchMatMulV3(x, y, Tout=ivy.Dtype, adj_x=False, adj_y=False, name='BatchMatMulV3'):
-   return ivy.BatchMatMul(x, y, Tout=Tout, adj_x=adj_x, adj_y=adj_y)
+    return ivy.BatchMatMul(x, y, Tout=Tout, adj_x=adj_x, adj_y=adj_y)
