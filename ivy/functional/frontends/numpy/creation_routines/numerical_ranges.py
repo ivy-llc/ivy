@@ -157,6 +157,7 @@ class OGrid(nd_grid):
 
 ogrid = OGrid()
 
+
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 def geomspace(start, stop, num=50, endpoint=True, dtype=None, axis=0):
@@ -165,12 +166,11 @@ def geomspace(start, stop, num=50, endpoint=True, dtype=None, axis=0):
         start, stop = stop, start
     # Compute the common ratio
     cr = ivy.log(stop / start) / (num - 1 if endpoint else num)
-    r = ivy.exp(cr)
     # Generate the sequence of values using the common ratio
     if dtype is None:
         dtype = start.dtype
     x = ivy.zeros((num,), dtype=dtype)
-    x = ivy.linspace(0, cr * num, num, endpoint=endpoint, dtype=dtype, axis=axis)
+    x = ivy.linspace(0, cr * (num - 1 if endpoint else num), num, endpoint=endpoint, dtype=dtype, axis=axis)
     x = ivy.exp(x)
     x = start * x
     # Include the endpoint if necessary
