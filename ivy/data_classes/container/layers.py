@@ -14,7 +14,7 @@ import ivy
 # noinspection PyMissingConstructor
 class _ContainerWithLayers(ContainerBase):
     @staticmethod
-    def static_linear(
+    def _static_linear(
         x: ivy.Container,
         weight: Union[ivy.Array, ivy.NativeArray],
         /,
@@ -188,7 +188,7 @@ class _ContainerWithLayers(ContainerBase):
         )
 
     @staticmethod
-    def static_dropout(
+    def _static_dropout(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         prob: float,
         /,
@@ -365,7 +365,7 @@ class _ContainerWithLayers(ContainerBase):
         )
 
     @staticmethod
-    def static_dropout1d(
+    def _static_dropout1d(
         x: ivy.Container,
         prob: float,
         /,
@@ -509,7 +509,7 @@ class _ContainerWithLayers(ContainerBase):
         )
 
     @staticmethod
-    def static_dropout3d(
+    def _static_dropout3d(
         x: ivy.Container,
         prob: float,
         /,
@@ -632,7 +632,7 @@ class _ContainerWithLayers(ContainerBase):
         )
 
     @staticmethod
-    def static_scaled_dot_product_attention(
+    def _static_scaled_dot_product_attention(
         q: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         k: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         v: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -851,7 +851,7 @@ class _ContainerWithLayers(ContainerBase):
         )
 
     @staticmethod
-    def static_multi_head_attention(
+    def _static_multi_head_attention(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         scale: float,
         num_heads: int,
@@ -931,7 +931,7 @@ class _ContainerWithLayers(ContainerBase):
         )
 
     @staticmethod
-    def static_conv1d(
+    def _static_conv1d(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         strides: Union[int, Tuple[int]],
@@ -1099,7 +1099,7 @@ class _ContainerWithLayers(ContainerBase):
         )
 
     @staticmethod
-    def static_conv2d(
+    def _static_conv2d(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         strides: Union[int, Tuple[int, int]],
@@ -1267,7 +1267,7 @@ class _ContainerWithLayers(ContainerBase):
         )
 
     @staticmethod
-    def static_conv1d_transpose(
+    def _static_conv1d_transpose(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         strides: Union[int, Tuple[int]],
@@ -1445,7 +1445,7 @@ class _ContainerWithLayers(ContainerBase):
         )
 
     @staticmethod
-    def static_conv2d_transpose(
+    def _static_conv2d_transpose(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         strides: Union[int, Tuple[int, int]],
@@ -1635,7 +1635,7 @@ class _ContainerWithLayers(ContainerBase):
         )
 
     @staticmethod
-    def static_depthwise_conv2d(
+    def _static_depthwise_conv2d(
         x: ivy.Container,
         filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         strides: Union[int, Tuple[int], Tuple[int, int]],
@@ -1777,7 +1777,7 @@ class _ContainerWithLayers(ContainerBase):
         )
 
     @staticmethod
-    def static_conv3d(
+    def _static_conv3d(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         strides: Union[int, Tuple[int, int, int]],
@@ -1925,7 +1925,7 @@ class _ContainerWithLayers(ContainerBase):
         )
 
     @staticmethod
-    def static_conv3d_transpose(
+    def _static_conv3d_transpose(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
@@ -2101,7 +2101,7 @@ class _ContainerWithLayers(ContainerBase):
         )
 
     @staticmethod
-    def static_lstm_update(
+    def _static_lstm_update(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         init_h: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         init_c: Union[ivy.Array, ivy.NativeArray, ivy.Container],
