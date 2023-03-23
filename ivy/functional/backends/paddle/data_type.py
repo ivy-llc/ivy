@@ -3,6 +3,7 @@ from typing import Optional, Union, Sequence, List
 
 import paddle
 import numpy as np
+
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
@@ -106,6 +107,7 @@ class Bfloat16Finfo:
 # Array API Standard #
 # -------------------#
 
+
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
@@ -127,20 +129,20 @@ def astype(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def broadcast_arrays(*arrays: paddle.Tensor) -> List[paddle.Tensor]:
-        
     if len(arrays) > 1:
         desired_shape = ivy.broadcast_shapes([arrays[0].shape, arrays[1].shape])
         if len(arrays) > 2:
-            for i in range(2, len(arrays)):
-                desired_shape = ivy.broadcast_shapes(
-                    [desired_shape, arrays[i].shape]
-                )
+            with ivy.ArrayMode(False):
+                for i in range(2, len(arrays)):
+                    desired_shape = ivy.broadcast_shapes(
+                        [desired_shape, arrays[i].shape]
+                    )
     else:
         return [arrays[0]]
     result = []
-    for tensor in arrays:
-        result.append(broadcast_to(tensor, desired_shape))
-
+    with ivy.ArrayMode(False):
+        for tensor in arrays:
+            result.append(broadcast_to(tensor, desired_shape))
     return result
 
 
@@ -161,18 +163,27 @@ def broadcast_to(
         if len(shape) == 0:
             return x
         else:
-            x = ivy.expand_dims(x,axis = 0).data
+            with ivy.ArrayMode(False):
+                x = ivy.expand_dims(x, axis=0)
     if x.ndim > len(shape):
         x = x.reshape([-1])
 
-    if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16,]:
-        return paddle.broadcast_to(x.cast('float32'), shape).cast(x.dtype)
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+    ]:
+        return paddle.broadcast_to(x.cast(ivy.default_float_dtype()), shape).cast(
+            x.dtype
+        )
     elif x.dtype in [paddle.complex64, paddle.complex128]:
-        x_real = paddle.broadcast_to(ivy.real(x).data, shape)
-        x_imag = paddle.broadcast_to(ivy.imag(x).data, shape)
+        x_real = paddle.broadcast_to(x.real(), shape)
+        x_imag = paddle.broadcast_to(x.imag(), shape)
         return x_real + 1j * x_imag
     else:
         return paddle.broadcast_to(x, shape)
+
 
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
@@ -189,6 +200,7 @@ def finfo(type: Union[paddle.dtype, str, paddle.Tensor], /) -> Finfo:
 
     return Finfo(np.finfo(type))
 
+
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
@@ -201,15 +213,17 @@ def iinfo(type: Union[paddle.dtype, str, paddle.Tensor], /) -> Iinfo:
 
     return Iinfo(np.iinfo(type))
 
+
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def result_type(*arrays_and_dtypes: Union[paddle.Tensor, paddle.dtype]) -> ivy.Dtype:
-    return ivy.promote_types(arrays_and_dtypes[0].dtype,arrays_and_dtypes[1].dtype)
+    return ivy.promote_types(arrays_and_dtypes[0].dtype, arrays_and_dtypes[1].dtype)
 
 
 # Extra #
 # ------#
+
 
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
@@ -232,6 +246,7 @@ def as_ivy_dtype(dtype_in: Union[paddle.dtype, str, bool, int, float], /) -> ivy
                 f" {dtype_in} is not supported by Paddle backend."
             )
     return ivy.Dtype(ivy_dtype_dict[dtype_in])
+
 
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
@@ -256,6 +271,7 @@ def as_native_dtype(
             "Cannot convert to Paddle dtype." f" {dtype_in} is not supported by Paddle."
         )
 
+
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
@@ -263,6 +279,7 @@ def dtype(x: paddle.Tensor, *, as_native: bool = False) -> ivy.Dtype:
     if as_native:
         return ivy.to_native(x).dtype
     return as_ivy_dtype(x.dtype)
+
 
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
