@@ -36,4 +36,3 @@ jobs:
           clean: false
           git-config-name: ivy-seed
           git-config-email: ivydl.team@gmail.com
-          force: true
