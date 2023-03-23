@@ -34,7 +34,7 @@ jobs:
           touch temp.txt
           echo -n "TEXT" > temp.txt
           git remote remove origin
-          git remote add origin https://github.com/unifyai/ivy-docs.git
+          git remote add origin git@github.com:unifyai/ivy-docs.git
           git add temp.txt
           git commit -m "First commit"
           git push --force origin master
