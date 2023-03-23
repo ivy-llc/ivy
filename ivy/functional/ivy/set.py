@@ -309,16 +309,44 @@ def unique_values(
 
     Examples
     --------
-    >>> import ivy
-    >>> a = ivy.array([1, 1, 2, 2, 3, 4, 4, 5])
-    >>> ivy.unique_values(a)
-    array([1, 2, 3, 4, 5])
-    >>> b = ivy.array([1, 2, 3, 4, 5])
-    >>> ivy.unique_values(b)
-    array([1, 2, 3, 4, 5])
-    >>> c = ivy.array([1.0, 1.0, 2.0, 2.0, 3.0, 4.0, 4.0, 5.0, -0.0, 0.0, float('nan'), float('nan')])
-    >>> ivy.unique_values(c)
-    array([0., 1., 2., 3., 4., 5., nan, -0.])
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([1, 2, 3, 3, 4, 4, 4, 5])
+    >>> y = ivy.unique_values(x)
+    >>> print(y)
+    ivy.array([1, 2, 3, 4, 5])
+
+    >>> x = ivy.array([[1, 2, 3], [3, 4, 4], [5, 5, 5]])
+    >>> y = ivy.unique_values(x)
+    >>> print(y)
+    ivy.array([1, 2, 3, 4, 5])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0, 1, 3 , 2 , 1 , 0]))
+    >>> y = ivy.unique_values(x)
+    >>> print(y)
+    {
+        a: ivy.array([0, 1, 2, 3])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([0., 1., 3. , 2. , 1. , 0.]),
+    ...                   b=ivy.array([1, 2, 1, 3, 4, 1, 3]))
+    >>> y = ivy.unique_values(x)
+    >>> print(y)
+    {
+        a: ivy.array([0., 1., 2., 3.]),
+        b: ivy.array([1, 2, 3, 4])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([[1, 2, 3], [3, 4, 4], [5, 5, 5]]),
+    ...                   b=ivy.array([[1, 2], [1, 3], [4, 1],[3, 2]]))
+    >>> y = ivy.unique_values(x)
+    >>> print(y)
+    {
+        a: ivy.array([1, 2, 3, 4, 5]),
+        b: ivy.array([1, 2, 3, 4])
+    }
 
     """
     return ivy.current_backend(x).unique_values(x, out=out)
