@@ -8,7 +8,7 @@ import ivy
 
 class _ContainerWithSet(ContainerBase):
     @staticmethod
-    def static_unique_all(
+    def _static_unique_all(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -147,7 +147,7 @@ class _ContainerWithSet(ContainerBase):
         )
 
     @staticmethod
-    def static_unique_counts(
+    def _static_unique_counts(
         x: ivy.Container,
         /,
         *,
@@ -276,7 +276,7 @@ class _ContainerWithSet(ContainerBase):
         )
 
     @staticmethod
-    def static_unique_values(
+    def _static_unique_values(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -376,7 +376,7 @@ class _ContainerWithSet(ContainerBase):
         )
 
     @staticmethod
-    def static_unique_inverse(
+    def _static_unique_inverse(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
