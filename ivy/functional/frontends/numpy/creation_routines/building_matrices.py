@@ -4,7 +4,6 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     handle_numpy_dtype,
 )
 
-
 @to_ivy_arrays_and_back
 def tril(m, k=0):
     return ivy.tril(m, k=k)
@@ -27,3 +26,8 @@ def tri(N, M=None, k=0, dtype="float64", *, like=None):
 @to_ivy_arrays_and_back
 def diag(v, k=0):
     return ivy.diag(v, k=k)
+
+
+@to_ivy_arrays_and_back
+def vander(x, N=None, increasing=False):
+    return ivy.vander(x, N=N, increasing=increasing)
