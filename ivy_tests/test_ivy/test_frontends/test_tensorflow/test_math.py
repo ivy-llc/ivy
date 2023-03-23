@@ -22,12 +22,12 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     test_with_out=st.just(False),
 )
 def test_tensorflow_accumulate_n(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -51,12 +51,12 @@ def test_tensorflow_accumulate_n(
     test_with_out=st.just(False),
 )
 def test_tensorflow_add(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -77,12 +77,12 @@ def test_tensorflow_add(
     test_with_out=st.just(False),
 )
 def test_tensorflow_tan(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -102,12 +102,12 @@ def test_tensorflow_tan(
     test_with_out=st.just(False),
 )
 def test_tensorflow_exp(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -127,12 +127,12 @@ def test_tensorflow_exp(
     test_with_out=st.just(False),
 )
 def test_tensorflow_sqrt(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -156,12 +156,12 @@ def test_tensorflow_sqrt(
     test_with_out=st.just(False),
 )
 def test_tensorflow_multiply(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -186,12 +186,12 @@ def test_tensorflow_multiply(
     test_with_out=st.just(False),
 )
 def test_tensorflow_maximum(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -216,12 +216,12 @@ def test_tensorflow_maximum(
     test_with_out=st.just(False),
 )
 def test_tensorflow_subtract(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -246,12 +246,12 @@ def test_tensorflow_subtract(
     test_with_out=st.just(False),
 )
 def test_tensorflow_squared_difference(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -276,12 +276,12 @@ def test_tensorflow_squared_difference(
     test_with_out=st.just(False),
 )
 def test_tensorflow_logical_xor(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -306,12 +306,12 @@ def test_tensorflow_logical_xor(
     test_with_out=st.just(False),
 )
 def test_tensorflow_divide(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -337,12 +337,12 @@ def test_tensorflow_divide(
     test_with_out=st.just(False),
 )
 def test_tensorflow_negative(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -366,12 +366,12 @@ def test_tensorflow_negative(
     test_with_out=st.just(False),
 )
 def test_tensorflow_logical_and(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -397,12 +397,12 @@ def test_tensorflow_logical_and(
     test_with_out=st.just(False),
 )
 def test_tensorflow_log_sigmoid(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -424,12 +424,12 @@ def test_tensorflow_log_sigmoid(
     test_with_out=st.just(False),
 )
 def test_tensorflow_reciprocal_no_nan(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -451,12 +451,12 @@ def test_tensorflow_reciprocal_no_nan(
     test_with_out=st.just(False),
 )
 def test_tensorflow_reduce_all(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -478,12 +478,12 @@ def test_tensorflow_reduce_all(
     test_with_out=st.just(False),
 )
 def test_tensorflow_reduce_any(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     (
         input_dtype,
@@ -508,12 +508,12 @@ def test_tensorflow_reduce_any(
     test_with_out=st.just(False),
 )
 def test_tensorflow_reduce_euclidean_norm(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     (
         input_dtype,
@@ -538,12 +538,12 @@ def test_tensorflow_reduce_euclidean_norm(
     test_with_out=st.just(False),
 )
 def test_tensorflow_reduce_logsumexp(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -564,13 +564,13 @@ def test_tensorflow_reduce_logsumexp(
     test_with_out=st.just(False),
 )
 def test_tensorflow_argmax(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-    output_type,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
+        output_type,
 ):
     if ivy.current_backend_str() == "torch":
         assume(output_type != "uint16")
@@ -598,12 +598,12 @@ def test_tensorflow_argmax(
     test_with_out=st.just(False),
 )
 def test_tensorflow_reduce_max(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -625,12 +625,12 @@ def test_tensorflow_reduce_max(
     test_with_out=st.just(False),
 )
 def test_tensorflow_reduce_min(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -652,12 +652,12 @@ def test_tensorflow_reduce_min(
     test_with_out=st.just(False),
 )
 def test_tensorflow_reduce_prod(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -678,12 +678,12 @@ def test_tensorflow_reduce_prod(
     ),
 )
 def test_tensorflow_reduce_std(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -705,12 +705,12 @@ def test_tensorflow_reduce_std(
     test_with_out=st.just(False),
 )
 def test_tensorflow_asinh(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -732,12 +732,12 @@ def test_tensorflow_asinh(
     test_with_out=st.just(False),
 )
 def test_tensorflow_reduce_sum(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -759,12 +759,12 @@ def test_tensorflow_reduce_sum(
     test_with_out=st.just(False),
 )
 def test_tensorflow_reduce_mean(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -787,13 +787,13 @@ def test_tensorflow_reduce_mean(
     keepdims=st.booleans(),
 )
 def test_tensorflow_reduce_variance(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-    keepdims,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
+        keepdims,
 ):
     input_dtype, x, axis, ddof = dtype_and_x
     helpers.test_frontend_function(
@@ -831,13 +831,13 @@ def test_tensorflow_reduce_variance(
     test_with_out=st.just(False),
 )
 def test_tensorflow_scalar_mul(
-    *,
-    dtype_and_x,
-    scalar_val,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        scalar_val,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     scalar_dtype, scalar = scalar_val
@@ -863,12 +863,12 @@ def test_tensorflow_scalar_mul(
     test_with_out=st.just(False),
 )
 def test_tensorflow_divide_no_nan(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtypes, xy = dtype_and_x
     helpers.test_frontend_function(
@@ -893,12 +893,12 @@ def test_tensorflow_divide_no_nan(
     test_with_out=st.just(False),
 )
 def test_tensorflow_multiply_no_nan(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtypes, xy = dtype_and_x
     helpers.test_frontend_function(
@@ -921,12 +921,12 @@ def test_tensorflow_multiply_no_nan(
     test_with_out=st.just(False),
 )
 def test_tensorflow_erfcinv(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -948,12 +948,12 @@ def test_tensorflow_erfcinv(
     test_with_out=st.just(False),
 )
 def test_tensorflow_is_non_decreasing(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -975,12 +975,12 @@ def test_tensorflow_is_non_decreasing(
     test_with_out=st.just(False),
 )
 def test_tensorflow_is_strictly_increasing(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1004,14 +1004,14 @@ def test_tensorflow_is_strictly_increasing(
     test_with_out=st.just(False),
 )
 def test_tensorflow_count_nonzero(
-    *,
-    dtype_x_axis,
-    dtype,
-    keepdims,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_x_axis,
+        dtype,
+        keepdims,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
@@ -1043,13 +1043,13 @@ def test_tensorflow_count_nonzero(
     test_with_out=st.just(False),
 )
 def test_tensorflow_confusion_matrix(
-    *,
-    dtype_and_x,
-    num_classes,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        num_classes,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1080,13 +1080,13 @@ def test_tensorflow_confusion_matrix(
     ),
 )
 def test_tensorflow_polyval(
-    *,
-    dtype_and_coeffs,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_coeffs,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     dtype_x, x = dtype_and_x
     dtype_coeffs, coeffs = dtype_and_coeffs
@@ -1111,13 +1111,13 @@ def test_tensorflow_polyval(
     test_with_out=st.just(False),
 )
 def test_tensorflow_unsorted_segment_mean(
-    *,
-    data,
-    segment_ids,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        data,
+        segment_ids,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=[ivy.float32, ivy.int32],
@@ -1141,13 +1141,13 @@ def test_tensorflow_unsorted_segment_mean(
     test_with_out=st.just(False),
 )
 def test_tensorflow_unsorted_segment_sqrt_n(
-    *,
-    data,
-    segment_ids,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        data,
+        segment_ids,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=[ivy.float32, ivy.int32],
@@ -1171,12 +1171,12 @@ def test_tensorflow_unsorted_segment_sqrt_n(
     test_with_out=st.just(False),
 )
 def test_tensorflow_zero_fraction(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1200,12 +1200,12 @@ def test_tensorflow_zero_fraction(
     test_with_out=st.just(False),
 )
 def test_tensorflow_truediv(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1257,13 +1257,13 @@ def test_tensorflow_pow(dtype_and_x, frontend, test_flags, fn_tree):
     test_with_out=st.just(False),
 )
 def test_tensorflow_argmin(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-    output_type,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
+        output_type,
 ):
     input_dtype, x, axis = dtype_and_x
     if isinstance(axis, tuple):
@@ -1291,12 +1291,12 @@ def test_tensorflow_argmin(
     test_with_out=st.just(False),
 )
 def test_tensorflow_equal(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1322,12 +1322,12 @@ def test_tensorflow_equal(
     test_with_out=st.just(False),
 )
 def test_tensorflow_floor(
-    *,
-    dtype_and_x,
-    test_flags,
-    frontend,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        test_flags,
+        frontend,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1352,12 +1352,12 @@ def test_tensorflow_floor(
     test_with_out=st.just(False),
 )
 def test_tensorflow_ceil(
-    *,
-    dtype_and_x,
-    test_flags,
-    frontend,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        test_flags,
+        frontend,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1383,12 +1383,12 @@ def test_tensorflow_ceil(
     test_with_out=st.just(False),
 )
 def test_tensorflow_minimum(
-    *,
-    dtype_and_x,
-    test_flags,
-    frontend,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        test_flags,
+        frontend,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1414,12 +1414,12 @@ def test_tensorflow_minimum(
     test_with_out=st.just(False),
 )
 def test_tensorflow_sigmoid(
-    *,
-    dtype_and_x,
-    test_flags,
-    on_device,
-    fn_tree,
-    frontend,
+        *,
+        dtype_and_x,
+        test_flags,
+        on_device,
+        fn_tree,
+        frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1443,12 +1443,12 @@ def test_tensorflow_sigmoid(
     test_with_out=st.just(False),
 )
 def test_tensorflow_tanh(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1470,12 +1470,12 @@ def test_tensorflow_tanh(
     test_with_out=st.just(False),
 )
 def test_tensorflow_rsqrt(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_and_x,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1504,12 +1504,12 @@ def test_tensorflow_rsqrt(
     test_with_out=st.just(False),
 )
 def test_tensorflow_nextafter(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_and_x,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1533,12 +1533,12 @@ def test_tensorflow_nextafter(
     test_with_out=st.just(False),
 )
 def test_tensorflow_log_softmax(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_and_x,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1560,12 +1560,12 @@ def test_tensorflow_log_softmax(
     test_with_out=st.just(False),
 )
 def test_tensorflow_abs(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_and_x,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1590,12 +1590,12 @@ def test_tensorflow_abs(
     test_with_out=st.just(False),
 )
 def test_tensorflow_asin(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_and_x,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1619,12 +1619,12 @@ def test_tensorflow_asin(
     test_with_out=st.just(False),
 )
 def test_tensorflow_acos(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_and_x,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1644,12 +1644,12 @@ def test_tensorflow_acos(
     test_with_out=st.just(False),
 )
 def test_tensorflow_square(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1671,12 +1671,12 @@ def test_tensorflow_square(
     test_with_out=st.just(False),
 )
 def test_tensorflow_is_nan(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1700,12 +1700,12 @@ def test_tensorflow_is_nan(
     test_with_out=st.just(False),
 )
 def test_tensorflow_is_finite(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_and_x,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1725,12 +1725,12 @@ def test_tensorflow_is_finite(
     test_with_out=st.just(False),
 )
 def test_tensorflow_atan(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1751,12 +1751,12 @@ def test_tensorflow_atan(
     ),
 )
 def test_tensorflow_log(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_and_x,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1777,12 +1777,12 @@ def test_tensorflow_log(
     ),
 )
 def test_tensorflow_add_n(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_and_x,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1806,12 +1806,12 @@ def test_tensorflow_add_n(
     test_with_out=st.just(False),
 )
 def test_tensorflow_floormod(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x[0], 0)))
@@ -1823,7 +1823,37 @@ def test_tensorflow_floormod(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
-        y=x[1], 
+        y=x[1],
+    )
+
+
+# greater
+@handle_frontend_test(
+    fn_tree="tensorflow.math.greater",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_greater(
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
     )
 
 
@@ -1851,25 +1881,3 @@ def test_tensorflow_cos(
         on_device=on_device,
         x=x[0],
     )
-
-    
-# greater
-@handle_frontend_test(
-    fn_tree="tensorflow.math.greater",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=2,
-        shared_dtype=True,
-    ),
-    test_with_out=st.just(False),
-)
-def test_tensorflow_greater(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-    y=x[1],
-    )
-
