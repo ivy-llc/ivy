@@ -33,7 +33,6 @@ jobs:
           branch: master
           repository-name: unifyai/ivy-docs
           folder: docs/build
-          target-folder: .
           clean: false
           git-config-name: ivy-seed
           git-config-email: ivydl.team@gmail.com
