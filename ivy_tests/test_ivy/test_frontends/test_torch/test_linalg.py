@@ -1101,15 +1101,29 @@ def test_torch_matmul(
 def _vander_helper(draw):
     # generate input matrix of shape (*, n) and where '*' is one or more
     # batch dimensions
-    random_size = draw(helpers.get_shape(min_dim_size=1, max_dim_size=5))
-    return draw(
+    N = draw(helpers.ints(min_value=2, max_value=5))
+    if draw(helpers.floats(min_value=0, max_value=1.)) < 0.5:
+        N = None
+
+    shape = draw(helpers.get_shape(min_num_dims=1,
+                                   max_num_dims=5,
+                                   min_dim_size=2,
+                                   max_dim_size=10))
+    dtype = "float"
+    if draw(helpers.floats(min_value=0, max_value=1.)) < 0.5:
+        dtype = "integer"
+
+    x = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float"),
-            shape=random_size,
+            available_dtypes=draw(helpers.get_dtypes(dtype)),
+            shape=shape,
             min_value=-10,
             max_value=10,
         )
     )
+
+    return *x, N
+
 
 @handle_frontend_test(
     fn_tree="torch.linalg.vander",
@@ -1123,13 +1137,13 @@ def test_torch_vander(
     on_device,
     test_flags,
 ):
-    input_dtype, x = dtype_and_input
+    input_dtype, x, N = dtype_and_input
+    test_flags.num_positional_args = 1
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
         test_flags=test_flags,
-        input=x,
-        test_values=False,
+        x=x[0], N=N
     )

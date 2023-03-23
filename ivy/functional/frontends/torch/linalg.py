@@ -207,27 +207,32 @@ def matmul(input, other, *, out=None):
 
 
 @to_ivy_arrays_and_back
-def vander(input, N=None):
-    if len(input.shape) < 1:
-        raise RuntimeError("N must be greater than 1.")
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+def vander(x, N=None):
+    if len(x.shape) < 1:
+        raise RuntimeError("Input dim must be greater than or equal to 1.")
 
-    if len(input.shape) == 1:
+    # pytorch always return int64 for integers
+    if "int" in x.dtype:
+        x = ivy.astype(x, ivy.int64)
+
+    if len(x.shape) == 1:
         # torch always returns the powers in ascending order
-        return ivy.vander(x=input, N=N, increasing=True)
+        return ivy.vander(x, N=N, increasing=True)
 
     # support multi-dimensional array
-    original_input_shape = input.shape
-    input = ivy.reshape(input, (-1, input.shape[-1]))
-
-    # number of 1D arrays to compute vander
-    item_count = input.shape[0]
+    original_shape = x.shape
     if N is None:
-        N = input.shape[-1]
+        N = x.shape[-1]
 
     # store the vander output
-    output = ivy.zeros((item_count, input.shape[-1], N), dtype=input.dtype)
+    x = ivy.reshape(x, (-1, x.shape[-1]))
+    output = []
 
-    for i in item_count:
-        ivy.vander(x=input[i], N=N, increasing=True, out=output[i])
+    for i in range(x.shape[0]):
+        output.append(ivy.vander(x[i], N=N, increasing=True))
 
+    output = ivy.stack(output)
+    output = ivy.reshape(output, (*original_shape, N))
+    output = ivy.astype(output, x.dtype)
     return output
