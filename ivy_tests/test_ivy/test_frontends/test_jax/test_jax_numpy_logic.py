@@ -861,12 +861,10 @@ def test_jax_numpy_logical_xor(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
         shared_dtype=True,
-        min_value=0,
-        max_value=8,
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_right_shift(  # NOQA
+def test_jax_numpy_right_shift(
     *,
     dtype_and_x,
     frontend,
@@ -875,12 +873,15 @@ def test_jax_numpy_right_shift(  # NOQA
     on_device,
 ):
     dtype, xs = dtype_and_x
+
+    xs[1] = np.asarray(np.clip(xs[1], 0, np.iinfo(dtype[1]).bits - 1), dtype=dtype[1])
+
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=xs[0],
-        y=xs[1],
+        x1=xs[0],
+        x2=xs[1],
     )
