@@ -1,20 +1,4 @@
 .. include:: ../README.rst
-    :end-before: <br clear="all" />
-
-.. raw:: html
-    
-    <br clear="all" />
-    <br/>
-    <br/>
-
-.. include:: ../README.rst
-    :start-after: <br clear="all" />
-    :end-before: Check out the docs_ for more info
-
-Check out our Google Colabs_ for some interactive demos!
-
-.. include:: ../README.rst
-    :start-after: and check out our Google Colabs_ for some interactive demos!
 
 .. toctree::
     :hidden:
