@@ -27,10 +27,11 @@ jobs:
           persist-credentials: false
 
       - name: Temp push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name ivy-seed
           git config user.email ivydl.team@gmail.com
-          export GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           touch temp.txt
           echo -n "TEXT" > temp.txt
           git remote remove origin
@@ -38,5 +39,3 @@ jobs:
           git add temp.txt
           git commit -m "First commit"
           git push --force origin master
-
-
