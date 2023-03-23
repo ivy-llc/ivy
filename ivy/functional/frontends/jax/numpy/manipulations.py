@@ -151,6 +151,11 @@ def atleast_2d(*arys):
 
 
 @to_ivy_arrays_and_back
+def tril(m, k=0):
+    return ivy.tril(m, k=k)
+
+
+@to_ivy_arrays_and_back
 def block(arr, block_size):
     if isinstance(arr, ivy.Array):
         arr_blocks = ivy.reshape(
@@ -193,6 +198,11 @@ def array_split(ary, indices_or_sections, axis=0):
     return ivy.split(
         ary, num_or_size_splits=indices_or_sections, axis=axis, with_remainder=True
     )
+
+
+@to_ivy_arrays_and_back
+def tile(A, reps):
+    return ivy.tile(A, reps)
 
 
 @to_ivy_arrays_and_back

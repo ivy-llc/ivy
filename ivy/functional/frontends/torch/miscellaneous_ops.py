@@ -331,3 +331,33 @@ def diff(input, n=1, dim=-1, prepend=None, append=None):
 @to_ivy_arrays_and_back
 def broadcast_shapes(*shapes):
     return ivy.broadcast_shapes(*shapes)
+
+
+@to_ivy_arrays_and_back
+def atleast_2d(*tensors):
+    return ivy.atleast_2d(*tensors)
+
+
+@to_ivy_arrays_and_back
+def searchsorted(
+    sorted_sequence,
+    values,
+    /,
+    *,
+    out_int32=False,
+    right=False,
+    side="left",
+    out=None,
+    sorter=None,
+):
+    if right and side == "left":
+        raise ivy.exceptions.IvyError(
+            "side and right can't be set to opposites,\
+            got side of left while right was True"
+        )
+    if right:
+        side = "right"
+    ret = ivy.searchsorted(sorted_sequence, values, side=side, out=out, sorter=sorter)
+    if out_int32:
+        ret = ivy.astype(ret, "int32")
+    return ret

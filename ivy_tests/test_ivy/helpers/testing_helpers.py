@@ -191,7 +191,7 @@ def _get_method_supported_devices_dtypes(
                 ivy, devices_and_dtypes[device]
             )
         supported_device_dtypes[b] = organized_dtypes
-        ivy.unset_backend()
+        ivy.previous_backend()
     return supported_device_dtypes
 
 
@@ -240,7 +240,7 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
                 ivy, devices_and_dtypes[device]
             )
         supported_device_dtypes[b] = organized_dtypes
-        ivy.unset_backend()
+        ivy.previous_backend()
     return supported_device_dtypes
 
 
