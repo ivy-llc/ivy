@@ -2342,3 +2342,160 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
         """
         return self.static_expand(self, shape, out=out)
+
+    @staticmethod
+    def static_fill_diagonal(
+        a: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        val: Union[
+            int, float, complex, List[int], List[float], List[complex], ivy.Array
+        ],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.fill_idagonal.
+        This method simply wraps the function, and so the docstring
+        for ivy.fill_diagonal also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        a
+            the container with array inputs.
+        val
+            A scalar, array or iterable of scalars that will fill the
+            diagonal of the given input array.
+        key_chains
+            The keychains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container with the diagonals of the arrays at each leaf of
+            the container filled with the given value.
+
+        Examples
+        --------
+        >>> a = ivy.Container(
+            a = ivy.array(
+                    [[[0.,  1.],
+                      [2.,  3.]],
+                      [[4.,  5.],
+                      [6.,  7.]]]
+                ),
+            b=ivy.array(
+                    [0.,  1.,  2.,  3.,
+                     4.,  5.,  6.,  7.,
+                     8.,  9.,  10., 11.,
+                     12., 13., 14., 15.]
+                )
+            )
+        >>> ivy.Container.fill_diagonal(a, 13)
+        a = ivy.array(
+                    [[[13.,  1.],
+                      [2.,  3.]],
+                      [[4.,  5.],
+                      [6.,  13.]]]
+                ),
+            b=ivy.array(
+                    [13.,  1.,  2.,  3.,
+                     4.,  13.,  6.,  7.,
+                     8.,  9.,  13., 11.,
+                     12., 13., 14., 13.]
+                )
+            )
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "fill_diagonal",
+            a,
+            val,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def fill_diagonal(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        val: Union[
+            int,
+            float,
+            complex,
+            List[int],
+            List[float],
+            List[complex],
+            Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        ],
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.fill_diagonal.
+        This method simply wraps the function, and so the docstring
+        for ivy.fill_diagonal also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            the container with array inputs.
+        val
+            A scalar, array or iterable of scalars that will fill the diagonal
+            of the given input array.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container with the diagonals of the arrays at each leaf of the
+            container filled with the given value.
+
+        Examples
+        --------
+        >>> a = ivy.Container(
+            a = ivy.array(
+                    [[[0.,  1.],
+                      [2.,  3.]],
+                      [[4.,  5.],
+                      [6.,  7.]]]
+                ),
+            b=ivy.array(
+                    [0.,  1.,  2.,  3.,
+                     4.,  5.,  6.,  7.,
+                     8.,  9.,  10., 11.,
+                     12., 13., 14., 15.]
+                )
+            )
+        >>> a.fill_diagonal(13)
+        a = ivy.array(
+                    [[[13.,  1.],
+                      [2.,  3.]],
+                      [[4.,  5.],
+                      [6.,  13.]]]
+                ),
+            b=ivy.array(
+                    [13.,  1.,  2.,  3.,
+                     4.,  13.,  6.,  7.,
+                     8.,  9.,  13., 11.,
+                     12., 13., 14., 13.]
+                )
+            )
+        """
+        return self.static_fill_diagonal(self, val, out=out)

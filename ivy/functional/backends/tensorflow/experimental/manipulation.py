@@ -234,3 +234,62 @@ def expand(
         if dim < 0:
             shape[i] = x.shape[i]
     return tf.broadcast_to(x, shape)
+
+
+@with_unsupported_dtypes(
+    {
+        "2.9.1 and below": (
+            "uint64",
+            "int64",
+            "int8",
+            "int32",
+            "uint32",
+            "int16",
+            "uint16",
+            "uint8",
+            "int8",
+        )
+    },
+    backend_version,
+)
+def fill_diagonal(
+    a: Union[tf.Tensor, tf.Variable],
+    val: Union[
+        int,
+        float,
+        complex,
+        List[int],
+        List[float],
+        List[complex],
+        Union[tf.Tensor, tf.Variable],
+    ],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if a.numpy().ndim < 2:
+        raise ivy.utils.exceptions.IvyError("input Array must be at least a 2-D")
+
+    if a.numpy().ndim == 2:
+        if isinstance(val, list) or tf.is_tensor(val):
+            a = tf.linalg.set_diag(input=a, diagonal=val)
+            return a
+        else:
+            if a.shape[0] <= a.shape[1]:
+                a = tf.linalg.set_diag(input=a, diagonal=[val] * a.shape[0])
+            else:
+                a = tf.linalg.set_diag(input=a, diagonal=[val] * a.shape[1])
+            return a
+    else:
+        if not min(a.shape) == max(a.shape):
+            raise ivy.utils.exceptions.IvyError(
+                "All dimensions of input must be of equal length"
+            )
+        step = 1 + (tf.math.cumprod(list(a.shape[:-1])).numpy().sum())
+        shape = a.shape
+        a = tf.reshape(a, -1)
+        b = a.numpy()
+        b[:None:step] = val
+        a = tf.convert_to_tensor(b)
+        a = tf.reshape(a, shape)
+        return a

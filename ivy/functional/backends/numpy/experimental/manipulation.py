@@ -324,3 +324,17 @@ def expand(
 
 
 expand.support_native_out = False
+
+
+def fill_diagonal(
+    a: np.ndarray,
+    val: Union[int, float, complex, List, np.ndarray],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    np.fill_diagonal(a, val)
+    return a
+
+
+fill_diagonal.support_native_out = False

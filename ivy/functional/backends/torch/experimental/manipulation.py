@@ -271,3 +271,37 @@ def expand(
 
 
 expand.support_native_out = False
+
+
+def fill_diagonal(
+    a: torch.Tensor,
+    val: Union[
+        int, float, complex, List[int], List[float], List[complex], torch.tensor
+    ],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if isinstance(val, list) or torch.is_tensor(val):
+        if a.ndim == 2:
+            step = a.shape[1] + 1
+            end = a.shape[1] * a.shape[1]
+            shape = a.shape
+            a = a.view(-1)
+            a[:end:step] = torch.tensor(val) if isinstance(val, list) else val
+            a = a.view(shape)
+            return a
+        if a.ndim > 2:
+            if not min(a.shape) == max(a.shape):
+                raise ivy.utils.exceptions.IvyError(
+                    "All dimensions of input must be of equal length"
+                )
+            step = 1 + (torch.cumprod(torch.Tensor(list(a.shape[:-1])), 0).sum().item())
+            shape = a.shape
+            a = a.view(-1)
+            a[: None : int(step)] = torch.tensor(val) if isinstance(val, list) else val
+            a = a.view(shape)
+            return a
+    else:
+        a.data.fill_diagonal_(val)
+        return a

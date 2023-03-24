@@ -298,3 +298,28 @@ def expand(
         if dim < 0:
             shape[i] = x.shape[i]
     return jnp.broadcast_to(x, tuple(shape))
+
+
+def fill_diagonal(
+    a: JaxArray,
+    val: Union[int, float, complex, List[int], List[float], List[complex], JaxArray],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if a.ndim < 2:
+        raise ValueError("array must be at least 2-d")
+    if a.ndim == 2:
+        i, j = jnp.diag_indices(min(a.shape[-2:]))
+        return a.at[..., i, j].set(val)
+    else:
+        if not min(a.shape) == max(a.shape):
+            raise ivy.utils.exceptions.IvyError(
+                "All dimensions of input must be of equal length"
+            )
+        step = 1 + (jnp.cumprod(jnp.array(list(a.shape[:-1]))).sum().item())
+        shape = a.shape
+        a = jnp.reshape(a, -1)
+        a = a.at[:None:step].set(val)
+        a = jnp.reshape(a, shape)
+        return a

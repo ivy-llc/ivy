@@ -1015,3 +1015,44 @@ def test_expand(
         x=x[0],
         shape=shape,
     )
+
+
+# fill_diagonal
+@handle_test(
+    fn_tree="functional.ivy.experimental.fill_diagonal",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=2,
+        min_dim_size=3,
+        max_dim_size=3,
+        min_value=-5,
+        max_value=5,
+    ),
+    val=st.floats(
+        min_value=1,
+        max_value=2,
+    ),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_fill_diagonal(
+    *,
+    dtype_and_x,
+    val,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    dtype, x = dtype_and_x
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        a=x[0],
+        val=val,
+    )

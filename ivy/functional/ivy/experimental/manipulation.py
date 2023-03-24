@@ -752,13 +752,13 @@ def _get_stats(padded, axis, width_pair, length_pair, stat_func):
     left_slice = _slice_at_axis(slice(left_index, left_index + left_length), axis)
     left_chunk = ivy.array(padded[left_slice])
     left_stat = stat_func(left_chunk, axis=axis, keepdims=True)
-    left_stat = ivy.round(left_stat) if 'int' in left_chunk.dtype else left_stat
+    left_stat = ivy.round(left_stat) if "int" in left_chunk.dtype else left_stat
     if left_length == right_length == max_length:
         return left_stat, left_stat
     right_slice = _slice_at_axis(slice(right_index - right_length, right_index), axis)
     right_chunk = ivy.array(padded[right_slice])
     right_stat = stat_func(right_chunk, axis=axis, keepdims=True)
-    right_stat = ivy.round(right_stat) if 'int' in right_chunk.dtype else right_stat
+    right_stat = ivy.round(right_stat) if "int" in right_chunk.dtype else right_stat
     return left_stat, right_stat
 
 
@@ -1593,3 +1593,59 @@ def expand(
         Output Array
     """
     return ivy.current_backend(x).expand(x, shape, out=out)
+
+
+@handle_view
+@to_native_arrays_and_back
+@handle_nestable
+@handle_array_like_without_promotion
+def fill_diagonal(
+    a: Union[ivy.Array, ivy.NativeArray],
+    val: Union[
+        int,
+        float,
+        complex,
+        List[int],
+        List[float],
+        List[complex],
+        Union[ivy.Array, ivy.NativeArray],
+    ],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Split an array into multiple sub-arrays horizontally.
+
+    Parameters
+    ----------
+    a
+        Array input.
+    val
+        A scalar, array or iterable of scalars that will fill the diagonal
+        of the given input array.
+    out
+        optional output array, for writing the result to.
+
+
+    Returns
+    -------
+    ret
+        input array with the diagonal filled.
+
+    Examples
+    --------
+    >>> ary = ivy.array(
+            [[0.,  1., 2., 3.],
+             [4.,  5., 6,  7.],
+             [8.,  9., 10., 11.],
+             [12., 13., 14., 15.]]
+            )
+    >>> a.fill_diagonal(2)
+        [ivy.array(
+            [[2.,  1., 2., 3.],
+             [4.,  2., 6,  7.],
+             [8.,  9., 2., 11.],
+             [12., 13., 14., 2.]]
+            )
+    """
+    return ivy.current_backend(a).fill_diagonal(a, val, out=out)

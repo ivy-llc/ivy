@@ -832,3 +832,51 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             Output Array
         """
         return ivy.expand(self._data, shape, out=out)
+
+    @handle_view
+    def fill_diagonal(
+        self: ivy.Array,
+        val: Union[
+            int, float, complex, List[int], List[float], List[complex], ivy.Array
+        ],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.fill_diagonal. This method simply
+        wraps the function, and so the docstring for ivy.fill_diagonal also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        val
+            A scalar value, array or Iterable that is used to fill the diagonal
+            of the given input array.
+        out
+            Optional output, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Array with a filled diagonal of given values val
+
+        Examples
+        --------
+        >>> a = ivy.array(
+            [[0.,  1., 2., 3.],
+             [4.,  5., 6,  7.],
+             [8.,  9., 10., 11.],
+             [12., 13., 14., 15.]]
+            )
+        >>> a.fill_diagonal(2)
+        [ivy.array(
+            [[2.,  1., 2., 3.],
+             [4.,  2., 6,  7.],
+             [8.,  9., 2., 11.],
+             [12., 13., 14., 2.]]
+            )
+        """
+        return ivy.fill_diagonal(self._data, val, out=out)
