@@ -24,7 +24,7 @@ jobs:
           #sudo touch .nojekyll
           #sudo cp .nojekyll docs/build/
           mkdir docs/build
-          touch docs/build/index.html
+          touch docs/build/index1.html
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4.4.1
