@@ -5744,9 +5744,6 @@ def test_torch_special_and(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
-        min_value=-1e04,
-        max_value=1e04,
-        allow_inf=False,
     ),
 )
 def test_torch_instance_bitwise_xor(
