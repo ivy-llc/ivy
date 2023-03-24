@@ -201,6 +201,8 @@ class EagerTensor:
 
     def __sub__(self, y, name="sub"):
         return tf_frontend.math.subtract(self._ivy_array, y, name=name)
+    def __add__(self, y, name="add"):
+        return tf_frontend.math.add(self._ivy_array, y, name=name)
 
     def __truediv__(self, y, name="truediv"):
         dtype = ivy.dtype(self._ivy_array)
