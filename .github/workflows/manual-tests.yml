@@ -31,6 +31,7 @@ jobs:
           path: ivy
           persist-credentials: false
           submodules: "recursive"
+          set-safe-directory: false
 
       - name: Get Job URL
         uses: Tiryoh/gha-jobid-action@v0
