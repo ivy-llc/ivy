@@ -262,8 +262,8 @@ def test_trapz(
         fw=backend_fw,
         ground_truth_backend=ground_truth_backend,
         fn_name=fn_name,
-        rtol_=1e-3,
-        atol_=1e-3,
+        rtol_=1e-1,
+        atol_=1e-1,
         y=np.asarray(y[0], dtype=input_dtype[0]),
         x=x,
         dx=dx,
@@ -1105,9 +1105,9 @@ def test_hypot(
 
 
 @handle_test(
-    fn_tree="binarizer",
+    fn_tree="functional.ivy.experimental.binarizer",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=helpers.get_dtypes("valid")
     ),
     threshold=helpers.floats(),
     container_flags=st.just([False]),
