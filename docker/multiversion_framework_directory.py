@@ -15,7 +15,7 @@ def directory_generator(req, base="/opt/miniconda/fw/"):
 def install_pkg(path, pkg, base="fw/"):
     if pkg.split("==")[0] == "torch":
         subprocess.run(
-            f"pip3 install {pkg} --default-timeout=100 -f https://download.pytorch.org/whl/cpu --target={path} --no-cache-dir",
+            f"pip3 install {pkg} --default-timeout=100 --extra-index-url https://download.pytorch.org/whl/cpu --target={path} --no-cache-dir",
             shell=True,
         )
     elif pkg.split("==")[0] == "jaxlib":
@@ -40,7 +40,7 @@ if __name__=="__main__":
         for i in arg_lis[2:]:
             if i.split('/')[0]=='torch':
                 subprocess.run(
-                    f"pip3 install {i} --default-timeout=100 -f https://download.pytorch.org/whl/cpu  --no-cache-dir",
+                    f"pip3 install torch=={i.split('/')[1]} --default-timeout=100 --extra-index-url https://download.pytorch.org/whl/cpu  --no-cache-dir",
                     shell=True,
                 )
             elif i.split('/')[0]=='tensorflow':
@@ -55,7 +55,7 @@ if __name__=="__main__":
                 )
             else:
                 subprocess.run(
-                    f"pip3 install {i} --default-timeout=100   --no-cache-dir", shell=True
+                    f"pip3 install {i.split('/')[0]}=={i.split('/')[1]} --default-timeout=100   --no-cache-dir", shell=True
                 )
         try:
             import tensorflow
@@ -68,7 +68,7 @@ if __name__=="__main__":
             import torch
         except:
             subprocess.run(
-                f"pip3 install torch --default-timeout=100 -f https://download.pytorch.org/whl/cpu  --no-cache-dir",
+                f"pip3 install torch --default-timeout=100 --extra-index-url https://download.pytorch.org/whl/cpu  --no-cache-dir",
                 shell=True,
             )
         try:
