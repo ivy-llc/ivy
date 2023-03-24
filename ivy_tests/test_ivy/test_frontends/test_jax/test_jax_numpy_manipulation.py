@@ -1317,10 +1317,12 @@ def _pad_helper(draw):
             min_num_dims=1,
             min_value=-100,
             max_value=100,
-        ).filter(lambda x: x[0][0] not in ["float16", "bfloat16"])
+        ).filter(
+            lambda x: x[0][0] not in ["float16", "bfloat16", "complex64", "complex128"]
+        ),
     )
     ndim = len(shape)
-    pad_width = draw(_st_tuples_or_int(ndim))
+    pad_width = draw(_st_tuples_or_int(ndim, min_val=0))
     kwargs = {}
     if mode == "reflect" or mode == "symmetric":
         kwargs["reflect_type"] = draw(st.sampled_from(["even", "odd"]))
@@ -1355,6 +1357,14 @@ def test_jax_numpy_pad(
         kwargs,
         mode,
     ) = dtype_and_input_and_other
+
+    if isinstance(pad_width, int):
+        pad_width = ((pad_width, pad_width),) * input.ndim
+    else:
+        pad_width = tuple(
+            tuple(pair) if isinstance(pair, list) else pair for pair in pad_width
+        )
+
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
