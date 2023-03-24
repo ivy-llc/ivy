@@ -200,3 +200,34 @@ def test_jax_numpy_tril_indices(
         n_rows=n_rows,
         k=k,
     )
+
+
+# Indices
+@handle_frontend_test(
+    fn_tree="jax.numpy.indices",
+    dimensions=helpers.get_shape(
+        allow_none=False,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    dtype=helpers.get_dtypes("valid", full=False),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_indices(
+    dimensions,
+    dtype,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        dimensions=dimensions
+    )
