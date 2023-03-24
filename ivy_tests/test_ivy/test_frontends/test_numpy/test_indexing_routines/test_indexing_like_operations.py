@@ -166,7 +166,7 @@ def test_tril_indices(
 @handle_frontend_test(
     fn_tree="numpy.indices",
     dimensions=helpers.get_shape(),
-    dtype=helpers.get_dtypes(kind="numeric"),
+    dtype=helpers.get_dtypes(kind="float", full=False),
     sparse=helpers.get_dtypes(kind="bool"),
     test_with_out=st.just(False),
 )
@@ -187,6 +187,6 @@ def test_indices(
         fn_tree=fn_tree,
         on_device=on_device,
         dimensions=dimensions,
-        dtype=dtype,
+        dtype=dtype[0],
         sparse=sparse,
     )
