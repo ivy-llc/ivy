@@ -451,4 +451,3 @@ class ndarray:
     
     def byteswap(self, inplace=False):
         return np_frontend.byteswap(self._ivy_array, value, out=self)
-
