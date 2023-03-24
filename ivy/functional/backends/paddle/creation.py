@@ -332,16 +332,20 @@ def _linspace_helper(start, stop, num, axis=None, *, dtype=None):
 
 
 def _differentiable_linspace(start, stop, num, *, dtype=None):
-    num = paddle.to_tensor(num, stop_gradient=False)
-    if num == 1:
-        return ivy.expand_dims(start, axis=0)
-    n_m_1 = num - 1
-    increment = (stop - start) / n_m_1
-    increment_tiled = paddle.repeat_interleave(ivy.to_native(increment), n_m_1)
-    increments = increment_tiled * paddle.linspace(
-        1, n_m_1, n_m_1.cast(paddle.int32), dtype=dtype
-    )
-    res = ivy.concat((start, start + increments), axis=0)
+    with ivy.ArrayMode(False):
+        start = ivy.to_native(start)
+        num = paddle.to_tensor(num, stop_gradient=False)
+        if num == 1:
+            return ivy.expand_dims(start, axis=0)
+        n_m_1 = ivy.subtract(num,1)
+        increment = ivy.divide(ivy.subtract(stop,start),n_m_1)
+        increment_tiled = ivy.repeat(increment, n_m_1)
+        increments = ivy.multiply(increment_tiled,paddle.linspace(
+            1, n_m_1, n_m_1.cast(paddle.int32), dtype=dtype
+        ))
+        if start.ndim == 0:
+            start = ivy.expand_dims(start, axis=0)
+        res = ivy.concat((start, ivy.add(start,increments)), axis=0)
     return res.cast(dtype)
 
 
