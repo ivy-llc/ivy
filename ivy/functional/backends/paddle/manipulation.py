@@ -409,7 +409,8 @@ def zero_pad(
     *,
     out: Optional[paddle.Tensor] = None,
 ):
-    raise IvyNotImplementedException()
+    with ivy.ArrayMode(False):
+        return constant_pad(x, pad_width=pad_width, value=0)
 
 
 @with_unsupported_device_and_dtypes(
