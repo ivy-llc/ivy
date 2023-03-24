@@ -206,6 +206,20 @@ class ndarray:
             subok=subok,
         )
 
+    def conjugate(
+        x,
+        /,
+        out=None,
+        *,
+        where=True,
+        casting="same_kind",
+        order="K",
+        dtype=None,
+        subok=True,
+    ):
+        return ivy.conj(x, out=out, where=where, casting=casting, order=order, dtype=dtype, subok=subok)
+
+
     def cumprod(self, *, axis=None, dtype=None, out=None):
         return np_frontend.cumprod(
             self._ivy_array,

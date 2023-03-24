@@ -18,6 +18,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
 from ivy.functional.frontends.numpy import ndarray
 from ivy_tests.test_ivy.test_frontends.test_numpy.test_mathematical_functions.test_miscellaneous import (  # noqa
     _get_clip_inputs,
+    _get_conjugate_inputs
 )
 from ivy_tests.test_ivy.test_frontends.test_numpy.test_mathematical_functions.test_sums_products_differences import (  # noqa
     _get_castable_dtypes_values,
@@ -642,6 +643,36 @@ def test_numpy_instance_clip(
         init_flags=init_flags,
         method_flags=method_flags,
         on_device=on_device,
+    )
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="conjugate",
+    input_and_ranges=_get_conjugate_inputs(),
+)
+def test_numpy_instance_conjugate(
+    input_and_ranges,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtypes, x = input_and_ranges
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        method_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_all_as_kwargs_np={},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+        function_name="conjugate",
     )
 
 

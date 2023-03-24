@@ -8,6 +8,50 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpe
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 import ivy
 
+def _get_conjugate_inputs():
+    float_arr = np.random.rand(2, 3).astype(np.float32)
+    complex_arr = (np.random.rand(2, 3) + 1j * np.random.rand(2, 3)).astype(np.complex64)
+    return [
+        ([np.float32], float_arr),
+        ([np.complex64], complex_arr),
+    ]
+
+@handle_frontend_test(
+    fn_tree="numpy.clip",
+    input_and_ranges=_get_conjugate_inputs(),
+    where=np_frontend_helpers.where(),
+)
+def test_numpy_conjugate(
+    input_and_ranges,
+    where,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, x, min, max, casting, dtype = input_and_ranges
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        a_min=min,
+        a_max=max,
+        out=None,
+        where=where,
+        casting=casting,
+        order="K",
+        dtype=dtype,
+        subok=True,
+    )
+
 
 @st.composite
 def _get_clip_inputs(draw):
