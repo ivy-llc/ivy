@@ -207,6 +207,11 @@ def sqrt(input, *, out=None):
 
 
 @to_ivy_arrays_and_back
+def real(input):
+    return ivy.real(input)
+
+
+@to_ivy_arrays_and_back
 def sign(input, *, out=None):
     return ivy.sign(input, out=out)
 
