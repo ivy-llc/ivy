@@ -60,11 +60,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Ivy 🛎
-        uses: actions/checkout@v2
-        with:
-          path: ivy
-          persist-credentials: false
-          submodules: "recursive"
+        run:
+          git clone https://github.com/unifyai/ivy.git
 
       - name: Get Job URL
         uses: Tiryoh/gha-jobid-action@v0
