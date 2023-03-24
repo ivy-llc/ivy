@@ -54,14 +54,14 @@ def get_submodule(test_path):
 
 
 def update_individual_test_results(
-        collection,
-        id,
-        submod,
-        backend,
-        test,
-        result,
-        backend_version=None,
-        frontend_version=None,
+    collection,
+    id,
+    submod,
+    backend,
+    test,
+    result,
+    backend_version=None,
+    frontend_version=None,
 ):
     key = submod + "." + backend + "." + test
     if backend_version is not None:
@@ -167,7 +167,7 @@ if __name__ == "__main__":
             print(coll, submod, test_fn)
             if with_gpu:
                 ret = os.system(
-                    f'docker run --rm --gpus all --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multicuda:latest python3 -m pytest --tb=short --device=gpu:0 -B={backend} {test}'
+                    f'docker run --rm --gpus all --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multicuda:latest python3 -m pytest --tb=short {test} --device=gpu:0 -B={backend}'
                     # noqa
                     # noqa
                 )
