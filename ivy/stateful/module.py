@@ -8,7 +8,7 @@ from typing import Optional, List, Tuple, Dict
 
 # local
 import ivy
-from ivy.container import Container
+from ivy.data_classes.container import Container
 from ivy.func_wrapper import _get_first_array
 from ivy.stateful.helpers import ModuleHelpers
 from ivy.stateful.converters import ModuleConverters
@@ -506,7 +506,7 @@ class Module(ModuleConverters, ModuleHelpers):
                 ivy.set_backend(self._target)
             self.compile(args=args, kwargs=kwargs)
             if self._target:
-                ivy.unset_backend()
+                ivy.previous_backend()
 
         if self._module_graph:
             # we need `v` in kwargs, since this is a compiled call

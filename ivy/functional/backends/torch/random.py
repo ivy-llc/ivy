@@ -126,6 +126,8 @@ def shuffle(
     seed: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if len(x.shape) == 0:
+        return x
     batch_size = x.shape[0]
     if seed:
         torch.manual_seed(seed)

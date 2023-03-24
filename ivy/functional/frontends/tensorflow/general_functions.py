@@ -376,3 +376,8 @@ def repeat(
 @to_ivy_arrays_and_back
 def unstack(value: ivy.array, axis=0, num=None, name=None):
     return ivy.unstack(value, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def reverse(tensor, axis, name=None):
+    return ivy.flip(tensor, axis=axis)
