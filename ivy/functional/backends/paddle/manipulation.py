@@ -344,24 +344,21 @@ def repeat(
 def tile(
     x: paddle.Tensor, /, repeats: Sequence[int], *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    """
-    if x.ndim == 0:
-        x = ivy.to_native(reshape(x, (-1,)))
-    if isinstance(repeats, Number):
-        repeats = [repeats]
-    if isinstance(repeats, paddle.Tensor) and repeats.ndim == 0:
-        repeats = ivy.to_native(reshape(repeats, (-1,)))
-    # code to unify behaviour with numpy and torch
-    if len(x.shape) < len(repeats):
-        while len(x.shape) != len(repeats):
-            x = ivy.to_native(expand_dims(x, 0))
-    elif len(x.shape) > len(repeats):
-        repeats = list(repeats)
-        while len(x.shape) != len(repeats):
-            repeats = [1] + repeats
-    """
-    if len(repeats) == 1 and repeats[0] == 0:
-        return paddle.to_tensor([]).squeeze().cast(x.dtype)
+    if ivy.min(repeats) == 0:
+        # This logic is to mimic other backends behaviour when a 0 in repeat 
+        # is received since paddle doesn't natively support it
+        if len(repeats) < x.ndim:
+            shape = x.shape
+            shape[-len(repeat) :] = ivy.multiply(
+                shape[-len(repeat) :], repeats
+            ).to_list()
+        elif len(repeats) > x.ndim:
+            shape = repeats
+            shape[-x.ndim :] = ivy.multiply(shape[-x.ndim :], repeats).to_list()
+        else:
+            shape = ivy.multiply(x.shape, repeats).to_list()
+        return paddle.zeros(shape).cast(x.dtype)
+
     if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
         return paddle.tile(x.cast(ivy.default_float_dtype()), repeats).cast(x.dtype)
     return paddle.tile(x, repeats)
