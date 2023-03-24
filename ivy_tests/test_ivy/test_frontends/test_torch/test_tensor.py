@@ -5735,16 +5735,18 @@ def test_torch_special_and(
         on_device=on_device,
     )
 
-    # bitwise_xor
 
-
+# bitwise_xor
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="bitwise_xor",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
     ),
 )
 def test_torch_instance_bitwise_xor(
