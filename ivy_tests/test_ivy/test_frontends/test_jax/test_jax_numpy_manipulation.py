@@ -11,7 +11,7 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpe
 from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa
     _get_dtype_values_k_axes_for_rot90,
     _get_split_locations,
-    _pad_helper,
+    _st_tuples_or_int,
 )
 
 
@@ -1288,6 +1288,51 @@ def test_jax_numpy_row_stack(
 
 
 # pad
+@st.composite
+def _pad_helper(draw):
+    mode = draw(
+        st.sampled_from(
+            [
+                "constant",
+                "edge",
+                "linear_ramp",
+                "maximum",
+                "mean",
+                "median",
+                "minimum",
+                "reflect",
+                "symmetric",
+                "wrap",
+            ]
+        )
+    )
+    if mode == "median":
+        dtypes = "float"
+    else:
+        dtypes = "numeric"
+    dtype, input, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes(dtypes),
+            ret_shape=True,
+            min_num_dims=1,
+            min_value=-100,
+            max_value=100,
+        ).filter(lambda x: x[0][0] not in ["float16", "bfloat16"])
+    )
+    ndim = len(shape)
+    pad_width = draw(_st_tuples_or_int(ndim))
+    kwargs = {}
+    if mode == "reflect" or mode == "symmetric":
+        kwargs["reflect_type"] = draw(st.sampled_from(["even", "odd"]))
+    if mode in ["maximum", "mean", "median", "minimum"]:
+        kwargs["stat_length"] = draw(_st_tuples_or_int(ndim, min_val=2))
+    if mode in ["linear_ramp"]:
+        kwargs["end_values"] = draw(_st_tuples_or_int(ndim))
+    if mode == "constant":
+        kwargs["constant_values"] = draw(_st_tuples_or_int(ndim))
+    return dtype, input[0], pad_width, kwargs, mode
+
+
 @handle_frontend_test(
     fn_tree="jax.numpy.pad",
     dtype_and_input_and_other=_pad_helper(),
@@ -1295,6 +1340,7 @@ def test_jax_numpy_row_stack(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_pad(
+    *,
     dtype_and_input_and_other,
     reflect_type,
     frontend,
@@ -1304,12 +1350,10 @@ def test_jax_numpy_pad(
 ):
     (
         dtype,
-        x,
+        input,
         pad_width,
+        kwargs,
         mode,
-        stat_length,
-        constant_values,
-        end_values,
     ) = dtype_and_input_and_other
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -1317,11 +1361,8 @@ def test_jax_numpy_pad(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        array=x[0],
+        array=input,
         pad_width=pad_width,
         mode=mode,
-        reflect_type=reflect_type,
-        stat_length=stat_length,
-        constant_values=constant_values,
-        end_values=end_values,
+        **kwargs,
     )
