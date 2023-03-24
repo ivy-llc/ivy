@@ -158,11 +158,7 @@ def reshape(
 
 
 @with_unsupported_device_and_dtypes(
-    {
-        "2.4.2 and below": {
-            "cpu": ("uint16", "bfloat16", "int8", "int16", "uint8", "float16", "bool")
-        }
-    },
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}},
     backend_version,
 )
 def roll(
@@ -173,6 +169,14 @@ def roll(
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+        paddle.bool,
+    ]:
+        return paddle.roll(x.cast(ivy.default_float_dtype()), shift, axis).cast(x.dtype)
     return paddle.roll(x, shift, axis)
 
 
@@ -222,21 +226,24 @@ def stack(
     else:
         raise ValueError("Cannot promote more than 2 dtypes per stack.")
 
-    arrays = list(map(lambda x:x.cast(dtype),arrays))  #paddle.to_tensor(arrays, dtype=dtype)
+    arrays = list(map(lambda x: x.cast(dtype), arrays))
 
-    if dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16,  paddle.bool]:
-        arrays = list(map(lambda x:x.cast(ivy.default_float_dtype()),arrays))
+    if dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16, paddle.bool]:
+        arrays = list(map(lambda x: x.cast(ivy.default_float_dtype()), arrays))
         return paddle.stack(arrays, axis=axis).cast(dtype)
 
-    elif dtype in [paddle.complex64, paddle.complex128,]:
-        arrays = list(map(lambda x:x.cast(dtype),arrays))
-        real_list = list(map(lambda x:x.real(),arrays))
-        imag_list = list(map(lambda x:x.imag(),arrays))
+    elif dtype in [
+        paddle.complex64,
+        paddle.complex128,
+    ]:
+        arrays = list(map(lambda x: x.cast(dtype), arrays))
+        real_list = list(map(lambda x: x.real(), arrays))
+        imag_list = list(map(lambda x: x.imag(), arrays))
         re_stacked = paddle.stack(real_list, axis=axis)
         imag_stacked = paddle.stack(imag_list, axis=axis)
         return re_stacked + imag_stacked * 1j
     else:
-        arrays = list(map(lambda x:x.cast(dtype),arrays))
+        arrays = list(map(lambda x: x.cast(dtype), arrays))
         return paddle.stack(arrays, axis=axis)
 
 
@@ -345,7 +352,7 @@ def tile(
     x: paddle.Tensor, /, repeats: Sequence[int], *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     if ivy.min(repeats) == 0:
-        # This logic is to mimic other backends behaviour when a 0 in repeat 
+        # This logic is to mimic other backends behaviour when a 0 in repeat
         # is received since paddle doesn't natively support it
         if len(repeats) < x.ndim:
             shape = x.shape
@@ -439,23 +446,8 @@ def clip(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if x.dtype in [
-        paddle.int8,
-        paddle.int16,
-        paddle.uint8,
-        paddle.float16,
-        paddle.complex64,
-        paddle.complex128,
-        paddle.bool,
-    ]:
-        if paddle.is_complex(x):
-            return paddle.clip(x.real(), x_min, x_max) + 1j * paddle.clip(
-                x.imag(), x_min, x_max
-            )
-        return paddle.clip(x.cast(ivy.default_float_dtype()), x_min, x_max).cast(
-            x.dtype
-        )
-    return paddle.clip(x, x_min, x_max)
+    with ivy.ArrayMode(False):
+        return ivy.minimum(ivy.maximum(x, x_min), x_max)
 
 
 @with_unsupported_device_and_dtypes(
