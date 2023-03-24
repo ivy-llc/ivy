@@ -154,6 +154,11 @@ def isfinite(x, /):
 
 
 @to_ivy_arrays_and_back
+def isin(element, test_elements, assume_unique=False, invert=False):
+    return ivy.isin(element, test_elements, assume_unique=assume_unique, invert=invert)
+
+
+@to_ivy_arrays_and_back
 def isinf(x, /):
     return ivy.isinf(x)
 
@@ -194,8 +199,3 @@ def isreal(x, out=None):
 def logical_xor(x1, x2, /):
     x1, x2 = promote_jax_arrays(x1, x2)
     return ivy.logical_xor(x1, x2)
-
-
-@to_ivy_arrays_and_back
-def isrealobj(x: any):
-    return not ivy.is_complex_dtype(ivy.dtype(x))
