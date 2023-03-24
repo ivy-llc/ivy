@@ -9,6 +9,9 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 def reshape(x, /, newshape, order="C"):
     return ivy.reshape(x, shape=newshape, order=order)
 
+@to_ivy_arrays_and_back
+def compress(condition, x, axis=None, out=None):
+    return ivy.compress(condition, x, axis=axis, out=out)
 
 @to_ivy_arrays_and_back
 def resize(x, /, newshape, refcheck=True):
