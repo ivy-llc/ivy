@@ -26,11 +26,8 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Checkout Ivy 🛎
-        uses: actions/checkout@v2
-        with:
-          path: ivy
-          persist-credentials: false
-          submodules: "recursive"
+        run:
+          git clone https://github.com/unifyai/ivy.git
 
       - name: Get Job URL
         uses: Tiryoh/gha-jobid-action@v0
@@ -60,8 +57,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Ivy 🛎
-        run:
-          git clone https://github.com/unifyai/ivy.git
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
 
       - name: Get Job URL
         uses: Tiryoh/gha-jobid-action@v0
