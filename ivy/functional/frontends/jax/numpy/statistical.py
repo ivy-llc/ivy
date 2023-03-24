@@ -402,6 +402,11 @@ def std(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=Non
     return ivy.astype(std_a, ivy.as_ivy_dtype(dtype), copy=False)
 
 
+@to_ivy_arrays_and_back
+def corrcoef(x, y=None, rowvar=True):
+    return ivy.corrcoef(x, y=y, rowvar=rowvar)
+    
+
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def nanmean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
