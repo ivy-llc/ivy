@@ -32,6 +32,19 @@ def _ceil(
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
+#round
+@handle_numpy_out
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
+def round(
+    x,
+    decimals=0,
+    out=None,
+):
+    return ivy.round(x, decimals=decimals, out=out)
+
 
 @handle_numpy_out
 @to_ivy_arrays_and_back
