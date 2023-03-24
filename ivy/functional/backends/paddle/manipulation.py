@@ -222,23 +222,22 @@ def stack(
     else:
         raise ValueError("Cannot promote more than 2 dtypes per stack.")
 
-    arrays = paddle.to_tensor(arrays, dtype=dtype)
-    if len(arrays.shape) == 1:  # handles scalar tensors
-        return arrays
-    if "complex" in str(dtype):
-        real_list = []
-        imag_list = []
-        for array in arrays:
-            real_list.append(paddle.real(array))
-            imag_list.append(paddle.imag(array))
+    arrays = list(map(lambda x:x.cast(dtype),arrays))  #paddle.to_tensor(arrays, dtype=dtype)
+
+    if dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16,  paddle.bool]:
+        arrays = list(map(lambda x:x.cast(ivy.default_float_dtype()),arrays))
+        return paddle.stack(arrays, axis=axis).cast(dtype)
+
+    elif dtype in [paddle.complex64, paddle.complex128,]:
+        arrays = list(map(lambda x:x.cast(dtype),arrays))
+        real_list = list(map(lambda x:x.real(),arrays))
+        imag_list = list(map(lambda x:x.imag(),arrays))
         re_stacked = paddle.stack(real_list, axis=axis)
         imag_stacked = paddle.stack(imag_list, axis=axis)
         return re_stacked + imag_stacked * 1j
     else:
-        arrays_list = []
-        for array in arrays.cast("float64"):
-            arrays_list.append(array)
-        return paddle.stack(arrays_list, axis=axis).cast(dtype)
+        arrays = list(map(lambda x:x.cast(dtype),arrays))
+        return paddle.stack(arrays, axis=axis)
 
 
 # Extra #
