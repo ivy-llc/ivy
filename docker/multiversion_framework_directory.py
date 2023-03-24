@@ -44,6 +44,7 @@ if __name__=="__main__":
                     shell=True,
                 )
             elif i.split('/')[0]=='tensorflow':
+                print(i, "heere")
                 subprocess.run(
                     f"pip3 install tensorflow-cpu=={i.split('/')[1]} --default-timeout=100   --no-cache-dir",
                     shell=True
