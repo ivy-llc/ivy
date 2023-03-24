@@ -5,7 +5,6 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 )
 
 
-
 @outputs_to_numpy_arrays
 def diag_indices(n, ndim=2):
     idx = ivy.arange(n, dtype=int)
@@ -14,9 +13,9 @@ def diag_indices(n, ndim=2):
 
 @to_ivy_arrays_and_back
 def tril_indices(n, k=0, m=None):
-    return ivy.tril_indices(n, k, m).    # changed (n, k, m) to (n, m, k)
-    
-  
+    return ivy.tril_indices(n, k, m)
+
+
 @to_ivy_arrays_and_back
 def tril_indices_from(arr, k=0):
        if arr.ndim != 2:
