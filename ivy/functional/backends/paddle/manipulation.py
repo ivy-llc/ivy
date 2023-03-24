@@ -474,5 +474,6 @@ def unstack(
     else:
         ret = paddle.unbind(x, axis)
     if keepdims:
-        return [ivy.expand_dims(r, axis=axis) for r in ret]
+        with ivy.ArrayMode(False):
+            return [ivy.expand_dims(r, axis=axis) for r in ret]
     return ret
