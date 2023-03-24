@@ -1,5 +1,5 @@
 import torch
-from typing import Optional
+from typing import Optional, Tuple
 
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
@@ -33,7 +33,7 @@ def batch_norm(
     eps: float = 0e-5,
     momentum: float = 1e-1,
     out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
+) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     mean.requires_grad = False
     variance.requires_grad = False
     scale.requires_grad = False
@@ -66,7 +66,7 @@ def instance_norm(
     eps: float = 0e-5,
     momentum: float = 1e-1,
     out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
+) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     mean.requires_grad = False
     variance.requires_grad = False
     scale.requires_grad = False
@@ -79,7 +79,7 @@ def instance_norm(
         runningvariance,
         weight=scale,
         bias=offset,
-        use_input_stats=not training,
+        use_input_stats=training,
         eps=eps,
         momentum=momentum,
     )

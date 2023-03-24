@@ -1,6 +1,6 @@
 import numpy as np
 from ivy.func_wrapper import with_unsupported_dtypes
-from typing import Optional
+from typing import Optional, Tuple
 from .. import backend_version
 
 
@@ -32,7 +32,7 @@ def batch_norm(
     eps: float = 1e-5,
     momentum: float = 1e-1,
     out: Optional[np.ndarray] = None,
-) -> np.ndarray:
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     runningmean = mean
     runningvariance = variance
     n = x.size / x.shape[1]
@@ -50,8 +50,8 @@ def batch_norm(
     ret = x * inv.astype(x.dtype, copy=False) + (
         offset - mean * inv if offset is not None else -mean * inv
     ).astype(x.dtype)
-    result = np.transpose(ret, (0, ndims - 1, *range(1, ndims - 1)))
-    return result, runningmean, runningvariance
+    xnormalized = np.transpose(ret, (0, ndims - 1, *range(1, ndims - 1)))
+    return xnormalized, runningmean, runningvariance
 
 
 def instance_norm(
@@ -66,9 +66,18 @@ def instance_norm(
     eps: float = 1e-5,
     momentum: float = 1e-1,
     out: Optional[np.ndarray] = None,
-) -> np.ndarray:
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    # Instance Norm with (N,C,H,W) is the same as BatchNorm with (1, N * C, H, W)
+    N = x.shape[0]
+    C = x.shape[1]
+    S = x.shape[2:]
+    x = x.reshape((1, N * C, *S))
+    mean = np.tile(mean, N)
+    variance = np.tile(variance, N)
+    scale = np.tile(scale, N)
+    offset = np.tile(offset, N)
     xnormalized, runningmean, runningvariance =\
-        batch_norm(x.reshape(1, -1, *x.shape[2:]),
+        batch_norm(x,
                    mean,
                    variance,
                    scale=scale,
@@ -77,7 +86,7 @@ def instance_norm(
                    eps=eps,
                    momentum=momentum,
                    out=out)
-    return xnormalized.reshape(x.shape), runningmean, runningvariance
+    return xnormalized.reshape((N, C, *S)), runningmean.reshape(N, C).mean(0), runningvariance.reshape(N, C).mean(0)
 
 def lp_normalize(
     x: np.ndarray,

@@ -1,5 +1,5 @@
 import tensorflow as tf
-from typing import Union, Optional
+from typing import Union, Optional, Tuple
 
 
 def l2_normalize(
@@ -27,7 +27,7 @@ def batch_norm(
     eps: float = 1e-5,
     momentum: float = 1e-1,
     out: Optional[tf.Tensor] = None,
-) -> Union[tf.Tensor, tf.Variable]:
+) -> Tuple[Union[tf.Tensor, tf.Variable], Union[tf.Tensor, tf.Variable], Union[tf.Tensor, tf.Variable]]:
     ndims = len(x.shape)
     runningmean = mean
     runningvariance = variance
@@ -56,10 +56,18 @@ def instance_norm(
     eps: float = 1e-5,
     momentum: float = 1e-1,
     out: Optional[tf.Tensor] = None,
-) -> Union[tf.Tensor, tf.Variable]:
+) -> Tuple[Union[tf.Tensor, tf.Variable], Union[tf.Tensor, tf.Variable], Union[tf.Tensor, tf.Variable]]:
     # Instance Norm with (N,C,H,W) is the same as BatchNorm with (1, N * C, H, W)
+    N = x.shape[0]
+    C = x.shape[1]
+    S = x.shape[2:]
+    x = tf.reshape(x, (1, N * C, *S))
+    mean = tf.tile(mean, [N])
+    variance = tf.tile(variance, [N])
+    scale = tf.tile(scale, [N])
+    offset = tf.tile(offset, [N])
     xnormalized, runningmean, runningvariance = \
-        batch_norm(tf.reshape(x, (1, -1, *x.shape[2:])),
+        batch_norm(x,
                    mean,
                    variance,
                    scale=scale,
@@ -69,7 +77,7 @@ def instance_norm(
                    momentum=momentum,
                    out=out)
 
-    return tf.reshape(xnormalized, x.shape), runningmean, runningvariance
+    return tf.reshape(xnormalized, (N, C, *S)), tf.reduce_mean(tf.reshape(runningmean, (N, C)), axis=0), tf.reduce_mean(tf.reshape(runningvariance, (N, C)), axis=0)
 
 def lp_normalize(
     x: Union[tf.Tensor, tf.Variable],
