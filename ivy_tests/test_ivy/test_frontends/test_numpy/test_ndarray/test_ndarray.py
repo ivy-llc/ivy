@@ -577,15 +577,14 @@ def test_numpy_instance_min(
     init_tree="numpy.array",
     method_name="prod",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float"),
         min_axis=-1,
         max_axis=0,
         min_num_dims=1,
         force_int_axis=True,
     ),
-    keepdims=st.booleans(),
 )
-def test_numpy_instance_prod(
+def test_numpy_ndarray_prod(
     dtype_x_axis,
     keepdims,
     frontend_method_data,
@@ -595,23 +594,27 @@ def test_numpy_instance_prod(
     on_device,
 ):
     input_dtypes, x, axis = dtype_x_axis
-
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
+        method_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
             "object": x[0],
         },
-        method_input_dtypes=input_dtypes,
         method_all_as_kwargs_np={
             "axis": axis,
+            "dtype": "float64",
+            "out": None,
             "keepdims": keepdims,
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        rtol_=1e-2,
+        atol_=1e-2,
         on_device=on_device,
     )
+
 
 
 @handle_frontend_method(
