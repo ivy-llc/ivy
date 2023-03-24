@@ -1147,3 +1147,28 @@ def test_torch_vander(
         test_flags=test_flags,
         x=x[0], N=N
     )
+
+#multi_dot 
+
+@handle_frontend_test(
+    fn_tree="torch.linalg.multi_dot",
+    dtype_and_input=_vander_helper(),
+)
+def test_torch_multi_dot( 
+    *,
+    dtype_and_input,
+    frontend,
+    fn_tree,
+    on_device,
+    test_flags,
+):
+    input_dtype, x, N = dtype_and_input
+    test_flags.num_positional_args = 1
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_flags=test_flags,
+        x=x[0], N=N
+    )

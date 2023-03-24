@@ -236,3 +236,8 @@ def vander(x, N=None):
     output = ivy.reshape(output, (*original_shape, N))
     output = ivy.astype(output, x.dtype)
     return output
+
+
+@to_ivy_arrays_and_back
+def multi_dot(tensors, *, out=None):
+    return ivy.multi_dot(tensors,out=out)
