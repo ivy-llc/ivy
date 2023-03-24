@@ -293,7 +293,8 @@ class ndarray:
 
     def view(self):
         return np_frontend.reshape(self._ivy_array, tuple(self.shape))
-
+    def compress(self,value,axis=None,*,out=None):
+        return np_frontend.compress(self._ivy_array, value, axis=axis, out=out)
     def __add__(self, value, /):
         return np_frontend.add(self._ivy_array, value)
 
