@@ -1016,6 +1016,7 @@ def nested_map(
         nested.
 
     """
+
     to_ignore = ivy.default(to_ignore, ())
     extra_nest_types = ivy.default(extra_nest_types, ())
     if include_derived is True:
@@ -1046,6 +1047,7 @@ def nested_map(
         if include_derived[dict]
         else (lambda x_, t_: type(x_) is t_),
     )
+
     if tuple_check_fn(x, tuple) and not isinstance(x, to_ignore):
         ret_list = [
             nested_map(
@@ -1071,9 +1073,8 @@ def nested_map(
             return class_instance(**dict(zip(x._fields, ret_list)))
         else:
             return class_instance(ret_list)
-    elif (list_check_fn(x, list) or isinstance(x, extra_nest_types)) and not isinstance(
-        x, to_ignore
-    ):
+    elif (list_check_fn(x, list) or list_check_fn(x, ivy.Array) or isinstance(
+            x, extra_nest_types)) and not isinstance(x, to_ignore):
         if isinstance(x, (ivy.Array, ivy.NativeArray)):
             ret = fn(x)
             if shallow:
@@ -1099,9 +1100,8 @@ def nested_map(
         if shallow:
             x[:] = ret_list[:]
         return class_instance(ret_list)
-    elif (dict_check_fn(x, dict) or isinstance(x, UserDict)) and not isinstance(
-        x, to_ignore
-    ):
+    elif (dict_check_fn(x, dict) or dict_check_fn(x, ivy.Container) or isinstance(
+            x, UserDict)) and not isinstance(x, to_ignore):
         class_instance = type(x)
         ret = {
             k: nested_map(
