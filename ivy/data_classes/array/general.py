@@ -250,13 +250,12 @@ class _ArrayWithGeneral(abc.ABC):
         --------
         >>> x = ivy.array([0., 1., 2.])
         >>> y = ivy.array([0, 1])
-        >>> x.gather(y)
+        >>> gather = x.gather(y)
+        >>> print(gather)
         ivy.array([0., 1.])
 
         """
-        return ivy.gather(
-            self._data, indices, axis=axis, batch_dims=batch_dims, out=out
-        )
+        return ivy.gather(self, indices, axis=axis, batch_dims=batch_dims, out=out)
 
     def scatter_nd(
         self: ivy.Array,
@@ -332,6 +331,8 @@ class _ArrayWithGeneral(abc.ABC):
             The array from which to gather values.
         indices
             Index array.
+        batch_dims
+            optional int, lets you gather different items from each element of a batch.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
