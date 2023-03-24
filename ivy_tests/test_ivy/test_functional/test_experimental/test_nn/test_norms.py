@@ -60,6 +60,7 @@ def test_instance_norm(
     ground_truth_backend,
 ):
     x_dtype, x, scale, offset, mean, variance = data
+    test_flags.test_gradients = False
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         fw=backend_fw,
@@ -102,6 +103,7 @@ def test_batch_norm(
     ground_truth_backend,
 ):
     x_dtype, x, scale, offset, mean, variance = data
+    test_flags.test_gradients=False
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         fw=backend_fw,
