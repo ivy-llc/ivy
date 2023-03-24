@@ -490,6 +490,7 @@ def ifft(
             "tf_area",
             "mitchellcubic",
             "gaussian",
+            "bicubic",
         ]
         and recompute_scale_factor
     )
@@ -507,6 +508,7 @@ def interpolate(
         "area",
         "nearest_exact",
         "tf_area",
+        "bicubic_tensorflow"
         "bicubic",
         "mitchellcubic",
         "lanczos3",
@@ -525,9 +527,11 @@ def interpolate(
         "nearest"
         if mode == "nearest-exact"
         else "bicubic"
+        "bicubic"
         if mode == "bicubic_tensorflow"
         else mode
     )
+
     size = [x.shape[0], *size, x.shape[1]]
     x = jnp.transpose(x, (0, *range(2, dims + 2), 1))
     return jnp.transpose(
