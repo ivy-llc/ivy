@@ -431,6 +431,16 @@ def tanh(x, name=None):
     return ivy.tanh(x)
 
 
+
+@with_supported_dtypes(
+    {"2.9.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def cosh(x, name=None):
+    return ivy.cosh(x)
+
+
 @to_ivy_arrays_and_back
 def rsqrt(x, name=None):
     return ivy.reciprocal(ivy.sqrt(x))
