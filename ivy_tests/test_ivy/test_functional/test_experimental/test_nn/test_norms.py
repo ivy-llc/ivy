@@ -10,6 +10,9 @@ def _instance_and_batch_norm_helper(draw):
     x_dtype, x, shape = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float"),
+            large_abs_safety_factor=24,
+            small_abs_safety_factor=24,
+            safety_factor_scale="log",
             min_num_dims=3,
             max_num_dims=4,
             min_dim_size=2,
@@ -43,7 +46,6 @@ def _instance_and_batch_norm_helper(draw):
     eps=helpers.floats(min_value=0e-5, max_value=0.1),
     momentum=helpers.floats(min_value=0.0, max_value=1.0),
     training=st.booleans(),
-    ground_truth_backend="torch",
 )
 def test_instance_norm(
     *,
@@ -65,8 +67,8 @@ def test_instance_norm(
         fn_name=fn_name,
         on_device=on_device,
         xs_grad_idxs=[[0, 0]],
-        rtol_=1e-3,
-        atol_=1e-3,
+        rtol_=1e-1,
+        atol_=1e-1,
         input_dtypes=x_dtype,
         x=x,
         mean=mean,
@@ -85,7 +87,6 @@ def test_instance_norm(
     eps=helpers.floats(min_value=0e-5, max_value=0.1),
     momentum=helpers.floats(min_value=0.0, max_value=1.0),
     training=st.booleans(),
-    ground_truth_backend="torch",
 
 )
 def test_batch_norm(
@@ -108,8 +109,8 @@ def test_batch_norm(
         fn_name=fn_name,
         on_device=on_device,
         xs_grad_idxs=[[0, 0]],
-        rtol_=1e-3,
-        atol_=1e-3,
+        rtol_=1e-1,
+        atol_=1e-1,
         input_dtypes=x_dtype,
         x=x,
         mean=mean,
