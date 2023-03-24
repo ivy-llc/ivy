@@ -316,7 +316,8 @@ def repeat(
             repeats = repeats.item()
             if repeats == 0:
                 return paddle.to_tensor([], dtype=x.dtype)
-
+    if axis is not None:
+        axis = axis % x.ndim
     if x.dtype in [
         paddle.int8,
         paddle.int16,
@@ -474,6 +475,10 @@ def unstack(
 ) -> List[paddle.Tensor]:
     if x.ndim == 0:
         return [x]
+    if axis is not None:
+        axis = axis % x.ndim
+    else:
+        axis = 0
     if x.dtype in [
         paddle.int8,
         paddle.int16,
