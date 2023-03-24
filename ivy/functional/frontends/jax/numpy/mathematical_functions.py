@@ -531,7 +531,3 @@ def ldexp(x1, x2, /):
 @to_ivy_arrays_and_back
 def imag(val, /):
     return ivy.imag(val)
-
-@to_ivy_arrays_and_back
-def conjugate(x, /):
-    return ivy.conjugate(x)
