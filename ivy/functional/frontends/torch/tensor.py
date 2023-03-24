@@ -866,3 +866,8 @@ class Tensor:
     # Method aliases
     absolute, absolute_ = abs, abs_
     ndimension = dim
+
+    @with_supported_dtypes({"1.11.0 and below": ("integer",)}, "torch")
+    def bitwise_and_(self, other, *, out=None):
+        self._ivy_array = self.bitwise_and(other, out=out).ivy_array
+        return self
