@@ -49,11 +49,19 @@ def asinh(x, name="asinh"):
     return ivy.asinh(x)
 
 
+@with_supported_dtypes(
+    {"2.11.0 and below": ("bfloat16", "float32", "float64", "complex64", "complex128")},
+    "tensorflow",
+)
 @to_ivy_arrays_and_back
 def atanh(x, name="atanh"):
     return ivy.atanh(x)
 
 
+@with_supported_dtypes(
+    {"2.11.0 and below": ("bfloat16", "float32", "float64", "complex64", "complex128")},
+    "tensorflow",
+)
 @to_ivy_arrays_and_back
 def acosh(x, name="acosh"):
     return ivy.acosh(x)
