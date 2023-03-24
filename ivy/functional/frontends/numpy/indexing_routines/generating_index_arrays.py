@@ -18,6 +18,6 @@ def tril_indices(n, k=0, m=None):
 
 @to_ivy_arrays_and_back
 def tril_indices_from(arr, k=0):
-       if arr.ndim != 2:
-           raise ValueError("input array must be 2-d")
-       return ivy.tril_indices(arr.shape[-2], k=k, m=arr.shape[-1])
+    if arr.ndim != 2:
+        raise ValueError("input array must be 2-d")
+    return ivy.tril_indices(arr.shape[-2], k=k, m=arr.shape[-1])
