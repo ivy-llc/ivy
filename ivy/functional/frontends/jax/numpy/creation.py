@@ -164,19 +164,21 @@ def single(x):
 @to_ivy_arrays_and_back
 def geomspace(start, stop, num=50, endpoint=True, dtype=None, axis=0):
     # Check if stop < start and swap values if necessary
+    flip = 0
     if stop < start:
         start, stop = stop, start
+        flip = 1
     # Compute the common ratio
     cr = ivy.log(stop / start) / (num - 1 if endpoint else num)
-    r = ivy.exp(cr)
     # Generate the sequence of values using the common ratio
     if dtype is None:
         dtype = start.dtype
-    x = ivy.zeros((num,), dtype=dtype)
-    x = ivy.linspace(0, cr * (num - 1 if endpoint else num), num, endpoint=endpoint, dtype=dtype, axis=axis)
+    x = ivy.linspace(0, cr * (num - 1 if endpoint else num), num, endpoint=endpoint, axis=axis)
     x = ivy.exp(x)
     x = start * x
     # Include the endpoint if necessary
     if endpoint:
         x[-1] = stop
-    return x
+    if flip == 1:
+        x=ivy.flip(x)
+    return x.asarray(dtype=dtype)
