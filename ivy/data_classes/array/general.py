@@ -1121,6 +1121,14 @@ class _ArrayWithGeneral(abc.ABC):
         >>> print(x)
         ivy.array([0])
 
+        With :class:`ivy.Array` input and default backend set as `numpy`:
+
+        >>> x = ivy.array([1, 2, 3], dtype=ivy.float32)
+        >>> y = ivy.array([0, 0, 0], dtype=ivy.int32)
+        >>> x.inplace_update(y, keep_input_dtype=True)
+        >>> print(x, x.dtype)
+        ivy.array([0., 0., 0.]) float32
+
         With :class:`ivy.Array` input and default backend set as `torch`:
 
         >>> x = ivy.array([1, 2, 3])

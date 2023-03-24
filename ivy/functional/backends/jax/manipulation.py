@@ -191,9 +191,6 @@ def clip(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    ivy.utils.assertions.check_less(
-        x_min, x_max, message="min values must be less than max"
-    )
     if (
         hasattr(x_min, "dtype")
         and hasattr(x_max, "dtype")

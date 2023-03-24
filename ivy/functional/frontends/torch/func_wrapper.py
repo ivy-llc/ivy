@@ -68,13 +68,19 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
         # call unmodified function
         # ToDo: Remove this default dtype setting
         #  once frontend specific backend setting is added
-        ivy.set_default_int_dtype("int64")
-        ivy.set_default_float_dtype(torch_frontend.get_default_dtype())
+        set_default_dtype = False
+        if not ("dtype" in kwargs and ivy.exists(kwargs["dtype"])) and all(
+            [not (ivy.is_array(i) or hasattr(i, "ivy_array")) for i in args]
+        ):
+            ivy.set_default_int_dtype("int64")
+            ivy.set_default_float_dtype(torch_frontend.get_default_dtype())
+            set_default_dtype = True
         try:
             ret = fn(*args, **kwargs)
         finally:
-            ivy.unset_default_int_dtype()
-            ivy.unset_default_float_dtype()
+            if set_default_dtype:
+                ivy.unset_default_int_dtype()
+                ivy.unset_default_float_dtype()
         # convert all arrays in the return to `torch_frontend.Tensor` instances
         return _from_ivy_array_to_torch_frontend_tensor(
             ret, nested=True, include_derived={tuple: True}
