@@ -378,7 +378,25 @@ def constant_pad(
     value: Number = 0.0,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    paddings = []
+    pad_width = list(pad_width)
+    for item in pad_width:
+        if len(item) != 2:
+            raise ivy.utils.exceptions.IvyException("Length of each item should be 2")
+        else:
+            paddings.append(item[0])
+            paddings.append(item[1])
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+        paddle.bool,
+    ]:
+        return paddle.nn.functional.pad(
+            x.cast(ivy.default_float_dtype()), pad=paddings, value=value
+        ).cast(x.dtype)
+    return paddle.nn.functional.pad(x=x, pad=paddings, value=value)
 
 
 @with_unsupported_device_and_dtypes(
