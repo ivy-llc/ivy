@@ -529,6 +529,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations
     _reciprocal,
     _subtract,
     _true_divide,
+    _divmod
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functions import (
@@ -580,6 +581,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.exponents_and_logarit
     _log2,
     _logaddexp,
     _logaddexp2,
+    _ldexp,
 )
 
 from ivy.functional.frontends.numpy.logic.array_type_testing import (
@@ -600,6 +602,7 @@ from ivy.functional.frontends.numpy.linalg.matrix_and_vector_products import _ma
 from ivy.functional.frontends.numpy.mathematical_functions.extrema_finding import (
     _maximum,
     _minimum,
+    _fmax,
 )
 
 # initializing ufuncs #
@@ -669,3 +672,7 @@ matmul = ufunc("_matmul")
 maximum = ufunc("_maximum")
 minimum = ufunc("_minimum")
 real = ufunc("_real")
+divmod = ufunc("_divmod")
+fmax = ufunc("_fmax")
+ldexp = ufunc("_ldexp")
+

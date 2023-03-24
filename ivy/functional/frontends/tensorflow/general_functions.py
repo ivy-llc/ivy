@@ -252,6 +252,10 @@ def transpose(a, perm=None, conjugate=False, name="transpose"):
     return ivy.permute_dims(a, axes=perm)
 
 
+def _num_to_bit_list(value, num_dims):
+    return list(map(int, "{:0{size}b}".format(value, size=num_dims)))[::-1]
+
+
 @to_ivy_arrays_and_back
 def strided_slice(
     input_,
@@ -266,13 +270,11 @@ def strided_slice(
     var=None,
     name=None,
 ):
-    def num_to_bit_list(number):
-        return list(map(int, "{:0{size}b}".format(number, size=len(input_.shape))))
-
     begin_mask, end_mask, ellipsis_mask, new_axis_mask, shrink_axis_mask = list(
         map(
-            num_to_bit_list,
+            _num_to_bit_list,
             [begin_mask, end_mask, ellipsis_mask, new_axis_mask, shrink_axis_mask],
+            [len(input_.shape)] * 5,
         )
     )
     ivy.assertions.check_true(
@@ -280,14 +282,16 @@ def strided_slice(
         message="Only one non-zero bit is allowed in ellipsis_mask.",
     )
     begin, end = map(lambda x: ivy.array(x) if isinstance(x, int) else x, [begin, end])
+    strides = [1] * len(input_.shape) if strides is None else strides
 
     full_slice = ()
+    new_dims = ()
     for i, _ in enumerate(input_.shape):
         if ellipsis_mask[i]:
             full_slice += (...,)
         else:
             if new_axis_mask[i]:
-                full_slice += (ivy.newaxis,)
+                new_dims += (i,)
             else:
                 strides_i = int(strides[i])
                 if not begin_mask[i] or shrink_axis_mask[i]:
@@ -301,13 +305,13 @@ def strided_slice(
                 else:
                     end_i = int(end[i])
                 full_slice += (py_slice(begin_i, end_i, strides_i),)
-    return input_[full_slice]
+    ret = input_[full_slice] if full_slice else input_
+    return ivy.expand_dims(ret, axis=new_dims)
 
 
 @to_ivy_arrays_and_back
 def slice(input_, begin, size, name=None):
-    n_slices = 1 if isinstance(begin, int) else len(begin)
-    return strided_slice(input_, begin, begin + size, strides=[1] * n_slices)
+    return strided_slice(input_, begin, begin + size)
 
 
 @to_ivy_arrays_and_back
@@ -372,3 +376,8 @@ def repeat(
 @to_ivy_arrays_and_back
 def unstack(value: ivy.array, axis=0, num=None, name=None):
     return ivy.unstack(value, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def reverse(tensor, axis, name=None):
+    return ivy.flip(tensor, axis=axis)

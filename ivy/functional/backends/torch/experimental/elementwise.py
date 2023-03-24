@@ -28,7 +28,7 @@ lcm.support_native_out = True
 
 
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("bfloat16",)},
+    {"2.9.1 and below": ("bfloat16", "complex")},
     backend_version,
 )
 def fmod(
@@ -176,16 +176,17 @@ def count_nonzero(
         return x
     if isinstance(axis, tuple):
         for d in sorted(axis):
-            x = x.unsqueeze(d-1)
+            x = x.unsqueeze(d - 1)
         return x
     elif isinstance(axis, int):
-        return x.unsqueeze(axis-1)
+        return x.unsqueeze(axis - 1)
     return x
 
 
 count_nonzero.support_native_out = False
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
 def nansum(
     x: torch.Tensor,
     /,

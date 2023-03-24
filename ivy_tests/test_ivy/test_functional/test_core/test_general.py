@@ -77,7 +77,7 @@ def _get_shape_of_list(lst, shape=()):
 @given(fw_str=st.sampled_from(["numpy", "jax", "torch", "tensorflow"]))
 def test_set_framework(fw_str):
     ivy.set_backend(fw_str)
-    ivy.unset_backend()
+    ivy.previous_backend()
 
 
 def test_use_within_use_framework():
@@ -995,7 +995,7 @@ def test_framework_setting_with_threading():
                 ivy.mean(x_)
             except TypeError:
                 return False
-        ivy.unset_backend()
+        ivy.previous_backend()
         return True
 
     # get original framework string and array
@@ -1010,7 +1010,7 @@ def test_framework_setting_with_threading():
     ivy.set_backend(fws)
     for _ in range(2000):
         ivy.mean(x)
-    ivy.unset_backend()
+    ivy.previous_backend()
     assert not thread.join()
 
 
@@ -1028,7 +1028,7 @@ def test_framework_setting_with_multiprocessing():
             except TypeError:
                 out_queue.put(False)
                 return
-        ivy.unset_backend()
+        ivy.previous_backend()
         out_queue.put(True)
 
     # get original framework string and array
@@ -1044,7 +1044,7 @@ def test_framework_setting_with_multiprocessing():
     ivy.set_backend(fws)
     for _ in range(1000):
         ivy.mean(x)
-    ivy.unset_backend()
+    ivy.previous_backend()
 
     worker.join()
     assert output_queue.get_nowait()
@@ -1057,7 +1057,7 @@ def test_explicit_ivy_framework_handles():
 
     # store original framework string and unset
     fw_str = ivy.current_backend_str()
-    ivy.unset_backend()
+    ivy.previous_backend()
 
     # set with explicit handle caught
     ivy_exp = ivy.get_backend(fw_str)
@@ -1079,7 +1079,7 @@ def test_explicit_ivy_framework_handles():
     assert ivy_exp.current_backend_str() == fw_str
 
     # unset global ivy from numpy
-    ivy.unset_backend()
+    ivy.previous_backend()
 
 
 # ToDo: re-add this test once ivy.get_backend is working correctly, with the returned
@@ -1315,8 +1315,9 @@ def test_inplace_variables_supported():
         num_arrays=2,
         shared_dtype=True,
     ),
+    keep_x_dtype=st.booleans(),
 )
-def test_inplace_update(x_val_and_dtypes, test_flags, on_device):
+def test_inplace_update(x_val_and_dtypes, keep_x_dtype, test_flags, on_device):
     dtype = x_val_and_dtypes[0][0]
     if dtype in ivy.function_unsupported_dtypes(ivy.inplace_update):
         return
@@ -1326,7 +1327,12 @@ def test_inplace_update(x_val_and_dtypes, test_flags, on_device):
     if (not test_flags.as_variable and ivy.inplace_arrays_supported()) or (
         test_flags.as_variable and ivy.inplace_variables_supported()
     ):
-        x_inplace = ivy.inplace_update(x, val)
+        if keep_x_dtype:
+            x_dtype = x.dtype
+            x_inplace = ivy.inplace_update(x, val, keep_input_dtype=True)
+            assert x_dtype == x_inplace.dtype
+        else:
+            x_inplace = ivy.inplace_update(x, val)
         assert id(x_inplace) == id(x)
         x = helpers.flatten_and_to_np(ret=x)
         val = helpers.flatten_and_to_np(ret=val)
@@ -1832,7 +1838,7 @@ def test_function_unsupported_devices(func):
 def test_current_backend_str(fw):
     ivy.set_backend(fw)
     assert ivy.current_backend_str() == fw
-    ivy.unset_backend()
+    ivy.previous_backend()
 
 
 # get_min_denominator
@@ -2110,7 +2116,7 @@ def test_vmap(func, dtype_and_arrays_and_axes, in_axes_as_cont):
     except Exception:
         jax_res = None
 
-    ivy.unset_backend()
+    ivy.previous_backend()
 
     if fw_res is not None and jax_res is not None:
         helpers.value_test(

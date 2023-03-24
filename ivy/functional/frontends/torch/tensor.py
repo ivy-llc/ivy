@@ -651,6 +651,9 @@ class Tensor:
     def flip(self, dims):
         return torch_frontend.flip(self._ivy_array, dims)
 
+    def fliplr(self):
+        return torch_frontend.fliplr(self._ivy_array)
+
     def sort(self, dim=-1, descending=False):
         return torch_frontend.sort(self._ivy_array, dim=dim, descending=descending)
 
@@ -862,6 +865,9 @@ class Tensor:
 
     def __invert__(self):
         return torch_frontend.bitwise_not(self._ivy_array)
+
+    def __and__(self, other):
+        return torch_frontend.bitwise_and(self, other)
 
     # Method aliases
     absolute, absolute_ = abs, abs_
