@@ -140,3 +140,9 @@ def flatnonzero(a):
 @to_ivy_arrays_and_back
 def sort_complex(a):
     return ivy.sort(a)
+
+def where(condition, x=None, y=None):
+    if x is not None and y is not None:
+        return ivy.where(condition, x, y)
+    else:
+        raise ValueError("Both x and y should be given.")
