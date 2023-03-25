@@ -3002,7 +3002,7 @@ def test_torch_instance_is_cuda(
     init_tree="torch.tensor",
     method_name="logical_and",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("bool"),
+        available_dtypes=helpers.get_dtypes("bool","integer"),
         num_arrays=2,
     ),
 )
