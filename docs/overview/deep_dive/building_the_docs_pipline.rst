@@ -45,27 +45,28 @@ characteristics:
    This file will be imported with the default ``conf.py`` file located in the 
    ``doc-builder`` repo.
 
-Running the script like this:
+Running the script:
 
 .. code-block:: bash
 
     ./make_docs_without_docker.sh /path/to/project
 
-will build the docs for the project and output them in the ``docs/build`` folder.
+will result in the creation of documentation for the project in the directory 
+``doc/build``.
 
 The Docker image
 ~~~~~~~~~~~~~~~~
 
 The Docker image `unifyai/doc-builder <https://hub.docker.com/r/unifyai/doc-builder>`_
-works as a wrapper around the ``make_docs_without_docker.sh`` script. It basically run
-the script on the ``/project`` folder, located in the container `like this 
+works as a wrapper around the ``make_docs_without_docker.sh`` script. It runs the script
+ on the ``/project`` directory, located in the container `as shown here 
 <https://github.com/unifyai/doc-builder/blob/master/Dockerfile#L20>`_:
 
 .. code-block:: bash
 
     ./make_docs_without_docker.sh /project
 
-So, to build the docs through docker you use this command:
+To build the docs through docker you use this command:
 
 .. code-block:: bash
 
@@ -74,8 +75,8 @@ So, to build the docs through docker you use this command:
 How Ivy's docs is structured
 -----------------------------
 
-If you looked into `Ivy's docs <https://github.com/unifyai/ivy/tree/master/docs>`_,
-you will find it structured like this:
+Looking at `Ivy docs <https://github.com/unifyai/ivy/tree/master/docs>`_, we can see 
+that it structured like this:
 
 .. code-block:: bash
 
@@ -171,8 +172,9 @@ This is a part of ``partial_conf.py``:
     }
 
 Here we are overriding the ``ivy_toctree_caption_map`` configuration, which is used to 
-customize the title of the table of contents for each module. This is specific to the 
-custom ``autosummary`` extension and we will cover all configurations in 
+customize the title of the table of contents for each module. 
+``ivy_toctree_caption_map`` is one of the configuration options we have in our
+:ref:```custom_autosummary``` extension, which will be covered extensively in 
 :ref:`Custom Extensions`.
 
 ``prebuild.sh``
@@ -279,7 +281,7 @@ to the current file. If we used include, and there is an ``autosummary`` directi
 the stub file, this directive will become invalid, because sphinx include the stub file
 by substitution.
 
-Let's say you have a file called ``index.rst`` which has this in it:
+Let's assume you have a file called ``index.rst`` which has this in it:
 
 .. code-block:: rst
 
@@ -291,7 +293,7 @@ Let's say you have a file called ``index.rst`` which has this in it:
 
         module
 
-If we said that ``module`` have 2 submodules ``foo``, and ``bar``, then the generated
+Let's assume that ``module`` have 2 submodules ``foo``, and ``bar``, then the generated
 stub file will be:
 
 .. code-block:: rst
@@ -339,7 +341,7 @@ to visualize what the ``index.rst`` will look like, we will have this:
         foo
         bar
 
-You see? The ``:toctree:`` option is now invalid, because it's now pointing to the 
+The ``:toctree:`` option is now invalid, because it's now pointing to the 
 ``module`` directory, which doesn't exist in the root folder.
 
 So, the ``:fix-directory:`` option is used to fix this problem, by changing the 
