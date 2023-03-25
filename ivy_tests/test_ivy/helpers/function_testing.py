@@ -121,7 +121,39 @@ except ImportError:
     is_torch_native_array = empty_func
 
 
-# Function testing
+# Ivy Function testing ##########################
+
+# Test Function Helpers ###############
+
+
+def _find_instance_in_args(args, array_indices, mask):
+    """Find the first element in the arguments that is considered to be an
+    instance of Array or Container class.
+
+    Parameters
+    ----------
+    args
+        Arguments to iterate over
+    array_indices
+        Indices of arrays that exists in the args
+    mask
+        Boolean mask for whether the corrseponding element in (args) has a
+        generated test_flags.native_array as False or test_flags.container as
+        true
+
+    Returns
+    -------
+        First found instance in the arguments
+    """
+    i = 0
+    for i, a in enumerate(mask):
+        if a:
+            break
+    instance_idx = array_indices[i]
+    instance = ivy.index_nest(args, instance_idx)
+    args = ivy.copy_nest(args, to_mutable=False)
+    ivy.prune_nest_at_index(args, instance_idx)
+    return instance
 
 
 def test_function(
@@ -295,32 +327,27 @@ def test_function(
     # Run either as an instance method or from the API directly
     instance = None
     if instance_method:
-        is_instance = [
+        array_or_container_mask = [
             (not native_flag) or container_flag
             for native_flag, container_flag in zip(
                 test_flags.native_arrays, test_flags.container
             )
         ]
-        arg_is_instance = is_instance[:num_arg_vals]
-        kwarg_is_instance = is_instance[num_arg_vals:]
-        if arg_is_instance and max(arg_is_instance):
-            i = 0
-            for i, a in enumerate(arg_is_instance):
-                if a:
-                    break
-            instance_idx = arrays_args_indices[i]
-            instance = ivy.index_nest(args, instance_idx)
-            args = ivy.copy_nest(args, to_mutable=False)
-            ivy.prune_nest_at_index(args, instance_idx)
-        else:
-            i = 0
-            for i, a in enumerate(kwarg_is_instance):
-                if a:
-                    break
-            instance_idx = arrays_kwargs_indices[i]
-            instance = ivy.index_nest(kwargs, instance_idx)
-            kwargs = ivy.copy_nest(kwargs, to_mutable=False)
-            ivy.prune_nest_at_index(kwargs, instance_idx)
+
+        # Boolean mask for args and kwargs True if an entry's
+        # test Array flag is True or test Container flag is true
+        args_instance_mask = array_or_container_mask[:num_arg_vals]
+        kwargs_instance_mask = array_or_container_mask[num_arg_vals:]
+
+        if any(args_instance_mask):
+            instance = _find_instance_in_args(
+                args, arrays_args_indices, args_instance_mask
+            )
+        elif any(kwargs_instance_mask):
+            instance = _find_instance_in_args(
+                kwargs, arrays_kwargs_indices, kwargs_instance_mask
+            )
+
         if test_flags.test_compile:
             target_fn = lambda instance, *args, **kwargs: instance.__getattribute__(
                 fn_name
@@ -398,7 +425,6 @@ def test_function(
             print(process.stderr.readlines())
             raise Exception
         ret_from_gt, ret_np_from_gt_flat, fw_list = ground_ret
-
     else:
         ivy.set_backend(ground_truth_backend)
         ivy.set_default_device(on_device)
@@ -478,7 +504,6 @@ def test_function(
                     ground_truth_backend=ground_truth_backend,
                     on_device=on_device,
                 )
-
         else:
             gradient_test(
                 fn=fn_name,
