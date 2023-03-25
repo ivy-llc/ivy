@@ -1,6 +1,7 @@
 # global
 import sys
 import ivy
+import tenserflow as tf
 from hypothesis import assume, strategies as st
 from ivy.functional.frontends.tensorflow.nn import _convolution_broadcast_helper
 from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_nn import _x_and_filters
@@ -699,9 +700,7 @@ def test_tensorflow_Atanh(  # NOQA
 # AvgPool3d
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.AvgPool3D",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-    ),
+    dtype_and_x=(ivy.Array, ivy.random_normal((1, 4, 4, 4, 3))),
 )
 def test_tensorflow_avg_pool_3d(
     *,
