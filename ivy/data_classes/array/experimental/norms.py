@@ -40,17 +40,17 @@ class _ArrayWithNormsExperimental(abc.ABC):
         return ivy.l2_normalize(self, axis=axis, out=out)
 
     def batch_norm(
-            self,
-            mean: Union[ivy.NativeArray, ivy.Array],
-            variance: Union[ivy.NativeArray, ivy.Array],
-            /,
-            *,
-            offset: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
-            scale: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
-            training: bool = False,
-            eps: float = 1e-5,
-            momentum: float = 1e-1,
-            out: Optional[ivy.Array] = None,
+        self,
+        mean: Union[ivy.NativeArray, ivy.Array],
+        variance: Union[ivy.NativeArray, ivy.Array],
+        /,
+        *,
+        offset: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
+        scale: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
+        training: bool = False,
+        eps: float = 1e-5,
+        momentum: float = 1e-1,
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.batch_norm. This method
@@ -76,14 +76,16 @@ class _ArrayWithNormsExperimental(abc.ABC):
         eps
             A small float number to avoid dividing by 0.
         momentum
-             The value used for the running_mean and running_var computation. Default value is 0.1.
+             The value used for the running_mean and running_var computation.
+              Default value is 0.1.
         out
             Optional output array, for writing the result to.
 
         Returns
         -------
         ret
-             Array containing the normalized, scaled, offset values.
+             Tuple of arrays containing the
+             normalized input, running mean, and running variance.
         """
         return ivy.batch_norm(
             self._data,
@@ -134,14 +136,16 @@ class _ArrayWithNormsExperimental(abc.ABC):
         eps
             A small float number to avoid dividing by 0.
         momentum
-             The value used for the running_mean and running_var computation. Default value is 0.1.
+             The value used for the running_mean and running_var computation.
+              Default value is 0.1.
         out
             Optional output array, for writing the result to.
 
         Returns
         -------
         ret
-             Array containing the normalized, scaled, offset values.
+             Tuple of array containing
+              the normalized input, running mean, and running variance.
         """
         return ivy.instance_norm(
             self._data,

@@ -135,21 +135,21 @@ class _ContainerWithNormsExperimental(ContainerBase):
 
     @staticmethod
     def static_batch_norm(
-            x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            mean: Union[ivy.NativeArray, ivy.Array, ivy.Container],
-            variance: Union[ivy.NativeArray, ivy.Array, ivy.Container],
-            /,
-            *,
-            offset: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]] = None,
-            scale: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]] = None,
-            training: bool = False,
-            eps: float = 1e-5,
-            momentum: float = 1e-1,
-            out: Optional[Union[ivy.Array, ivy.Container]] = None,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        mean: Union[ivy.NativeArray, ivy.Array, ivy.Container],
+        variance: Union[ivy.NativeArray, ivy.Array, ivy.Container],
+        /,
+        *,
+        offset: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]] = None,
+        scale: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]] = None,
+        training: bool = False,
+        eps: float = 1e-5,
+        momentum: float = 1e-1,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.batch_norm.
@@ -174,7 +174,8 @@ class _ContainerWithNormsExperimental(ContainerBase):
         eps
             A small float number to avoid dividing by 0.
         momentum
-             The value used for the running_mean and running_var computation. Default value is 0.1.
+             The value used for the running_mean and running_var computation.
+              Default value is 0.1.
         out
             Optional output array, for writing the result to.
         key_chains
@@ -192,7 +193,8 @@ class _ContainerWithNormsExperimental(ContainerBase):
         Returns
         -------
         ret
-             Container containing the normalized, scaled, offset values.
+             Tuple of containers containing
+              the normalized input, running mean, and running variance.
         """
         return ContainerBase.cont_multi_map_in_function(
             "batch_norm",
@@ -212,21 +214,21 @@ class _ContainerWithNormsExperimental(ContainerBase):
         )
 
     def batch_norm(
-            self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            mean: Union[ivy.NativeArray, ivy.Array, ivy.Container],
-            variance: Union[ivy.NativeArray, ivy.Array, ivy.Container],
-            /,
-            *,
-            offset: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]] = None,
-            scale: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]] = None,
-            training: bool = False,
-            eps: float = 1e-5,
-            momentum: float = 1e-1,
-            out: Optional[Union[ivy.Array, ivy.Container]] = None,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        mean: Union[ivy.NativeArray, ivy.Array, ivy.Container],
+        variance: Union[ivy.NativeArray, ivy.Array, ivy.Container],
+        /,
+        *,
+        offset: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]] = None,
+        scale: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]] = None,
+        training: bool = False,
+        eps: float = 1e-5,
+        momentum: float = 1e-1,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.batch_norm.
@@ -251,7 +253,8 @@ class _ContainerWithNormsExperimental(ContainerBase):
         eps
             A small float number to avoid dividing by 0.
         momentum
-             The value used for the running_mean and running_var computation. Default value is 0.1.
+             The value used for the running_mean and running_var computation.
+              Default value is 0.1.
         out
             Optional output array, for writing the result to.
         key_chains
@@ -269,7 +272,8 @@ class _ContainerWithNormsExperimental(ContainerBase):
         Returns
         -------
         ret
-             Container containing the normalized, scaled, offset values.
+             Tuple of containers containing
+              the normalized input, running mean, and running variance.
         """
         return self.static_batch_norm(
             self,
@@ -286,23 +290,24 @@ class _ContainerWithNormsExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
+
     @staticmethod
     def static_instance_norm(
-            x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            mean: Union[ivy.NativeArray, ivy.Array, ivy.Container],
-            variance: Union[ivy.NativeArray, ivy.Array, ivy.Container],
-            /,
-            *,
-            offset: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]] = None,
-            scale: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]] = None,
-            training: bool = False,
-            eps: float = 1e-5,
-            momentum: float = 1e-1,
-            out: Optional[Union[ivy.Array, ivy.Container]] = None,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        mean: Union[ivy.NativeArray, ivy.Array, ivy.Container],
+        variance: Union[ivy.NativeArray, ivy.Array, ivy.Container],
+        /,
+        *,
+        offset: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]] = None,
+        scale: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]] = None,
+        training: bool = False,
+        eps: float = 1e-5,
+        momentum: float = 1e-1,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
     ):
         """
         ivy.Container static method variant of ivy.instance_norm.
@@ -327,7 +332,8 @@ class _ContainerWithNormsExperimental(ContainerBase):
         eps
             A small float number to avoid dividing by 0.
         momentum
-             The value used for the running_mean and running_var computation. Default value is 0.1.
+             The value used for the running_mean and running_var computation.
+              Default value is 0.1.
         out
             Optional output array, for writing the result to.
         key_chains
@@ -345,7 +351,8 @@ class _ContainerWithNormsExperimental(ContainerBase):
         Returns
         -------
         ret
-             Container containing the normalized, scaled, offset values.
+             Tuple of containers
+              containing the normalized input, running mean, and running variance.
         """
         return ContainerBase.cont_multi_map_in_function(
             "instance_norm",
@@ -365,21 +372,21 @@ class _ContainerWithNormsExperimental(ContainerBase):
         )
 
     def instance_norm(
-            self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            mean: Union[ivy.NativeArray, ivy.Array, ivy.Container],
-            variance: Union[ivy.NativeArray, ivy.Array, ivy.Container],
-            /,
-            *,
-            offset: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]] = None,
-            scale: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]] = None,
-            training: bool = False,
-            eps: float = 1e-5,
-            momentum: float = 1e-1,
-            out: Optional[Union[ivy.Array, ivy.Container]] = None,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        mean: Union[ivy.NativeArray, ivy.Array, ivy.Container],
+        variance: Union[ivy.NativeArray, ivy.Array, ivy.Container],
+        /,
+        *,
+        offset: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]] = None,
+        scale: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]] = None,
+        training: bool = False,
+        eps: float = 1e-5,
+        momentum: float = 1e-1,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
     ):
         """
         ivy.Container instance method variant of ivy.instance_norm.
@@ -404,7 +411,8 @@ class _ContainerWithNormsExperimental(ContainerBase):
         eps
             A small float number to avoid dividing by 0.
         momentum
-             The value used for the running_mean and running_var computation. Default value is 0.1.
+             The value used for the running_mean and running_var computation.
+              Default value is 0.1.
         out
             Optional output array, for writing the result to.
         key_chains
@@ -422,7 +430,8 @@ class _ContainerWithNormsExperimental(ContainerBase):
         Returns
         -------
         ret
-             Container containing the normalized, scaled, offset values.
+             Tuple of containers containing
+              the normalized input, running mean, and running variance.
         """
         return self.static_instance_norm(
             self,
