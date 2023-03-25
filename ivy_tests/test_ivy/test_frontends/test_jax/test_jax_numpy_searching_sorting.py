@@ -354,7 +354,7 @@ def test_jax_numpy_where(
     on_device,
 ):
     dtype, x = dtype_and_x
-    x = ivy.array(x[0], dtype=dtype)
+    x = helpers.get_frontend_ret(frontend, f"{fn_tree}.array", x[0], dtype=dtype)
     condition = x > 0.5
     x1 = x * 2
     x2 = x * -2
