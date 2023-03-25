@@ -300,13 +300,7 @@ def test_function(
         not test_flags.native_arrays[0] or test_flags.container[0]
     )
 
-    (
-        args,
-        kwargs,
-        num_arg_vals,
-        arrays_args_indices,
-        arrays_kwargs_indices,
-    ) = create_args_kwargs(
+    args, kwargs = create_args_kwargs(
         args_np=args_np,
         arg_np_vals=arg_np_arrays,
         args_idxs=arrays_args_indices,
@@ -338,8 +332,8 @@ def test_function(
 
         # Boolean mask for args and kwargs True if an entry's
         # test Array flag is True or test Container flag is true
-        args_instance_mask = array_or_container_mask[:num_arg_vals]
-        kwargs_instance_mask = array_or_container_mask[num_arg_vals:]
+        args_instance_mask = array_or_container_mask[:total_num_arrays]
+        kwargs_instance_mask = array_or_container_mask[total_num_arrays:]
 
         if any(args_instance_mask):
             instance, args = _find_instance_in_args(
@@ -431,8 +425,7 @@ def test_function(
         ivy.set_backend(ground_truth_backend)
         ivy.set_default_device(on_device)
         try:
-            fn = getattr(ivy, fn_name)
-            args, kwargs, *_ = create_args_kwargs(
+            args, kwargs = create_args_kwargs(
                 args_np=args_np,
                 arg_np_vals=arg_np_arrays,
                 args_idxs=arrays_args_indices,
@@ -634,7 +627,7 @@ def test_frontend_function(
     function_module = importlib.import_module(frontend_submods)
     frontend_fn = getattr(function_module, fn_name)
 
-    args, kwargs, *_ = create_args_kwargs(
+    args, kwargs = create_args_kwargs(
         args_np=args_np,
         arg_np_vals=arg_np_vals,
         args_idxs=args_idxs,
@@ -908,7 +901,7 @@ def gradient_test(
     arg_np_vals, args_idxs, c_arg_vals = _get_nested_np_arrays(args_np)
     kwarg_np_vals, kwargs_idxs, c_kwarg_vals = _get_nested_np_arrays(kwargs_np)
 
-    args, kwargs, _, args_idxs, kwargs_idxs = create_args_kwargs(
+    args, kwargs = create_args_kwargs(
         args_np=args_np,
         arg_np_vals=arg_np_vals,
         args_idxs=args_idxs,
@@ -968,7 +961,7 @@ def gradient_test(
         )
         if test_unsupported:
             return
-        args, kwargs, _, args_idxs, kwargs_idxs = create_args_kwargs(
+        args, kwargs = create_args_kwargs(
             args_np=args_np,
             arg_np_vals=arg_np_vals,
             args_idxs=args_idxs,
@@ -1202,7 +1195,7 @@ def test_method(
     ]
 
     # Create Args
-    args_method, kwargs_method, *_ = create_args_kwargs(
+    args_method, kwargs_method = create_args_kwargs(
         args_np=args_np_method,
         arg_np_vals=met_arg_np_vals,
         args_idxs=met_args_idxs,
@@ -1289,7 +1282,7 @@ def test_method(
     else:
         ivy.set_backend(ground_truth_backend)
         ivy.set_default_device(on_device)
-        args_gt_constructor, kwargs_gt_constructor, *_ = create_args_kwargs(
+        args_gt_constructor, kwargs_gt_constructor = create_args_kwargs(
             args_np=args_np_constructor,
             arg_np_vals=con_arg_np_vals,
             args_idxs=con_args_idxs,
@@ -1300,7 +1293,7 @@ def test_method(
             test_flags=init_flags,
             on_device=on_device,
         )
-        args_gt_method, kwargs_gt_method, *_ = create_args_kwargs(
+        args_gt_method, kwargs_gt_method = create_args_kwargs(
             args_np=args_np_method,
             arg_np_vals=met_arg_np_vals,
             args_idxs=met_args_idxs,
@@ -1523,7 +1516,7 @@ def test_frontend_method(
     ]
 
     # Create Args
-    args_constructor, kwargs_constructor, *_ = create_args_kwargs(
+    args_constructor, kwargs_constructor = create_args_kwargs(
         args_np=args_np_constructor,
         arg_np_vals=con_arg_np_vals,
         args_idxs=con_args_idxs,
@@ -1569,7 +1562,7 @@ def test_frontend_method(
     ]
 
     # Create Args
-    args_method, kwargs_method, *_ = create_args_kwargs(
+    args_method, kwargs_method = create_args_kwargs(
         args_np=args_np_method,
         arg_np_vals=met_arg_np_vals,
         args_idxs=met_args_idxs,
@@ -1800,8 +1793,7 @@ def create_args_kwargs(
 
     Returns
     -------
-    Arguments, Keyword-arguments, number of arguments, and indexes on arguments and
-    keyword-arguments.
+    Backend specific arguments, keyword-arguments
     """
     # create args
     args = ivy.copy_nest(args_np, to_mutable=False)
@@ -1818,7 +1810,7 @@ def create_args_kwargs(
             kwarg_np_vals, input_dtypes, on_device, len(arg_np_vals)
         ),
     )
-    return args, kwargs, len(arg_np_vals), args_idxs, kwargs_idxs
+    return args, kwargs
 
 
 def convtrue(argument):
