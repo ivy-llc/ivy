@@ -143,7 +143,8 @@ def _find_instance_in_args(args, array_indices, mask):
 
     Returns
     -------
-        First found instance in the arguments
+        First found instance in the arguments and the updates arguments not
+        including the instance
     """
     i = 0
     for i, a in enumerate(mask):
@@ -151,9 +152,9 @@ def _find_instance_in_args(args, array_indices, mask):
             break
     instance_idx = array_indices[i]
     instance = ivy.index_nest(args, instance_idx)
-    args = ivy.copy_nest(args, to_mutable=False)
-    ivy.prune_nest_at_index(args, instance_idx)
-    return instance
+    new_args = ivy.copy_nest(args, to_mutable=False)
+    ivy.prune_nest_at_index(new_args, instance_idx)
+    return instance, new_args
 
 
 def test_function(
@@ -319,8 +320,9 @@ def test_function(
 
     # If function doesn't have an out argument but an out argument is given
     # or a test with out flag is True
+
     if ("out" in kwargs or test_flags.with_out) and "out" not in inspect.signature(
-        fn
+        getattr(ivy, fn_name)
     ).parameters:
         raise Exception(f"Function {fn_name} does not have an out parameter")
 
@@ -340,11 +342,11 @@ def test_function(
         kwargs_instance_mask = array_or_container_mask[num_arg_vals:]
 
         if any(args_instance_mask):
-            instance = _find_instance_in_args(
+            instance, args = _find_instance_in_args(
                 args, arrays_args_indices, args_instance_mask
             )
         elif any(kwargs_instance_mask):
-            instance = _find_instance_in_args(
+            instance, kwargs = _find_instance_in_args(
                 kwargs, arrays_kwargs_indices, kwargs_instance_mask
             )
 
