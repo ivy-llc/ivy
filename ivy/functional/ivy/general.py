@@ -56,6 +56,29 @@ trace_mode_dict["none"] = ""
 show_func_wrapper_trace_mode_stack = list()
 
 
+# Extra #
+# ------#
+
+
+class ArrayMode:
+    """Array Mode Context Manager."""
+
+    # noinspection PyShadowingNames
+    def __init__(self, array_mode):
+        self._array_mode = array_mode
+
+    def __enter__(self):
+        set_array_mode(self._array_mode)
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        unset_array_mode()
+        if self and (exc_type is not None):
+            print(exc_tb)
+            raise exc_val
+        return self
+
+
 def _parse_ellipsis(so, ndims):
     pre = list()
     for s in so:
