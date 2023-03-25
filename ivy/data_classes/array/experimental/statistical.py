@@ -363,3 +363,75 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
             minlength=minlength,
             out=out,
         )
+
+    def nanquantile(
+        self: ivy.Array,
+        q: Union[ivy.Array, float],
+        /,
+        *,
+        axis: Optional[Union[int, Tuple[int]]] = None,
+        keepdims: bool = False,
+        interpolation: str = "linear",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.nanquantile.
+        This method simply wraps the function, and so the docstring
+        for ivy.nanquantile also applies to this method with minimal
+        changes.
+        Parameters
+        ----------
+        self
+            Input arrays, containing NaN values to be ignored
+        q
+            Input array of float. Quantile or sequence of quantiles to compute,
+            which must be between 0 and 1 inclusive.
+        axis
+            Axis or axes along which the quantiles are computed. The default is
+            to compute the quantile(s) along a flattened version of the array.
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result
+            as dimensions with size one. With this option, the result will broadcast
+            correctly against the original array a.
+        interpolation (method)
+            {'nearest', 'linear', 'lower', 'higher', 'midpoint'}.
+            Default value: 'linear'.
+            This specifies the interpolation method to use when the desired quantile
+            lies between two data points i < j:
+            - linear: i + (j - i) * fraction, where fraction is the fractional part of
+             the index surrounded by i and j.
+            - lower: i.
+            - higher: j.
+            - nearest: i or j, whichever is nearest.
+            - midpoint: (i + j) / 2. linear and midpoint interpolation do not work with
+            integer dtypes.
+        out
+            Alternative output array in which to place the result.
+        Returns
+        -------
+        ret
+            Container with quantile –If q is a single percentile and axis=None,
+            then the result is a scalar.
+            If multiple quantiles are given, first axis of the result corresponds to the
+            quantiles.The other axes are the axes that remain after the reduction of a.
+        Examples
+        --------
+        >>> a = ivy.array([[10., ivy.nan, 4.], [3., 2., 1.]])
+        >>> q = ivy.array(0.5)
+        >>> a.nanquantile(q)
+        ivy.array(3.0)
+        >>> a.nanquantile(a, q, axis=0)
+        ivy.array([6.5, 2. , 2.5])
+        >>> a.nanquantile(a, q, axis=1)
+        ivy.array([[7.],[2.]])
+        >>> a.nanquantile(a, q, axis=1, keepdims=True)
+        ivy.array([[7.],
+                   [2.]])
+        """
+        return ivy.nanquantile(
+            self._data,
+            q,
+            axis=axis,
+            keepdims=keepdims,
+            interpolation=interpolation,
+            out=out,
+        )
