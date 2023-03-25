@@ -125,3 +125,41 @@ def bincount(
 
 
 bincount.support_native_out = False
+
+
+def numpy_cumprod(
+    a: np.ndarray,
+    axis: Optional[int] = None,
+    exclude_first: bool = False,
+    dtype: Optional[np.dtype] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if exclude_first:
+        a = np.swapaxes(a, axis, -1)
+        a = np.concatenate((np.ones_like(a[..., :1]), a[..., 1:]), axis=-1)
+        a = np.swapaxes(a, axis, -1)
+    return np.cumprod(a, axis=axis, dtype=dtype, out=out)
+
+def cumprod(
+        self: ivy.Container,
+        n_rows: int,
+        n_cols: Optional[int] = None,
+        k: Optional[int] = 0,
+        /,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        *,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    ) -> ivy.Container:
+        return self.cumprod(
+            n_rows=n_rows,
+            n_cols=n_cols,
+            k=k,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            device=device,
+        )
