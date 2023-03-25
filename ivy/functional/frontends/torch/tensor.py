@@ -280,8 +280,8 @@ class Tensor:
         self._ivy_array = self.abs().ivy_array
         return self
 
-    def logical_and(self,other):
-        return torch_frontend.logical_and(self._ivy_array,other)
+    def logical_and(self, other):
+        return torch_frontend.logical_and(self._ivy_array, other)
 
     def bitwise_not(self, *, out=None):
         return torch_frontend.bitwise_not(self._ivy_array)
@@ -754,6 +754,9 @@ class Tensor:
     def atan2_(self, other):
         self._ivy_array = self.atan2(other).ivy_array
         return self
+
+    def fmax(self, other, out=None):
+        return torch_frontend.fmax(self._ivy_array, other, out=out)
 
     # Special Methods #
     # -------------------#
