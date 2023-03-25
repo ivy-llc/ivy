@@ -197,5 +197,11 @@ def logical_xor(x1, x2, /):
 
 
 @to_ivy_arrays_and_back
+def right_shift(x1, x2, /):
+    return ivy.bitwise_right_shift(x1, x2)
+
+
+@to_ivy_arrays_and_back
 def isrealobj(x: any):
     return not ivy.is_complex_dtype(ivy.dtype(x))
+
