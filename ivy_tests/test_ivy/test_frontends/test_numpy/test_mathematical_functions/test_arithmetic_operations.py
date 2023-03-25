@@ -1,6 +1,7 @@
 # global
 from hypothesis import assume, strategies as st
 import numpy as np
+import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -535,7 +536,7 @@ def test_numpy_mod(
     )
 
 
-#modf
+# modf
 @handle_frontend_test(
     fn_tree = "numpy.modf",
     dtypes_values_casting = np_frontend_helpers.dtypes_values_casting_dtype(
@@ -570,7 +571,7 @@ def test_numpy_modf(
         fn_tree = fn_tree,
         on_device = on_device,
         x = x[0],
-        out = [None, None],
+        out = [ivy.zeros_like(x[0]), ivy.zeros_like(x[0])],  
         where = where,
         casting = casting,
         order = "K",

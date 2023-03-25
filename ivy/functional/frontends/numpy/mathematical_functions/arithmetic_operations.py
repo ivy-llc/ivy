@@ -298,20 +298,29 @@ def _mod(
 def _modf(
     x,
     /,
-    out = None,
+    out=None,
     *,
-    where = True,
-    casting = "same_kind",
-    order = "K",
-    dtype = None,
-    subok = True,
+    where=True,
+    casting="same_kind",
+    order="K",
+    dtype=None,
+    subok=True,
 ):
     x = ivy.asarray(x)
-    ret1, ret2 = ivy.modf(x, out=out)
+    if out is not None:
+        ret = ivy.modf(x, out=out)
+        ret1, ret2 = None, None
+    else:
+        ret1, ret2 = ivy.modf(x)
+        ret = (ret1, ret2)
     if ivy.is_array(where):
-        ret1 = ivy.where(where, ret1, ivy.default(out, ivy.zeros_like(ret1)), out=out)
-        ret2 = ivy.where(where, ret2, ivy.default(out, ivy.zeros_like(ret2)), out=out)
-    return ret1, ret2
+        ret1 = ivy.where(
+            where, ret1, ivy.default(out, ivy.zeros_like(ret1)), out=out
+        )
+        ret2 = ivy.where(
+            where, ret2, ivy.default(out, ivy.zeros_like(ret2)), out=out
+        )
+    return ret
 
 
 @handle_numpy_out
