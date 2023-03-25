@@ -15,11 +15,8 @@ import ivy
 
 
 def _to_native(x: Any, inplace: bool = False) -> Any:
-    current_backend = ivy.current_backend_str()  # cache current backend string
     if isinstance(x, ivy.Array):
         return x.data
-    elif isinstance(x, np.ndarray) and current_backend != "numpy":
-        return ivy.Array(x).data
     elif isinstance(x, ivy.Container):
         return x.cont_map(
             lambda x_, _: _to_native(x_, inplace=inplace), inplace=inplace
