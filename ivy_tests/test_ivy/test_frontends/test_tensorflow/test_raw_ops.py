@@ -701,7 +701,6 @@ def test_tensorflow_Atanh(  # NOQA
     fn_tree="tensorflow.raw_ops.AvgPool3D",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        shapes=[[1, 4, 4, 4, 3]],
     ),
 )
 def test_tensorflow_avg_pool_3d(
