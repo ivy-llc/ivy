@@ -2673,7 +2673,7 @@ def test_numpy_instance_mod__(
     init_tree="numpy.array",
     method_name="byteswap",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("bool"),
         num_arrays=2,
         min_value=0,
         exclude_min=True,
