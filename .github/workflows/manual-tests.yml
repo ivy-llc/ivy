@@ -25,6 +25,10 @@ jobs:
     if: ${{ github.event.inputs.gpu == 'true' }}
     runs-on: self-hosted
     steps:
+      - name: Clean repository
+        run:
+          sudo rm -fr $GITHUB_WORKSPACE && mkdir $GITHUB_WORKSPACE
+
       - name: Checkout Ivy 🛎
         uses: actions/checkout@v2
         with:
