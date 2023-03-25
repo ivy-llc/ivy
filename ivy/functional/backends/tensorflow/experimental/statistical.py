@@ -6,6 +6,25 @@ from tensorflow.python.ops.numpy_ops import np_math_ops
 from ivy.func_wrapper import with_supported_dtypes
 from . import backend_version
 
+def histogramdd(
+        input: Union[tf.Tensor, tf.Variable],
+        /,
+        *,
+        bins: Optional[Union[Tuple[int],int,Tuple[float]]] = 10,
+        weights : Optional[Tuple[int]] = None,
+        range: Optional[Union[Tuple[int], int]] = [0., 1., 0., 1.],
+        density: Optional[bool] = False
+) -> Union[tf.Tensor, tf.Variable]:
+    if type(bins)==int:
+
+        bins = tf.convert_to_tensor(bins, dtype=tf.int32)
+    else:
+        bins = tf.cast(bins, dtype=input.dtype)
+    return tfp.stats.histogram(
+        x=input,
+        edges=bins,
+        weights=weights
+    )
 
 def median(
     input: Union[tf.Tensor, tf.Variable],

@@ -2,6 +2,22 @@ from typing import Optional, Union, Tuple, Sequence
 from ivy.functional.backends.jax import JaxArray
 import jax.numpy as jnp
 
+def histogramdd(
+        input: JaxArray,
+        /,
+        *,
+        bins: Optional[Union[Tuple[int],int]] = 10,
+        range: Optional[Union[Tuple[int], int]] = None,
+        weights : Optional[Tuple[int]] = None,
+        density: Optional[bool] = None
+) -> Tuple[JaxArray]:
+    return jnp.histogramdd(
+        input,
+        bins,
+        range,
+        weights,
+        density
+    )
 
 def median(
     input: JaxArray,
