@@ -2,7 +2,17 @@
 from __future__ import annotations
 import functools
 from numbers import Number
-from typing import Union, Tuple, Optional, List, Sequence, Callable, Protocol, TypeVar, Iterable
+from typing import (
+    Union,
+    Tuple,
+    Optional,
+    List,
+    Sequence,
+    Callable,
+    Protocol,
+    TypeVar,
+    Iterable
+)
 import numpy as np
 
 # local
