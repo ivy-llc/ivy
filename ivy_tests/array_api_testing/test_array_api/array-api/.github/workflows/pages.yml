@@ -1,0 +1,39 @@
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+    - "**"
+jobs:
+  run:
+    # Don't run Action on forks, and allow skipping CI
+    if: "github.repository == 'data-apis/array-api' && !contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.head_commit.message, '[skip github]')"
+    runs-on: ubuntu-18.04
+    steps:
+    # - uses: docker://pandoc/latex:2.9
+    - uses: actions/checkout@master
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.10.2' # Version range or exact version of a Python version to use, using semvers version range syntax.
+        architecture: 'x64' # (x64 or x86)
+    - run: |
+        # add dependencies based on the conf.py
+        pip install -r requirements.txt
+    - name: Build docs
+      run: |
+        # Turn warnings into errors; ensure .doctrees doesn't get deployed
+        sphinx-build -b html -WT --keep-going spec build/latest -d doctrees
+        touch build/.nojekyll
+    - uses: actions/upload-artifact@v2
+      if: ${{ github.event_name == 'pull_request'}}
+      with:
+        name: html
+        path: build/
+        if-no-files-found: error
+    - name: Deploy
+      if: ${{ github.ref == 'refs/heads/main'}}
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./build

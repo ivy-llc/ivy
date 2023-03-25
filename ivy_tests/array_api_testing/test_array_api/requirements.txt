@@ -1,0 +1,4 @@
+pytest
+pytest-json-report
+hypothesis>=6.55.0
+ndindex>=1.6
