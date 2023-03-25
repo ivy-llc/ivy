@@ -14,13 +14,13 @@ def _isin_data_generation_helper(draw):
     assume_unique = draw(st.booleans())
     if assume_unique:
         dtype_and_x = helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
+            available_dtypes=helpers.get_dtypes("valid"),
             num_arrays=2,
             shared_dtype=True,
         ).filter(lambda x: np.array_equal(x[1][0], np.unique(x[1][0])))
     else:
         dtype_and_x = helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
+            available_dtypes=helpers.get_dtypes("valid"),
             num_arrays=2,
             shared_dtype=True,
         )
@@ -39,6 +39,7 @@ def test_isin(
     invert,
     test_flags,
     backend_fw,
+    on_device,
 ):
     assume_unique, x_and_dtype = assume_unique_and_dtype_and_x
     dtypes, values = x_and_dtype
@@ -46,6 +47,7 @@ def test_isin(
     helpers.test_function(
         input_dtypes=dtypes,
         test_flags=test_flags,
+        on_device=on_device,
         fw=backend_fw,
         fn_name="isin",
         ground_truth_backend="numpy",
