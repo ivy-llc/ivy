@@ -87,7 +87,6 @@ def shuffle(x, /):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
-add-gamma-numpy-frontend
 def gamma(alpha, beta, /, size=None):
     return ivy.gamma(alpha, beta, shape=size)
 
