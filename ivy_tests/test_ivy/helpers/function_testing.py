@@ -1,5 +1,4 @@
 # global
-# flake8: noqa
 import os
 import copy
 from typing import Union, List
@@ -479,7 +478,9 @@ def test_function(
     ):
         if not fw.backend in fw_list or not ivy.nested_argwhere(
             all_as_kwargs_np,
-            lambda x: x.dtype in fw_list[fw] if isinstance(x, np.ndarray) else None,
+            lambda x: x.dtype in fw_list[fw.backend]
+            if isinstance(x, np.ndarray)
+            else None,
         ):
             gradient_test(
                 fn=fn_name,
