@@ -42,6 +42,33 @@ def _get_dtype_and_matrix(draw):
         )
     )
 
+#lu
+@handle_frontend_test(
+    fn_tree="torch.linalg.lu",
+    dtype_and_x=_get_dtype_and_square_matrix(),
+    pivot=st.booleans(),
+)
+def test_torch_lu_factor(
+    *,
+    dtype_and_x,
+    pivot,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x = dtype_and_x
+
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-01,
+        input=x,
+        pivot=pivot,
+    )
 
 # vector_norm
 @handle_frontend_test(

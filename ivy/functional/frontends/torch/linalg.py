@@ -7,6 +7,11 @@ from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 
 
 @to_ivy_arrays_and_back
+def lu(input,*,pivot=True,out=None):
+    return ivy.lu_factor(input,pivot,out)
+
+
+@to_ivy_arrays_and_back
 def vector_norm(input, ord=2, dim=None, keepdim=False, *, dtype=None, out=None):
     return ivy.vector_norm(
         input, axis=dim, keepdims=keepdim, ord=ord, out=out, dtype=dtype
