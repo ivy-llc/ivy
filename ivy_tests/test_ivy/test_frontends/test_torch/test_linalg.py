@@ -1211,4 +1211,3 @@ def test_torch_multi_dot(
         test_values=True,
         tensors=x,
     )
-    
