@@ -3,6 +3,7 @@ instances.
 """
 
 # global
+import numpy as np
 from typing import Any, Union, Tuple, Dict, Iterable, Optional
 
 # local
@@ -14,8 +15,11 @@ import ivy
 
 
 def _to_native(x: Any, inplace: bool = False) -> Any:
+    current_backend = ivy.current_backend_str()  # cache current backend string
     if isinstance(x, ivy.Array):
         return x.data
+    elif isinstance(x, np.ndarray) and current_backend != "numpy":
+        return ivy.Array(x).data
     elif isinstance(x, ivy.Container):
         return x.cont_map(
             lambda x_, _: _to_native(x_, inplace=inplace), inplace=inplace
@@ -28,7 +32,9 @@ def _to_ivy(x: Any) -> Any:
         return x
     elif isinstance(x, ivy.Container):
         return x.to_ivy()
-    return ivy.Array(x) if ivy.is_native_array(x) else x
+    if ivy.is_native_array(x) or isinstance(x, np.ndarray):
+        return ivy.Array(x)
+    return x
 
 
 # Wrapped #
