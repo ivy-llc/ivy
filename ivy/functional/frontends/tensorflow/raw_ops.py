@@ -716,3 +716,44 @@ def DebugGradientIdentity(input, name="DebugGradientIdentity"):
 @to_ivy_arrays_and_back
 def Real(input, Tout=ivy.float32, name="Real"):
     return ivy.Real(input, Tout=Tout)
+
+
+def Conv2D(
+    *,
+    input,
+    filter,
+    strides,
+    padding,
+    explicit_paddings=[],
+    use_cudnn_on_gpu=False,
+    data_format='NHWC',
+    dilations=[1, 1, 1, 1],
+    name="Conv2D",
+):
+    # ivy.backends.tensorflow expects strides and dilations to be
+    # a single integer value or a list of 2 values whereas the raw op
+    # expects a list of 4 values
+    if data_format == "NHWC":
+        strides = strides[1:-1]
+        dilations = dilations[1:-1]
+    elif data_format == "NCHW":
+        strides = strides[2:]
+        dilations = dilations[2:]
+    # for Conv2D, the explicit_padding is defined as
+    # [0, 0, pad_top, pad_bottom, pad_left, pad_right, 0, 0]
+    # when the data_format is "NHWC"
+    # for Conv2D, the explicit_paddings is defined as
+    # [0, 0, 0, 0, pad_top, pad_bottom, pad_left, pad_right]
+    # when the data_format is "NCHW"
+    if padding == "EXPLICIT" and data_format == "NHWC":
+        padding = [explicit_paddings[i:i+2] for i in range(2, 6, 2)]
+    elif padding == "EXPLICIT" and data_format == "NCHW":
+        padding = [explicit_paddings[i:i+2] for i in range(0, 8, 2)]
+    return ivy.conv2d(
+        input,
+        filter,
+        strides,
+        padding,
+        data_format=data_format,
+        dilations=dilations
+    )

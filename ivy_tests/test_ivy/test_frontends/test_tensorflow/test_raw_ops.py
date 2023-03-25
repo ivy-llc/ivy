@@ -11,7 +11,6 @@ import math
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
-
 # Acos
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Acos",
@@ -3470,4 +3469,90 @@ def test_tensorflow_Real(
         on_device=on_device,
         input=x[0],
         Tout=Tout,
+    )
+
+
+@st.composite
+def _conv2d_helper(draw):
+    input_dtype, \
+    x, \
+    filters, \
+    strides, \
+    dilations, \
+    data_format, \
+    padding = draw(_x_and_filters(
+    dtypes=helpers.get_dtypes("float", full=False),
+    data_format=st.sampled_from(["NHWC"]),
+    padding=st.sampled_from(["SAME", "VALID"]),
+    type="2d",
+    dilation_min=1,
+    dilation_max=1,
+    ))
+    if padding == "EXPLICIT":
+        pad_top = draw(st.integers(min_value=0, max_value=3))
+        pad_bottom = draw(st.integers(min_value=0, max_value=3))
+        pad_left = draw(st.integers(min_value=0, max_value=3))
+        pad_right = draw(st.integers(min_value=0, max_value=3))
+
+        if data_format == "NHWC":
+            explicit_paddings = [0, pad_top, pad_bottom, pad_left, pad_right, 0, 0, 0]
+        else:
+            explicit_paddings = [0, 0, 0, pad_top, pad_bottom, pad_left, pad_right, 0]
+    else:
+        explicit_paddings = []
+
+    return input_dtype, \
+        x, \
+        filters, \
+        dilations, \
+        data_format, \
+        strides, \
+        padding, \
+        explicit_paddings
+
+
+#Conv2D
+@handle_frontend_test(
+fn_tree="tensorflow.raw_ops.Conv2D",
+x_f_d_df=_conv2d_helper(),
+test_with_out=st.just(False),
+)
+def test_tensorflow_Conv2D(
+    *,
+    x_f_d_df,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, \
+        x, \
+        filters, \
+        data_format, \
+        dilation, \
+        stride, \
+        paddings, \
+        explicit_paddings = x_f_d_df
+    # Broadcast strides and dilations to correct dims for the ground truth
+    # backend func to run correctly
+    stride = _convolution_broadcast_helper(
+        stride, num_spatial_dims=2, channel_index=3, name="strides"
+    )
+    dilation = _convolution_broadcast_helper(
+        dilation, num_spatial_dims=2, channel_index=3, name="dilations"
+    )
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+        filter=filters,
+        strides=stride,
+        padding=paddings,
+        use_cudnn_on_gpu=True,
+        explicit_paddings=explicit_paddings,
+        data_format=data_format,
+        dilations=dilation,
     )
