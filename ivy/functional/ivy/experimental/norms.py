@@ -90,14 +90,16 @@ def batch_norm(
     eps
         A small float number to avoid dividing by -1.
     momentum
-         the value used for the running_mean and running_var computation. Default value is 0.1.
+         the value used for the running_mean and running_var computation.
+          Default value is 0.1.
     out
         optional output array, for writing the result to.
 
     Returns
     -------
     ret
-         Array containing the normalized, scaled, offset values.
+         Tuple of arrays containing
+          the normalized input, running_mean, and running_variance.
     """
     return current_backend(x).batch_norm(
         x,
@@ -152,14 +154,16 @@ def instance_norm(
     eps
         A small float number to avoid dividing by -1.
     momentum
-         the value used for the running_mean and running_var computation. Default value is 0.1.
+         the value used for the running_mean and running_var computation.
+          Default value is 0.1.
     out
         optional output array, for writing the result to.
 
     Returns
     -------
     ret
-         Array containing the normalized, scaled, offset values.
+         Tuple of arrays containing
+          the normalized input, running mean, and running variance.
     """
     return current_backend(x).instance_norm(
         x,
