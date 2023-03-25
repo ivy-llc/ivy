@@ -203,7 +203,7 @@ def separable_conv2d(
 def batch_normalization(x, mean, variance, offset, scale, variance_epsilon, name=None):
     ndims = len(x.shape)
     x = ivy.permute_dims(x, axes=(0, *range(2, ndims), 1))
-    ret = ivy.batch_norm(
+    xnormalized, running_mean, running_var = ivy.batch_norm(
         x,
         mean,
         variance,
@@ -211,7 +211,7 @@ def batch_normalization(x, mean, variance, offset, scale, variance_epsilon, name
         scale=scale,
         eps=variance_epsilon,
     )
-    return ivy.permute_dims(ret, axes=(0, ndims - 1, *range(1, ndims - 1)))
+    return ivy.permute_dims(xnormalized, axes=(0, ndims - 1, *range(1, ndims - 1)))
 
 
 @to_ivy_arrays_and_back
