@@ -476,7 +476,7 @@ def test_function(
         and "bool" not in input_dtypes
         and not any(ivy.is_complex_dtype(d) for d in input_dtypes)
     ):
-        if not fw.backend in fw_list or not ivy.nested_argwhere(
+        if fw.backend not in fw_list or not ivy.nested_argwhere(
             all_as_kwargs_np,
             lambda x: x.dtype in fw_list[fw.backend]
             if isinstance(x, np.ndarray)
@@ -502,10 +502,13 @@ def test_function(
 
         assert (
             ret_device == ret_from_gt_device
-        ), f"ground truth backend ({ground_truth_backend}) returned array on device {ret_from_gt_device} but target backend ({ivy.backend}) returned array on device {ret_device}"
+        ), f"ground truth backend ({ground_truth_backend}) returned array on device "
+        f"{ret_from_gt_device} but target backend ({ivy.backend}) returned array on "
+        f"device {ret_device}"
         assert (
             ret_device == on_device
-        ), f"device is set to {on_device}, but ground truth produced array on {ret_device}"
+        ), f"device is set to {on_device}, but ground truth "
+        f"produced array on {ret_device}"
 
     # assuming value test will be handled manually in the test function
     if not test_values:
@@ -1287,7 +1290,7 @@ def test_method(
             on_device=on_device,
         )
         ins_gt = ivy.__dict__[class_name](*args_gt_constructor, **kwargs_gt_constructor)
-        # ToDo : remove this when the handle_method can properly compute unsupported dtypes
+        # TODO this when the handle_method can properly compute unsupported dtypes
         if any(
             dtype
             in ivy.function_unsupported_dtypes(ins_gt.__getattribute__(method_name))
@@ -1379,10 +1382,13 @@ def test_method(
         ret_device = ivy.dev(ret)
         assert (
             ret_device == ret_from_gt_device
-        ), f"ground truth backend ({ground_truth_backend}) returned array on device {ret_from_gt_device} but target backend ({ivy.backend}) returned array on device {ret_device}"
+        ), f"ground truth backend ({ground_truth_backend}) returned array on device "
+        f"{ret_from_gt_device} but target backend ({ivy.backend}) returned array on "
+        f"device {ret_device}"
         assert (
             ret_device == on_device
-        ), f"device is set to {on_device}, but ground truth produced array on {ret_device}"
+        ), f"device is set to {on_device}, but ground truth "
+        f"produced array on {ret_device}"
 
     # assuming value test will be handled manually in the test function
     if not test_values:
