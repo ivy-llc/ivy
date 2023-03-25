@@ -13,7 +13,7 @@ class Sequential(Module):
         self,
         *sub_modules: Module,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-        v: Optional[Union[ivy.Array, ivy.NativeVariable]] = None,
+        v: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     ):
         """
