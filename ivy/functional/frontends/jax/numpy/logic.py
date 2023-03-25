@@ -155,7 +155,27 @@ def isfinite(x, /):
 
 @to_ivy_arrays_and_back
 def isin(element, test_elements, assume_unique=False, invert=False):
-    return ivy.isin(element, test_elements, assume_unique=assume_unique, invert=invert)
+    # Convert inputs to tensors
+    element_tensor = ivy.array(element)
+    test_elements_tensor = ivy.array(test_elements)
+
+    # Find which elements of test_elements are equal to element
+    matches = ivy.equal(test_elements_tensor, element_tensor)
+
+    # If assume_unique is True, assume that test_elements has no duplicates
+    if assume_unique:
+        unique_matches = ivy.reduce_any(matches, axis=0)
+    else:
+        # Otherwise, remove duplicates from test_elements and find matches
+        unique_test_elements = ivy.unique(test_elements_tensor)
+        unique_matches = ivy.equal(unique_test_elements, element_tensor)
+
+    # If invert is True, invert the matches
+    if invert:
+        matches = ivy.logical_not(matches)
+
+    # Return matches or unique_matches depending on assume_unique
+    return unique_matches if assume_unique else matches
 
 
 @to_ivy_arrays_and_back
