@@ -292,6 +292,11 @@ def unique_values(
            The order of unique elements is not specified and may vary between
            implementations.
 
+    Raises
+    ------
+    TypeError
+        If `x` is not an instance of `ivy.Array` or `ivy.NativeArray`.
+
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -301,6 +306,19 @@ def unique_values(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
+
+    Examples
+    --------
+    >>> import ivy
+    >>> a = ivy.array([1, 1, 2, 2, 3, 4, 4, 5])
+    >>> ivy.unique_values(a)
+    array([1, 2, 3, 4, 5])
+    >>> b = ivy.array([1, 2, 3, 4, 5])
+    >>> ivy.unique_values(b)
+    array([1, 2, 3, 4, 5])
+    >>> c = ivy.array([1.0, 1.0, 2.0, 2.0, 3.0, 4.0, 4.0, 5.0, -0.0, 0.0, float('nan'), float('nan')])
+    >>> ivy.unique_values(c)
+    array([0., 1., 2., 3., 4., 5., nan, -0.])
 
     """
     return ivy.current_backend(x).unique_values(x, out=out)
