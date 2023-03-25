@@ -83,3 +83,9 @@ def shuffle(x, /):
     if isinstance(x, int):
         x = ivy.arange(x)
     return ivy.shuffle(x)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def standard_normal(size=None):
+    return ivy.random_normal(mean=0.0, std=1.0, shape=size, dtype="float64")

@@ -267,6 +267,7 @@ def asarray(
         float,
         NestedSequence,
         SupportsBufferProtocol,
+        np.ndarray,
     ],
     /,
     *,

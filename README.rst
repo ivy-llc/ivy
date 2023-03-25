@@ -144,6 +144,7 @@ These functions can be used eagerly or lazily. If you pass the necessary argumen
 .. code-block:: python
     
     import ivy
+    import jax
     ivy.set_backend("jax")
 
     # Simple JAX function to transpile
@@ -155,7 +156,7 @@ These functions can be used eagerly or lazily. If you pass the necessary argumen
 .. code-block:: python
     
     # Arguments are available -> transpilation happens eagerly
-    eager_graph = ivy.transpile(test_fn, to="torch", args=(x1,))
+    eager_graph = ivy.transpile(test_fn, source="jax", to="torch", args=(x1,))
     
     # eager_graph is now torch code and runs efficiently
     ret = eager_graph(x1)
@@ -163,7 +164,7 @@ These functions can be used eagerly or lazily. If you pass the necessary argumen
 .. code-block:: python
     
     # Arguments are not available -> transpilation happens lazily
-    lazy_graph = ivy.transpile(test_fn, to="torch")
+    lazy_graph = ivy.transpile(test_fn, source="jax", to="torch")
     
     # The transpiled graph is initialized, transpilation will happen here
     ret = lazy_graph(x1)
@@ -251,7 +252,7 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
     for step in range(100):
         loss, grads = ivy.execute_with_gradients(loss_fn, model.v)
         model.v = optimizer.step(model.v, grads)
-        print('step {} loss {}'.format(step, ivy.to_numpy(loss).item()))
+        print('Step: {} --- Loss: {}'.format(step, ivy.to_numpy(loss).item()))
 
     print('Finished training!')
 
@@ -333,7 +334,7 @@ If you are working on a GPU device, you can pull from:
 Installing from source
 ######################
 
-Obviously, you can also install Ivy from source if you want to take advantage of the latest changes, but we can't ensure that everything will work as expected :sweat_smile:
+You can also install Ivy from source if you want to take advantage of the latest changes, but we can't ensure everything will work as expected. :sweat_smile:
 
 .. code-block:: bash
 
@@ -513,6 +514,8 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 
     import ivy
     import torch
+    import os
+    os.environ["SM_FRAMEWORK"] = "tf.keras"
     import segmentation_models as sm
 
     # transpile sm from tensorflow to torch
@@ -968,6 +971,8 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 
     import ivy
     import jax
+    import os
+    os.environ["SM_FRAMEWORK"] = "tf.keras"
     import segmentation_models as sm
 
     # transpile sm from tensorflow to jax
@@ -1095,6 +1100,8 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 
     import ivy
     import numpy as np
+    import os
+    os.environ["SM_FRAMEWORK"] = "tf.keras"
     import segmentation_models as sm
 
     # transpile sm from tensorflow to numpy

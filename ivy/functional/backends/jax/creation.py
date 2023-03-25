@@ -1,5 +1,6 @@
 # global
 from numbers import Number
+import numpy as np
 from typing import Union, Optional, List, Sequence
 
 import jax.dlpack
@@ -50,7 +51,9 @@ def arange(
 @asarray_infer_device
 @asarray_handle_nestable
 def asarray(
-    obj: Union[JaxArray, bool, int, float, NestedSequence, SupportsBufferProtocol],
+    obj: Union[
+        JaxArray, bool, int, float, NestedSequence, SupportsBufferProtocol, np.ndarray
+    ],
     /,
     *,
     copy: Optional[bool] = None,
@@ -72,6 +75,9 @@ def asarray(
             return _to_device(jnp.array(obj, dtype=dtype, copy=True), device=device)
         else:
             return _to_device(jnp.asarray(obj, dtype=dtype), device=device)
+    elif isinstance(obj, np.ndarray):
+        dtype = ivy.as_native_dtype(ivy.as_ivy_dtype(obj.dtype.name))
+        ivy.utils.assertions._check_jax_x64_flag(dtype)
     else:
         dtype = ivy.default_dtype(dtype=dtype, item=obj)
         ivy.utils.assertions._check_jax_x64_flag(dtype)
