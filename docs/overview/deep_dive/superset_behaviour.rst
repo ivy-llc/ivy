@@ -180,6 +180,7 @@ This will make sure that we don't introduce any inefficiencies and also avoid re
 Ivy allows this using the `handle_mixed_function`_ wrapper on the backend-specific implementation. So the :code:`torch` backend implementation of :func:`interpolate` would look like the following,
 
 .. code-block:: python
+
     @handle_mixed_function(
         lambda *args, mode="linear", **kwargs: mode
         not in [
