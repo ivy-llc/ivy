@@ -50,7 +50,7 @@ def statistical_dtype_values(draw, *, function):
                 | helpers.floats(min_value=0, max_value=max_correction - 1)
             )
         return dtype, values, axis, correction
-    if function == "quantile":
+    if function == "quantile" or function == "nanquantile":
         q = draw(
             helpers.array_values(
                 dtype=helpers.get_dtypes("float"),
@@ -316,4 +316,38 @@ def test_bincount(
         x=x[0],
         weights=x[1],
         minlength=min_length,
+    )
+
+
+# nanquantile
+@handle_test(
+    fn_tree="functional.ivy.experimental.nanquantile",
+    dtype_and_x=statistical_dtype_values(function="nanquantile"),
+    keep_dims=st.booleans(),
+    test_gradients=st.just(False),
+    test_with_out=st.just(False),
+)
+def test_nanquantile(
+    *,
+    dtype_and_x,
+    keep_dims,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x, axis, interpolation, q = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        a=x[0],
+        q=q,
+        axis=axis,
+        interpolation=interpolation[0],
+        keepdims=keep_dims,
     )
