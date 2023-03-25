@@ -33,6 +33,9 @@ class ndarray:
             "ivy.array", "ivy.frontends.numpy.ndarray"
         )
 
+    def __str__(self):
+        return str(self._ivy_array)
+
     # Properties #
     # ---------- #
 
@@ -448,3 +451,7 @@ class ndarray:
     
     def __mod__(self, value, /):
         return np_frontend.mod(self._ivy_array, value, out=self)
+    
+      
+
+   
