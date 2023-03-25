@@ -188,7 +188,13 @@ def nan_to_num(x: paddle.Tensor,
                neginf: Optional[Union[float, int]] = None,
                out: Optional[paddle.Tensor] = None,
                ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+     if copy:
+         return paddle.nan_to_num(x, nan=nan, posinf=posinf, neginf=neginf, out=out)
+     else:
+         x = paddle.nan_to_num(x, nan=nan, posinf=posinf, neginf=neginf)
+         return x
+               
+    
 
 
 def logaddexp2(
