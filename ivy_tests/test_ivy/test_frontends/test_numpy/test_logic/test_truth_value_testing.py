@@ -125,13 +125,15 @@ def test_numpy_isscalar(
     test_with_out=st.just(False),
 )
 def test_numpy_isfortran(
+    *,
     dtype_and_x,
     frontend,
     on_device,
-    *,
     fn_tree,
     test_flags,
 ):
+    if ivy.current_backend() != "numpy":
+        return
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -150,10 +152,10 @@ def test_numpy_isfortran(
     ),
 )
 def test_numpy_isreal(
+    *,
     dtype_and_x,
     frontend,
     on_device,
-    *,
     fn_tree,
     test_flags,
 ):
@@ -176,10 +178,10 @@ def test_numpy_isreal(
     test_with_out=st.just(False),
 )
 def test_numpy_isrealobj(
+    *,
     dtype_and_x,
     frontend,
     on_device,
-    *,
     fn_tree,
     test_flags,
 ):
@@ -197,15 +199,15 @@ def test_numpy_isrealobj(
 @handle_frontend_test(
     fn_tree="numpy.iscomplexobj",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("real_and_complex"), min_num_dims=1
+        available_dtypes=helpers.get_dtypes("real_and_complex"),
     ),
     test_with_out=st.just(False),
 )
 def test_numpy_iscomplexobj(
+    *,
     dtype_and_x,
     frontend,
     on_device,
-    *,
     fn_tree,
     test_flags,
 ):
@@ -216,7 +218,7 @@ def test_numpy_iscomplexobj(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        a=x[0],
+        x=x[0],
     )
 
 
@@ -228,10 +230,10 @@ def test_numpy_iscomplexobj(
     test_with_out=st.just(False),
 )
 def test_numpy_iscomplex(
+    *,
     dtype_and_x,
     frontend,
     on_device,
-    *,
     fn_tree,
     test_flags,
 ):
