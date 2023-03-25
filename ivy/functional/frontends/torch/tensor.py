@@ -755,7 +755,6 @@ class Tensor:
         self._ivy_array = self.atan2(other).ivy_array
         return self
     
-    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def fmin(self, other, out=None):
         return torch_frontend.fmin(self._ivy_array, other, out=out)
 
