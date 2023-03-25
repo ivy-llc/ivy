@@ -512,3 +512,8 @@ def floormod(x, y, name=None):
 def greater(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return ivy.greater(x, y)
+
+
+@to_ivy_arrays_and_back
+def cos(x, name=None):
+    return ivy.cos(x)
