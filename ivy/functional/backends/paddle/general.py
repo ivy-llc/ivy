@@ -165,7 +165,7 @@ def inplace_increment(
     val: Union[ivy.Array, paddle.Tensor],
 ) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
-    x_native.data += val_native
+    x_native += val_native
     if ivy.is_ivy_array(x):
         x.data = x_native
     else:
