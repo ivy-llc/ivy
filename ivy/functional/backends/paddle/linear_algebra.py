@@ -92,7 +92,8 @@ def cross(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "complex64", "complex128")}}, backend_version
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "complex64", "complex128")}},
+    backend_version,
 )
 def det(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     if x.dtype in [
@@ -104,7 +105,9 @@ def det(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
         paddle.float16,
         paddle.bool,
     ]:
-        return paddle.linalg.det(x.cast(ivy.default_float_dtype())).squeeze().cast(x.dtype)
+        return (
+            paddle.linalg.det(x.cast(ivy.default_float_dtype())).squeeze().cast(x.dtype)
+        )
     return paddle.linalg.det(x).squeeze()
 
 
@@ -120,15 +123,21 @@ def diagonal(
     axis2: int = -1,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16, paddle.complex64, paddle.complex128]:
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+        paddle.complex64,
+        paddle.complex128,
+    ]:
         if paddle.is_complex(x):
-            return (
-                paddle.diagonal(x.real(), offset=offset, axis1=axis1, axis2=axis2)
-                + 1j * paddle.diagonal(x.imag(), offset=offset, axis1=axis1, axis2=axis2)
-            )
-        return paddle.diagonal(x.cast(ivy.default_float_dtype()), offset=offset, axis1=axis1, axis2=axis2).cast(
-            x.dtype
-        )
+            return paddle.diagonal(
+                x.real(), offset=offset, axis1=axis1, axis2=axis2
+            ) + 1j * paddle.diagonal(x.imag(), offset=offset, axis1=axis1, axis2=axis2)
+        return paddle.diagonal(
+            x.cast(ivy.default_float_dtype()), offset=offset, axis1=axis1, axis2=axis2
+        ).cast(x.dtype)
     return paddle.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
 
 
@@ -168,12 +177,23 @@ def eigvalsh(
 def inner(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return paddle.inner(x1, x2)
+    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    if x1.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.int32,
+        paddle.int64,
+        paddle.uint8,
+        paddle.float16,
+        paddle.bool,
+    ]:
+        x1, x2 = x1.cast(ivy.default_float_dtype()), x2.cast(ivy.default_float_dtype())
+    return paddle.inner(x1, x2).cast(ret_dtype)
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "complex64", "complex128")}},
+    backend_version,
 )
 def inv(
     x: paddle.Tensor,
@@ -182,7 +202,20 @@ def inv(
     adjoint: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle.inverse(x)
+    ret_dtype = x.dtype
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.int32,
+        paddle.int64,
+        paddle.uint8,
+        paddle.float16,
+        paddle.bool,
+    ]:
+        x = x.cast(ivy.default_float_dtype())
+    if adjoint:
+        x = paddle.moveaxis(x, -2, -1).conj()
+    return paddle.inverse(x).cast(ret_dtype)
 
 
 @with_unsupported_device_and_dtypes(
@@ -199,11 +232,25 @@ def matmul(
     adjoint_b: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    if x1.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.int32,
+        paddle.int64,
+        paddle.uint8,
+        paddle.float16,
+        paddle.bool,
+    ]:
+        x1, x2 = x1.cast(ivy.default_float_dtype()), x2.cast(ivy.default_float_dtype())
+
     if adjoint_a:
         x1 = paddle.moveaxis(x1, -2, -1).conj()
     if adjoint_b:
         x2 = paddle.moveaxis(x2, -2, -1).conj()
-    return paddle.matmul(x1, x2, transpose_x=transpose_a, transpose_y=transpose_b)
+    return paddle.matmul(x1, x2, transpose_x=transpose_a, transpose_y=transpose_b).cast(
+        ret_dtype
+    )
 
 
 @with_unsupported_device_and_dtypes(
@@ -224,20 +271,20 @@ def matrix_norm(
         _expand_dims = True
 
     if ord == -float("inf"):
-        ret = paddle.min(
+        ret = paddle.amin(
             paddle.sum(paddle.abs(x), axis=axis[1], keepdim=True),
             axis=axis,
             keepdim=keepdims,
         )
 
     elif ord == -1:
-        ret = paddle.min(
+        ret = paddle.amin(
             paddle.sum(paddle.abs(x), axis=axis[0], keepdim=True),
             axis=axis,
             keepdim=keepdims,
         )
     elif ord == -2:
-        ret = paddle.min(paddle.linalg.svd(x)[1], axis=axis, keepdim=keepdims)
+        ret = paddle.amin(paddle.linalg.svd(x)[1], axis=axis, keepdim=keepdims)
     elif ord == "nuc":
         if x.size == 0:
             ret = x
@@ -246,20 +293,20 @@ def matrix_norm(
     elif ord == "fro":
         ret = paddle.linalg.norm(x, p=ord, axis=axis, keepdim=keepdims)
     elif ord == float("inf"):
-        ret = paddle.max(
+        ret = paddle.amax(
             paddle.sum(paddle.abs(x), axis=axis[1], keepdim=True),
             axis=axis,
             keepdim=keepdims,
         )
 
     elif ord == 1:
-        ret = paddle.max(
+        ret = paddle.amax(
             paddle.sum(paddle.abs(x), axis=axis[0], keepdim=True),
             axis=axis,
             keepdim=keepdims,
         )
     elif ord == 2:
-        ret = paddle.max(
+        ret = paddle.amax(
             paddle.linalg.svd(x)[1].unsqueeze(-1), axis=axis[1], keepdim=keepdims
         )
     if _expand_dims:
@@ -290,7 +337,8 @@ def matrix_power(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "complex64", "complex128")}},
+    backend_version,
 )
 def matrix_rank(
     x: paddle.Tensor,
@@ -300,67 +348,28 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    def dim_reduction(array):
-        if array.ndim == 1:
-            ret = array[0]
-        elif array.ndim == 2:
-            ret = array[0][0]
-        elif array.ndim == 3:
-            ret = array[0][0][0]
-        elif array.ndim == 4:
-            ret = array[0][0][0][0]
-        return ret
-
-    if len(x.shape) == 3:
-        if x.shape[-3] == 0:
-            return paddle.to_tensor(0).astype(x.dtype)
-    elif len(x.shape) > 3:
-        if x.shape[-3] == 0 or x.shape[-4] == 0:
-            return paddle.to_tensor(0).astype(x.dtype)
-    axis = None
-    ret_shape = x.shape[:-2]
-    if len(x.shape) == 2:
-        singular_values = paddle.linalg.svd(x, full_matrices=False)
-    elif len(x.shape) > 2:
-        y = x.reshape((-1, *x.shape[-2:]))
-        singular_values = paddle.to_tensor(
-            [
-                paddle.linalg.svd(split[0], full_matrices=False)[1]
-                for split in paddle.split(y, y.shape[0], axis=0)
-            ]
-        )
-        axis = 1
-    if len(x.shape) < 2 or len(singular_values.shape) == 0:
-        return paddle.to_tensor(0).astype(x.dtype)
-    max_values = paddle.max(singular_values, axis=axis)
-    if atol is None:
-        if rtol is None:
-            ret = paddle.sum(singular_values != 0, axis=axis)
-        else:
-            try:
-                max_rtol = max_values * rtol
-            except ValueError:
-                if ivy.all(
-                    element == rtol[0] for element in rtol
-                ):  # all elements are same in rtol
-                    rtol = dim_reduction(rtol)
-                    max_rtol = max_values * rtol
-            if not isinstance(rtol, float) and rtol.size > 1:
-                if ivy.all(element == max_rtol[0] for element in max_rtol):
-                    max_rtol = dim_reduction(max_rtol)
-            elif not isinstance(max_values, float) and max_values.size > 1:
-                if ivy.all(element == max_values[0] for element in max_values):
-                    max_rtol = dim_reduction(max_rtol)
-            ret = ivy.sum(singular_values > max_rtol, axis=axis)
-    else:  # atol is not None
-        if rtol is None:  # atol is not None, rtol is None
-            ret = paddle.sum(singular_values > atol, axis=axis)
-        else:
-            tol = paddle.max(atol, max_values * rtol)
-            ret = paddle.sum(singular_values > tol, axis=axis)
-    if len(ret_shape):
-        ret = ret.reshape(ret_shape)
-    return ret.astype(x.dtype)
+    if x.ndim < 2:
+        return paddle.to_tensor(0, dtype=x.dtype)
+    else:
+        atol = atol if atol is not None else 0
+        rtol = rtol if rtol is not None else 0
+        with ivy.ArrayMode(False):
+            svd_values = svd(x)[1]
+            sigma = ivy.max(svd_values)
+            tol = ivy.maximum(atol, rtol * sigma)
+        if x.dtype in [
+            paddle.int8,
+            paddle.int16,
+            paddle.int32,
+            paddle.int64,
+            paddle.uint8,
+            paddle.float16,
+            paddle.bool,
+        ]:
+            return paddle.linalg.matrix_rank(
+                x.cast(ivy.default_float_dtype()), tol=tol
+            ).cast(x.dtype)
+        return paddle.linalg.matrix_rank(x, tol=tol).cast(x.dtype)
 
 
 @with_unsupported_device_and_dtypes(
@@ -374,8 +383,7 @@ def matrix_transpose(
     conjugate: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    ndim = len(x.shape)
-    perm = list(range(ndim))
+    perm = list(range(x.ndim))
     perm[-1], perm[-2] = perm[-2], perm[-1]
     return paddle.transpose(x, perm=perm)
 
@@ -386,8 +394,18 @@ def matrix_transpose(
 def outer(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return paddle.outer(x1, x2)
+    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    if x1.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.int32,
+        paddle.int64,
+        paddle.uint8,
+        paddle.float16,
+        paddle.bool,
+    ]:
+        x1, x2 = x1.cast(ivy.default_float_dtype()), x2.cast(ivy.default_float_dtype())
+    return paddle.outer(x1, x2).cast(ret_dtype)
 
 
 @with_unsupported_device_and_dtypes(
@@ -477,12 +495,26 @@ def solve(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "complex64", "complex128")}},
+    backend_version,
 )
 def svd(
     x: paddle.Tensor, /, *, full_matrices: bool = True, compute_uv: bool = True
 ) -> Union[paddle.Tensor, Tuple[paddle.Tensor, ...]]:
-    ret = paddle.linalg.svd(x, full_matrices=full_matrices)
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.int32,
+        paddle.int64,
+        paddle.uint8,
+        paddle.float16,
+        paddle.bool,
+    ]:
+        ret = paddle.linalg.svd(
+            x.cast(ivy.default_float_dtype()), full_matrices=full_matrices
+        ).cast(x.dype)
+    else:
+        ret = paddle.linalg.svd(x, full_matrices=full_matrices)
     if compute_uv:
         results = namedtuple("svd", "U S Vh")
         return results(*ret)
@@ -492,12 +524,14 @@ def svd(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "complex64", "complex128")}},
+    backend_version,
 )
 def svdvals(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    return paddle.linalg.svd(x)[1]
+    with ivy.ArrayMode(False):
+        return svd(x)[1]
 
 
 @with_unsupported_device_and_dtypes(
@@ -511,7 +545,19 @@ def tensordot(
     axes: Union[int, Tuple[List[int], List[int]]] = 2,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle.tensordot(x1, x2, axes)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    ret_dtype = x1.dtype
+    if x1.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.int32,
+        paddle.int64,
+        paddle.uint8,
+        paddle.float16,
+        paddle.bool,
+    ]:
+        x1, x2 = x1.cast(ivy.default_float_dtype()), x2.cast(ivy.default_float_dtype())
+    return paddle.tensordot(x1, x2, axes=axes).cast(ret_dtype)
 
 
 @with_unsupported_device_and_dtypes(
@@ -540,7 +586,9 @@ def vecdot(
     axis: int = -1,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle.tensordot(x1, x2, axis)
+    axes = [axis % x1.ndim]
+    with ivy.ArrayMode(False):
+        return tensordot(x1, x2, axes=axes)
 
 
 @with_unsupported_device_and_dtypes(
@@ -599,7 +647,20 @@ def diag(
     k: int = 0,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle.diag(x, k=k)
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.complex64,
+        paddle.complex128,
+        paddle.bool,
+    ]:
+        if paddle.is_complex(x):
+            return paddle.diag(x.real(), offset=k) + 1j * paddle.diag(
+                x.imag(), offset=k
+            )
+        return paddle.diag(x.cast(ivy.default_float_dtype()), offset=k).cast(x.dtype)
+    return paddle.diag(x, offset=k)
 
 
 @with_unsupported_device_and_dtypes(
