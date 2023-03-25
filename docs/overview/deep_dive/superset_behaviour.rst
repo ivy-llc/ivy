@@ -156,8 +156,8 @@ Maximizing Usage of Native Functionality
 
 While achieving the objective of having superset behaviour across the backends, native functionality of frameworks should be made use of as much as possible.
 Even if a framework-specific function doesn't provide complete superset behaviour, we should still make use of the partial behaviour that it provides an then add more logic for the remaining part.
-This is for efficiency reasons and is more explained under the `Mixed Functions <https://lets-unify.ai/ivy/overview/deep_dive/function_types.html#mixed-functions>` section.
-In cases when a framework-specific function exists for one or two backends which cover the superset, we still implement a `Mixed Functions <https://lets-unify.ai/ivy/overview/deep_dive/function_types.html#mixed-functions>`.
+This is for efficiency reasons and is more explained under the `Mixed Functions <https://lets-unify.ai/ivy/overview/deep_dive/function_types.html#mixed-functions>`_ section.
+In cases when a framework-specific function exists for one or two backends which cover the superset, we still implement a `Mixed Functions <https://lets-unify.ai/ivy/overview/deep_dive/function_types.html#mixed-functions>`_.
 But when the framework-specific functions do not cover all superset functionality, Ivy also allows for a mixed-compositional hybrid approach.
 
 Consider the example of :func:`interpolate`,
