@@ -873,3 +873,153 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
             array([6.5, 2. , 2.5])
         """
         return self.static_bincount(self, weights=weights, minlength=minlength, out=out)
+
+    @staticmethod
+    def static_nanquantile(
+        a: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        q: Union[ivy.Array, float],
+        /,
+        *,
+        axis: Optional[Union[int, Tuple[int]]] = None,
+        keepdims: bool = False,
+        interpolation: str = "linear",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container static method variant of ivy.nanquantile.
+        This method simply wraps the function, and so the docstring
+        for ivy.nanquantile also applies to this method with minimal
+        changes.
+        Parameters
+        ----------
+        a
+            Input container including arrays, containing NaN values to be ignored
+        q
+            Input array of float. Quantile or sequence of quantiles to compute,
+            which must be between 0 and 1 inclusive.
+        axis
+            Axis or axes along which the quantiles are computed. The default is
+            to compute the quantile(s) along a flattened version of the array.
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result
+            as dimensions with size one. With this option, the result will broadcast
+            correctly against the original array a.
+        interpolation (method)
+            {'nearest', 'linear', 'lower', 'higher', 'midpoint'}. Default value:
+            'linear'.
+            This specifies the interpolation method to use when the desired quantile
+            lies between two data points i < j:
+            - linear: i + (j - i) * fraction, where fraction is the fractional part
+            of the index surrounded by i and j.
+            - lower: i.
+            - higher: j.
+            - nearest: i or j, whichever is nearest.
+            - midpoint: (i + j) / 2. linear and midpoint interpolation do not work with
+            integer dtypes.
+        out
+            Alternative output array in which to place the result.
+        Returns
+        -------
+        ret
+            Container with quantile –If q is a single percentile and axis=None,
+            then the result is a scalar.
+            If multiple quantiles are given, first axis of the result corresponds to the
+            quantiles.The other axes are the axes that remain after the reduction of a.
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+            >>> a = ivy.Container(x=ivy.array([[10., ivy.nan, 4.], [3., 2., 1.]]),
+                              y=ivy.array([ivy.nan, 2., 3., 4.]))
+        >>> q = 0.5
+        >>> ivy.Container.static_nanquantile(a, q)
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "nanquantile",
+            a,
+            q,
+            axis=axis,
+            keepdims=keepdims,
+            interpolation=interpolation,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def nanquantile(
+        self: ivy.Container,
+        q: Union[ivy.Array, float],
+        /,
+        *,
+        axis: Optional[Union[int, Tuple[int]]] = None,
+        keepdims: bool = False,
+        interpolation: str = "linear",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.nanquantile.
+        This method simply wraps the function, and so the docstring
+        for ivy.nanquantile also applies to this method with minimal
+        changes.
+        Parameters
+        ----------
+        self
+            Input container including arrays, containing NaN values to be ignored
+        q
+            Input array of float. Quantile or sequence of quantiles to compute,
+            which must be between 0 and 1 inclusive.
+        axis
+            Axis or axes along which the quantiles are computed. The default is
+            to compute the quantile(s) along a flattened version of the array.
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result
+            as dimensions with size one. With this option, the result will broadcast
+            correctly against the original array a.
+        interpolation (method)
+            {'nearest', 'linear', 'lower', 'higher', 'midpoint'}.
+            Default value: 'linear'.
+            This specifies the interpolation method to use when the desired quantile
+            lies between two data points i < j:
+            - linear: i + (j - i) * fraction, where fraction is the fractional part of
+             the index surrounded by i and j.
+            - lower: i.
+            - higher: j.
+            - nearest: i or j, whichever is nearest.
+            - midpoint: (i + j) / 2. linear and midpoint interpolation do not work with
+            integer dtypes.
+        out
+            Alternative output array in which to place the result.
+        Returns
+        -------
+        ret
+            Container with quantile –If q is a single percentile and axis=None,
+            then the result is a scalar.
+            If multiple quantiles are given, first axis of the result corresponds to the
+            quantiles.The other axes are the axes that remain after the reduction of a.
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> a = ivy.Container(x=ivy.array([[10., ivy.nan, 4.], [3., 2., 1.]]),\
+                              y=ivy.array([ivy.nan, 2., 3., 4.]))
+        >>> q = 0.5
+        >>> a.nanquantile(q)
+        """
+        return self.static_nanquantile(
+            self,
+            q,
+            axis=axis,
+            keepdims=keepdims,
+            interpolation=interpolation,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
