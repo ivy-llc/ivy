@@ -65,7 +65,7 @@ def test_vorbis_window(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        x=x[0],
+        window_length=x[0],
         dtype=input_dtype[0],
     )
 
