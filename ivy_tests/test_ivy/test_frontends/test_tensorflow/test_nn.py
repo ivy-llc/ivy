@@ -767,7 +767,6 @@ def test_tensorflow_separable_conv2d(
     variance=helpers.array_values(dtype=ivy.float16, shape=(3, 5), min_value=0),
     offset=helpers.array_values(dtype=ivy.float16, shape=(3, 5)),
     scale=helpers.array_values(dtype=ivy.float16, shape=(3, 5)),
-    test_with_out=st.just(False),
 )
 def test_tensorflow_batch_normalization(
     *,
