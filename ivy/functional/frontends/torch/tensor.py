@@ -281,7 +281,7 @@ class Tensor:
         return self
 
     def logical_and(self,other):
-        return torch.frontend.logical_and(self._ivy_array,other)
+        return torch_frontend.logical_and(self._ivy_array,other)
 
     def bitwise_not(self, *, out=None):
         return torch_frontend.bitwise_not(self._ivy_array)
