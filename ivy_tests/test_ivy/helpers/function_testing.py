@@ -469,37 +469,18 @@ def test_function(
         if gt_returned_array:
             ret_from_gt_device = ivy.dev(ret_from_gt)
         ivy.previous_backend()
-    # gradient test
-    fw = ivy.current_backend_str()
+
+    # Gradient test
     if (
         test_flags.test_gradients
-        and not fw == "numpy"
         and not instance_method
         and "bool" not in input_dtypes
         and not any(ivy.is_complex_dtype(d) for d in input_dtypes)
     ):
-        if fw in fw_list:
-            if ivy.nested_argwhere(
-                all_as_kwargs_np,
-                lambda x: x.dtype in fw_list[fw] if isinstance(x, np.ndarray) else None,
-            ):
-                pass
-            else:
-                gradient_test(
-                    fn=fn_name,
-                    all_as_kwargs_np=all_as_kwargs_np,
-                    args_np=args_np,
-                    kwargs_np=kwargs_np,
-                    input_dtypes=input_dtypes,
-                    test_flags=test_flags,
-                    rtol_=rtol_,
-                    atol_=atol_,
-                    xs_grad_idxs=xs_grad_idxs,
-                    ret_grad_idxs=ret_grad_idxs,
-                    ground_truth_backend=ground_truth_backend,
-                    on_device=on_device,
-                )
-        else:
+        if not fw.backend in fw_list or not ivy.nested_argwhere(
+            all_as_kwargs_np,
+            lambda x: x.dtype in fw_list[fw] if isinstance(x, np.ndarray) else None,
+        ):
             gradient_test(
                 fn=fn_name,
                 all_as_kwargs_np=all_as_kwargs_np,
