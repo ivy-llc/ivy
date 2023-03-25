@@ -6,9 +6,7 @@ from . import stubs
 # Replace this with a specific array module to test it, for example,
 #
 # import numpy as array_module
-import ivy as array_module
-
-array_module.set_backend("tensorflow")
+array_module = None
 
 if array_module is None:
     if "ARRAY_API_TESTS_MODULE" in os.environ:

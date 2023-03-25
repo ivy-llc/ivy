@@ -15,7 +15,6 @@ _floats = st.floats
 
 @wraps(_floats)
 def floats(*a, **kw):
-    # kw["width"] = 32
     kw["allow_subnormal"] = False
     return _floats(*a, **kw)
 
