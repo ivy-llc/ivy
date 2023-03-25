@@ -607,8 +607,8 @@ def test_torch_heaviside(
 # asarray
 @handle_frontend_test(
     fn_tree="torch.asarray",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
-    dtype=helpers.get_dtypes("valid", full=False),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric")),
+    dtype=helpers.get_dtypes("numeric", full=False),
 )
 def test_torch_asarray(
     *,
