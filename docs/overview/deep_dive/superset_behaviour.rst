@@ -5,6 +5,7 @@ Superset Behaviour
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`superset behavior channel`: https://discord.com/channels/799879767196958751/1018954266322419732
 .. _`superset behavior forum`: https://discord.com/channels/799879767196958751/1028296822386610196
+.. _`handle_mixed_function`: https://github.com/unifyai/ivy/blob/6a57477daa87e3b3c6d157f10b935ba4fa21c39f/ivy/func_wrapper.py#L923
 
 When implementing functions in Ivy, whether they are primary, compositional or mixed, we are constantly faced with the question: which backend implementation should Ivy most closely follow?
 
@@ -149,6 +150,86 @@ This new implementation will be compiled to a graph of either one, three, four o
 
 This does mean we do not adopt the default values used by PyTorch, but that's okay.
 Implementing the superset does not mean adopting the same default values for arguments, it simply means equipping the Ivy function with the capabilities to execute the superset of behaviours.
+
+Maximizing Usage of Native Functionality
+----------------------------------------
+
+While achieving the objective of having superset behaviour across the backends, native functionality of frameworks should be made use of as much as possible.
+Even if a framework-specific function doesn't provide complete superset behaviour, we should still make use of the partial behaviour that it provides an then add more logic for the remaining part.
+This is for efficiency reasons and is more explained under the `Mixed Function <https://lets-unify.ai/ivy/overview/deep_dive/function_types.html#mixed-functions>`_ section.
+In cases when a framework-specific function exists for one or two backends but not the others, we implement a `Mixed Function <https://lets-unify.ai/ivy/overview/deep_dive/function_types.html#mixed-functions>`_.
+But when the framework-specific functions do not cover all superset functionality, Ivy also allows for a mixed-compositional hybrid approach.
+
+Consider the example of :func:`interpolate`,
+Most frameworks contain some kind of interpolation function, usually limited to 2D and/or 3D, but :func:`ivy.interpolate` should be much more general, including interpolations across a larger number of dimensions.
+On top of this, different framework-specific functions support different sets of modes for interpolation.
+for example, if we look at the framework-specific functions available that serve the purpose of interpolation
+1. :func:`torch.nn.functional.interpolate` supports larger number of dimensions in the input but doesn't support the :code:`gaussian` or :code:`mitchellcubic` modes which are supported by :func:`tf.image.resize`.
+2. :func:`tf.image.resize` supports the :code:`gaussian` or :code:`mitchellcubic` modes but doesn't support some other modes in :func:`torch.nn.functional.interpolate` and it also doesn't support larger than a 4-dimensional input.
+3. :func:`jax.image.resize` also has missing modes and doesn't support larger number of dimensions.
+4. :code:`numpy` doesn't have an equivalent function for interpolation (:func:`numpy.interp` is very different from the functionality required).
+So the ideal superset implementation for :func:`ivy.interpolate` would be supporting the union of all modes supported by different implementations and support a larger number of dimensions in the input.
+
+But there are a few considerations to be made,
+1. Implementing all the modes for all the backend-specific implementations would be tedious and repetitive as some modes may not be supported by more than one framework.
+2. We would need a completely compositional implementation for the :code:`numpy` backend which doesn't have an equivalent framework-specific function.
+2. But also having a single compositional implementation for all backends would be considerably inefficient as compared to the framework-specific functions with overlapping functionality.
+As a workaround, we can simply make use of the backend-specific implementations for a certain number of dimensions and modes for each backend, and then have a general compositional implementations which covers all the remaining cases.
+This will make sure that we don't introduce any inefficiencies and also avoid re-implementation for all the backends.
+
+Ivy allows this using the `handle_mixed_function`_ wrapper on the backend-specific implementation. So the :code:`torch` backend implementation of :func:`interpolate` would look like the following,
+
+.. code-block:: python
+
+    @handle_mixed_function(
+        lambda *args, mode="linear", **kwargs: mode
+        not in [
+            "tf_area",
+            "bicubic_tensorflow",
+            "mitchellcubic",
+            "lanczos3",
+            "lanczos5",
+            "gaussian",
+        ]
+    )
+    def interpolate(
+        x: torch.Tensor,
+        size: Union[Sequence[int], int],
+        /,
+        *,
+        mode: Literal[
+            "linear",
+            "bilinear",
+            "trilinear",
+            "nearest",
+            "area",
+            "nearest_exact",
+            "tf_area",
+            "bicubic",
+            "mitchellcubic",
+            "lanczos3",
+            "lanczos5",
+            "gaussian",
+        ] = "linear",
+        scale_factor: Optional[Union[Sequence[int], int]] = None,
+        recompute_scale_factor: Optional[bool] = None,
+        align_corners: Optional[bool] = None,
+        antialias: bool = False,
+        out: Optional[torch.Tensor] = None,
+    ):
+        return torch.nn.functional.interpolate(
+            x,
+            size=size,
+            mode=mode,
+            align_corners=align_corners,
+            antialias=antialias,
+            scale_factor=scale_factor,
+            recompute_scale_factor=recompute_scale_factor,
+        )
+
+The :code:`@handle_mixed_function` accepts a function as an input that receives the arguments and keyword arguments passed to the backend-specific implementation.
+The input function is expected to be a boolean function where we'd use the backend-specific implementation if :code:`True` and the compositional implementation if :code:`False`.
+This provides the flexibility to add any custom logic based on the use-case for maximal use of framework-specific implementations while achieving superset generalization.
 
 More Examples
 -------------
