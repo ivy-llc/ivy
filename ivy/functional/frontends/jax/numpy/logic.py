@@ -155,17 +155,14 @@ def isfinite(x, /):
 
 @to_ivy_arrays_and_back
 def isin(element, test_elements, assume_unique=False, invert=False):
-    element_shape = ivy.shape(element)
-    test_elements_shape = ivy.shape(test_elements)
     element = ivy.reshape(element, (-1,))
     test_elements = ivy.reshape(test_elements, (-1,))
     indices = ivy.indices_where(ivy.equal(test_elements, element))
     if assume_unique:
         indices = ivy.unique(indices)
     if invert:
-        indices = ivy.indices_where(ivy.logical_not(ivy.in_range(ivy.size(test_elements), indices)))
-    indices = ivy.reshape(indices, element_shape[:-1])
-    return ivy.cast(indices, 'bool')
+        indices = ivy.logical_not(ivy.in_range(ivy.size(test_elements), indices))
+    return ivy.reshape(ivy.cast(ivy.in_range(ivy.size(element), indices), 'bool'), ivy.shape(element))
 
 
 @to_ivy_arrays_and_back
