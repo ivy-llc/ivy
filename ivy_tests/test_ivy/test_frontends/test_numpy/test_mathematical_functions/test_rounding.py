@@ -76,7 +76,7 @@ def test_numpy_fix(
     )
 
 
-#floor
+# floor
 @handle_frontend_test(
     fn_tree="numpy.floor",
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
@@ -88,9 +88,11 @@ def test_numpy_fix(
         get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
-    number_positional_args=1,
+    number_positional_args = np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="floor"
+    ),
 )
-def test_ivy_floor(
+def test_numpy_floor(
     dtypes_values_casting,
     where,
     frontend,
