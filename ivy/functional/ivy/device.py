@@ -222,8 +222,8 @@ def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int
     return len(ivy.get_all_ivy_arrays_on_dev(device))
 
 
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 def print_all_ivy_arrays_on_dev(
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -266,8 +266,8 @@ def print_all_ivy_arrays_on_dev(
 # Retrieval
 
 
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 @to_native_arrays_and_back
 def dev(
     x: Union[ivy.Array, ivy.NativeArray], /, *, as_native: bool = False
@@ -814,9 +814,9 @@ def unset_default_device() -> None:
 
 
 @to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
 @handle_array_like_without_promotion
 def to_device(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -1130,8 +1130,8 @@ def _get_devices(fn, complement=True):
     return tuple(supported)
 
 
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 def function_supported_devices(fn: Callable, recurse: bool = True) -> Tuple:
     """Returns the supported devices of the current backend's function.
 
@@ -1168,8 +1168,8 @@ def function_supported_devices(fn: Callable, recurse: bool = True) -> Tuple:
     return tuple(supported_devices)
 
 
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 def function_unsupported_devices(fn: Callable, recurse: bool = True) -> Tuple:
     """Returns the unsupported devices of the current backend's function.
 

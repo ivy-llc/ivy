@@ -20,10 +20,10 @@ from ivy.func_wrapper import (
 
 
 @to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 @handle_array_like_without_promotion
+@handle_out_argument
 @handle_array_function
 def argmax(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -124,10 +124,10 @@ def argmax(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 @handle_array_like_without_promotion
+@handle_out_argument
 @handle_array_function
 def argmin(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -229,8 +229,8 @@ def argmin(
 
 
 @to_native_arrays_and_back
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 @handle_array_like_without_promotion
 @handle_array_function
 def nonzero(
@@ -366,10 +366,10 @@ def nonzero(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 @handle_array_like_without_promotion
+@handle_out_argument
 @handle_array_function
 def where(
     condition: Union[ivy.Array, ivy.NativeArray],
@@ -456,10 +456,10 @@ def where(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 @handle_array_like_without_promotion
+@handle_out_argument
 @handle_array_function
 def argwhere(
     x: Union[ivy.Array, ivy.NativeArray],

@@ -18,8 +18,8 @@ from ivy.utils.exceptions import handle_exceptions
 
 
 @to_native_arrays_and_back
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 @handle_array_like_without_promotion
 @handle_array_function
 def unique_all(
@@ -138,8 +138,8 @@ def unique_all(
 
 
 @to_native_arrays_and_back
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 @handle_array_like_without_promotion
 @handle_array_function
 def unique_inverse(
@@ -239,10 +239,10 @@ def unique_inverse(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 @handle_array_like_without_promotion
+@handle_out_argument
 @handle_array_function
 def unique_values(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -325,8 +325,8 @@ def unique_values(
 
 
 @to_native_arrays_and_back
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 @handle_array_like_without_promotion
 @handle_array_function
 def unique_counts(

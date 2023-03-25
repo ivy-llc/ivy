@@ -27,8 +27,8 @@ def _reduce_loss(red, loss, axis, out):
 # ------#
 
 
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 @handle_array_like_without_promotion
 @handle_array_function
 def cross_entropy(
@@ -82,8 +82,8 @@ def cross_entropy(
     return _reduce_loss(reduction, log_pred * true, axis, out)
 
 
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 @handle_array_like_without_promotion
 @handle_array_function
 def binary_cross_entropy(
@@ -189,8 +189,8 @@ def binary_cross_entropy(
     )
 
 
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 @handle_array_like_without_promotion
 @handle_array_function
 def sparse_cross_entropy(

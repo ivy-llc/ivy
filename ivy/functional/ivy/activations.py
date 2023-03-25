@@ -95,12 +95,12 @@ ACTIVATION_FUNCTIONS = [
 ]
 
 
-@integer_arrays_to_float
 @to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 @handle_array_like_without_promotion
+@handle_out_argument
+@integer_arrays_to_float
 @handle_array_function
 def gelu(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -205,10 +205,10 @@ def get(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 @handle_array_like_without_promotion
+@handle_out_argument
 @handle_array_function
 def leaky_relu(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -270,10 +270,10 @@ def leaky_relu(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 @handle_array_like_without_promotion
+@handle_out_argument
 @handle_array_function
 def log_softmax(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -341,10 +341,10 @@ def log_softmax(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 @handle_array_like_without_promotion
+@handle_out_argument
 @handle_array_function
 def relu(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
@@ -393,12 +393,12 @@ def relu(
     return current_backend(x).relu(x, out=out)
 
 
-@integer_arrays_to_float
 @to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 @handle_array_like_without_promotion
+@handle_out_argument
+@integer_arrays_to_float
 @handle_array_function
 def sigmoid(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
@@ -444,10 +444,10 @@ def sigmoid(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 @handle_array_like_without_promotion
+@handle_out_argument
 @handle_array_function
 def softmax(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -493,10 +493,10 @@ def softmax(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 @handle_array_like_without_promotion
+@handle_out_argument
 @handle_array_function
 def softplus(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -550,10 +550,10 @@ def softplus(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 @handle_array_like_without_promotion
+@handle_out_argument
 @handle_array_function
 def mish(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None

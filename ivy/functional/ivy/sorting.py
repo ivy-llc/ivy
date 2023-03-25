@@ -18,10 +18,10 @@ from ivy.utils.exceptions import handle_exceptions
 
 
 @to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 @handle_array_like_without_promotion
+@handle_out_argument
 @handle_array_function
 def argsort(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -134,10 +134,10 @@ def argsort(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 @handle_array_like_without_promotion
+@handle_out_argument
 @handle_array_function
 def sort(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -242,10 +242,10 @@ def sort(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 @handle_array_like_without_promotion
+@handle_out_argument
 @handle_array_function
 def searchsorted(
     x: Union[ivy.Array, ivy.NativeArray],
