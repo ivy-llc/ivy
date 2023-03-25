@@ -247,8 +247,10 @@ def _x_and_filters(
     )
     if type == "separable":
         p_filter_shape = (
-            1, 1, filter_shape[-1] * filter_shape[-2],
-            draw(helpers.ints(min_value=1, max_value=3))
+            1,
+            1,
+            filter_shape[-1] * filter_shape[-2],
+            draw(helpers.ints(min_value=1, max_value=3)),
         )
         p_filters = draw(
             helpers.array_values(
@@ -735,7 +737,6 @@ def test_tensorflow_separable_conv2d(
     variance=helpers.array_values(dtype=ivy.float16, shape=(3, 5), min_value=0),
     offset=helpers.array_values(dtype=ivy.float16, shape=(3, 5)),
     scale=helpers.array_values(dtype=ivy.float16, shape=(3, 5)),
-    test_with_out=st.just(False),
 )
 def test_tensorflow_batch_normalization(
     *,

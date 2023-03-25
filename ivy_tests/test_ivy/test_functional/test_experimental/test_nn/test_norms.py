@@ -4,7 +4,10 @@ from hypothesis import strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
+
 # instance_norm
+
+
 @st.composite
 def _instance_and_batch_norm_helper(draw):
     x_dtype, x, shape = draw(
@@ -40,10 +43,11 @@ def _instance_and_batch_norm_helper(draw):
     )
     return x_dtype, x[-1], others[0], others[1], others[2], variance[0]
 
+
 @handle_test(
     fn_tree="functional.ivy.experimental.instance_norm",
     data=_instance_and_batch_norm_helper(),
-    eps=helpers.floats(min_value=0e-5, max_value=0.1),
+    eps=helpers.floats(min_value=1e-5, max_value=0.1),
     momentum=helpers.floats(min_value=0.0, max_value=1.0),
     training=st.booleans(),
 )
@@ -81,14 +85,14 @@ def test_instance_norm(
         momentum=momentum,
     )
 
+
 # batch_norm
 @handle_test(
     fn_tree="functional.ivy.experimental.batch_norm",
     data=_instance_and_batch_norm_helper(),
-    eps=helpers.floats(min_value=0e-5, max_value=0.1),
+    eps=helpers.floats(min_value=1e-5, max_value=0.1),
     momentum=helpers.floats(min_value=0.0, max_value=1.0),
     training=st.booleans(),
-
 )
 def test_batch_norm(
     *,
@@ -103,7 +107,7 @@ def test_batch_norm(
     ground_truth_backend,
 ):
     x_dtype, x, scale, offset, mean, variance = data
-    test_flags.test_gradients=False
+    test_flags.test_gradients = False
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         fw=backend_fw,
