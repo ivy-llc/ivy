@@ -16,21 +16,8 @@ from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_an
 # -------------------#
 
 
-@with_unsupported_dtypes(
-    {
-        "2.4.2 and below": (
-            "int8",
-            "int16",
-            "uint8",
-            "uint16",
-            "bfloat16",
-            "float16",
-            "complex64",
-            "complex128",
-            "bool",
-        )
-    },
-    backend_version,
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def min(
     x: paddle.Tensor,
@@ -40,17 +27,28 @@ def min(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle.min(x, axis=axis, keepdim=keepdims)
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+        paddle.complex64,
+        paddle.complex128,
+        paddle.bool,
+    ]:
+        if paddle.is_complex(x):
+            real = paddle.amin(x.real(), axis=axis, keepdim=keepdims)
+            masked_x = ivy.to_native(ivy.greater_equal(x, paddle.amin(x.real())) * x)
+            imag = paddle.amin(masked_x.imag(), axis=axis, keepdim=keepdims)
+            return real + 1j * imag
+        return paddle.amin(
+            x.cast(ivy.default_float_dtype()), axis=axis, keepdim=keepdims
+        ).cast(x.dtype)
+    return paddle.amin(x, axis=axis, keepdim=keepdims)
 
 
-@with_unsupported_dtypes(
-    {
-        "2.4.2 and below": (
-            "uint16",
-            "bfloat16",
-        )
-    },
-    backend_version,
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def max(
     x: paddle.Tensor,
@@ -60,14 +58,24 @@ def max(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16, paddle.complex64, paddle.complex128, paddle.bool]:
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+        paddle.complex64,
+        paddle.complex128,
+        paddle.bool,
+    ]:
         if paddle.is_complex(x):
-            real = paddle.max(x.real(), axis=axis, keepdim=keepdims)
-            masked_x = ivy.to_native(ivy.greater_equal(x,paddle.max(x.real())) * x)
-            imag = paddle.max(masked_x.imag(), axis=axis, keepdim=keepdims)
-            return real+ 1j*imag
-        return paddle.max(x.cast(ivy.default_float_dtype()), axis=axis, keepdim=keepdims).cast(x.dtype)
-    return paddle.max(x, axis=axis, keepdim=keepdims)
+            real = paddle.amax(x.real(), axis=axis, keepdim=keepdims)
+            masked_x = ivy.to_native(ivy.greater_equal(x, paddle.amax(x.real())) * x)
+            imag = paddle.amax(masked_x.imag(), axis=axis, keepdim=keepdims)
+            return real + 1j * imag
+        return paddle.amax(
+            x.cast(ivy.default_float_dtype()), axis=axis, keepdim=keepdims
+        ).cast(x.dtype)
+    return paddle.amax(x, axis=axis, keepdim=keepdims)
 
 
 @with_unsupported_device_and_dtypes(
@@ -104,21 +112,8 @@ def mean(
     return ret if keepdims else ret.squeeze()
 
 
-@with_unsupported_dtypes(
-    {
-        "2.4.2 and below": (
-            "int8",
-            "int16",
-            "uint8",
-            "uint16",
-            "bfloat16",
-            "float16",
-            "complex64",
-            "complex128",
-            "bool",
-        )
-    },
-    backend_version,
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def prod(
     x: paddle.Tensor,
@@ -129,26 +124,29 @@ def prod(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    raise IvyNotImplementedException()
+    # TODO:prod causes segmentation fault
     return paddle.prod(x, axis=axis, keepdim=keepdims, dtype=dtype)
 
 
-@with_unsupported_dtypes(
-    {
-        "2.4.2 and below": (
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-            "uint8",
-            "uint16",
-            "bfloat16",
-            "float16",
-            "complex64",
-            "complex128",
-            "bool",
-        )
-    },
-    backend_version,
+def _std(x, axis, correction, keepdim):
+    with ivy.ArrayMode(False):
+        u = mean(x, axis=axis, keepdims=True)
+        out = sum(ivy.pow(ivy.subtract(x, u), 2), axis=axis, keepdims=keepdim)
+        num_elm_in = paddle.prod(paddle.to_tensor(x.shape)).item()
+        num_elm_out = paddle.prod(paddle.to_tensor(out.shape)).item()
+        n = num_elm_out / num_elm_in
+        out = ivy.sqrt(ivy.multiply(out, n))
+        if correction:
+            n = ivy.sqrt(
+                ivy.divide(num_elm_in, (num_elm_in - correction * num_elm_out))
+            )
+            out = ivy.multiply(out, n)
+        return out
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def std(
     x: paddle.Tensor,
@@ -159,44 +157,11 @@ def std(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if axis is None:
-        axis = list(range(len(x.shape)))
-    if axis == ():
-        return x
-    axis = (axis,) if isinstance(axis, int) else tuple(axis)
-    if correction == 0:
-        return paddle.std(x, axis=axis, unbiased=False, keepdim=keepdims)
-    elif correction == 1:
-        return paddle.std(x, axis=axis, unbiased=True, keepdim=keepdims)
-    size = 1
-    for a in axis:
-        size *= x.shape[a]
-    if size - correction <= 0:
-        ret = paddle.std(x, axis=axis, unbiased=False, keepdim=keepdims)
-        ret = ivy.full(ret.shape, float("nan"), dtype=ret.dtype)
-        return ret
-    ret = paddle.mul(
-        paddle.std(x, axis=axis, unbiased=False, keepdim=keepdims),
-        (size / (size - correction)) ** 0.5,
-    )
-    return ret
+    return _std(x, axis, correction, keepdims).cast(x.dtype)
 
 
-@with_unsupported_dtypes(
-    {
-        "2.4.2 and below": (
-            "int8",
-            "int16",
-            "uint8",
-            "uint16",
-            "bfloat16",
-            "float16",
-            "complex64",
-            "complex128",
-            "bool",
-        )
-    },
-    backend_version,
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def sum(
     x: paddle.Tensor,
@@ -207,26 +172,16 @@ def sum(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if x.dtype in [paddle.int8, paddle.uint8]:
+        dtype = x.dtype if dtype is None else dtype
+        return paddle.sum(
+            x.cast(ivy.default_float_dtype()), axis=axis, dtype=dtype, keepdim=keepdims
+        ).cast(dtype)
     return paddle.sum(x, axis=axis, dtype=dtype, keepdim=keepdims)
 
 
-@with_unsupported_dtypes(
-    {
-        "2.4.2 and below": (
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-            "uint8",
-            "uint16",
-            "bfloat16",
-            "float16",
-            "complex64",
-            "complex128",
-            "bool",
-        )
-    },
-    backend_version,
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def var(
     x: paddle.Tensor,
@@ -237,45 +192,15 @@ def var(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if axis is None:
-        axis = list(range(len(x.shape)))
-    if axis == ():
-        return x
-    axis = (axis,) if isinstance(axis, int) else tuple(axis)
-    if correction == 0:
-        return paddle.var(x, axis=axis, unbiased=False, keepdim=keepdims)
-    elif correction == 1:
-        return paddle.var(x, axis=axis, unbiased=True, keepdim=keepdims)
-    size = 1
-    for a in axis:
-        size *= x.shape[a]
-    if size - correction <= 0:
-        ret = paddle.var(x, axis=axis, unbiased=False, keepdim=keepdims)
-        ret = ivy.full(ret.shape, float("nan"), dtype=ret.dtype)
-        return ret
-    else:
-        ret = paddle.mul(
-            paddle.var(x, axis=axis, unbiased=False, keepdim=keepdims),
-            (size / (size - correction)) ** 0.5,
-        )
+    with ivy.ArrayMode(False):
+        ret = ivy.pow(_std(x, axis, correction, keepdims), 2).cast(x.dtype)
     return ret
 
 
 # Extra #
 # ----- #
-@with_unsupported_dtypes(
-    {
-        "2.4.2 and below": (
-            "int8",
-            "int16",
-            "uint8",
-            "uint16",
-            "bfloat16",
-            "float16",
-            "bool",
-        )
-    },
-    backend_version,
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def cumprod(
     x: paddle.Tensor,
@@ -290,21 +215,8 @@ def cumprod(
     raise IvyNotImplementedException()
 
 
-@with_unsupported_dtypes(
-    {
-        "2.4.2 and below": (
-            "int8",
-            "int16",
-            "uint8",
-            "uint16",
-            "bfloat16",
-            "float16",
-            "complex64",
-            "complex128",
-            "bool",
-        )
-    },
-    backend_version,
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def cumsum(
     x: paddle.Tensor,
