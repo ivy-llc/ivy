@@ -59,8 +59,7 @@ The Docker image
 
 The Docker image `unifyai/doc-builder <https://hub.docker.com/r/unifyai/doc-builder>`_
 works as a wrapper around the ``make_docs_without_docker.sh`` script. It runs the script
- on the ``/project`` directory, located in the container `as shown here 
-<https://github.com/unifyai/doc-builder/blob/master/Dockerfile#L20>`_:
+ on the ``/project`` directory, located in the container `as shown here <https://github.com/unifyai/doc-builder/blob/master/Dockerfile#L20>`_:
 
 .. code-block:: bash
 
@@ -174,7 +173,7 @@ This is a part of ``partial_conf.py``:
 Here we are overriding the ``ivy_toctree_caption_map`` configuration, which is used to 
 customize the title of the table of contents for each module. 
 ``ivy_toctree_caption_map`` is one of the configuration options we have in our
-:ref:```custom_autosummary``` extension, which will be covered extensively in 
+``custom_autosummary`` extension, which will be covered extensively in 
 :ref:`Custom Extensions`.
 
 ``prebuild.sh``
