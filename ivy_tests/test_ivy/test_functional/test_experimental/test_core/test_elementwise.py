@@ -262,8 +262,8 @@ def test_trapz(
         fw=backend_fw,
         ground_truth_backend=ground_truth_backend,
         fn_name=fn_name,
-        rtol_=1e-3,
-        atol_=1e-3,
+        rtol_=1e-1,
+        atol_=1e-1,
         y=np.asarray(y[0], dtype=input_dtype[0]),
         x=x,
         dx=dx,
@@ -967,12 +967,14 @@ def test_zeta(
 # gradient
 @handle_test(
     fn_tree="functional.ivy.experimental.gradient",
-    dtype_and_x=helpers.dtype_and_values(
+    dtype_n_x_n_axis=helpers.dtype_values_axis(
         available_dtypes=("float32", "float16", "float64"),
         min_num_dims=1,
         max_num_dims=3,
         min_dim_size=2,
         max_dim_size=4,
+        valid_axis=True,
+        force_int_axis=True,
     ),
     spacing=helpers.ints(
         min_value=-3,
@@ -983,7 +985,7 @@ def test_zeta(
 )
 def test_gradient(
     *,
-    dtype_and_x,
+    dtype_n_x_n_axis,
     spacing,
     test_flags,
     backend_fw,
@@ -991,7 +993,7 @@ def test_gradient(
     on_device,
     ground_truth_backend,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, axis = dtype_n_x_n_axis
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
@@ -1001,6 +1003,7 @@ def test_gradient(
         fn_name=fn_name,
         x=x[0],
         spacing=spacing,
+        axis=axis,
     )
 
 

@@ -280,6 +280,9 @@ class Tensor:
         self._ivy_array = self.abs().ivy_array
         return self
 
+    def logical_and(self,other):
+        return torch_frontend.logical_and(self._ivy_array,other)
+
     def bitwise_not(self, *, out=None):
         return torch_frontend.bitwise_not(self._ivy_array)
 
@@ -651,6 +654,9 @@ class Tensor:
     def flip(self, dims):
         return torch_frontend.flip(self._ivy_array, dims)
 
+    def fliplr(self):
+        return torch_frontend.fliplr(self._ivy_array)
+
     def sort(self, dim=-1, descending=False):
         return torch_frontend.sort(self._ivy_array, dim=dim, descending=descending)
 
@@ -869,3 +875,6 @@ class Tensor:
     # Method aliases
     absolute, absolute_ = abs, abs_
     ndimension = dim
+
+    def bitwise_xor(self, other, *, out=None):
+        return torch_frontend.bitwise_xor(self._ivy_array, other)

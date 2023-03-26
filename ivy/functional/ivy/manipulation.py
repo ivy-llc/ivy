@@ -1009,7 +1009,7 @@ def constant_pad(
     }
 
     """
-    return current_backend(x).constant_pad(x, pad_width, value, out=out)
+    return current_backend(x).constant_pad(x, pad_width=pad_width, value=value, out=out)
 
 
 @to_native_arrays_and_back
