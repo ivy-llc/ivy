@@ -1,0 +1,261 @@
+# local
+import ivy
+from ivy.functional.frontends.jax.func_wrapper import (
+    to_ivy_arrays_and_back,
+    handle_jax_dtype,
+)
+from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
+
+
+@to_ivy_arrays_and_back
+def clip(a, a_min=None, a_max=None, out=None):
+    ivy.utils.assertions.check_all_or_any_fn(
+        a_min,
+        a_max,
+        fn=ivy.exists,
+        type="any",
+        limit=[1, 2],
+        message="at most one of a_min or a_max can be None",
+    )
+    a = ivy.array(a)
+    if a_min is None:
+        a, a_max = promote_types_of_jax_inputs(a, a_max)
+        return ivy.minimum(a, a_max, out=out)
+    if a_max is None:
+        a, a_min = promote_types_of_jax_inputs(a, a_min)
+        return ivy.maximum(a, a_min, out=out)
+    return ivy.clip(a, a_min, a_max, out=out)
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+def concatenate(arrays, axis=0, dtype=None):
+    ret = ivy.concat(arrays, axis=axis)
+    if dtype:
+        ret = ivy.array(ret, dtype=dtype)
+    return ret
+
+
+@to_ivy_arrays_and_back
+def reshape(a, newshape, order="C"):
+    return ivy.reshape(a, shape=newshape, order=order)
+
+
+@to_ivy_arrays_and_back
+<<<<<<< HEAD
+=======
+def resize(a, new_shape):
+    a = ivy.array(a)
+    resized_a = ivy.reshape(a, new_shape)
+    return resized_a
+
+
+@to_ivy_arrays_and_back
+>>>>>>> 389dca45a1e0481907cf9d0cc56aecae3e740c69
+def moveaxis(a, source, destination):
+    return ivy.moveaxis(a, source, destination)
+
+
+@to_ivy_arrays_and_back
+def flipud(m):
+    return ivy.flipud(m, out=None)
+
+
+@to_ivy_arrays_and_back
+def transpose(a, axes=None):
+    if not axes:
+        axes = list(range(len(a.shape)))[::-1]
+    if type(axes) is int:
+        axes = [axes]
+    if (len(a.shape) == 0 and not axes) or (len(a.shape) == 1 and axes[0] == 0):
+        return a
+    return ivy.permute_dims(a, axes, out=None)
+
+
+@to_ivy_arrays_and_back
+def flip(m, axis=None):
+    return ivy.flip(m, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def fliplr(m):
+    return ivy.fliplr(m)
+
+
+@to_ivy_arrays_and_back
+def expand_dims(a, axis):
+    return ivy.expand_dims(a, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def stack(arrays, axis=0, out=None, dtype=None):
+    if dtype:
+        return ivy.astype(
+            ivy.stack(arrays, axis=axis, out=out), ivy.as_ivy_dtype(dtype)
+        )
+    return ivy.stack(arrays, axis=axis, out=out)
+
+
+@to_ivy_arrays_and_back
+def take(
+    a,
+    indices,
+    axis=None,
+    out=None,
+    mode=None,
+    unique_indices=False,
+    indices_are_sorted=False,
+    fill_value=None,
+):
+    return ivy.take_along_axis(a, indices, axis, out=out)
+
+
+@to_ivy_arrays_and_back
+<<<<<<< HEAD
+=======
+def broadcast_arrays(*args):
+    return ivy.broadcast_arrays(*args)
+
+
+@to_ivy_arrays_and_back
+def broadcast_shapes(*shapes):
+    return ivy.broadcast_shapes(*shapes)
+
+
+@to_ivy_arrays_and_back
+>>>>>>> 389dca45a1e0481907cf9d0cc56aecae3e740c69
+def broadcast_to(arr, shape):
+    return ivy.broadcast_to(arr, shape)
+
+
+@to_ivy_arrays_and_back
+def append(arr, values, axis=None):
+    if axis is None:
+        return ivy.concat((ivy.flatten(arr), ivy.flatten(values)), axis=0)
+    else:
+        return ivy.concat((arr, values), axis=axis)
+
+
+@to_ivy_arrays_and_back
+def swapaxes(a, axis1, axis2):
+    return ivy.swapaxes(a, axis1, axis2)
+
+
+@to_ivy_arrays_and_back
+def atleast_3d(*arys):
+    return ivy.atleast_3d(*arys)
+
+
+@to_ivy_arrays_and_back
+def atleast_1d(*arys):
+    return ivy.atleast_1d(*arys)
+
+
+@to_ivy_arrays_and_back
+def atleast_2d(*arys):
+    return ivy.atleast_2d(*arys)
+
+
+@to_ivy_arrays_and_back
+<<<<<<< HEAD
+=======
+def tril(m, k=0):
+    return ivy.tril(m, k=k)
+
+
+@to_ivy_arrays_and_back
+def block(arr, block_size):
+    if isinstance(arr, ivy.Array):
+        arr_blocks = ivy.reshape(
+            arr, ivy.concat([ivy.shape(arr)[:-1], [-1, block_size]], 0)
+        )
+        return arr_blocks
+
+
+@to_ivy_arrays_and_back
+>>>>>>> 389dca45a1e0481907cf9d0cc56aecae3e740c69
+def squeeze(a, axis=None):
+    return ivy.squeeze(a, axis)
+
+
+@to_ivy_arrays_and_back
+<<<<<<< HEAD
+=======
+def rot90(m, k=1, axes=(0, 1)):
+    return ivy.rot90(m, k=k, axes=axes)
+
+
+@to_ivy_arrays_and_back
+>>>>>>> 389dca45a1e0481907cf9d0cc56aecae3e740c69
+def split(ary, indices_or_sections, axis=0):
+    if isinstance(indices_or_sections, (list, tuple)):
+        indices_or_sections = (
+            ivy.diff(indices_or_sections, prepend=[0], append=[ary.shape[axis]])
+            .astype(ivy.int8)
+            .to_list()
+        )
+    return ivy.split(
+        ary, num_or_size_splits=indices_or_sections, axis=axis, with_remainder=False
+    )
+
+
+@to_ivy_arrays_and_back
+def array_split(ary, indices_or_sections, axis=0):
+    if isinstance(indices_or_sections, (list, tuple)):
+        indices_or_sections = (
+            ivy.diff(indices_or_sections, prepend=[0], append=[ary.shape[axis]])
+            .astype(ivy.int8)
+            .to_list()
+        )
+    return ivy.split(
+        ary, num_or_size_splits=indices_or_sections, axis=axis, with_remainder=True
+    )
+
+
+@to_ivy_arrays_and_back
+<<<<<<< HEAD
+=======
+def tile(A, reps):
+    return ivy.tile(A, reps)
+
+
+@to_ivy_arrays_and_back
+>>>>>>> 389dca45a1e0481907cf9d0cc56aecae3e740c69
+def dsplit(ary, indices_or_sections):
+    return ivy.dsplit(ary, indices_or_sections)
+
+
+@to_ivy_arrays_and_back
+<<<<<<< HEAD
+=======
+def dstack(tup, dtype=None):
+    return ivy.dstack(tup)
+
+
+@to_ivy_arrays_and_back
+>>>>>>> 389dca45a1e0481907cf9d0cc56aecae3e740c69
+def vsplit(ary, indices_or_sections):
+    return ivy.vsplit(ary, indices_or_sections)
+
+
+@to_ivy_arrays_and_back
+def hsplit(ary, indices_or_sections):
+    return ivy.hsplit(ary, indices_or_sections)
+<<<<<<< HEAD
+=======
+
+
+@to_ivy_arrays_and_back
+def roll(a, shift, axis=None):
+    return ivy.roll(a, shift, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def row_stack(tup):
+    if len(ivy.shape(tup[0])) == 1:
+        xs = []
+        for t in tup:
+            xs += [ivy.reshape(t, (1, ivy.shape(t)[0]))]
+        return ivy.concat(xs, axis=0)
+    return ivy.concat(tup, axis=0)
+>>>>>>> 389dca45a1e0481907cf9d0cc56aecae3e740c69
