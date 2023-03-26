@@ -14,6 +14,7 @@ from ivy.utils.backend import ast_helpers
 
 # local
 from ivy.func_wrapper import _wrap_function
+from ivy.utils.backend.sub_backend_handler import _clear_current_sub_backends
 
 backend_stack = []
 compiled_backends = {}
@@ -433,6 +434,8 @@ def set_backend(backend: str, dynamic: bool = False):
     global ivy_original_dict
     if not backend_stack:
         ivy_original_dict = ivy.__dict__.copy()
+
+    _clear_current_sub_backends()
     if isinstance(backend, str):
         temp_stack = list()
         while backend_stack:
