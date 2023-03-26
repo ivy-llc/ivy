@@ -3172,7 +3172,11 @@ def gather(
 
     """
     return current_backend(params, indices).gather(
-        params, indices, axis=axis, batch_dims=batch_dims, out=out
+        params,
+        indices,
+        axis=axis,
+        batch_dims=batch_dims,
+        out=out
     )
 
 
@@ -3199,6 +3203,8 @@ def gather_nd(
         The array from which to gather values.
     indices
         Index array.
+    batch_dims
+        optional int, lets you gather different items from each element of a batch.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
