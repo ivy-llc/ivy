@@ -570,6 +570,7 @@ def test_numpy_modf(
         input_dtype = input_dtypes,
         test_flags = test_flags,
     )
+    out = [ivy.array(np.zeros_like(x[0])), ivy.array(np.zeros_like(x[0]))] 
     np_frontend_helpers.test_frontend_function(
         input_dtypes = input_dtypes,
         frontend = frontend,
@@ -578,7 +579,7 @@ def test_numpy_modf(
         on_device = on_device,
         x1=x[0],
         x2=x[1],
-        out = [ivy.zeros_like(x[0]), ivy.zeros_like(x[0])],  
+        out = out, 
         where = where,
         casting = casting,
         order = "K",
