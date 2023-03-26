@@ -2586,7 +2586,7 @@ def test_jax_numpy_ldexp(
         max_value=3,
     ),
     test_with_out=st.just(False),
-    test_gradients=st.just(False),
+    #test_gradients=st.just(False),
 )
 def test_jax_numpy_gradient(
     *,
