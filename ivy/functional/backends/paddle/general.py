@@ -197,7 +197,7 @@ def inplace_update(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def inplace_variables_supported():
-    raise IvyNotImplementedException()
+    return False
 
 
 def multiprocessing(context=None):
