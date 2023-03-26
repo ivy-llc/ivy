@@ -154,7 +154,13 @@ def inplace_decrement(
     x: Union[ivy.Array, paddle.Tensor],
     val: Union[ivy.Array, paddle.Tensor],
 ) -> ivy.Array:
-    raise IvyNotImplementedException()
+    (x_native, val_native), _ = ivy.args_to_native(x, val)
+    x_native -= val_native
+    if ivy.is_ivy_array(x):
+        x.data = x_native
+    else:
+        x = ivy.Array(x_native)
+    return x
 
 
 @with_unsupported_device_and_dtypes(
@@ -164,8 +170,13 @@ def inplace_increment(
     x: Union[ivy.Array, paddle.Tensor],
     val: Union[ivy.Array, paddle.Tensor],
 ) -> ivy.Array:
-    raise IvyNotImplementedException()
-
+    (x_native, val_native), _ = ivy.args_to_native(x, val)
+    x_native += val_native
+    if ivy.is_ivy_array(x):
+        x.data = x_native
+    else:
+        x = ivy.Array(x_native)
+    return x
 
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
