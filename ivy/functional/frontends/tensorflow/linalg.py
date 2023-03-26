@@ -35,6 +35,11 @@ def eigvalsh(tensor, name=None):
     return ivy.eigvalsh(tensor)
 
 
+@to_ivy_arrays_and_back
+def eigvals(tensor, name=None):
+    return ivy.eigvals(tensor)
+
+
 @with_supported_dtypes(
     {
         "2.9.0 and below": (

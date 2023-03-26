@@ -100,6 +100,30 @@ def test_tensorflow_eigvalsh(
 
 
 @handle_frontend_test(
+    fn_tree="tensorflow.linalg.eigvals",
+    dtype_and_input=_get_dtype_and_matrix(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_eigvals(
+    *,
+    dtype_and_input,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensor=x[0],
+    )
+
+
+@handle_frontend_test(
     fn_tree="tensorflow.linalg.matrix_rank",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
