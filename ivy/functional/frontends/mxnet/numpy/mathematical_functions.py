@@ -18,3 +18,7 @@ def add(x1, x2, out=None):
 @to_ivy_arrays_and_back
 def sin(x, out=None, **kwargs):
     return ivy.sin(x, out=out, **kwargs)
+@handle_mxnet_out
+@to_ivy_arrays_and_back
+def imag(x1):
+    return ivy.imag(x1)

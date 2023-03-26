@@ -775,3 +775,6 @@ def isreal(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 
 isreal.support_native_out = False
+@_scalar_output_to_0d_array
+def imag(x: np.ndarray) -> np.ndarray:
+    return np.imag(x)
