@@ -515,5 +515,5 @@ def greater(x, y, name=None):
 
 
 @to_ivy_arrays_and_back
-def sinh(x, name="sinh"):
+def sinh(x, name=None):
     return ivy.sinh(x)
