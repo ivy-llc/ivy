@@ -24,3 +24,4 @@ pandas
 pyspark
 paddlepaddle
 mxnet
+autoflake # for backend generation

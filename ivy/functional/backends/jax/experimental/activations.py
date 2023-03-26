@@ -74,3 +74,7 @@ def batch_norm(
     ).astype(x.dtype)
 
     return jnp.transpose(ret, (0, ndims - 1, *range(1, ndims - 1)))
+
+
+def logsigmoid(input: JaxArray) -> JaxArray:
+    return jax.nn.log_sigmoid(input)

@@ -29,7 +29,6 @@ else:
 use = ivy.utils.backend.ContextManager(_module_in_memory)
 
 NativeArray = Tensor
-NativeVariable = Tensor
 NativeDevice = str
 NativeDtype = DType
 NativeShape = TensorShape
