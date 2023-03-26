@@ -132,9 +132,7 @@ def Concat(*, concat_dim, values, name="Concat"):
     return ivy.concat(values, axis=concat_dim)
 
 
-@to_ivy_arrays_and_back
-def Cos(*, x, name="Cos"):
-    return ivy.cos(x)
+Cos = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.cos))
 
 
 @to_ivy_arrays_and_back
@@ -577,6 +575,36 @@ def EuclideanNorm(*, input, axis, keep_dims=False, name="EuclideanNorm"):
 
 
 ConcatV2 = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.concat))
+
+
+@to_ivy_arrays_and_back
+def Conv2D(
+    *,
+    input,
+    output,
+    strides,
+    padding,
+    data_format="NHWC",
+    dilations=[1, 1, 1, 1],
+    name="Conv2D",
+):
+    if data_format == "NDHWC":
+        strides = [1] + strides[1:-1] + [1]
+        dilations = [1] + dilations[1:-1] + [1]
+    elif data_format == "NCDHW":
+        strides = [1, 1] + strides[2:] + [1]
+        dilations = [1, 1] + dilations[2:] + [1]
+    filter = ivy.variable(ivy.random_normal(shape=output + input, stddev=0.1))
+    return ivy.conv2d(
+        input,
+        output,
+        filter,
+        strides,
+        padding,
+        data_format=data_format,
+        dilations=dilations,
+        name=name,
+    )
 
 
 @to_ivy_arrays_and_back
