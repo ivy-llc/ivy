@@ -296,7 +296,8 @@ def _mod(
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
 def _modf(
-    x,
+    x1,
+    x2,
     /,
     out=None,
     *,
@@ -306,20 +307,12 @@ def _modf(
     dtype=None,
     subok=True,
 ):
-    x = ivy.asarray(x)
-    if out is not None:
-        ret = ivy.modf(x, out=out)
-        ret1, ret2 = None, None
-    else:
-        ret1, ret2 = ivy.modf(x)
-        ret = (ret1, ret2)
+    if dtype:
+        x1 = ivy.astype(ivy.array(x1), ivy.as_ivy_dtype(dtype))
+        x2 = ivy.astype(ivy.array(x2), ivy.as_ivy_dtype(dtype))
+    ret = ivy.remainder(x1, x2, out=out)
     if ivy.is_array(where):
-        ret1 = ivy.where(
-            where, ret1, ivy.default(out, ivy.zeros_like(ret1)), out=out
-        )
-        ret2 = ivy.where(
-            where, ret2, ivy.default(out, ivy.zeros_like(ret2)), out=out
-        )
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
 
