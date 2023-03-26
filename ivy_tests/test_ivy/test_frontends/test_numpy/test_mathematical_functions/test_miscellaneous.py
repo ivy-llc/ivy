@@ -185,6 +185,7 @@ def test_numpy_sqrt(
         subok=True,
     )
 
+
 # reciprocal
 @handle_frontend_test(
     fn_tree="numpy.reciprocal",
