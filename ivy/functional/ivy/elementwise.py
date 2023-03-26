@@ -3277,6 +3277,47 @@ def logaddexp(
 
     """
     return ivy.current_backend(x1, x2).logaddexp(x1, x2, out=out)
+    
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_function
+def logaddexp2(
+        x1: Union[ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Calculates the Logarithm of the sum of the exponentiations ``log2(2**x1 + 2**x2)`` 
+    for each element ``x1_i`` of the input array ``x1`` with the respective element 
+    ``x2_i`` of the input array ``x2``.
+    **Special cases**
+    For floating-point operands,
+    - If either ``x1_i`` or ``x2_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x1_i`` is ``+infinity`` and ``x2_i`` is not ``NaN``, the result is
+      ``+infinity``.
+    - If ``x1_i`` is not ``NaN`` and ``x2_i`` is ``+infinity``, the result is
+      ``+infinity``.
+    Parameters
+    ----------
+    x1
+        first input array. Should have a floating-point data type.
+    x2
+        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`).
+        Should have a floating-point data type.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+    Returns
+    -------
+    ret
+        an array containing the element-wise results. The returned array must have a
+        floating-point data type determined by :ref:`type-promotion`.
+    """
+    return ivy.current_backend(x1, x2).logaddexp2(x1, x2, out=out)
 
 
 # ToDo: compare the examples against special case for zeros.
