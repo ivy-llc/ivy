@@ -1489,7 +1489,8 @@ class _ContainerWithGeneral(ContainerBase):
         >>> x = ivy.Container(a = ivy.array([0., 1., 2.]),
         ...                   b = ivy.array([4., 5., 6.]))
         >>> y = ivy.array([0, 1])
-        >>> print(ivy.Container.static_gather(x, y))
+        >>> z = ivy.Container.static_gather(x, y)
+        >>> print(z)
         {
             a: ivy.array([0., 1.]),
             b: ivy.array([4., 5.])
@@ -1565,7 +1566,8 @@ class _ContainerWithGeneral(ContainerBase):
         ...                   b = ivy.array([4., 5., 6.]))
         >>> y = ivy.Container(a = ivy.array([0, 1]),
         ...                   b = ivy.array([1, 2]))
-        >>> print(x.gather(y))
+        >>> z = x.gather(y)
+        >>> print(z)
         {
             a: ivy.array([0., 1.]),
             b: ivy.array([5., 6.])
@@ -1605,6 +1607,17 @@ class _ContainerWithGeneral(ContainerBase):
             The container to check for nans.
         include_infs
             Whether to include infs and -infs in the check. Default is True.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -1613,7 +1626,7 @@ class _ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.container(a=ivy.array([1, 2]), b=ivy.array([float('nan'), 2]))
+        >>> x = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([float('nan'), 2]))
         >>> y = ivy.Container.static_has_nans(x)
         >>> print(y)
         {
@@ -1649,6 +1662,17 @@ class _ContainerWithGeneral(ContainerBase):
         ----------
         include_infs
             Whether to include infs and -infs in the check. Default is True.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -1656,7 +1680,7 @@ class _ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.container(a=ivy.array([1, 2]), b=ivy.array([float('nan'), 2]))
+        >>> x = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([float('nan'), 2]))
         >>> y = x.has_nans(x)
         >>> print(y)
         {
@@ -2026,8 +2050,12 @@ class _ContainerWithGeneral(ContainerBase):
 
         Parameters
         ----------
+        params
+            The container from which to gather values.
         indices
             Index array.
+        batch_dims
+            optional int, lets you gather different items from each element of a batch.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -2039,6 +2067,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        out
+            optional array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
 
         Returns
         -------
@@ -2093,6 +2124,8 @@ class _ContainerWithGeneral(ContainerBase):
             The container from which to gather values.
         indices
             Index array or container.
+        batch_dims
+            optional int, lets you gather different items from each element of a batch.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -2158,6 +2191,8 @@ class _ContainerWithGeneral(ContainerBase):
 
         Parameters
         ----------
+        x
+            input container.
         pattern
             Reduction pattern.
         reduction
@@ -2176,6 +2211,9 @@ class _ContainerWithGeneral(ContainerBase):
             Default is ``False``.
         axes_lengths
             Any additional specifications for dimensions.
+        out
+            optional array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
 
         Returns
         -------
@@ -2309,6 +2347,8 @@ class _ContainerWithGeneral(ContainerBase):
 
         Parameters
         ----------
+        x
+            input container.
         pattern
             Rearrangement pattern.
         key_chains
