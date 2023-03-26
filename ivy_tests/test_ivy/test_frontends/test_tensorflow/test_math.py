@@ -69,6 +69,7 @@ def test_tensorflow_add(
         y=x[1],
     )
 
+
 # sin
 @handle_frontend_test(
     fn_tree="tensorflow.math.sin",
@@ -1847,10 +1848,10 @@ def test_tensorflow_floormod(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
-        y=x[1], 
+        y=x[1],
     )
 
-    
+
 # greater
 @handle_frontend_test(
     fn_tree="tensorflow.math.greater",
