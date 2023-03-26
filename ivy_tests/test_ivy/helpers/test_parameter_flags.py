@@ -8,7 +8,7 @@ from ivy.functional.ivy.gradients import _variable
 
 @st.composite
 def _gradient_strategy(draw):
-    if test_globals.CURRENT_BACKEND == "numpy":
+    if test_globals.CURRENT_BACKEND().backend == "numpy":
         draw(st.just(False))
     draw(st.booleans())
 
