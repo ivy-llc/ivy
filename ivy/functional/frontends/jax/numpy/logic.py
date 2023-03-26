@@ -205,3 +205,13 @@ def right_shift(x1, x2, /):
 def isrealobj(x: any):
     return not ivy.is_complex_dtype(ivy.dtype(x))
 
+
+@to_ivy_arrays_and_back
+def iscomplexobj(x):
+    if x.ndim == 0:
+        return ivy.is_complex_dtype(ivy.dtype(x))
+    for ele in x:
+        if ivy.is_complex_dtype(ivy.dtype(ele)):
+            return True
+        else:
+            return False
