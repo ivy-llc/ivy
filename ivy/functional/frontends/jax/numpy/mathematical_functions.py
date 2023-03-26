@@ -523,10 +523,11 @@ def around(a, decimals=0, out=None):
 def frexp(x, /):
     return ivy.frexp(x)
 
+
 @to_ivy_arrays_and_back
 def ldexp(x1, x2, /):
     return ivy.ldexp(x1, x2)
-
+  
 #imag
 @to_ivy_arrays_and_back
 def imag(val, /):
