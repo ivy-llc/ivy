@@ -83,13 +83,13 @@ def _check_shapes_broadcastable(out, inp):
 # ------#
 
 
-@to_native_arrays_and_back
-@handle_exceptions
-@handle_nestable
-@handle_out_argument
-@infer_dtype
-@infer_device
 @handle_array_function
+@infer_device
+@infer_dtype
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
 def random_uniform(
     *,
     low: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
@@ -197,13 +197,13 @@ def random_uniform(
     )
 
 
-@to_native_arrays_and_back
-@handle_exceptions
-@handle_nestable
-@handle_out_argument
-@infer_dtype
-@infer_device
 @handle_array_function
+@infer_device
+@infer_dtype
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
 def random_normal(
     *,
     mean: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
@@ -308,12 +308,12 @@ def random_normal(
     )
 
 
-@to_native_arrays_and_back
-@handle_exceptions
-@handle_nestable
-@handle_out_argument
-@infer_device
 @handle_array_function
+@infer_device
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -417,12 +417,12 @@ def multinomial(
     )
 
 
-@to_native_arrays_and_back
-@handle_exceptions
-@handle_nestable
-@handle_out_argument
-@infer_device
 @handle_array_function
+@infer_device
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
 def randint(
     low: Union[int, ivy.NativeArray, ivy.Array],
     high: Union[int, ivy.NativeArray, ivy.Array],
@@ -495,8 +495,8 @@ def randint(
     )
 
 
-@handle_exceptions
 @handle_nestable
+@handle_exceptions
 def seed(*, seed_value: int = 0) -> None:
     """Sets the seed for random number generation.
 
@@ -514,11 +514,11 @@ def seed(*, seed_value: int = 0) -> None:
     return ivy.current_backend().seed(seed_value=seed_value)
 
 
-@to_native_arrays_and_back
-@handle_exceptions
-@handle_nestable
-@handle_out_argument
 @handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
 def shuffle(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

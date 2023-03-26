@@ -27,10 +27,10 @@ def _reduce_loss(red, loss, axis, out):
 # ------#
 
 
-@handle_exceptions
-@handle_nestable
-@handle_array_like_without_promotion
 @handle_array_function
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
 def cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
@@ -82,10 +82,10 @@ def cross_entropy(
     return _reduce_loss(reduction, log_pred * true, axis, out)
 
 
-@handle_exceptions
-@handle_nestable
-@handle_array_like_without_promotion
 @handle_array_function
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
 def binary_cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
@@ -189,10 +189,10 @@ def binary_cross_entropy(
     )
 
 
-@handle_exceptions
-@handle_nestable
-@handle_array_like_without_promotion
 @handle_array_function
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
 def sparse_cross_entropy(
     true: Union[ivy.Array, ivy.NativeArray],
     pred: Union[ivy.Array, ivy.NativeArray],
