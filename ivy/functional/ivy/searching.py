@@ -240,11 +240,15 @@ def nonzero(
     as_tuple: bool = True,
     size: Optional[int] = None,
     fill_value: Number = 0,
-) -> Union[Tuple[ivy.Array], ivy.Array]:
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,#added
+    out: Optional[ivy.NativeDtype] = None, #added
+
+) -> Union[Tuple[ivy.Array], ivy.NativeArray]:
     """Returns the indices of the array elements which are non-zero.
 
     Parameters
     ----------
+
     x
         input array. Must have a positive rank. If `x` is zero-dimensional, the function
         must raise an exception.
@@ -261,6 +265,11 @@ def nonzero(
         when size is specified and there are fewer than size number of elements,
         the remaining elements in the output array will be filled with fill_value.
         Default = 0.
+    out
+        If provided, the result will be inserted into this array. It should be of the
+        appropriate shape and dtype.
+    dtype
+        Optional data type of the output array.
 
     Returns
     -------
@@ -320,7 +329,7 @@ def nonzero(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0,1,2,3,0]), b=ivy.array([[1,1], [0,0]]))
+    >>> x = ivy.Container(a=ivy.array([0,1,2,3,0]), b=ivy.array([[1,1], [0,0]])) ---->ERROR
     >>> y = ivy.nonzero(x)
     >>> print(y)
     {
@@ -359,10 +368,41 @@ def nonzero(
 
     >>> print(y.b)
     (ivy.array([]),)
+
+
+###updated
+     Using :numpy and change dtype
+     --> same for each backend
+
+    >>>x = np.array([1,2,3,4,0,1])
+    >>>ivy.set_numpy_backend()
+    >>>indices = ivy.nonzero(x,dtype = float) # store the indices in the out_tensor
+    >>>print(type(indices[0][0].item()))
+    <class 'float'>
+
+
+    Using :out in torch to output in another torch.tensor
+    (only for pytorch)
+    import torch
+    >>>x = torch.tensor([[0, 1, 0], [2, 0, 3]])
+    >>>out_tensor = torch.empty((2), dtype=torch.int64) # create an empty tensor with the desired shape and dtype
+    >>>indices = torch.nonzero(x, out=out_tensor) # store the indices in the out_tensor
+    >>>>print(out_tensor)
+tensor([[0, 1],
+        [1, 0],
+        [1, 2]])
+    >>>print(indecies)
+tensor([[0, 1],
+        [1, 0],
+        [1, 2]])
+
     """
+
+
     return current_backend(x).nonzero(
-        x, as_tuple=as_tuple, size=size, fill_value=fill_value
+        x, as_tuple=as_tuple, size=size, fill_value=fill_value,dtype = dtype,out=out
     )
+
 
 
 @to_native_arrays_and_back

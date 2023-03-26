@@ -9,21 +9,23 @@ import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
+
 # Array API Standard #
 # ------------------ #
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
 def argmax(
-    x: torch.Tensor,
-    /,
-    *,
-    axis: Optional[int] = None,
-    keepdims: bool = False,
-    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-    select_last_index: bool = False,
-    out: Optional[torch.Tensor] = None,
+        x: torch.Tensor,
+        /,
+        *,
+        axis: Optional[int] = None,
+        keepdims: bool = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        select_last_index: bool = False,
+        out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    # print("TENSORRR")
     if select_last_index:
         if axis is None:
             x = torch.flip(x, dims=[axes for axes in range(x.ndim)])
@@ -34,23 +36,26 @@ def argmax(
             ret = torch.argmax(x, dim=axis, keepdim=keepdims)
             ret = x.shape[axis] - ret - 1
     else:
+
         ret = torch.argmax(x, dim=axis, keepdim=keepdims)
     if dtype:
+        # print("TYPE" , dtype)
         dtype = ivy.as_native_dtype(dtype)
         return ret.to(dtype=dtype)
+    # print("RET",out)
     return ret
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
 def argmin(
-    x: torch.Tensor,
-    /,
-    *,
-    axis: Optional[int] = None,
-    keepdims: bool = False,
-    output_dtype: Optional[torch.dtype] = None,
-    select_last_index: bool = False,
-    out: Optional[torch.Tensor] = None,
+        x: torch.Tensor,
+        /,
+        *,
+        axis: Optional[int] = None,
+        keepdims: bool = False,
+        output_dtype: Optional[torch.dtype] = None,
+        select_last_index: bool = False,
+        out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if select_last_index:
         if axis is None:
@@ -70,14 +75,19 @@ def argmin(
 
 
 def nonzero(
-    x: torch.Tensor,
-    /,
-    *,
-    as_tuple: bool = True,
-    size: Optional[int] = None,
-    fill_value: Number = 0,
+        x: torch.Tensor,
+        /,
+        *,
+        as_tuple: bool = True,
+        size: Optional[int] = None,
+        fill_value: Number = 0,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        out: Optional[torch.Tensor] = None,
 ) -> Union[torch.Tensor, Tuple[torch.Tensor]]:
-    res = torch.stack(torch.nonzero(x, as_tuple=True))
+    if as_tuple:
+        res = torch.stack(torch.nonzero(x, as_tuple=True ))
+    else:
+        res = torch.nonzero(x, as_tuple=False , out = out)
 
     if size is not None:
         if isinstance(fill_value, float):
@@ -88,20 +98,24 @@ def nonzero(
             res = tnf.pad(res, (0, diff), value=fill_value)
         elif diff < 0:
             res = res[:, :size]
-
-    res = tuple(res)
     if as_tuple:
+        res = tuple(res)
         return res
-    return torch.stack(res, dim=1)
+
+    if dtype:
+        # print("TYPE" , dtype)
+        dtype = ivy.as_native_dtype(dtype)
+        return res.to(dtype=dtype)
+    return res  # torch.stack(res, dim=1)
 
 
 def where(
-    condition: torch.Tensor,
-    x1: Union[float, int, torch.Tensor],
-    x2: Union[float, int, torch.Tensor],
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
+        condition: torch.Tensor,
+        x1: Union[float, int, torch.Tensor],
+        x2: Union[float, int, torch.Tensor],
+        /,
+        *,
+        out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return ivy.astype(torch.where(condition, x1, x2), x1.dtype, copy=False)

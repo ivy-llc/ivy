@@ -162,6 +162,10 @@ class _ArrayWithSearching(abc.ABC):
         as_tuple: bool = True,
         size: Optional[int] = None,
         fill_value: Number = 0,
+
+       dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+
+       out: Optional[ivy.Array] = None,
     ) -> Union[Tuple[ivy.Array], ivy.Array]:
         """
         ivy.Array instance method variant of ivy.nonzero. This method simply
@@ -192,8 +196,9 @@ class _ArrayWithSearching(abc.ABC):
             Array containing the indices of the non-zero values.
 
         """
+        #print("ARRAAYY")
         return ivy.nonzero(
-            self._data, as_tuple=as_tuple, size=size, fill_value=fill_value
+            self._data, as_tuple=as_tuple, size=size, fill_value=fill_value ,dtype=dtype,out=out
         )
 
     def where(

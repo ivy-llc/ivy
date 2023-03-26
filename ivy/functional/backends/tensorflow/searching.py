@@ -68,23 +68,29 @@ def nonzero(
     as_tuple: bool = True,
     size: Optional[int] = None,
     fill_value: Number = 0,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable, Tuple[Union[tf.Tensor, tf.Variable]]]:
     res = tf.experimental.numpy.nonzero(x)
 
     if size is not None:
-        dtype = tf.int64
+        dtype_x = tf.int64
         if isinstance(fill_value, float):
-            dtype = tf.float64
-        res = tf.cast(res, dtype)
+            dtype_x = tf.float64
+        res = tf.cast(res, dtype_x)
 
         diff = size - res[0].shape[0]
         if diff > 0:
             res = tf.pad(res, [[0, 0], [0, diff]], constant_values=fill_value)
         elif diff < 0:
             res = tf.slice(res, [0, 0], [-1, size])
-
+    if dtype is not None:
+        dtype = ivy.as_native_dtype(dtype)
+        res = tf.cast(res, dtype)
     if as_tuple:
         return tuple(res)
+
+
     return tf.stack(res, axis=1)
 
 

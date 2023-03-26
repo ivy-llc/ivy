@@ -67,21 +67,24 @@ def nonzero(
     as_tuple: bool = True,
     size: Optional[int] = None,
     fill_value: Number = 0,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    #out: Optional[np.ndarray] = None,
 ) -> Union[np.ndarray, Tuple[np.ndarray]]:
     res = np.nonzero(x)
 
     if size is not None:
-        if isinstance(fill_value, float):
-            res = np.asarray(res, dtype=np.float64)
-
         diff = size - res[0].shape[0]
         if diff > 0:
             res = np.pad(res, ((0, 0), (0, diff)), constant_values=fill_value)
         elif diff < 0:
             res = np.array(res)[:, :size]
-
+    res = np.array(res)
+    if dtype:
+        dtype = ivy.as_native_dtype(dtype)
+        res = res.astype(dtype)
     if as_tuple:
         return tuple(res)
+
     return np.stack(res, axis=1)
 
 

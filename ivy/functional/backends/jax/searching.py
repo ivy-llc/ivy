@@ -71,9 +71,13 @@ def nonzero(
     as_tuple: bool = True,
     size: Optional[int] = None,
     fill_value: Number = 0,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
 ) -> Union[JaxArray, Tuple[JaxArray]]:
     res = jnp.nonzero(x, size=size, fill_value=fill_value)
-
+    res = jnp.array(res)
+    if dtype:
+        dtype = ivy.as_native_dtype(dtype)
+        res =  res.astype(dtype)
     if as_tuple:
         return tuple(res)
 
