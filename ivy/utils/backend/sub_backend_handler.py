@@ -76,7 +76,7 @@ def _set_sub_backend_as_ivy(
             and not k.startswith("__")
             and isinstance(v, ModuleType)
         ):
-            mod = type(ivy)(k)
+            mod = ModuleType(k)
             mod.__name__ = v.__name__
             mod.__file__ = v.__file__
             target.__dict__[k] = mod
@@ -139,6 +139,8 @@ def clear_sub_backends():
 
 # This is used in set_backend only
 def _clear_current_sub_backends():
+    global original_backend_dict
+    original_backend_dict = None
     if ivy.current_sub_backends():
         ivy.current_backend().sub_backends._current_sub_backends = []
 
