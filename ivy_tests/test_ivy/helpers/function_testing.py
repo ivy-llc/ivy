@@ -26,7 +26,7 @@ def framework_comparator(frontend):
     elif frontend.split("/")[0] == "torch":
         return (
             frontend.split("/")[1]
-            == importlib.import_module(frontend.split("/")[1]).__version__.split("+")[0]
+            == importlib.import_module(frontend.split("/")[0]).__version__.split("+")[0]
         )
     else:
         return (
@@ -63,18 +63,10 @@ from .assertions import (
 from . import globals
 
 
-try:
-    os.environ["IVY_ROOT"] = ".ivy"
-    import ivy.compiler.compiler as ic
-except Exception:
-    ic = types.SimpleNamespace()
-    ic.compile = lambda func, args, kwargs: func
-
-
 # Temporary (.so) configuration
 def compiled_if_required(fn, test_compile=False, args=None, kwargs=None):
     if test_compile:
-        fn = ic.compile(fn, args=args, kwargs=kwargs)
+        fn = ivy.compile(fn, args=args, kwargs=kwargs)
     return fn
 
 
