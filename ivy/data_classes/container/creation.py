@@ -830,6 +830,63 @@ class _ContainerWithCreation(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
+        """
+        Compute a multi-dimensional meshgrid using input arrays.
+        Function takes in multiple input arrays or scalars and returns
+        a container object that represents a multi-dimensional grid.
+        The function can create either a dense or a sparse grid based on
+        the value of an optional flag. It also allows the user to specify
+        the indexing method to be used and apply a list of key chains to
+        the output grid. Additionally, the function can map sequences such
+        as lists and tuples to the output grid if corresponding flag is set.
+        The final output is a container object that represents the
+        multi-dimensional meshgrid.
+
+        Parameters
+        ----------
+        self : ivy.Container
+            The container object.
+        *arrays : tuple
+            Input arrays or scalars to create a meshgrid from.
+        sparse : bool, optional
+            Flag to return a sparse grid. Default is False.
+        indexing : str, optional
+            Specifies the indexing method to be used for the meshgrid.
+            It takes either the string 'xy' or 'ij' and the default is 'xy'.
+        key_chains : list, optional
+            A list of key chains that can be applied to the meshgrid.
+            Default is None.
+        to_apply : bool, optional
+            Flag to apply the given key chains to the output grid.
+            Default is True.
+        prune_unapplied : bool, optional
+            Flag to remove any unapplied key chains.
+            Default is False.
+        map_sequences : bool, optional
+            Flag to map sequences such as lists and tuples to the output grid.
+            Default is False.
+
+        Returns
+        -------
+        ret : ivy.Container
+        A container object representing the multi-dimensional meshgrid.
+
+        Examples
+        --------
+        >>> import ivy
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = ivy.array([4, 5, 6, 7])
+        >>> grid = ivy.meshgrid(x, y)
+        >>> print(grid)
+        ivy.Container({'0': ivy.array([[1, 2, 3],
+                                        [1, 2, 3],
+                                        [1, 2, 3],
+                                        [1, 2, 3]]),
+                        '1': ivy.array([[4, 4, 4],
+                                        [5, 5, 5],
+                                        [6, 6, 6],
+                                        [7, 7, 7]])})
+    """
         return self.static_meshgrid(
             tuple([self] + list(arrays)),
             sparse,
@@ -1175,7 +1232,7 @@ class _ContainerWithCreation(ContainerBase):
         ret
             container with tensors of zeros with the same shape and type as the inputs,
             unless dtype provided which overrides.
-        
+
         Examples
         --------
         With :class:`ivy.Container` inputs:
