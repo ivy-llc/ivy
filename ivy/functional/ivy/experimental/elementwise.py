@@ -1358,8 +1358,12 @@ def binarizer(
         Binarized output data
     """
     xc = ivy.copy_array(x, out=out)
-    bin = ivy.where(xc > threshold, 1, 0)
-    return bin
+    if ivy.is_bool_dtype(xc) and ivy.current_backend_str() == "torch":
+        xc = ivy.astype(xc, ivy.default_float_dtype())
+    if ivy.is_complex_dtype(xc):
+        xc = ivy.abs(xc)
+    ret = ivy.where(xc > threshold, 1, 0)
+    return ret
 
 
 @to_native_arrays_and_back

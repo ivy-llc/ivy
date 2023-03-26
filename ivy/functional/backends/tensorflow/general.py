@@ -44,7 +44,7 @@ def _parse_index(indices, ndims):
 
 
 def is_native_array(x, /, *, exclusive=False):
-    if isinstance(x, tf.Tensor) or isinstance(x, tf.Variable):
+    if isinstance(x, (tf.Tensor, tf.Variable)):
         if exclusive and isinstance(x, tf.Variable):
             return False
         return True

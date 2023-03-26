@@ -7,6 +7,13 @@ from ivy.functional.ivy.gradients import _variable
 
 
 @st.composite
+def _gradient_strategy(draw):
+    if test_globals.CURRENT_BACKEND().backend == "numpy":
+        draw(st.just(False))
+    draw(st.booleans())
+
+
+@st.composite
 def _as_varaible_strategy(draw):
     if (
         test_globals.CURRENT_BACKEND is not test_globals._Notsetval
@@ -31,7 +38,7 @@ BuiltAsVariableStrategy = _as_varaible_strategy()
 BuiltContainerStrategy = st.lists(st.booleans(), min_size=1, max_size=1)
 BuiltInstanceStrategy = st.booleans()
 BuiltInplaceStrategy = st.just(False)
-BuiltGradientStrategy = st.booleans()
+BuiltGradientStrategy = _gradient_strategy()
 BuiltWithOutStrategy = st.booleans()
 BuiltCompileStrategy = st.booleans()
 BuiltFrontendArrayStrategy = st.booleans()
