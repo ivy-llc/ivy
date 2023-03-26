@@ -173,7 +173,7 @@ This is a part of ``partial_conf.py``:
 Here we are overriding the ``ivy_toctree_caption_map`` configuration, which is used to 
 customize the title of the table of contents for each module. 
 ``ivy_toctree_caption_map`` is one of the configuration options we have in our
-:ref:`custom_autosummary` extension, which will be covered extensively in 
+``custom_autosummary`` extension, which will be covered extensively in 
 :ref:`Custom Extensions`.
 
 ``prebuild.sh``
