@@ -104,4 +104,4 @@ from . import sets
 from . import signal
 from . import sparse
 
-frontend_array = constant
+_frontend_array = constant

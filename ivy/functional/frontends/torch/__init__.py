@@ -286,4 +286,4 @@ from . import utilities
 from .utilities import *
 from . import linalg
 
-frontend_array = tensor
+_frontend_array = tensor

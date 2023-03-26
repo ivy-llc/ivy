@@ -455,4 +455,4 @@ from .statistical import *
 from . import searching_sorting
 from .searching_sorting import *
 
-frontend_array = array
+_frontend_array = array

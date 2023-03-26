@@ -574,7 +574,7 @@ def test_frontend_function(
         num_positional_args=test_flags.num_positional_args, kwargs=all_as_kwargs_np
     )
     create_frontend_array = importlib.import_module(f"ivy.functional.frontends.{frontend}"
-                                                    ).frontend_array
+                                                    )._frontend_array
 
     # extract all arrays from the arguments and keyword arguments
     arg_np_vals, args_idxs, c_arg_vals = _get_nested_np_arrays(args_np)

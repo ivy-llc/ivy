@@ -605,7 +605,8 @@ from ivy.functional.frontends.numpy.mathematical_functions.extrema_finding impor
     _fmax,
 )
 
-frontend_array = array
+_frontend_array = array
+
 # initializing ufuncs #
 # ---------------------#
 
