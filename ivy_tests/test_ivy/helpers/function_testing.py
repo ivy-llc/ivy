@@ -26,7 +26,7 @@ def framework_comparator(frontend):
     elif frontend.split("/")[0] == "torch":
         return (
             frontend.split("/")[1]
-            == importlib.import_module(frontend.split("/")[1]).__version__.split("+")[0]
+            == importlib.import_module(frontend.split("/")[0]).__version__.split("+")[0]
         )
     else:
         return (
