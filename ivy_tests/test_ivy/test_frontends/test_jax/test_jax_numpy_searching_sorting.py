@@ -339,30 +339,36 @@ def test_jax_numpy_sort_complex(
     )
 
 # where
-@helpers.handle_frontend_test(
+@handle_frontend_test(
     fn_tree="jax.numpy.where",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-    ),
+    dtype_and_x=dtype_and_values(available_dtypes=helpers.get_dtypes("numeric")),
     test_with_out=st.just(False),
+    inplace=st.just(False),
 )
 def test_jax_numpy_where(
+    *,
     dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
     on_device,
+    fn_tree,
+    frontend,
 ):
-    dtype, x = dtype_and_x
-    x = helpers.get_frontend_ret(frontend, f"{fn_tree}.array", x[0], dtype=dtype)
+    input_dtype, x = dtype_and_x
+    x = helpers.get_frontend_ret(frontend, f"{frontend}.array", x[0], dtype=input_dtype)
     condition = x > 0.5
     x1 = x * 2
     x2 = x * -2
 
     helpers.test_frontend_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
         frontend=frontend,
-        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         condition=condition,
