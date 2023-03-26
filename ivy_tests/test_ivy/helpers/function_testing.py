@@ -63,18 +63,10 @@ from .assertions import (
 from . import globals
 
 
-try:
-    os.environ["IVY_ROOT"] = ".ivy"
-    import ivy.compiler.compiler as ic
-except Exception:
-    ic = types.SimpleNamespace()
-    ic.compile = lambda func, args, kwargs: func
-
-
 # Temporary (.so) configuration
 def compiled_if_required(fn, test_compile=False, args=None, kwargs=None):
     if test_compile:
-        fn = ic.compile(fn, args=args, kwargs=kwargs)
+        fn = ivy.compile(fn, args=args, kwargs=kwargs)
     return fn
 
 
