@@ -338,10 +338,11 @@ def test_jax_numpy_sort_complex(
         test_values=False,
     )
 
+
 # where
 @handle_frontend_test(
     fn_tree="jax.numpy.where",
-    dtype_and_x=dtype_and_values(available_dtypes=helpers.get_dtypes("numeric")),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric")),
     test_with_out=st.just(False),
     inplace=st.just(False),
 )
