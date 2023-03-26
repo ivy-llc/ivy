@@ -104,7 +104,23 @@ def to_list(x: paddle.Tensor, /) -> list:
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+    {
+        "2.4.2 and below": {
+            "cpu": (
+                "uint16",
+                "bfloat16",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "float16",
+                "complex64",
+                "complex128",
+                "bool",
+            )
+        }
+    },
+    backend_version,
 )
 def gather(
     params: paddle.Tensor,
