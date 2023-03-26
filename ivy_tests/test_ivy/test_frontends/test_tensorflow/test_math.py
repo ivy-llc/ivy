@@ -1857,21 +1857,20 @@ def test_tensorflow_greater(
     )
 
 
-# sinh
 @handle_frontend_test(
-    fn_tree="tensorflow.math.sinh",
+    fn_tree="tensorflow.math.cos",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        available_dtypes=helpers.get_dtypes("float"),
     ),
     test_with_out=st.just(False),
 )
-def test_tensorflow_sinh(
+def test_tensorflow_cos(
     *,
     dtype_and_x,
+    on_device,
+    fn_tree,
     frontend,
     test_flags,
-    fn_tree,
-    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
