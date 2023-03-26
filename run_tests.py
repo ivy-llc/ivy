@@ -138,7 +138,6 @@ def run_multiversion_testing():
 
 
 if __name__ == "__main__":
-    print(sys.argv)
     redis_url = sys.argv[1]
     redis_pass = sys.argv[2]
     mongo_key = sys.argv[3]
