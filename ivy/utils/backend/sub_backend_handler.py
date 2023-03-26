@@ -6,17 +6,42 @@ import ivy
 from ivy.func_wrapper import _wrap_function
 from ivy.utils.exceptions import IvyException
 
+
+_backends_subpackage_path = "ivy.functional.backends"
 _sub_backend_dict = dict()
 _backend_to_sub_backends_dict = dict()
-# torch sub_backends
 
-_sub_backend_dict["xformers"] = "ivy.functional.backends.torch.sub_backends.xformers"
+for backend in os.listdir(
+    os.path.join(
+        ivy.__path__[0].rpartition(os.path.sep)[0],  # type: ignore
+        _backends_subpackage_path.replace(".", os.path.sep),
+    )
+):
+    if backend.startswith("__"):
+        continue
+
+    sub_backends_dir = os.path.join(
+        ivy.__path__[0].rpartition(os.path.sep)[0],
+        _backends_subpackage_path.replace(".", os.path.sep),
+        backend,
+        "sub_backends",
+    )
+    if os.path.isdir(sub_backends_dir):
+        for sub_backend in os.listdir(sub_backends_dir):
+            if sub_backend.startswith("__"):
+                continue
+            _sub_backend_dict[
+                sub_backend
+            ] = f"{_backends_subpackage_path}.{backend}.sub_backends.{sub_backend}"
+            try:
+                _backend_to_sub_backends_dict[backend].append(sub_backend)
+            except KeyError:
+                _backend_to_sub_backends_dict[backend] = [sub_backend]
 
 
-_backend_to_sub_backends_dict["torch"] = ["xformers"]
+_all_sub_backends = []
 
-
-_all_sub_backends = _backend_to_sub_backends_dict["torch"]
+[_all_sub_backends.extend(v) for v in _backend_to_sub_backends_dict.values()]
 
 
 original_backend_dict = None
@@ -51,7 +76,9 @@ def set_sub_backend(sub_backend_str: str):
     global original_backend_dict
     if original_backend_dict is None:
         original_backend_dict = ivy.__dict__.copy()
-    sub_backend = importlib.import_module(_sub_backend_dict[sub_backend_str])
+    sub_backend = ivy.utils.dynamic_import.import_module(
+        _sub_backend_dict[sub_backend_str]
+    )
     _set_sub_backend_as_ivy(ivy.__dict__.copy(), ivy, sub_backend)
     ivy.current_backend().sub_backends._current_sub_backends.append(sub_backend_str)
 
@@ -97,7 +124,7 @@ def unset_sub_backend(sub_backend_str: str):
     if sub_backend_str not in ivy.current_sub_backends():
         return
     global original_backend_dict
-    sub_backend = importlib.import_module(
+    sub_backend = ivy.utils.dynamic_import.import_module(
         _sub_backend_dict[sub_backend_str]
     )  # The sub-backend is cached so this is fast
     _unset_sub_backend_from_ivy(
