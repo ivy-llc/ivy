@@ -300,15 +300,18 @@ def strided_slice(
     elif len(ellipsis_indices) == 1:
         ellipsis_index = ellipsis_indices[0]
         num_missing = input_rank - len(begin)
-        if ellipsis_index >= len(begin):
-            begin = begin + [0] * num_missing
-            end = end + input_shape[ellipsis_index:ellipsis_index + num_missing]
-            strides = strides + [1] * num_missing
+        if num_missing == 0:
+            begin_mask[ellipsis_index] = 1
+            end_mask[ellipsis_index] = 1
         else:
-            begin = begin[:ellipsis_index] + [0] * num_missing + begin[ellipsis_index:]
-            end = end[:ellipsis_index] + input_shape[ellipsis_index:ellipsis_index + num_missing] + end[ellipsis_index:]
-            strides = strides[:ellipsis_index] + [1] * num_missing + strides[ellipsis_index:]
-
+            if ellipsis_index >= len(begin):
+                begin = begin + [0] * num_missing
+                end = end + input_shape[ellipsis_index:ellipsis_index + num_missing]
+                strides = strides + [1] * num_missing
+            else:
+                begin = begin[:ellipsis_index] + [0] * num_missing + begin[ellipsis_index:]
+                end = end[:ellipsis_index] + input_shape[ellipsis_index:ellipsis_index + num_missing] + end[ellipsis_index:]
+                strides = strides[:ellipsis_index] + [1] * num_missing + strides[ellipsis_index:]
     new_axis_indices = [i for i, v in enumerate(new_axis_mask) if v]
     ret = ivy.expand_dims(input_, axis=new_axis_indices)
 

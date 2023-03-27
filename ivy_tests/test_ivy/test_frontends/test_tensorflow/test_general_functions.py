@@ -1064,7 +1064,7 @@ def _strided_slice_helper(draw):
     ellipsis_mask = _num_to_bit_list(masks[2], ndims)
     for i, v in enumerate(ellipsis_mask):
         if v == 1:
-            skip = draw(st.integers(min_value=1, max_value=ndims))
+            skip = draw(st.integers(min_value=0, max_value=ndims))
             begin, end, strides = map(
                 lambda x: x[:i] + x[i+skip:] if i+skip < ndims else x[:i],
                 [begin, end, strides]
