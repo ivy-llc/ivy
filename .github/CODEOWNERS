@@ -12,3 +12,4 @@ docs/index.rst @KareemMAX
 docs/make_docs.sh @KareemMAX
 docs/partial_docs.sh @KareemMAX
 docs/prebuild.sh @KareemMAX
+docs/_templates @KareemMAX
