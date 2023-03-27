@@ -714,3 +714,6 @@ def DebugGradientIdentity(input, name="DebugGradientIdentity"):
 @to_ivy_arrays_and_back
 def Real(input, Tout=ivy.float32, name="Real"):
     return ivy.Real(input, Tout=Tout)
+
+
+Slice = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.slice))
