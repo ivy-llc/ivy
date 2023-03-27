@@ -2,7 +2,6 @@
 from hypothesis import strategies as st, assume
 import math
 
-
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
@@ -856,6 +855,34 @@ def test_torch_index_select(
         input=input,
         dim=axis,
         index=indices,
+    )
+
+
+# masked_select
+@handle_frontend_test(
+    fn_tree="torch.masked_select",
+    dtype_value_shape=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("valid"),
+        indices_dtypes=["bool"],
+    ),
+)
+def test_torch_masked_select(
+    *,
+    dtype_value_shape,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtypes, input, mask = dtype_value_shape
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input,
+        mask=mask,
     )
 
 

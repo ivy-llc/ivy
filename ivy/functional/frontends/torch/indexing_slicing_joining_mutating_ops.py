@@ -177,6 +177,12 @@ def index_select(input, dim, index, *, out=None):
 
 
 @to_ivy_arrays_and_back
+def masked_select(input, mask, *, out=None):
+    index = ivy.argwhere(mask)
+    return ivy.gather(input, index, out=out)
+
+
+@to_ivy_arrays_and_back
 def dstack(tensors, *, out=None):
     return ivy.dstack(tensors, out=out)
 
