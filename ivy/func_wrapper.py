@@ -23,11 +23,11 @@ FN_DECORATORS = [
     "handle_out_argument",
     "handle_view_indexing",
     "handle_view",
+    "handle_array_like_without_promotion",
     "handle_nestable",
     "handle_exceptions",
     "with_unsupported_dtypes",
     "handle_nans",
-    "handle_array_like_without_promotion",
     "handle_mixed_function",
 ]
 
