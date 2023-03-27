@@ -1972,8 +1972,7 @@ def einops_repeat(
     out: Optional[ivy.Array] = None,
     **axes_lengths: Dict[str, int],
 ) -> ivy.Array:
-    """
-    Perform einops repeat operation on input array x.
+    """Perform einops repeat operation on input array x.
 
     Parameters
     ----------
@@ -1991,6 +1990,9 @@ def einops_repeat(
     -------
     ret
         New array with einops.repeat having been applied.
+
+    This function is *nestable*, and therefore also accepts :code:'ivy.Container'
+    instance in place of the argument.
 
     Examples
     --------
