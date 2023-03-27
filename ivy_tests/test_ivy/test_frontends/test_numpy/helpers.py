@@ -176,7 +176,7 @@ def test_frontend_function(*args, where=None, **kwargs):
 # noinspection PyShadowingNames
 def handle_where_and_array_bools(where, input_dtype, test_flags):
     if isinstance(where, list) or isinstance(where, tuple):
-        where = where[0]
+        where = ivy.array(where[0], dtype='bool')
         test_flags.as_variable += [False]
         test_flags.native_arrays += [False]
         input_dtype += ["bool"]

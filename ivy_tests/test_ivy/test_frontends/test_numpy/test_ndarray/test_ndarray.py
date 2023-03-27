@@ -591,14 +591,11 @@ def test_numpy_ndarray_prod(
     on_device,
 ):
     input_dtypes, x, axis, dtype, where = dtype_x_axis_dtype
-
     where, input_dtypes, method_flags = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
         test_flags=method_flags,
     )
-
-    where = where.astype('bool')
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
@@ -609,8 +606,8 @@ def test_numpy_ndarray_prod(
             "axis": axis,
             "dtype":dtype,
             "keepdims": keep_dims,
-            "initial":initial,
-            "where":where,
+            "initial": initial,
+            "where": where,
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
