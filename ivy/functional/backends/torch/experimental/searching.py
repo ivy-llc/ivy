@@ -9,7 +9,7 @@ def unravel_index(
     /,
     *,
     out: Optional[torch.Tensor] = None,
-) -> Tuple:
+) -> Tuple[torch.Tensor]:
     temp = indices.to(torch.int32)
     output = []
     for dim in reversed(shape):

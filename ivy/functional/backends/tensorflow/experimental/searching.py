@@ -22,7 +22,7 @@ def unravel_index(
     /,
     *,
     out: Optional[Tuple[Union[tf.Tensor, tf.Variable]]] = None,
-) -> Tuple:
+) -> Tuple[tf.Tensor]:
     temp = indices
     output = []
     for dim in reversed(shape):

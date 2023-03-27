@@ -13,7 +13,7 @@ class _ArrayWithSearchingExperimental(abc.ABC):
         /,
         *,
         out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
+    ) -> Tuple[ivy.Array]:
         """ivy.Array instance method variant of ivy.unravel_index. This method simply
         wraps the function, and so the docstring for ivy.unravel_index also applies to
         this method with minimal changes.
