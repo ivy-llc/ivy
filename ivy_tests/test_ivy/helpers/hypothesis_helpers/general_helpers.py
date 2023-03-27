@@ -16,9 +16,9 @@ def matrix_is_stable(x, cond_limit=30):
 
     Parameters
     ----------
-    matrix
+    x
         The original matrix whose condition number is to be determined.
-    condition_index
+    cond_limit
         The greater the condition number, the more ill-conditioned the matrix
         will be, the more it will be prone to numerical instabilities.
 
@@ -35,12 +35,12 @@ def matrix_is_stable(x, cond_limit=30):
 
         The limit should always be in the range "1-30", greater the number greater
         the computational instability. Should not increase 30, it leads to strong
-        multicollinearity which leads to singularity.
+        multi-collinearity which leads to singularity.
 
     Returns
     -------
-    A bool, either True or False. Which tells whether the matrix is suitable for
-    further numerical computations or not.
+        A bool, either True or False. Which tells whether the matrix is suitable for
+        further numerical computations or not.
     """
     return np.linalg.cond(x.astype("float64")) <= cond_limit
 
@@ -55,23 +55,28 @@ def apply_safety_factor(
     large_abs_safety_factor=1.1,
     safety_factor_scale="linear",
 ):
-    """
-    Applies safety factor scaling to numeric data type.
+    """Applies safety factor scaling to numeric data type.
 
     Parameters
     ----------
     dtype
+        the data type to apply safety factor scaling to.
     min_value
+        the minimum value of the data type.
     max_value
+        the maximum value of the data type.
     abs_smallest_val
+        the absolute smallest representable value of the data type.
     large_abs_safety_factor
+        the safety factor to apply to the maximum value.
     small_abs_safety_factor
+        the safety factor to apply to the minimum value.
     safety_factor_scale
+        the scale to apply the safety factor to, either 'linear' or 'log'.
 
     Returns
     -------
-    the result of applying safety scaling to minimum value, maximum value and
-    absolute smallest representable value (only for float dtypes).
+        A tuple of the minimum value, maximum value and absolute smallest representable
     """
     assert small_abs_safety_factor >= 1, "small_abs_safety_factor must be >= 1"
     assert large_abs_safety_factor >= 1, "large_value_safety_factor must be >= 1"
@@ -178,9 +183,7 @@ def get_shape(
     min_dim_size=1,
     max_dim_size=10,
 ):
-    """Draws a tuple of integers drawn randomly from [min_dim_size, max_dim_size]
-     of size drawn from min_num_dims to max_num_dims. Useful for randomly
-     drawing the shape of an array.
+    """Draws a random shape.
 
     Parameters
     ----------
@@ -200,7 +203,7 @@ def get_shape(
 
     Returns
     -------
-    A strategy that draws a tuple.
+        A strategy that draws a tuple.
     """
     if allow_none:
         shape = draw(
@@ -226,8 +229,7 @@ def get_shape(
 
 @st.composite
 def get_mean_std(draw, *, dtype):
-    """Draws two integers representing the mean and standard deviation for a given data
-    type.
+    """Draws two floats; mean and std, for a given data type such that std > 0.
 
     Parameters
     ----------
@@ -241,7 +243,8 @@ def get_mean_std(draw, *, dtype):
     -------
     A strategy that can be used in the @given hypothesis decorator.
     """
-    none_or_float = none_or_float = number_helpers.floats(dtype=dtype) | st.none()
+    # TODO: Does this actually work?
+    none_or_float = number_helpers.floats(dtype=dtype) | st.none()
     values = draw(array_helpers.list_of_size(x=none_or_float, size=2))
     values[1] = abs(values[1]) if values[1] else None
     return values[0], values[1]
@@ -249,7 +252,7 @@ def get_mean_std(draw, *, dtype):
 
 @st.composite
 def get_bounds(draw, *, dtype):
-    """Draws two integers low, high for a given data type such that low < high.
+    """Draws two floats; low and high, for a given data type such that low < high.
 
     Parameters
     ----------
@@ -288,14 +291,14 @@ def get_axis(
     shape,
     allow_neg=True,
     allow_none=False,
-    sorted=True,
+    sorted=True,  # TODO: should be renamed to sort_values
     unique=True,
     min_size=1,
     max_size=None,
     force_tuple=False,
     force_int=False,
 ):
-    """Draws one or more axis for the given shape.
+    """Draws a random axis or axes.
 
     Parameters
     ----------
@@ -330,7 +333,7 @@ def get_axis(
 
     Returns
     -------
-    A strategy that can be used in the @given hypothesis decorator.
+        A strategy that draws an axis or axes.
     """
     assert not (force_int and force_tuple), (
         "Cannot return an int and a tuple. If " "both are valid then set both to False."
@@ -401,6 +404,24 @@ def get_axis(
 
 @st.composite
 def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
+    """Draws a random x and filters for a convolution.  # TODO: What should be done here?
+
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    dim
+        the dimension of the convolution
+    transpose
+        if True, draw a transpose convolution
+    depthwise
+        if True, draw a depthwise convolution
+
+    Returns
+    -------
+        A strategy that draws a random x and filters for a convolution.
+    """
     strides = draw(st.integers(min_value=1, max_value=2))
     padding = draw(st.sampled_from(["SAME", "VALID"]))
     batch_size = draw(st.integers(1, 5))
@@ -461,27 +482,39 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
             safety_factor_scale="log",
         )
     )
+    ret = (
+        dtype,
+        vals,
+        filters,
+        dilations,
+        data_format,
+        strides,
+        padding
+    )
     if transpose:
-        return (
-            dtype,
-            vals,
-            filters,
-            dilations,
-            data_format,
-            strides,
-            padding,
-            output_shape,
-        )
-    return dtype, vals, filters, dilations, data_format, strides, padding
+        return *ret, padding
+    return ret
 
 
 @st.composite
 def embedding_helper(draw):
+    """Helper function for embedding layer tests. # TODO: What does this function do?
+
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+
+    Returns
+    -------
+        A strategy for generating a tuple
+    """
     dtype_weight, weight = draw(
         array_helpers.dtype_and_values(
             available_dtypes=[
                 x
-                for x in draw(dtype_helpers.get_dtypes("numeric"))
+                for x in draw(dtype_helpers.get_dtypes("numeric"))  # TODO: Should this be valid?
                 if "float" in x or "complex" in x
             ],
             min_num_dims=2,
