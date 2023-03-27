@@ -190,3 +190,41 @@ def test_indices(
         dtype=dtype[0],
         sparse=sparse,
     )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.fill_diagonal",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        min_axes_size=2,
+        max_axes_size=2,
+        valid_axis=True,
+    ),
+    dtype_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    wrap=helpers.get_dtypes(kind="bool"),
+    test_with_out=st.just(False),
+)
+def test_numpy_fill_diagonal(
+    dtype_x_axis,
+    wrap,
+    dtype_values,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x, axis = dtype_x_axis
+    dtype, val = dtype_values
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        on_device=on_device,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        a=x[0],
+        val=val[0],
+        wrap=wrap
+    )
