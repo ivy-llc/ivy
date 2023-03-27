@@ -121,7 +121,7 @@ class _ContainerWithGeneral(ContainerBase):
             b: true
         }
         """
-        return self.static_is_native_array(
+        return self._static_is_native_array(
             self,
             exclusive=exclusive,
             key_chains=key_chains,
@@ -235,7 +235,7 @@ class _ContainerWithGeneral(ContainerBase):
             b: false
         }
         """
-        return self.static_is_ivy_array(
+        return self._static_is_ivy_array(
             self,
             exclusive=exclusive,
             key_chains=key_chains,
@@ -356,7 +356,7 @@ class _ContainerWithGeneral(ContainerBase):
             b: true
         }
         """
-        return self.static_is_array(
+        return self._static_is_array(
             self,
             exclusive=exclusive,
             key_chains=key_chains,
@@ -501,7 +501,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return self.static_clip_vector_norm(
+        return self._static_clip_vector_norm(
             self,
             max_norm,
             p=p,
@@ -648,7 +648,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return self.static_inplace_update(
+        return self._static_inplace_update(
             self,
             val,
             ensure_in_backend=ensure_in_backend,
@@ -793,7 +793,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return self.static_inplace_decrement(
+        return self._static_inplace_decrement(
             self,
             val,
             key_chains=key_chains,
@@ -935,7 +935,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return self.static_inplace_increment(
+        return self._static_inplace_increment(
             self,
             val,
             key_chains=key_chains,
@@ -1045,7 +1045,7 @@ class _ContainerWithGeneral(ContainerBase):
         with jax backend
         
         """
-        return self.static_assert_supports_inplace(
+        return self._static_assert_supports_inplace(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -1221,7 +1221,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return self.static_all_equal(
+        return self._static_all_equal(
             self,
             *xs,
             equality_matrix=equality_matrix,
@@ -1406,7 +1406,7 @@ class _ContainerWithGeneral(ContainerBase):
                     1.00000000e+00,  1.00000000e+00,  1.00000000e+00]])
         }
         """
-        return self.static_fourier_encode(
+        return self._static_fourier_encode(
             self,
             max_freq,
             num_bands=num_bands,
@@ -1572,7 +1572,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return self.static_gather(
+        return self._static_gather(
             self,
             indices,
             axis=axis,
@@ -1665,7 +1665,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return self.static_has_nans(
+        return self._static_has_nans(
             self,
             include_infs=include_infs,
             key_chains=key_chains,
@@ -1855,7 +1855,7 @@ class _ContainerWithGeneral(ContainerBase):
             b: ivy.array([1, 2, 20, 30, 40, 6, 7, 8, 9, 10])
         }
         """
-        return self.static_scatter_nd(
+        return self._static_scatter_nd(
             self,
             updates,
             shape=shape,
@@ -1996,7 +1996,7 @@ class _ContainerWithGeneral(ContainerBase):
             b: ivy.array([8, 7, 5, 4, 0, 0, 0, 0])
         }
         """
-        return self.static_scatter_flat(
+        return self._static_scatter_flat(
             self,
             updates,
             size=size,
@@ -2129,7 +2129,7 @@ class _ContainerWithGeneral(ContainerBase):
                         [200., 300.]])
         }
         """
-        return self.static_gather_nd(
+        return self._static_gather_nd(
             self,
             indices,
             batch_dims=batch_dims,
@@ -2280,7 +2280,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return self.static_einops_reduce(
+        return self._static_einops_reduce(
             self,
             pattern,
             reduction,
@@ -2420,7 +2420,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return self.static_einops_repeat(
+        return self._static_einops_repeat(
             self,
             pattern,
             key_chains=key_chains,
@@ -2578,7 +2578,7 @@ class _ContainerWithGeneral(ContainerBase):
             b: False
         }
         """
-        return self.static_value_is_nan(
+        return self._static_value_is_nan(
             self,
             include_infs=include_infs,
             key_chains=key_chains,
@@ -2725,7 +2725,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return self.static_to_numpy(
+        return self._static_to_numpy(
             self,
             copy=copy,
             key_chains=key_chains,
@@ -2843,7 +2843,7 @@ class _ContainerWithGeneral(ContainerBase):
             c: -1
         }
         """
-        return self.static_to_scalar(
+        return self._static_to_scalar(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -2952,7 +2952,7 @@ class _ContainerWithGeneral(ContainerBase):
         {a:[0,1,2]}
 
         """
-        return self.static_to_list(
+        return self._static_to_list(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -3143,7 +3143,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return self.static_stable_divide(
+        return self._static_stable_divide(
             self,
             denominator,
             min_denominator=min_denominator,
@@ -3251,7 +3251,7 @@ class _ContainerWithGeneral(ContainerBase):
             numerically stable power.
 
         """
-        return self.static_stable_pow(
+        return self._static_stable_pow(
             self,
             exponent,
             min_base=min_base,
@@ -3427,7 +3427,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return self.static_einops_rearrange(
+        return self._static_einops_rearrange(
             self,
             pattern,
             key_chains=key_chains,
@@ -3569,7 +3569,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return self.static_clip_matrix_norm(
+        return self._static_clip_matrix_norm(
             self,
             max_norm,
             p=p,
