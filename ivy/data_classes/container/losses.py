@@ -163,7 +163,7 @@ class _ContainerWithLosses(ContainerBase):
             b:ivy.array(1.609438)
         }
         """
-        return self.static_cross_entropy(
+        return self._static_cross_entropy(
             self,
             pred,
             axis=axis,
@@ -321,7 +321,7 @@ class _ContainerWithLosses(ContainerBase):
             b: ivy.array([1.61, 0.223, 1.61])
         }
         """
-        return self.static_binary_cross_entropy(
+        return self._static_binary_cross_entropy(
             self,
             pred,
             epsilon=epsilon,
@@ -487,7 +487,7 @@ class _ContainerWithLosses(ContainerBase):
             b: ivy.array([0.223, 0.223, 1.61])
         }
         """
-        return self.static_sparse_cross_entropy(
+        return self._static_sparse_cross_entropy(
             self,
             pred,
             axis=axis,

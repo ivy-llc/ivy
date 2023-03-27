@@ -70,7 +70,7 @@ class _ContainerWithManipulation(ContainerBase):
         """
         new_xs = xs.cont_copy() if ivy.is_ivy_container(xs) else xs.copy()
         new_xs.insert(0, self.cont_copy())
-        return self.static_concat(
+        return self._static_concat(
             new_xs,
             axis=axis,
             key_chains=key_chains,
@@ -223,7 +223,7 @@ class _ContainerWithManipulation(ContainerBase):
                           [[6., 7.]]])
         }
         """
-        return self.static_expand_dims(
+        return self._static_expand_dims(
             self,
             copy=copy,
             axis=axis,
@@ -369,7 +369,7 @@ class _ContainerWithManipulation(ContainerBase):
             b: ivy.array([2, 11])
         }]
         """
-        return self.static_split(
+        return self._static_split(
             self,
             copy=copy,
             num_or_size_splits=num_or_size_splits,
@@ -480,7 +480,7 @@ class _ContainerWithManipulation(ContainerBase):
             b:ivy.array([[3.],[4.],[5.]])
         }
         """
-        return self.static_permute_dims(
+        return self._static_permute_dims(
             self,
             axes,
             copy=copy,
@@ -640,7 +640,7 @@ class _ContainerWithManipulation(ContainerBase):
             b: ivy.array([4, 3, 2])
         }
         """
-        return self.static_flip(
+        return self._static_flip(
             self,
             copy=copy,
             axis=axis,
@@ -855,7 +855,7 @@ class _ContainerWithManipulation(ContainerBase):
                           [1, 3, 5]])
         }
         """
-        return self.static_reshape(
+        return self._static_reshape(
             self,
             shape,
             key_chains=key_chains,
@@ -1027,7 +1027,7 @@ class _ContainerWithManipulation(ContainerBase):
         }
 
         """
-        return self.static_roll(
+        return self._static_roll(
             self,
             shift,
             axis=axis,
@@ -1177,7 +1177,7 @@ class _ContainerWithManipulation(ContainerBase):
             b: ivy.array([[11.], [12.]])
         }
         """
-        return self.static_squeeze(
+        return self._static_squeeze(
             self,
             axis=axis,
             copy=copy,
@@ -1352,7 +1352,7 @@ class _ContainerWithManipulation(ContainerBase):
         """
         new_xs = xs.cont_copy() if ivy.is_ivy_container(xs) else xs.copy()
         new_xs.insert(0, self.cont_copy())
-        return self.static_stack(
+        return self._static_stack(
             new_xs,
             axis=axis,
             key_chains=key_chains,
@@ -1448,7 +1448,7 @@ class _ContainerWithManipulation(ContainerBase):
             b: ivy.array([3., 3., 4., 4., 5., 5.])
         }
         """
-        return self.static_repeat(
+        return self._static_repeat(
             self,
             repeats,
             axis=axis,
@@ -1559,7 +1559,7 @@ class _ContainerWithManipulation(ContainerBase):
         }
 
         """
-        return self.static_tile(
+        return self._static_tile(
             self,
             repeats,
             key_chains=key_chains,
@@ -1677,7 +1677,7 @@ class _ContainerWithManipulation(ContainerBase):
             b: ivy.array([0, 0, 4, 5, 6, 0, 0, 0])
         }
         """
-        return self.static_constant_pad(
+        return self._static_constant_pad(
             self,
             pad_width,
             value=value,
@@ -1813,7 +1813,7 @@ class _ContainerWithManipulation(ContainerBase):
         }
 
         """
-        return self.static_zero_pad(
+        return self._static_zero_pad(
             self,
             pad_width,
             key_chains=key_chains,
@@ -1937,7 +1937,7 @@ class _ContainerWithManipulation(ContainerBase):
                           [9, 12]])
         }
         """
-        return self.static_swapaxes(
+        return self._static_swapaxes(
             self,
             axis0,
             axis1,
@@ -2102,7 +2102,7 @@ class _ContainerWithManipulation(ContainerBase):
                           [15, 16]])
         }]
         """
-        return self.static_unstack(
+        return self._static_unstack(
             self,
             copy=copy,
             axis=axis,
@@ -2254,7 +2254,7 @@ class _ContainerWithManipulation(ContainerBase):
             b: ivy.array([2., 2., 2.])
         }
         """
-        return self.static_clip(
+        return self._static_clip(
             self,
             x_min,
             x_max,

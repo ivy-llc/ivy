@@ -138,7 +138,7 @@ class _ContainerWithSet(ContainerBase):
             ]
         }
         """
-        return self.static_unique_all(
+        return self._static_unique_all(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -267,7 +267,7 @@ class _ContainerWithSet(ContainerBase):
             a:[values=ivy.array([0.,1.,2.,3.]),counts=ivy.array([2,2,1,1])],
             b:[values=ivy.array([1,2,3,4]),counts=ivy.array([3,1,2,1])]}
         """
-        return self.static_unique_counts(
+        return self._static_unique_counts(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -366,7 +366,7 @@ class _ContainerWithSet(ContainerBase):
             'c': [4]
         }
         """
-        return self.static_unique_values(
+        return self._static_unique_values(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -498,7 +498,7 @@ class _ContainerWithSet(ContainerBase):
         }
 
         """
-        return self.static_unique_inverse(
+        return self._static_unique_inverse(
             self,
             key_chains=key_chains,
             to_apply=to_apply,

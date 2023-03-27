@@ -283,7 +283,7 @@ class _ContainerWithRandom(ContainerBase):
                           [16.2, 31.7]])
         }
         """
-        return self.static_random_uniform(
+        return self._static_random_uniform(
             low=self,
             high=high,
             shape=shape,
@@ -569,7 +569,7 @@ class _ContainerWithRandom(ContainerBase):
                           [23., 29.4]])
         }
         """
-        return self.static_random_normal(
+        return self._static_random_normal(
             mean=self,
             std=std,
             shape=shape,
@@ -716,7 +716,7 @@ class _ContainerWithRandom(ContainerBase):
         ret
             Drawn samples from the parameterized normal distribution.
         """
-        return self.static_multinomial(
+        return self._static_multinomial(
             population_size,
             num_samples,
             batch_size=batch_size,
@@ -1003,7 +1003,7 @@ class _ContainerWithRandom(ContainerBase):
                           [10, 6]])
         }
         """
-        return self.static_randint(
+        return self._static_randint(
             self,
             high,
             shape=shape,
@@ -1131,7 +1131,7 @@ class _ContainerWithRandom(ContainerBase):
             b: ivy.array([6, 7, 1])
         }
         """
-        return self.static_shuffle(
+        return self._static_shuffle(
             self,
             seed=seed,
             key_chains=key_chains,

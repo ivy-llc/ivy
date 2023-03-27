@@ -123,7 +123,7 @@ class _ContainerWithSearching(ContainerBase):
                           [0]])
         }
         """
-        return self.static_argmax(
+        return self._static_argmax(
             self,
             axis=axis,
             keepdims=keepdims,
@@ -257,7 +257,7 @@ class _ContainerWithSearching(ContainerBase):
                           [0]])
         }
         """
-        return self.static_argmin(
+        return self._static_argmin(
             self,
             axis=axis,
             keepdims=keepdims,
@@ -345,7 +345,7 @@ class _ContainerWithSearching(ContainerBase):
             a container containing the indices of the nonzero values.
 
         """
-        return self.static_nonzero(
+        return self._static_nonzero(
             self, as_tuple=as_tuple, size=size, fill_value=fill_value
         )
 
@@ -438,7 +438,7 @@ class _ContainerWithSearching(ContainerBase):
             b: ivy.array([2, 8, 6])
         }
         """
-        return self.static_where(self, x1, x2, out=out)
+        return self._static_where(self, x1, x2, out=out)
 
     # Extra #
     # ----- #
@@ -567,7 +567,7 @@ class _ContainerWithSearching(ContainerBase):
         }
 
         """
-        return self.static_argwhere(
+        return self._static_argwhere(
             self,
             key_chains=key_chains,
             to_apply=to_apply,

@@ -761,7 +761,7 @@ class _ContainerWithStatistical(ContainerBase):
             b: ivy.array([27., 64.])
         }
         """
-        return self.static_prod(
+        return self._static_prod(
             self,
             axis=axis,
             dtype=dtype,
@@ -813,7 +813,7 @@ class _ContainerWithStatistical(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.static_sum(
+        return self._static_sum(
             self,
             axis=axis,
             dtype=dtype,
@@ -1261,7 +1261,7 @@ class _ContainerWithStatistical(ContainerBase):
                          [10, 10]])
         }
         """
-        return self.static_cumsum(
+        return self._static_cumsum(
             self,
             axis=axis,
             exclusive=exclusive,
@@ -1441,7 +1441,7 @@ class _ContainerWithStatistical(ContainerBase):
                           [1, 5]])
         }
         """
-        return self.static_cumprod(
+        return self._static_cumprod(
             self,
             axis=axis,
             exclusive=exclusive,
