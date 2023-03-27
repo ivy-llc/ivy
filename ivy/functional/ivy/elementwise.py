@@ -5596,3 +5596,43 @@ def isreal(
     }
     """
     return ivy.current_backend(x).isreal(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
+def gcd(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Returns the greatest common divisor of ``|x1|`` and ``|x2|``
+
+    Parameters
+    ----------
+    x1, x2
+          arrays of values. If ``x1.shape != x2.shape``, they must be broadcastable 
+          to a common shape (which becomes the shape of the output)
+
+    Returns
+    -------
+    y 
+          the greatest common divisor of the absolute value of the inputs.
+          This is a scalar if both `x1` and `x2` are scalars.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> ivy.gcd(15,25)
+    5
+    >>> ivy.gcd.reduce([18, 24, 72])
+    6
+    """
+
+    return ivy.current_backend(x1, x2).gcd(x1, x2, out=out)
