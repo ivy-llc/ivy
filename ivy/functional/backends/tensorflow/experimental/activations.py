@@ -64,3 +64,7 @@ def batch_norm(
 
 def logsigmoid(input: Tensor) -> Tensor:
     return tf.math.log_sigmoid(input)
+
+
+def selu(input: Tensor) -> Tensor:
+    return tf.nn.selu(input, name='selu')
