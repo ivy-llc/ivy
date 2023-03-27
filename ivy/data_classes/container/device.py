@@ -55,7 +55,7 @@ class _ContainerWithDevice(ContainerBase):
             b:cpu
         }
         """
-        return self.static_dev(self, as_native=as_native)
+        return self._static_dev(self, as_native=as_native)
 
     @staticmethod
     def _static_to_device(
@@ -183,7 +183,7 @@ class _ContainerWithDevice(ContainerBase):
         cpu cpu
 
         """
-        return self.static_to_device(
+        return self._static_to_device(
             self,
             device,
             key_chains=key_chains,

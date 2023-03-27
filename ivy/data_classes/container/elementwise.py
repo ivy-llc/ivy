@@ -121,7 +121,7 @@ class _ContainerWithElementwise(ContainerBase):
         }
 
         """
-        return self.static_abs(
+        return self._static_abs(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -248,7 +248,7 @@ class _ContainerWithElementwise(ContainerBase):
         }
 
         """
-        return self.static_acosh(
+        return self._static_acosh(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -474,7 +474,7 @@ class _ContainerWithElementwise(ContainerBase):
         }
 
         """
-        return self.static_acos(
+        return self._static_acos(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -552,7 +552,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([17, 21, 25])
         }
         """
-        return self.static_add(
+        return self._static_add(
             self,
             x2,
             key_chains=key_chains,
@@ -697,7 +697,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([-1.02, 0.644, 0.305])
         }
         """
-        return self.static_asin(
+        return self._static_asin(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -822,7 +822,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([2.21, -1.61, -1.19])
         }
         """
-        return self.static_asinh(
+        return self._static_asinh(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -944,7 +944,7 @@ class _ContainerWithElementwise(ContainerBase):
         }
 
         """
-        return self.static_atan(
+        return self._static_atan(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -1104,7 +1104,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([1.07, -0.696, 0., -0.993])
         }
         """
-        return self.static_atan2(
+        return self._static_atan2(
             self,
             x2,
             key_chains=key_chains,
@@ -1230,7 +1230,7 @@ class _ContainerWithElementwise(ContainerBase):
         }
 
         """
-        return self.static_atanh(
+        return self._static_atanh(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -1383,7 +1383,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([False, True])
         }
         """
-        return self.static_bitwise_and(
+        return self._static_bitwise_and(
             self,
             x2,
             key_chains=key_chains,
@@ -1498,7 +1498,7 @@ class _ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results. The returned container
             must have a data type determined by :ref:`type-promotion`.
         """
-        return self.static_bitwise_left_shift(
+        return self._static_bitwise_left_shift(
             self,
             x2,
             key_chains=key_chains,
@@ -1635,7 +1635,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([-5, -6, -7])
         }
         """
-        return self.static_bitwise_invert(
+        return self._static_bitwise_invert(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -1762,7 +1762,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([0.54, 1., 0.96])
         }
         """
-        return self.static_cos(
+        return self._static_cos(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -1905,7 +1905,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([7, 7, 7])
         }
         """
-        return self.static_bitwise_or(
+        return self._static_bitwise_or(
             self,
             x2,
             key_chains=key_chains,
@@ -2053,7 +2053,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([1, 2, 16])
         }
         """
-        return self.static_bitwise_right_shift(
+        return self._static_bitwise_right_shift(
             self,
             x2,
             key_chains=key_chains,
@@ -2191,7 +2191,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([6])
         }
         """
-        return self.static_bitwise_xor(
+        return self._static_bitwise_xor(
             self,
             x2,
             key_chains=key_chains,
@@ -2313,7 +2313,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([6., -3., 6.])
         }
         """
-        return self.static_ceil(
+        return self._static_ceil(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -2460,7 +2460,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([1.23, 1.52, 10.1])
         }
         """
-        return self.static_cosh(
+        return self._static_cosh(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -2611,7 +2611,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: 0.5
         }
         """
-        return self.static_divide(
+        return self._static_divide(
             self,
             x2,
             key_chains=key_chains,
@@ -2758,7 +2758,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([True, True, True])
         }
         """
-        return self.static_equal(
+        return self._static_equal(
             self,
             x2,
             key_chains=key_chains,
@@ -2880,7 +2880,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([54.59814835, 148.4131622, 403.428772])
         }
         """
-        return self.static_exp(
+        return self._static_exp(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -3012,7 +3012,7 @@ class _ContainerWithElementwise(ContainerBase):
         }
 
         """
-        return self.static_expm1(
+        return self._static_expm1(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -3133,7 +3133,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([5., -4., 5.])
         }
         """
-        return self.static_floor(
+        return self._static_floor(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -3295,7 +3295,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([3., 2., 2.])
         }
         """
-        return self.static_floor_divide(
+        return self._static_floor_divide(
             self,
             x2,
             key_chains=key_chains,
@@ -3434,7 +3434,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([False, False, False])
         }
         """
-        return self.static_greater(
+        return self._static_greater(
             self,
             x2,
             key_chains=key_chains,
@@ -3572,7 +3572,7 @@ class _ContainerWithElementwise(ContainerBase):
             b:ivy.array([False,False,False])
         }
         """
-        return self.static_greater_equal(
+        return self._static_greater_equal(
             self,
             x2,
             key_chains=key_chains,
@@ -3696,7 +3696,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([True, False])
         }
         """
-        return self.static_isfinite(
+        return self._static_isfinite(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -3837,7 +3837,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([True, False, False])
         }
         """
-        return self.static_isinf(
+        return self._static_isinf(
             self,
             detect_positive=detect_positive,
             detect_negative=detect_negative,
@@ -3966,7 +3966,7 @@ class _ContainerWithElementwise(ContainerBase):
         }
 
         """
-        return self.static_isnan(
+        return self._static_isnan(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -4104,7 +4104,7 @@ class _ContainerWithElementwise(ContainerBase):
         }
 
         """
-        return self.static_less(
+        return self._static_less(
             self,
             x2,
             key_chains=key_chains,
@@ -4253,7 +4253,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([True, True, True])
         }
         """
-        return self.static_less_equal(
+        return self._static_less_equal(
             self,
             x2,
             key_chains=key_chains,
@@ -4387,7 +4387,7 @@ class _ContainerWithElementwise(ContainerBase):
         }
 
         """
-        return self.static_log(
+        return self._static_log(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -4519,7 +4519,7 @@ class _ContainerWithElementwise(ContainerBase):
         }
 
         """
-        return self.static_log1p(
+        return self._static_log1p(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -4622,7 +4622,7 @@ class _ContainerWithElementwise(ContainerBase):
             floating-point data type determined by :ref:`type-promotion`.
 
         """
-        return self.static_log2(
+        return self._static_log2(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -4754,7 +4754,7 @@ class _ContainerWithElementwise(ContainerBase):
             c: ivy.array([0.898, 0.0414, 0.])
         }
         """
-        return self.static_log10(
+        return self._static_log10(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -4897,7 +4897,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([5.05, 6.05, 7.05])
         }
         """
-        return self.static_logaddexp(
+        return self._static_logaddexp(
             self,
             x2,
             key_chains=key_chains,
@@ -5072,7 +5072,7 @@ class _ContainerWithElementwise(ContainerBase):
             b:ivy.array([False,False,False])
         }
         """
-        return self.static_logical_and(
+        return self._static_logical_and(
             self,
             x2,
             key_chains=key_chains,
@@ -5203,7 +5203,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([False, False, True, False])
         }
         """
-        return self.static_logical_not(
+        return self._static_logical_not(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -5349,7 +5349,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([True, True, True])
         }
         """
-        return self.static_logical_or(
+        return self._static_logical_or(
             self,
             x2,
             key_chains=key_chains,
@@ -5496,7 +5496,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([False, False, False, True, False])
         }
         """
-        return self.static_logical_xor(
+        return self._static_logical_xor(
             self,
             x2,
             key_chains=key_chains,
@@ -5652,7 +5652,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([41.5, 5.44, 0.65])
         }
         """
-        return self.static_multiply(
+        return self._static_multiply(
             self,
             x2,
             key_chains=key_chains,
@@ -5778,7 +5778,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([-3., -4., 5.])
         }
         """
-        return self.static_negative(
+        return self._static_negative(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -5926,7 +5926,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([False, False, False])
         }
         """
-        return self.static_not_equal(
+        return self._static_not_equal(
             self,
             x2,
             key_chains=key_chains,
@@ -6053,7 +6053,7 @@ class _ContainerWithElementwise(ContainerBase):
         }
 
         """
-        return self.static_positive(
+        return self._static_positive(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -6188,7 +6188,7 @@ class _ContainerWithElementwise(ContainerBase):
             b:ivy.array([8,27])
         }
         """
-        return self.static_pow(
+        return self._static_pow(
             self,
             x2,
             key_chains=key_chains,
@@ -6379,7 +6379,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([0., 0., 1.])
         }
         """
-        return self.static_remainder(
+        return self._static_remainder(
             self,
             x2,
             modulus=modulus,
@@ -6506,7 +6506,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([-301., -527., 4.])
         }
         """
-        return self.static_round(
+        return self._static_round(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -6629,7 +6629,7 @@ class _ContainerWithElementwise(ContainerBase):
             c: ivy.array([-1., -1., 1.])
         }
         """
-        return self.static_sign(
+        return self._static_sign(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -6754,7 +6754,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([0.757, 0.959, 0.279])
         }
         """
-        return self.static_sin(
+        return self._static_sin(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -6897,7 +6897,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([0.721, -1.14, -10.])
         }
         """
-        return self.static_sinh(
+        return self._static_sinh(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -7020,7 +7020,7 @@ class _ContainerWithElementwise(ContainerBase):
         }
 
         """
-        return self.static_square(
+        return self._static_square(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -7147,7 +7147,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([9.64, 7.35, 5.])
         }
         """
-        return self.static_sqrt(
+        return self._static_sqrt(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -7306,7 +7306,7 @@ class _ContainerWithElementwise(ContainerBase):
         }
 
         """
-        return self.static_subtract(
+        return self._static_subtract(
             self,
             x2,
             key_chains=key_chains,
@@ -7431,7 +7431,7 @@ class _ContainerWithElementwise(ContainerBase):
             b:ivy.array([-0.143, 1.16, -3.38])
         }
         """
-        return self.static_tan(
+        return self._static_tan(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -7555,7 +7555,7 @@ class _ContainerWithElementwise(ContainerBase):
             b:ivy.array([0.995, 0.999, 1.])
         }
         """
-        return self.static_tanh(
+        return self._static_tanh(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -7679,7 +7679,7 @@ class _ContainerWithElementwise(ContainerBase):
         }
 
         """
-        return self.static_trunc(
+        return self._static_trunc(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -7798,7 +7798,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([1., -0.99999928, 0.91903949])
         }
         """
-        return self.static_erf(
+        return self._static_erf(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -7943,7 +7943,7 @@ class _ContainerWithElementwise(ContainerBase):
         }
 
         """
-        return self.static_minimum(
+        return self._static_minimum(
             self,
             x2,
             key_chains=key_chains,
@@ -8099,7 +8099,7 @@ class _ContainerWithElementwise(ContainerBase):
                           [3, 9]])
         }
         """
-        return self.static_maximum(
+        return self._static_maximum(
             self,
             x2,
             key_chains=key_chains,
@@ -8219,7 +8219,7 @@ class _ContainerWithElementwise(ContainerBase):
         }
 
         """
-        return self.static_reciprocal(
+        return self._static_reciprocal(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -8342,7 +8342,7 @@ class _ContainerWithElementwise(ContainerBase):
         }
 
         """
-        return self.static_deg2rad(
+        return self._static_deg2rad(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -8465,7 +8465,7 @@ class _ContainerWithElementwise(ContainerBase):
         }
 
         """
-        return self.static_rad2deg(
+        return self._static_rad2deg(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -8605,7 +8605,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([1., 0., -4.])
         }
         """
-        return self.static_trunc_divide(
+        return self._static_trunc_divide(
             self,
             x2,
             key_chains=key_chains,
@@ -8729,7 +8729,7 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([True, False, True])
         }
         """
-        return self.static_isreal(
+        return self._static_isreal(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -8845,4 +8845,4 @@ class _ContainerWithElementwise(ContainerBase):
             b: 10.5
         }
         """
-        return self.static_trapz(self, x=x, dx=dx, axis=axis, out=out)
+        return self._static_trapz(self, x=x, dx=dx, axis=axis, out=out)
