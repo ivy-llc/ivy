@@ -142,7 +142,7 @@ class _ContainerWithDataTypes(ContainerBase):
         }
 
         """
-        return self.static_astype(
+        return self._static_astype(
             self,
             dtype,
             key_chains=key_chains,
@@ -295,7 +295,7 @@ class _ContainerWithDataTypes(ContainerBase):
             b: ivy.array([0., 0.])
         }]
         """
-        return self.static_broadcast_arrays(
+        return self._static_broadcast_arrays(
             self,
             *arrays,
             key_chains=key_chains,
@@ -413,7 +413,7 @@ class _ContainerWithDataTypes(ContainerBase):
         }
 
         """
-        return self.static_broadcast_to(
+        return self._static_broadcast_to(
             self,
             shape,
             key_chains=key_chains,
@@ -534,7 +534,7 @@ class _ContainerWithDataTypes(ContainerBase):
             b: true
         }
         """
-        return self.static_can_cast(
+        return self._static_can_cast(
             self, to, key_chains, to_apply, prune_unapplied, map_sequences
         )
 
@@ -581,7 +581,7 @@ class _ContainerWithDataTypes(ContainerBase):
             b: int32
         }
         """
-        return self.static_dtype(
+        return self._static_dtype(
             self,
             as_native=as_native,
             key_chains=key_chains,
@@ -754,7 +754,7 @@ class _ContainerWithDataTypes(ContainerBase):
         }
 
         """
-        return self.static_finfo(
+        return self._static_finfo(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -885,7 +885,7 @@ class _ContainerWithDataTypes(ContainerBase):
         }
 
         """
-        return self.static_iinfo(
+        return self._static_iinfo(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -919,7 +919,7 @@ class _ContainerWithDataTypes(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
-        return self.static_is_bool_dtype(
+        return self._static_is_bool_dtype(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -1065,7 +1065,7 @@ class _ContainerWithDataTypes(ContainerBase):
         >>> print(x.a.dtype, x.b.dtype)
         float32 int32
         """
-        return self.static_is_float_dtype(
+        return self._static_is_float_dtype(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -1099,7 +1099,7 @@ class _ContainerWithDataTypes(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
-        return self.static_is_int_dtype(
+        return self._static_is_int_dtype(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -1131,7 +1131,7 @@ class _ContainerWithDataTypes(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
-        return self.static_is_uint_dtype(
+        return self._static_is_uint_dtype(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -1253,7 +1253,7 @@ class _ContainerWithDataTypes(ContainerBase):
         >>> print(x)
         False
         """
-        return self.static_is_complex_dtype(
+        return self._static_is_complex_dtype(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -1367,7 +1367,7 @@ class _ContainerWithDataTypes(ContainerBase):
             }
         }
         """
-        return self.static_result_type(
+        return self._static_result_type(
             self,
             *arrays_and_dtypes,
             key_chains=key_chains,
