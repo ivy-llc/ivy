@@ -202,6 +202,7 @@ def test_jax_numpy_tril_indices(
     )
 
 
+
 # triu_indices
 @handle_frontend_test(
     fn_tree="jax.numpy.triu_indices",
@@ -229,7 +230,6 @@ def test_jax_numpy_triu_indices(
         on_device=on_device,
     )
 
-
 # triu_indices_from
 @handle_frontend_test(
     fn_tree="jax.numpy.triu_indices_from",
@@ -242,7 +242,40 @@ def test_jax_numpy_triu_indices(
     k=helpers.ints(min_value=-5, max_value=5),
     test_with_out=st.just(False),
 )
+
 def test_jax_numpy_triu_indices_from(
+    dtype_and_x,
+    k,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        arr=x[0],
+        k=k,
+    )
+    
+# tril_indices_from
+@handle_frontend_test(
+    fn_tree="jax.numpy.tril_indices_from",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=1,
+        min_num_dims=2,
+        max_num_dims=5,
+    ),
+    k=helpers.ints(min_value=-5, max_value=5),
+    test_with_out=st.just(False),
+)
+
+def test_jax_numpy_tril_indices_from(
     dtype_and_x,
     k,
     test_flags,
