@@ -796,7 +796,7 @@ def arrays_and_axes(
     return_dtype=False,
     force_int_axis=False,
 ):
-    """# TODO: Short explanation of this helper
+    """Generates a list of arrays and axes.
 
     Parameters
     ----------
@@ -1132,7 +1132,7 @@ def array_values(
         try:
             np.dtype("bfloat16")
         except Exception:
-            # enables bfloat16 behavior with possibly no side-effects
+            # enables bfloat16 behavior with possibly no side effects
 
             import paddle_bfloat  # noqa
 
