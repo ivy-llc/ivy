@@ -140,7 +140,7 @@ def reshape_shapes(draw, *, shape):
 
     Returns
     -------
-    A strategy that draws a tuple.
+        A strategy that draws a tuple.
     """
     if isinstance(shape, st._internal.SearchStrategy):
         shape = draw(shape)
@@ -168,7 +168,7 @@ def subsets(draw, *, elements):
 
     Returns
     -------
-    A strategy that draws a subset of elements.
+        A strategy that draws a subset of elements.
     """
     return tuple(e for e in elements if draw(st.booleans()))
 
@@ -233,7 +233,7 @@ def get_mean_std(draw, *, dtype):
 
     Returns
     -------
-    A strategy that can be used in the @given hypothesis decorator.
+        A strategy that can be used in the @given hypothesis decorator.
     """
     # TODO: Does this actually work?
     none_or_float = number_helpers.floats(dtype=dtype) | st.none()
@@ -256,7 +256,7 @@ def get_bounds(draw, *, dtype):
 
     Returns
     -------
-    A strategy that can be used in the @given hypothesis decorator.
+        A strategy that can be used in the @given hypothesis decorator.
     """
     if "int" in dtype:
         values = draw(array_helpers.array_values(dtype=dtype, shape=2))
