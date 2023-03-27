@@ -1076,6 +1076,11 @@ def nested_map(
     elif (list_check_fn(x, list) or isinstance(x, extra_nest_types)) and not isinstance(
         x, to_ignore
     ):
+        if isinstance(x, (ivy.Array, ivy.NativeArray)):
+            ret = fn(x)
+            if shallow:
+                return ivy.inplace_update(x, ret)
+            return ret
         ret_list = [
             nested_map(
                 i,
