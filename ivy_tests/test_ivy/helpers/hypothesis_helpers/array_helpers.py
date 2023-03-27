@@ -787,7 +787,7 @@ def array_indices_axis(
 def arrays_and_axes(
     draw,
     available_dtypes=get_dtypes("float"),
-    allow_none=False,
+    allow_none=False,  # TODO: Should this exist? - 1
     min_num_dims=1,
     max_num_dims=5,
     min_dim_size=1,
@@ -796,11 +796,77 @@ def arrays_and_axes(
     return_dtype=False,
     force_int_axis=False,
 ):
+    """# TODO: Short explanation of this helper
+
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    available_dtypes
+        if dtype is None, data type is drawn from this list randomly.
+    allow_none
+        if True, one of the dimensions can be None
+    min_num_dims
+        The minimum number of dimensions the arrays can have.
+    max_num_dims
+        The maximum number of dimensions the arrays can have.
+    min_dim_size
+        The minimum size of the dimensions of the arrays.
+    max_dim_size
+        The maximum size of the dimensions of the arrays.
+    num
+        The number of arrays to be generated
+    return_dtype
+        If `True`, return a tuple of the form `(dtype, arrays, axes)` instead of
+        `(arrays, axes)`
+    force_int_axis
+        If `True` and only one axis is drawn for each array, the returned axis will be
+        an integer instead of a tuple containing one integer or `None`
+
+
+    Returns
+    -------
+        A strategy that draws arrays and their axes
+
+    Examples
+    --------
+    >>> arrays_and_axes(
+    ...     allow_none=False,
+    ...     min_num_dims=1,
+    ...     max_num_dims=2,
+    ...     min_dim_size=2,
+    ...     max_dim_size=4,
+    ...     num=2,
+    ...     return_dtype=True,
+    ... )
+    (['float16', 'float16'], [array([[-1., -1.],
+        [-1., -1.]], dtype=float16), array([[-1., -1.],
+        [-1., -1.]], dtype=float16)], (None, None))
+    (['float16', 'float32'],
+        [array([ 1.5 , -8.33], dtype=float16),
+        array([8.26e+00, 9.10e+00, 6.72e-05], dtype=float16)],
+        (0, None))
+    (['float64', 'float32'],
+        [array([-1.1, -12.24322108]),
+        array([[-2.44758124e-308, 8.26446279e+000, 5.96046448e-008],
+        [1.17549435e-038, 1.06541027e-001, 1.13725760e+001]])],
+        (None, None))
+
+    >>> arrays_and_axes(
+    ...     num=1,
+    ...     force_int_axis=True,
+    ... )
+    ([array([0.07143888])], 0)
+    ([array([-2.44758124e-308])], None)
+    ([array([-6.72e-05, -6.72e-05, -6.72e-05, -6.72e-05, -6.72e-05],
+        dtype=float16)], 0)
+    """
     shapes = list()
     for _ in range(num):
         shape = draw(
             gh.get_shape(
-                allow_none=False,
+                allow_none=False,  # TODO: Should this exist? - 1
                 min_num_dims=min_num_dims,
                 max_num_dims=max_num_dims,
                 min_dim_size=min_dim_size,
@@ -820,8 +886,8 @@ def arrays_and_axes(
             draw(array_values(dtype=dtype[0], shape=shape, min_value=-20, max_value=20))
         )
     if force_int_axis:
-        if len(shape) <= 2:
-            axes = draw(st.one_of(st.integers(0, len(shape) - 1), st.none()))
+        if len(shape) <= 2:  # TODO: What is "shape"? It doesn't seem to be defined previously - 2
+            axes = draw(st.one_of(st.integers(0, len(shape) - 1), st.none()))  # TODO: st.none() might overlap with allow_none? - 1
         else:
             axes = draw(st.integers(0, len(shape) - 1))
     else:
@@ -925,6 +991,23 @@ def array_values(
     Returns
     -------
         A strategy that draws a list.
+
+    Examples
+    --------
+    >>> array_values(
+    ...     dtype=get_dtypes("float"),
+    ...     shape=st.shared(get_shape()),
+    ... )
+    -1.0
+    [-2.44758124e-308]
+    [[ 5.26444487e+016]
+        [-6.16066656e-150]
+        [ 3.40282347e+038]
+        [-3.40282347e+038]
+        [-1.44711121e-285]
+        [ 9.99990000e-001]
+        [-2.44758124e-308]
+        [ 1.00000000e-005]]
     """
     assert small_abs_safety_factor >= 1, "small_abs_safety_factor must be >= 1"
     assert large_abs_safety_factor >= 1, "large_value_safety_factor must be >= 1"
@@ -1053,7 +1136,7 @@ def array_values(
 
             import paddle_bfloat  # noqa
 
-    array = np.asarray(values, dtype=dtype)
+    array = np.asarray(values, dtype=dtype)  # TODO: This will break if kind_dtype not in ['bool', 'int', 'float']
 
     if isinstance(shape, (tuple, list)):
         return array.reshape(shape)
@@ -1198,7 +1281,7 @@ def arrays_for_pooling(
         )
     if array_dim == 3:
         kernel = draw(st.tuples(st.integers(1, in_shape[1])))
-    new_kernel = kernel
+    new_kernel = kernel  # TODO: This will raise an error if array_dim not in [5, 4, 3]
     if return_dilation:
         new_kernel = []
         dilations = []
