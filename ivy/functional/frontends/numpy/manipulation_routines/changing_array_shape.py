@@ -13,7 +13,7 @@ def reshape(x, /, newshape, order="C"):
 def compress(condition, x, axis=None, out=None):
     condition = ivy.asarray([1, 0, 1, 0]).astype(ivy.bool)
     mask = ivy.expand_dims(condition, axis=axis)
-    indices = np.nonzero(mask)
+    indices = ivy.nonzero(mask)
     if axis is not None:
         indices = (ivy.moveaxis(indices, 0, axis),)
         x = ivy.swapaxes(x, axis, 0)
