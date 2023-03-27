@@ -576,13 +576,13 @@ def test_numpy_instance_min(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
     method_name="prod",
-    dtype_x_axis=_get_castable_dtypes_values(use_where=True),
-    keepdims=st.booleans(),
+    dtype_x_axis_dtype=_get_castable_dtypes_values(use_where=True),
+    keep_dims=st.booleans(),
     initial=st.one_of(st.floats(min_value=-100, max_value=100)),
 )
 def test_numpy_ndarray_prod(
-    dtype_x_axis,
-    keepdims,
+    dtype_x_axis_dtype,
+    keep_dims,
     initial,
     frontend_method_data,
     init_flags,
@@ -590,19 +590,27 @@ def test_numpy_ndarray_prod(
     frontend,
     on_device,
 ):
-    input_dtypes, x, axis, dtype, where = dtype_x_axis
+    input_dtypes, x, axis, dtype, where = dtype_x_axis_dtype
+
+    where, input_dtypes, method_flags = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=method_flags,
+    )
+
+    where = where.astype('bool')
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
-        method_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
             "object": x[0],
         },
+        method_input_dtypes=input_dtypes,
         method_all_as_kwargs_np={
-            "dtype": dtype,
             "axis": axis,
-            "keepdims": keepdims,
-            "initial": initial,
-            "where": where,
+            "dtype":dtype,
+            "keepdims": keep_dims,
+            "initial":initial,
+            "where":where,
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
@@ -610,7 +618,6 @@ def test_numpy_ndarray_prod(
         method_flags=method_flags,
         on_device=on_device,
     )
-
 
 
 @handle_frontend_method(
