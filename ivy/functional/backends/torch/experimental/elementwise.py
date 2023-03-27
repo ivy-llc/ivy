@@ -186,7 +186,6 @@ def count_nonzero(
 count_nonzero.support_native_out = False
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
 def nansum(
     x: torch.Tensor,
     /,

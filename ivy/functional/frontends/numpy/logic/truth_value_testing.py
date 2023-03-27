@@ -1,12 +1,11 @@
 # global
 import ivy
-import numbers
+import numpy as np
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     from_zero_dim_arrays_to_scalar,
     handle_numpy_out,
 )
-import ivy.functional.frontends.numpy as np_frontend
 
 
 @handle_numpy_out
@@ -48,14 +47,15 @@ def any(
 @to_ivy_arrays_and_back
 def isscalar(element):
     return (
-        isinstance(element, (int, float, complex, bool, bytes, str, memoryview))
-        or isinstance(element, numbers.Number)
-        or isinstance(element, np_frontend.generic)
+        isinstance(element, int)
+        or isinstance(element, bool)
+        or isinstance(element, float)
+        or isinstance(element, complex)
     )
 
 
 @to_ivy_arrays_and_back
-def isfortran(a):
+def isfortran(a: np.ndarray):
     return a.flags.fnc
 
 
@@ -70,10 +70,15 @@ def isrealobj(x: any):
 
 
 @to_ivy_arrays_and_back
-def iscomplexobj(x):
-    if x.ndim == 0:
-        return ivy.is_complex_dtype(ivy.dtype(x))
-    for ele in x:
+def iscomplexobj(a: np.ndarray):
+    """The return value, True if x is of a complex type or
+        has at least one complex element.
+    Args:
+        a (np.ndarray): _description_
+    """
+    for ele in a:
+        # ivy.dtype considers a+0j also as complex,
+        # which is same requirement as of iscomplexobj()
         if ivy.is_complex_dtype(ivy.dtype(ele)):
             return True
         else:
@@ -81,5 +86,5 @@ def iscomplexobj(x):
 
 
 @to_ivy_arrays_and_back
-def iscomplex(x):
+def iscomplex(x: np.ndarray):
     return ivy.bitwise_invert(ivy.isreal(x))
