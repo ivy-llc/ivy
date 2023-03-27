@@ -18,12 +18,13 @@ from ivy.utils.exceptions import handle_exceptions
 # ------#
 
 
-@inputs_to_ivy_arrays
+@handle_array_function
 @integer_arrays_to_float
 @handle_exceptions
 @handle_nestable
+@inputs_to_ivy_arrays
 @handle_array_like_without_promotion
-@handle_array_function
+@handle_exceptions
 def layer_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     normalized_shape: Tuple[int],
