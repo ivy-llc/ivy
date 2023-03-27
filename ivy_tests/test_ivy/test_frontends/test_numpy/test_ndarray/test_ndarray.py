@@ -599,6 +599,7 @@ def test_numpy_ndarray_prod(
         input_dtype=input_dtypes,
         test_flags=method_flags,
     )
+    where = ivy.array(where, dtype='bool')
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
