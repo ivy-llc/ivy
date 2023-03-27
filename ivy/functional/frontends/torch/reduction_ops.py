@@ -86,6 +86,8 @@ def prod(input, dim, *, keepdim=False, dtype=None):
             dtype = ivy.float32
     return ivy.prod(input, axis=dim, dtype=dtype, keepdims=keepdim)
 
+def unique_consecutive(input, dim, *, return_inverse=False, return_counts=None):
+    return ivy.unique_consecutive(input, dim=dim, return_inverse=return_inverse, return_counts=return_counts)
 
 @to_ivy_arrays_and_back
 def var(input, dim, unbiased, keepdim=False, *, out=None):

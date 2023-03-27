@@ -45,6 +45,44 @@ def test_torch_dist(
         p=p,
     )
 
+@handle_frontend_test(
+    fn_tree="torch.unique_consecutive",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        shared_dtype=True,
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
+    ),
+   
+)
+
+def unique_consecutive(
+    *,
+    dtype_and_input,
+    p,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    dim=None,
+    return_inverse=False,
+    return_counts=False,
+):
+    input_dtype, input = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        dim=dim,
+        return_inverse=return_inverse,
+        return_counts=return_counts,
+        p=p,
+    )
+
 
 @handle_frontend_test(
     fn_tree="torch.argmax",

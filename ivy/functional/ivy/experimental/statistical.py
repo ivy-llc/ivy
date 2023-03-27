@@ -313,3 +313,26 @@ def bincount(
     return ivy.current_backend(x).bincount(
         x, weights=weights, minlength=minlength, out=out
     )
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def unique_consecutive(
+    x: ivy.Array,
+    /,
+    *,
+    dim: Optional[int] = None,
+    return_inverse: bool = False,
+    return_counts: bool = False,
+    out: Optional[ivy.Array] = ivy.array,
+) -> ivy.Array:
+    return ivy.current_backend(x).unique_consecutive(
+        x, dim=dim,return_inverse=return_inverse, return_counts=return_counts, out=out
+    )
+
+
+
+
+
+

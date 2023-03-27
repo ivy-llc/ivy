@@ -177,6 +177,26 @@ def sum(
     return torch.sum(input=x, dim=axis, dtype=dtype, keepdim=keepdims)
 
 
+
+def unique_consecutive(x: torch.Tensor,
+                      dim: Optional[int] = None,
+                      return_inverse: bool = False,
+                      return_counts: bool = False,
+                      out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    """
+    Returns the unique consecutive elements of a PyTorch tensor along a given dimension.
+    """
+    unique_values, inverse_indices, counts = torch.unique_consecutive(x, return_inverse=return_inverse, return_counts=return_counts, dim=dim, out=out)
+    if return_inverse and return_counts:
+        return unique_values, inverse_indices, counts
+    elif return_inverse:
+        return unique_values, inverse_indices
+    elif return_counts:
+        return unique_values, counts
+    else:
+        return unique_values
+    
+
 def var(
     x: torch.Tensor,
     /,
