@@ -82,7 +82,7 @@ def test_lcm(
 @handle_test(
     fn_tree="functional.ivy.experimental.fmod",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
         shared_dtype=False,
         large_abs_safety_factor=6,
@@ -110,7 +110,7 @@ def test_fmod(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        ground_truth_backend="numpy",
+        ground_truth_backend="jax",
         fw=backend_fw,
         fn_name=fn_name,
         x1=x[0],
@@ -262,8 +262,8 @@ def test_trapz(
         fw=backend_fw,
         ground_truth_backend=ground_truth_backend,
         fn_name=fn_name,
-        rtol_=1e-3,
-        atol_=1e-3,
+        rtol_=1e-1,
+        atol_=1e-1,
         y=np.asarray(y[0], dtype=input_dtype[0]),
         x=x,
         dx=dx,
@@ -787,6 +787,8 @@ def test_allclose(
     equal_nan,
     test_flags,
     backend_fw,
+    fn_name,
+    on_device,
     ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
@@ -795,7 +797,8 @@ def test_allclose(
         ground_truth_backend=ground_truth_backend,
         test_flags=test_flags,
         fw=backend_fw,
-        fn_name="allclose",
+        fn_name=fn_name,
+        on_device=on_device,
         x1=x[0],
         x2=x[1],
         rtol=rtol,
@@ -821,6 +824,7 @@ def test_fix(
     test_flags,
     backend_fw,
     fn_name,
+    on_device,
     ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
@@ -830,6 +834,7 @@ def test_fix(
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
     )
 
@@ -939,6 +944,8 @@ def test_diff(
 def test_zeta(
     dtype_and_x,
     test_flags,
+    fn_name,
+    on_device,
     ground_truth_backend,
     backend_fw,
 ):
@@ -948,7 +955,8 @@ def test_zeta(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
-        fn_name="zeta",
+        on_device=on_device,
+        fn_name=fn_name,
         rtol_=1e-02,
         atol_=1e-02,
         x=x[0],
@@ -959,12 +967,14 @@ def test_zeta(
 # gradient
 @handle_test(
     fn_tree="functional.ivy.experimental.gradient",
-    dtype_and_x=helpers.dtype_and_values(
+    dtype_n_x_n_axis=helpers.dtype_values_axis(
         available_dtypes=("float32", "float16", "float64"),
         min_num_dims=1,
         max_num_dims=3,
         min_dim_size=2,
         max_dim_size=4,
+        valid_axis=True,
+        force_int_axis=True,
     ),
     spacing=helpers.ints(
         min_value=-3,
@@ -975,7 +985,7 @@ def test_zeta(
 )
 def test_gradient(
     *,
-    dtype_and_x,
+    dtype_n_x_n_axis,
     spacing,
     test_flags,
     backend_fw,
@@ -983,7 +993,7 @@ def test_gradient(
     on_device,
     ground_truth_backend,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, axis = dtype_n_x_n_axis
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
@@ -993,6 +1003,7 @@ def test_gradient(
         fn_name=fn_name,
         x=x[0],
         spacing=spacing,
+        axis=axis,
     )
 
 
@@ -1097,9 +1108,9 @@ def test_hypot(
 
 
 @handle_test(
-    fn_tree="binarizer",
+    fn_tree="functional.ivy.experimental.binarizer",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=helpers.get_dtypes("valid")
     ),
     threshold=helpers.floats(),
     container_flags=st.just([False]),

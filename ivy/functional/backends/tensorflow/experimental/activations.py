@@ -60,3 +60,15 @@ def batch_norm(
     x = tf.transpose(x, perm=(0, *range(2, ndims), 1))
     ret = tf.nn.batch_normalization(x, mean, variance, offset, scale, eps)
     return tf.transpose(ret, perm=(0, ndims - 1, *range(1, ndims - 1)))
+
+
+def logsigmoid(input: Tensor) -> Tensor:
+    return tf.math.log_sigmoid(input)
+
+
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
+def selu(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
+    ret = tf.nn.selu(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)

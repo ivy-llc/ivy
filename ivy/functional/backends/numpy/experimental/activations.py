@@ -4,6 +4,7 @@ from typing import Optional, Union
 import numpy as np
 
 # local
+import ivy
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 
 
@@ -71,3 +72,21 @@ def batch_norm(
         offset - mean * inv if offset is not None else -mean * inv
     ).astype(x.dtype)
     return np.transpose(ret, (0, ndims - 1, *range(1, ndims - 1)))
+
+
+@_scalar_output_to_0d_array
+def logsigmoid(input: np.ndarray) -> np.ndarray:
+    return -(np.log1p(np.exp(-(input))))
+
+
+@_scalar_output_to_0d_array
+def selu(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    alpha = 1.6732632423543772848170429916717
+    scale = 1.0507009873554804934193349852946
+    ret = (scale * np.where(x > 0, x, alpha * np.expm1(x))).astype(x.dtype)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ret
+
+
+selu.support_native_out = True

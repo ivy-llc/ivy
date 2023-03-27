@@ -1,7 +1,0 @@
-# submodules to skip entirely
-functional/backends
-functional/frontends
-functional/ivy/old
-functional/experimental
-array/experimental
-container/experimental

@@ -204,3 +204,35 @@ def lu_factor(A, *, pivot=True, out=None):
 @to_ivy_arrays_and_back
 def matmul(input, other, *, out=None):
     return ivy.matmul(input, other, out=out)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+def vander(x, N=None):
+    if len(x.shape) < 1:
+        raise RuntimeError("Input dim must be greater than or equal to 1.")
+
+    # pytorch always return int64 for integers
+    if "int" in x.dtype:
+        x = ivy.astype(x, ivy.int64)
+
+    if len(x.shape) == 1:
+        # torch always returns the powers in ascending order
+        return ivy.vander(x, N=N, increasing=True)
+
+    # support multi-dimensional array
+    original_shape = x.shape
+    if N is None:
+        N = x.shape[-1]
+
+    # store the vander output
+    x = ivy.reshape(x, (-1, x.shape[-1]))
+    output = []
+
+    for i in range(x.shape[0]):
+        output.append(ivy.vander(x[i], N=N, increasing=True))
+
+    output = ivy.stack(output)
+    output = ivy.reshape(output, (*original_shape, N))
+    output = ivy.astype(output, x.dtype)
+    return output

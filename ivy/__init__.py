@@ -1,11 +1,24 @@
 # global
 import copy
 import warnings
-from ivy._version import __version__ as __version__
 import builtins
 import numpy as np
 import sys
 
+
+import ivy.utils.backend.handler
+from ivy._version import __version__ as __version__
+
+_not_imported_backends = list(ivy.utils.backend.handler._backend_dict.keys())
+try:
+    # Skip numpy from frameworks installed
+    _not_imported_backends.remove("numpy")
+except KeyError:
+    pass
+for backend_framework in _not_imported_backends.copy():
+    # If a framework was already imported before our init execution
+    if backend_framework in sys.modules:
+        _not_imported_backends.remove(backend_framework)
 
 warnings.filterwarnings("ignore", module="^(?!.*ivy).*$")
 
@@ -25,7 +38,7 @@ def is_local():
 class FrameworkStr(str):
     def __new__(cls, fw_str):
         ivy.utils.assertions.check_elem_in_list(
-            fw_str, ["jax", "tensorflow", "torch", "numpy"]
+            fw_str, ivy.utils.backend.handler._backend_dict.keys()
         )
         return str.__new__(cls, fw_str)
 
@@ -35,10 +48,6 @@ class Framework:
 
 
 class NativeArray:
-    pass
-
-
-class NativeVariable:
     pass
 
 
@@ -686,11 +695,11 @@ promotion_table = {**array_api_promotion_table, **extra_promotion_table}
 
 
 from .func_wrapper import *
-from .array import Array, add_ivy_array_instance_methods
-from .array.conversions import *
-from .array import conversions as arr_conversions
-from .container import conversions as cont_conversions
-from .container import (
+from .data_classes.array import Array, add_ivy_array_instance_methods
+from .data_classes.array.conversions import *
+from .data_classes.array import conversions as arr_conversions
+from .data_classes.container import conversions as cont_conversions
+from .data_classes.container import (
     ContainerBase,
     Container,
     add_ivy_container_instance_methods,
@@ -706,10 +715,10 @@ from ivy.utils.backend import (
     set_jax_backend,
     set_tensorflow_backend,
     set_torch_backend,
-    unset_backend,
+    previous_backend,
     backend_stack,
     choose_random_backend,
-    clear_backend_stack,
+    unset_backend,
 )
 from . import func_wrapper
 from .utils import assertions, exceptions, verbosity
@@ -722,10 +731,17 @@ from ivy.utils.inspection import fn_array_spec, add_array_specs
 
 add_array_specs()
 
+_imported_frameworks_before_compiler = list(sys.modules.keys())
 try:
     from .compiler.compiler import transpile, compile, unify
 except:  # noqa: E722
     compile, transpile, unify = None, None, None
+finally:
+    # Skip framework imports done by Ivy compiler for now
+    for backend_framework in _not_imported_backends.copy():
+        if backend_framework in sys.modules:
+            if backend_framework not in _imported_frameworks_before_compiler:
+                _not_imported_backends.remove(backend_framework)
 
 
 # add instance methods to Ivy Array and Container
@@ -1166,10 +1182,9 @@ def dynamic_backend_as(value):
     return DynamicBackendContext(value)
 
 
-modules = ivy.utils.backend.handler._backend_dict.keys()
-for module in modules:
-    if module != "numpy" and module in sys.modules:
+for backend_framework in _not_imported_backends:
+    if backend_framework in sys.modules:
         warnings.warn(
-            f"{module} module has been imported while ivy doesn't import it without "
-            "setting a backend, ignore if that's intended"
+            f"{backend_framework} module has been imported while ivy doesn't "
+            "import it without setting a backend, ignore if that's intended"
         )
