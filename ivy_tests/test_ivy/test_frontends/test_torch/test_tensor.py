@@ -2996,13 +2996,14 @@ def test_torch_instance_is_cuda(
         on_device=on_device,
     )
 
+
 # logical_and
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="logical_and",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("bool","integer"),
+        available_dtypes=helpers.get_dtypes("bool", "integer"),
         num_arrays=2,
     ),
 )
@@ -3030,6 +3031,7 @@ def test_torch_instance_logical_and(
         frontend=frontend,
         on_device=on_device,
     )
+
 
 # bitwise_not
 @handle_frontend_method(

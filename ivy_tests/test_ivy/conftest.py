@@ -5,6 +5,7 @@ from typing import Dict
 import subprocess
 import importlib
 from .. import config as env_config
+
 mod_frontend = {
     "tensorflow": None,
     "numpy": None,
@@ -16,6 +17,7 @@ mod_backend = {
     "numpy": None,
     "jax": None,
     "torch": None,
+    "paddle": None,
 }  # multiversion
 
 ground_backend = None  # multiversion
@@ -70,13 +72,13 @@ def pytest_configure(config):
         backend_strs = raw_value.split(",")
 
     # env specification for multiversion backend
-    env_val=config.getoption("--env")
+    env_val = config.getoption("--env")
     if env_val:
         # check if multiversion format in backend argument
-        if [True if '/' in x else False for x in backend_strs][0]:
+        if [True if "/" in x else False for x in backend_strs][0]:
             raise Exception("--env and '/' naming in backend can't be used together")
         else:
-            env_val=env_val.split(',')
+            env_val = env_val.split(",")
             env_config.allow_global_framework_imports(fw=env_val)
 
     # frontend
