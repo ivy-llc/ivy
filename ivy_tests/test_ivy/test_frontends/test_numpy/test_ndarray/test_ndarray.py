@@ -584,6 +584,7 @@ def test_numpy_instance_min(
         force_int_axis=True,
     ),
     keepdims=st.booleans(),
+    initial=st.one_of(st.floats(min_value=-100, max_value=100)),
 )
 def test_numpy_ndarray_prod(
     dtype_x_axis,
