@@ -10,7 +10,8 @@ import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
 
 # from . import backend_version
-from ivy.functional.ivy.layers import _handle_padding
+from ivy.functional.ivy.layers import _handle_padding, _get_x_data_format
+from ivy.functional.backends import pd_backend
 
 
 def _is_list_or_tuple(inp):
@@ -191,8 +192,67 @@ def conv_general_dilated(
     bias: Optional[paddle.Tensor] = None,
     out: Optional[paddle.Tensor] = None,
 ):
-    raise IvyNotImplementedException()
+    if data_format == "channel_first":
+        x = paddle.transpose(x, perm=(0, *range(2, dims + 2), 1))
 
+    if dims == 1:
+        df = "NLC"
+    else:
+        df = _get_x_data_format(dims, "channel_last")
+
+    # adding dilation in input
+    x_dilations = [x_dilations] * dims if isinstance(x_dilations, int) else x_dilations
+    for i in range(dims):
+        if x_dilations[i] > 1:
+            h = x.shape[1 + i]
+            new_height = h + (h - 1) * (x_dilations[i] - 1)
+            h = paddle.eye(new_height, dtype=x.dtype)[:: x_dilations[i]]
+            x = pd_backend.swapaxes(x, 1 + i, -1)
+            x = paddle.matmul(x, h)
+            x = pd_backend.swapaxes(x, -1, 1 + i)
+    
+    x = _pad_before_conv(x, filters, strides, padding, dims, dilations, data_format)
+    filters = paddle.transpose(filters, perm=(dims + 1, dims, *range(dims)))
+    if not isinstance(padding, str):
+        padding = "VALID"
+    
+    if dims == 1:
+        res = paddle.nn.functional.conv1d(
+            x,
+            filters,
+            bias=bias,
+            data_format=df,
+            stride=strides,
+            padding=padding,
+            dilation=dilations,
+            groups=feature_group_count,
+        )
+    elif dims == 2:
+        res = paddle.nn.functional.conv2d(
+            x,
+            filters,
+            bias=bias,
+            data_format=df,
+            stride=strides,
+            padding=padding,
+            dilation=dilations,
+            groups=feature_group_count,
+        )
+    elif dims == 3:
+        res = paddle.nn.functional.conv3d(
+            x,
+            filters,
+            bias=bias,
+            data_format=df,
+            stride=strides,
+            padding=padding,
+            dilation=dilations,
+            groups=feature_group_count,
+        )
+    
+    if data_format == "channel_first":
+        res = paddle.transpose(res, perm=(0, dims + 1, *range(1, dims + 1)))
+    return res
 
 def conv_general_transpose(
     x: paddle.Tensor,
