@@ -573,11 +573,12 @@ def test_frontend_function(
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
         num_positional_args=test_flags.num_positional_args, kwargs=all_as_kwargs_np
     )
+    create_frontend_array = importlib.import_module(f"ivy.functional.frontends.{frontend}"
+                                                    )._frontend_array
 
     # extract all arrays from the arguments and keyword arguments
     arg_np_vals, args_idxs, c_arg_vals = _get_nested_np_arrays(args_np)
     kwarg_np_vals, kwargs_idxs, c_kwarg_vals = _get_nested_np_arrays(kwargs_np)
-
     # make all lists equal in length
     num_arrays = c_arg_vals + c_kwarg_vals
     if len(input_dtypes) < num_arrays:
@@ -604,7 +605,9 @@ def test_frontend_function(
     function_module = importlib.import_module(frontend_submods)
     frontend_fn = getattr(function_module, fn_name)
 
+    # apply test flags etc.
     args, kwargs = create_args_kwargs(
+
         args_np=args_np,
         arg_np_vals=arg_np_vals,
         args_idxs=args_idxs,
@@ -615,7 +618,12 @@ def test_frontend_function(
         test_flags=test_flags,
         on_device=on_device,
     )
-    args_ivy, kwargs_ivy = ivy.args_to_ivy(*args, **kwargs)
+    if test_flags.generate_frontend_arrays:
+        args_for_test, kwargs_for_test = args_to_frontend(*args,
+                                                          frontend_array_fn=create_frontend_array,
+                                                          **kwargs)
+    else:
+        args_for_test, kwargs_for_test = ivy.args_to_ivy(*args, **kwargs)
 
     # check and replace NativeClass object in arguments with ivy counterparts
     from ivy_tests.test_ivy.test_frontends.test_numpy import convnumpy
@@ -652,64 +660,115 @@ def test_frontend_function(
         importlib.import_module("ivy.functional.frontends.jax").config.update(
             "jax_enable_x64", True
         )
-    ret = get_frontend_ret(frontend_fn, *args_ivy, **kwargs_ivy)
+
+    _as_ivy_arrays = not test_flags.generate_frontend_arrays
+    ret = get_frontend_ret(frontend_fn,
+                           *args_for_test,
+                           as_ivy_arrays=_as_ivy_arrays,
+                           **kwargs_for_test)
+
     if test_flags.with_out:
         if not inspect.isclass(ret):
             is_ret_tuple = issubclass(ret.__class__, tuple)
         else:
             is_ret_tuple = issubclass(ret, tuple)
-        if is_ret_tuple:
-            ret = ivy.nested_map(
-                ret,
-                lambda _x: ivy.array(_x) if not ivy.is_array(_x) else _x,
-                include_derived=True,
-            )
-        elif not ivy.is_array(ret):
-            ret = ivy.array(ret)
+
+        if test_flags.generate_frontend_arrays:
+            if is_ret_tuple:
+                ret = ivy.nested_map(
+                    ret,
+                    lambda _x: arrays_to_frontend(create_frontend_array)(_x) if not _is_frontend_array(_x) else _x,
+                    include_derived=True,
+                )
+            elif not _is_frontend_array(ret):
+                ret = arrays_to_frontend(create_frontend_array)(ret)
+        else:
+            if is_ret_tuple:
+                ret = ivy.nested_map(
+                    ret,
+                    lambda _x: ivy.array(_x) if not ivy.is_array(_x) else _x,
+                    include_derived=True,
+                )
+            elif not ivy.is_array(ret):
+                ret = ivy.array(ret)
+
+
         out = ret
         # pass return value to out argument
         # check if passed reference is correctly updated
         kwargs["out"] = out
         if is_ret_tuple:
-            flatten_ret = flatten(ret=ret)
-            flatten_out = flatten(ret=out)
+            if test_flags.generate_frontend_arrays:
+                flatten_ret = flatten_frontend(ret=ret,
+                                               frontend_array_fn=create_frontend_array)
+                flatten_out = flatten_frontend(ret=out,
+                                               frontend_array_fn=create_frontend_array)
+            else:
+                flatten_ret = flatten(ret=ret)
+                flatten_out = flatten(ret=out)
             for ret_array, out_array in zip(flatten_ret, flatten_out):
-                if ivy.native_inplace_support:
-                    assert ret_array.data is out_array.data
+                if ivy.native_inplace_support and not any((ivy.isscalar(ret),
+                                                           ivy.isscalar(out))):
+                    if test_flags.generate_frontend_arrays:
+                        assert ret_array.ivy_array.data is out_array.ivy_array.data
+                    else:
+                        assert ret.data is out.data
                 assert ret_array is out_array
         else:
-            if ivy.native_inplace_support:
-                assert ret.data is out.data
+            if ivy.native_inplace_support and not any((ivy.isscalar(ret),
+                                                       ivy.isscalar(out))):
+                if test_flags.generate_frontend_arrays:
+                    assert ret.ivy_array.data is out.ivy_array.data
+                else:
+                    assert ret.data is out.data
             assert ret is out
     elif test_flags.inplace:
         assert not isinstance(ret, tuple)
-        assert ivy.is_array(ret)
+
+        if test_flags.generate_frontend_arrays:
+            assert _is_frontend_array(ret)
+        else:
+            assert ivy.is_array(ret)
+
+        if test_flags.generate_frontend_arrays:
+            array_fn = _is_frontend_array
+        else:
+            array_fn = ivy.is_array
         if "inplace" in list(inspect.signature(frontend_fn).parameters.keys()):
             # the function provides optional inplace update
             # set inplace update to be True and check
             # if returned reference is inputted reference
             # and if inputted reference's content is correctly updated
             copy_kwargs["inplace"] = True
-            first_array = ivy.func_wrapper._get_first_array(*copy_args, **copy_kwargs)
+            first_array = ivy.func_wrapper._get_first_array(*copy_args,
+                                                            array_fn=array_fn,
+                                                            **copy_kwargs)
             ret_ = get_frontend_ret(frontend_fn, *copy_args, **copy_kwargs)
             assert first_array is ret_
         else:
             # the function provides inplace update by default
             # check if returned reference is inputted reference
-            first_array = ivy.func_wrapper._get_first_array(*args, **kwargs)
+            first_array = ivy.func_wrapper._get_first_array(*args,
+                                                            array_fn=array_fn,
+                                                            **kwargs)
             ret_ = get_frontend_ret(frontend_fn, *args, **kwargs)
             assert first_array is ret_
             args, kwargs = copy_args, copy_kwargs
-
     # create NumPy args
+
+    def arrays_to_numpy(x):
+        if test_flags.generate_frontend_arrays:
+            return ivy.to_numpy(x.ivy_array) if _is_frontend_array(x) else x
+        return ivy.to_numpy(x._data) if isinstance(x, ivy.Array) else x
+
     args_np = ivy.nested_map(
-        args_ivy,
-        lambda x: ivy.to_numpy(x._data) if isinstance(x, ivy.Array) else x,
+        args_for_test,
+        arrays_to_numpy,
         shallow=False,
     )
     kwargs_np = ivy.nested_map(
-        kwargs_ivy,
-        lambda x: ivy.to_numpy(x._data) if isinstance(x, ivy.Array) else x,
+        kwargs_for_test,
+        arrays_to_numpy,
         shallow=False,
     )
 
@@ -827,7 +886,11 @@ def test_frontend_function(
             ivy.previous_backend()
             raise e
 
-    ret_np_flat = flatten_and_to_np(ret=ret)
+    if test_flags.generate_frontend_arrays:
+        ret_np_flat = flatten_frontend_to_np(ret=ret,
+                                             frontend_array_fn=create_frontend_array)
+    else:
+        ret_np_flat = flatten_and_to_np(ret=ret)
 
     # assuming value test will be handled manually in the test function
     if not test_values:
@@ -1734,6 +1797,7 @@ def _get_framework_atol(atols: dict, current_fw: str):
 def _get_nested_np_arrays(nest):
     """
     A helper function to search for a NumPy arrays in a nest
+
     Parameters
     ----------
     nest
@@ -1744,6 +1808,7 @@ def _get_nested_np_arrays(nest):
          Items found, indices, and total number of arrays found
     """
     indices = ivy.nested_argwhere(nest, lambda x: isinstance(x, np.ndarray))
+
     ret = ivy.multi_index_nest(nest, indices)
     return ret, indices, len(ret)
 
@@ -1847,13 +1912,32 @@ def flatten(*, ret):
     if not isinstance(ret, tuple):
         ret = (ret,)
     ret_idxs = ivy.nested_argwhere(ret, ivy.is_ivy_array)
+
     # no ivy array in the returned values, which means it returned scalar
     if len(ret_idxs) == 0:
         ret_idxs = ivy.nested_argwhere(ret, ivy.isscalar)
         ret_flat = ivy.multi_index_nest(ret, ret_idxs)
-        ret_flat = [
-            ivy.asarray(x, dtype=ivy.Dtype(str(np.asarray(x).dtype))) for x in ret_flat
-        ]
+        ret_flat = [ivy.asarray(x, dtype=ivy.Dtype(str(np.asarray(x).dtype))) for x in ret_flat]
+    else:
+        ret_flat = ivy.multi_index_nest(ret, ret_idxs)
+    return ret_flat
+
+
+def flatten_frontend(*, ret, frontend_array_fn=None):
+    """Returns a flattened numpy version of the frontend arrays in ret."""
+    if not isinstance(ret, tuple):
+        ret = (ret,)
+
+    ret_idxs = ivy.nested_argwhere(ret, _is_frontend_array)
+
+    # handle scalars
+    if len(ret_idxs) == 0:
+        ret_idxs = ivy.nested_argwhere(ret, ivy.isscalar)
+        ret_flat = ivy.multi_index_nest(ret, ret_idxs)
+        ret_flat = [frontend_array_fn(x,
+                                          dtype=ivy.Dtype(str(np.asarray(x).dtype)))
+                    for x in ret_flat]
+
     else:
         ret_flat = ivy.multi_index_nest(ret, ret_idxs)
     return ret_flat
@@ -1863,6 +1947,15 @@ def flatten_and_to_np(*, ret):
     # flatten the return
     ret_flat = flatten(ret=ret)
     return [ivy.to_numpy(x) for x in ret_flat]
+
+
+def flatten_frontend_to_np(*, ret, frontend_array_fn=None):
+    # flatten the return
+
+    ret_flat = flatten_frontend(ret=ret,
+                                frontend_array_fn=frontend_array_fn)
+
+    return [ivy.to_numpy(x.ivy_array) for x in ret_flat]
 
 
 def get_ret_and_flattened_np_array(fn, *args, test_compile: bool = False, **kwargs):
@@ -1884,9 +1977,12 @@ def get_ret_and_flattened_np_array(fn, *args, test_compile: bool = False, **kwar
     return ret, flatten_and_to_np(ret=ret)
 
 
-def get_frontend_ret(fn, *args, **kwargs):
+def get_frontend_ret(fn, *args, as_ivy_arrays=True, **kwargs, ):
     ret = fn(*args, **kwargs)
-    ret = ivy.nested_map(ret, _frontend_array_to_ivy, include_derived={tuple: True})
+    if as_ivy_arrays:
+        ret = ivy.nested_map(ret,
+                             _frontend_array_to_ivy,
+                             include_derived={tuple: True})
     return ret
 
 
@@ -1952,3 +2048,26 @@ def _frontend_array_to_ivy(x):
         return x.ivy_array
     else:
         return x
+
+
+def args_to_frontend(
+        *args,
+        frontend_array_fn=None,
+        include_derived=None,
+        **kwargs):
+    frontend_args = ivy.nested_map(args, arrays_to_frontend(frontend_array_fn=frontend_array_fn),
+                                   include_derived,
+                                   shallow=False)
+    frontend_kwargs = ivy.nested_map(kwargs, arrays_to_frontend(frontend_array_fn=frontend_array_fn),
+                                     include_derived,
+                                     shallow=False)
+    return frontend_args, frontend_kwargs
+
+
+def arrays_to_frontend(frontend_array_fn=None):
+    def _new_fn(x, *args, **kwargs):
+        if _is_frontend_array(x):
+            return x
+        return frontend_array_fn(x, *args, **kwargs) if ivy.is_array(x) else x
+
+    return _new_fn
