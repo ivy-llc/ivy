@@ -293,9 +293,6 @@ def clip(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    ivy.utils.assertions.check_less(
-        ivy.array(x_min), ivy.array(x_max), message="min values must be less than max"
-    )
     return np.asarray(np.clip(x, x_min, x_max, out=out), dtype=x.dtype)
 
 

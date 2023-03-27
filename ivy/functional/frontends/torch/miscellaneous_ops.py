@@ -5,6 +5,11 @@ from ivy.functional.frontends.torch import promote_types_of_torch_inputs
 
 
 @to_ivy_arrays_and_back
+def atleast_1d(*tensors):
+    return ivy.atleast_1d(*tensors)
+
+
+@to_ivy_arrays_and_back
 def flip(input, dims):
     return ivy.flip(input, axis=dims)
 
