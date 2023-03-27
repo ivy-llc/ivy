@@ -179,6 +179,11 @@ def imag(
     return paddle.imag(val)
 
 
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ("int8", "int16", "int32", "int64", "uint8",
+                         "uint16", "bfloat16", "float16", "complex64", "complex128", "bool")},
+    backend_version,
+)
 def nan_to_num(x: paddle.Tensor,
                /,
                *,
