@@ -1076,11 +1076,6 @@ def nested_map(
     elif (list_check_fn(x, list) or isinstance(x, extra_nest_types)) and not isinstance(
         x, to_ignore
     ):
-        if isinstance(x, (ivy.Array, ivy.NativeArray)):
-            ret = fn(x)
-            if shallow:
-                return ivy.inplace_update(x, ret)
-            return ret
         ret_list = [
             nested_map(
                 i,
@@ -1126,7 +1121,13 @@ def nested_map(
             x.update(**ret)
             return x
         return class_instance(**ret)
-    return fn(x)
+    ret = fn(x)
+    if shallow and ivy.is_array(ret):
+        is_native = ivy.is_native_array(ret)
+        ret = ivy.inplace_update(x, ret)
+        if is_native:
+            return ret.to_native()
+    return ret
 
 
 @handle_exceptions
