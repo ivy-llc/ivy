@@ -15,9 +15,9 @@ from ivy.func_wrapper import (
 from ivy.utils.exceptions import handle_exceptions
 
 
-@handle_nestable
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def max_pool1d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int]],
@@ -227,9 +227,9 @@ def max_pool3d(
     )
 
 
-@handle_nestable
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def avg_pool1d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int]],
@@ -430,8 +430,8 @@ def avg_pool3d(
     )
 
 
-@to_native_arrays_and_back
 @integer_arrays_to_float
+@to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -530,8 +530,8 @@ def dct(
 
 @to_native_arrays_and_back
 @handle_out_argument
-@handle_exceptions
 @handle_array_like_without_promotion
+@handle_exceptions
 def fft(
     x: Union[ivy.Array, ivy.NativeArray],
     dim: int,
@@ -594,10 +594,10 @@ def fft(
     return ivy.current_backend(x).fft(x, dim, norm=norm, n=n, out=out)
 
 
-@handle_nestable
-@handle_exceptions
 @to_native_arrays_and_back
 @handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
 def dropout1d(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -666,10 +666,10 @@ def dropout1d(
     )
 
 
-@handle_nestable
-@handle_exceptions
 @to_native_arrays_and_back
 @handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
 def dropout3d(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -717,9 +717,9 @@ def dropout3d(
 
 @to_native_arrays_and_back
 @handle_out_argument
-@handle_exceptions
-@handle_nestable
 @handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
 def ifft(
     x: Union[ivy.Array, ivy.NativeArray],
     dim: int,
@@ -783,8 +783,8 @@ def ifft(
 
 @to_native_arrays_and_back
 @handle_out_argument
-@handle_exceptions
 @handle_nestable
+@handle_exceptions
 def embedding(
     weights: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -841,8 +841,8 @@ def embedding(
 
 @to_native_arrays_and_back
 @handle_out_argument
-@handle_exceptions
 @handle_nestable
+@handle_exceptions
 def dft(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -919,9 +919,9 @@ def dft(
 
 
 @to_native_arrays_and_back
-@handle_exceptions
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def interp(x, xp, fp, left=None, right=None, period=None):
     x_arr = ivy.array(x)
     fix_later = False

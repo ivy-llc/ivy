@@ -1016,6 +1016,7 @@ def nested_map(
         nested.
 
     """
+
     to_ignore = ivy.default(to_ignore, ())
     extra_nest_types = ivy.default(extra_nest_types, ())
     if include_derived is True:
@@ -1046,6 +1047,7 @@ def nested_map(
         if include_derived[dict]
         else (lambda x_, t_: type(x_) is t_),
     )
+
     if tuple_check_fn(x, tuple) and not isinstance(x, to_ignore):
         ret_list = [
             nested_map(

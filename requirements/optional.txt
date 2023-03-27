@@ -22,6 +22,6 @@ coverage
 scikit-learn
 pandas
 pyspark
-paddlepaddle
+paddlepaddle # unpinned , mod_name=paddle
 mxnet
 autoflake # for backend generation
