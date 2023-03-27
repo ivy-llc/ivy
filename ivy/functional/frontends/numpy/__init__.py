@@ -583,6 +583,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.exponents_and_logarit
     _logaddexp,
     _logaddexp2,
     _ldexp,
+    _frexp,
 )
 
 from ivy.functional.frontends.numpy.logic.array_type_testing import (
@@ -679,3 +680,4 @@ divmod = ufunc("_divmod")
 fmax = ufunc("_fmax")
 ldexp = ufunc("_ldexp")
 floor = ufunc("_floor")
+frexp = ufunc("_frexp")

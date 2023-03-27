@@ -221,6 +221,35 @@ def i0(x):
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
+def _frexp(
+    x,
+    /,
+    out = None,
+    *, 
+    where = True,
+    casting = "same_kind",
+    order = "K",
+    dtype = None,
+    subok = True,
+):
+    x = ivy.array(x)
+    m, e = ivy.frexpx(x)
+    if ivy.is_array(where):
+        m = ivy.where(where, m, ivy.default(out, ivy.zeros_like(m)), out=out)
+        e = ivy.where(where, e, ivy.default(out, ivy.zeros_like(e)), out=out)
+    if out is not None:
+        out[0][:] = m
+        out[1][:] = e
+        return out
+    else:
+        return m, e
+    
+
+@handle_numpy_out
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
 def _ldexp(
     x1,
     x2,
