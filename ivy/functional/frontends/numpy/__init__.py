@@ -529,7 +529,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations
     _reciprocal,
     _subtract,
     _true_divide,
-    _divmod
+    _divmod,
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functions import (

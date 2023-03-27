@@ -52,8 +52,8 @@ def median(
     return ivy.current_backend().median(input, axis=axis, keepdims=keepdims, out=out)
 
 
-@to_native_arrays_and_back
 @infer_dtype
+@to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 @handle_exceptions

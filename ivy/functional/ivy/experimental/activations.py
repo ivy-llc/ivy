@@ -14,11 +14,11 @@ from ivy.func_wrapper import (
 )
 
 
-@handle_out_argument
-@handle_nestable
 @to_native_arrays_and_back
-@handle_exceptions
+@handle_out_argument
 @handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
 def logit(
     x: Union[float, int, ivy.Array],
     /,
@@ -61,11 +61,11 @@ def logit(
     return current_backend(x).logit(x, eps=eps, out=out)
 
 
-@handle_out_argument
-@handle_nestable
 @to_native_arrays_and_back
-@handle_exceptions
+@handle_out_argument
 @handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
 def prelu(
     x: Union[ivy.NativeArray, ivy.Array],
     slope: Union[float, ivy.NativeArray, ivy.Array],
@@ -120,9 +120,9 @@ def prelu(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
 def thresholded_relu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -176,12 +176,12 @@ def thresholded_relu(
     return current_backend(x).thresholded_relu(x, threshold=threshold, out=out)
 
 
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
-@handle_array_function
 def relu6(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -232,11 +232,11 @@ def relu6(
     return current_backend(x).relu6(x, out=out)
 
 
-@handle_out_argument
-@handle_nestable
 @to_native_arrays_and_back
-@handle_exceptions
+@handle_out_argument
 @handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
 def batch_norm(
     x: Union[ivy.NativeArray, ivy.Array],
     mean: Union[ivy.NativeArray, ivy.Array],
@@ -286,11 +286,11 @@ def batch_norm(
     )
 
 
-@handle_out_argument
-@handle_nestable
 @to_native_arrays_and_back
-@handle_exceptions
+@handle_out_argument
 @handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
 def logsigmoid(
     input: Union[ivy.NativeArray, ivy.Array],
 ) -> ivy.Array:

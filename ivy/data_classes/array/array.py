@@ -312,7 +312,7 @@ class Array(
 
     def __array__(self, *args, **kwargs):
         args, kwargs = args_to_native(*args, **kwargs)
-        return self._data.__array__(*args, **kwargs)
+        return self._data.__array__(*args, dtype=self.dtype, **kwargs)
 
     def __array_prepare__(self, *args, **kwargs):
         args, kwargs = args_to_native(*args, **kwargs)
