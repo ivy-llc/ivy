@@ -107,26 +107,25 @@ def floats(
             exclude_max=exclude_max,
         )
     else:
+        width = floats_info[dtype]["width"]
+        float_strategy_kwargs = {
+            "allow_nan": allow_nan,
+            "allow_subnormal": allow_subnormal,
+            "allow_infinity": allow_inf,
+            "width": width,
+            "exclude_min": exclude_min,
+            "exclude_max": exclude_max,
+        }
         float_strategy = st.one_of(
             st.floats(
-                min_value=float_of(min_value, floats_info[dtype]["width"]),
-                max_value=float_of(-abs_smallest_val, floats_info[dtype]["width"]),
-                allow_nan=allow_nan,
-                allow_subnormal=allow_subnormal,
-                allow_infinity=allow_inf,
-                width=floats_info[dtype]["width"],
-                exclude_min=exclude_min,
-                exclude_max=exclude_max,
+                min_value=float_of(min_value, width),
+                max_value=float_of(-abs_smallest_val, width),
+                **float_strategy_kwargs
             ),
             st.floats(
-                min_value=float_of(abs_smallest_val, floats_info[dtype]["width"]),
-                max_value=float_of(max_value, floats_info[dtype]["width"]),
-                allow_nan=allow_nan,
-                allow_subnormal=allow_subnormal,
-                allow_infinity=allow_inf,
-                width=floats_info[dtype]["width"],
-                exclude_min=exclude_min,
-                exclude_max=exclude_max,
+                min_value=float_of(abs_smallest_val, width),
+                max_value=float_of(max_value, width),
+                **float_strategy_kwargs
             ),
         )
     values = draw(float_strategy)
@@ -237,18 +236,19 @@ def number(
     ret
         A strategy that draws integers or floats.
     """
+    common_kwargs = {
+        "min_value": min_value,
+        "max_value": max_value,
+        "safety_factor": large_abs_safety_factor,
+        "safety_factor_scale": safety_factor_scale,
+    }
     return draw(
         ints(
-            min_value=min_value,
-            max_value=max_value,
-            safety_factor=large_abs_safety_factor,
-            safety_factor_scale=safety_factor_scale,
+            **common_kwargs
         )
-        | floats(
-            min_value=min_value,
-            max_value=max_value,
-            small_abs_safety_factor=small_abs_safety_factor,
-            large_abs_safety_factor=large_abs_safety_factor,
-            safety_factor_scale=safety_factor_scale,
+        |
+        floats(
+            **common_kwargs,
+            small_abs_safety_factor=small_abs_safety_factor
         )
     )
