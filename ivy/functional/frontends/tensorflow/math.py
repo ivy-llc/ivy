@@ -522,3 +522,9 @@ def cos(x, name=None):
 @to_ivy_arrays_and_back
 def sinh(x, name=None):
     return ivy.sinh(x)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.10.0 and below": ("bfloat16", "int32")}, "tensorflow")
+def xlogy(x, y, name=None):
+    return ivy.xlogy(x, y)
