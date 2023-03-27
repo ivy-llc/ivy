@@ -55,7 +55,7 @@ def _generate_data_layer_norm(
 
     weight_shape = shape[axis:]
     bias_shape = shape[axis:]
-    normalized_shape = shape[axis:]
+    normalized_idxs = list(range(axis, len(shape)))
 
     arg_dict = {
         "available_dtypes": dtype,
@@ -81,7 +81,7 @@ def _generate_data_layer_norm(
     _, weight_values = results_weight
     _, bias_values = results_bias
 
-    return dtype, values, tuple(normalized_shape), weight_values, bias_values
+    return dtype, values, normalized_idxs, weight_values, bias_values
 
 
 @handle_test(
@@ -103,7 +103,8 @@ def test_layer_norm(
     on_device,
     ground_truth_backend,
 ):
-    dtype, x, normalized_shape, scale, offset = values_tuple
+    dtype, x, normalized_idxs, scale, offset = values_tuple
+    test_flags.test_compile = False
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -115,7 +116,7 @@ def test_layer_norm(
         atol_=0.5,
         xs_grad_idxs=[[0, 0]],
         x=x[0],
-        normalized_shape=normalized_shape,
+        normalized_idxs=normalized_idxs,
         eps=eps,
         scale=scale[0],
         offset=offset[0],

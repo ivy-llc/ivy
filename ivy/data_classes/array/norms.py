@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Tuple, Union
+from typing import Optional, List, Union
 import abc
 
 # local
@@ -11,7 +11,7 @@ import ivy
 class _ArrayWithNorms(abc.ABC):
     def layer_norm(
         self: ivy.Array,
-        normalized_shape: Tuple[int],
+        normalized_idxs: List[int],
         /,
         *,
         scale: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -29,8 +29,8 @@ class _ArrayWithNorms(abc.ABC):
         ----------
         self
             Input array
-        normalized_shape
-            Tuple containing the last k dimensions to apply normalization to.
+        normalized_idxs
+            Indices to apply the normalization to.
         scale
             Learnable gamma variables for elementwise post-multiplication,
             default is ``None``.
@@ -49,10 +49,22 @@ class _ArrayWithNorms(abc.ABC):
         ret
             The layer after applying layer normalization.
 
+         Examples
+        --------
+        >>> x = ivy.array([[0.0976, -0.3452,  1.2740],
+        ...                   [0.1047,  0.5886,  1.2732],
+        ...                   [0.7696, -1.7024, -2.2518]])
+        >>> norm = x.layer_norm([0, 1], eps=0.001,
+        ...                     new_std=1.5, scale=0.5, offset=[0.5, 0.02, 0.1])
+        >>> print(norm)
+        ivy.array([[ 0.826, -0.178, 0.981 ],
+                   [ 0.831,  0.421, 0.981 ],
+                   [ 1.26 , -1.05 , -1.28 ]])
+
         """
         return ivy.layer_norm(
             self,
-            normalized_shape,
+            normalized_idxs,
             scale=scale,
             offset=offset,
             eps=eps,
