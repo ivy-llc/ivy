@@ -1972,8 +1972,7 @@ def einops_repeat(
     out: Optional[ivy.Array] = None,
     **axes_lengths: Dict[str, int],
 ) -> ivy.Array:
-    """
-    Perform einops repeat operation on input array x.
+    """Perform einops repeat operation on input array x.
 
     Parameters
     ----------
@@ -1991,6 +1990,9 @@ def einops_repeat(
     -------
     ret
         New array with einops.repeat having been applied.
+
+    This function is *nestable*, and therefore also accepts :code:'ivy.Container'
+    instance in place of the argument.
 
     Examples
     --------
@@ -3172,7 +3174,11 @@ def gather(
 
     """
     return current_backend(params, indices).gather(
-        params, indices, axis=axis, batch_dims=batch_dims, out=out
+        params,
+        indices,
+        axis=axis,
+        batch_dims=batch_dims,
+        out=out
     )
 
 
@@ -3199,6 +3205,8 @@ def gather_nd(
         The array from which to gather values.
     indices
         Index array.
+    batch_dims
+        optional int, lets you gather different items from each element of a batch.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.

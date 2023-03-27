@@ -67,7 +67,8 @@ def _get_required_native_variables(xs, xs_grad_idxs):
     # To make sure that only the required arrays are converted to native arrays
     xs = ivy.nested_map(xs, ivy.to_ivy, include_derived=True, shallow=False)
     if xs_grad_idxs is not None:
-        xs = ivy.map_nest_at_indices(xs, xs_grad_idxs, ivy.to_native, shallow=False)
+        xs_required = ivy.multi_index_nest(xs, xs_grad_idxs)
+        ivy.nested_map(xs_required, ivy.to_native, include_derived=True)
     else:
         xs = ivy.nested_map(xs, ivy.to_native, include_derived=True, shallow=False)
 
