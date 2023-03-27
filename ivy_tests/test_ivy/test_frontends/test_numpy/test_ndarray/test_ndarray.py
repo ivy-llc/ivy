@@ -576,13 +576,7 @@ def test_numpy_instance_min(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
     method_name="prod",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_axis=-1,
-        max_axis=0,
-        min_num_dims=1,
-        force_int_axis=True,
-    ),
+    dtype_x_axis=_get_castable_dtypes_values(use_where=True),
     keepdims=st.booleans(),
     initial=st.one_of(st.floats(min_value=-100, max_value=100)),
 )
