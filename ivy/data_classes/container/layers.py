@@ -176,7 +176,7 @@ class _ContainerWithLayers(ContainerBase):
         }
 
         """
-        return self.static_linear(
+        return self._static_linear(
             self,
             weight,
             bias=bias,
@@ -349,7 +349,7 @@ class _ContainerWithLayers(ContainerBase):
             b: ivy.array([0., 11.4285717, 12.8571434])
         }
         """
-        return self.static_dropout(
+        return self._static_dropout(
             self,
             prob,
             scale=scale,
@@ -496,7 +496,7 @@ class _ContainerWithLayers(ContainerBase):
             b: ivy.array([[[0., 0., 12.]]])
         }
         """
-        return self.static_dropout1d(
+        return self._static_dropout1d(
             self,
             prob,
             training=training,
@@ -619,7 +619,7 @@ class _ContainerWithLayers(ContainerBase):
         ret
             Result container of the output after dropout is performed.
         """
-        return self.static_dropout3d(
+        return self._static_dropout3d(
             self,
             prob,
             training=training,
@@ -837,7 +837,7 @@ class _ContainerWithLayers(ContainerBase):
                         [4.4, 5.6]]])
         }
         """
-        return self.static_scaled_dot_product_attention(
+        return self._static_scaled_dot_product_attention(
             self,
             k,
             v,
@@ -911,7 +911,7 @@ class _ContainerWithLayers(ContainerBase):
         map_sequences: bool = False,
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
-        return self.static_multi_head_attention(
+        return self._static_multi_head_attention(
             self,
             scale,
             num_heads,
@@ -1084,7 +1084,7 @@ class _ContainerWithLayers(ContainerBase):
             ...                [-3.25, 10.5, 24.2]]])
         }
         """
-        return self.static_conv1d(
+        return self._static_conv1d(
             self,
             filters,
             strides,
@@ -1252,7 +1252,7 @@ class _ContainerWithLayers(ContainerBase):
             b:ivy.array([[[[4.],[0.],[0.]],[[1.],[6.],[0.]],[[0.],[1.],[5.]]]])
         }
         """
-        return self.static_conv2d(
+        return self._static_conv2d(
             self,
             filters,
             strides,
@@ -1429,7 +1429,7 @@ class _ContainerWithLayers(ContainerBase):
             b: [1,112,6]
         }
         """
-        return self.static_conv1d_transpose(
+        return self._static_conv1d_transpose(
             self,
             filters,
             strides,
@@ -1619,7 +1619,7 @@ class _ContainerWithLayers(ContainerBase):
             }
         }
         """
-        return self.static_conv2d_transpose(
+        return self._static_conv2d_transpose(
             self,
             filters,
             strides,
@@ -1762,7 +1762,7 @@ class _ContainerWithLayers(ContainerBase):
         >>> print(y.shape)
         [1, 64, 64, 3]
         """
-        return self.static_depthwise_conv2d(
+        return self._static_depthwise_conv2d(
             self,
             filters,
             strides,
@@ -1910,7 +1910,7 @@ class _ContainerWithLayers(ContainerBase):
         }
 
         """
-        return self.static_conv3d(
+        return self._static_conv3d(
             self,
             filters,
             strides,
@@ -2085,7 +2085,7 @@ class _ContainerWithLayers(ContainerBase):
             }
         }
         """
-        return self.static_conv3d_transpose(
+        return self._static_conv3d_transpose(
             self,
             filters,
             strides,
@@ -2194,7 +2194,7 @@ class _ContainerWithLayers(ContainerBase):
         }
 
         """
-        return self.static_lstm_update(
+        return self._static_lstm_update(
             self,
             init_h,
             init_c,
