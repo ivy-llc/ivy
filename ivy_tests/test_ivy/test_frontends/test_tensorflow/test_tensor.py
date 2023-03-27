@@ -513,11 +513,11 @@ def test_tensorflow_instance_sub(
         on_device=on_device,
     )
 
-# __add__
+# add
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="tensorflow.constant",
-    method_name="__add__",
+    method_name="add",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
