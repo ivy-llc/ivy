@@ -1,5 +1,5 @@
 
-.. _`Backend Handler`: https://lets-unify.ai/ivy/overview/design/building_blocks.html#backend-handler
+.. _`Backend Handler`: https://lets-unify.ai/ivy/overview/design/building_blocks.html#backend-handler.
 .. _`Backend Functional APIs`: https://lets-unify.ai/ivy/overview/design/building_blocks.html#backend-functional-apis
 
 .. _`Mechanics`: https://github.com/unifyai/mech
