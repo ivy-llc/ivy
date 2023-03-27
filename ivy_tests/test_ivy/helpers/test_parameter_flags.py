@@ -41,6 +41,7 @@ BuiltInplaceStrategy = st.just(False)
 BuiltGradientStrategy = _gradient_strategy()
 BuiltWithOutStrategy = st.booleans()
 BuiltCompileStrategy = st.booleans()
+BuiltFrontendArrayStrategy = st.booleans()
 
 
 flags_mapping = {
@@ -164,12 +165,14 @@ class FrontendFunctionTestFlags(TestFlags):
         inplace,
         as_variable,
         native_arrays,
+        generate_frontend_arrays,
     ):
         self.num_positional_args = num_positional_args
         self.with_out = with_out
         self.inplace = inplace
         self.native_arrays = native_arrays
         self.as_variable = as_variable
+        self.generate_frontend_arrays = generate_frontend_arrays
 
     def apply_flags(self, args_to_iterate, input_dtypes, on_device, offset):
         ret = []
@@ -189,6 +192,8 @@ class FrontendFunctionTestFlags(TestFlags):
             f"inplace={self.inplace}. "
             f"native_arrays={self.native_arrays}. "
             f"as_variable={self.as_variable}. "
+            f"generate_frontend_arrays={self.generate_frontend_arrays}. "
+
         )
 
     def __repr__(self):
@@ -204,6 +209,7 @@ def frontend_function_flags(
     inplace,
     as_variable,
     native_arrays,
+    generate_frontend_arrays,
 ):
     return draw(
         st.builds(
@@ -213,6 +219,7 @@ def frontend_function_flags(
             inplace=inplace,
             as_variable=as_variable,
             native_arrays=native_arrays,
+            generate_frontend_arrays=generate_frontend_arrays
         )
     )
 
