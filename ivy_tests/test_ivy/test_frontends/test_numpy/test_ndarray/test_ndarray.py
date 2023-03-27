@@ -583,10 +583,11 @@ def test_numpy_instance_min(
         min_num_dims=1,
         force_int_axis=True,
     ),
+    keepdims=st.booleans(),
 )
 def test_numpy_ndarray_prod(
     dtype_x_axis,
-    keep_dims,
+    keepdims,
     initial,
     frontend_method_data,
     init_flags,
@@ -604,7 +605,7 @@ def test_numpy_ndarray_prod(
         method_all_as_kwargs_np={
             "dtype": dtype,
             "axis": axis,
-            "keepdims": keep_dims,
+            "keepdims": keepdims,
             "initial": initial,
             "where": where,
         },
