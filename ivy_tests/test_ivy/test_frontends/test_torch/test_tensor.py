@@ -1299,8 +1299,6 @@ def test_torch_instance_amin(
     init_tree="torch.tensor",
     method_name="angle",
     dtype_x=helpers.dtype_and_values(
-        min_value=-1.0,
-        max_value=1.0,
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
