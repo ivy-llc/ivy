@@ -560,6 +560,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.hyperbolic_functions 
 from ivy.functional.frontends.numpy.mathematical_functions.rounding import (
     _ceil,
     _trunc,
+    _floor,
 )
 
 from ivy.functional.frontends.numpy.logic.comparison import (
@@ -581,6 +582,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.exponents_and_logarit
     _log2,
     _logaddexp,
     _logaddexp2,
+    _ldexp,
 )
 
 from ivy.functional.frontends.numpy.logic.array_type_testing import (
@@ -601,7 +603,10 @@ from ivy.functional.frontends.numpy.linalg.matrix_and_vector_products import _ma
 from ivy.functional.frontends.numpy.mathematical_functions.extrema_finding import (
     _maximum,
     _minimum,
+    _fmax,
 )
+
+_frontend_array = array
 
 # initializing ufuncs #
 # ---------------------#
@@ -671,3 +676,6 @@ maximum = ufunc("_maximum")
 minimum = ufunc("_minimum")
 real = ufunc("_real")
 divmod = ufunc("_divmod")
+fmax = ufunc("_fmax")
+ldexp = ufunc("_ldexp")
+floor = ufunc("_floor")

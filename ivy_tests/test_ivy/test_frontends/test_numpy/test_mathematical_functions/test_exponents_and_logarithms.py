@@ -5,6 +5,7 @@ import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_elementwise import ldexp_args
 
 # exp
 @handle_frontend_test(
@@ -467,4 +468,31 @@ def test_numpy_i0(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+    )
+
+# ldexp
+@handle_frontend_test(
+    fn_tree="numpy.ldexp",
+    dtype_and_x=ldexp_args(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="ldexp"
+    ),
+)
+def test_numpy_ldexp(
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=x[0],
+        x2=x[1],
     )
