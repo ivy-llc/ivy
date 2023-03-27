@@ -33,5 +33,13 @@ def tril_indices(n_rows, n_cols=None, k=0):
 
 
 @to_ivy_arrays_and_back
+def triu_indices(n, k=0, m=None):
+    return ivy.triu_indices(n, m, k)
+
+@to_ivy_arrays_and_back
+def triu_indices_from(arr, k=0):
+    return ivy.triu_indices(arr.shape[-2], arr.shape[-1], k)
+
 def tril_indices_from(arr, k=0):
     return ivy.tril_indices(arr.shape[-2], arr.shape[-1], k)
+
