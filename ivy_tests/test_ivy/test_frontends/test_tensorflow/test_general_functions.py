@@ -1040,19 +1040,13 @@ def _strided_slice_helper(draw):
         ),
     )
     ndims = len(shape)
-    # ToDo: make function work for combination of masks
-    masks = [0, 0, 0, 0, 0]
-    mask_index = draw(st.integers(min_value=0, max_value=4))
-    masks[mask_index] = draw(st.integers(min_value=0, max_value=2**ndims - 1))
-    if mask_index == 2 and masks[mask_index] > 1:
-        masks[mask_index] = 1  # maximum one ellipse
-    # masks = draw(
-    #     st.lists(
-    #         st.integers(min_value=0, max_value=2**ndims - 1), min_size=5, max_size=5
-    #     ).filter(
-    #         lambda x: bin(x[2])[2:].count("1") <= min(len(shape)-1, 1)
-    #     )
-    # )
+    masks = draw(
+        st.lists(
+            st.integers(min_value=0, max_value=2**ndims - 1), min_size=5, max_size=5
+        ).filter(
+            lambda x: bin(x[2])[2:].count("1") <= min(len(shape)-1, 1)
+        )
+    )
     begin, end, strides = [], [], []
     for i in shape:
         begin += [draw(st.integers(min_value=0, max_value=i - 1))]
@@ -1088,8 +1082,8 @@ def test_tensorflow_strided_slice(
     on_device,
 ):
     dtype, x, begin, end, strides, masks = dtype_x_params
-    # ToDo: fix this corner case
-    assume(not (masks[2] == 1 and any(b == e for b, e in zip(begin, end))))
+    # ToDo: fix new_axis_mask
+    assume(masks[3] == 0)
     try:
         helpers.test_frontend_function(
             input_dtypes=dtype + 3 * ["int64"] + 5 * ["int32"],
