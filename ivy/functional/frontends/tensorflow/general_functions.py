@@ -306,8 +306,11 @@ def strided_slice(
             begin_mask[ellipsis_index] = 1
             end_mask[ellipsis_index] = 1
         else:
-            for i in py_range(ellipsis_index, ellipsis_index + num_missing, 1):
-                shrink_axis_mask[i] = 0
+            for i in py_range(ellipsis_index, ellipsis_index + num_missing + 1, 1):
+                if i < len(shrink_axis_mask):
+                    shrink_axis_mask[i] = 0
+                else:
+                    break
             if ellipsis_index >= len(begin):
                 begin = begin + [0] * num_missing
                 end = end + input_shape[ellipsis_index:ellipsis_index + num_missing]
@@ -331,14 +334,14 @@ def strided_slice(
             s = 1 if (ellipsis_mask[i] or new_axis_mask[i]) else s
         elif shrink_axis_mask[i]:
             if b is not None:
-                e = b + 1 if strides[i] > 0 else b - 1
+                e = b + 1 if s > 0 else b - 1
             else:
-                e = 1 if strides[i] > 0 else input_rank - 2
+                e = 1 if s > 0 else input_shape[i] - 2
         full_slice.append(py_slice(b, e, s))
     ret = ret if full_slice is None else ret[tuple(full_slice)]
     shrink_indices = [i for i, v in enumerate(shrink_axis_mask)
                       if v and ret.shape[i] == 1]
-    ret = ivy.squeeze(ret, axis=shrink_indices) if ret.size else ret
+    ret = ivy.squeeze(ret, axis=shrink_indices)
     return ret
 
 
