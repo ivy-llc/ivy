@@ -448,3 +448,6 @@ class ndarray:
     
     def __mod__(self, value, /):
         return np_frontend.mod(self._ivy_array, value, out=self)
+
+    def __divmod__(self, value, /):
+        return np_frontend.divmod(self._ivy_array, value, out=self)
