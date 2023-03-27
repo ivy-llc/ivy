@@ -54,6 +54,13 @@ Running the script:
 will result in the creation of documentation for the project in the directory 
 ``doc/build``.
 
+Options
+"""""""
+
+--no-cleanup    Disable the backup/cleanup procedure
+--git-add       Stage changed files before generating the docs, this is useful if you
+                    want know which files changed by you when used with ``--no-cleanup``
+
 The Docker image
 ~~~~~~~~~~~~~~~~
 
