@@ -101,7 +101,7 @@ def get_dtypes(
     Returns
     -------
     ret
-        dtype string
+        A strategy that draws dtype strings
     """
     if prune_function:
         retrieval_fn = _get_fn_dtypes
@@ -116,8 +116,8 @@ def get_dtypes(
         retrieval_fn = _get_type_dict
         valid_dtypes = set(retrieval_fn(ivy, kind))
 
-    # The function may be called from a frontend test or an IVY api test
-    # In the case of a IVY api test, the function should make sure it returns a valid
+    # The function may be called from a frontend test or an Ivy API test
+    # In the case of an Ivy API test, the function should make sure it returns a valid
     # dtypes for the backend and also for the ground truth backend, if it is called from
     # a frontend test, we should also count for the frontend support data types
     # In conclusion, the following operations will get the intersection of
@@ -145,7 +145,6 @@ def get_dtypes(
                 process.stdin.write(
                     f"{test_globals.CURRENT_RUNNING_TEST.fn_tree}" + "\n"
                 )
-
                 process.stdin.flush()
             except Exception as e:
                 print(
@@ -170,7 +169,7 @@ def get_dtypes(
             frontend_dtypes = retrieval_fn(test_globals.CURRENT_FRONTEND(), kind)
             valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
 
-    # Make sure we return dtypes that are compatiable with ground truth backend
+    # Make sure we return dtypes that are compatible with ground truth backend
     ground_truth_is_set = (
         test_globals.CURRENT_GROUND_TRUTH_BACKEND is not test_globals._Notsetval  # NOQA
     )
@@ -246,7 +245,7 @@ def array_dtypes(
 
     Returns
     -------
-    A strategy that draws a list.
+        A strategy that draws a list of data types.
     """
     if isinstance(available_dtypes, st._internal.SearchStrategy):
         available_dtypes = draw(available_dtypes)
@@ -304,7 +303,7 @@ def get_castable_dtype(draw, available_dtypes, dtype: str, x: Optional[list] = N
     Returns
     -------
     ret
-        A tuple of inputs and castable dtype.
+        A strategy that draws a tuple of inputs and a castable dtype.
     """
     bound_dtype_bits = (
         lambda d: ivy.dtype_bits(d) / 2
