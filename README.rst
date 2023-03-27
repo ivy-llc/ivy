@@ -46,6 +46,7 @@
         </a>
         <img class="dark-light" width="6%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
     </div>
+    <br clear="all" />
 
 **Ivy Libraries**
 
