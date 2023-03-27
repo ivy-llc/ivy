@@ -205,23 +205,15 @@ def get_shape(
     -------
         A strategy that draws a tuple.
     """
+    lists_strategy = st.lists(
+        number_helpers.ints(min_value=min_dim_size, max_value=max_dim_size),
+        min_size=min_num_dims,
+        max_size=max_num_dims,
+    )
     if allow_none:
-        shape = draw(
-            st.none()
-            | st.lists(
-                number_helpers.ints(min_value=min_dim_size, max_value=max_dim_size),
-                min_size=min_num_dims,
-                max_size=max_num_dims,
-            )
-        )
+        shape = draw(st.none() | lists_strategy)
     else:
-        shape = draw(
-            st.lists(
-                number_helpers.ints(min_value=min_dim_size, max_value=max_dim_size),
-                min_size=min_num_dims,
-                max_size=max_num_dims,
-            )
-        )
+        shape = draw(lists_strategy)
     if shape is None:
         return shape
     return tuple(shape)
@@ -464,22 +456,23 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
         x_shape = (batch_size,) + x_dim + (input_channels,)
     else:
         x_shape = (batch_size, input_channels) + x_dim
+
+    common_kwargs = {
+        "dtype": dtype[0],
+        "large_abs_safety_factor": 3,
+        "small_abs_safety_factor": 4,
+        "safety_factor_scale": "log",
+    }
     vals = draw(
         array_helpers.array_values(
-            dtype=dtype[0],
             shape=x_shape,
-            large_abs_safety_factor=3,
-            small_abs_safety_factor=4,
-            safety_factor_scale="log",
+            **common_kwargs,
         )
     )
     filters = draw(
         array_helpers.array_values(
-            dtype=dtype[0],
             shape=filter_shape,
-            large_abs_safety_factor=3,
-            small_abs_safety_factor=4,
-            safety_factor_scale="log",
+            **common_kwargs
         )
     )
     ret = (
@@ -514,13 +507,13 @@ def embedding_helper(draw):
         array_helpers.dtype_and_values(
             available_dtypes=[
                 x
-                for x in draw(dtype_helpers.get_dtypes("numeric"))  # TODO: Should this be valid?
+                for x in draw(dtype_helpers.get_dtypes("numeric"))  # TODO: Shouldn't this be valid?
                 if "float" in x or "complex" in x
             ],
             min_num_dims=2,
             max_num_dims=2,
             min_dim_size=1,
-            min_value=-1e04,
+            min_value=-1e04,  # TODO: Why are we hard-coding a number here?
             max_value=1e04,
         )
     )
