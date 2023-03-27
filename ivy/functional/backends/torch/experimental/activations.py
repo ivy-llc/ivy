@@ -73,5 +73,5 @@ def logsigmoid(input: torch.Tensor) -> torch.Tensor:
 def selu(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     ret = torch.nn.functional.selu(x)
     if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)

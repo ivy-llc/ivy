@@ -668,7 +668,19 @@ class _ContainerWithActivationExperimental(ContainerBase):
 
         Returns
         -------
+        ret
             Container with Log-sigmoid applied to the leaves.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
+        >>> y = x.logsigmoid()
+        >>> print(y)
+        {
+            a: ivy.array([-0.31326163, -1.46328258]),
+            b: ivy.array([-0.51301527, -0.79813886])
+        }
+
         """
         return self.static_logsigmoid(
             self,
@@ -721,21 +733,18 @@ class _ContainerWithActivationExperimental(ContainerBase):
 
         Examples
         --------
-        >>> x = {
-                    a: ivy.array([-3., -2., -1., 0., 1., 2., 3., 4., 5.]),
-                    b: ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.])
-                }
+        >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
         >>> y = ivy.Container.static_selu(x)
         >>> print(y)
         {
-            a: ivy.array([0., 0., 0., 0., 1., 2., 3., 4., 5.]),
-            b: ivy.array([1., 2., 3., 4., 5., 6., 6., 6., 6.])
+            a: ivy.array([1.05070102, -1.22856998]),
+            b: ivy.array([0.42028043, -0.31868932])
         }
 
         """
         return ContainerBase.cont_multi_map_in_function(
             "selu",
-            input,
+            x,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -785,15 +794,12 @@ class _ContainerWithActivationExperimental(ContainerBase):
 
         Examples
         --------
-        >>> x = {
-                    a: ivy.array([-3., -2., -1., 0., 1., 2., 3., 4., 5.]),
-                    b: ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.])
-                }
+        >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
         >>> y = x.selu()
         >>> print(y)
         {
-            a: ivy.array([0., 0., 0., 0., 1., 2., 3., 4., 5.]),
-            b: ivy.array([1., 2., 3., 4., 5., 6., 6., 6., 6.])
+            a: ivy.array([1.05070102, -1.22856998]),
+            b: ivy.array([0.42028043, -0.31868932])
         }
 
         """

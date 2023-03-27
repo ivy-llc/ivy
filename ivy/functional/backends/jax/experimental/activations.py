@@ -83,5 +83,5 @@ def logsigmoid(input: JaxArray) -> JaxArray:
 def selu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     ret = jax.nn.selu(x).astype(x.dtype)
     if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
+        return ivy.inplace_update(out, ret).astype(x.dtype)
     return ret

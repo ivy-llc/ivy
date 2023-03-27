@@ -266,27 +266,17 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         With :class:`ivy.Array` input:
 
         >>> x = ivy.array([-1.,  0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.])
-        >>> y = ivy.selu(x)
+        >>> y = x.selu()
         >>> print(y)
-        ivy.array([0., 0., 1., 2., 3., 4., 5., 6., 6.])
+        ivy.array([-1.11133075,  0.,  1.05070102,  2.10140204,  3.15210295,
+                    4.20280409,  5.25350523,  6.30420589,  7.35490704])
 
         >>> x = ivy.array([-1.,  0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.])
         >>> y = ivy.zeros(9)
-        >>> ivy.selu(x, out = y)
+        >>> x.selu(out = y)
         >>> print(y)
-        ivy.array([0., 0., 1., 2., 3., 4., 5., 6., 6.])
+        ivy.array([-1.11133075,  0.,  1.05070102,  2.10140204,  3.15210295,
+                    4.20280409,  5.25350523,  6.30420589,  7.35490704])
 
-        With :class:`ivy.Container` input:
-
-        >>> x = {
-                    a: ivy.array([-3., -2., -1., 0., 1., 2., 3., 4., 5.]),
-                    b: ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.])
-                }
-        >>> x = ivy.selu(x, out=x)
-        >>> print(x)
-        {
-        a: ivy.array([0., 0., 0., 0., 1., 2., 3., 4., 5.]),
-        b: ivy.array([1., 2., 3., 4., 5., 6., 6., 6., 6.])
-        }
         """
         return ivy.selu(self._data, out=out)

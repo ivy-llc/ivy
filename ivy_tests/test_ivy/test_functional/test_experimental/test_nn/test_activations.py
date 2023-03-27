@@ -1,5 +1,5 @@
 # global
-from hypothesis import assume, strategies as st
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -247,7 +247,7 @@ def test_logsigmoid(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         safety_factor_scale="log",
-        large_abs_safety_factor=20,
+        small_abs_safety_factor=20,
     ),
     test_with_out=st.just(False),
 )
@@ -262,8 +262,6 @@ def test_selu(
 ):
     input_dtype, input = dtype_and_input
     test_flags.num_positional_args = len(input)
-    test_flags.container = [False]
-    assume(("bfloat16" not in input_dtype) and ("float16" not in input_dtype))
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
@@ -271,6 +269,6 @@ def test_selu(
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
-        input=input[0],
         atol_=1e-5,
+        x=input[0],
     )
