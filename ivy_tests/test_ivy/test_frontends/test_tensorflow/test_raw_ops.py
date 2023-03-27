@@ -3455,7 +3455,7 @@ def test_tensorflow_BandedTriangularSolve(
         fn_tree=fn_tree,
         on_device=on_device,
         matrix=x[0], 
-        rhs=matrix, 
+        rhs=x[1], 
         lower=lower, 
         adjoint=adjoint,
     )    
@@ -3485,10 +3485,10 @@ def test_tensorflow_BatchMatMul(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        adj_x=adj_x, 
-        adj_y=adj_y,
         x=x[0],
         y=x[1],
+        adj_x=adj_x, 
+        adj_y=adj_y,
     )  
 
 
@@ -3516,10 +3516,10 @@ def test_tensorflow_BatchMatMulV2(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        adj_x=adj_x, 
-        adj_y=adj_y,
         x=x[0],
         y=x[1],
+        adj_x=adj_x, 
+        adj_y=adj_y,
     )  
 
 
@@ -3548,9 +3548,10 @@ def test_tensorflow_BatchMatMulV3(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
+        x=x[0],
+        y=x[1],
         Tout=Tout,
         adj_x=adj_x, 
         adj_y=adj_y,
-        x=x[0],
-        y=x[1],
+        Tout=Tout,
     )    
