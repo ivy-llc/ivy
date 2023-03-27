@@ -97,11 +97,43 @@ def get_dtypes(
         returns the complete list of valid types
     none
         allow none in the list of valid types
+    key
+        TODO: add description
+    prune_function
+        TODO: add description
 
     Returns
     -------
     ret
         A strategy that draws dtype strings
+
+    Examples
+    --------
+    >>> get_dtypes()
+    ['float16',
+        'uint8',
+        'complex128',
+        'bool',
+        'uint32',
+        'float64',
+        'int8',
+        'int16',
+        'complex64',
+        'float32',
+        'int32',
+        'uint16',
+        'int64',
+        'uint64']
+
+    >>> get_dtypes(
+    ...     kind='numeric',
+    ...     full=False,
+    ... )
+    ['int16']
+    ['uint16']
+    ['complex64']
+
+    # TODO: Needs an example that utilizes key and prune_function
     """
     if prune_function:
         retrieval_fn = _get_fn_dtypes
@@ -246,6 +278,25 @@ def array_dtypes(
     Returns
     -------
         A strategy that draws a list of data types.
+
+    Examples
+    --------
+    >>> array_dtypes(
+    ...     available_dtypes=get_dtypes("numeric"),
+    ...     shared_dtype=True,
+    ... )
+    ['float64']
+    ['int8', 'int8']
+    ['int32', 'int32', 'int32', 'int32']
+
+    >>> array_dtypes(
+    ...     num_arrays=5,
+    ...     available_dtypes=get_dtypes("valid"),
+    ...     shared_dtype=False,
+    ... )
+    ['int8', 'float64', 'complex64', 'int8', 'bool']
+    ['bool', 'complex64', 'bool', 'complex64', 'bool']
+    ['float64', 'int8', 'float64', 'int8', 'float64']
     """
     if isinstance(available_dtypes, st._internal.SearchStrategy):
         available_dtypes = draw(available_dtypes)
