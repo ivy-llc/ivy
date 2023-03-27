@@ -295,10 +295,10 @@ class ndarray:
             self._ivy_array,
             axis=axis,
             dtype=dtype,
-            out=out,
             keepdims=keepdims,
             initial=initial,
             where=where,
+            out=out,
         )
 
     def view(self):
