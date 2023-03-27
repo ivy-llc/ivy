@@ -3045,7 +3045,7 @@ def test_tensorflow_ConcatV2(
 
 # Conv2D
 @handle_frontend_test(
-    fn_tree="ivy.tensorflow.ops.Conv2D",
+    fn_tree="tensorflow.raw_ops.Conv2D",
     x_f_d_df=_x_and_filters(
         dtypes=helpers.get_dtypes("float", full=False),
         data_format=st.sampled_from(["NHWC", "NCHW"]),
@@ -3087,7 +3087,7 @@ def test_tensorflow_Conv2D(
         dilations=dilation,
     )
 
-    
+
 # Conv3D
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Conv3D",
