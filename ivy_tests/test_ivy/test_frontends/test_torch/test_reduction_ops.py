@@ -80,7 +80,6 @@ def unique_consecutive(
         dim=dim,
         return_inverse=return_inverse,
         return_counts=return_counts,
-        p=p,
     )
 
 
