@@ -68,8 +68,10 @@ def logsigmoid(input: torch.Tensor) -> torch.Tensor:
     return torch.nn.functional.logsigmoid(input)
 
 
+@with_unsupported_dtypes({"1.13.0 and below": ("float16", "bfloat16")}, backend_version)
 def selu(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     ret = torch.nn.functional.selu(x)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ivy.astype(ret, x.dtype)
+
