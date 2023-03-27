@@ -2,7 +2,7 @@
 
 
 # local
-from typing import List, Union, Optional
+from typing import Tuple, Union, Optional
 import ivy
 from ivy.func_wrapper import (
     handle_array_function,
