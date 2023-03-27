@@ -3553,5 +3553,4 @@ def test_tensorflow_BatchMatMulV3(
         Tout=Tout,
         adj_x=adj_x, 
         adj_y=adj_y,
-        Tout=Tout,
     )    
