@@ -6,7 +6,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
 
-# relu
+# logit
 @handle_test(
     fn_tree="functional.ivy.experimental.logit",
     dtype_and_x=helpers.dtype_and_values(
@@ -71,6 +71,7 @@ def test_thresholded_relu(
     )
 
 
+# prelu
 @handle_test(
     fn_tree="prelu",
     dtype_and_x=helpers.dtype_and_values(
@@ -237,4 +238,37 @@ def test_logsigmoid(
         fn_name=fn_name,
         on_device=on_device,
         input=x[0],
+    )
+
+
+# selu
+@handle_test(
+    fn_tree="functional.ivy.experimental.selu",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        safety_factor_scale="log",
+        small_abs_safety_factor=20,
+    ),
+    test_with_out=st.just(False),
+)
+def test_selu(
+    *,
+    dtype_and_input,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, input = dtype_and_input
+    test_flags.num_positional_args = len(input)
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=input_dtype,
+        fw=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        atol_=1e-5,
+        x=input[0],
     )

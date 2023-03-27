@@ -1,6 +1,6 @@
 
-.. _`Backend Handler`: https://lets-unify.ai/ivy/design/building_blocks.html#backend-handler
-.. _`Backend Functional APIs`: https://lets-unify.ai/ivy/design/building_blocks.html#backend-functional-apis
+.. _`Backend Handler`: https://lets-unify.ai/ivy/overview/design/building_blocks.html#backend-handler
+.. _`Backend Functional APIs`: https://lets-unify.ai/ivy/overview/design/building_blocks.html#backend-functional-apis
 
 .. _`Mechanics`: https://github.com/unifyai/mech
 .. _`Computer Vision`: https://github.com/unifyai/vision
@@ -11,7 +11,7 @@
 .. _`Models`: https://github.com/unifyai/models
 
 .. _`Examples page`: https://lets-unify.ai/demos/
-.. _`open tasks`: https://lets-unify.ai/ivy/contributing/open_tasks.html
+.. _`open tasks`: https://lets-unify.ai/ivy/overview/contributing/open_tasks.html
 
 .. _`Discord`: https://discord.gg/sXyFF8tDtm
 .. _`Twitter`: https://twitter.com/letsunifyai
@@ -63,7 +63,7 @@
 .. raw:: html
 
     <div style="display: block;" align="center">
-    <b><a href="https://lets-unify.ai/">Website</a></b> | <b><a href="https://lets-unify.ai/ivy/">Docs</a></b> | <b><a href="https://lets-unify.ai/demos/">Examples</a></b> | <b><a href="https://lets-unify.ai/ivy/design.html">Design</a></b> | <b><a href="https://lets-unify.ai/ivy/faq.html">FAQ</a></b><br><br>
+    <b><a href="https://lets-unify.ai/">Website</a></b> | <b><a href="https://lets-unify.ai/ivy/">Docs</a></b> | <b><a href="https://lets-unify.ai/demos/">Examples</a></b> | <b><a href="https://lets-unify.ai/ivy/overview/design.html">Design</a></b> | <b><a href="https://lets-unify.ai/ivy/overview/faq.html">FAQ</a></b><br><br>
     
     <b>All of AI, at your fingertips</b>
     
@@ -139,11 +139,12 @@ This way, Ivy makes all ML-related projects available for you, independently of 
     # Converts framework-specific code to Ivy
     ivy.unify()
 
-These functions can be used eagerly or lazily. If you pass the neccesary arguments for function tracing, the compilation/transpilation step will happen instantly (eagerly). Otherwise, the compilation/transpilation will happen only when the returned function is first invoked.
+These functions can be used eagerly or lazily. If you pass the necessary arguments for function tracing, the compilation/transpilation step will happen instantly (eagerly). Otherwise, the compilation/transpilation will happen only when the returned function is first invoked.
 
 .. code-block:: python
     
     import ivy
+    import jax
     ivy.set_backend("jax")
 
     # Simple JAX function to transpile
@@ -155,7 +156,7 @@ These functions can be used eagerly or lazily. If you pass the neccesary argumen
 .. code-block:: python
     
     # Arguments are available -> transpilation happens eagerly
-    eager_graph = ivy.transpile(test_fn, to="torch", args=(x1,))
+    eager_graph = ivy.transpile(test_fn, source="jax", to="torch", args=(x1,))
     
     # eager_graph is now torch code and runs efficiently
     ret = eager_graph(x1)
@@ -163,7 +164,7 @@ These functions can be used eagerly or lazily. If you pass the neccesary argumen
 .. code-block:: python
     
     # Arguments are not available -> transpilation happens lazily
-    lazy_graph = ivy.transpile(test_fn, to="torch")
+    lazy_graph = ivy.transpile(test_fn, source="jax", to="torch")
     
     # The transpiled graph is initialized, transpilation will happen here
     ret = lazy_graph(x1)
@@ -171,7 +172,7 @@ These functions can be used eagerly or lazily. If you pass the neccesary argumen
     # lazy_graph is now torch code and runs efficiently
     ret = lazy_graph(x1)
 
-If you want to learn more, you can find more information in the `Ivy as a transpiler section of the docs! <https://lets-unify.ai/ivy/design/ivy_as_a_transpiler.html>`_
+If you want to learn more, you can find more information in the `Ivy as a transpiler section of the docs! <https://lets-unify.ai/ivy/overview/design/ivy_as_a_transpiler.html>`_
 
 When should I use Ivy as a transpiler?
 ######################################
@@ -181,9 +182,9 @@ If you want to use building blocks published in other frameworks (neural network
 Ivy as a framework
 -------------------
 
-The Ivy framework is built on top of various essential components, mainly the `Backend Handler`_, which manages what framework is being used behind the scenes and the `Backend Functional APIs`_, which provide framework-specific implementations of the Ivy functions. Likewise, classes such as :code:`ivy.Container` or :code:`ivy.Array` are also available, facilitating the use of structured data and array-like objects (learn more about them `here! <https://lets-unify.ai/ivy/design/ivy_as_a_framework.html>`_). 
+The Ivy framework is built on top of various essential components, mainly the `Backend Handler`_, which manages what framework is being used behind the scenes and the `Backend Functional APIs`_, which provide framework-specific implementations of the Ivy functions. Likewise, classes such as :code:`ivy.Container` or :code:`ivy.Array` are also available, facilitating the use of structured data and array-like objects (learn more about them `here! <https://lets-unify.ai/ivy/overview/design/ivy_as_a_framework.html>`_). 
 
-All of the functionalities in Ivy are exposed through the :code:`Ivy functional API` and the :code:`Ivy stateful API`. All functions in the `Functional API <https://lets-unify.ai/ivy/design/building_blocks.html#ivy-functional-api>`_ are **Framework Agnostic Functions**, which mean that we can use them like this:
+All of the functionalities in Ivy are exposed through the :code:`Ivy functional API` and the :code:`Ivy stateful API`. All functions in the `Functional API <https://lets-unify.ai/ivy/overview/design/building_blocks.html#ivy-functional-api>`_ are **Framework Agnostic Functions**, which mean that we can use them like this:
 
 .. code-block:: python
 
@@ -194,7 +195,7 @@ All of the functionalities in Ivy are exposed through the :code:`Ivy functional 
     import torch
 
     def mse_loss(y, target):
-        return ivy.mean((out - target)**2)
+        return ivy.mean((y - target)**2)
 
     jax_mse   = mse_loss(jnp.ones((5,)), jnp.ones((5,)))
     tf_mse    = mse_loss(tf.ones((5,)), tf.ones((5,)))
@@ -204,7 +205,7 @@ All of the functionalities in Ivy are exposed through the :code:`Ivy functional 
 In the example above we show how Ivy's functions are compatible with tensors from different frameworks.
 This is the same for ALL Ivy functions. They can accept tensors from any framework and return the correct result.
 
-The `Ivy Stateful API <https://lets-unify.ai/ivy/design/ivy_as_a_framework/ivy_stateful_api.html>`_, on the other hand, allows you to define trainable modules and layers, which you can use alone or as a part of any other framework code!
+The `Ivy Stateful API <https://lets-unify.ai/ivy/overview/design/ivy_as_a_framework/ivy_stateful_api.html>`_, on the other hand, allows you to define trainable modules and layers, which you can use alone or as a part of any other framework code!
 
 .. code-block:: python
 
@@ -251,7 +252,7 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
     for step in range(100):
         loss, grads = ivy.execute_with_gradients(loss_fn, model.v)
         model.v = optimizer.step(model.v, grads)
-        print('step {} loss {}'.format(step, ivy.to_numpy(loss).item()))
+        print('Step: {} --- Loss: {}'.format(step, ivy.to_numpy(loss).item()))
 
     print('Finished training!')
 
@@ -287,7 +288,7 @@ covering topics like `Mechanics`_, `Computer Vision`_, `Robotics`_, a `Reinforce
     </div>
     <br clear="all" />
 
-As always, you can find more information about `Ivy as a framework in the docs! <https://lets-unify.ai/ivy/design/ivy_as_a_framework.html#ivy-as-a-framework>`_
+As always, you can find more information about `Ivy as a framework in the docs! <https://lets-unify.ai/ivy/overview/design/ivy_as_a_framework.html>`_
 
 When should I use Ivy as a framework?
 ######################################
@@ -333,7 +334,7 @@ If you are working on a GPU device, you can pull from:
 Installing from source
 ######################
 
-Obviously, you can also install Ivy from source if you want to take advantage of the latest changes, but we can't ensure that everything will work as expected :sweat_smile:
+You can also install Ivy from source if you want to take advantage of the latest changes, but we can't ensure everything will work as expected. :sweat_smile:
 
 .. code-block:: bash
 
@@ -347,7 +348,7 @@ or alternatively, for the last step:
 
     python3 -m pip install --user -e .
 
-If you want to set up testing and various frameworks it's probably best to check out the `Contributing - Setting Up <https://lets-unify.ai/ivy/contributing/setting_up.html#setting-up>`_ page, where OS-specific and IDE-specific instructions and video tutorials to do so are available!
+If you want to set up testing and various frameworks it's probably best to check out the `Contributing - Setting Up <https://lets-unify.ai/ivy/overview/contributing/setting_up.html#setting-up>`_ page, where OS-specific and IDE-specific instructions and video tutorials to do so are available!
 
 
 Using Ivy
@@ -403,11 +404,11 @@ Documentation
 
 The `Ivy Docs page <https://lets-unify.ai/ivy/>`_ holds all the relevant information about Ivy's and it's framework API reference. 
 
-There, you will find the `Design <https://lets-unify.ai/ivy/design.html>`_ page, which is an user-focused guide about the architecture and the building blocks of Ivy. Likewise, you can take a look at the `Deep dive <https://lets-unify.ai/ivy/deep_dive.html>`_, which is oriented towards potential contributors of the code base and explains the nuances of Ivy in full detail 🔎. 
+There, you will find the `Design <https://lets-unify.ai/ivy/overview/design.html>`_ page, which is an user-focused guide about the architecture and the building blocks of Ivy. Likewise, you can take a look at the `Deep dive <https://lets-unify.ai/ivy/overview/deep_dive.html>`_, which is oriented towards potential contributors of the code base and explains the nuances of Ivy in full detail 🔎
 
-Another important sections of the docs is `Background <https://lets-unify.ai/ivy/background.html>`_, which contextualises the problem Ivy is trying to solve and the current `ML Explosion <https://lets-unify.ai/ivy/background/ml_explosion.html>`_, explaining both (1) why is important `to solve this problem <https://lets-unify.ai/ivy/background/why_unify.html>`_ and (2) how we are adhering to existing `standards <https://lets-unify.ai/ivy/background/standardization.html>`_ to make this happen. 
+Another important sections of the docs is `Background <https://lets-unify.ai/ivy/overview/background.html>`_, which contextualises the problem Ivy is trying to solve and the current `ML Explosion <https://lets-unify.ai/ivy/overview/background/ml_explosion.html#ml-explosion>`_, explaining both (1) why is important `to solve this problem <https://lets-unify.ai/ivy/overview/background/why_unify.html#why-unify>`_ and (2) how we are adhering to existing `standards <https://lets-unify.ai/ivy/overview/background/standardization.html#standardization>`_ to make this happen.
 
-Lastly, you can also find there the `Related Work <https://lets-unify.ai/ivy/related_work.html>`_ section, which paints a clear picture of the role Ivy plays in the ML stack, comparing it to other existing solutions in terms of functionalities and level.
+Lastly, you can also find there the `Related Work <https://lets-unify.ai/ivy/overview/related_work.html>`_ section, which paints a clear picture of the role Ivy plays in the ML stack, comparing it to other existing solutions in terms of functionalities and level.
 
 
 Examples
@@ -513,6 +514,8 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 
     import ivy
     import torch
+    import os
+    os.environ["SM_FRAMEWORK"] = "tf.keras"
     import segmentation_models as sm
 
     # transpile sm from tensorflow to torch
@@ -968,6 +971,8 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 
     import ivy
     import jax
+    import os
+    os.environ["SM_FRAMEWORK"] = "tf.keras"
     import segmentation_models as sm
 
     # transpile sm from tensorflow to jax
@@ -1095,6 +1100,8 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 
     import ivy
     import numpy as np
+    import os
+    os.environ["SM_FRAMEWORK"] = "tf.keras"
     import segmentation_models as sm
 
     # transpile sm from tensorflow to numpy
@@ -1397,7 +1404,7 @@ Contributing
 We believe that everyone can contribute and make a difference. Whether it's writing code 💻, fixing bugs 🐛, 
 or simply sharing feedback 💬, your contributions are definitely welcome and appreciated 🙌 
 
-Check out all of our open tasks, and find out more info in our `Contributing <https://lets-unify.ai/ivy/contributing.html>`_ guide in the docs!
+Check out all of our open tasks, and find out more info in our `Contributing guide <https://lets-unify.ai/ivy/overview/contributing.html>`_ in the docs!
 
 Join our amazing community as a code contributor, and help accelerate our journey to unify all ML frameworks!
 

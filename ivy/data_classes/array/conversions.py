@@ -3,6 +3,7 @@ instances.
 """
 
 # global
+import numpy as np
 from typing import Any, Union, Tuple, Dict, Iterable, Optional
 
 # local
@@ -28,7 +29,9 @@ def _to_ivy(x: Any) -> Any:
         return x
     elif isinstance(x, ivy.Container):
         return x.to_ivy()
-    return ivy.Array(x) if ivy.is_native_array(x) else x
+    if ivy.is_native_array(x) or isinstance(x, np.ndarray):
+        return ivy.Array(x)
+    return x
 
 
 # Wrapped #

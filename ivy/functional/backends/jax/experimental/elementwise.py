@@ -25,7 +25,7 @@ def sinc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.sinc(x)
 
 
-@with_unsupported_dtypes({"0.3.14 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
 def fmod(
     x1: JaxArray,
     x2: JaxArray,
