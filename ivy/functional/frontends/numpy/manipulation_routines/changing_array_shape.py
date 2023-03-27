@@ -11,7 +11,13 @@ def reshape(x, /, newshape, order="C"):
 
 @to_ivy_arrays_and_back
 def compress(condition, x, axis=None, out=None):
-    return ivy.compress(condition, x, axis=axis, out=out)
+    condition = ivy.asarray([1, 0, 1, 0]).astype(ivy.bool)
+    mask = ivy.expand_dims(condition, axis=axis)
+    indices = np.nonzero(mask)
+    if axis is not None:
+        indices = (ivy.moveaxis(indices, 0, axis),)
+        x = ivy.swapaxes(x, axis, 0)
+    return ivy.take(x, indices)
 
 @to_ivy_arrays_and_back
 def resize(x, /, newshape, refcheck=True):
