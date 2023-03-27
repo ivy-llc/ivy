@@ -120,7 +120,7 @@ class _ContainerWithConversions(ContainerBase):
             Container object with all sub-arrays converted to their native format.
 
         """
-        return self.static_to_native(
+        return self._static_to_native(
             self,
             nested,
             include_derived,
@@ -242,7 +242,7 @@ class _ContainerWithConversions(ContainerBase):
             instances.
 
         """
-        return self.static_to_ivy(
+        return self._static_to_ivy(
             self,
             nested,
             include_derived,

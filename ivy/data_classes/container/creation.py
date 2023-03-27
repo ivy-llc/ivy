@@ -321,7 +321,7 @@ class _ContainerWithCreation(ContainerBase):
             b: ivy.array([15., 15., 15.])
         }
         """
-        return self.static_full_like(
+        return self._static_full_like(
             self,
             fill_value,
             key_chains,
@@ -440,7 +440,7 @@ class _ContainerWithCreation(ContainerBase):
         ret
             a container having the same shape as ``self`` and filled with ones.
         """
-        return self.static_ones_like(
+        return self._static_ones_like(
             self,
             key_chains,
             to_apply,
@@ -558,7 +558,7 @@ class _ContainerWithCreation(ContainerBase):
         ret
             an container having the same shape as ``x`` and filled with ``zeros``.
         """
-        return self.static_zeros_like(
+        return self._static_zeros_like(
             self,
             key_chains,
             to_apply,
@@ -603,7 +603,7 @@ class _ContainerWithCreation(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.static_tril(
+        return self._static_tril(
             self,
             k,
             key_chains,
@@ -647,7 +647,7 @@ class _ContainerWithCreation(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.static_triu(
+        return self._static_triu(
             self,
             k,
             key_chains,
@@ -694,7 +694,7 @@ class _ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
-        return self.static_empty_like(
+        return self._static_empty_like(
             self,
             key_chains,
             to_apply,
@@ -783,7 +783,7 @@ class _ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
-        return self.static_linspace(
+        return self._static_linspace(
             self,
             stop,
             num,
@@ -830,7 +830,7 @@ class _ContainerWithCreation(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
-        return self.static_meshgrid(
+        return self._static_meshgrid(
             tuple([self] + list(arrays)),
             sparse,
             indexing,
@@ -871,7 +871,7 @@ class _ContainerWithCreation(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.static_from_dlpack(
+        return self._static_from_dlpack(
             self,
             key_chains,
             to_apply,
@@ -924,7 +924,7 @@ class _ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
-        return self.static_native_array(
+        return self._static_native_array(
             self,
             key_chains,
             to_apply,
@@ -1106,7 +1106,7 @@ class _ContainerWithCreation(ContainerBase):
                 }
         }
         """
-        return self.static_logspace(
+        return self._static_logspace(
             self,
             stop,
             num,
@@ -1307,7 +1307,7 @@ class _ContainerWithCreation(ContainerBase):
             c: ivy.array([[0., 0., 0., 0., 1.]])
         }
         """
-        return self.static_one_hot(
+        return self._static_one_hot(
             self,
             depth,
             on_value=on_value,
