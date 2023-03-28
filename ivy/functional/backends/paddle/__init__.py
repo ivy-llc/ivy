@@ -16,7 +16,7 @@ else:
 use = ivy.utils.backend.ContextManager(_module_in_memory)
 
 NativeArray = paddle.Tensor
-NativeVariable = paddle.static.Variable  # paddle.fluid.framework.Variable
+NativeVariable = paddle.Tensor  # paddle.fluid.framework.Variable
 NativeDevice = paddle.fluid.libpaddle.Place
 NativeDtype = paddle.dtype
 NativeShape = list
