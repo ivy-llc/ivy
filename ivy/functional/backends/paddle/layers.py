@@ -47,7 +47,7 @@ def _pad_before_conv(x, filters, strides, padding, dims, dilations, data_format)
         else:
             raise ValueError(f"Invalid padding format: {padding}")
     return paddle.nn.functional.pad(
-        x, data_format="NDHWC", mode="constant", pad=padding
+        x, data_format=data_format, mode="constant", pad=padding
     )
 
 
