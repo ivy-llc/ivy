@@ -31,12 +31,53 @@ _dtype_kind_keys = {
 
 
 def _get_fn_dtypes(framework, kind="valid"):
+    """
+    Return a list of supported data types for a specified machine learning framework and kind of data type.
+
+    Parameters
+    ----------
+    framework
+        A machine learning framework object.
+
+    kind
+        the kind of data type being queried. The default value is 'valid',
+        which returns al the valid data types for the framework.
+
+    Returns
+    -------
+        A list of supported data types for the specified framework and kind of data type.
+    """
     return test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[framework.backend][
         test_globals.CURRENT_DEVICE_STRIPPED
     ][kind]
 
 
 def _get_type_dict(framework, kind):
+    """
+
+    Returns a dictionary of valid data types for a specified machine learning framework and kind of data type.
+
+    Parameters
+    ----------
+    framework
+        A machine learning framework object.
+    kind
+        The kind of data type being queried. Possible values are:
+            -"valid": all valid data types for the framework
+            -"numeric": all valid numeric data types for the framework
+            -"integer": all valid integer data types for the framework
+            -"float": all valid floating-point data types for the framework
+            -"unsigned": all valid unsigned integer data types for the framework
+            -"signed_integer": all valid signed integer data types for the framework
+            -"complex": all valid complex data types for the framework
+            -"real_and_complex": all valid numeric and complex data types for the framework
+            -"float_and_complex": all valid floating-point and complex data types for the framework
+            -"bool": all valid boolean data types for the framework
+
+    Returns
+    -------
+        dict: A dictionary of valid data types for the specified framework and kind of data type.
+    """
     if kind == "valid":
         return framework.valid_dtypes
     elif kind == "numeric":
@@ -70,6 +111,21 @@ def _get_type_dict(framework, kind):
 
 
 def make_json_pickable(s):
+    """
+        Modifies a string to make it serializable using JSON (JavaScript Object Noticeable)
+
+        Replace instances of "builtins.bfloat16" with "ivy.bfloat16" and instances of
+        "jax._src.device_array.reconstruct_device_array" with "jax.numpy.array".
+
+    Parameters
+    ----------
+    s
+        A string to be modified
+
+    Returns
+    -------
+        A modified version of the input string that can be serialized using JSON
+    """
     s = s.replace("builtins.bfloat16", "ivy.bfloat16")
     s = s.replace("jax._src.device_array.reconstruct_device_array", "jax.numpy.array")
     return s
@@ -239,7 +295,8 @@ def array_dtypes(
     shared_dtype=False,
     array_api_dtypes=False,
 ):
-    """Draws a list of data types.
+    """
+    Draws a list of data types.
 
     Parameters
     ----------
@@ -325,6 +382,23 @@ def get_castable_dtype(draw, available_dtypes, dtype: str, x: Optional[list] = N
     )
 
     def cast_filter(d):
+        """
+           Filters available data type based on the maximum value of iinput
+            array 'x' and the number of bits required to represent the data type.
+        Parameters
+        ----------
+        d
+            Data type
+
+        x
+            Optional input array
+
+        Returns
+        -------
+            If x is None, returns a tuple of the input 'dtype' and the filtered
+            data 'cast_dtype'. If 'x' is not None, returns a tuple of the input
+            'dtype', the input array 'x', and the filtered data 'cast_dtype'.
+        """
         if ivy.is_int_dtype(d):
             max_val = ivy.iinfo(d).max
         elif ivy.is_float_dtype(d) or ivy.is_complex_dtype(d):
