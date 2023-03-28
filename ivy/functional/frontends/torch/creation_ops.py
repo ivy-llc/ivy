@@ -276,10 +276,10 @@ def tensor(
 
 @to_ivy_arrays_and_back
 def asarray(
-    obj, 
+    obj,
     *,
     dtype=None,
     device=None,
-    copy=None, 
+    copy=None,
 ):
     return ivy.asarray(obj, copy=copy, dtype=dtype, device=device)
