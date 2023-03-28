@@ -1,4 +1,6 @@
 # global
+import importlib
+
 import numpy as np
 from hypothesis import strategies as st
 from typing import Optional
@@ -128,7 +130,17 @@ def get_dtypes(
     if test_globals.CURRENT_FRONTEND is not test_globals._Notsetval or isinstance(
         test_globals.CURRENT_FRONTEND_STR, list
     ):  # NOQA
-        if isinstance(test_globals.CURRENT_FRONTEND_STR, list):
+        # this piece of code below checks if the version of frontend is the same
+        # as backend, i.e eg: --backend=torch/1.13.0 --frontend=torch/1.13.0
+        # in such cases we don't need to use subprocess
+        ver=True
+        if test_globals.CURRENT_FRONTEND():
+            ver=test_globals.CURRENT_FRONTEND().backend_version['version']
+
+            if isinstance(test_globals.CURRENT_FRONTEND_STR, list):
+                ver=test_globals.CURRENT_FRONTEND_STR[0].split('/')[1]!=ver
+
+        if isinstance(test_globals.CURRENT_FRONTEND_STR, list) and ver:
             process = test_globals.CURRENT_FRONTEND_STR[1]
             try:
                 if test_globals.CURRENT_RUNNING_TEST.is_method:
@@ -165,6 +177,7 @@ def get_dtypes(
                 raise Exception
             frontend_dtypes = frontend_ret
             valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
+
 
         else:
             frontend_dtypes = retrieval_fn(test_globals.CURRENT_FRONTEND(), kind)

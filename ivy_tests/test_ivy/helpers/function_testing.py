@@ -565,6 +565,8 @@ def test_frontend_function(
     ret_np
         optional, return value from the Numpy function
     """
+    if isinstance(frontend, list):
+        frontend, frontend_proc = frontend
     assert (
         not test_flags.with_out or not test_flags.inplace
     ), "only one of with_out or with_inplace can be set as True"
@@ -573,7 +575,12 @@ def test_frontend_function(
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
         num_positional_args=test_flags.num_positional_args, kwargs=all_as_kwargs_np
     )
-    create_frontend_array = importlib.import_module(f"ivy.functional.frontends.{frontend}"
+    if '/' in frontend:
+        # multiversion
+        create_frontend_array = importlib.import_module(f"ivy.functional.frontends.{frontend.split('/')[0]}"
+                                                        )._frontend_array
+    else:
+        create_frontend_array = importlib.import_module(f"ivy.functional.frontends.{frontend}"
                                                     )._frontend_array
 
     # extract all arrays from the arguments and keyword arguments
@@ -598,8 +605,7 @@ def test_frontend_function(
 
     # frontend function
     # parse function name and frontend submodules (jax.lax, jax.numpy etc.)
-    if isinstance(frontend, list):
-        frontend, frontend_proc = frontend
+
     split_index = fn_tree.rfind(".")
     frontend_submods, fn_name = fn_tree[:split_index], fn_tree[split_index + 1 :]
     function_module = importlib.import_module(frontend_submods)
