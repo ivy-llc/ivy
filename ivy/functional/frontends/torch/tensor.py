@@ -871,3 +871,7 @@ class Tensor:
 
     def bitwise_xor(self, other, *, out=None):
         return torch_frontend.bitwise_xor(self._ivy_array, other)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def cumprod(self, dim, dtype):
+        return torch_frontend.cumprod(self._ivy_array, dim, dtype=dtype)
