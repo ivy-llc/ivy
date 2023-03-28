@@ -3690,6 +3690,7 @@ def test_torch_special_pow(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     dtype = input_dtype[0]
@@ -3708,6 +3709,7 @@ def test_torch_special_pow(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
