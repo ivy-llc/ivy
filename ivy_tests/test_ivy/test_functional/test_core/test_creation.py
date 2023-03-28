@@ -819,7 +819,7 @@ def test_copy_array(
     else:
         assert ivy.is_native_array(ret)
     # cardinality test
-    assert ret.shape == x.shape
+    assert list(ret.shape) == list(x.shape)
     # value test
     helpers.assert_all_close(ivy.to_numpy(ret), ivy.to_numpy(x))
     assert id(x) != id(ret)

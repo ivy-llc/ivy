@@ -48,3 +48,9 @@ discussion_channel_map = {
 # That resolved a bug of autosummary generating docs for code-block examples
 # of autosummary
 autosummary_generate = ['index.rst']
+
+skippable_method_attributes = [
+    {
+        "__qualname__": "_wrap_function.<locals>.new_function"
+    }
+]
