@@ -125,3 +125,23 @@ def bincount(
 
 
 bincount.support_native_out = False
+
+def numpy_cumsum(input_arr, 
+        dim=None, 
+        dtype=None, 
+        keepdims=False):
+    return ivy.to_numpy(
+        ivy.cumsum(
+            ivy.array(input_arr), 
+                    dim=dim, 
+                    dtype=dtype, 
+                    keepdims=keepdims
+                    )
+                    )
+
+# Define a 2D numpy array
+arr = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+# Compute the cumulative sum of array elements along the first dimension (rows) using numpy
+cumsum_np = np.cumsum(arr, axis=0)
+# Compute the cumulative sum of array elements along the first dimension (rows) using Ivy
+cumsum_ivy = numpy_cumsum(arr, dim=0)
