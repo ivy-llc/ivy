@@ -229,7 +229,6 @@ class ndarray:
             axis1=axis1,
             axis2=axis2,
         )
-
     def sort(self, *, axis=-1, kind=None, order=None):
         return np_frontend.sort(self._ivy_array, axis=axis, kind=kind, order=order)
 
@@ -290,6 +289,17 @@ class ndarray:
 
     def tobytes(self, order="C") -> bytes:
         return np_frontend.tobytes(self.data, order=order)
+
+    def prod(self, *, axis=None, dtype=None, out=None, keepdims=False, initial=None, where=True):
+        return np_frontend.prod(
+            self._ivy_array,
+            axis=axis,
+            dtype=dtype,
+            keepdims=keepdims,
+            initial=initial,
+            where=where,
+            out=out,
+        )
 
     def view(self):
         return np_frontend.reshape(self._ivy_array, tuple(self.shape))
