@@ -193,7 +193,6 @@ class FrontendFunctionTestFlags(TestFlags):
             f"native_arrays={self.native_arrays}. "
             f"as_variable={self.as_variable}. "
             f"generate_frontend_arrays={self.generate_frontend_arrays}. "
-
         )
 
     def __repr__(self):
@@ -219,7 +218,7 @@ def frontend_function_flags(
             inplace=inplace,
             as_variable=as_variable,
             native_arrays=native_arrays,
-            generate_frontend_arrays=generate_frontend_arrays
+            generate_frontend_arrays=generate_frontend_arrays,
         )
     )
 
