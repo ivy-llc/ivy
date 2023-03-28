@@ -64,3 +64,11 @@ def batch_norm(
 
 def logsigmoid(input: Tensor) -> Tensor:
     return tf.math.log_sigmoid(input)
+
+
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
+def selu(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
+    ret = tf.nn.selu(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)
