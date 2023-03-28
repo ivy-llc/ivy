@@ -627,6 +627,43 @@ def test_jax_numpy_logspace(
     )
 
 
+# meshgrid
+@handle_frontend_test(
+    fn_tree="jax.numpy.meshgrid",
+    dtype_and_x1=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric"), min_num_dims=1, max_num_dims=1, min_dim_size=2, max_dim_size=10),
+    dtype_and_x2=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric"), min_num_dims=1, max_num_dims=1, min_dim_size=2, max_dim_size=10),
+    indexing=st.sampled_from(["xy", "ij"]),
+    sparse=st.booleans(),
+    copy=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_meshgrid(
+    dtype_and_x1,
+    dtype_and_x2,
+    indexing,
+    sparse,
+    copy,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtype1, x1 = dtype_and_x1
+    dtype2, x2 = dtype_and_x2
+    helpers.test_frontend_function(
+        input_dtypes=(dtype1, dtype2),
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x1=x1,
+        x2=x2,
+        indexing=indexing,
+        sparse=sparse,
+        copy=copy
+    )
+
+
 # linspace
 @handle_frontend_test(
     fn_tree="jax.numpy.linspace",
