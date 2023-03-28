@@ -3138,6 +3138,7 @@ def test_torch_instance_bitwise_or_(
         on_device=on_device,
     )
 
+
 # bitwise_left_shift
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -3172,6 +3173,7 @@ def test_torch_instance_bitwise_left_shift(
         frontend=frontend,
         on_device=on_device,
     )
+
 
 # add_
 @handle_frontend_method(
