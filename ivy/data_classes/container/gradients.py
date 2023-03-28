@@ -8,7 +8,7 @@ from ivy.data_classes.container.base import ContainerBase
 # noinspection PyMissingConstructor
 class _ContainerWithGradients(ContainerBase):
     @staticmethod
-    def static_stop_gradient(
+    def _static_stop_gradient(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -155,7 +155,7 @@ class _ContainerWithGradients(ContainerBase):
         }
 
         """
-        return self.static_stop_gradient(
+        return self._static_stop_gradient(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
