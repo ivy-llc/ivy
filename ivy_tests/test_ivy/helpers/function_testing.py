@@ -1,5 +1,4 @@
 # global
-import os
 import copy
 from typing import Union, List
 import numpy as np
