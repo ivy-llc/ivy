@@ -256,6 +256,7 @@ def _num_to_bit_list(value, num_dims):
     return list(map(int, "{:0{size}b}".format(value, size=num_dims)))[::-1]
 
 
+# ToDo: find a way around for negative indexing, which torch does not support
 @to_ivy_arrays_and_back
 def strided_slice(
     input_,
@@ -305,42 +306,47 @@ def strided_slice(
         if num_missing == 0:
             begin_mask[ellipsis_index] = 1
             end_mask[ellipsis_index] = 1
+            shrink_axis_mask[ellipsis_index] = 0
+            new_axis_mask[ellipsis_index] = 0
         else:
             for i in py_range(ellipsis_index, ellipsis_index + num_missing + 1, 1):
                 if i < len(shrink_axis_mask):
                     shrink_axis_mask[i] = 0
+                    new_axis_mask[i] = 0
                 else:
                     break
             if ellipsis_index >= len(begin):
-                begin = begin + [0] * num_missing
-                end = end + input_shape[ellipsis_index:ellipsis_index + num_missing]
+                begin = begin + [None] * num_missing
+                end = end + [None] * num_missing
                 strides = strides + [1] * num_missing
             else:
-                begin = begin[:ellipsis_index] + [0] * (num_missing + 1) + \
+                begin = begin[:ellipsis_index] + [None] * (num_missing + 1) + \
                     begin[ellipsis_index + 1:]
-                end = end[:ellipsis_index] + \
-                    input_shape[ellipsis_index:ellipsis_index + num_missing + 1] + \
+                end = end[:ellipsis_index] + [None] * (num_missing + 1) + \
                     end[ellipsis_index + 1:]
                 strides = strides[:ellipsis_index] + [1] * (num_missing + 1) + \
                     strides[ellipsis_index + 1:]
-    new_axis_indices = [i for i, v in enumerate(new_axis_mask) if v]
-    ret = ivy.expand_dims(input_, axis=new_axis_indices)
-    full_slice = []
+    full_slice = ()
     for i, _ in enumerate(begin):
-        b = begin[i] if not (begin_mask[i] or new_axis_mask[i]) else None
-        e = end[i] if not (end_mask[i] or new_axis_mask[i]) else None
-        s = strides[i]
-        if b is None and e is None:
-            s = 1 if (ellipsis_mask[i] or new_axis_mask[i]) else s
-        elif shrink_axis_mask[i]:
-            if b is not None:
-                e = b + 1 if s > 0 else b - 1
-            else:
-                e = 1 if s > 0 else input_shape[i] - 2
-        full_slice.append(py_slice(b, e, s))
-    ret = ret if full_slice is None else ret[tuple(full_slice)]
+        if new_axis_mask[i]:
+            full_slice += (ivy.newaxis,)
+        else:
+            b = begin[i] if not begin_mask[i] else None
+            e = end[i] if not end_mask[i] else None
+            s = strides[i]
+            if b is None and e is None:
+                s = 1 if ellipsis_mask[i] else s
+            elif shrink_axis_mask[i]:
+                if b is not None:
+                    e = b + 1 if s > 0 else b - 1
+                else:
+                    e = 1 if s > 0 else input_shape[i] - 2
+            full_slice += (py_slice(b, e, s),)
+    if all(i is None for i in full_slice):
+        full_slice += (...,)
+    ret = input_[full_slice]
     shrink_indices = [i for i, v in enumerate(shrink_axis_mask)
-                      if v and ret.shape[i] == 1]
+                      if v and i < len(ret.shape) and ret.shape[i] == 1]
     ret = ivy.squeeze(ret, axis=shrink_indices)
     return ret
 

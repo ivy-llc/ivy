@@ -1082,8 +1082,7 @@ def test_tensorflow_strided_slice(
     on_device,
 ):
     dtype, x, begin, end, strides, masks = dtype_x_params
-    # ToDo: fix new_axis_mask
-    assume(masks[3] == 0)
+    assume(masks[2] == 0 or masks[3] == 0)
     try:
         helpers.test_frontend_function(
             input_dtypes=dtype + 3 * ["int64"] + 5 * ["int32"],
