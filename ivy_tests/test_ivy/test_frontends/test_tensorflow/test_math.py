@@ -1641,9 +1641,9 @@ def test_tensorflow_acos(
 @handle_frontend_test(
     fn_tree="tensorflow.math.acosh",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=-1,
-        max_value=1,
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_value= -1,
+        max_value= math.inf,
     ),
     test_with_out=st.just(False),
 )
