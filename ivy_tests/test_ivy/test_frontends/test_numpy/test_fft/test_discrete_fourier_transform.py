@@ -30,6 +30,7 @@ def test_numpy_iftt(
         norm=None
     )
 
+
 @handle_frontend_test(
     fn_tree="numpy.fft.ifft2",
     dtype_and_x=helpers.dtype_and_values(
