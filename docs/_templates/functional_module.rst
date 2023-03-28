@@ -1,7 +1,7 @@
 {{ name | escape | underline }}
 
-.. autofunction:: ivy.{{ name }}
+.. autoskippablefunction:: ivy.{{ name }}
 
-.. autofunction:: ivy.Array.{{ name }}
+.. autoskippablefunction:: ivy.Array.{{ name }}
 
-.. autofunction:: ivy.Container.{{ name }}
+.. autoskippablefunction:: ivy.Container.{{ name }}
