@@ -85,13 +85,18 @@ def float_power(
     x2 = paddle.cast(x2, dtype='float64')    # Compute the element-wise power
     return paddle.cast(paddle.pow(x1, x2), dtype=paddle.float64)
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16","float16")}}, backend_version
+)  
 def exp2(
     x: Union[paddle.Tensor, float, list, tuple],
     /,
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    y = paddle.full(shape=x.shape, fill_value=2, dtype=x.dtype)
+    res = paddle.pow(y,x)
+    return res
 
 
 def copysign(
