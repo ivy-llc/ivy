@@ -310,7 +310,7 @@ def strided_slice(
             new_axis_mask[ellipsis_index] = 0
         else:
             for i in py_range(ellipsis_index, ellipsis_index + num_missing + 1, 1):
-                if i < len(shrink_axis_mask):
+                if i < input_rank:
                     shrink_axis_mask[i] = 0
                     new_axis_mask[i] = 0
                 else:
