@@ -69,6 +69,7 @@ class ContainerBase(dict, abc.ABC):
         types_to_iteratively_nest=None,
         alphabetical_keys=True,
         dynamic_backend=None,
+        ivy_binding=None,
         **kwargs,
     ):
         """Initialize container object from input dict representation.
@@ -122,6 +123,10 @@ class ContainerBase(dict, abc.ABC):
             keyword arguments for dict creation. Default is ``None``.
 
         """
+        # Use the current global Ivy
+        if ivy_binding is None:
+            self.ivy = ivy_binding
+
         self._queues = queues
         self._container_combine_method = container_combine_method
         if ivy.exists(self._queues):

@@ -94,7 +94,7 @@ class Array(
     _ArrayWithStatisticalExperimental,
     _ArrayWithUtilityExperimental,
 ):
-    def __init__(self, data, dynamic_backend=None):
+    def __init__(self, data, dynamic_backend=None, ivy_binding=None):
         _ArrayWithActivations.__init__(self)
         _ArrayWithCreation.__init__(self)
         _ArrayWithDataTypes.__init__(self)
@@ -134,10 +134,14 @@ class Array(
         _ArrayWithSortingExperimental.__init__(self),
         _ArrayWithStatisticalExperimental.__init__(self),
         _ArrayWithUtilityExperimental.__init__(self),
-        self._init(data, dynamic_backend)
+        self._init(data, dynamic_backend, ivy_binding)
         self._view_attributes(data)
 
-    def _init(self, data, dynamic_backend=None):
+    def _init(self, data, dynamic_backend=None, ivy_binding=None):
+        if ivy_binding is None:
+            # Use the current global Ivy
+            self.ivy = ivy
+
         if ivy.is_ivy_array(data):
             self._data = data.data
         elif ivy.is_native_array(data):

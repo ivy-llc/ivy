@@ -109,6 +109,7 @@ class Container(
         types_to_iteratively_nest=None,
         alphabetical_keys=True,
         dynamic_backend=None,
+        ivy_binding=None,
         **kwargs
     ):
         ContainerBase.__init__(
@@ -129,6 +130,7 @@ class Container(
             types_to_iteratively_nest,
             alphabetical_keys,
             dynamic_backend,
+            ivy_binding,
             **kwargs
         )
 
