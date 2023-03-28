@@ -227,8 +227,13 @@ def cumsum(
     dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
-
+    if exclusive:
+        x = paddle.concat((paddle.zeros_like(x.slice([None] * axis + [slice(0, 1)], [-1] * (axis + 1))),
+                           x.slice([None] * axis + [slice(0, -1)], [-1] * (axis + 1))), axis=axis)
+    out = paddle.cumsum(x, axis=axis)
+    if reverse:
+        out = paddle.flip(out, axis=[axis])
+    return out
 
 def einsum(
     equation: str,
