@@ -449,5 +449,5 @@ class ndarray:
     def __mod__(self, value, /):
         return np_frontend.mod(self._ivy_array, value, out=self)
 
-    def round(self, decimals=0, *, out=None):
-        return np_frontend.round(self._ivy_array, decimals=decimals, out=out)
+    def round(self,  *, out=None):
+        return np_frontend.round(self._ivy_array, out=out)
