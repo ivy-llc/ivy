@@ -529,7 +529,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations
     _reciprocal,
     _subtract,
     _true_divide,
-    _divmod
+    _divmod,
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functions import (
@@ -560,6 +560,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.hyperbolic_functions 
 from ivy.functional.frontends.numpy.mathematical_functions.rounding import (
     _ceil,
     _trunc,
+    _floor,
 )
 
 from ivy.functional.frontends.numpy.logic.comparison import (
@@ -604,6 +605,8 @@ from ivy.functional.frontends.numpy.mathematical_functions.extrema_finding impor
     _minimum,
     _fmax,
 )
+
+_frontend_array = array
 
 # initializing ufuncs #
 # ---------------------#
@@ -675,4 +678,4 @@ real = ufunc("_real")
 divmod = ufunc("_divmod")
 fmax = ufunc("_fmax")
 ldexp = ufunc("_ldexp")
-
+floor = ufunc("_floor")
