@@ -403,6 +403,12 @@ def equal(x, y, name=None):
 
 
 @to_ivy_arrays_and_back
+def not_equal(x, y, name=None):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.not_equal(x, y)
+
+
+@to_ivy_arrays_and_back
 def floor(x, name=None):
     return ivy.floor(x)
 
@@ -517,3 +523,8 @@ def greater(x, y, name=None):
 @to_ivy_arrays_and_back
 def cos(x, name=None):
     return ivy.cos(x)
+
+
+@to_ivy_arrays_and_back
+def sinh(x, name=None):
+    return ivy.sinh(x)

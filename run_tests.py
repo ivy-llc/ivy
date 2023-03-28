@@ -63,13 +63,14 @@ def update_individual_test_results(
     backend_version=None,
     frontend_version=None,
 ):
-    key = submod + "." + backend + "." + test
+    key = submod + "." + backend
     if backend_version is not None:
         backend_version = backend_version.replace(".", "_")
         key += "." + backend_version
     if frontend_version is not None:
         frontend_version = frontend_version.replace(".", "_")
         key += "." + frontend_version
+    key += "." + test
     collection.update_one(
         {"_id": id},
         {"$set": {key: result}},

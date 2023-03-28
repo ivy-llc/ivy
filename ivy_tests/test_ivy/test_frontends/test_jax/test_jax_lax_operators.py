@@ -2308,6 +2308,32 @@ def test_jax_lax_top_k(
         # test_values=False,
     )
 
+# real
+@handle_frontend_test(
+    fn_tree="jax.lax.real",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("complex")
+    ),
+)
+def test_jax_lax_real(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=True,
+        x=x[0],
+    )
+
 
 # squeeze
 @st.composite
@@ -2352,3 +2378,4 @@ def test_jax_lax_squeeze(
         array=value[0],
         dimensions=dim,
     )
+

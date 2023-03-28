@@ -43,3 +43,9 @@ discussion_channel_map = {
     "ivy.stateful.optimizers": ["1000043277870964747", "1028300892434350090"],
     "ivy.stateful.sequential": ["1000043078381473792", "1028300952308027472"],
 }
+
+skippable_method_attributes = [
+    {
+        "__qualname__": "_wrap_function.<locals>.new_function"
+    }
+]
