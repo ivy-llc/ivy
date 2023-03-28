@@ -7,20 +7,36 @@ import paddle
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.utils.exceptions import IvyNotImplementedException
 
-# from . import backend_version
+from . import backend_version
 from ivy.functional.ivy.layers import _handle_padding, _get_x_data_format
-from ivy.functional.backends import pd_backend
+from ivy.functional.backends import paddle as pd_backend
 
 
 def _is_list_or_tuple(inp):
     return isinstance(inp, (list, tuple))
 
 
+def _convert_to_list(value, n, name="padding", _type=int):
+    if isinstance(value, _type):
+        return [value] * n
+    else:
+        try:
+            value_list = list(value)
+        except TypeError:
+            raise ValueError(
+                f"The input {name}'s type must be list or tuple. Received: {value}"
+            )
+        else:
+            return value_list
+
+
 def _pad_before_conv(x, filters, strides, padding, dims, dilations, data_format):
-    dilations = [dilations] * dims if isinstance(dilations, int) else dilations
-    strides = [strides] * dims if isinstance(strides, int) else strides
+    dilations = _convert_to_list(dilations, dims, "dilations")
+    strides = _convert_to_list(strides, dims, "strides")
+
     if isinstance(padding, str):
         # Case 1: "VALID", "SAME" etc.
         filter_shape = [
@@ -29,25 +45,32 @@ def _pad_before_conv(x, filters, strides, padding, dims, dilations, data_format)
         ]
         padding_spec = [
             _handle_padding(x.shape[1 + i], strides[i], filter_shape[i], padding)
-            for i in range(dims)
+            for i in range(dims - 1, -1, -1)
         ]
         padding_top = [padding_spec[i] // 2 for i in range(dims)]
         padding_bot = [padding_spec[i] - padding_spec[i] // 2 for i in range(dims)]
         padding = [None] * len(padding_top) * 2
         padding[::2] = padding_top
         padding[1::2] = padding_bot
-    elif _is_list_or_tuple(padding):
-        if len(padding) == dims + 2 and _is_list_or_tuple(padding[0]):
-            # Case 2: [(0,0),(pad_left, pad_right),(pad_top, pad_bottom)...,(0,0)]
-            padding = padding[1:-1] if data_format == "NDHWC" else padding[2:]
-            padding = [elem for pad_i_dim in padding for elem in pad_i_dim]
-        elif len(padding) == dims and _is_list_or_tuple(padding[0]):
-            # Case 3: [(pad_left, pad_right), (pad_top, pad_bottom)...]
-            padding = [elem for pad_i_dim in padding for elem in pad_i_dim]
-        else:
-            raise ValueError(f"Invalid padding format: {padding}")
+
+    elif (
+        _is_list_or_tuple(padding)
+        and len(padding) == dims
+        and _is_list_or_tuple(padding[0])
+    ):
+        # Case 2: [(pad_left, pad_right), (pad_top, pad_bottom)...]
+        padding = [item for sublist in padding for item in sublist[::-1]][::-1]
+    else:
+        raise ValueError(f"Invalid padding format: {padding}")
+
+    if not all([p >= 0 for p in padding]):
+        raise ValueError(
+            f"Invalid padding, all values should be larger than"
+            f"or equal to 0, but received: {padding}."
+        )
+
     return paddle.nn.functional.pad(
-        x, data_format=data_format, mode="constant", pad=padding
+        x, pad=padding, data_format=data_format, mode="constant"
     )
 
 
@@ -127,6 +150,7 @@ def depthwise_conv2d(
     raise IvyNotImplementedException()
 
 
+@with_unsupported_dtypes({"2.4.2 and below": ("float16",)}, backend_version)
 def conv3d(
     x: paddle.Tensor,
     filters: paddle.Tensor,
@@ -140,18 +164,21 @@ def conv3d(
 ):
     if data_format == "NCDHW":
         x = paddle.transpose(x, perm=(0, 2, 3, 4, 1))
-    x = _pad_before_conv(x, filters, strides, padding, 3, dilations, data_format)
+
+    df = "NDHWC"
+    x = _pad_before_conv(x, filters, strides, padding, 3, dilations, df)
     filters = paddle.transpose(filters, perm=(4, 3, 0, 1, 2))
-    if not isinstance(padding, str):
-        padding = "VALID"
+    padding = "VALID"
+
     res = paddle.nn.functional.conv3d(
         x,
         filters,
-        data_format="NDHWC",
+        data_format=df,
         stride=strides,
         padding=padding,
         dilation=dilations,
     )
+
     if data_format == "NCDHW":
         res = paddle.transpose(res, perm=(0, 4, 1, 2, 3))
     return res
@@ -173,6 +200,7 @@ def conv3d_transpose(
     raise IvyNotImplementedException()
 
 
+@with_unsupported_dtypes({"2.4.2 and below": ("float16",)}, backend_version)
 def conv_general_dilated(
     x: paddle.Tensor,
     filters: paddle.Tensor,
@@ -195,11 +223,6 @@ def conv_general_dilated(
     if data_format == "channel_first":
         x = paddle.transpose(x, perm=(0, *range(2, dims + 2), 1))
 
-    if dims == 1:
-        df = "NLC"
-    else:
-        df = _get_x_data_format(dims, "channel_last")
-
     # adding dilation in input
     x_dilations = [x_dilations] * dims if isinstance(x_dilations, int) else x_dilations
     for i in range(dims):
@@ -210,12 +233,12 @@ def conv_general_dilated(
             x = pd_backend.swapaxes(x, 1 + i, -1)
             x = paddle.matmul(x, h)
             x = pd_backend.swapaxes(x, -1, 1 + i)
-    
-    x = _pad_before_conv(x, filters, strides, padding, dims, dilations, data_format)
+
+    df = "NLC" if dims == 1 else _get_x_data_format(dims, data_format="channel_last")
+    x = _pad_before_conv(x, filters, strides, padding, dims, dilations, df)
     filters = paddle.transpose(filters, perm=(dims + 1, dims, *range(dims)))
-    if not isinstance(padding, str):
-        padding = "VALID"
-    
+    padding = "VALID"
+
     if dims == 1:
         res = paddle.nn.functional.conv1d(
             x,
@@ -249,10 +272,11 @@ def conv_general_dilated(
             dilation=dilations,
             groups=feature_group_count,
         )
-    
+
     if data_format == "channel_first":
         res = paddle.transpose(res, perm=(0, dims + 1, *range(1, dims + 1)))
     return res
+
 
 def conv_general_transpose(
     x: paddle.Tensor,
