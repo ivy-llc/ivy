@@ -215,6 +215,7 @@ def cumprod(
     raise IvyNotImplementedException()
 
 
+
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
@@ -234,7 +235,8 @@ def cumsum(
     if reverse:
         out = paddle.flip(out, axis=[axis])
     return out
-
+    
+    
 def einsum(
     equation: str,
     *operands: paddle.Tensor,
