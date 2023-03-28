@@ -544,11 +544,7 @@ def Softplus(*, features, name="Softplus"):
     return ivy.softplus(features)
 
 
-@to_ivy_arrays_and_back
-def Xdivy(*, x, y, name="Xdivy"):
-    if (x == 0).all():
-        return 0.0
-    return ivy.divide(x, y)
+Xdivy = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.xdivy))
 
 
 @with_unsupported_dtypes({"2.10.0 and below": ("bfloat16")}, "tensorflow")
@@ -718,28 +714,28 @@ def Real(input, Tout=ivy.float32, name="Real"):
 
 @to_ivy_arrays_and_back
 def BandedTriangularSolve(
-    matrix, 
-    rhs, 
-    lower=True, 
-    adjoint=False, 
+    matrix,
+    rhs,
+    lower=True,
+    adjoint=False,
     name="BandedTriangularSolve",
 ):
     return ivy.BandedTriangularSolve(matrix, rhs, lower=lower, adjoint=adjoint)
 
 
 @to_ivy_arrays_and_back
-def BatchMatMul(x, y, adj_x=False, adj_y=False, name='BatchMatMul'):
+def BatchMatMul(x, y, adj_x=False, adj_y=False, name="BatchMatMul"):
     return ivy.BatchMatMul(x, y, adj_x=adj_x, adj_y=adj_y)
 
 
 @to_ivy_arrays_and_back
-def BatchMatMulV2(x, y, adj_x=False, adj_y=False, name='BatchMatMulV2'):
+def BatchMatMulV2(x, y, adj_x=False, adj_y=False, name="BatchMatMulV2"):
     return ivy.BatchMatMulV2(x, y, adj_x=adj_x, adj_y=adj_y)
 
 
 @to_ivy_arrays_and_back
-def BatchMatMulV3(x, y, Tout=ivy.Dtype, adj_x=False, adj_y=False, name='BatchMatMulV3'):
+def BatchMatMulV3(x, y, Tout=ivy.Dtype, adj_x=False, adj_y=False, name="BatchMatMulV3"):
     return ivy.BatchMatMulV3(x, y, Tout=Tout, adj_x=adj_x, adj_y=adj_y)
-    
-    
+
+
 Slice = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.slice))
