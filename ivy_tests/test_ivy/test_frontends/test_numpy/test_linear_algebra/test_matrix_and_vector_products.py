@@ -12,63 +12,6 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
 )
 
 
-@st.composite
-def _get_dtype_value1_value2_axis_for_cross(
-    draw,
-    available_dtypes,
-    min_value=None,
-    max_value=None,
-    allow_inf=False,
-    exclude_min=False,
-    exclude_max=False,
-    min_num_dims=1,
-    max_num_dims=10,
-    min_dim_size=1,
-    max_dim_size=3,
-):
-    shape = draw(
-        helpers.get_shape(
-            allow_none=False,
-            min_num_dims=min_num_dims,
-            max_num_dims=max_num_dims,
-            min_dim_size=min_dim_size,
-            max_dim_size=max_dim_size,
-        )
-    )
-    axisa = draw(helpers.ints(min_value=1, max_value=len(shape)))
-    axisb = draw(helpers.ints(min_value=1, max_value=len(shape)))
-    axisc = draw(helpers.ints(min_value=1, max_value=len(shape)))
-    axis = draw(helpers.ints(min_value=1, max_value=len(shape)))
-    dtype = draw(st.sampled_from(draw(available_dtypes)))
-
-    values = []
-    for i in range(2):
-        values.append(
-            draw(
-                helpers.array_values(
-                    dtype=dtype,
-                    shape=shape,
-                    min_value=min_value,
-                    max_value=max_value,
-                    allow_inf=allow_inf,
-                    exclude_min=exclude_min,
-                    exclude_max=exclude_max,
-                    large_abs_safety_factor=72,
-                    small_abs_safety_factor=72,
-                    safety_factor_scale="log",
-                )
-            )
-        )
-
-    value1, value2 = values[0], values[1]
-    if not isinstance(axis, list):
-        value2 = value2.transpose(
-            [k for k in range(len(shape) - axis, len(shape))]
-            + [k for k in range(0, len(shape) - axis)]
-        )
-    return [dtype], value1, value2, axisa, axisb, axisc, axis
-
-
 # outer
 @handle_frontend_test(
     fn_tree="numpy.outer",
@@ -131,10 +74,66 @@ def test_numpy_inner(
         b=xs[1],
     )
 
-
 # cross
+@st.composite
+def _get_dtype_value1_value2_axis_for_cross(
+    draw,
+    available_dtypes,
+    min_value=None,
+    max_value=None,
+    allow_inf=False,
+    exclude_min=False,
+    exclude_max=False,
+    min_num_dims=1,
+    max_num_dims=10,
+    min_dim_size=1,
+    max_dim_size=3,
+):
+    shape = draw(
+        helpers.get_shape(
+            allow_none=False,
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
+        )
+    )
+    axisa = draw(helpers.ints(min_value=1, max_value=len(shape)))
+    axisb = draw(helpers.ints(min_value=1, max_value=len(shape)))
+    axisc = draw(helpers.ints(min_value=1, max_value=len(shape)))
+    axis = draw(helpers.ints(min_value=1, max_value=len(shape)))
+    dtype = draw(st.sampled_from(draw(available_dtypes)))
+
+    values = []
+    for i in range(2):
+        values.append(
+            draw(
+                helpers.array_values(
+                    dtype=dtype,
+                    shape=shape,
+                    min_value=min_value,
+                    max_value=max_value,
+                    allow_inf=allow_inf,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                    large_abs_safety_factor=72,
+                    small_abs_safety_factor=72,
+                    safety_factor_scale="log",
+                )
+            )
+        )
+
+    value1, value2 = values[0], values[1]
+    if not isinstance(axis, list):
+        value2 = value2.transpose(
+            [k for k in range(len(shape) - axis, len(shape))]
+            + [k for k in range(0, len(shape) - axis)]
+        )
+    return [dtype], value1, value2, axisa, axisb, axisc, axis
+
+
 @handle_frontend_test(
-    fn_tree="numpy.linalg.cross",
+    fn_tree="numpy.cross",
     dtype_x1_x2_axis=_get_dtype_value1_value2_axis_for_cross(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
@@ -145,7 +144,7 @@ def test_numpy_inner(
         max_value=1e5,
     ),
 )
-def test_cross(
+def test_numpy_cross(
     *,
     dtype_x1_x2_axis,
     test_flags,
