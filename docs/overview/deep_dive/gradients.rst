@@ -112,6 +112,7 @@ Following is an example of usage of :func:`ivy.bind_custom_gradient_function`,
     ret, grad = ivy.execute_with_gradients(func, x)
 
 The :code:`custom_grad_fn` here accepts :code:`*args` which has the structure :code:`((xs, ret), upstream)` where,
+
 * :code:`xs` is the input similar to the one accepted in :func:`ivy.execute_with_gradients`
 * :code:`ret` is the output of the forward pass of the :func:`inter_func`
 * :code:`upstream` refers to the previously computed gradients while back-propagating
