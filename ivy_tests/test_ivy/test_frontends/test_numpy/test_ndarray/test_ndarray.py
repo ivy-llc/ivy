@@ -2726,6 +2726,8 @@ def test_numpy_instance_mod__(
     ),
      choices = helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
+        min_size=1,
+        max_size=dtype_and_x.shape[0],
     ),
     mode = st.sampled_from(["raise", "wrap", "clip"])
 )
