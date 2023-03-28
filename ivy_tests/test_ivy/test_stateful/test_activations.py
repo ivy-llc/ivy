@@ -31,6 +31,7 @@ def test_gelu(
     ground_truth_backend,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_method(
@@ -46,6 +47,7 @@ def test_gelu(
         atol_=1e-2,
         rtol_=1e-2,
         test_gradients=test_gradients,
+        on_device=on_device,
     )
 
 
@@ -71,6 +73,7 @@ def test_geglu(
     ground_truth_backend,
     init_flags,
     method_flags,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     # last dim must be even, this could replaced with a private helper
@@ -88,4 +91,5 @@ def test_geglu(
         rtol_=1e-2,
         atol_=1e-2,
         test_gradients=test_gradients,
+        on_device=on_device,
     )

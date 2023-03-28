@@ -387,7 +387,9 @@ def matrix_transpose(
     perm = list(range(x.ndim))
     perm[-1], perm[-2] = perm[-2], perm[-1]
     if x.dtype in [paddle.int8, paddle.int16, paddle.uint8]:
-        return paddle.transpose(x.cast(ivy.default_float_dtype()), perm=perm).cast(x.dtype)
+        return paddle.transpose(x.cast(ivy.default_float_dtype()), perm=perm).cast(
+            x.dtype
+        )
     return paddle.transpose(x, perm=perm)
 
 
