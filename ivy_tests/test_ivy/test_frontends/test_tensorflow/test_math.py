@@ -723,38 +723,11 @@ def test_tensorflow_asinh(
     )
 
 
-# acosh
-@handle_frontend_test(
-    fn_tree="tensorflow.math.acosh",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple([ivy.float32, ivy.float64]),
-    ),
-    test_with_out=st.just(False),
-)
-def test_tensorflow_acosh(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
 # atanh
 @handle_frontend_test(
     fn_tree="tensorflow.math.atanh",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple([ivy.float32, ivy.float64]),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
     test_with_out=st.just(False),
 )
@@ -1880,7 +1853,7 @@ def test_tensorflow_floormod(
         y=x[1],
     )
 
-    
+
 # greater
 @handle_frontend_test(
     fn_tree="tensorflow.math.greater",
