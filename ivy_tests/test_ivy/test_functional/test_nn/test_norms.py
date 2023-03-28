@@ -104,7 +104,6 @@ def test_layer_norm(
     ground_truth_backend,
 ):
     dtype, x, normalized_idxs, scale, offset = values_tuple
-    test_flags.test_compile = False
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
