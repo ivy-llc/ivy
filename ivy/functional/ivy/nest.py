@@ -972,6 +972,7 @@ def nested_map(
     _dict_check_fn: Optional[Callable] = None,
     extra_nest_types: Optional[Union[type, Tuple[type]]] = None,
     shallow: bool = True,
+    inplace: bool = False,
 ) -> Union[ivy.Array, ivy.NativeArray, Iterable, Dict]:
     """Applies a function on x in a nested manner, whereby all dicts, lists and tuples
     are traversed to their lowest leaves before applying the method and returning x. If
@@ -1008,6 +1009,9 @@ def nested_map(
     shallow
         Whether to inplace update the input nest or not
         Only works if nest is a mutable type. Default is ``True``.
+    inplace
+        Whether to inplace update every array at the leaves of the input nest.
+        Default is ``False``.
 
     Returns
     -------
@@ -1122,7 +1126,7 @@ def nested_map(
             return x
         return class_instance(**ret)
     ret = fn(x)
-    if shallow and ivy.is_array(ret):
+    if inplace and ivy.is_array(ret):
         is_native = ivy.is_native_array(ret)
         ret = ivy.inplace_update(x, ret)
         if is_native:
