@@ -359,4 +359,4 @@ def test_docstrings(backend):
             "\n".join(failures)
         )
 
-    ivy.unset_backend()
+    ivy.previous_backend()

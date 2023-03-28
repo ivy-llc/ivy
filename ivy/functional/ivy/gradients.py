@@ -67,7 +67,8 @@ def _get_required_native_variables(xs, xs_grad_idxs):
     # To make sure that only the required arrays are converted to native arrays
     xs = ivy.nested_map(xs, ivy.to_ivy, include_derived=True, shallow=False)
     if xs_grad_idxs is not None:
-        xs = ivy.map_nest_at_indices(xs, xs_grad_idxs, ivy.to_native, shallow=False)
+        xs_required = ivy.multi_index_nest(xs, xs_grad_idxs)
+        ivy.nested_map(xs_required, ivy.to_native, include_derived=True)
     else:
         xs = ivy.nested_map(xs, ivy.to_native, include_derived=True, shallow=False)
 
@@ -160,13 +161,23 @@ def _set_duplicates(xs, duplicate_index_chains):
     """Setting the duplicates in the nested structure to
     have the same reference
     """
-    originals = [
-        [key_chains[0]] * (len(key_chains) - 1) for key_chains in duplicate_index_chains
-    ]
+    originals = list(
+        map(
+            lambda key_chains: [key_chains[0]] * (len(key_chains) - 1),
+            duplicate_index_chains,
+        )
+    )
     originals = ivy.multi_index_nest(xs, list(itertools.chain(*originals)))
-    duplicates = [list(index_chains[1:]) for index_chains in duplicate_index_chains]
+    duplicates = list(
+        map(lambda index_chains: list(index_chains[1:]), duplicate_index_chains)
+    )
     nullifying_index_chains = (
-        [index_chain.split("/") for index_chain in list(itertools.chain(*duplicates))]
+        list(
+            map(
+                lambda index_chain: index_chain.split("/"),
+                list(itertools.chain(*duplicates)),
+            )
+        )
         if isinstance(xs, ivy.Container)
         else list(itertools.chain(*duplicates))
     )
@@ -227,7 +238,7 @@ _check_if_empty = (
 
 
 _idxs_to_str = lambda idxs: [
-    "_".join([str(x) for x in idxs[i]]) for i in range(len(idxs))
+    "_".join(list(map(lambda x: str(x), idxs[i]))) for i in range(len(idxs))
 ]
 
 
@@ -321,8 +332,8 @@ class GradientTracking:
 # Gradient Mode #
 
 # noinspection PyShadowingNames
-@handle_exceptions
 @handle_array_function
+@handle_exceptions
 def with_grads(*, with_grads: Optional[bool] = None) -> bool:
     """
     Enter a nested code space where gradients are computed. This method
@@ -372,8 +383,8 @@ def with_grads(*, with_grads: Optional[bool] = None) -> bool:
 
 
 # noinspection PyShadowingNames
-@handle_exceptions
 @handle_array_function
+@handle_exceptions
 def set_with_grads(with_grads: bool) -> None:
     """
     This method adds the with_grads component to the global list with_grads_stack
@@ -406,8 +417,8 @@ def set_with_grads(with_grads: bool) -> None:
     with_grads_stack.append(with_grads)
 
 
-@handle_exceptions
 @handle_array_function
+@handle_exceptions
 def unset_with_grads() -> None:
     """
     This method deletes the last with_grads component from the global list
@@ -434,12 +445,12 @@ def unset_with_grads() -> None:
         with_grads_stack.pop(-1)
 
 
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
-@handle_array_function
 def stop_gradient(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -698,10 +709,10 @@ grad.computes_gradients = True
 # Optimizer Steps #
 
 
-@inputs_to_ivy_arrays
-@handle_exceptions
-@handle_array_like_without_promotion
 @handle_array_function
+@inputs_to_ivy_arrays
+@handle_array_like_without_promotion
+@handle_exceptions
 def adam_step(
     dcdw: Union[ivy.Array, ivy.NativeArray],
     mw: Union[ivy.Array, ivy.NativeArray],
@@ -852,10 +863,10 @@ adam_step.out_index = 0
 # Optimizer Updates #
 
 
-@inputs_to_ivy_arrays
-@handle_exceptions
-@handle_array_like_without_promotion
 @handle_array_function
+@inputs_to_ivy_arrays
+@handle_array_like_without_promotion
+@handle_exceptions
 def optimizer_update(
     w: Union[ivy.Array, ivy.NativeArray],
     effective_grad: Union[ivy.Array, ivy.NativeArray],
@@ -975,10 +986,10 @@ def optimizer_update(
     return w
 
 
-@inputs_to_ivy_arrays
-@handle_exceptions
-@handle_array_like_without_promotion
 @handle_array_function
+@inputs_to_ivy_arrays
+@handle_array_like_without_promotion
+@handle_exceptions
 def gradient_descent_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],
@@ -1068,10 +1079,10 @@ def gradient_descent_update(
     return ivy.optimizer_update(w, dcdw, lr, stop_gradients=stop_gradients, out=out)
 
 
-@inputs_to_ivy_arrays
-@handle_exceptions
-@handle_array_like_without_promotion
 @handle_array_function
+@inputs_to_ivy_arrays
+@handle_array_like_without_promotion
+@handle_exceptions
 def lars_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],
@@ -1119,10 +1130,10 @@ def lars_update(
     )
 
 
-@inputs_to_ivy_arrays
-@handle_exceptions
-@handle_array_like_without_promotion
 @handle_array_function
+@inputs_to_ivy_arrays
+@handle_array_like_without_promotion
+@handle_exceptions
 def adam_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],
@@ -1284,10 +1295,10 @@ def adam_update(
 adam_update.out_index = 0
 
 
-@inputs_to_ivy_arrays
-@handle_exceptions
-@handle_array_like_without_promotion
 @handle_array_function
+@inputs_to_ivy_arrays
+@handle_array_like_without_promotion
+@handle_exceptions
 def lamb_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],
