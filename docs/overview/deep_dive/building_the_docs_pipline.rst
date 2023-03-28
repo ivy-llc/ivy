@@ -57,9 +57,11 @@ will result in the creation of documentation for the project in the directory
 Options
 """""""
 
---no-cleanup    Disable the backup/cleanup procedure
---git-add       Stage changed files before generating the docs, this is useful if you
-                    want know which files changed by you when used with ``--no-cleanup``
+--no-cleanup                    Disable the backup/cleanup procedure
+--git-add                       Stage changed files before generating the docs, this is 
+                                useful if you want know which files changed by you when 
+                                used with ``--no-cleanup``
+--skip-dependencies-install     Skip installing python dependencies
 
 The Docker image
 ~~~~~~~~~~~~~~~~
@@ -200,6 +202,7 @@ As of writing this documentation, Ivy's doc-builder is using 3 custom extensions
 1. ``custom_autosummary``
 2. ``custom_builder``
 3. ``discussion_linker``
+4. ``skippable_function``
 
 ``custom_autosummary``
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -488,3 +491,24 @@ Here is an example of how it works for ``ivy.functional.ivy.creation``:
 
 All of the above template strings can be customized using the configuration, so feel free
 to change them to your liking.
+
+``skippable_function``
+~~~~~~~~~~~~~~~~~~~~~~
+
+This extension provides a custom auto documenter ``autoskippablemethod`` that skip 
+functions that match values in ``skippable_method_attributes`` configuration.
+
+This is an example of ``skippable_method_attributes`` configuration in
+``partial_conf.py``:
+
+.. code-block:: python
+
+    skippable_method_attributes = [
+        {
+            "__qualname__": "_wrap_function.<locals>.new_function"
+        }
+    ]
+
+This will remove any function that has ``__qualname__`` attribute equal to 
+``_wrap_function.<locals>.new_function``.
+
