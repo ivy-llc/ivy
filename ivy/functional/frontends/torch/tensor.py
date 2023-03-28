@@ -201,9 +201,8 @@ class Tensor:
         return torch_frontend.reshape(self._ivy_array, shape_tup)
 
     def float(self, memory_format=None):
-        cast_tensor = self.clone()
-        cast_tensor.ivy_array = ivy.astype(self._ivy_array, ivy.float32)
-        return cast_tensor
+        self._ivy_array = ivy.astype(self.ivy_array, ivy.float32, copy=False)
+        return self
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def asinh(self):
@@ -520,9 +519,8 @@ class Tensor:
         return torch_frontend.stack(slices)
 
     def long(self, memory_format=None):
-        cast_tensor = self.clone()
-        cast_tensor.ivy_array = ivy.astype(self._ivy_array, ivy.int64)
-        return cast_tensor
+        self._ivy_array = ivy.astype(self.ivy_array, ivy.int64, copy=False)
+        return self
 
     def max(self, dim=None, keepdim=False):
         return torch_frontend.max(self._ivy_array, dim=dim, keepdim=keepdim)
@@ -616,14 +614,12 @@ class Tensor:
         return torch_frontend.negative(self._ivy_array)
 
     def int(self, memory_format=None):
-        cast_tensor = self.clone()
-        cast_tensor.ivy_array = ivy.astype(self._ivy_array, ivy.int32)
-        return cast_tensor
+        self._ivy_array = ivy.astype(self.ivy_array, ivy.int32, copy=False)
+        return self
 
     def bool(self, memory_format=None):
-        cast_tensor = self.clone()
-        cast_tensor.ivy_array = ivy.astype(self._ivy_array, ivy.bool)
-        return cast_tensor
+        self._ivy_array = ivy.astype(self.ivy_array, ivy.bool, copy=False)
+        return self
 
     def type(self, dtype=None, non_blocking=False, **kwargs):
         if ivy.exists(dtype):
@@ -640,9 +636,8 @@ class Tensor:
             pass
 
     def byte(self, memory_format=None):
-        cast_tensor = self.clone()
-        cast_tensor.ivy_array = ivy.astype(self._ivy_array, ivy.uint8)
-        return cast_tensor
+        self._ivy_array = ivy.astype(self.ivy_array, ivy.uint8, copy=False)
+        return self
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def ne(self, other):
