@@ -323,14 +323,14 @@ def test_function(
 
         # Boolean mask for args and kwargs True if an entry's
         # test Array flag is True or test Container flag is true
-        args_instance_mask = array_or_container_mask[:total_num_arrays]
-        kwargs_instance_mask = array_or_container_mask[total_num_arrays:]
+        args_instance_mask = array_or_container_mask[: test_flags.num_positional_args]
+        kwargs_instance_mask = array_or_container_mask[test_flags.num_positional_args :]
 
         if any(args_instance_mask):
             instance, args = _find_instance_in_args(
                 args, arrays_args_indices, args_instance_mask
             )
-        elif any(kwargs_instance_mask):
+        else:
             instance, kwargs = _find_instance_in_args(
                 kwargs, arrays_kwargs_indices, kwargs_instance_mask
             )
