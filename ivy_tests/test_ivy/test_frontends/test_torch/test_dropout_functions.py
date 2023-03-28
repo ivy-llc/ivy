@@ -2,7 +2,8 @@
 import numpy as np
 from hypothesis import strategies as st
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-
+import torch
+import unittest
 # local
 import ivy_tests.test_ivy.helpers as helpers
 
@@ -67,30 +68,39 @@ def test_torch_dropout(
     test_with_out=st.just(False),
     test_inplace=st.booleans(),
 )
-def test_torch_dropout(
-    *,
-    dtype_and_x,
-    prob,
-    training,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, x = dtype_and_x
-    ret = helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        input=x[0],
-        p=prob,
-        training=training,
-        test_values=False,
-    )
-    ret = helpers.flatten_and_to_np(ret=ret)
-    x = np.asarray(x[0], input_dtype[0])
-    for u in ret:
-        # cardinality test
-        assert u.shape == x.shape        
+class TestTorchDropout3d(unittest.TestCase):
+
+    def test_torch_dropout3d(
+        self,
+        dtype_and_x,
+        prob,
+        training,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
+    ):
+
+        input_dtype, x = dtype_and_x
+        dropout = torch.nn.Dropout3d(p=prob)
+
+        x_torch = torch.tensor(x[0], dtype=torch.float32)
+        output_torch = dropout(x_torch)
+
+        output_np = output_torch.detach().numpy()
+
+        self.assertEqual(output_np.shape, x[0].shape)
+
+        self.assertFalse(np.allclose(output_np, x[0]))
+
+        if training:
+            dropout.train()
+            output_torch_train = dropout(x_torch)
+            output_np_train = output_torch_train.detach().numpy()
+            self.assertFalse(np.allclose(output_np, output_np_train))
+
+        else:
+            dropout.eval()
+            output_torch_eval = dropout(x_torch)
+            output_np_eval = output_torch_eval.detach().numpy()
+            self.assertTrue(np.allclose(output_np, output_np_eval)))
