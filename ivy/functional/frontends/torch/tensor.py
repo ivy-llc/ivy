@@ -755,7 +755,7 @@ class Tensor:
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def __add__(self, other):
-        return torch_frontend.add(self._ivy_array, other)
+        return self.add(other)
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def __mod__(self, other):
@@ -763,12 +763,10 @@ class Tensor:
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def __pow__(self, exponent):
-        return torch_frontend.pow(self._ivy_array, exponent)
+        return self.pow(exponent)
 
     def __long__(self, memory_format=None):
-        cast_tensor = self.clone()
-        cast_tensor.ivy_array = ivy.astype(self._ivy_array, ivy.int64)
-        return cast_tensor
+        return self.long()
 
     def __getitem__(self, query, /):
         ret = ivy.get_item(self._ivy_array, query)
@@ -847,7 +845,7 @@ class Tensor:
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def __ne__(self, other):
-        return torch_frontend.ne(self._ivy_array, other)
+        return self.ne(other)
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def __rsub__(self, other):
