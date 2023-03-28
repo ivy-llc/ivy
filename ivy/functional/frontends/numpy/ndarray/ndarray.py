@@ -314,6 +314,9 @@ class ndarray:
     def view(self):
         return np_frontend.reshape(self._ivy_array, tuple(self.shape))
 
+    def choose(self, choices, /, *, out=None, mode="raise"):
+        return np_frontend.choose(self._ivy_array, choices, out=out, mode=mode)
+        
     def __add__(self, value, /):
         return np_frontend.add(self._ivy_array, value)
 
