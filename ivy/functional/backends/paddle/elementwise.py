@@ -961,7 +961,7 @@ def bitwise_right_shift(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
-    return paddle.floor(x1.cast("float64") / 2**x2.cast("float64")).astype(ret_dtype)
+    return paddle.floor(x1.cast("float64") / 2 ** x2.cast("float64")).astype(ret_dtype)
 
 
 def bitwise_left_shift(
@@ -972,7 +972,7 @@ def bitwise_left_shift(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
-    return paddle.floor(x1.cast("float64") * 2**x2.cast("float64")).astype(ret_dtype)
+    return paddle.floor(x1.cast("float64") * 2 ** x2.cast("float64")).astype(ret_dtype)
 
 
 # Extra #

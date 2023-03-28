@@ -10,7 +10,7 @@ from ivy.data_classes.container.base import ContainerBase
 
 class _ContainerWithCreation(ContainerBase):
     @staticmethod
-    def static_arange(
+    def _static_arange(
         start: Number,
         /,
         stop: Optional[Number] = None,
@@ -39,7 +39,7 @@ class _ContainerWithCreation(ContainerBase):
         )
 
     @staticmethod
-    def static_asarray(
+    def _static_asarray(
         x: Union[
             ivy.Array,
             ivy.NativeArray,
@@ -112,7 +112,7 @@ class _ContainerWithCreation(ContainerBase):
         )
 
     @staticmethod
-    def static_zeros(
+    def _static_zeros(
         shape: Union[int, Sequence[int]],
         /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -137,7 +137,7 @@ class _ContainerWithCreation(ContainerBase):
         )
 
     @staticmethod
-    def static_ones(
+    def _static_ones(
         shape: Union[int, Sequence[int]],
         /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -162,7 +162,7 @@ class _ContainerWithCreation(ContainerBase):
         )
 
     @staticmethod
-    def static_full_like(
+    def _static_full_like(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         fill_value: Union[int, float],
@@ -321,7 +321,7 @@ class _ContainerWithCreation(ContainerBase):
             b: ivy.array([15., 15., 15.])
         }
         """
-        return self.static_full_like(
+        return self._static_full_like(
             self,
             fill_value,
             key_chains,
@@ -334,7 +334,7 @@ class _ContainerWithCreation(ContainerBase):
         )
 
     @staticmethod
-    def static_ones_like(
+    def _static_ones_like(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -440,7 +440,7 @@ class _ContainerWithCreation(ContainerBase):
         ret
             a container having the same shape as ``self`` and filled with ones.
         """
-        return self.static_ones_like(
+        return self._static_ones_like(
             self,
             key_chains,
             to_apply,
@@ -452,7 +452,7 @@ class _ContainerWithCreation(ContainerBase):
         )
 
     @staticmethod
-    def static_zeros_like(
+    def _static_zeros_like(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -558,7 +558,7 @@ class _ContainerWithCreation(ContainerBase):
         ret
             an container having the same shape as ``x`` and filled with ``zeros``.
         """
-        return self.static_zeros_like(
+        return self._static_zeros_like(
             self,
             key_chains,
             to_apply,
@@ -570,7 +570,7 @@ class _ContainerWithCreation(ContainerBase):
         )
 
     @staticmethod
-    def static_tril(
+    def _static_tril(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         k: int = 0,
@@ -603,7 +603,7 @@ class _ContainerWithCreation(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.static_tril(
+        return self._static_tril(
             self,
             k,
             key_chains,
@@ -614,7 +614,7 @@ class _ContainerWithCreation(ContainerBase):
         )
 
     @staticmethod
-    def static_triu(
+    def _static_triu(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         k: int = 0,
@@ -647,7 +647,7 @@ class _ContainerWithCreation(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.static_triu(
+        return self._static_triu(
             self,
             k,
             key_chains,
@@ -658,7 +658,7 @@ class _ContainerWithCreation(ContainerBase):
         )
 
     @staticmethod
-    def static_empty_like(
+    def _static_empty_like(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -694,7 +694,7 @@ class _ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
-        return self.static_empty_like(
+        return self._static_empty_like(
             self,
             key_chains,
             to_apply,
@@ -706,7 +706,7 @@ class _ContainerWithCreation(ContainerBase):
         )
 
     @staticmethod
-    def static_eye(
+    def _static_eye(
         n_rows: int,
         n_cols: Optional[int] = None,
         /,
@@ -735,7 +735,7 @@ class _ContainerWithCreation(ContainerBase):
         )
 
     @staticmethod
-    def static_linspace(
+    def _static_linspace(
         start: Union[ivy.Array, ivy.NativeArray, float],
         stop: Union[ivy.Array, ivy.NativeArray, float],
         /,
@@ -783,7 +783,7 @@ class _ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
-        return self.static_linspace(
+        return self._static_linspace(
             self,
             stop,
             num,
@@ -799,7 +799,7 @@ class _ContainerWithCreation(ContainerBase):
         )
 
     @staticmethod
-    def static_meshgrid(
+    def _static_meshgrid(
         *arrays: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number]],
         sparse: bool = False,
         indexing: str = "xy",
@@ -830,7 +830,7 @@ class _ContainerWithCreation(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
-        return self.static_meshgrid(
+        return self._static_meshgrid(
             tuple([self] + list(arrays)),
             sparse,
             indexing,
@@ -841,7 +841,7 @@ class _ContainerWithCreation(ContainerBase):
         )
 
     @staticmethod
-    def static_from_dlpack(
+    def _static_from_dlpack(
         x: Union[ivy.Array, ivy.NativeArray],
         /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -871,7 +871,7 @@ class _ContainerWithCreation(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.static_from_dlpack(
+        return self._static_from_dlpack(
             self,
             key_chains,
             to_apply,
@@ -881,7 +881,7 @@ class _ContainerWithCreation(ContainerBase):
         )
 
     @staticmethod
-    def static_native_array(
+    def _static_native_array(
         x: Union[
             ivy.Array,
             ivy.NativeArray,
@@ -924,7 +924,7 @@ class _ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
-        return self.static_native_array(
+        return self._static_native_array(
             self,
             key_chains,
             to_apply,
@@ -936,7 +936,7 @@ class _ContainerWithCreation(ContainerBase):
         )
 
     @staticmethod
-    def static_logspace(
+    def _static_logspace(
         start: Union[ivy.Array, ivy.NativeArray, float, ivy.Container],
         stop: Union[ivy.Array, ivy.NativeArray, float, ivy.Container],
         /,
@@ -1106,7 +1106,7 @@ class _ContainerWithCreation(ContainerBase):
                 }
         }
         """
-        return self.static_logspace(
+        return self._static_logspace(
             self,
             stop,
             num,
@@ -1123,7 +1123,7 @@ class _ContainerWithCreation(ContainerBase):
         )
 
     @staticmethod
-    def static_one_hot(
+    def _static_one_hot(
         indices: ivy.Container,
         depth: int,
         /,
@@ -1307,7 +1307,7 @@ class _ContainerWithCreation(ContainerBase):
             c: ivy.array([[0., 0., 0., 0., 1.]])
         }
         """
-        return self.static_one_hot(
+        return self._static_one_hot(
             self,
             depth,
             on_value=on_value,

@@ -14,7 +14,7 @@ import ivy
 # noinspection PyMissingConstructor
 class _ContainerWithLayers(ContainerBase):
     @staticmethod
-    def static_linear(
+    def _static_linear(
         x: ivy.Container,
         weight: Union[ivy.Array, ivy.NativeArray],
         /,
@@ -176,7 +176,7 @@ class _ContainerWithLayers(ContainerBase):
         }
 
         """
-        return self.static_linear(
+        return self._static_linear(
             self,
             weight,
             bias=bias,
@@ -188,7 +188,7 @@ class _ContainerWithLayers(ContainerBase):
         )
 
     @staticmethod
-    def static_dropout(
+    def _static_dropout(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         prob: float,
         /,
@@ -349,7 +349,7 @@ class _ContainerWithLayers(ContainerBase):
             b: ivy.array([0., 11.4285717, 12.8571434])
         }
         """
-        return self.static_dropout(
+        return self._static_dropout(
             self,
             prob,
             scale=scale,
@@ -365,7 +365,7 @@ class _ContainerWithLayers(ContainerBase):
         )
 
     @staticmethod
-    def static_dropout1d(
+    def _static_dropout1d(
         x: ivy.Container,
         prob: float,
         /,
@@ -496,7 +496,7 @@ class _ContainerWithLayers(ContainerBase):
             b: ivy.array([[[0., 0., 12.]]])
         }
         """
-        return self.static_dropout1d(
+        return self._static_dropout1d(
             self,
             prob,
             training=training,
@@ -509,7 +509,7 @@ class _ContainerWithLayers(ContainerBase):
         )
 
     @staticmethod
-    def static_dropout3d(
+    def _static_dropout3d(
         x: ivy.Container,
         prob: float,
         /,
@@ -619,7 +619,7 @@ class _ContainerWithLayers(ContainerBase):
         ret
             Result container of the output after dropout is performed.
         """
-        return self.static_dropout3d(
+        return self._static_dropout3d(
             self,
             prob,
             training=training,
@@ -632,7 +632,7 @@ class _ContainerWithLayers(ContainerBase):
         )
 
     @staticmethod
-    def static_scaled_dot_product_attention(
+    def _static_scaled_dot_product_attention(
         q: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         k: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         v: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -837,7 +837,7 @@ class _ContainerWithLayers(ContainerBase):
                         [4.4, 5.6]]])
         }
         """
-        return self.static_scaled_dot_product_attention(
+        return self._static_scaled_dot_product_attention(
             self,
             k,
             v,
@@ -851,7 +851,7 @@ class _ContainerWithLayers(ContainerBase):
         )
 
     @staticmethod
-    def static_multi_head_attention(
+    def _static_multi_head_attention(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         scale: float,
         num_heads: int,
@@ -911,7 +911,7 @@ class _ContainerWithLayers(ContainerBase):
         map_sequences: bool = False,
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
-        return self.static_multi_head_attention(
+        return self._static_multi_head_attention(
             self,
             scale,
             num_heads,
@@ -931,7 +931,7 @@ class _ContainerWithLayers(ContainerBase):
         )
 
     @staticmethod
-    def static_conv1d(
+    def _static_conv1d(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         strides: Union[int, Tuple[int]],
@@ -1084,7 +1084,7 @@ class _ContainerWithLayers(ContainerBase):
             ...                [-3.25, 10.5, 24.2]]])
         }
         """
-        return self.static_conv1d(
+        return self._static_conv1d(
             self,
             filters,
             strides,
@@ -1099,7 +1099,7 @@ class _ContainerWithLayers(ContainerBase):
         )
 
     @staticmethod
-    def static_conv2d(
+    def _static_conv2d(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         strides: Union[int, Tuple[int, int]],
@@ -1252,7 +1252,7 @@ class _ContainerWithLayers(ContainerBase):
             b:ivy.array([[[[4.],[0.],[0.]],[[1.],[6.],[0.]],[[0.],[1.],[5.]]]])
         }
         """
-        return self.static_conv2d(
+        return self._static_conv2d(
             self,
             filters,
             strides,
@@ -1267,7 +1267,7 @@ class _ContainerWithLayers(ContainerBase):
         )
 
     @staticmethod
-    def static_conv1d_transpose(
+    def _static_conv1d_transpose(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         strides: Union[int, Tuple[int]],
@@ -1429,7 +1429,7 @@ class _ContainerWithLayers(ContainerBase):
             b: [1,112,6]
         }
         """
-        return self.static_conv1d_transpose(
+        return self._static_conv1d_transpose(
             self,
             filters,
             strides,
@@ -1445,7 +1445,7 @@ class _ContainerWithLayers(ContainerBase):
         )
 
     @staticmethod
-    def static_conv2d_transpose(
+    def _static_conv2d_transpose(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         strides: Union[int, Tuple[int, int]],
@@ -1619,7 +1619,7 @@ class _ContainerWithLayers(ContainerBase):
             }
         }
         """
-        return self.static_conv2d_transpose(
+        return self._static_conv2d_transpose(
             self,
             filters,
             strides,
@@ -1635,7 +1635,7 @@ class _ContainerWithLayers(ContainerBase):
         )
 
     @staticmethod
-    def static_depthwise_conv2d(
+    def _static_depthwise_conv2d(
         x: ivy.Container,
         filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         strides: Union[int, Tuple[int], Tuple[int, int]],
@@ -1762,7 +1762,7 @@ class _ContainerWithLayers(ContainerBase):
         >>> print(y.shape)
         [1, 64, 64, 3]
         """
-        return self.static_depthwise_conv2d(
+        return self._static_depthwise_conv2d(
             self,
             filters,
             strides,
@@ -1777,7 +1777,7 @@ class _ContainerWithLayers(ContainerBase):
         )
 
     @staticmethod
-    def static_conv3d(
+    def _static_conv3d(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         strides: Union[int, Tuple[int, int, int]],
@@ -1910,7 +1910,7 @@ class _ContainerWithLayers(ContainerBase):
         }
 
         """
-        return self.static_conv3d(
+        return self._static_conv3d(
             self,
             filters,
             strides,
@@ -1925,7 +1925,7 @@ class _ContainerWithLayers(ContainerBase):
         )
 
     @staticmethod
-    def static_conv3d_transpose(
+    def _static_conv3d_transpose(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
@@ -2085,7 +2085,7 @@ class _ContainerWithLayers(ContainerBase):
             }
         }
         """
-        return self.static_conv3d_transpose(
+        return self._static_conv3d_transpose(
             self,
             filters,
             strides,
@@ -2101,7 +2101,7 @@ class _ContainerWithLayers(ContainerBase):
         )
 
     @staticmethod
-    def static_lstm_update(
+    def _static_lstm_update(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         init_h: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         init_c: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -2194,7 +2194,7 @@ class _ContainerWithLayers(ContainerBase):
         }
 
         """
-        return self.static_lstm_update(
+        return self._static_lstm_update(
             self,
             init_h,
             init_c,

@@ -716,4 +716,30 @@ def Real(input, Tout=ivy.float32, name="Real"):
     return ivy.Real(input, Tout=Tout)
 
 
+@to_ivy_arrays_and_back
+def BandedTriangularSolve(
+    matrix,
+    rhs,
+    lower=True,
+    adjoint=False,
+    name="BandedTriangularSolve",
+):
+    return ivy.BandedTriangularSolve(matrix, rhs, lower=lower, adjoint=adjoint)
+
+
+@to_ivy_arrays_and_back
+def BatchMatMul(x, y, adj_x=False, adj_y=False, name="BatchMatMul"):
+    return ivy.BatchMatMul(x, y, adj_x=adj_x, adj_y=adj_y)
+
+
+@to_ivy_arrays_and_back
+def BatchMatMulV2(x, y, adj_x=False, adj_y=False, name="BatchMatMulV2"):
+    return ivy.BatchMatMulV2(x, y, adj_x=adj_x, adj_y=adj_y)
+
+
+@to_ivy_arrays_and_back
+def BatchMatMulV3(x, y, Tout=ivy.Dtype, adj_x=False, adj_y=False, name="BatchMatMulV3"):
+    return ivy.BatchMatMulV3(x, y, Tout=Tout, adj_x=adj_x, adj_y=adj_y)
+
+
 Slice = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.slice))
