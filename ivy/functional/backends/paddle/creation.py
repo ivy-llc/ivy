@@ -299,7 +299,10 @@ def _linspace_helper(start, stop, num, axis=None, *, dtype=None):
             res += [start + inc * i for i in range(1, num - 1)]
             res.append(stop)
         else:
-            res = [linspace_method(strt, stp, num) for strt, stp in zip(ivy.unstack(start), ivy.unstack(stop))]
+            res = [
+                linspace_method(strt, stp, num)
+                for strt, stp in zip(ivy.unstack(start), ivy.unstack(stop))
+            ]
     elif start_is_array and not stop_is_array:
         if num < start.shape[0]:
             start = ivy.expand_dims(start, axis=axis)
@@ -322,7 +325,7 @@ def _linspace_helper(start, stop, num, axis=None, *, dtype=None):
             res = [linspace_method(start, stp, num) for stp in stop]
     else:
         return linspace_method(start, stop, num, dtype=dtype)
-    res = ivy.concat(res, axis = -1).reshape(sos_shape + [num])
+    res = ivy.concat(res, axis=-1).reshape(sos_shape + [num])
     if axis is not None:
         ndim = res.ndim
         perm = ivy.arange(0, ndim - 1).tolist()
@@ -337,15 +340,16 @@ def _differentiable_linspace(start, stop, num, *, dtype=None):
         num = paddle.to_tensor(num, stop_gradient=False)
         if num == 1:
             return ivy.expand_dims(start, axis=0)
-        n_m_1 = ivy.subtract(num,1)
-        increment = ivy.divide(ivy.subtract(stop,start),n_m_1)
+        n_m_1 = ivy.subtract(num, 1)
+        increment = ivy.divide(ivy.subtract(stop, start), n_m_1)
         increment_tiled = ivy.repeat(increment, n_m_1)
-        increments = ivy.multiply(increment_tiled,paddle.linspace(
-            1, n_m_1, n_m_1.cast(paddle.int32), dtype=dtype
-        ))
+        increments = ivy.multiply(
+            increment_tiled,
+            paddle.linspace(1, n_m_1, n_m_1.cast(paddle.int32), dtype=dtype),
+        )
         if start.ndim == 0:
             start = ivy.expand_dims(start, axis=0)
-        res = ivy.concat((start, ivy.add(start,increments)), axis=0)
+        res = ivy.concat((start, ivy.add(start, increments)), axis=0)
     return res.cast(dtype)
 
 
@@ -558,6 +562,7 @@ def zeros_like(
 
 
 array = asarray
+
 
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version

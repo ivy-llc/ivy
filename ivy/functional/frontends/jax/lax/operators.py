@@ -127,11 +127,11 @@ def conv(
 
 def _set_dimension_numbers(dims):
     if dims == 1:
-        return "NHC", "HIO", "NHC"
+        return "NCH", "OIH", "NCH"
     elif dims == 2:
-        return "NHWC", "HWIO", "NHWC"
+        return "NCHW", "OIHW", "NCHW"
     elif dims == 3:
-        return "NDHWC", "DHWIO", "NDHWC"
+        return "NCDHW", "OIDHW", "NCDHW"
 
 
 def _get_general_df(data_format):
@@ -236,9 +236,9 @@ def conv_general_dilated(
 
 @to_ivy_arrays_and_back
 def convert_element_type(operand, new_dtype):
-    assert can_cast(ivy.dtype(operand), new_dtype), "Cannot cast from {} to {}".format(
-        ivy.dtype(operand), new_dtype
-    )
+    assert can_cast(
+        ivy.dtype(operand), ivy.as_ivy_dtype(new_dtype)
+    ), "Cannot cast from {} to {}".format(ivy.dtype(operand), new_dtype)
     return ivy.astype(operand, new_dtype, copy=False)
 
 
@@ -283,7 +283,6 @@ def dot_general(
     lhs, rhs, dimension_numbers, precision=None, preferred_element_type=None
 ):
     (lhs_contracting, rhs_contracting), (lhs_batch, rhs_batch) = dimension_numbers
-    assert len(lhs.shape) == len(rhs.shape)
     ivy.utils.assertions.check_less(
         len(lhs.shape), 52, "number of dimensions greater than 52 is not supported"
     )
