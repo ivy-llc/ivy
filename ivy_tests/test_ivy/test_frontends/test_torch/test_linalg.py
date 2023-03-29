@@ -1192,7 +1192,6 @@ def _generate_multi_dot_dtype_and_arrays(draw):
 @handle_frontend_test(
     fn_tree="torch.linalg.multi_dot",
     dtype_x=_generate_multi_dot_dtype_and_arrays(),
-    # test_gradients=st.just(False),
 )
 def test_torch_multi_dot(
     dtype_x,
