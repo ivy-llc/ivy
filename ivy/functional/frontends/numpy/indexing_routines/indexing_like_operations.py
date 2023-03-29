@@ -52,4 +52,5 @@ def indices(dimensions, dtype=int, sparse=False):
 # unravel_index
 @to_ivy_arrays_and_back
 def unravel_index(indices, shape, order='C'):
-    return ivy.unravel_index(indices, shape)
+    ret = [x.astype("int64") for x in ivy.unravel_index(indices, shape)]
+    return tuple(ret)
