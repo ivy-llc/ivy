@@ -249,22 +249,21 @@ def cumprod(
     else:
         x = paddle.cast(x, dtype)
     if not (exclusive or reverse):
-        ret = paddle.cumprod(x, dim=axis)
+        return paddle.cumprod(x, dim=axis).cast(dtype)
     elif exclusive and reverse:
         x = paddle.cumprod(paddle.flip(x, axis=(axis,)), dim=axis)
         x = swap_axes(x, axis, -1)
         x = paddle.concat((paddle.ones_like(x[..., -1:]), x[..., :-1]), -1)
         x = swap_axes(x, axis, -1)
-        ret = paddle.flip(x, axis=(axis,))
+        return paddle.flip(x, axis=(axis,)).cast(dtype)
     elif exclusive:
         x = swap_axes(x, axis, -1)
         x = paddle.concat((paddle.ones_like(x[..., -1:]), x[..., :-1]), -1)
         x = paddle.cumprod(x, -1)
-        ret = swap_axes(x, axis, -1)
+        return swap_axes(x, axis, -1).cast(dtype)
     else:
         x = paddle.cumprod(paddle.flip(x, axis=(axis,)), dim=axis)
-        ret = paddle.flip(x, axis=axis)
-    return ret.cast(dtype)
+        return paddle.flip(x, axis=axis).cast(dtype)
 
 
 @with_unsupported_device_and_dtypes(
