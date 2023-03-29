@@ -21,6 +21,14 @@ def normal(shape, mean=0.0, stddev=1.0, dtype=ivy.float32, seed=None, name=None)
     return ivy.random_normal(mean=mean, std=stddev, shape=shape, dtype=dtype, seed=seed)
 
 
+@with_unsupported_dtypes(
+    {"2.9.0 and below": ("int8", "int16", "int32", "int64", "unsigned")}, "tensorflow"
+)
+@to_ivy_arrays_and_back
+def poisson(shape, lam, dtype=ivy.float32, seed=None, name=None):
+    return ivy.poisson(lam, shape=shape, dtype=dtype, seed=seed)
+
+
 # implement random shuffle
 @with_unsupported_dtypes(
     {"2.9.0 and below": ("int8", "int16", "in32", "int64", "unsigned")}, "tensorflow"
