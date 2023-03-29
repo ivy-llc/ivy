@@ -342,7 +342,6 @@ def xlogy(
     backend_version,
 )
 def real(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-
     return paddle.real(x)
 
 

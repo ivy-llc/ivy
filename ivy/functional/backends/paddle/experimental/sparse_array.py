@@ -19,7 +19,6 @@ def native_sparse_array(
     dense_shape=None,
     format="coo",
 ):
-
     raise IvyNotImplementedException()
 
 
