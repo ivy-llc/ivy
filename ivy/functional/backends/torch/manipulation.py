@@ -168,7 +168,7 @@ def squeeze(
             newarr = torch.clone(x)
             return torch.squeeze(newarr, axis)
         return torch.squeeze(x, axis)
-    if axis is None:        
+    if axis is None:
         if copy:
             newarr = torch.clone(x)
             return torch.squeeze(newarr)
@@ -281,11 +281,7 @@ def repeat(
 
 
 def tile(
-    x: torch.Tensor, 
-    /, 
-    repeats: Sequence[int], 
-    *, 
-    out: Optional[torch.Tensor] = None
+    x: torch.Tensor, /, repeats: Sequence[int], *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     if isinstance(repeats, torch.Tensor):
         repeats = repeats.detach().cpu().numpy().tolist()
@@ -322,13 +318,13 @@ def zero_pad(
 
 
 def swapaxes(
-    x: torch.Tensor, 
-    axis0: int, 
-    axis1: int, 
-    /, 
-    *, 
+    x: torch.Tensor,
+    axis0: int,
+    axis1: int,
+    /,
+    *,
     copy: Optional[bool] = None,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if copy:
         newarr = torch.clone(x)
@@ -345,9 +341,6 @@ def clip(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    ivy.utils.assertions.check_less(
-        x_min, x_max, message="min values must be less than max"
-    )
     if hasattr(x_min, "dtype"):
         promoted_type = torch.promote_types(x_min.dtype, x_max.dtype)
         promoted_type = torch.promote_types(promoted_type, x.dtype)
@@ -361,12 +354,12 @@ clip.support_native_out = True
 
 
 def unstack(
-    x: torch.Tensor, 
-    /, 
-    *, 
+    x: torch.Tensor,
+    /,
+    *,
     copy: Optional[bool] = None,
-    axis: int = 0, 
-    keepdims: bool = False
+    axis: int = 0,
+    keepdims: bool = False,
 ) -> List[torch.Tensor]:
     if x.shape == ():
         if copy:

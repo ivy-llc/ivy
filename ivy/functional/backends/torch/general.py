@@ -285,9 +285,12 @@ def inplace_update(
     /,
     *,
     ensure_in_backend: bool = False,
+    keep_input_dtype: bool = False,
 ) -> ivy.Array:
     ivy.utils.assertions.check_inplace_sizes_valid(x, val)
     if ivy.is_array(x) and ivy.is_array(val):
+        if keep_input_dtype:
+            val = ivy.astype(val, x.dtype)
         (x_native, val_native), _ = ivy.args_to_native(x, val)
         if is_variable(x_native):
             x_native.data = val_native

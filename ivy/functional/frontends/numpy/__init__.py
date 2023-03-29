@@ -602,8 +602,10 @@ from ivy.functional.frontends.numpy.linalg.matrix_and_vector_products import _ma
 
 from ivy.functional.frontends.numpy.mathematical_functions.extrema_finding import (
     _minimum,
+    _fmax,
 )
 
+<<<<<<< HEAD
 
 
 
@@ -612,6 +614,9 @@ from ivy.functional.frontends.numpy.mathematical_functions.extrema_finding impor
 
 frontend_array = array
 
+=======
+_frontend_array = array
+>>>>>>> d25ed20822bf6ee12a4023c6bbff54cb25e8ce01
 
 # initializing ufuncs #
 # ---------------------#
@@ -683,6 +688,7 @@ real = ufunc("_real")
 divmod = ufunc("_divmod")
 fmax = ufunc("_fmax")
 ldexp = ufunc("_ldexp")
+<<<<<<< HEAD
 
 
 
@@ -729,3 +735,6 @@ from .linalg.matrix_and_vector_products import (
 
 floor = ufunc("_floor")
 
+=======
+floor = ufunc("_floor")
+>>>>>>> d25ed20822bf6ee12a4023c6bbff54cb25e8ce01

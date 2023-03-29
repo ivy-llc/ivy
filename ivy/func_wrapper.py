@@ -6,7 +6,6 @@
 
 
 import contextlib
-import numbers
 import ivy
 import functools
 import logging
@@ -31,11 +30,11 @@ FN_DECORATORS = [
     "handle_out_argument",
     "handle_view_indexing",
     "handle_view",
+    "handle_array_like_without_promotion",
     "handle_nestable",
     "handle_exceptions",
     "with_unsupported_dtypes",
     "handle_nans",
-    "handle_array_like_without_promotion",
     "handle_mixed_function",
 ]
 
@@ -219,15 +218,11 @@ def handle_array_like_without_promotion(fn: Callable) -> Callable:
                     # since asarray throws unpredictable bugs
                     if _check_in_nested_sequence(arg, value=Ellipsis, _type=slice):
                         continue
-                    if ivy.is_native_array(arg) or isinstance(
-                        arg, (list, tuple, numbers.Number)
-                    ):
+                    if not ivy.is_array(arg):
                         args[i] = ivy.array(arg)
                 elif parameters in kwargs:
                     kwarg = kwargs[parameter]
-                    if ivy.is_native_array(kwarg) or isinstance(
-                        kwarg, (list, tuple, numbers.Number)
-                    ):
+                    if not ivy.is_array(kwarg):
                         kwargs[parameter] = ivy.array(kwarg)
 
         return fn(*args, **kwargs)
@@ -650,8 +645,8 @@ def handle_nestable(fn: Callable) -> Callable:
         # if any of the arguments or keyword arguments passed to the function contains
         # a container, get the container's version of the function and call it using
         # the passed arguments.
-        if hasattr(ivy.Container, "static_" + fn_name):
-            cont_fn = getattr(ivy.Container, "static_" + fn_name)
+        if hasattr(ivy.Container, "_static_" + fn_name):
+            cont_fn = getattr(ivy.Container, "_static_" + fn_name)
         else:
             cont_fn = lambda *args, **kwargs: ivy.Container.cont_multi_map_in_function(
                 fn, *args, **kwargs

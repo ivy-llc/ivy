@@ -101,6 +101,7 @@ from . import general_functions
 from .general_functions import *
 from . import raw_ops
 from . import sets
+<<<<<<< HEAD
 
 
 
@@ -108,3 +109,9 @@ from . import sets
 
 frontend_array = constant
 
+=======
+from . import signal
+from . import sparse
+
+_frontend_array = constant
+>>>>>>> d25ed20822bf6ee12a4023c6bbff54cb25e8ce01

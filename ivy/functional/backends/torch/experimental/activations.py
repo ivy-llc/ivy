@@ -5,6 +5,7 @@ import torch
 import torch.nn
 
 # local
+import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
@@ -61,3 +62,16 @@ def batch_norm(
     return torch.nn.functional.batch_norm(
         x, mean, variance, weight=scale, bias=offset, training=training, eps=eps
     )
+
+
+@with_unsupported_dtypes({"1.13.0 and below": ("float16", "bfloat16")}, backend_version)
+def logsigmoid(input: torch.Tensor) -> torch.Tensor:
+    return torch.nn.functional.logsigmoid(input)
+
+
+@with_unsupported_dtypes({"1.13.0 and below": ("float16", "bfloat16")}, backend_version)
+def selu(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    ret = torch.nn.functional.selu(x)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)
