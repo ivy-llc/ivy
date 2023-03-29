@@ -84,7 +84,7 @@ def float_power(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16","float16","bool","complex128","complex64","int8","int16","uint8")}}, backend_version
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 ) 
 def exp2(
     x: Union[paddle.Tensor, float, list, tuple],
