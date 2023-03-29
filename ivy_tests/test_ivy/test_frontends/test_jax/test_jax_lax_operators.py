@@ -2379,4 +2379,3 @@ def test_jax_lax_squeeze(
         array=value[0],
         dimensions=dim,
     )
-
