@@ -195,8 +195,7 @@ def imag(
 
 
 @with_unsupported_dtypes(
-    {"2.4.2 and below": ("int8", "int16", "int32", "int64", "uint8",
-                         "uint16", "bfloat16", "float16", "complex64", "complex128", "bool")},
+    {"2.4.2 and below": ("uint16", "bfloat16","float16")},
     backend_version,
 )
 def nan_to_num(
@@ -209,22 +208,25 @@ def nan_to_num(
     neginf: Optional[Union[float, int]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if x.dtype == paddle.float32:
-        posinf = 3.40282347e+38 if posinf is None else posinf
-        neginf = -3.40282347e+38 if neginf is None else neginf
-        d_type='float32'
-    elif x.dtype == paddle.float64:
-        posinf = 1.7976931348623157e+308 if posinf is None else posinf
-        neginf = -1.7976931348623157e+308 if neginf is None else neginf
-        d_type='float64'
-    ret = paddle.where(paddle.isnan(x), paddle.to_tensor(nan, dtype=d_type), x)
-    ret = paddle.where(paddle.logical_and(paddle.isinf(ret), ret > 0), paddle.to_tensor(posinf, dtype=d_type), ret)
-    ret = paddle.where(paddle.logical_and(paddle.isinf(ret), ret < 0), paddle.to_tensor(neginf, dtype=d_type), ret)
-    if copy:
-        return ret.clone()
-    else:
-        x= ret
-        return x
+     with ivy.ArrayMode(False):
+        if ivy.is_int_dtype(x):
+            if posinf==None:
+                posinf = ivy.iinfo(x).max
+            if neginf==None:
+                neginf= ivy.iinfo(x).min
+        elif ivy.is_float_dtype(x) or ivy.is_complex_dtype(x):
+            if posinf==None:
+                posinf = ivy.finfo(x).max
+            if neginf==None:
+                neginf=ivy.finfo(x).min     
+        ret = paddle.where(paddle.isnan(x), paddle.to_tensor(nan, dtype=x.dtype), x)
+        ret = paddle.where(paddle.logical_and(paddle.isinf(ret), ret > 0), paddle.to_tensor(posinf, dtype=x.dtype), ret)
+        ret = paddle.where(paddle.logical_and(paddle.isinf(ret), ret < 0), paddle.to_tensor(neginf, dtype=x.dtype), ret)
+        if copy:
+            return ret.clone()
+        else:
+            x= ret
+            return x
 
 
 def logaddexp2(
