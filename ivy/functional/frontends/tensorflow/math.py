@@ -275,6 +275,8 @@ def reduce_max(input_tensor, axis=None, keepdims=False, name="reduce_max"):
 
 @to_ivy_arrays_and_back
 def reduce_mean(input_tensor, axis=None, keepdims=False, name="reduce_mean"):
+    if ivy.exists(axis):
+        axis = ivy.to_list(axis)
     return ivy.mean(input_tensor, axis=axis, keepdims=keepdims)
 
 
@@ -400,6 +402,12 @@ def truediv(x, y, name="truediv"):
 def equal(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return ivy.equal(x, y)
+
+
+@to_ivy_arrays_and_back
+def not_equal(x, y, name=None):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.not_equal(x, y)
 
 
 @to_ivy_arrays_and_back
