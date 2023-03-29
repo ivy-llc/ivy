@@ -1,16 +1,20 @@
 import os
-import importlib
 from types import ModuleType, FunctionType
+import warnings
 
 import ivy
 from ivy.func_wrapper import _wrap_function
 from ivy.utils.exceptions import IvyException
+
+warnings.simplefilter("always", UserWarning)
 
 
 _backends_subpackage_path = "ivy.functional.backends"
 _sub_backend_dict = dict()
 _backend_to_sub_backends_dict = dict()
 
+
+# dynamic sub_backend detection
 for backend in os.listdir(
     os.path.join(
         ivy.__path__[0].rpartition(os.path.sep)[0],  # type: ignore
@@ -49,24 +53,23 @@ original_backend_dict = None
 
 def set_sub_backend(sub_backend_str: str):
     if ivy.backend == "none":
-        print("You must set a backend first:")
-        available_sub_backends()
+        warnings.warn("You must set a backend first:")
         return
 
     if ivy.current_backend_str() not in _backend_to_sub_backends_dict.keys():
-        print(
-            f"backend {ivy.current_backend_str()} does not have any supported sub_backends"
+        warnings.warn(
+            f"backend {ivy.current_backend_str()} does not have any supported sub_backends"  # noqa
         )
         return
 
     if sub_backend_str not in _all_sub_backends:
         raise IvyException(
-            f"sub_backend must be one from {_backend_to_sub_backends_dict[ivy.current_backend_str()]}"
+            f"sub_backend must be one from {_backend_to_sub_backends_dict[ivy.current_backend_str()]}"  # noqa
         )
 
     if sub_backend_str not in _backend_to_sub_backends_dict[ivy.current_backend_str()]:
-        print(
-            f"{ivy.current_backend_str()} does not support {sub_backend_str} as a sub_backend"
+        warnings.warn(
+            f"{ivy.current_backend_str()} does not support {sub_backend_str} as a sub_backend"  # noqa
         )
         return
 
@@ -83,6 +86,7 @@ def set_sub_backend(sub_backend_str: str):
     ivy.current_backend().sub_backends._current_sub_backends.append(sub_backend_str)
 
 
+# this is very similiar to _set_backend_as_ivy in handler.py, with a minor change
 def _set_sub_backend_as_ivy(
     original: dict, target: ModuleType, sub_backend: ModuleType
 ):
@@ -103,6 +107,9 @@ def _set_sub_backend_as_ivy(
             and not k.startswith("__")
             and isinstance(v, ModuleType)
         ):
+            # we are creating a module to avoid inplace updating
+            # the sub_backends dict's modules, this happens when
+            # unsetting the sub_backend as we partially update the modules
             mod = ModuleType(k)
             mod.__name__ = v.__name__
             mod.__file__ = v.__file__
@@ -124,9 +131,11 @@ def unset_sub_backend(sub_backend_str: str):
     if sub_backend_str not in ivy.current_sub_backends():
         return
     global original_backend_dict
+
+    # The sub-backend is cached so this is fast
     sub_backend = ivy.utils.dynamic_import.import_module(
         _sub_backend_dict[sub_backend_str]
-    )  # The sub-backend is cached so this is fast
+    )
     _unset_sub_backend_from_ivy(
         original_backend_dict, ivy, sub_backend, sub_backend.name
     )
@@ -164,7 +173,7 @@ def clear_sub_backends():
         ivy.current_backend().sub_backends._current_sub_backends = []
 
 
-# This is used in set_backend only
+# This is only used in set_backend in handler.py
 def _clear_current_sub_backends():
     global original_backend_dict
     original_backend_dict = None
@@ -172,6 +181,7 @@ def _clear_current_sub_backends():
         ivy.current_backend().sub_backends._current_sub_backends = []
 
 
+# this is overwritten when setting a backend
 def available_sub_backends():
     for k, v in _backend_to_sub_backends_dict.items():
         print(f"backend: {k} supports sub_backends: {v}")
