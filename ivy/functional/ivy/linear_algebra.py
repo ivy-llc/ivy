@@ -2504,6 +2504,45 @@ def vector_norm(
     )
 
 
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
+def lu(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    pivot: bool = True,
+    out: Optional[ivy.Array] = None,
+) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray], Union[
+        ivy.Array, ivy.NativeArray]]:
+    """
+    Parameters
+    ----------
+
+    A
+       tensor of shape (*, m, n) where * is zero or more batch dimensions.
+
+
+    pivot
+       Controls whether to compute the LU decomposition with partial pivoting or no 
+       pivoting. Default: True.
+
+
+    out
+       output tuple of three tensors. Ignored if None. Default: None.
+
+
+    Returns
+    -------
+    ret
+       A named tuple (P, L, U).
+    """
+    return current_backend(x).lu(x, pivot=pivot, out=out)
+
+
 # Extra #
 # ------#
 
