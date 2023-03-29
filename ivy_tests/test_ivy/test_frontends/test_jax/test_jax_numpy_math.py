@@ -2575,14 +2575,16 @@ def test_jax_numpy_ldexp(
 #gradient
 @handle_frontend_test(
     fn_tree="jax.numpy.gradient",
-    dtype_and_x=helpers.dtype_and_values(
+    dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
         max_num_dims=3,
         min_dim_size=2,
         max_dim_size=4,
+        valid_axis=True,
+        force_int_axis=True,
     ),
-    spacing=helpers.ints(
+    varargs=helpers.ints(
         min_value=-3,
         max_value=3,
     ),
@@ -2591,14 +2593,14 @@ def test_jax_numpy_ldexp(
 )
 def test_jax_numpy_gradient(
     *,
-    dtype_and_x,
-    spacing,
+    dtype_x_axis,
+    varargs,
     test_flags,
     on_device,
     fn_tree,
     frontend,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, axis = dtype_x_axis,
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
@@ -2606,6 +2608,7 @@ def test_jax_numpy_gradient(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
-        spacing=spacing,
+        varargs=varargs,
+        axis=axis,
+        edge_order = 1,
     )
-

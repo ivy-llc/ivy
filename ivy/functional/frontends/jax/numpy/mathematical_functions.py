@@ -528,8 +528,9 @@ def frexp(x, /):
 def ldexp(x1, x2, /):
     return ivy.ldexp(x1, x2)
 
+
 #Returns the gradient of an N-dimensional array
 @to_ivy_arrays_and_back
-def gradient(x, *sampling, axis=None, edge_order=None):
-    return ivy.gradient(x,*sampling,axis=axis,edge_order=edge_order)
+def gradient(f, *varargs, axis=None, edge_order=None):
+    return ivy.gradient(f, scaling = varargs, axis=axis, edge_order=edge_order)
 
