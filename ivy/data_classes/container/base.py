@@ -3673,7 +3673,16 @@ class ContainerBase(dict, abc.ABC):
         indent_str = " " * self._print_indent
 
         def _align_array(array_str_in):
-            array_str_in_split = array_str_in.split("([")
+            split_phrase_dict = {
+                "": "([",
+                "jax": "([",
+                "numpy": "([",
+                "tensorflow": "([",
+                "pytorch": "([",
+                "paddle": "])",
+            }
+            split_phrase = split_phrase_dict[self._cont_ivy.current_backend_str()]
+            array_str_in_split = array_str_in.split(split_phrase)
             leading_str_to_keep = array_str_in_split[0].replace("\\n", "")
             indented_key_size = len(leading_str_to_keep.replace('"', "").split(": ")[0])
             indented_key_str = " " * (indented_key_size + 2)
@@ -3699,7 +3708,7 @@ class ContainerBase(dict, abc.ABC):
                     num_extra_dims = i
                     break
             extra_indent = (len(leading_str) + 1 + num_extra_dims) * " "
-            array_str_in = "([".join([leading_str_to_keep, remaining_str])
+            array_str_in = split_phrase.join([leading_str_to_keep, remaining_str])
             uniform_indent_wo_overflow = array_str_in.replace(
                 "\\n[", "\n" + local_indent_str + extra_indent + "["
             )
