@@ -78,3 +78,10 @@ def batch_norm(
 
 def logsigmoid(input: JaxArray) -> JaxArray:
     return jax.nn.log_sigmoid(input)
+
+
+def selu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    ret = jax.nn.selu(x).astype(x.dtype)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ret

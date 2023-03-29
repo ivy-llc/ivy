@@ -312,7 +312,7 @@ class Array(
 
     def __array__(self, *args, **kwargs):
         args, kwargs = args_to_native(*args, **kwargs)
-        return self._data.__array__(*args, **kwargs)
+        return self._data.__array__(*args, dtype=self.dtype, **kwargs)
 
     def __array_prepare__(self, *args, **kwargs):
         args, kwargs = args_to_native(*args, **kwargs)
@@ -1106,4 +1106,11 @@ class Array(
     def __iter__(self):
         if self.ndim == 0:
             raise TypeError("iteration over a 0-d ivy.Array not supported")
+        if ivy.current_backend_str() == "paddle" and self.dtype in [
+            "int8",
+            "int16",
+            "uint8",
+            "float16",
+        ]:
+            return iter([to_ivy(i) for i in ivy.unstack(self._data)])
         return iter([to_ivy(i) for i in self._data])
