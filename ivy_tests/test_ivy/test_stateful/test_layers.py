@@ -112,6 +112,7 @@ def test_linear_layer(
         method_with_v=method_with_v,
         rtol_=1e-02,
         atol_=1e-02,
+        on_device=on_device,
     )
 
 
@@ -160,6 +161,7 @@ def test_dropout_layer(
         class_name=class_name,
         method_name=method_name,
         test_values=False,
+        on_device=on_device,
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     for u in ret:
@@ -307,6 +309,7 @@ def test_multi_head_attention_layer(
         atol_=1e-2,
         test_values=False,
         return_flat_np_arrays=True,
+        on_device=on_device,
     )
     assert_same_type_and_shape([ret_np_flat, ret_np_from_gt_flat])
 
@@ -444,6 +447,7 @@ def test_conv1d_layer(
         method_with_v=method_with_v,
         rtol_=1e-02,
         atol_=1e-02,
+        on_device=on_device,
     )
 
 
@@ -518,6 +522,7 @@ def test_conv1d_transpose_layer(
         method_with_v=method_with_v,
         rtol_=1e-02,
         atol_=1e-02,
+        on_device=on_device,
     )
 
 
@@ -579,6 +584,7 @@ def test_conv2d_layer(
         method_with_v=method_with_v,
         rtol_=1e-02,
         atol_=1e-02,
+        on_device=on_device,
     )
 
 
@@ -656,6 +662,7 @@ def test_conv2d_transpose_layer(
         method_with_v=method_with_v,
         rtol_=1e-02,
         atol_=1e-02,
+        on_device=on_device,
     )
 
 
@@ -725,6 +732,7 @@ def test_depthwise_conv2d_layer(
         method_with_v=method_with_v,
         rtol_=1e-02,
         atol_=1e-02,
+        on_device=on_device,
     )
 
 
@@ -794,6 +802,7 @@ def test_conv3d_layer(
         method_with_v=method_with_v,
         rtol_=1e-02,
         atol_=1e-02,
+        on_device=on_device,
     )
 
 
@@ -871,6 +880,7 @@ def test_conv3d_transpose_layer(
         method_with_v=method_with_v,
         rtol_=1e-02,
         atol_=1e-02,
+        on_device=on_device,
     )
 
 
@@ -942,6 +952,7 @@ def test_lstm_layer(
         method_with_v=method_with_v,
         rtol_=1e-01,
         atol_=1e-01,
+        on_device=on_device,
     )
 
 

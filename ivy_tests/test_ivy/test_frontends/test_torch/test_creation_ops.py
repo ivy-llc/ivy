@@ -602,3 +602,33 @@ def test_torch_heaviside(
         values=values[0],
         on_device=on_device,
     )
+
+
+# asarray
+@handle_frontend_test(
+    fn_tree="torch.asarray",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
+    dtype=helpers.get_dtypes("numeric", full=False),
+)
+def test_torch_asarray(
+    *,
+    dtype_and_x,
+    dtype,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        obj=x[0],
+        dtype=dtype[0],
+        device=on_device,
+    )

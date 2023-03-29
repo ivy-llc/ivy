@@ -10,7 +10,7 @@ from ivy.data_classes.container.base import ContainerBase
 # noinspection PyMissingConstructor
 class _ContainerWithSearching(ContainerBase):
     @staticmethod
-    def static_argmax(
+    def _static_argmax(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -123,7 +123,7 @@ class _ContainerWithSearching(ContainerBase):
                           [0]])
         }
         """
-        return self.static_argmax(
+        return self._static_argmax(
             self,
             axis=axis,
             keepdims=keepdims,
@@ -133,7 +133,7 @@ class _ContainerWithSearching(ContainerBase):
         )
 
     @staticmethod
-    def static_argmin(
+    def _static_argmin(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -257,7 +257,7 @@ class _ContainerWithSearching(ContainerBase):
                           [0]])
         }
         """
-        return self.static_argmin(
+        return self._static_argmin(
             self,
             axis=axis,
             keepdims=keepdims,
@@ -267,7 +267,7 @@ class _ContainerWithSearching(ContainerBase):
         )
 
     @staticmethod
-    def static_nonzero(
+    def _static_nonzero(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -345,12 +345,12 @@ class _ContainerWithSearching(ContainerBase):
             a container containing the indices of the nonzero values.
 
         """
-        return self.static_nonzero(
+        return self._static_nonzero(
             self, as_tuple=as_tuple, size=size, fill_value=fill_value
         )
 
     @staticmethod
-    def static_where(
+    def _static_where(
         condition: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
@@ -438,13 +438,13 @@ class _ContainerWithSearching(ContainerBase):
             b: ivy.array([2, 8, 6])
         }
         """
-        return self.static_where(self, x1, x2, out=out)
+        return self._static_where(self, x1, x2, out=out)
 
     # Extra #
     # ----- #
 
     @staticmethod
-    def static_argwhere(
+    def _static_argwhere(
         x: ivy.Container,
         /,
         *,
@@ -567,7 +567,7 @@ class _ContainerWithSearching(ContainerBase):
         }
 
         """
-        return self.static_argwhere(
+        return self._static_argwhere(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
