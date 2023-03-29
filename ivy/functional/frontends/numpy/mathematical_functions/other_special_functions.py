@@ -11,17 +11,15 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 
 
 
-@handle_numpy_out
-@handle_numpy_dtype
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def unwrap(p, discont=None, axis=-1, *, period=2*ivy.pi):
-    p = ivy.Array.asarray(p)
+    p = ivy.asarray(p)
     nd = p.ndim
     dd = ivy.diff(p, axis=axis)
     if discont is None:
         discont = period/2
-    slice1 = [ivy.slice(None, None)]*nd     # full slices
+    slice1 = [slice(None, None)]*nd     # full slices
     slice1[axis] = ivy.slice(1, None)
     slice1 = ivy.tuple(slice1)
     dtype = ivy.result_type(dd, period)
@@ -41,8 +39,3 @@ def unwrap(p, discont=None, axis=-1, *, period=2*ivy.pi):
     up = ivy.array(p, copy=True, dtype=dtype)
     up[slice1] = p[slice1] + ph_correct.cumsum(axis)
     return up
-
-my_list = [24,8,3,4,34,8]
-ans = unwrap(my_list)
-print("After the np.unwrap()")
-print(ans)
