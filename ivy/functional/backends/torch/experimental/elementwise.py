@@ -459,6 +459,18 @@ def ldexp(
     return torch.ldexp(x1, x2, out=out)
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
+def lerp(
+    input: torch.Tensor,
+    end: torch.Tensor,
+    weight: Union[torch.Tensor, float],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.lerp(input, end, weight, out=out)
+
+
 def frexp(
     x: torch.Tensor,
     /,
