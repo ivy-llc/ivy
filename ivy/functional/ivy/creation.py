@@ -2,7 +2,17 @@
 from __future__ import annotations
 import functools
 from numbers import Number
-from typing import Union, Tuple, Optional, List, Sequence, Callable, Protocol, TypeVar
+from typing import (
+    Union,
+    Tuple,
+    Optional,
+    List,
+    Sequence,
+    Callable,
+    Protocol,
+    TypeVar,
+    Iterable,
+)
 import numpy as np
 
 # local
@@ -1681,6 +1691,26 @@ def native_array(
     ret
         A native array interpretation of x.
 
+    Examples
+    -------
+    With :class:`List[Number]` input:
+
+    >>> x = [1, 2, 3]
+    >>> x_native = native_array(x)
+    >>> print(x_native)
+    [1. 2. 3.]
+
+    With :class:`np.ndarray` input:
+    >>> y = np.array([4, 5, 6])
+    >>> y_native = native_array(y)
+    >>> print(y_native)
+    [4. 5. 6.]
+
+    With :class:`ivy.Array` input:
+    >>> z = ivy.array([7, 8, 9])
+    >>> z_native = native_array(z)
+    >>> print(z_native)
+    [7. 8. 9.]
     """
     # ToDo: Make this more efficient,
     # ideally without first converting to ivy.Array with ivy.asarray and then
