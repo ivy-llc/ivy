@@ -103,3 +103,19 @@ def bincount(
     else:
         ret = jnp.bincount(x, minlength=minlength).astype(x.dtype)
     return ret
+
+
+def percentile(
+    a: JaxArray,
+    q: Union[Sequence[float], float],
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    interpolation: str = "linear",
+    keepdims: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return jnp.percentile(
+        a, q, axis=axis, keepdims=keepdims, method=interpolation, out=out
+    )
