@@ -15,7 +15,7 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
-def unwrap(p, discont=None, axis=-1, *, period=2*pi):
+def unwrap(p, discont=None, axis=-1, *, period=2*ivy.pi):
     p = ivy.Array.asarray(p)
     nd = p.ndim
     dd = ivy.diff(p, axis=axis)
