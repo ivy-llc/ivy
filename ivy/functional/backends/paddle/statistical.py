@@ -10,10 +10,30 @@ import paddle
 import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
 from . import backend_version
-from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
 
 # Array API Standard #
 # -------------------#
+
+
+def swap_axes(x, axis1, axis2):
+    n = x.ndim
+    if axis1 < 0:
+        axis1 = n + axis1
+    if axis2 < 0:
+        axis2 = n + axis2
+    perm = []
+    for i in range(0, n):
+        perm.append(i)
+    perm[axis1] = axis2
+    perm[axis2] = axis1
+    return paddle.transpose(x, perm)
+
+
+def _infer_dtype(dtype: paddle.dtype):
+    default_dtype = ivy.infer_default_dtype(dtype)
+    if ivy.dtype_bits(dtype) < ivy.dtype_bits(default_dtype):
+        return default_dtype
 
 
 @with_unsupported_device_and_dtypes(
@@ -200,7 +220,15 @@ def var(
 # Extra #
 # ----- #
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+    {
+        "2.4.2 and below": {
+            "cpu": (
+                "uint16",
+                "bfloat16",
+            )
+        }
+    },
+    backend_version,
 )
 def cumprod(
     x: paddle.Tensor,
@@ -212,7 +240,31 @@ def cumprod(
     dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(x.dtype)
+        dtype = ivy.as_native_dtype(dtype)
+    if dtype in [paddle.uint8, paddle.int8, paddle.int16]:
+        x = paddle.cast(x, ivy.closest_valid_dtype())
+    else:
+        x = paddle.cast(x, dtype)
+    if not (exclusive or reverse):
+        ret = paddle.cumprod(x, dim=axis)
+    elif exclusive and reverse:
+        x = paddle.cumprod(paddle.flip(x, axis=(axis,)), dim=axis)
+        x = swap_axes(x, axis, -1)
+        x = paddle.concat((paddle.ones_like(x[..., -1:]), x[..., :-1]), -1)
+        x = swap_axes(x, axis, -1)
+        ret = paddle.flip(x, axis=(axis,))
+    elif exclusive:
+        x = swap_axes(x, axis, -1)
+        x = paddle.concat((paddle.ones_like(x[..., -1:]), x[..., :-1]), -1)
+        x = paddle.cumprod(x, -1)
+        ret = swap_axes(x, axis, -1)
+    else:
+        x = paddle.cumprod(paddle.flip(x, axis=(axis,)), dim=axis)
+        ret = paddle.flip(x, axis=axis)
+    return ret.cast(dtype)
 
 
 @with_unsupported_device_and_dtypes(
