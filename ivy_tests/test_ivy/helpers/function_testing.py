@@ -1947,3 +1947,12 @@ def _frontend_array_to_ivy(x):
         return x.ivy_array
     else:
         return x
+
+
+def arrays_to_frontend(frontend_array_fn=None):
+    def _new_fn(x, *args, **kwargs):
+        if _is_frontend_array(x):
+            return x
+        return frontend_array_fn(x, *args, **kwargs) if ivy.is_array(x) else x
+
+    return _new_fn

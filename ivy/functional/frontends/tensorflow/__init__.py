@@ -26,7 +26,6 @@ tensorflow_enum_to_type = {
 
 tensorflow_type_to_enum = {v: k for k, v in tensorflow_enum_to_type.items()}
 
-
 float32 = DType(1)
 float64 = DType(2)
 int32 = DType(3)
@@ -102,5 +101,10 @@ from . import general_functions
 from .general_functions import *
 from . import raw_ops
 from . import sets
-from . import signal
-from . import sparse
+
+
+
+
+
+frontend_array = constant
+

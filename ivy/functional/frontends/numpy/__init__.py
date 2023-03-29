@@ -529,6 +529,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations
     _reciprocal,
     _subtract,
     _true_divide,
+    _divmod,
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functions import (
@@ -559,6 +560,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.hyperbolic_functions 
 from ivy.functional.frontends.numpy.mathematical_functions.rounding import (
     _ceil,
     _trunc,
+    _floor,
 )
 
 from ivy.functional.frontends.numpy.logic.comparison import (
@@ -580,6 +582,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.exponents_and_logarit
     _log2,
     _logaddexp,
     _logaddexp2,
+    _ldexp,
 )
 
 from ivy.functional.frontends.numpy.logic.array_type_testing import (
@@ -598,9 +601,17 @@ from ivy.functional.frontends.numpy.logic.logical_operations import (
 from ivy.functional.frontends.numpy.linalg.matrix_and_vector_products import _matmul
 
 from ivy.functional.frontends.numpy.mathematical_functions.extrema_finding import (
-    _maximum,
     _minimum,
 )
+
+
+
+
+
+
+
+frontend_array = array
+
 
 # initializing ufuncs #
 # ---------------------#
@@ -669,3 +680,52 @@ matmul = ufunc("_matmul")
 maximum = ufunc("_maximum")
 minimum = ufunc("_minimum")
 real = ufunc("_real")
+divmod = ufunc("_divmod")
+fmax = ufunc("_fmax")
+ldexp = ufunc("_ldexp")
+
+
+
+
+# flake8: noqa
+
+from .creation_routines import *
+from . import indexing_routines
+from .indexing_routines import *
+from . import logic
+from .logic import *
+from . import manipulation_routines
+from .manipulation_routines import *
+from . import mathematical_functions
+from .mathematical_functions import *
+from . import sorting_searching_counting
+from .sorting_searching_counting import *
+from . import statistics
+from .statistics import *
+from . import ndarray
+from .ndarray import *
+from . import matrix
+from .matrix import *
+
+from . import ma
+from . import fft
+from . import random
+from . import ufunc
+
+from . import linalg
+from .linalg.matrix_and_vector_products import (
+    # dot,
+    # vdot,
+    inner,
+    outer,
+    matmul,
+    # tensordot,
+    # einsum,
+    # einsum_path,
+    # kron,
+)
+
+
+
+floor = ufunc("_floor")
+
