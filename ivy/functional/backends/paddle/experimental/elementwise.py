@@ -83,13 +83,18 @@ def float_power(
     return paddle.cast(paddle.pow(x1, x2), dtype=paddle.float64)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16","float16")}}, backend_version
+)  
 def exp2(
     x: Union[paddle.Tensor, float, list, tuple],
     /,
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    y = paddle.full(shape=x.shape, fill_value=2, dtype=x.dtype)
+    res = paddle.pow(y,x)
+    return res
 
 
 def copysign(
@@ -190,6 +195,11 @@ def imag(
     return paddle.imag(val)
 
 
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ("int8", "int16", "int32", "int64", "uint8",
+                         "uint16", "bfloat16", "float16", "complex64", "complex128", "bool")},
+    backend_version,
+)
 def nan_to_num(
     x: paddle.Tensor,
     /,
@@ -200,7 +210,22 @@ def nan_to_num(
     neginf: Optional[Union[float, int]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if x.dtype == paddle.float32:
+        posinf = 3.40282347e+38 if posinf is None else posinf
+        neginf = -3.40282347e+38 if neginf is None else neginf
+        d_type='float32'
+    elif x.dtype == paddle.float64:
+        posinf = 1.7976931348623157e+308 if posinf is None else posinf
+        neginf = -1.7976931348623157e+308 if neginf is None else neginf
+        d_type='float64'
+    ret = paddle.where(paddle.isnan(x), paddle.to_tensor(nan, dtype=d_type), x)
+    ret = paddle.where(paddle.logical_and(paddle.isinf(ret), ret > 0), paddle.to_tensor(posinf, dtype=d_type), ret)
+    ret = paddle.where(paddle.logical_and(paddle.isinf(ret), ret < 0), paddle.to_tensor(neginf, dtype=d_type), ret)
+    if copy:
+        return ret.clone()
+    else:
+        x= ret
+        return x
 
 
 def logaddexp2(
