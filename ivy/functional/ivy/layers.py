@@ -4,7 +4,6 @@
 from typing import Optional, Tuple, Union, Callable, Sequence
 
 # local
-from functools import reduce
 import ivy
 from ivy.utils.backend import current_backend
 from ivy.func_wrapper import (
