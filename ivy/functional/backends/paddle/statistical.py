@@ -16,26 +16,6 @@ from ivy.func_wrapper import with_unsupported_device_and_dtypes
 # -------------------#
 
 
-def swap_axes(x, axis1, axis2):
-    n = x.ndim
-    if axis1 < 0:
-        axis1 = n + axis1
-    if axis2 < 0:
-        axis2 = n + axis2
-    perm = []
-    for i in range(0, n):
-        perm.append(i)
-    perm[axis1] = axis2
-    perm[axis2] = axis1
-    return paddle.transpose(x, perm)
-
-
-def _infer_dtype(dtype: paddle.dtype):
-    default_dtype = ivy.infer_default_dtype(dtype)
-    if ivy.dtype_bits(dtype) < ivy.dtype_bits(default_dtype):
-        return default_dtype
-
-
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
@@ -242,25 +222,26 @@ def cumprod(
 ) -> paddle.Tensor:
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
-        dtype = _infer_dtype(x.dtype)
-        dtype = ivy.as_native_dtype(dtype)
+        dtype = x.dtype
     if dtype in [paddle.uint8, paddle.int8, paddle.int16]:
-        x = paddle.cast(x, ivy.closest_valid_dtype())
+        x = paddle.cast(x, ivy.default_int_dtype())
     else:
         x = paddle.cast(x, dtype)
     if not (exclusive or reverse):
         return paddle.cumprod(x, dim=axis).cast(dtype)
     elif exclusive and reverse:
         x = paddle.cumprod(paddle.flip(x, axis=(axis,)), dim=axis)
-        x = swap_axes(x, axis, -1)
-        x = paddle.concat((paddle.ones_like(x[..., -1:]), x[..., :-1]), -1)
-        x = swap_axes(x, axis, -1)
+        with ivy.ArrayMode(False):
+            x = ivy.swapaxes(x, axis, -1)
+            x = paddle.concat((paddle.ones_like(x[..., -1:]), x[..., :-1]), -1)
+            x = ivy.swapaxes(x, axis, -1)
         return paddle.flip(x, axis=(axis,)).cast(dtype)
     elif exclusive:
-        x = swap_axes(x, axis, -1)
-        x = paddle.concat((paddle.ones_like(x[..., -1:]), x[..., :-1]), -1)
-        x = paddle.cumprod(x, -1)
-        return swap_axes(x, axis, -1).cast(dtype)
+        with ivy.ArrayMode(False):
+            x = ivy.swapaxes(x, axis, -1)
+            x = paddle.concat((paddle.ones_like(x[..., -1:]), x[..., :-1]), -1)
+            x = paddle.cumprod(x, -1)
+            return ivy.swapaxes(x, axis, -1).cast(dtype)
     else:
         x = paddle.cumprod(paddle.flip(x, axis=(axis,)), dim=axis)
         return paddle.flip(x, axis=axis).cast(dtype)
