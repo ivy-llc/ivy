@@ -101,5 +101,9 @@ def where(
 # ----- #
 
 
-def argwhere(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def argwhere(x: np.ndarray,
+             /,
+             *,
+             out: Optional[np.ndarray] = None,
+) -> np.ndarray:
     return np.argwhere(x)
