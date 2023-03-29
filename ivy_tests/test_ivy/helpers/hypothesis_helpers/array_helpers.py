@@ -1225,7 +1225,7 @@ def arrays_for_pooling(
         padding = draw(st.one_of(st.just(padding), st.sampled_from(["VALID", "SAME"])))
     else:
         padding = draw(st.sampled_from(["VALID", "SAME"]))
-    strides = draw(st.tuples(st.integers(1, in_shape[1])))
+    strides = draw(st.tuples(st.integers(1, min(kernel))))
     if return_dilation:
         return dtype, x, kernel, strides, padding, dilations
     return dtype, x, kernel, strides, padding
