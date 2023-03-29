@@ -1131,51 +1131,14 @@ def _dim_scale_factor(input_size, output_size, align_corners, scales):
     return dim_scale_factor
 
 
-def _mitchell_cubic_kernel(x, B=1/3, C=1/3):
-    x = abs(x)
-    if x < 1:
-        return ((12 - 9 * B - 6 * C) * (x ** 3) + (-18 + 12 * B + 6 * C) * (x ** 2) +
-                (6 - 2 * B)) / 6
-    elif x < 2:
-        return ((-B - 6 * C) * (x ** 3) + (6 * B + 30 * C) * (x ** 2) +
-                (-12 * B - 48 * C) * x + (8 * B + 24 * C)) / 6
+def _mitchellcubic_kernel(x):
+    absx = abs(x)
+    if absx < 1:
+        return (7 * absx ** 3 - 12 * absx ** 2 + 6) / 6
+    elif absx < 2:
+        return (-absx ** 3 + 6 * absx ** 2 - 11 * absx + 6) / 6
     else:
         return 0
-
-
-def _mitchell_cubic_weights(kernel_size, scale, B=1/3, C=1/3):
-    kernel = ivy.zeros(kernel_size)
-    for i in range(kernel_size):
-        x = (i - kernel_size // 2) / scale
-        kernel[i] = _mitchell_cubic_kernel(x, B, C)
-    return kernel / kernel.sum()
-
-
-def _slice_at_axis(sl, axis):
-    return (slice(None),) * axis + (sl,) + (...,)
-
-
-def _convolve(image, kernel, axis):
-    kernel_size = kernel.shape[0]
-    pad_width = [(0, 0) if i != axis else (kernel_size // 2, kernel_size // 2)
-                 for i in range(image.ndim)]
-    padded = ivy.pad(image, pad_width, mode='reflect')
-    result = ivy.empty_like(image)
-    for i in range(image.shape[axis]):
-        result[_slice_at_axis(slice(i, i + 1, 1), axis)] = ivy.sum(
-            padded[_slice_at_axis(slice(i, i + kernel_size, 1), axis)] *
-            kernel[:, ivy.newaxis],
-        )
-    return result
-
-
-def _gaussian_kernel(kernel_size, scale, sigma=1):
-    kernel = ivy.zeros(kernel_size)
-    center = kernel_size // 2
-    for i in range(kernel_size):
-        x = (i - center) / scale
-        kernel[i] = ivy.exp(-(x ** 2) / (2 * sigma ** 2))
-    return kernel / kernel.sum()
 
 
 def _compute_weight_mat(
@@ -1244,7 +1207,7 @@ def _upsample_cubic_interp1d(coeffs, ts):
 def _sum_tensors(ts):
     return reduce(ivy.add, ts)
 
-def upsample_bicubic2d_default(
+def _upsample_bicubic2d_default(
     a,
     output_size,
     align_corners,
@@ -1496,26 +1459,74 @@ def interpolate(
                             1 / scale_x
                         )
     elif mode == "bicubic":
-        return upsample_bicubic2d_default(x, size, align_corners)
-    elif mode in ["mitchellcubic", "gaussian"]:
-        new_h, new_w = size
-        n, c, h, w = x.shape
-        scale_h, scale_w = new_h / h, new_w / w
-        kernel_size_h, kernel_size_w = int(4 * scale_h) + 1, int(4 * scale_w) + 1
-        if mode == "mitchellcubic":
-            kernel_h = _mitchell_cubic_weights(kernel_size_h, scale_h)
-            kernel_w = _mitchell_cubic_weights(kernel_size_w, scale_w)
-        else:
-            kernel_h = _gaussian_kernel(kernel_size_h, scale_h)
-            kernel_w = _gaussian_kernel(kernel_size_w, scale_w)
-        ret = ivy.empty((n, c, new_h, new_w), dtype=x.dtype)
-        for b in range(n):
-            for i in range(c):
-                temp = _convolve(x[b, i, ...], kernel_w, axis=1)
-                temp = _convolve(temp, kernel_h, axis=0)
-                h_indexes = ivy.round(ivy.linspace(0, h - 1, new_h)).astype(int)
-                w_indexes = ivy.round(ivy.linspace(0, w - 1, new_w)).astype(int)
-                ret[b, i, ...] = ivy.array(temp.to_numpy()[h_indexes, w_indexes])
+        return _upsample_bicubic2d_default(x, size, align_corners)
+    elif mode == "mitchellcubic":
+        batch, channels, in_height, in_width = x.shape
+        out_height, out_width = size
+        scale_factor_h = out_height / in_height
+        scale_factor_w = out_width / in_width
+        ret = ivy.zeros((batch, channels, out_height, out_width))
+        for i in range(out_height):
+            for j in range(out_width):
+                p_i = i / scale_factor_h
+                p_j = j / scale_factor_w
+                left = int(math.floor(p_j - 2))
+                right = int(math.ceil(p_j + 2))
+                top = int(math.floor(p_i - 2))
+                bottom = int(math.ceil(p_i + 2))
+                kernel_w = ivy.array(
+                    [_mitchellcubic_kernel((p_j - j) / scale_factor_w)
+                     for i in range(left, right)])
+                kernel_h = ivy.array(
+                    [_mitchellcubic_kernel((p_i - i) / scale_factor_h)
+                     for j in range(top, bottom)])
+                left_pad = max(0, -left)
+                right_pad = max(0, right - in_width)
+                top_pad = max(0, -top)
+                bottom_pad = max(0, bottom - in_height)
+                pad_width = [(0, 0), (0, 0)] * (len(x.shape) - 3) + \
+                            [(top_pad, bottom_pad), (left_pad, right_pad)]
+                padded_x = ivy.pad(x, pad_width, mode='edge')
+                for b in range(batch):
+                    for c in range(channels):
+                        patch = padded_x[
+                                b, c,
+                                top + top_pad:bottom + top_pad,
+                                left + left_pad:right + left_pad]
+                        ret[b, c, i, j] = ivy.sum(
+                            kernel_h[:, ivy.newaxis] * patch * kernel_w[ivy.newaxis,:]
+                        )
+    elif mode == "gaussian":
+        ratio_h = size[0] / x.shape[-2]
+        ratio_w = size[1] / x.shape[-1]
+        sigma = max(1 / ratio_h, 1 / ratio_w) * 0.5
+        kernel_size = 2 * int(math.ceil(3 * sigma)) + 1
+        kernel_h = ivy.zeros((kernel_size,), dtype=x.dtype)
+        kernel_w = ivy.zeros((kernel_size,), dtype=x.dtype)
+        for i in range(kernel_h.size):
+            kernel_h[i] = ivy.exp(-0.5 * ((i - kernel_h.size // 2) / sigma) ** 2)
+            kernel_w[i] = ivy.exp(-0.5 * ((i - kernel_w.size // 2) / sigma) ** 2)
+        kernel_h /= ivy.sum(kernel_h)
+        kernel_w /= ivy.sum(kernel_w)
+        pad_width = [(0, 0), (0, 0)] * (len(x.shape) - 3) + [
+            (int(math.ceil(3 * sigma)), int(math.ceil(3 * sigma))),
+            (int(math.ceil(3 * sigma)), int(math.ceil(3 * sigma)))]
+        padded_x = ivy.pad(x, pad_width, mode='constant')
+        output_shape = x.shape[:2] + size
+        ret = ivy.zeros(output_shape, dtype=x.dtype)
+        for i in range(size[0]):
+            for j in range(size[1]):
+                p_i = int(math.floor(i / ratio_h + int(math.ceil(3 * sigma))))
+                p_j = int(math.floor(j / ratio_w + int(math.ceil(3 * sigma))))
+                for b in range(x.shape[0]):
+                    for c in range(x.shape[1]):
+                        patch = padded_x[
+                                 b, c,
+                                 p_i - kernel_size // 2: p_i + kernel_size // 2 + 1,
+                                 p_j - kernel_size // 2: p_j + kernel_size // 2 + 1]
+                        ret[b, c, i, j] = ivy.sum(
+                            kernel_h[ivy.newaxis, :] * patch * kernel_w[:, ivy.newaxis]
+                        )
     elif mode == "tf_area":
         ret = _tf_area_interpolate(x, size, dims)
     return ivy.astype(ret, ivy.dtype(x), out=out)
