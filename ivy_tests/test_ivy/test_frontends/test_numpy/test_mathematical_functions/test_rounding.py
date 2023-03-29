@@ -209,3 +209,28 @@ def test_numpy_rint(
         dtype=dtype,
         subok=True,
     )
+# round
+@handle_frontend_test(
+    fn_tree="numpy.round",
+    dtype_and_a=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+
+def test_numpy_round(
+    dtype_and_a,
+    frontend,
+    fn_tree,
+    on_device,
+    test_flags,
+):
+    input_dtypes, a = dtype_and_a
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=a[0],
+    )
