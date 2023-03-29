@@ -3,9 +3,6 @@ import tensorflow as tf
 import tensorflow_probability as tfp
 from tensorflow.python.ops.numpy_ops import np_math_ops
 
-from ivy.func_wrapper import with_supported_dtypes
-from . import backend_version
-
 
 def median(
     input: Union[tf.Tensor, tf.Variable],
@@ -35,32 +32,6 @@ def nanmean(
 ) -> Union[tf.Tensor, tf.Variable]:
     np_math_ops.enable_numpy_methods_on_tensor()
     return tf.experimental.numpy.nanmean(a, axis=axis, keepdims=keepdims, dtype=dtype)
-
-
-@with_supported_dtypes(
-    {
-        "2.9.1 and below": (
-            "int32",
-            "int64",
-        )
-    },
-    backend_version,
-)
-def unravel_index(
-    indices: Union[tf.Tensor, tf.Variable],
-    shape: Tuple[int],
-    /,
-    *,
-    out: Optional[Tuple[Union[tf.Tensor, tf.Variable]]] = None,
-) -> Tuple:
-    temp = indices
-    output = []
-    for dim in reversed(shape):
-        output.append(temp % dim)
-        temp = temp // dim
-    output.reverse()
-    ret = tf.convert_to_tensor(output, dtype=tf.int32)
-    return tuple(ret)
 
 
 def quantile(
