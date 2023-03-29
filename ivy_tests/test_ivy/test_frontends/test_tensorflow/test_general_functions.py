@@ -5,11 +5,13 @@ import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
+from ivy.functional.frontends.tensorflow.general_functions import _num_to_bit_list
 from ivy_tests.test_ivy.test_frontends.test_numpy.test_creation_routines.test_from_shape_or_value import (  # noqa : E501
     _input_fill_and_dtype,
 )
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _matrix_rank_helper
+from tensorflow import errors as tf_errors
 
 
 @st.composite
@@ -1042,25 +1044,26 @@ def _strided_slice_helper(draw):
         st.lists(
             st.integers(min_value=0, max_value=2**ndims - 1), min_size=5, max_size=5
         ).filter(
-            lambda x: bin(x[2])[2:].count("1") <= 1
-        )  # maximum one ellipse
+            lambda x: bin(x[2])[2:].count("1") <= min(len(shape)-1, 1)
+        )
     )
     begin, end, strides = [], [], []
-    n_omit = draw(st.integers(min_value=0, max_value=ndims - 1))
-    sub_shape = shape[: len(shape) - n_omit]
-    for i in sub_shape:
+    for i in shape:
         begin += [draw(st.integers(min_value=0, max_value=i - 1))]
-        end += [
-            draw(
-                st.integers(min_value=0, max_value=i - 1).filter(
-                    lambda x: x != begin[-1]
-                )
-            )
-        ]
+        end += [draw(st.integers(min_value=0, max_value=i - 1))]
         if begin[-1] < end[-1]:
             strides += [draw(st.integers(min_value=1, max_value=i))]
         else:
             strides += [draw(st.integers(max_value=-1, min_value=-i))]
+    ellipsis_mask = _num_to_bit_list(masks[2], ndims)
+    for i, v in enumerate(ellipsis_mask):
+        if v == 1:
+            skip = draw(st.integers(min_value=0, max_value=ndims))
+            begin, end, strides = map(
+                lambda x: x[:i] + x[i+skip:] if i+skip < ndims else x[:i],
+                [begin, end, strides]
+            )
+            break
     return dtype, x, np.array(begin), np.array(end), np.array(strides), masks
 
 
@@ -1096,6 +1099,8 @@ def test_tensorflow_strided_slice(
             new_axis_mask=masks[3],
             shrink_axis_mask=masks[4],
         )
+    except tf_errors.InvalidArgumentError:
+        assume(False)
     except Exception as e:
         if (
             hasattr(e, "message")
@@ -1617,3 +1622,52 @@ def test_tensorflow_unstack(
         value=x[0],
         axis=axis,
     )
+
+
+# reverse    
+@st.composite
+def reverse_helper(draw):
+    dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            min_num_dims=1,
+            max_num_dims=8,
+            ret_shape=True,
+        )
+    )
+    axis_dtype, axis = draw(
+        helpers.dtype_and_values(
+            available_dtypes=["int32", "int64"],
+            min_num_dims=1,
+            max_num_dims=1,
+            min_value=-(len(shape) - 1),
+            max_value=len(shape) - 1,
+            shape=(1,),
+        )
+    )
+    return dtype, x, axis_dtype, axis
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.reverse",
+    dtype_x_axis=reverse_helper(),
+)
+def test_tensorflow_reverse(
+    *,
+    dtype_x_axis,
+    frontend,
+    fn_tree,
+    test_flags,
+    on_device,
+):
+
+    dtype, x, axis_dtype, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype + axis_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensor=x[0],
+        axis=axis[0],
+    )    

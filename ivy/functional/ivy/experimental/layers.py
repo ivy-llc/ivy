@@ -15,9 +15,9 @@ from ivy.func_wrapper import (
 from ivy.utils.exceptions import handle_exceptions
 
 
-@handle_nestable
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def max_pool1d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int]],
@@ -227,9 +227,9 @@ def max_pool3d(
     )
 
 
-@handle_nestable
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_nestable
 def avg_pool1d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int]],
@@ -430,8 +430,8 @@ def avg_pool3d(
     )
 
 
-@to_native_arrays_and_back
 @integer_arrays_to_float
+@to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -530,8 +530,8 @@ def dct(
 
 @to_native_arrays_and_back
 @handle_out_argument
-@handle_exceptions
 @handle_array_like_without_promotion
+@handle_exceptions
 def fft(
     x: Union[ivy.Array, ivy.NativeArray],
     dim: int,
@@ -594,10 +594,10 @@ def fft(
     return ivy.current_backend(x).fft(x, dim, norm=norm, n=n, out=out)
 
 
-@handle_nestable
-@handle_exceptions
 @to_native_arrays_and_back
 @handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
 def dropout1d(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -666,10 +666,10 @@ def dropout1d(
     )
 
 
-@handle_nestable
-@handle_exceptions
 @to_native_arrays_and_back
 @handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
 def dropout3d(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -717,9 +717,9 @@ def dropout3d(
 
 @to_native_arrays_and_back
 @handle_out_argument
-@handle_exceptions
-@handle_nestable
 @handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
 def ifft(
     x: Union[ivy.Array, ivy.NativeArray],
     dim: int,
@@ -783,8 +783,8 @@ def ifft(
 
 @to_native_arrays_and_back
 @handle_out_argument
-@handle_exceptions
 @handle_nestable
+@handle_exceptions
 def embedding(
     weights: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -841,8 +841,8 @@ def embedding(
 
 @to_native_arrays_and_back
 @handle_out_argument
-@handle_exceptions
 @handle_nestable
+@handle_exceptions
 def dft(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -919,9 +919,9 @@ def dft(
 
 
 @to_native_arrays_and_back
-@handle_exceptions
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
 def interp(x, xp, fp, left=None, right=None, period=None):
     x_arr = ivy.array(x)
     fix_later = False
@@ -1219,6 +1219,88 @@ def _compute_weight_mat(
         0,
     )
 
+def _upsample_cubic_convolution1(x, A):
+    return ((A + 2) * x - (A + 3)) * x * x + 1
+
+
+def _upsample_cubic_convolution2(x, A):
+    return ((A * x - 5 * A) * x + 8 * A) * x - 4 * A
+
+
+def _upsample_get_cubic_coefficients(t):
+    A = -0.75
+    return (
+        _upsample_cubic_convolution2(t + 1.0, A),
+        _upsample_cubic_convolution1(t, A),
+        _upsample_cubic_convolution1(1.0 - t, A),
+        _upsample_cubic_convolution2(2.0 - t, A),
+    )
+
+
+def _upsample_cubic_interp1d(coeffs, ts):
+    coeffs2 = _upsample_get_cubic_coefficients(ts)
+    return _sum_tensors(c1 * c2 for (c1, c2) in zip(coeffs, coeffs2))
+
+def _sum_tensors(ts):
+    return reduce(ivy.add, ts)
+
+def upsample_bicubic2d_default(
+    a,
+    output_size,
+    align_corners,
+    scale_h=None,
+    scale_w=None,
+):
+    N, C, iH, iW = a.shape
+    oH, oW = output_size
+
+    def compute_scale(in_size, out_size, align_corners, scale=None):
+        if align_corners:
+            return (in_size - 1) / (out_size - 1) if out_size > 1 else 0
+        else:
+            return 1 / scale if scale is not None and scale > 0 else in_size / out_size
+
+    def compute_source_index(scale, dst_index, align_corners):
+        if align_corners:
+            return scale * dst_index
+        else:
+            return scale * (dst_index + 0.5) - 0.5
+
+    height_scale = compute_scale(iH, oH, align_corners, scale_h)
+    width_scale = compute_scale(iW, oW, align_corners, scale_w)
+
+    N_idx = ivy.reshape(ivy.arange(N), (N, 1, 1, 1))
+    C_idx = ivy.reshape(ivy.arange(C), (1, C, 1, 1))
+    out_y = ivy.reshape(ivy.arange(oH), ((1, 1, oH, 1)))
+    out_x = ivy.reshape(ivy.arange(oW), ((1, 1, 1, oW)))
+
+    real_x = compute_source_index(width_scale, out_x, align_corners)
+    in_x = ivy.floor(real_x)
+    t_x = real_x - in_x
+    ix = ivy.astype(in_x, ivy.int64)
+
+    real_y = compute_source_index(height_scale, out_y, align_corners)
+    in_y = ivy.floor(real_y)
+    t_y = real_y - in_y
+    iy = ivy.astype(in_y, ivy.int64)
+
+    iys_ofs = (iy - 1, iy, iy + 1, iy + 2)
+    ixs_ofs = (ix - 1, ix, ix + 1, ix + 2)
+
+    def load_bounded(ys, xs):
+        y_idx = ivy.clip(ys, 0, iH - 1)
+        x_idx = ivy.clip(xs, 0, iW - 1)
+        return a[N_idx, C_idx, y_idx, x_idx]
+
+    def get_x_interp(y):
+        coeffs_x = tuple((load_bounded(y, x_ofs) for x_ofs in ixs_ofs))
+        return _upsample_cubic_interp1d(coeffs_x, t_x)
+
+    coeffs_y = tuple((get_x_interp(y_ofs) for y_ofs in iys_ofs))
+    result = _upsample_cubic_interp1d(coeffs_y, t_y)
+
+    return result
+
 
 @handle_out_argument
 @handle_nestable
@@ -1235,6 +1317,7 @@ def interpolate(
         "area",
         "nearest_exact",
         "tf_area",
+        "bicubic_tensorflow"
         "bicubic",
         "mitchellcubic",
         "lanczos3",
@@ -1314,6 +1397,7 @@ def interpolate(
     if mode in [
         "linear",
         "bilinear",
+        "bicubic",
         "bicubic_tensorflow",
         "trilinear",
         "lanczos3",
@@ -1412,29 +1496,7 @@ def interpolate(
                             1 / scale_x
                         )
     elif mode == "bicubic":
-        scale_factor_h = size[0] / x.shape[2]
-        scale_factor_w = size[1] / x.shape[3]
-        x = ivy.pad(x, ((0, 0), (0, 0), (2, 2), (2, 2)), mode="edge")
-        ret = ivy.zeros((*x.shape[:2], size[0], size[1]))
-        for n in range(ret.shape[0]):
-            for c in range(ret.shape[1]):
-                for i in range(ret.shape[2]):
-                    for j in range(ret.shape[3]):
-                        x0, y0 = i / scale_factor_h + 2, j / scale_factor_w + 2
-                        x_s = [math.floor(x0) + i - x0 for i in range(-1, 3, 1)]
-                        y_s = [math.floor(y0) + i - y0 for i in range(-1, 3, 1)]
-                        mat_l = ivy.array([[_bicubic_kernel(x_i) for x_i in x_s]])
-                        mat_m = ivy.array(
-                            [
-                                [x[n, c, int(x0 + x_i), int(y0 + y_i)] for y_i in y_s]
-                                for x_i in x_s
-                            ],
-                            dtype=ivy.float32,
-                        )
-                        mat_r = ivy.array([[_bicubic_kernel(y_i)] for y_i in y_s])
-                        ret[n, c, i, j] = ivy.squeeze(
-                            ivy.multi_dot((mat_l, mat_m, mat_r)), 0
-                        )
+        return upsample_bicubic2d_default(x, size, align_corners)
     elif mode in ["mitchellcubic", "gaussian"]:
         new_h, new_w = size
         n, c, h, w = x.shape

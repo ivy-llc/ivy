@@ -84,12 +84,12 @@ def flip(
 
 
 def permute_dims(
-    x: np.ndarray, 
-    /, 
-    axes: Tuple[int, ...], 
-    *, 
+    x: np.ndarray,
+    /,
+    axes: Tuple[int, ...],
+    *,
     copy: Optional[bool] = None,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if copy:
         newarr = x.copy()
@@ -220,11 +220,7 @@ def repeat(
 
 
 def tile(
-    x: np.ndarray, 
-    /, 
-    repeats: Sequence[int], 
-    *, 
-    out: Optional[np.ndarray] = None
+    x: np.ndarray, /, repeats: Sequence[int], *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.tile(x, repeats)
 
@@ -247,13 +243,13 @@ def zero_pad(
 
 
 def swapaxes(
-    x: np.ndarray, 
-    axis0: int, 
-    axis1: int, 
-    /, 
-    *, 
+    x: np.ndarray,
+    axis0: int,
+    axis1: int,
+    /,
+    *,
     copy: Optional[bool] = None,
-    out: Optional[np.ndarray] = None
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if copy:
         newarr = x.copy()
@@ -262,12 +258,12 @@ def swapaxes(
 
 
 def unstack(
-    x: np.ndarray, 
-    /, 
-    *, 
+    x: np.ndarray,
+    /,
+    *,
     copy: Optional[bool] = None,
-    axis: int = 0, 
-    keepdims: bool = False
+    axis: int = 0,
+    keepdims: bool = False,
 ) -> List[np.ndarray]:
     if x.shape == ():
         if copy:
@@ -293,9 +289,6 @@ def clip(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    ivy.utils.assertions.check_less(
-        ivy.array(x_min), ivy.array(x_max), message="min values must be less than max"
-    )
     return np.asarray(np.clip(x, x_min, x_max, out=out), dtype=x.dtype)
 
 

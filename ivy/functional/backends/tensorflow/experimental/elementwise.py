@@ -36,7 +36,9 @@ def lcm(
     return tf.math.abs(tf.experimental.numpy.lcm(x1, x2))
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("unsigned",)}, backend_version)
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("unsigned", "complex", "bool")}, backend_version
+)
 def fmod(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -153,6 +155,7 @@ def count_nonzero(
     )
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def nansum(
     x: Union[tf.Tensor, tf.Variable],
     /,

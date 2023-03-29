@@ -8,7 +8,7 @@ from typing import Optional, List, Tuple, Dict
 
 # local
 import ivy
-from ivy.container import Container
+from ivy.data_classes.container import Container
 from ivy.func_wrapper import _get_first_array
 from ivy.stateful.helpers import ModuleHelpers
 from ivy.stateful.converters import ModuleConverters

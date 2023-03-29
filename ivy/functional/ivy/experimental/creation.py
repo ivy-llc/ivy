@@ -18,8 +18,8 @@ from ivy.func_wrapper import (
 )
 
 
-@outputs_to_ivy_arrays
 @infer_device
+@outputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
 def triu_indices(
@@ -152,10 +152,10 @@ def vorbis_window(
     return ivy.current_backend().vorbis_window(window_length, dtype=dtype, out=out)
 
 
+@infer_dtype
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-@infer_dtype
 @handle_exceptions
 def hann_window(
     size: int,
@@ -383,8 +383,8 @@ def hamming_window(
             )
 
 
-@outputs_to_ivy_arrays
 @infer_device
+@outputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
 def tril_indices(
@@ -478,13 +478,13 @@ def tril_indices(
     return current_backend().tril_indices(n_rows, n_cols, k, device=device)
 
 
+@infer_device
+@infer_dtype
 @to_native_arrays_and_back
 @handle_out_argument
-@infer_dtype
-@infer_device
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
 def eye_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

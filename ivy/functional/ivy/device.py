@@ -266,9 +266,9 @@ def print_all_ivy_arrays_on_dev(
 # Retrieval
 
 
+@to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
-@to_native_arrays_and_back
 def dev(
     x: Union[ivy.Array, ivy.NativeArray], /, *, as_native: bool = False
 ) -> Union[ivy.Device, ivy.NativeDevice]:
@@ -815,9 +815,9 @@ def unset_default_device() -> None:
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
 def to_device(
     x: Union[ivy.Array, ivy.NativeArray],
     device: Union[ivy.Device, ivy.NativeDevice],
@@ -826,12 +826,13 @@ def to_device(
     stream: Optional[Union[int, Any]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Move the input array x to the desired device, specified by device string.
+    """
+    Move the input array x to the desired device, specified by device string.
 
     Parameters
     ----------
     x
-       input array to be moved to the desired device
+        input array to be moved to the desired device
     device
         device to move the input array `x` to
     stream
