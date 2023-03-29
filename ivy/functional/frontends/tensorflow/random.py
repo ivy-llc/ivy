@@ -28,3 +28,8 @@ def normal(shape, mean=0.0, stddev=1.0, dtype=ivy.float32, seed=None, name=None)
 @to_ivy_arrays_and_back
 def shuffle(value, seed=None, name=None):
     return ivy.shuffle(value, seed=seed)
+
+
+@to_ivy_arrays_and_back
+def categorical(logits, num_samples, dtype=None, seed=None, name=None):
+    return ivy.multinomial(probs=logits, num_samples=num_samples, dtype=dtype, seed=seed)
