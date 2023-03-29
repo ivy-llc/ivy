@@ -20,7 +20,7 @@ def l2_normalize(
 l2_normalize.support_native_out = True
 
 
-@with_unsupported_dtypes({"0.11.0 and below": ("bfloat16", "float16")}, backend_version)
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, backend_version)
 def batch_norm(
     x: torch.Tensor,
     mean: torch.Tensor,
