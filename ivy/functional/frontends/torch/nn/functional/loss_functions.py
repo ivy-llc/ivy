@@ -304,14 +304,7 @@ def nll_loss(
 
 
 @to_ivy_arrays_and_back
-def gaussian_nll_loss(
-    input,
-    target,
-    var,
-    full=False,
-    eps=1e-6,
-    reduction="mean"
-):
+def gaussian_nll_loss(input, target, var, full=False, eps=1e-6, reduction="mean"):
 
     if var.shape != input.shape:
         if input.shape[:-1] == var.shape:
@@ -319,23 +312,17 @@ def gaussian_nll_loss(
         elif input.shape[:-1] == var.shape[:-1] and var.shape[-1] == 1:
             pass
         else:
-            raise ivy.utils.exceptions.IvyError(
-                "var is of incorrect size"
-            )
+            raise ivy.utils.exceptions.IvyError("var is of incorrect size")
 
     if reduction is not None and reduction != "mean" and reduction != "sum":
-        raise ivy.utils.exceptions.IvyError(
-            f"{reduction} is not valid"
-        )
+        raise ivy.utils.exceptions.IvyError(f"{reduction} is not valid")
 
     if ivy.any(var < 0):
-        raise ivy.utils.exceptions.IvyError(
-            "var has negative entry/entries"
-        )
+        raise ivy.utils.exceptions.IvyError("var has negative entry/entries")
 
     var = ivy.maximum(var, eps)
 
-    loss = 0.5 * (ivy.log(var) + (input - target)**2 / var)
+    loss = 0.5 * (ivy.log(var) + (input - target) ** 2 / var)
 
     if full:
         loss += 0.5 * ivy.log(2 * ivy.pi)

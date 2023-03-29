@@ -15,6 +15,7 @@ from . import backend_version
 import multiprocessing as _multiprocessing
 from .elementwise import _elementwise_helper
 
+
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
@@ -91,7 +92,7 @@ def to_numpy(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def to_scalar(x: paddle.Tensor, /) -> Number:
-    if isinstance(x, (Number,complex)):
+    if isinstance(x, (Number, complex)):
         return x
     return x.item()
 
@@ -144,10 +145,15 @@ def gather(
             indices_list = [i1 for i in indices_list for i1 in i]
         result = []
         for p, i in zip(params_list, indices_list):
-            result.append(paddle.gather(p, paddle.reshape(i, shape=[-1]), axis=axis-batch_dims))
+            result.append(
+                paddle.gather(p, paddle.reshape(i, shape=[-1]), axis=axis - batch_dims)
+            )
         result = paddle.concat(result, axis=0)
-    new_shape = params.shape[:axis] + indices.shape[batch_dims:] + params.shape[axis + 1:]
+    new_shape = (
+        params.shape[:axis] + indices.shape[batch_dims:] + params.shape[axis + 1 :]
+    )
     return paddle.reshape(result, shape=new_shape)
+
 
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
@@ -208,6 +214,7 @@ def inplace_increment(
     else:
         x = ivy.Array(x_native)
     return x
+
 
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version

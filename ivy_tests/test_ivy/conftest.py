@@ -207,9 +207,22 @@ def run_around_tests(request, on_device, backend_fw, compile_graph, implicit):
 
 
 def pytest_generate_tests(metafunc):
-    metafunc.parametrize(
-        "on_device,backend_fw,compile_graph,implicit", TEST_PARAMS_CONFIG
-    )
+    # Skip backend test against groud truth backend
+    # This redundant and wastes resources, as we going to be comparing
+    # The backend against it self
+    if hasattr(metafunc.function, "ground_truth_backend"):
+        test_paramters = TEST_PARAMS_CONFIG.copy()
+        # Find the entries that contains the ground truth backend as it's backend
+        for entry in test_paramters.copy():
+            if entry[1].backend == metafunc.function.ground_truth_backend:
+                test_paramters.remove(entry)
+        metafunc.parametrize(
+            "on_device,backend_fw,compile_graph,implicit", test_paramters
+        )
+    else:
+        metafunc.parametrize(
+            "on_device,backend_fw,compile_graph,implicit", TEST_PARAMS_CONFIG
+        )
 
 
 def process_cl_flags(config) -> Dict[str, bool]:

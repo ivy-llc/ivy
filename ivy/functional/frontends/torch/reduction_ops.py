@@ -63,6 +63,11 @@ def nanmean(input, dim=None, keepdim=False, *, dtype=None, out=None):
 
 
 @to_ivy_arrays_and_back
+def median(input, dim=-1, keepdim=False, *, out=None):
+    return ivy.median(input, axis=dim, keepdims=keepdim, out=out)
+
+
+@to_ivy_arrays_and_back
 def std(input, dim, unbiased, keepdim=False, *, out=None):
     return ivy.std(input, axis=dim, correction=int(unbiased), keepdims=keepdim, out=out)
 

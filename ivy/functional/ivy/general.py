@@ -3174,11 +3174,7 @@ def gather(
 
     """
     return current_backend(params, indices).gather(
-        params,
-        indices,
-        axis=axis,
-        batch_dims=batch_dims,
-        out=out
+        params, indices, axis=axis, batch_dims=batch_dims, out=out
     )
 
 
