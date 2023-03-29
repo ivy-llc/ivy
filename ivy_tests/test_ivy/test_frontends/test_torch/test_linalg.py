@@ -42,7 +42,7 @@ def _get_dtype_and_matrix(draw):
         )
     )
 
-#lu
+# lu
 @handle_frontend_test(
     fn_tree="torch.linalg.lu",
     dtype_and_x=_get_dtype_and_square_matrix(),
