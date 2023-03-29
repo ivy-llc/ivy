@@ -236,3 +236,16 @@ def vander(x, N=None):
     output = ivy.reshape(output, (*original_shape, N))
     output = ivy.astype(output, x.dtype)
     return output
+
+
+def norm(input, ord=2, dim=None, keepdim=False, *, out=None):
+    if isinstance(dim, int):
+        return ivy.vector_norm(input, ord=ord, axis=dim, keepdims=keepdim, out=out)
+    elif isinstance(dim, tuple):
+        return ivy.matrix_norm(input, ord=ord, axis=dim, keepdims=keepdim, out=out)
+    elif dim is None and ord is None:
+        return ivy.vector_norm(input, ord=2, axis=-1, keepdims=keepdim, out=out)
+    elif dim is None and ord is not None:
+        return ivy.vector_norm(input, ord=ord, axis=dim, keepdims=keepdim, out=out)
+    else:
+        raise ValueError("Invalid axis or ord value.")
