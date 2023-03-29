@@ -1095,15 +1095,6 @@ def _triangle_kernel(x):
     return ivy.maximum(0, 1 - ivy.abs(x))
 
 
-def _bicubic_kernel(s, a=-0.5):
-    abs_s = abs(s)
-    if (abs_s >= 0) & (abs_s <= 1):
-        return (a + 2) * (abs_s**3) - (a + 3) * (abs_s**2) + 1
-    elif (abs_s > 1) & (abs_s <= 2):
-        return a * (abs_s**3) - (5 * a) * (abs_s**2) + (8 * a) * abs_s - 4 * a
-    return 0
-
-
 def _cubic_kernel(x):
     out = ((1.5 * x - 2.5) * x) * x + 1.0
     out = ivy.where(x >= 1.0, ((-0.5 * x + 2.5) * x - 4.0) * x + 2.0, out)
