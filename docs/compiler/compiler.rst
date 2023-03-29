@@ -147,7 +147,7 @@ Let's start by compiling a simple function:
 
 The compiler generates the following graph:
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiler/figure1.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/compiler/figure1.png
 
 From the graph, we can observe that:
 
@@ -230,7 +230,7 @@ The compiler is able to cache constant arrays and their operations through the
 When calling ``ivy.compile()``, the ``array_caching`` argument is set to True by 
 default, which returns the following graph.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiler/figure2.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/compiler/figure2.png
 
 This shows that by catching the constant operation in the graph, a simpler graph can be 
 obtained. However, if desired, this argument can be set to false, resulting in the 
@@ -238,7 +238,7 @@ following graph. This ultimately results in a trade-off between time and memory,
 cached results need to be stored in memory but if they are not cached these operations 
 need to be performed.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiler/figure3.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/compiler/figure3.png
 
 Generators
 ~~~~~~~~~~
@@ -259,7 +259,7 @@ can be included or "baked" into the graph.
 
 Returns:
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiler/figure4.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/compiler/figure4.png
 
 And instead,
 
@@ -278,7 +278,7 @@ And instead,
 
 Returns:
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiler/figure5.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/compiler/figure5.png
 
 Stateful
 ~~~~~~~~
@@ -301,7 +301,7 @@ arbitrary classes.
 
     comp_func = ivy.compile(fn, cont.cont_deep_copy(), x, arg_stateful_idxs=[[0]])
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/compiler/figure6.png
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/compiler/figure6.png
 
 Sharp bits
 ----------
