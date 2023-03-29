@@ -7,7 +7,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bool")}, backend_version)
 def median(
     input: torch.Tensor,
     /,
@@ -16,13 +16,23 @@ def median(
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return quantile(
+    if isinstance(axis, tuple):
+        if len(axis) == 1:
+            axis = axis[0]
+    ret = quantile(
         input,
         0.5,
         axis=axis,
         keepdims=keepdims,
         interpolation="midpoint",
-    ).type_as(input)
+    )
+    if input.dtype in [torch.int64, torch.float64]:
+        ret = torch.asarray(ret, dtype=torch.float64)
+    elif input.dtype in [torch.float16, torch.bfloat16]:
+        ret = torch.asarray(ret, dtype=input.dtype)
+    else:
+        ret = torch.asarray(ret, dtype=torch.float32)
+    return ret
 
 
 median.support_native_out = False

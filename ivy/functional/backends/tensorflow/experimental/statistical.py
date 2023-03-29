@@ -3,7 +3,10 @@ import tensorflow as tf
 import tensorflow_probability as tfp
 from tensorflow.python.ops.numpy_ops import np_math_ops
 
+from ivy import with_supported_dtypes
 
+
+@with_supported_dtypes({"1.11.0 and below": ("bfloat16", "float16", "float32", "float64")}, "tensorflow")
 def median(
     input: Union[tf.Tensor, tf.Variable],
     /,
