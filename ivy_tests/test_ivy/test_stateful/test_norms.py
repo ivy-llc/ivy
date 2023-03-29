@@ -50,4 +50,5 @@ def test_layer_norm_layer(
         init_with_v=init_with_v,
         method_with_v=method_with_v,
         test_gradients=test_gradients,
+        on_device=on_device,
     )

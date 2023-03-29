@@ -87,6 +87,7 @@ def _grad_func(y, xs, retain_grads):
     else:
 
         def grad_(x):
+            x = ivy.array([0.0]).to_native() if x is None else x
             grad = paddle.grad(
                 outputs=y,
                 inputs=ivy.array([0.0]).to_native() if x is None else x,

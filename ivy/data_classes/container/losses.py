@@ -8,7 +8,7 @@ from ivy.data_classes.container.base import ContainerBase
 
 class _ContainerWithLosses(ContainerBase):
     @staticmethod
-    def static_cross_entropy(
+    def _static_cross_entropy(
         true: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
@@ -163,7 +163,7 @@ class _ContainerWithLosses(ContainerBase):
             b:ivy.array(1.609438)
         }
         """
-        return self.static_cross_entropy(
+        return self._static_cross_entropy(
             self,
             pred,
             axis=axis,
@@ -177,7 +177,7 @@ class _ContainerWithLosses(ContainerBase):
         )
 
     @staticmethod
-    def static_binary_cross_entropy(
+    def _static_binary_cross_entropy(
         true: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
@@ -321,7 +321,7 @@ class _ContainerWithLosses(ContainerBase):
             b: ivy.array([1.61, 0.223, 1.61])
         }
         """
-        return self.static_binary_cross_entropy(
+        return self._static_binary_cross_entropy(
             self,
             pred,
             epsilon=epsilon,
@@ -334,7 +334,7 @@ class _ContainerWithLosses(ContainerBase):
         )
 
     @staticmethod
-    def static_sparse_cross_entropy(
+    def _static_sparse_cross_entropy(
         true: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
@@ -487,7 +487,7 @@ class _ContainerWithLosses(ContainerBase):
             b: ivy.array([0.223, 0.223, 1.61])
         }
         """
-        return self.static_sparse_cross_entropy(
+        return self._static_sparse_cross_entropy(
             self,
             pred,
             axis=axis,
