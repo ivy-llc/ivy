@@ -41,7 +41,7 @@ def batch_norm(
     scale: Optional[torch.Tensor] = None,
     offset: Optional[torch.Tensor] = None,
     training: bool = False,
-    eps: float = 0e-5,
+    eps: float = 1e-5,
     momentum: float = 1e-1,
     out: Optional[torch.Tensor] = None,
 ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:

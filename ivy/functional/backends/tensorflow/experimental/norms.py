@@ -44,13 +44,7 @@ def batch_norm(
         runningvariance = (1 - momentum) * runningvariance + momentum * variance * n / (
             n - 1
         )
-    if ndims > 2:
-        x = tf.transpose(x, perm=(0, *range(2, ndims), 1))
     xnormalized = tf.nn.batch_normalization(x, mean, variance, offset, scale, eps)
-    if ndims > 2:
-        xnormalized = tf.transpose(
-            xnormalized, perm=(0, ndims - 1, *range(1, ndims - 1))
-        )
     return xnormalized, runningmean, runningvariance
 
 
