@@ -45,13 +45,16 @@ def batch_norm(
     momentum: float = 1e-1,
     out: Optional[torch.Tensor] = None,
 ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    # reshape to N,C,H,W
+    xdims = x.ndim
+    x = torch.permute(x, dims=(0, xdims - 1, *range(1, xdims - 1)))
     mean.requires_grad = False
     variance.requires_grad = False
     scale.requires_grad = False
     offset.requires_grad = False
     runningmean = mean.clone()
     runningvariance = variance.clone()
-    result = torch.nn.functional.batch_norm(
+    xnormalized = torch.nn.functional.batch_norm(
         x,
         runningmean,
         runningvariance,
@@ -61,7 +64,8 @@ def batch_norm(
         eps=eps,
         momentum=momentum,
     )
-    return result, runningmean, runningvariance
+    xnormalized = torch.permute(x, dims=(0, *range(2, xdims), 1))
+    return xnormalized, runningmean, runningvariance
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
