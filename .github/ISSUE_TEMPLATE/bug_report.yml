@@ -44,9 +44,13 @@ body:
         - label: TensorFlow
         - label: PyTorch
         - label: JAX
+    validations:
+      required: false
   - type: input
     id: device
     attributes:
       label: Device
       description: What device did you encounter the bug on? Which GPU/CPU/TPU?
       placeholder: "GPU: NVIDIA GeForce RTX 3090"
+    validations:
+      required: false
