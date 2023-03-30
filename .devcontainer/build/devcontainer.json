@@ -16,7 +16,8 @@
 		}
 	},
 
-	"postCreateCommand": "bash .devcontainer/post_create_commands.sh"
+	"postCreateCommand": "bash /path/to/my_script.sh"
+	//the above line we have modified the postCreateCommand property to execute a shell script located 
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
