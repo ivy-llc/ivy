@@ -115,6 +115,7 @@ def triu_indices(
 
 
 @to_native_arrays_and_back
+@infer_dtype
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -200,6 +201,7 @@ def hann_window(
 
 
 @to_native_arrays_and_back
+@infer_dtype
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -247,6 +249,7 @@ def kaiser_window(
 
 
 @outputs_to_ivy_arrays
+@infer_dtype
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -312,6 +315,7 @@ def kaiser_bessel_derived_window(
 
 
 @to_native_arrays_and_back
+@infer_dtype
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
