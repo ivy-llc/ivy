@@ -352,6 +352,7 @@ def test_jax_numpy_where(
     on_device,
     fn_tree,
     frontend,
+    dtype_and_x,
 ):
     input_dtype, x = dtype_and_x
     x = x[0]
