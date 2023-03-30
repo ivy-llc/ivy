@@ -123,6 +123,22 @@ def multinomial(
             return tf.random.categorical(tf.math.log(probs), num_samples)
 
 
+def random_stateless_uniform(
+    *,
+    low: Union[float, tf.Tensor, tf.Variable] = 0.0,
+    high: Union[float, tf.Tensor, tf.Variable] = 1.0,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int], tf.Tensor]] = None,
+    dtype: DType,
+    device: str,
+    seed: int,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    shape = _check_bounds_and_get_shape(low, high, shape)
+    low = tf.cast(low, dtype)
+    high = tf.cast(high, dtype)
+    with tf.device(device):
+        return tf.random.stateless_uniform(shape, seed, low, high, dtype=dtype)
+
 def randint(
     low: Union[float, tf.Tensor, tf.Variable],
     high: Union[float, tf.Tensor, tf.Variable],
