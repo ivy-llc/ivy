@@ -377,5 +377,4 @@ def test_numpy_standard_gamma(
         on_device=on_device,
         alpha=x[0],
         test_values=False,
-        size=size,
     )
