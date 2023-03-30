@@ -346,6 +346,8 @@ def test_jax_numpy_sort_complex(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_where(
+    *,
+    dtype_x_axis,
     test_flags,
     on_device,
     fn_tree,
