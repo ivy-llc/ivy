@@ -24,7 +24,7 @@ of functions from the backend functional API only, which results in:
 Compiler API
 ------------
 
-.. py:function:: ivy.compile(*objs, stateful = None, arg_stateful_idxs = None, kwarg_stateful_idxs = None, to_ivy  = False, include_generators = True, array_caching = True, time_chronological = True, return_backend_compiled_fn = False, static_argnums = None, static_argnames = None, args = None, kwargs = None,)
+.. py:function:: ivy.compile(*objs, stateful = None, arg_stateful_idxs = None, kwarg_stateful_idxs = None, to = None, include_generators = True, array_caching = True, return_backend_compiled_fn = False, static_argnums = None, static_argnames = None, args = None, kwargs = None,)
     
     Compiles a ``Callable`` or set of them into an Ivy graph. If ``args`` or ``kwargs`` are specified, 
     compilation is performed eagerly, otherwise, compilation will happen lazily.
@@ -38,7 +38,7 @@ Compiler API
     :param kwarg_stateful_idxs: Keyword arguments to be considered stateful during the graph compilation.
     :type kwarg_stateful_idxs: ``Optional[List]``
     :param to: Backend that the graph will be compiled to. If not specified, the current backend will be used.
-    :type to: ``str``
+    :type to: ```Optional[str]``
     :param include_generators: Include array creation/generation functions as part of the graph.
     :type include_generators: ``bool``
     :param array_caching: Cache the constant arrays that appear as arguments to the functions in the graph.
@@ -196,6 +196,8 @@ are included as nodes or "baked" into the graph.
 
     def fn(x):
         a = torch.randint(0, 100, size=[1])
+        z = x * a
+        return z + torch.rand([1])
         
     comp_func = ivy.compile(fn, include_generators=True, args=(x,))
 
