@@ -804,14 +804,14 @@ def all_nested_indices(
     nest
         The nest to check the leaves of.
     include_nests
-        Whether to also include indices of the nests themselves, not only leaves.
-        Default is ``False``.
+        Whether to also include indices of the nests themselves, not only
+        leaves. Default is ``False``.
     _index
-        The indices detected so far. None at the beginning. Used internally, do not set
-        manually.
+        The indices detected so far. None at the beginning. Used internally, 
+        do not set manually.
     _base
-        Whether the current function call is the first function call in the recursive
-        stack. Used internally, do not set manually.
+        Whether the current function call is the first function call in the 
+        recursive stack. Used internally, do not set manually.
     extra_nest_types
         Types to recursively check when deciding whether to go deeper into the
         nest or not
