@@ -303,7 +303,21 @@ def zeta(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    temp = ivy.logical_and(ivy.greater(x, 0), ivy.equal(ivy.remainder(x, 2), 0))
+    temp = ivy.logical_and(temp, ivy.less_equal(q, 0))
+    temp = ivy.logical_and(temp, ivy.equal(ivy.remainder(q, 1), 0))
+    inf_indices = ivy.logical_or(temp, ivy.equal(x, 1))
+    temp = ivy.logical_and(ivy.not_equal(ivy.remainder(x, 2), 0), ivy.greater(x, 1))
+    temp = ivy.logical_and(temp, ivy.less_equal(q, 0))
+    nan_indices = ivy.logical_or(temp, ivy.less(x, 1))
+    n, res = 1, 1 / q**x
+    while n < 10000:
+        term = 1 / (q + n) ** x
+        n, res = n + 1, res + term
+    ret=ivy.round(res)
+    ret = ivy.where(nan_indices, paddle.to_tensor(ivy.nan), ret)
+    ret = ivy.where(inf_indices, paddle.to_tensor(ivy.inf), ret)
+    return ret
 
 
 def gradient(
