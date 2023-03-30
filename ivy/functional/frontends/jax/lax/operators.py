@@ -501,8 +501,8 @@ def slice(operand, start_indices, limit_indices, strides=None):
         lambda x: ivy.array(x) if isinstance(x, int) else x, [start_indices, limit_indices]
     )
     strides = [1] * len(operand.shape) if strides is None else strides
+
     full_slice = ()
-    new_dims = ()
     for i, _ in enumerate(operand.shape):
         strides_i = int(strides[i])
         start_i = int(start_indices[i])
