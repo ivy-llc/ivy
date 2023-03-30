@@ -44,3 +44,10 @@ def triu_indices_from(arr, k=0):
 
 def tril_indices_from(arr, k=0):
     return ivy.tril_indices(arr.shape[-2], arr.shape[-1], k)
+
+
+# unravel_index
+@to_ivy_arrays_and_back
+def unravel_index(indices, shape):
+    ret = [x.astype("int64") for x in ivy.unravel_index(indices, shape)]
+    return tuple(ret)
