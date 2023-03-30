@@ -114,3 +114,20 @@ def bincount(
         ret = tf.math.bincount(x, minlength=minlength)
         ret = tf.cast(ret, x.dtype)
     return ret
+
+
+def percentile(
+    a: Union[tf.Tensor, tf.Variable],
+    q: Union[Sequence[float], float],
+    /,
+    *,
+    interpolation: str = "linear",
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,    
+) -> Union[tf.Tensor, tf.Variable]:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+
+    return tfp.stats.percentile(
+        a, q, axis=axis, interpolation=interpolation, keepdims=keepdims
+    )

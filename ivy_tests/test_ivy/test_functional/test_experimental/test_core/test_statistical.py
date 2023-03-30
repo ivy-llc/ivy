@@ -70,6 +70,27 @@ def statistical_dtype_values(draw, *, function):
             )
         )
         return dtype, values, axis, interpolation, q
+    if function == "percentile":
+        # q = draw(
+        #     helpers.array_values(
+        #         dtype=helpers.get_dtypes("float"),
+        #         shape=helpers.get_shape(min_dim_size=1, max_num_dims=1, min_num_dims=1),
+        #         min_value=0.0,
+        #         max_value=100.0,
+        #         exclude_max=False,
+        #         exclude_min=False,
+        #     )
+        # )
+        q = draw(st.floats(0.0, 100.0, width=16).map(lambda x : round(x, 2)))
+
+        interpolation_names = ["linear", "lower", "higher", "midpoint", "nearest"]
+        interpolation = draw(
+            helpers.list_of_size(
+                x=st.sampled_from(interpolation_names),
+                size=1,
+            )
+        )
+        return dtype, values, axis, interpolation, q
     return dtype, values, axis
 
 
@@ -267,4 +288,46 @@ def test_bincount(
         x=x[0],
         weights=x[1],
         minlength=min_length,
+    )
+
+
+# percentile
+@handle_test(
+    fn_tree="functional.ivy.experimental.percentile",
+    dtype_and_x=statistical_dtype_values(function="percentile"),
+    keep_dims=st.booleans(),
+    test_gradients=st.just(False),
+    number_positional_args=st.just(2),
+    test_with_out=st.just(False),
+)
+def test_percentile(
+    *,
+    dtype_and_x,
+    keep_dims,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x, axis, interpolation, q = dtype_and_x
+
+    # print(f"\n\n\nq:{q}")
+    # print(f"\n\n\na:{x[0]}")
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        # a=[1, 2, 3, 4],
+        # q=50,
+        a=x[0],
+        q=q,
+        axis=axis,
+        interpolation=interpolation[0],
+        keepdims=keep_dims,
+        rtol_=1e-3,
+        atol_=1e-2,
     )

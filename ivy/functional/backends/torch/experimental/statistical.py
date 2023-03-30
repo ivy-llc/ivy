@@ -133,3 +133,79 @@ def bincount(
 
 
 bincount.support_native_out = False
+
+
+@with_unsupported_dtypes(
+    {"1.11.0 and below": ("bfloat16", "bfloat32", "float16", "float32")}, 
+    backend_version
+)
+def percentile(
+    a: torch.Tensor,
+    q: Union[Sequence[float], float],
+    /,
+    *,
+    axis: Optional[Union[Sequence[int], int]] = None,
+    keepdims: bool = False,
+    interpolation: str = "linear",
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    # if isinstance(axis, list) or isinstance(axis, tuple):
+    #     temp = a.detach()
+    #     dimension = len(a.size())
+    #     for x in axis:
+    #         axis1 = x
+    #         for axis2 in range(x + 1, dimension):
+    #             temp = torch.transpose(temp, axis1, axis2)
+    #             axis1 = axis2
+    #     temp = torch.flatten(temp, start_dim=dimension - len(axis))
+    #     ret = torch.quantile(
+    #         torch.tensor(temp), 
+    #         torch.tensor(q / 100),
+    #         dim=-1,
+    #         keepdim=keepdims, 
+    #         interpolation=interpolation,
+    #         out=out
+    #     )
+
+    # ret = torch.quantile(
+    #     torch.tensor(a), 
+    #     torch.tensor(q / 100),
+    #     dim=axis, 
+    #     keepdim=keepdims, 
+    #     interpolation=interpolation, 
+    #     out=out
+    # )
+
+    # return ret
+    temp = a
+    qt = q / 100
+    # if isinstance(q, torch.tensor):
+    # qt = q.to(torch.float64)
+    # else:
+    # qt = q
+    if isinstance(axis, list) or isinstance(axis, tuple):
+        dimension = len(a.size())
+        for x in axis:
+            axis1 = x
+            for axis2 in range(x + 1, dimension):
+                temp = torch.transpose(temp, axis1, axis2)
+                axis1 = axis2
+        temp = torch.flatten(temp, start_dim=dimension - len(axis))
+
+        print("\n\ninput a: ", a)
+        print("\n\ninput q: ", q)
+        ret = torch.quantile(
+            temp, qt, dim=-1, keepdim=keepdims, interpolation=interpolation, out=out
+        )
+        print("\n\nret: ", ret)
+        return ret
+    print("\n\ninput a: ", a)
+    print("\n\ninput q: ", q)
+    ret = torch.quantile(
+        temp, qt, dim=axis, keepdim=keepdims, interpolation=interpolation, out=out
+    )
+    print("\n\nret: ", ret)
+    return ret
+
+
+percentile.support_native_out = True

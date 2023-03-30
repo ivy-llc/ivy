@@ -276,3 +276,164 @@ def bincount(
     return ivy.current_backend(x).bincount(
         x, weights=weights, minlength=minlength, out=out
     )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def percentile(
+    a: Union[ivy.Array, ivy.NativeArray],
+    q: Union[Sequence[float], float],
+    /,
+    *,
+    axis: Optional[Union[Sequence[int], int]] = None,
+    interpolation: str = "linear",
+    keepdims: bool = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Calculates the q-th percentile of the array ``a``.
+
+    .. note::
+       When the number of elements over which to compute the q-th percentile is zero,
+       some specification-compliant libraries may choose to raise an error, 
+       (e.g., if ``a`` is a ``NaN`` input array, return ``NaN``),
+
+    **Special Cases**
+
+    Let ``x_i`` is the element from ``a`` or just ``a`` itself.
+
+    -   If ``x_i`` is ``NaN``, the q-th percentile is ``NaN`` (i.e., ``NaN`` values
+        propagate).
+
+    Parameters
+    ----------
+    a
+        input array. Should have a floating-point data type.
+    q
+        Percentile or sequence of percentiles to compute, which must be between 0 and 
+        100 inclusive.
+    axis
+        axis or axes along which q-th percentile must be computed. By default, the 
+        percentile must be computed over the entire array. Default: ``None``.
+    keepdims
+        bool, if ``True``, the reduced axes (dimensions) must be included in the result
+        as singleton dimensions, and, accordingly, the result must be compatible with
+        the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced
+        axes (dimensions) must not be included in the result. Default: ``False``.
+    interpolation
+        {'nearest', 'linear', 'lower', 'higher', 'midpoint'}. Default value: 'linear'.
+        This specifies the interpolation method to use when the desired quantile lies
+        between two data points i < j:
+        - linear: i + (j - i) * fraction, where fraction is the fractional part of the
+        index surrounded by i and j.
+        - lower: i.
+        - higher: j.
+        - nearest: i or j, whichever is nearest.
+        - midpoint: (i + j) / 2. linear and midpoint interpolation do not work with
+        integer dtypes.    
+    out
+        optional output array, for writing the result to.
+
+
+    Returns
+    -------
+    ret
+        scalar or array, if the q-th percentile was computed over the entire array, a
+        zero-dimensional array containing the q-th percentile; otherwise, a
+        non-zero-dimensional array containing the q-th percentile. The returned
+        array must have the same data type as ``a``.
+        .. note::
+           While this specification recommends that this function only accept input
+           arrays having a floating-point data type, specification-compliant array
+           libraries may choose to accept input arrays having an integer data type.
+           While mixed data type promotion is implementation-defined, if the input
+           array ``a`` has an integer data type, the returned array must have the
+           default floating-point data type.
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/
+    signatures.statistical_functions.mean.html>`_ in the standard.
+
+    Both the description and the type hints above assumes an array input for
+    simplicity, but this function is *nestable*, and therefore also accepts
+    :class:`ivy.Container` instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([3., 4., 5.])
+    >>> y = ivy.percentile(x,75)
+    >>> print(y)
+    ivy.array(4.5)
+    >>> x = ivy.array([0., 1., 2.])
+    >>> y = ivy.array(0.)
+    >>> ivy.percentile(x,75, out=y)
+    >>> print(y)
+    ivy.array(1.5)
+
+    >>> x = ivy.array([[-1., -2., -3., 0., -1.], [1., 2., 3., 0., 1.]])
+    >>> y = ivy.array([0., 0.])
+    >>> ivy.percentile(x,75, axis=1, out=y)
+    >>> print(y)
+    ivy.array([-1.,  2.])
+
+      >>> x = ivy.array([[-1., -2., -3., 0., -1.], [1., 2., 3., 0., 1.]])
+    >>> y = ivy.array([0., 0.])
+    >>> ivy.percentile(x,[75,90], axis=1, out=y)
+    >>> print(y)
+    ivy.array([[-1.        ,  2.        ],
+       [-0.40000001,  2.5999999 ]])
+
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([3., 4., 5.])
+    >>> y = ivy.percentile(x,75)
+    >>> print(y)
+    ivy.array(4.5)
+
+    >>> x = ivy.array([0., 1., 2.])
+    >>> y = ivy.array(0.)
+    >>> ivy.percentile(x,75, out=y)
+    >>> print(y)
+    ivy.array(1.5)
+
+    >>> x = ivy.array([[-1., -2., -3., 0., -1.], [1., 2., 3., 0., 1.]])
+    >>> y = ivy.array([0., 0.])
+    >>> ivy.percentile(x,75, axis=1, out=y)
+    >>> print(y)
+    ivy.array([-1.,  2.])
+
+    >>> x = ivy.array([[-1., -2., -3., 0., -1.], [1., 2., 3., 0., 1.]])
+    >>> y = ivy.array([0., 0.])
+    >>> ivy.percentile(x,[75,90], axis=1, out=y)
+    >>> print(y)
+    ivy.array([[-1.        ,  2.        ],
+       [-0.40000001,  2.5999999 ]])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([-1., 0., 1.]), b=ivy.array([1.1, 0.2, 1.4]))
+    >>> y = ivy.percentile(x,75)
+    >>> print(y)
+    {
+        a: ivy.array(0.5),
+        b: ivy.array(1.25)
+    }
+
+
+    >>> x = ivy.Container(a=ivy.array([[0., 1., 2.], [3., 4., 5.]]),
+    ...                   b=ivy.array([[3., 4., 5.], [6., 7., 8.]]))
+    >>> ivy.percentile(x,75, axis=0, out=x)
+    >>> print(x)
+    {
+        a: ivy.array([2.25, 3.25, 4.25]),
+        b: ivy.array([5.25, 6.25, 7.25])
+    }
+
+    """
+    return ivy.current_backend(a).percentile(a, q, axis=axis, keepdims=keepdims, 
+                                             interpolation=interpolation, out=out)

@@ -108,3 +108,23 @@ def bincount(
 
 
 bincount.support_native_out = False
+
+
+def percentile(
+    a: np.ndarray,
+    q: Union[Sequence[float], float],
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    interpolation: str = "linear",
+    keepdims: bool = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+
+    return np.percentile(
+        a=a, q=q, axis=axis, keepdims=keepdims, out=out, method=interpolation
+    ).astype(a.dtype)
+
+
+percentile.support_native_out = True
