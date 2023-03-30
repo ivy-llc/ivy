@@ -33,3 +33,12 @@ def sort_complex(a):
 @to_ivy_arrays_and_back
 def lexsort(keys, /, *, axis=-1):
     return ivy.lexsort(keys, axis=axis)
+
+@to_ivy_arrays_and_back
+def byteswap(
+    x,
+    /,
+    *,
+    inplace=False,
+):
+    return ivy.byteswap(x, inplace=inplace)
