@@ -2630,7 +2630,6 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
 @handle_array_function
 @to_native_arrays_and_back
 @handle_view_indexing
-@handle_array_like_without_promotion
 @handle_nestable
 def get_item(
     x: Union[ivy.Array, ivy.NativeArray],
