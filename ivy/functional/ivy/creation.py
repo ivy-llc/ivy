@@ -1716,8 +1716,6 @@ def native_array(
     # ideally without first converting to ivy.Array with ivy.asarray and then
     # converting back to native with ivy.to_native
 
-    if isinstance(x, (ivy.Array, ivy.NativeArray, Iterable)):
-        return ivy.to_native(x, dtype=dtype, device=device)
     return ivy.to_native(ivy.asarray(x, dtype=dtype, device=device))
 
 

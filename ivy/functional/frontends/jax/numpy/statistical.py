@@ -17,6 +17,7 @@ def einsum(
     optimize="optimal",
     precision=None,
     _use_xeinsum=False,
+    _dot_general=None,
 ):
     return ivy.einsum(subscripts, *operands, out=out)
 

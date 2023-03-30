@@ -72,7 +72,6 @@ def arange(
 
 
 def _stack_tensors(x, dtype):
-
     # TODO: change paddle.stack to ivy.stack
     if isinstance(x, (list, tuple)) and len(x) != 0 and isinstance(x[0], (list, tuple)):
         for i, item in enumerate(x):
