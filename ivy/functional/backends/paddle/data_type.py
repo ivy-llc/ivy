@@ -174,7 +174,7 @@ def broadcast_to(
         paddle.uint8,
         paddle.float16,
     ]:
-        return paddle.broadcast_to(x.cast(ivy.default_float_dtype()), shape).cast(
+        return paddle.broadcast_to(x.cast("float32"), shape).cast(
             x.dtype
         )
     elif x.dtype in [paddle.complex64, paddle.complex128]:
