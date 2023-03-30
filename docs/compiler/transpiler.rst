@@ -1,48 +1,48 @@
 Transpiler
 ==========
 
-The Ivy transpiler allows you to use code from any framework in your project with just 
-one line of code.
+..
 
-If you want to:
+   ⚠️ **Warning**: The compiler and the transpiler are not publicly available yet, so certain parts of this doc won't work as expected as of now!
 
-- Use functions and building blocks like neural networks, layers, activations, and 
-  training pipelines published in other frameworks. Ex: Using Jax.lax module in PyTorch
-- Integrate code developed in various frameworks into your code. Ex: Use the Kornia 
-  library in TensorFlow
-- Move code from one framework to another. Ex: Convert TensorFlow to Jax
 
-Ivy's **transpiler is definitely the tool 🔧 for the job!**
-
-The transpiler converts a function written in any framework into the framework of your 
-choice. As the output of transpilation is native code in the target framework, the 
+Ivy's Transpiler converts a function written in any framework into your framework of 
+choice, preserving all the logic between frameworks. 
+As the output of transpilation is native code in the target framework, the 
 transpiled code can be used as if it was originally developed in that framework, 
 applying framework-specific optimizations or tools and making a whole new level of code 
 available to you.
 
-To convert the code, Ivy traces a computational graph using the graph compiler and 
+This makes all ML-related projects available to you, independently of the framework you 
+want to use to research, develop, or deploy systems. So if you want to:
+
+- Use functions and building blocks like neural networks, layers, activations, and 
+  training pipelines published in other frameworks. Ex: Using Haiku modules in PyTorch to 
+  get access to the latest model.
+- Integrate code developed in other frameworks into your code. Ex: Use the Kornia 
+  library in Jax for extra performance.
+- Take advantage of specific features in other frameworks. Ex: Convert Jax code to Tensorflow for deployment. 
+
+Ivy's Transpiler is definitely the tool for the job 🔧
+
+To convert the code, Ivy traces a computational graph using the Graph Compiler and 
 leverages Ivy's frontends and backends to link one framework to another. After swapping 
 each function node in the computational graph with their equivalent Ivy frontend 
-functions, the compiler removes all frontend wrappings and replaces them with the native
+functions, the compiler removes all the wrapping in the frontends and replaces them with the native
 functions of the target framework.
 
-Ivy ensures that the logic is preserved between the source and the target frameworks. 
-This makes all ML-related projects available to you, independently of the framework you 
-want to use to research, develop, or deploy systems.
 
 Transpiler API
 --------------
 
 .. py:function:: ivy.transpile(*objs, source = None, to = None, debug_mode = False, args = None, kwargs = None, params_v = None,)
 
-  Returns either a transpiled Graph or a non-initialized LazyGraph.
+  Transpiles a ``Callable`` or set of them from a ``source`` framework to another framework. If ``args`` or ``kwargs`` are specified, 
+  transpilation is performed eagerly, otherwise, transpilation will happen lazily.
 
-  If args and kwargs are specified, transpilation is performed eagerly, otherwise, 
-  transpilation will happen lazily.
-
-  :param objs: The native Callables to be transpiled.
+  :param objs: Native callable(s) to transpile.
   :type objs: ``Callable``
-  :param source: The framework that ``obj`` is from.
+  :param source: The framework that ``obj`` is from. This must be provided unless ``obj`` is a framework-specific module.
   :type source: ``Optional[str]``
   :param to: The target framework to transpile ``obj`` to.
   :type to: ``Optional[str]``
@@ -54,46 +54,27 @@ Transpiler API
   :type args: ``Optional[Tuple]``
   :param kwargs: If specified, keyword arguments that will be used to transpile eagerly.
   :type kwargs: ``Optional[dict]``
-  :param params_v: Parameters of a haiku model, as when transpiling these the parameters
+  :param params_v: Parameters of a haiku model, as when transpiling these, the parameters
                    need to be passed explicitly to the function call.
-  :return: A transpiled Graph or a non-initialized LazyGraph.
-  :rtype: ``Union[Graph, LazyGraph]``
+  :rtype: ``Union[Graph, LazyGraph, ModuleType, ivy.Module, torch.nn.Module, tf.keras.Model, hk.Module]``
+  :return: A transpiled ``Graph`` or a non-initialized ``LazyGraph``. If the object is an native trainable module, the corresponding module in the target framework will be returned. If the object is a ``ModuleType``, the function will return a copy of the module with every method lazily transpiled.
 
-.. rubric:: Example
-
-Here, we are transpiling a HF model from torch to tensorflow and then using the 
-transpiled model with tensorflow tensors directly:
-
-.. code-block:: python
-
-  import ivy
-  from transformers import AutoImageProcessor, ResNetForImageClassification
-  from datasets import load_dataset
-
-  # Set backend to torch
-  ivy.set_backend("torch")
-
-  # Download the input image
-  dataset = load_dataset("huggingface/cats-image")
-  image = dataset["test"]["image"][0]
-
-  # Setting the model
-  image_processor = AutoImageProcessor.from_pretrained("microsoft/resnet-50")
-  model = ResNetForImageClassification.from_pretrained("microsoft/resnet-50")
-
-  # Transpiling the model to tensorflow
-  tf_model = ivy.transpile(model, source="torch", to="tensorflow", kwargs=inputs)
-
-  # Using the transpiled model
-  tf_inputs = image_processor(image, return_tensors="tf")
-  ret = tf_model(None, **tf_inputs)
-
-.. py:function:: ivy.unify(fn, source = None, args = None, kwargs = None, **transpile_kwargs, )
+.. py:function:: ivy.unify(*objs, source = None, args = None, kwargs = None, **transpile_kwargs,)
 
   Transpiles an object into Ivy code. It's an alias to 
   ``ivy.transpile(..., to=”ivy”, ...)``
 
-  :rtype: ``Callable``
+  :param objs: Native callable(s) to transpile.
+  :type objs: ``Callable``
+  :param source: The framework that ``obj`` is from. This must be provided unless ``obj`` is a framework-specific module.
+  :type source: ``Optional[str]``
+  :param args: If specified, arguments that will be used to unify eagerly.
+  :type args: ``Optional[Tuple]``
+  :param kwargs: If specified, keyword arguments that will be used to unify eagerly.
+  :param transpile_kwargs: Arbitrary keyword arguments that will be passed to ``ivy.transpile``.
+
+  :rtype: ``Union[Graph, LazyGraph, ModuleType, ivy.Module]``
+  :return: A transpiled ``Graph`` or a non-initialized ``LazyGraph``. If the object is an native trainable module, the corresponding module in the target framework will be returned. If the object is a ``ModuleType``, the function will return a copy of the module with every method lazily transpiled.
 
 Using the transpiler
 --------------------
@@ -101,7 +82,10 @@ Using the transpiler
 Similar to the ``ivy.compile`` function, ``ivy.unify`` and ``ivy.transpile`` can be used
 eagerly and lazily. If you pass the necessary arguments, the function will be called 
 instantly, otherwise, transpilation will happen the first time you invoke the function 
-with the proper arguments.
+with the proper arguments. 
+
+In both cases, arguments or keyword arguments can be arrays from 
+either the ``source`` framework or the ``to`` framework.
 
 Transpiling functions
 ~~~~~~~~~~~~~~~~~~~~~
@@ -121,13 +105,13 @@ a small JAX function to Torch both eagerly and lazily.
   x1 = ivy.array([1., 2.])
 
   # Arguments are available -> transpilation happens eagerly
-  eager_graph = ivy.transpile(test_fn, to="torch", args=(x1,))
+  eager_graph = ivy.transpile(test_fn, source="jax", to="torch", args=(x1,))
 
   # eager_graph is now torch code and runs efficiently
   ret = eager_graph(x1)
 
   # Arguments are not available -> transpilation happens lazily
-  lazy_graph = ivy.transpile(test_fn, to="torch") 
+  lazy_graph = ivy.transpile(test_fn, source="jax", to="torch") 
 
   # The transpiled graph is initialized, transpilation will happen here
   ret = lazy_graph(x1)
@@ -138,7 +122,7 @@ a small JAX function to Torch both eagerly and lazily.
 Transpiling Libraries
 ~~~~~~~~~~~~~~~~~~~~~
 
-With Ivy, you can also transpile entire libraries and modules with just one line of 
+Likewise, you can use ``ivy.transpile`` to convert entire libraries and modules with just one line of 
 code!
 
 .. code-block:: python
@@ -212,7 +196,8 @@ another, at the moment we support ``torch.nn.Module`` when ``to=”torch”``,
 Ivy.unify
 ~~~~~~~~~
 
-Additionally, you can use ``ivy.unify`` to convert framework specific code to Ivy
+As mentioned above, ``ivy.unify`` is an alias to transpilation to Ivy, so you can use it
+exactly in the same way to convert framework specific code to Ivy.
 
 .. code-block:: python
 
@@ -254,5 +239,35 @@ still working on some rough edges. These include:
    PyTorch (which uses ``N, C, H, W``) to TensorFlow (which uses ``N, H, W, C``), you'll
    need to include a permute statement for the inference to be correct. 
 
-Last but not least, as the transpiler uses the graph compiler under the hood, the sharp 
+Keep in mind that the transpiler uses the graph compiler under the hood, so the sharp 
 bits of the compiler apply here as well!
+
+Examples
+--------
+
+Here, we are transpiling a HF model from torch to tensorflow and then using the 
+resulting model with tensorflow tensors directly:
+
+.. code-block:: python
+
+  import ivy
+  from transformers import AutoImageProcessor, ResNetForImageClassification
+  from datasets import load_dataset
+
+  # Set backend to torch
+  ivy.set_backend("torch")
+
+  # Download the input image
+  dataset = load_dataset("huggingface/cats-image")
+  image = dataset["test"]["image"][0]
+
+  # Setting the model
+  image_processor = AutoImageProcessor.from_pretrained("microsoft/resnet-50")
+  model = ResNetForImageClassification.from_pretrained("microsoft/resnet-50")
+
+  # Transpiling the model to tensorflow
+  tf_model = ivy.transpile(model, source="torch", to="tensorflow", kwargs=inputs)
+
+  # Using the transpiled model
+  tf_inputs = image_processor(image, return_tensors="tf")
+  ret = tf_model(None, **tf_inputs)
