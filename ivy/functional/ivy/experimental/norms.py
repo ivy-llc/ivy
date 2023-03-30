@@ -101,17 +101,29 @@ def batch_norm(
          Tuple of arrays containing
           the normalized input, running_mean, and running_variance.
     """
-    return current_backend(x).batch_norm(
-        x,
-        mean,
-        variance,
-        scale=scale,
-        offset=offset,
-        training=training,
-        eps=eps,
-        momentum=momentum,
-        out=out,
+
+    runningmean = mean
+    runningvariance = variance
+    ndims = len(x.shape)
+    if training:
+        n = 1 if ndims == 1 else x.size / x.shape[1]
+        dims = (0, *range(2, ndims))
+        mean = ivy.mean(x, axis=dims)
+        variance = ivy.var(x, axis=dims)
+        runningmean = (1 - momentum) * runningmean + momentum * mean
+        runningvariance = (1 - momentum) * runningvariance + momentum * variance * n / (
+            n - 1
+        )
+    inv = 1.0 / ivy.sqrt(variance + eps)
+    if scale is not None:
+        inv = inv * scale
+    xnormalized = x * inv.astype(x.dtype, copy=False) + ivy.astype(
+        offset - mean * inv if offset is not None else -mean * inv, x.dtype
     )
+    return xnormalized, runningmean, runningvariance
+
+
+batch_norm.mixed_function = True
 
 
 @handle_nestable
