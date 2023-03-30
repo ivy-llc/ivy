@@ -1044,7 +1044,7 @@ def _strided_slice_helper(draw):
         st.lists(
             st.integers(min_value=0, max_value=2**ndims - 1), min_size=5, max_size=5
         ).filter(
-            lambda x: bin(x[2])[2:].count("1") <= min(len(shape)-1, 1)
+            lambda x: bin(x[2])[2:].count("1") <= min(len(shape) -1, 1)
         )
     )
     begin, end, strides = [], [], []
@@ -1060,7 +1060,7 @@ def _strided_slice_helper(draw):
         if v == 1:
             skip = draw(st.integers(min_value=0, max_value=ndims))
             begin, end, strides = map(
-                lambda x: x[:i] + x[i+skip:] if i+skip < ndims else x[:i],
+                lambda x: x[:i] + x[i + skip:] if i + skip < ndims else x[:i],
                 [begin, end, strides]
             )
             break
