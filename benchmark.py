@@ -327,9 +327,7 @@ def visualize_speed_up(
             axes = np.expand_dims(axes, len(axes.shape))
         else:
             axes = np.expand_dims(axes, 0)
-    print("axes", axes)
     for device, axis in zip(devices, axes):
-        print("axis", axis)
         for backend, ax in zip(backends, axis):
             ax.set_title("{} : {}".format(backend, device), {"fontsize": 18})
             ax.set_ylabel("Percent Speed up on compiling", {"fontsize": 18})
