@@ -333,6 +333,7 @@ def test_array__neg__(
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,

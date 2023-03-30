@@ -3045,7 +3045,7 @@ def test_tensorflow_ConcatV2(
 
 # Conv2D
 @handle_frontend_test(
-    fn_tree="ivy.tensorflow.ops.Conv2D",
+    fn_tree="tensorflow.raw_ops.Conv2D",
     x_f_d_df=_x_and_filters(
         dtypes=helpers.get_dtypes("float", full=False),
         data_format=st.sampled_from(["NHWC", "NCHW"]),
@@ -3087,7 +3087,7 @@ def test_tensorflow_Conv2D(
         dilations=dilation,
     )
 
-    
+
 # Conv3D
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Conv3D",
@@ -3471,3 +3471,131 @@ def test_tensorflow_Real(
         input=x[0],
         Tout=Tout,
     )
+
+
+# BandedTriangularSolve
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.BandedTriangularSolve",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_BandedTriangularSolve(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    matrix, 
+    rhs, 
+    lower, 
+    adjoint,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        matrix=x[0], 
+        rhs=x[1], 
+        lower=lower, 
+        adjoint=adjoint,
+    )    
+
+
+# BatchMatMul
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.BatchMatMul",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_BatchMatMul(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    adj_x, 
+    adj_y,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+        adj_x=adj_x, 
+        adj_y=adj_y,
+    )  
+
+
+# BatchMatMulV2
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.BatchMatMulV2",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_BatchMatMulV2(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    adj_x, 
+    adj_y,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+        adj_x=adj_x, 
+        adj_y=adj_y,
+    )  
+
+
+# BatchMatMulV3
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.BatchMatMulV3",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_BatchMatMulV3(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    Tout,
+    adj_x, 
+    adj_y,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+        Tout=Tout,
+        adj_x=adj_x, 
+        adj_y=adj_y,
+    )    
