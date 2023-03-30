@@ -16,7 +16,7 @@
 
 .. autosummary::
   :toctree: docs/functional
-  :template: top_level_toc.rst
+  :template: top_functional_toc.rst
   :recursive:
   :include:
 

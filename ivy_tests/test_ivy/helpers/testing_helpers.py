@@ -441,7 +441,7 @@ def handle_frontend_test(
             inplace=test_inplace,
             as_variable=as_variable_flags,
             native_arrays=native_array_flags,
-            generate_frontend_arrays=generate_frontend_arrays
+            generate_frontend_arrays=generate_frontend_arrays,
         )
 
     def test_wrapper(test_fn):
