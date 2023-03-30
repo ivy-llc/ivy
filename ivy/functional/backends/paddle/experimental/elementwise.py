@@ -235,6 +235,9 @@ def nan_to_num(
             return x
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def logaddexp2(
     x1: Union[paddle.Tensor, float, list, tuple],
     x2: Union[paddle.Tensor, float, list, tuple],
@@ -242,7 +245,8 @@ def logaddexp2(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    with ivy.ArrayMode(False):
+        return ivy.log2(ivy.exp2(x1) + ivy.exp2(x2))
 
 
 def diff(
