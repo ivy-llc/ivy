@@ -239,8 +239,9 @@ still working on some rough edges. These include:
    PyTorch (which uses ``N, C, H, W``) to TensorFlow (which uses ``N, H, W, C``), you'll
    need to include a permute statement for the inference to be correct. 
 
-Keep in mind that the transpiler uses the graph compiler under the hood, so the sharp 
-bits of the compiler apply here as well!
+Keep in mind that the transpiler uses the graph compiler under the hood, so the 
+`sharp bits of the compiler <https://lets-unify.ai/ivy/compiler/compiler.html#sharp-bits>`_ 
+apply here as well!
 
 Examples
 --------
