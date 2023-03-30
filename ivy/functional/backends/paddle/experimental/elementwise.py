@@ -195,7 +195,7 @@ def imag(
 
 
 @with_unsupported_dtypes(
-    {"2.4.2 and below": ("uint16", "bfloat16","float16")},
+    {"2.4.2 and below": ("uint16", "bfloat16")},
     backend_version,
 )
 def nan_to_num(
@@ -219,9 +219,9 @@ def nan_to_num(
                 posinf = ivy.finfo(x).max
             if neginf==None:
                 neginf=ivy.finfo(x).min     
-        ret = paddle.where(paddle.isnan(x), paddle.to_tensor(nan, dtype=x.dtype), x)
-        ret = paddle.where(paddle.logical_and(paddle.isinf(ret), ret > 0), paddle.to_tensor(posinf, dtype=x.dtype), ret)
-        ret = paddle.where(paddle.logical_and(paddle.isinf(ret), ret < 0), paddle.to_tensor(neginf, dtype=x.dtype), ret)
+        ret = ivy.where(ivy.isnan(x), paddle.to_tensor(nan, dtype=x.dtype), x)
+        ret = ivy.where(ivy.logical_and(ivy.isinf(ret), ret > 0), paddle.to_tensor(posinf, dtype=x.dtype), ret)
+        ret = ivy.where(ivy.logical_and(ivy.isinf(ret), ret < 0), paddle.to_tensor(neginf, dtype=x.dtype), ret)
         if copy:
             return ret.clone()
         else:
