@@ -74,3 +74,17 @@ def rand(
         dtype=dtype,
         device=device,
     )
+
+
+@with_supported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float32",
+            "float64",
+        )
+    },
+    "torch",
+)
+@to_ivy_arrays_and_back
+def normal(mean, std, *, generator=None, out=None):
+    return ivy.random_normal(mean=mean, std=std, out=out)
