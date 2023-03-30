@@ -9,6 +9,7 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
 )
 
 from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_supported_dtypes
 
 
 AddN = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add_n))
@@ -743,3 +744,12 @@ def BatchMatMulV3(x, y, Tout=ivy.Dtype, adj_x=False, adj_y=False, name="BatchMat
 
 
 Slice = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.slice))
+
+Zeta = to_ivy_arrays_and_back(
+    with_supported_dtypes(
+        {
+            "2.11.0 and below": ("float32", "float64"),
+        },
+        "tensorflow",
+    )(map_raw_ops_alias(tf_frontend.math.zeta))
+)

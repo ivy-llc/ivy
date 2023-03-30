@@ -1938,3 +1938,33 @@ def test_tensorflow_sinh(
         on_device=on_device,
         x=x[0],
     )
+
+
+# zeta
+@handle_frontend_test(
+    fn_tree="tensorflow.math.zeta",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=("float32", "float64"),
+        num_arrays=2,
+    ),
+    number_positional_args=2,
+    test_with_out=st.just(False),
+)
+def test_tensorflow_zeta(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, (x, q) = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype, input_dtype],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input_tensor=x,
+        q=q,
+    )
