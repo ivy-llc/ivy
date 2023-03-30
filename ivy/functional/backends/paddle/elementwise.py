@@ -120,16 +120,9 @@ def equal(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
-    if x1.dtype in [paddle.int8, paddle.uint8, paddle.complex64, paddle.complex128]:
-        if paddle.is_complex(x1):
-            return logical_and(
-                paddle.equal(x1.real(), x2.real()), paddle.equal(x1.imag(), x2.imag())
-            )
-        return paddle.equal(
-            x1.cast(ivy.default_float_dtype()), x2.cast(ivy.default_float_dtype())
-        )
-    return paddle.equal(x1, x2)
+    with ivy.ArrayMode(False):
+        diff = ivy.subtract(x1, x2)
+        return ivy.logical_and(ivy.less_equal(diff, 0), ivy.greater_equal(diff, 0))
 
 
 @with_unsupported_device_and_dtypes(

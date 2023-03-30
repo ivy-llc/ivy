@@ -754,6 +754,9 @@ class Tensor:
     def atan2_(self, other):
         self._ivy_array = self.atan2(other).ivy_array
         return self
+    
+    def fmin(self, other, out=None):
+        return torch_frontend.fmin(self._ivy_array, other, out=out)
 
     # Special Methods #
     # -------------------#
