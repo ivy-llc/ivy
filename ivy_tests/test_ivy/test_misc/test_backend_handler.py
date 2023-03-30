@@ -223,8 +223,8 @@ def test_dynamic_backend_all_combos(middle_backend, end_backend):
     # add the necessary asserts to check if the data
     # of the objects are in the correct format
     
-    assert isinstance(a.data,ivy.current_backend().NativeArray)
-    assert isinstance(ivy_cont["b"].data,ivy.current_backend().NativeArray)
+    assert isinstance(a.data, ivy.current_backend().NativeArray)
+    assert isinstance(ivy_cont["b"].data, ivy.current_backend().NativeArray)
 
     
     if end_backend == "numpy":
@@ -237,7 +237,7 @@ def test_dynamic_backend_all_combos(middle_backend, end_backend):
         assert ivy.current_backend().gradients.is_variable(nativ_cont["b"].data)
             
     else:
-        assert isinstance(nativ_cont["b"].data,ivy.current_backend().NativeArray)
+        assert isinstance(nativ_cont["b"].data, ivy.current_backend().NativeArray)
 
 
 def test_dynamic_backend_setter():
