@@ -1,14 +1,17 @@
-# global
-from typing import Callable, Union
+from typing import Any, Callable, Dict, List, Tuple, Union
 import functools
 import time
 import os
 import copy
 import importlib
+import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 import ivy
 
 
+sns.set()
 LINE_UP = "\033[1A"
 LINE_CLEAR = "\x1b[2K"
 
@@ -50,7 +53,7 @@ class _AvoidGPUPreallocation:
         return self
 
 
-def move_to_device(args=None, kwargs=None, device="cpu"):
+def _move_to_device(args=None, kwargs=None, device="cpu"):
     args_idxs = ivy.nested_argwhere(args, ivy.is_array)
     kwargs_idxs = ivy.nested_argwhere(kwargs, ivy.is_array)
     func = lambda x: ivy.to_device(x, device, out=x)
@@ -61,7 +64,7 @@ def move_to_device(args=None, kwargs=None, device="cpu"):
     return args, kwargs
 
 
-def compute_time(fn: Callable) -> Callable:
+def _compute_time(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         start = time.time()
@@ -72,14 +75,14 @@ def compute_time(fn: Callable) -> Callable:
     return new_fn
 
 
-def read_or_create_csv(output_path="./ivy/report.csv"):
+def _read_or_create_csv(output_path="./report.csv"):
     if not os.path.exists(output_path):
         with open(output_path, "w") as f:
             f.write(",".join(COLUMNS) + "\n")
     return pd.read_csv(output_path)
 
 
-def write_to_csv(df, row_list, output_path="./ivy/report.csv"):
+def _write_to_csv(df, row_list, output_path="./report.csv"):
     row = {k: v for k, v in zip(COLUMNS, row_list)}
     df = df.append(row, ignore_index=True)
     df.to_csv(output_path, index=False)
@@ -87,14 +90,51 @@ def write_to_csv(df, row_list, output_path="./ivy/report.csv"):
 
 def eager_benchmark(
     obj: Union[Callable, str],
-    label=None,
-    backends=["jax"],
-    devices=["cpu"],
-    functional_api=False,
-    args=None,
-    kwargs=None,
-    output_path="./ivy/report.csv",
+    label: str = None,
+    backends: List[str] = None,
+    devices: List[str] = None,
+    functional_api: bool = False,
+    args: Tuple[Any] = None,
+    kwargs: Dict[str, Any] = None,
+    output_path="./report.csv",
 ):
+    """
+    Function to benchmark the function or module passed in input on the required
+    backends and devices.
+
+    Parameters
+    ----------
+    obj
+        The function or module to be benchmarked with and without graph compilation.
+        In case of a function from ivy's functional API, this parameter would receive
+        a string which is the function name, along with functional_api set to True.
+    label
+        The preferred name for the experiment as would be added to the csv. If no
+        name is provided, then the __name__ of the obj would be picked by default
+        (Default value = ``None``).
+    backends
+        A list of strings for backends to benchmark with. Should be among the backends
+        that ivy supports (Default value = ``None``).
+    devices
+        A list of target devices that ivy supports with the backends. The devices that
+        are invalid for a particular backend would be ignored
+        (Default value  = ``None``).
+    functional_api
+        Should only be set to ``True`` if the obj being passed is a part of ivy's
+        functional API. (Default value = ``False``).
+    args
+        The positional arguments to be passed to the obj.
+    kwargs
+        The keyword arguments to be passed to obj.
+    output_path
+        The path to the csv file to write to. By default results are written to
+        reports.csv in the folder from where the script it run
+        (Default value = ``None``).
+
+    """
+    backends = ivy.default(backends, [])
+    devices = ivy.default(devices, [])
+    output_path = ivy.default(output_path, "./report.csv")
     print("\nBenchmarking backends : " + " ".join(backends) + "\n")
     for backend in backends:
         with _AvoidGPUPreallocation(backend) as _:
@@ -112,31 +152,23 @@ def eager_benchmark(
             if functional_api:
                 obj_call = ivy.__dict__[obj]
             for i, device in enumerate(valid_devices):
-                # move the arrays to dev
-                args, kwargs = move_to_device(args=args, kwargs=kwargs, device=device)
-
-                # compilation
+                args, kwargs = _move_to_device(args=args, kwargs=kwargs, device=device)
                 if isinstance(obj_call, ivy.Module):
                     obj_call_copy = copy.deepcopy(obj_call)
                     obj_call_copy.compile(args=args, kwargs=kwargs)
                     compiled_fn = obj_call_copy
                 else:
                     compiled_fn = ivy.compile(obj_call, args=args, kwargs=kwargs)
-
-                # wrapping both function to compute time
                 kwargs = ivy.default(kwargs, {})
                 args = ivy.default(args, ())
-                uncompiled_time = compute_time(obj_call)(*args, **kwargs)
-                compiled_time = compute_time(compiled_fn)(*args, **kwargs)
-
+                uncompiled_time = _compute_time(obj_call)(*args, **kwargs)
+                compiled_time = _compute_time(compiled_fn)(*args, **kwargs)
                 label = obj_call.__name__ if label is None else label
                 percent_speed_up = round(
                     abs(uncompiled_time - compiled_time) / uncompiled_time * 100, 6
                 )
-
-                # write results to the csv
-                df = read_or_create_csv(output_path)
-                write_to_csv(
+                df = _read_or_create_csv(output_path)
+                _write_to_csv(
                     df,
                     [
                         len(df.index),
@@ -149,12 +181,65 @@ def eager_benchmark(
                     ],
                     output_path,
                 )
-
-                # move the arrays back to the cpu
-                args, kwargs = move_to_device(args=args, kwargs=kwargs, device="cpu")
-
-                # clear device memory
+                args, kwargs = _move_to_device(args=args, kwargs=kwargs, device="cpu")
                 ivy.clear_cached_mem_on_dev(device)
                 print(LINE_UP * (len(valid_devices) - i), end=LINE_CLEAR)
                 print("device : {}\t --> done\n".format(device))
             ivy.unset_backend()
+    print("Results written to {} ...".format(output_path))
+
+
+def visualize_speed_up(
+    file_path: str = None,
+    output_path: str = None,
+    devices: Union[List[str], str] = "all",
+    backends: Union[List[str], str] = "all",
+    labels: Union[List[str], str] = None,
+):
+    """
+    Function to visualize the speed up results stored in the csv.
+
+    Parameters
+    ----------
+    file_path
+        The path of the csv file where the results are stored.
+    output_path
+        The path to the png file to store the graphs in.
+    devices
+        A filter for the devices for which graphs should be generated.
+    backends
+        A filter for the backends for which graphs should be generated.
+    labels
+        A filter for the labels for which graphs should be generated.
+
+    """
+    file_path = ivy.default(file_path, "./report.csv")
+    output_path = ivy.default(output_path, "./saved_fig.png")
+    df = pd.read_csv(file_path)
+    df = df.query("label in @labels") if labels is not None else df
+    backends = list(df["backend"].unique()) if backends == "all" else backends
+    devices = list(df["device"].unique()) if devices == "all" else devices
+    labels = (
+        list(df["label"].unique())
+        if labels == "all"
+        else [labels]
+        if isinstance(labels, str)
+        else labels
+    )
+    fig, axes = plt.subplots(len(devices), len(backends))
+    fig.set_figwidth(30)
+    fig.set_figheight(12)
+    fig.tight_layout(pad=10.0)
+    axes = np.asarray([axes]) if not isinstance(axes, np.ndarray) else axes
+    while len(axes.shape) < 2:
+        axes = np.expand_dims(axes, 0)
+    for device, axis in zip(devices, axes):
+        for backend, ax in zip(backends, axis):
+            ax.set_title("{} : {}".format(backend, device), {"fontsize": 18})
+            ax.set_ylabel("Percent Speed up on compiling", {"fontsize": 18})
+            ax.tick_params(axis="both", labelsize=15)
+            query = df.query("backend == @backend and device == @device")
+            assert not query.empty, "No records matching the filters passed"
+            ax.violinplot(query["percent_speed_up"])
+    plt.savefig(output_path)
+    print("plot saved to {} ...".format(output_path))
