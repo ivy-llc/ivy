@@ -788,7 +788,7 @@ def nested_argwhere(
 
 @handle_exceptions
 def all_nested_indices(
-    nest: Union[List, Tuple, Dict, Array, NativeArray, Container] = None,
+    nest: Union[List, Tuple, Dict, ivy.Array, ivy.NativeArray, ivy.Container] = None,
     /,
     include_nests: bool = False,
     _index: Optional[Union[int, Sequence[int]]] = None,
@@ -797,72 +797,59 @@ def all_nested_indices(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
-    Returns indices of all the elements in nest
+    """Returns indices of all the elements in nest
+
     Parameters
     ----------
     nest
         The nest to check the leaves of.
     include_nests
-        Whether to also include indices of the nests themselves, not only
-        leaves. Default is ``False``.
+        Whether to also include indices of the nests themselves, not only leaves.
+        Default is ``False``.
     _index
-        The indices detected so far. None at the beginning. Used internally, do
-        not set manually.
+        The indices detected so far. None at the beginning. Used internally, do not set
+        manually.
     _base
-        Whether the current function call is the first function call in the
-        recursive stack. Used internally, do not set manually.
+        Whether the current function call is the first function call in the recursive
+        stack. Used internally, do not set manually.
     extra_nest_types
         Types to recursively check when deciding whether to go deeper into the
         nest or not
     out
         Optional output array, for writing the result to. It must have a shape
         that the inputs broadcast to.
+
     Returns
     -------
     ret
         A set of indices of all elements in nest
-    Both the description and the type hints above assumes an array input for
-    simplicity, but this function is nestable, and therefore also accepts
-    :class:ivy.Container instances in place of the arguments.
+    
+    Both the description and the type hints above assumes an array input 
+    for simplicity, but this function is nestable, and therefore also 
+    accepts :class:ivy.Container instances in place of the arguments.
+
     Examples
     --------
     With :class:`Dict` input:
+
     >>> x = {'a': 2., 'b': [6., [15., 9.]], 'c': (7., 56.)}
-    >>> y = all_nested_indices(x)
+    >>> y = ivy.all_nested_indices(x)
     >>> print(y)
     [['a'], ['b', 0], ['b', 1, 0], ['b', 1, 1], ['c', 0], ['c', 1]]
-    With :class:`Tuple` input:
-    >>> x = (12, 53)
-    >>> y = ivy.zeros(3)
-    >>> ivy.all_nested_indices(x, False, out=y)
-    >>> print(y)
-    [[0], [1]]
+
     With :class:`ivy.Array` input:
-    >>> x = ivy.array([0, 1, 2, 3, 4])
-    >>> y = all_nested_indices(x, out=x)
+
+    >>> x = ivy.array([0., 1., 2., 3., 4.])
+    >>> y = ivy.all_nested_indices(x, False, out=x)
     >>> print(y)
     [[]]
-    >>> x = ivy.array([[42, 68, 50], [12, 13, 18]])
-    >>> y = x.all_nested_indices()
-    >>> print(y)
-    >>> x = ivy.array([0, 1, 2, 3, 4])
-    >>> y = all_nested_indices(x, out=x)
-    >>> print(y)
-    [[]]
+
     With :class:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
-    >>> y = all_nested_indices(x, True)
+    >>> y = ivy.all_nested_indices(x, True)
     >>> print(y)
     [['a'], ['b']]
-    >>> x = ivy.Container(a=ivy.array([1, 1, 1, 1]), c=ivy.array([4, 8, 6, 3]))
-    >>> y = x.all_nested_indices()
-    >>> print(y)
-    >>> x = ivy.Container({'a': ivy.array([3., 78., 5.]),
-    >>>                    'b': {'c': ivy.array([28., 25., 32.]),
-    >>>                    'd': ivy.array([0., 52., 42.])}})
-    >>> y = ivy.Container.static_all_nested_indices(x)
-    >>> print(y)
     """
     _index = list() if _index is None else _index
     extra_nest_types = ivy.default(extra_nest_types, ())
