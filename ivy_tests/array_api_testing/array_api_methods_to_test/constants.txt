@@ -1,3 +1,0 @@
-irrational_numbers
-inf
-nan

@@ -1,7 +1,0 @@
-astype
-broadcast_arrays
-broadcast_to
-can_cast
-finfo
-iinfo
-result_type
