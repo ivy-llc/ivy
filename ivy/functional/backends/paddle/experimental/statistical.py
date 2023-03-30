@@ -212,7 +212,6 @@ def quantile(
     interpolation: Optional[str] = "linear",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-
     return _compute_quantile(
         x=a,
         q=q,
