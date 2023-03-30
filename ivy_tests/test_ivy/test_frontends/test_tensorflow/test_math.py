@@ -1947,7 +1947,7 @@ def test_tensorflow_sinh(
         available_dtypes=("float32", "float64"),
         num_arrays=2,
     ),
-    number_positional_args=2,
+    num_positional_args=2,
     test_with_out=st.just(False),
 )
 def test_tensorflow_zeta(
