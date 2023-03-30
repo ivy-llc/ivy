@@ -353,8 +353,9 @@ def test_numpy_standard_normal(
     
 @handle_frontend_test(
     fn_tree="numpy.random.standard_gamma",
-    input_dtypes=helpers.get_dtypes("integer", full=False),
-    size=helpers.get_shape(allow_none=True),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"), min_num_dims=1
+    ),
     test_with_out=st.just(False),
 )
 def test_numpy_standard_gamma(
