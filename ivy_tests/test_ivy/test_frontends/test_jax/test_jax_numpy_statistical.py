@@ -847,3 +847,36 @@ def test_jax_numpy_corrcoef(
         y=x[1],
         rowvar=rowvar,
     )
+
+
+# percentile
+@handle_frontend_test(
+    fn_tree="jax.numpy.percentile",
+    dtype_x_q=statistical_dtype_values(function="percentile"),
+    keep_dims=st.booleans(),
+)
+def test_jax_numpy_percentile(
+    dtype_x_q,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    keep_dims,
+):
+    input_dtypes, x, axis, interpolation, q = dtype_x_q
+    if isinstance(axis, tuple):
+        axis = axis[0]
+
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        q=q,
+        axis=axis,
+        method=interpolation[0],
+        out=None,
+        keepdims=keep_dims,
+    )

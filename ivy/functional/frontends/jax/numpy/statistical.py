@@ -420,3 +420,24 @@ def std(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=Non
 @to_ivy_arrays_and_back
 def corrcoef(x, y=None, rowvar=True):
     return ivy.corrcoef(x, y=y, rowvar=rowvar)
+
+
+@to_ivy_arrays_and_back
+def percentile(
+    a, 
+    q, 
+    /, 
+    *, 
+    axis=None,
+    out=None,
+    interpolation="linear",
+    keepdims=False,
+):
+    axis = tuple(axis) if isinstance(axis, list) else axis
+
+    a = ivy.array(a)
+
+    ret = ivy.percentile(a, q, axis=axis, keep_dims=keepdims, 
+                         interpolation=interpolation, out=out)
+    
+    return ret
