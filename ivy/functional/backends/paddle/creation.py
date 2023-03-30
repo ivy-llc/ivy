@@ -144,7 +144,7 @@ def asarray(
 
     elif isinstance(obj, (Number, bool, complex)):
         if dtype is None:
-            dtype = ivy.promote_types(type(obj), type(obj))
+            dtype = ivy.default_dtype(item=obj)
         ret = paddle.to_tensor(obj).squeeze().cast(dtype)
         return ret
 
@@ -239,6 +239,8 @@ def full(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if dtype is None:
+        dtype = ivy.default_dtype(item=fill_value)
     return to_device(
         paddle.full(shape=shape, fill_value=fill_value).cast(dtype), device
     )
@@ -256,9 +258,7 @@ def full_like(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return to_device(
-        paddle.full_like(x=x.cast("float32"), fill_value=fill_value).cast(dtype), device
-    )
+    return full(shape=x.shape, fill_value=fill_value, dtype=dtype, device=device)
 
 
 def _linspace_helper(start, stop, num, axis=None, *, dtype=None):
@@ -575,7 +575,6 @@ def copy_array(
     if to_ivy_array:
         return ivy.to_ivy(x.clone())
     return x.clone()
-    # raise IvyNotImplementedException()
 
 
 @with_unsupported_device_and_dtypes(
