@@ -239,42 +239,45 @@ def _get_safe_casting_dtype(draw, *, dtypes):
 
 
 @st.composite
-def get_dtype_and_values_and_casting(
+def dtypes_values_casting_dtype(
     draw,
     *,
+    arr_func,
     get_dtypes_kind="valid",
     get_dtypes_index=0,
     get_dtypes_none=True,
     get_dtypes_key=None,
-    **kwargs,
 ):
-    input_dtype, x = draw(helpers.dtype_and_values(**kwargs))
+    dtypes, values = [], []
     casting = draw(st.sampled_from(["no", "equiv", "safe", "same_kind", "unsafe"]))
+    for func in arr_func:
+        typ, val = draw(func())
+        dtypes += typ if isinstance(typ, list) else [typ]
+        values += val if isinstance(val, list) else [val]
+
+    if casting in ["no", "equiv"] and len(dtypes) > 0:
+        dtypes = [dtypes[0]] * len(dtypes)
+
     if casting in ["no", "equiv"]:
-        dtype = input_dtype[0]
-        input_dtype = [dtype for x in input_dtype]
-        return dtype, input_dtype, x, casting
-    dtype = draw(
-        helpers.get_dtypes(
-            get_dtypes_kind,
-            index=get_dtypes_index,
-            full=False,
-            none=get_dtypes_none,
-            key=get_dtypes_key,
-        )
-    )
-    if casting in ["safe", "same_kind"]:
-        while not ivy.all([ivy.can_cast(x, dtype[0]) for x in input_dtype]):
-            dtype = draw(
-                helpers.get_dtypes(
-                    get_dtypes_kind,
-                    index=get_dtypes_index,
-                    full=False,
-                    none=get_dtypes_none,
-                    key=get_dtypes_key,
-                )
-            )
-    return dtype[0], input_dtype, x, casting
+        dtype = draw(st.just(None))
+    elif casting in ["safe", "same_kind"]:
+        dtype = draw(_get_safe_casting_dtype(dtypes=dtypes))
+    else: # when unsafe casting allowed, all casts and "bool" allowed
+        dtype = draw(
+            helpers.get_dtypes(
+                kind=get_dtypes_kind,
+                index=get_dtypes_index,
+                full=False,
+                none=get_dtypes_none,
+                key=get_dtypes_key,
+            ), 
+        )[0]
+        dtype = draw(st.sampled_from([dtype, "bool"]))
+        # filter uint64 as not supported by torch backend
+        if dtype == "uint64":
+            dtype = None
+    return dtypes, values, casting, dtype
+
 
 @st.composite
 def get_dtype_and_values_and_casting(
