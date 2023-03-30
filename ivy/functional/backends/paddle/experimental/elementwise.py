@@ -307,9 +307,9 @@ def zeta(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     with ivy.ArrayMode(False):
-        temp = ivy.logical_and(ivy.greater(x, 0), ivy.equal(ivy.remainder(x, 2), 0))
+        temp = ivy.logical_and(ivy.greater(x, 0), paddle.equal(ivy.remainder(x, 2), 0))
         temp = ivy.logical_and(temp, ivy.less_equal(q, 0))
-        temp = ivy.logical_and(temp, ivy.equal(ivy.remainder(q, 1), 0))
+        temp = ivy.logical_and(temp, paddle.equal(ivy.remainder(q, 1), 0))
         inf_indices = ivy.logical_or(temp, ivy.equal(x, 1))
         temp = ivy.logical_and(ivy.not_equal(ivy.remainder(x, 2), 0), ivy.greater(x, 1))
         temp = ivy.logical_and(temp, ivy.less_equal(q, 0))
