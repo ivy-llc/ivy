@@ -323,8 +323,13 @@ def visualize_speed_up(
     fig.tight_layout(pad=10.0)
     axes = np.asarray([axes]) if not isinstance(axes, np.ndarray) else axes
     while len(axes.shape) < 2:
-        axes = np.expand_dims(axes, 0)
+        if len(devices) > len(backends):
+            axes = np.expand_dims(axes, len(axes.shape))
+        else:
+            axes = np.expand_dims(axes, 0)
+    print("axes", axes)
     for device, axis in zip(devices, axes):
+        print("axis", axis)
         for backend, ax in zip(backends, axis):
             ax.set_title("{} : {}".format(backend, device), {"fontsize": 18})
             ax.set_ylabel("Percent Speed up on compiling", {"fontsize": 18})
