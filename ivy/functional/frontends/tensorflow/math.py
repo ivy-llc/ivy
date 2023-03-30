@@ -477,6 +477,11 @@ def acos(x, name="acos"):
 
 
 @to_ivy_arrays_and_back
+def acosh(x, name="acosh"):
+    return ivy.acosh(x)
+
+
+@to_ivy_arrays_and_back
 def square(x, name=None):
     return ivy.square(x)
 
