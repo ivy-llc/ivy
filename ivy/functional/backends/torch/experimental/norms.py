@@ -1,7 +1,7 @@
 import torch
 from typing import Optional, Tuple
 
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, handle_mixed_function
 from .. import backend_version
 
 
@@ -19,7 +19,18 @@ def l2_normalize(
 
 l2_normalize.support_native_out = True
 
+# TODO update the decorator to consider the case when scale or offset is None
 
+
+@handle_mixed_function(
+    lambda x, mean, variance, scale, offset, **kwargs: (
+        x.ndim > 1
+        and mean.ndim == 1
+        and variance.ndim == 1
+        and scale.ndim == 1
+        and offset.ndim == 1
+    )
+)
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, backend_version)
 def batch_norm(
     x: torch.Tensor,
