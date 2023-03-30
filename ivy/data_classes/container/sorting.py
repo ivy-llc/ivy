@@ -11,7 +11,7 @@ import ivy
 # noinspection PyMissingConstructor
 class _ContainerWithSorting(ContainerBase):
     @staticmethod
-    def static_argsort(
+    def _static_argsort(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -198,7 +198,7 @@ class _ContainerWithSorting(ContainerBase):
             b: ivy.array([0, 1])
         }
         """
-        return self.static_argsort(
+        return self._static_argsort(
             self,
             axis=axis,
             descending=descending,
@@ -211,7 +211,7 @@ class _ContainerWithSorting(ContainerBase):
         )
 
     @staticmethod
-    def static_sort(
+    def _static_sort(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -321,7 +321,7 @@ class _ContainerWithSorting(ContainerBase):
         }
 
         """
-        return self.static_sort(
+        return self._static_sort(
             self,
             axis=axis,
             descending=descending,
@@ -334,7 +334,7 @@ class _ContainerWithSorting(ContainerBase):
         )
 
     @staticmethod
-    def static_searchsorted(
+    def _static_searchsorted(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         v: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -390,7 +390,7 @@ class _ContainerWithSorting(ContainerBase):
         also applies to this method with minimal changes.
 
         """
-        return self.static_searchsorted(
+        return self._static_searchsorted(
             self,
             v,
             side=side,

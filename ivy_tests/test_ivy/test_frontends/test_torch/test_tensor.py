@@ -2996,13 +2996,14 @@ def test_torch_instance_is_cuda(
         on_device=on_device,
     )
 
+
 # logical_and
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="logical_and",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("bool","integer"),
+        available_dtypes=helpers.get_dtypes("bool", "integer"),
         num_arrays=2,
     ),
 )
@@ -3030,6 +3031,7 @@ def test_torch_instance_logical_and(
         frontend=frontend,
         on_device=on_device,
     )
+
 
 # bitwise_not
 @handle_frontend_method(
@@ -3688,6 +3690,7 @@ def test_torch_special_pow(
     init_flags,
     method_flags,
     frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     dtype = input_dtype[0]
@@ -3706,6 +3709,7 @@ def test_torch_special_pow(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
@@ -5838,6 +5842,85 @@ def test_torch_instance_bitwise_xor(
         frontend=frontend,
         on_device=on_device,
     )
+
+# cumprod
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="cumprod",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+    ),
+    dim=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(), key="shape"),
+        allow_neg=True,
+        force_int=True,
+    ),
+    dtypes=_dtypes(),
+)
+def test_torch_instance_cumprod(
+    dtype_value,
+    dim,
+    dtypes,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_value
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=dtypes,
+        method_all_as_kwargs_np={
+            "dim": dim,
+            "dtype": dtypes[0],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# relu
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="relu",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        allow_inf=False,
+    ),
+)
+def test_torch_instance_relu(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
 
 # fmin
 @handle_frontend_method(

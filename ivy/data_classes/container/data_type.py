@@ -11,7 +11,7 @@ from ivy.data_classes.container.base import ContainerBase
 # noinspection PyMissingConstructor
 class _ContainerWithDataTypes(ContainerBase):
     @staticmethod
-    def static_astype(
+    def _static_astype(
         x: ivy.Container,
         dtype: ivy.Dtype,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -142,7 +142,7 @@ class _ContainerWithDataTypes(ContainerBase):
         }
 
         """
-        return self.static_astype(
+        return self._static_astype(
             self,
             dtype,
             key_chains=key_chains,
@@ -154,7 +154,7 @@ class _ContainerWithDataTypes(ContainerBase):
         )
 
     @staticmethod
-    def static_broadcast_arrays(
+    def _static_broadcast_arrays(
         *arrays: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -295,7 +295,7 @@ class _ContainerWithDataTypes(ContainerBase):
             b: ivy.array([0., 0.])
         }]
         """
-        return self.static_broadcast_arrays(
+        return self._static_broadcast_arrays(
             self,
             *arrays,
             key_chains=key_chains,
@@ -305,7 +305,7 @@ class _ContainerWithDataTypes(ContainerBase):
         )
 
     @staticmethod
-    def static_broadcast_to(
+    def _static_broadcast_to(
         x: ivy.Container,
         /,
         shape: Tuple[int, ...],
@@ -413,7 +413,7 @@ class _ContainerWithDataTypes(ContainerBase):
         }
 
         """
-        return self.static_broadcast_to(
+        return self._static_broadcast_to(
             self,
             shape,
             key_chains=key_chains,
@@ -424,7 +424,7 @@ class _ContainerWithDataTypes(ContainerBase):
         )
 
     @staticmethod
-    def static_can_cast(
+    def _static_can_cast(
         from_: ivy.Container,
         to: ivy.Dtype,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -534,12 +534,12 @@ class _ContainerWithDataTypes(ContainerBase):
             b: true
         }
         """
-        return self.static_can_cast(
+        return self._static_can_cast(
             self, to, key_chains, to_apply, prune_unapplied, map_sequences
         )
 
     @staticmethod
-    def static_dtype(
+    def _static_dtype(
         x: ivy.Container,
         *,
         as_native: bool = False,
@@ -581,7 +581,7 @@ class _ContainerWithDataTypes(ContainerBase):
             b: int32
         }
         """
-        return self.static_dtype(
+        return self._static_dtype(
             self,
             as_native=as_native,
             key_chains=key_chains,
@@ -592,7 +592,7 @@ class _ContainerWithDataTypes(ContainerBase):
         )
 
     @staticmethod
-    def static_default_float_dtype(
+    def _static_default_float_dtype(
         *,
         input: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         float_dtype: Optional[Union[ivy.FloatDtype, ivy.NativeDtype]] = None,
@@ -614,7 +614,7 @@ class _ContainerWithDataTypes(ContainerBase):
         )
 
     @staticmethod
-    def static_default_complex_dtype(
+    def _static_default_complex_dtype(
         *,
         input: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         complex_dtype: Optional[Union[ivy.FloatDtype, ivy.NativeDtype]] = None,
@@ -636,7 +636,7 @@ class _ContainerWithDataTypes(ContainerBase):
         )
 
     @staticmethod
-    def static_function_supported_dtypes(
+    def _static_function_supported_dtypes(
         fn: Callable,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -653,7 +653,7 @@ class _ContainerWithDataTypes(ContainerBase):
         )
 
     @staticmethod
-    def static_function_unsupported_dtypes(
+    def _static_function_unsupported_dtypes(
         fn: Callable,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -670,7 +670,7 @@ class _ContainerWithDataTypes(ContainerBase):
         )
 
     @staticmethod
-    def static_finfo(
+    def _static_finfo(
         type: ivy.Container,
         /,
         *,
@@ -754,7 +754,7 @@ class _ContainerWithDataTypes(ContainerBase):
         }
 
         """
-        return self.static_finfo(
+        return self._static_finfo(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -763,7 +763,7 @@ class _ContainerWithDataTypes(ContainerBase):
         )
 
     @staticmethod
-    def static_iinfo(
+    def _static_iinfo(
         type: ivy.Container,
         /,
         *,
@@ -885,7 +885,7 @@ class _ContainerWithDataTypes(ContainerBase):
         }
 
         """
-        return self.static_iinfo(
+        return self._static_iinfo(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -894,7 +894,7 @@ class _ContainerWithDataTypes(ContainerBase):
         )
 
     @staticmethod
-    def static_is_bool_dtype(
+    def _static_is_bool_dtype(
         dtype_in: ivy.Container,
         /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -919,7 +919,7 @@ class _ContainerWithDataTypes(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
-        return self.static_is_bool_dtype(
+        return self._static_is_bool_dtype(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -928,7 +928,7 @@ class _ContainerWithDataTypes(ContainerBase):
         )
 
     @staticmethod
-    def static_is_float_dtype(
+    def _static_is_float_dtype(
         dtype_in: ivy.Container,
         /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -1065,7 +1065,7 @@ class _ContainerWithDataTypes(ContainerBase):
         >>> print(x.a.dtype, x.b.dtype)
         float32 int32
         """
-        return self.static_is_float_dtype(
+        return self._static_is_float_dtype(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -1074,7 +1074,7 @@ class _ContainerWithDataTypes(ContainerBase):
         )
 
     @staticmethod
-    def static_is_int_dtype(
+    def _static_is_int_dtype(
         dtype_in: ivy.Container,
         /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -1099,7 +1099,7 @@ class _ContainerWithDataTypes(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
-        return self.static_is_int_dtype(
+        return self._static_is_int_dtype(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -1108,7 +1108,7 @@ class _ContainerWithDataTypes(ContainerBase):
         )
 
     @staticmethod
-    def static_is_uint_dtype(
+    def _static_is_uint_dtype(
         dtype_in: ivy.Container,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1131,7 +1131,7 @@ class _ContainerWithDataTypes(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
-        return self.static_is_uint_dtype(
+        return self._static_is_uint_dtype(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -1140,7 +1140,7 @@ class _ContainerWithDataTypes(ContainerBase):
         )
 
     @staticmethod
-    def static_is_complex_dtype(
+    def _static_is_complex_dtype(
         dtype_in: ivy.Container,
         /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -1253,7 +1253,7 @@ class _ContainerWithDataTypes(ContainerBase):
         >>> print(x)
         False
         """
-        return self.static_is_complex_dtype(
+        return self._static_is_complex_dtype(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -1262,7 +1262,7 @@ class _ContainerWithDataTypes(ContainerBase):
         )
 
     @staticmethod
-    def static_result_type(
+    def _static_result_type(
         *arrays_and_dtypes: ivy.Container,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1367,7 +1367,7 @@ class _ContainerWithDataTypes(ContainerBase):
             }
         }
         """
-        return self.static_result_type(
+        return self._static_result_type(
             self,
             *arrays_and_dtypes,
             key_chains=key_chains,
