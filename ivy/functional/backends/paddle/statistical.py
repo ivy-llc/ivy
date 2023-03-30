@@ -233,18 +233,19 @@ def cumprod(
         x = paddle.cumprod(paddle.flip(x, axis=(axis,)), dim=axis)
         with ivy.ArrayMode(False):
             x = ivy.swapaxes(x, axis, -1)
-            x = paddle.concat((paddle.ones_like(x[..., -1:]), x[..., :-1]), -1)
+            x = ivy.concat((ivy.ones_like(x[..., -1:]), x[..., :-1]), axis=-1)
             x = ivy.swapaxes(x, axis, -1)
-        return paddle.flip(x, axis=(axis,)).cast(dtype)
+            return ivy.flip(x, axis=(axis,)).cast(dtype)
     elif exclusive:
         with ivy.ArrayMode(False):
             x = ivy.swapaxes(x, axis, -1)
-            x = paddle.concat((paddle.ones_like(x[..., -1:]), x[..., :-1]), -1)
+            x = ivy.concat((ivy.ones_like(x[..., -1:]), x[..., :-1]), axis=-1)
             x = paddle.cumprod(x, -1)
             return ivy.swapaxes(x, axis, -1).cast(dtype)
     else:
-        x = paddle.cumprod(paddle.flip(x, axis=(axis,)), dim=axis)
-        return paddle.flip(x, axis=axis).cast(dtype)
+        with ivy.ArrayMode(False):
+            x = paddle.cumprod(paddle.flip(x, axis=(axis,)), dim=axis)
+            return ivy.flip(x, axis=axis).cast(dtype)
 
 
 @with_unsupported_device_and_dtypes(
