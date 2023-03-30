@@ -5,8 +5,6 @@ from hypothesis import strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
-# instance_norm
-
 
 @st.composite
 def _instance_and_batch_norm_helper(draw):
@@ -16,9 +14,9 @@ def _instance_and_batch_norm_helper(draw):
             large_abs_safety_factor=24,
             small_abs_safety_factor=24,
             safety_factor_scale="log",
-            min_num_dims=3,
+            min_num_dims=1,
             max_num_dims=4,
-            min_dim_size=2,
+            min_dim_size=1,
             ret_shape=True,
             max_value=999,
             min_value=-1001,
@@ -27,7 +25,7 @@ def _instance_and_batch_norm_helper(draw):
     _, variance = draw(
         helpers.dtype_and_values(
             dtype=x_dtype,
-            shape=(shape[1],),
+            shape=(shape[-1],),
             max_value=999,
             min_value=0,
         )
@@ -35,7 +33,7 @@ def _instance_and_batch_norm_helper(draw):
     _, others = draw(
         helpers.dtype_and_values(
             dtype=x_dtype * 3,
-            shape=(shape[1],),
+            shape=(shape[-1],),
             max_value=999,
             min_value=-1001,
             num_arrays=3,
