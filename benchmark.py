@@ -131,6 +131,74 @@ def eager_benchmark(
         reports.csv in the folder from where the script it run
         (Default value = ``None``).
 
+    Returns
+    -------
+
+    Examples
+    --------
+    With an :code:`ivy` function:
+    >>> import ivy
+    >>> from benchmark import eager_benchmark
+    >>> ivy.set_backend("torch")
+    >>> fn = "conv1d"
+    >>> args = (
+    ...     ivy.array([[[0.0], [3.0], [0.0]]], device="cpu"),
+    ...     ivy.array([[[0.0]], [[1.0]], [[0.0]]], device="cpu"),
+    ...     (1,),
+    ...     "SAME",
+    ... )
+    >>> kwargs = {"data_format": "NWC", "dilations": (1,)}
+    >>> eager_benchmark(
+    ...     fn,
+    ...     label="conv1d",
+    ...     backends=["jax", "numpy", "tensorflow", "torch"],
+    ...     devices=["cpu", "gpu:0"],
+    ...     args=args,
+    ...     kwargs=kwargs,
+    ...     functional_api=True,
+    ...     output_path="./ivy/report.csv"
+    ... )
+
+    With a compositional function:
+
+    >>> import ivy
+    >>> from benchmark import eager_benchmark
+    >>> ivy.set_backend("torch")
+    >>> def fn(*args, **kwargs):
+    ...     return ivy.conv1d(*args, **kwargs) + 1
+    >>> args = (
+    ...     ivy.array([[[0.0], [3.0], [0.0]]], device="cpu"),
+    ...     ivy.array([[[0.0]], [[1.0]], [[0.0]]], device="cpu"),
+    ...     (1,),
+    ...     "SAME",
+    ... )
+    >>> kwargs = {"data_format": "NWC", "dilations": (1,)}
+    >>> eager_benchmark(
+    ...     fn,
+    ...     label="compos",
+    ...     backends=["jax", "numpy", "tensorflow", "torch"],
+    ...     devices=["cpu", "gpu:0"],
+    ...     args=args,
+    ...     kwargs=kwargs,
+    ...     output_path="./ivy/report.csv"
+    ... )
+
+    With a module:
+
+    >>> import ivy
+    >>> from benchmark import eager_benchmark
+    >>> ivy.set_backend("torch")
+    >>> module = ivy.GELU(approximate=False)
+    >>> args = (ivy.random_uniform(shape=(4, 32)),)
+    >>> eager_benchmark(
+    ...     module,
+    ...     label="GELU",
+    ...     backends=["jax", "numpy", "tensorflow", "torch"],
+    ...     devices=["cpu", "gpu:0"],
+    ...     args=args,
+    ...     output_path="./ivy/report.csv"
+    ... )
+
     """
     backends = ivy.default(backends, [])
     devices = ivy.default(devices, [])
@@ -211,6 +279,29 @@ def visualize_speed_up(
         A filter for the backends for which graphs should be generated.
     labels
         A filter for the labels for which graphs should be generated.
+
+    Examples
+    --------
+    Visualize for given set of devices and backends:
+
+    >>> from benchmark import visualize_speed_up
+    >>> visualize_speed_up(
+    ...     file_path="./ivy/report.csv",
+    ...     output_path="./ivy/save_fig.png",
+    ...     backends=["torch", "jax"],
+    ...     devices=["cpu", "gpu:0"],
+    ... )
+
+    Visualize for a specific experiment label:
+
+    >>> from benchmark import visualize_speed_up
+    >>> visualize_speed_up(
+    ...     file_path="./ivy/report.csv",
+    ...     output_path="./ivy/save_fig.png",
+    ...     backends=["jax"],
+    ...     devices=["gpu:0"],
+    ...     labels=["GELU"],
+    ... )
 
     """
     file_path = ivy.default(file_path, "./report.csv")
