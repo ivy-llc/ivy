@@ -356,5 +356,4 @@ def test_numpy_ediff1d(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
-        axis=axis,
     )
