@@ -145,8 +145,8 @@ def asarray(
     elif isinstance(obj, (Number, bool, complex)):
         if dtype is None:
             dtype = ivy.default_dtype(item=obj)
-        ret = paddle.to_tensor(obj).squeeze().cast(dtype)
-        return ret
+        with ivy.ArrayMode(False):
+            return ivy.squeeze(paddle.to_tensor(obj,dtype=dtype),0)
 
     else:
         dtype = ivy.as_native_dtype((ivy.default_dtype(dtype=dtype, item=obj)))
