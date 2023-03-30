@@ -1942,3 +1942,115 @@ def logspace(
         device=device,
         out=out,
     )
+
+
+@handle_array_function
+@infer_device
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_nestable
+def one_cool(
+        indices: Union[ivy.Array, ivy.NativeArray],
+        depth: int,
+        /,
+        *,
+        on_value: Optional[Number] = None,
+        off_value: Optional[Number] = None,
+        axis: Optional[int] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        device: Union[ivy.Device, ivy.NativeDevice] = None,
+        out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Returns a one-hot array. The locations represented by indices in the parameter
+    indices take value on_value, while all other locations take value off_value.
+
+    Parameters
+    ----------
+    indices
+        Indices for where the ones should be scattered *[batch_shape, dim]*
+    depth
+        Scalar defining the depth of the one-hot dimension.
+    on_value
+        Scalar defining the value to fill in output when indices[j] == i.
+        Default: ``1``.
+    off_value
+        Scalar defining the value to fill in output when indices[j] != i.
+        Default: ``0``.
+    axis
+        Axis to scatter on. The default is ``-1``, a new inner-most axis is created.
+    dtype
+        The data type of the output tensor.
+    device
+        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if
+        None.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        Tensor of zeros with the same shape and type as a, unless dtype provided which
+        overrides.
+
+    Examples
+    --------
+    With :class:`ivy.Array` inputs:
+
+    >>> x = ivy.array([3, 1])
+    >>> y = 5
+    >>> z = x.one_cool(5)
+    >>> print(z)
+    ivy.array([[0., 0., 0., 1., 0.],
+    ...    [0., 1., 0., 0., 0.]])
+
+    >>> x = ivy.array([0])
+    >>> y = 5
+    >>> ivy.one_cool(x, y)
+    ivy.array([[1., 0., 0., 0., 0.]])
+
+    >>> x = ivy.array([0])
+    >>> y = 5
+    >>> ivy.one_cool(x, 5, out=z)
+    ivy.array([[1., 0., 0., 0., 0.]])
+    >>> print(z)
+    ivy.array([[1., 0., 0., 0., 0.]])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1, 2]), \
+        b=ivy.array([3, 1]), c=ivy.array([2, 3]))
+    >>> y = 5
+    >>> z = x.one_cool(y)
+    >>> print(z)
+    {
+        a: ivy.array([[0., 1., 0., 0., 0.],
+                    [0., 0., 1., 0., 0.]]),
+        b: ivy.array([[0., 0., 0., 1., 0.],
+                    [0., 1., 0., 0., 0.]]),
+        c: ivy.array([[0., 0., 1., 0., 0.],
+                    [0., 0., 0., 1., 0.]])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([2]), \
+        b=ivy.array([]), c=ivy.native_array([4]))
+    >>> y = 7
+    >>> z = x.one_cool(y)
+    >>> print(z)
+    {
+        a: ivy.array([[0., 0., 1., 0., 0., 0., 0.]]),
+        b: ivy.array([], shape=(0, 7)),
+        c: ivy.array([[0., 0., 0., 0., 1., 0., 0.]])
+    }
+    """
+    return current_backend(indices).one_cool(
+        indices,
+        depth,
+        on_value=on_value,
+        off_value=off_value,
+        axis=axis,
+        dtype=dtype,
+        device=device,
+        out=out,
+    )
