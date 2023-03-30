@@ -347,12 +347,11 @@ def test_jax_numpy_sort_complex(
 )
 def test_jax_numpy_where(
     *,
-    dtype_x_axis,
-    test_flags,
-    on_device,
-    fn_tree,
-    frontend,
     dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     x = x[0]
