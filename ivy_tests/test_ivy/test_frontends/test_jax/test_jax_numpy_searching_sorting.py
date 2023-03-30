@@ -344,6 +344,7 @@ def test_jax_numpy_sort_complex(
     fn_tree="jax.numpy.where",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric")),
     test_with_out=st.just(False),
+    native_arrays=st.just(True),
 )
 def test_jax_numpy_where(
     *,
@@ -352,6 +353,7 @@ def test_jax_numpy_where(
     test_flags,
     fn_tree,
     on_device,
+    native_array
 ):
     input_dtype, x = dtype_and_x
     x = x[0]
@@ -363,6 +365,7 @@ def test_jax_numpy_where(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         frontend=frontend,
+        native_array_flags=native_array,
         fn_tree=fn_tree,
         on_device=on_device,
         condition=condition,
