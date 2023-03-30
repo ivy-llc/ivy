@@ -210,7 +210,11 @@ def logaddexp2(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    if not ivy.is_float_dtype(x1):
+        x1 = paddle.cast(x1, ivy.default_float_dtype(as_native=True))
+        x2 = paddle.cast(x2, ivy.default_float_dtype(as_native=True))
+    return ivy.log2(ivy.exp2(x1) + ivy.exp2(x2))
 
 
 def diff(
