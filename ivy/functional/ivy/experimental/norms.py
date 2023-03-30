@@ -106,7 +106,7 @@ def batch_norm(
     runningvariance = variance
     ndims = len(x.shape)
     if training:
-        n = 1 if ndims == 1 else x.size / x.shape[1]
+        n = x.size if ndims == 1 else x.size / x.shape[-1]
         dims = (0, *range(2, ndims))
         mean = ivy.mean(x, axis=dims)
         variance = ivy.var(x, axis=dims)
