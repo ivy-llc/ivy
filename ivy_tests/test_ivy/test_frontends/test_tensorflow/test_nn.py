@@ -754,7 +754,6 @@ def test_tensorflow_separable_conv2d(
     )
 
 
-# TODO: test with other dtypes
 @st.composite
 def _batch_normalization_helper(draw):
     shape1, shape2, shape3, shape4 = draw(helpers.mutually_broadcastable_shapes(4))
