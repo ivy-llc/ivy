@@ -131,9 +131,10 @@ We follow the `Array API Standard convention`_ about positional and keyword argu
   When a method accepting positional-only parameters is called, positional arguments are mapped to these parameters based solely on their order.
 * Optional parameters must be keyword-only arguments.
 
-This convention makes it easier for us to modify functions in the future.
-Keyword-only parameters will mandate the use of argument names when calling functions, and this will increase our flexibility for extending function behaviour in future releases without breaking forward compatibility.
-Similar arguments can be kept together in the argument list, rather than us needing to add these at the very end to ensure positional argument behaviour remains the same.
+Using keyword-only parameters makes it easier for us to modify functions in the future. When using keyword-only parameters, we must use argument names when calling functions, 
+which increases our flexibility for extending function behaviour in future releases without breaking forward compatibility. This approach allows us to 
+keep similar arguments together in the argument list, instead of needing to add them at the very end to ensure positional argument 
+behaviour remains the same. In summary, using keyword-only parameters enables us to modify functions more easily in the future while maintaining compatibility with existing code.
 
 The :code:`dtype`, :code:`device` and :code:`out` arguments are always keyword-only.
 Arrays always have type hint :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :class:`ivy.Array` in the output.
@@ -287,10 +288,10 @@ Version Pinning
 At any point in time, Ivy's development will be predominantly focused around a particular version (and all prior versions) for each of the backend frameworks.
 These are the pinned versions shown in the `optional.txt <https://github.com/unifyai/ivy/blob/master/requirements/optional.txt>`_ file.
 
-At the time of pinning, these will be the most up-to-date versions for each framework, but new releases of the backend frameworks will then of course be made and there will sometimes be a short period of time in which we are working towards the next Ivy release, and we opt to keep the repo pinned to the older version until the next release is out.
-This helps to prevent our work growing in an unbounded manner, as we work towards getting all tests passing and everything in good shape before making the release.
-If we always pulled the latest version of every framework into master, we might end up constantly battling new subtle bugs, without knowing whether the bugs come from the change in version or our own incremental changes to the code.
-Therefore, when working towards an Ivy release, keeping the backends temporarily pinned essentially ensures that our development target remains fixed for this period of time.
+When we work towards a new Ivy release, we pin the latest version of each framework, which is the most up-to-date version at the time. 
+However, new releases of the backend frameworks will continue to be made, and during this period, we choose to stick to the older version until the next release is out. This approach helps us avoid uncontrolled 
+growth and allows us to focus on getting all tests passing and ensuring everything is in good shape before making the release. If we constantly pulled the latest version of every framework into master, we might encounter new subtle bugs without knowing whether they resulted from the change in version or our own incremental code changes. 
+Therefore, temporarily pinning the backends during the Ivy release process ensures that our development target remains consistent and fixed during this period.
 
 As an example, at the time of writing the latest version of PyTorch is :code:`1.12.1`, whereas Ivy is pinned to version :code:`1.11.0`.
 Therefore, all frontend functions (see Ivy Frontends section) added to ivy should not include any arguments or behaviours which are exclusive to PyTorch version :code:`1.12.1`.
