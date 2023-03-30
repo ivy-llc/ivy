@@ -2731,11 +2731,11 @@ def test_numpy_instance_mod__(
         min_num_dims=1,
         force_int_axis=True,
     ),
-    keep_dims=st.booleans(),
+    inplace=st.booleans(),
 )
 def test_numpy_ndarray_byteswap(
     dtype_x_axis,
-    keep_dims,
+    inplace,
     frontend_method_data,
     init_flags,
     method_flags,
@@ -2750,8 +2750,7 @@ def test_numpy_ndarray_byteswap(
         },
         method_input_dtypes=input_dtypes,
         method_all_as_kwargs_np={
-            "axis": axis,
-            "keepdims": keep_dims,
+            "inplace": inplace,
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
