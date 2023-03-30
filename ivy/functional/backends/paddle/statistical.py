@@ -230,8 +230,8 @@ def cumprod(
     if not (exclusive or reverse):
         return paddle.cumprod(x, dim=axis).cast(dtype)
     elif exclusive and reverse:
-        x = paddle.cumprod(paddle.flip(x, axis=(axis,)), dim=axis)
         with ivy.ArrayMode(False):
+            x = paddle.cumprod(ivy.flip(x, axis=(axis,)), dim=axis)
             x = ivy.swapaxes(x, axis, -1)
             x = ivy.concat((ivy.ones_like(x[..., -1:]), x[..., :-1]), axis=-1)
             x = ivy.swapaxes(x, axis, -1)
@@ -244,7 +244,7 @@ def cumprod(
             return ivy.swapaxes(x, axis, -1).cast(dtype)
     else:
         with ivy.ArrayMode(False):
-            x = paddle.cumprod(paddle.flip(x, axis=(axis,)), dim=axis)
+            x = paddle.cumprod(ivy.flip(x, axis=(axis,)), dim=axis)
             return ivy.flip(x, axis=axis).cast(dtype)
 
 
