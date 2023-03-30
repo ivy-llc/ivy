@@ -118,6 +118,8 @@ def pinv(a, rcond=None, validate_args=False, name=None):
 )
 def tensordot(a, b, axes, name=None):
     a, b = check_tensorflow_casting(a, b)
+    if not ivy.isscalar(axes):
+        axes = ivy.to_list(axes)
     return ivy.tensordot(a, b, axes=axes)
 
 
@@ -243,3 +245,8 @@ def lu_matrix_inverse(lower_upper, perm, validate_args=False, name=None):
 @to_ivy_arrays_and_back
 def einsum(equation, *inputs, **kwargs):
     return tf_frontend.einsum(equation, *inputs, **kwargs)
+
+
+@to_ivy_arrays_and_back
+def adjoint(matrix, name=None):
+    return ivy.adjoint(matrix)
