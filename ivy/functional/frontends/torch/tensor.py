@@ -754,7 +754,7 @@ class Tensor:
     def atan2_(self, other):
         self._ivy_array = self.atan2(other).ivy_array
         return self
-    
+
     def fmin(self, other, out=None):
         return torch_frontend.fmin(self._ivy_array, other, out=out)
 
@@ -883,3 +883,8 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def cumprod(self, dim, dtype):
         return torch_frontend.cumprod(self._ivy_array, dim, dtype=dtype)
+
+    @with_supported_dtypes({"1.11.0 and below": ("integer",)}, "torch")
+    def bitwise_xor_(self, other, *, out=None):
+        self._ivy_array = self.bitwise_xor(other, out=out).ivy_array
+        return self
