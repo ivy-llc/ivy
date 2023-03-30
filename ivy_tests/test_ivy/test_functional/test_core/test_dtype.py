@@ -886,7 +886,7 @@ _composition_1.test_unsupported_dtypes = {
         "complex64",
         "complex128",
     ),
-    "paddle": ("uint16","uint32","uint64","bfloat16","complex64", "complex128",),
+    "paddle": ("uint16", "uint32", "uint64", "bfloat16", "complex64", "complex128", ),
 }
 
 
@@ -900,7 +900,7 @@ _composition_2.test_unsupported_dtypes = {
     "jax": ("complex64", "complex128"),
     "tensorflow": ("complex64", "complex128"),
     "torch": ("uint16", "uint32", "uint64", "float16", "complex64", "complex128"),
-    "paddle": ("uint16","uint32","uint64","bfloat16",),
+    "paddle": ("uint16", "uint32", "uint64", "bfloat16", ),
 }
 
 
