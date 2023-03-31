@@ -3,6 +3,7 @@
 # local
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
+import ivy.functional.frontends.torch.nn.functional as torch_frontend_nn
 from ivy.functional.frontends.numpy.creation_routines.from_existing_data import (
     array as np_frontend_array,
 )
@@ -261,6 +262,10 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def log2(self):
         return torch_frontend.log2(self._ivy_array)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+    def relu(self):
+        return torch_frontend_nn.relu(self._ivy_array)
 
     def amax(self, dim=None, keepdim=False):
         return torch_frontend.amax(self._ivy_array, dim=dim, keepdim=keepdim)
@@ -749,6 +754,9 @@ class Tensor:
     def atan2_(self, other):
         self._ivy_array = self.atan2(other).ivy_array
         return self
+    
+    def fmin(self, other, out=None):
+        return torch_frontend.fmin(self._ivy_array, other, out=out)
 
     # Special Methods #
     # -------------------#

@@ -533,5 +533,10 @@ def top_k(operand, k):
 
 
 @to_ivy_arrays_and_back
+def squeeze(array, dimensions):
+    return ivy.squeeze(array, dimensions)
+
+
+@to_ivy_arrays_and_back
 def real(x):
     return ivy.real(x)

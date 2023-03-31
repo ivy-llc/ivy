@@ -59,7 +59,7 @@ def expand_dims(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if x.dtype == paddle.float16:
-        return paddle.unsqueeze(x.cast(ivy.default_float_dtype()), axis).cast(x.dtype)
+        return paddle.unsqueeze(x.cast("float32"), axis).cast(x.dtype)
     return paddle.unsqueeze(x, axis)
 
 
@@ -77,7 +77,7 @@ def flip(
     if axis is None:
         axis = list(range(x.ndim))
     if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
-        return paddle.flip(x.cast(ivy.default_float_dtype()), axis).cast(x.dtype)
+        return paddle.flip(x.cast("float32"), axis).cast(x.dtype)
     return paddle.flip(x, axis)
 
 
@@ -93,7 +93,7 @@ def permute_dims(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if x.dtype in [paddle.int8, paddle.int16, paddle.uint8]:
-        return paddle.transpose(x.cast(ivy.default_float_dtype()), axes).cast(x.dtype)
+        return paddle.transpose(x.cast("float32"), axes).cast(x.dtype)
     return paddle.transpose(x, axes)
 
 
@@ -176,7 +176,7 @@ def roll(
         paddle.float16,
         paddle.bool,
     ]:
-        return paddle.roll(x.cast(ivy.default_float_dtype()), shift, axis).cast(x.dtype)
+        return paddle.roll(x.cast("float32"), shift, axis).cast(x.dtype)
     return paddle.roll(x, shift, axis)
 
 
@@ -200,7 +200,7 @@ def squeeze(
             "tried to squeeze a zero-dimensional input by axis {}".format(axis)
         )
     if x.dtype in [paddle.int16, paddle.float16]:
-        return paddle.squeeze(x.cast(ivy.default_float_dtype()), axis=axis).cast(
+        return paddle.squeeze(x.cast("float32"), axis=axis).cast(
             x.dtype
         )
     return paddle.squeeze(x, axis=axis)
@@ -229,7 +229,7 @@ def stack(
     arrays = list(map(lambda x: x.cast(dtype), arrays))
 
     if dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16, paddle.bool]:
-        arrays = list(map(lambda x: x.cast(ivy.default_float_dtype()), arrays))
+        arrays = list(map(lambda x: x.cast("float32"), arrays))
         return paddle.stack(arrays, axis=axis).cast(dtype)
 
     elif dtype in [
@@ -339,7 +339,7 @@ def repeat(
             ) + 1j * paddle.repeat_interleave(x.imag(), repeats=repeats, axis=axis)
 
         return paddle.repeat_interleave(
-            x.cast(ivy.default_float_dtype()), repeats=repeats, axis=axis
+            x.cast("float32"), repeats=repeats, axis=axis
         ).cast(x.dtype)
 
     return paddle.repeat_interleave(x, repeats=repeats, axis=axis)
@@ -367,7 +367,7 @@ def tile(
         return paddle.zeros(shape).cast(x.dtype)
 
     if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
-        return paddle.tile(x.cast(ivy.default_float_dtype()), repeats).cast(x.dtype)
+        return paddle.tile(x.cast("float32"), repeats).cast(x.dtype)
     return paddle.tile(x, repeats)
 
 
@@ -398,7 +398,7 @@ def constant_pad(
         paddle.bool,
     ]:
         return paddle.nn.functional.pad(
-            x.cast(ivy.default_float_dtype()), pad=paddings, value=value
+            x.cast("float32"), pad=paddings, value=value
         ).cast(x.dtype)
     return paddle.nn.functional.pad(x=x, pad=paddings, value=value)
 
@@ -480,7 +480,7 @@ def unstack(
             imag_list = paddle.unbind(x.imag(), axis)
             ret = [(a + 1j * b) for a, b in zip(real_list, imag_list)]
         else:
-            ret = paddle.unbind(x.cast(ivy.default_float_dtype()), axis)
+            ret = paddle.unbind(x.cast("float32"), axis)
             ret = list(map(lambda a: a.cast(x.dtype), ret))
 
     else:

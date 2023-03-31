@@ -1746,7 +1746,7 @@ _composition_1.test_unsupported_devices_and_dtypes = {
             "complex64",
             "complex128",
         ),
-        "paddle": ("uint16","uint32","uint64","bfloat16",),
+        "paddle": ("uint16","uint32","uint64","bfloat16","complex64", "complex128"),
     },
     "gpu": {
         "numpy": ivy.all_dtypes,
