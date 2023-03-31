@@ -82,7 +82,6 @@ def unique_counts(x: paddle.Tensor, /) -> Tuple[paddle.Tensor, paddle.Tensor]:
     {"2.4.2 and below": {"cpu": ("complex64", "complex128")}}, backend_version
 )
 def unique_inverse(x: paddle.Tensor, /) -> Tuple[paddle.Tensor, paddle.Tensor]:
-
     if x.dtype not in [paddle.int32, paddle.int64, paddle.float32, paddle.float64]:
         x, x_dtype = x.cast("float32"), x.dtype
     else:

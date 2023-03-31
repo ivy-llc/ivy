@@ -283,7 +283,7 @@ def _handle_backend_specific_vars(backend):
         backend.set_global_attr("RNG", backend.functional.backends.jax.random.RNG)
 
 
-def convert_from_source_backend_to_numpy(variable_ids, numpy_objs):
+def convert_from_source_backend_to_numpy(variable_ids, numpy_objs, devices):
     # Dynamic Backend
     from ivy.functional.ivy.gradients import _is_variable, _variable_data
 
@@ -348,6 +348,7 @@ def convert_from_source_backend_to_numpy(variable_ids, numpy_objs):
     for obj in new_objs:
         if obj.dynamic_backend:
             numpy_objs.append(obj)
+            devices.append(obj.device)
             if _is_var(obj):
                 # add variable object id to set
                 variable_ids.add(id(obj))
@@ -362,27 +363,33 @@ def convert_from_source_backend_to_numpy(variable_ids, numpy_objs):
             else:
                 obj._data = np_data
 
-    return variable_ids, numpy_objs
+    return variable_ids, numpy_objs, devices
 
 
-def convert_from_numpy_to_target_backend(variable_ids, numpy_objs):
+def convert_from_numpy_to_target_backend(variable_ids, numpy_objs, devices):
     # Dynamic Backend
     from ivy.functional.ivy.gradients import _variable
 
     # convert all ivy.Array and ivy.Container instances from numpy
     # to native arrays using the newly set backend
-    for obj in numpy_objs:
+    for obj, device in zip(numpy_objs, devices):
         np_arr = obj.data if isinstance(obj, ivy.Array) else obj
         # check if object was originally a variable
         if id(obj) in variable_ids:
             native_arr = ivy.nested_map(
-                np_arr, current_backend().asarray, include_derived=True, shallow=False
+                np_arr,
+                lambda x: current_backend().asarray(x, device=device),
+                include_derived=True,
+                shallow=False,
             )
             new_data = _variable(native_arr)
 
         else:
             new_data = ivy.nested_map(
-                np_arr, current_backend().asarray, include_derived=True, shallow=False
+                np_arr,
+                lambda x: current_backend().asarray(x, device=device),
+                include_derived=True,
+                shallow=False,
             )
 
         if isinstance(obj, ivy.Container):
@@ -421,11 +428,12 @@ def set_backend(backend: str, dynamic: bool = False):
 
     variable_ids = set()  # create an empty set to store variable object ids
     numpy_objs = []  # create an empty list to store numpy objects
+    devices = []  # create an empty list to store device strings
     # created during 1st conversion step
 
     if dynamic:
-        variable_ids, numpy_objs = convert_from_source_backend_to_numpy(
-            variable_ids, numpy_objs
+        variable_ids, numpy_objs, devices = convert_from_source_backend_to_numpy(
+            variable_ids, numpy_objs, devices
         )
 
     # update the global dict with the new backend
@@ -449,7 +457,7 @@ def set_backend(backend: str, dynamic: bool = False):
     _set_backend_as_ivy(ivy_original_dict, ivy, backend)
 
     if dynamic:
-        convert_from_numpy_to_target_backend(variable_ids, numpy_objs)
+        convert_from_numpy_to_target_backend(variable_ids, numpy_objs, devices)
 
     if verbosity.level > 0:
         verbosity.cprint("backend stack: {}".format(backend_stack))

@@ -307,8 +307,8 @@ def _interp_args(draw, mode=None, mode_list=None):
             available_dtypes=helpers.get_dtypes("float"),
             min_num_dims=num_dims,
             max_num_dims=num_dims,
-            min_dim_size=1,
-            max_dim_size=3,
+            min_dim_size=2,
+            max_dim_size=5,
             large_abs_safety_factor=50,
             small_abs_safety_factor=50,
             safety_factor_scale="log",
@@ -368,31 +368,23 @@ def test_interpolate(
         scale_factor,
         recompute_scale_factor,
     ) = dtype_x_mode
-    try:
-        helpers.test_function(
-            ground_truth_backend=ground_truth_backend,
-            input_dtypes=input_dtype,
-            test_flags=test_flags,
-            fw=backend_fw,
-            fn_name=fn_name,
-            on_device=on_device,
-            rtol_=1e-01,
-            atol_=1e-01,
-            x=x[0],
-            size=size,
-            mode=mode,
-            align_corners=align_corners,
-            antialias=antialias,
-            scale_factor=scale_factor,
-            recompute_scale_factor=recompute_scale_factor,
-        )
-    except Exception as e:
-        if hasattr(e, "message") and (
-            "output dimensions must be positive" in e.message
-            or "Input and output sizes should be greater than 0" in e.message
-        ):
-            assume(False)
-        raise e
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-01,
+        atol_=1e-01,
+        x=x[0],
+        size=size,
+        mode=mode,
+        align_corners=align_corners,
+        antialias=antialias,
+        scale_factor=scale_factor,
+        recompute_scale_factor=recompute_scale_factor,
+    )
 
 
 @st.composite
