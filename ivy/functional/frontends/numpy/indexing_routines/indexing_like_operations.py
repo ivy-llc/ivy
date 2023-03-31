@@ -47,3 +47,8 @@ def indices(dimensions, dtype=int, sparse=False):
         else:
             res[i] = idx
     return res
+
+
+@to_ivy_arrays_and_back
+def mask_indices(n, mask_func, k=0):
+    return ivy.mask_indices(n, mask_func, k)
