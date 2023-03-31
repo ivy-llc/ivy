@@ -96,11 +96,6 @@ def nanargmin(a, /, *, axis=None, out=None, keepdims=None):
 
 
 @to_ivy_arrays_and_back
-def lexsort(keys, /, *, axis=-1):
-    return ivy.lexsort(keys, axis=axis)
-
-
-@to_ivy_arrays_and_back
 def extract(condition, arr):
     if condition.dtype is not bool:
         condition = condition != 0
@@ -140,3 +135,8 @@ def flatnonzero(a):
 @to_ivy_arrays_and_back
 def sort_complex(a):
     return ivy.sort(a)
+
+
+@to_ivy_arrays_and_back
+def lexsort(keys, /, *, axis=-1):
+    return ivy.lexsort(keys, axis=axis)
