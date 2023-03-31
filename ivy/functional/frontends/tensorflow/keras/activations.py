@@ -124,6 +124,34 @@ selu.supported_dtypes = {
 }
 
 
+@to_ivy_arrays_and_back
+def leaky_relu(x, alpha=0.01):
+    return ivy.leaky_relu(x, alpha=alpha)
+
+
+selu.leaky_relu = {
+    "numpy": (
+        "float16",
+        "float32",
+        "float64",
+    ),
+    "tensorflow": (
+        "float16",
+        "float32",
+        "float64",
+    ),
+    "torch": (
+        "float32",
+        "float64",
+    ),
+    "jax": (
+        "float16",
+        "float32",
+        "float64",
+    ),
+}
+
+
 def deserialize(name, custom_objects=None):
     return ivy.deserialize(name, custom_objects=custom_objects)
 

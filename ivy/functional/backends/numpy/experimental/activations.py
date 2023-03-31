@@ -90,3 +90,14 @@ def selu(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 
 selu.support_native_out = True
+
+
+@_scalar_output_to_0d_array
+def leaky_relu(x: np.ndarray, /, *, alpha: float = 0.01, out: Optional[np.ndarray] = None) -> np.ndarray:
+    ret = np.where(x > 0, x, alpha * x).astype(x.dtype)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ret
+
+
+leaky_relu.support_native_out = True

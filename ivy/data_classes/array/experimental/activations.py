@@ -280,3 +280,33 @@ class _ArrayWithActivationsExperimental(abc.ABC):
 
         """
         return ivy.selu(self._data, out=out)
+    
+    def leaky_relu(self, /, *, alpha: float = 0.01, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """Applies the Leaky ReLU activation function.
+
+        Parameters
+        ----------
+        self
+            input array
+        alpha
+            the slope of the negative part
+        out
+            optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array with Leak ReLU applied to each element in input.
+
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+
+        >>> x = ivy.array([-2.,  -1., 0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.])
+        >>> y = x.leaky_relu()
+        >>> print(y)
+        ivy.array([-0.0200, -0.0100,  0.0000,  1.0000,  2.0000,  3.0000,  4.0000,  5.0000,
+                    6.0000,  7.0000])
+        """
+        return ivy.leaky_relu(self._data, alpha=alpha, out=out)

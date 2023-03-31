@@ -72,3 +72,10 @@ def selu(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ivy.astype(ret, x.dtype)
+
+
+def leaky_relu(x: Tensor, /, *, alpha: float = 0.01, out: Optional[Tensor] = None) -> Tensor:
+    ret = tf.nn.leaky_relu(x, alpha=alpha)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ivy.astype(ret, x.dtype)

@@ -388,3 +388,52 @@ def selu(
     }
     """
     return current_backend(x).selu(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@handle_array_function
+def leaky_relu(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, alpha: float = 0.01, out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Applies the element-wise function:
+
+    Parameters
+    ----------
+    x
+        input array
+    alpha
+        controls the angle of the negative slope
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing the LeakyReLU activation of each element in ``x``.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+    >>> x = ivy.array([-1.,  0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.])
+    >>> y = ivy.leaky_relu(x)
+    >>> print(y)
+    ivy.array([-0.01,  0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.])
+
+    With :class:`ivy.Container` input:
+    >>> x = ivy.Container(
+            a=ivy.array([-3., -2., -1., 0., 1., 2., 3., 4., 5.]),
+            b=ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.])
+        )
+    >>> x = ivy.leaky_relu(x, out=x)
+    >>> print(x)
+    {
+        a: ivy.array([-0.03, -0.02, -0.01, 0., 1., 2., 3., 4., 5.]),
+        b: ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.])
+    }
+    """
+    return current_backend(x).leaky_relu(x, alpha=alpha, out=out)

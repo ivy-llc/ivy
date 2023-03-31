@@ -114,8 +114,8 @@ def triu_indices(
     return current_backend().triu_indices(n_rows, n_cols, k, device=device)
 
 
-@infer_dtype
 @to_native_arrays_and_back
+@infer_dtype
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -200,8 +200,8 @@ def hann_window(
     )
 
 
-@infer_dtype
 @to_native_arrays_and_back
+@infer_dtype
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -248,8 +248,8 @@ def kaiser_window(
     )
 
 
-@infer_dtype
 @outputs_to_ivy_arrays
+@infer_dtype
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -314,8 +314,8 @@ def kaiser_bessel_derived_window(
     return ivy.array(dn_low + dn_mid, dtype=dtype, out=out)
 
 
-@infer_dtype
 @to_native_arrays_and_back
+@infer_dtype
 @handle_out_argument
 @handle_nestable
 @handle_exceptions

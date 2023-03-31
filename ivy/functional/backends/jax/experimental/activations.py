@@ -85,3 +85,10 @@ def selu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ret
+
+
+def leaky_relu(x: JaxArray, /, *, alpha: float = 0.01, out: Optional[JaxArray] = None) -> JaxArray:
+    ret = jax.nn.leaky_relu(x, negative_slope=alpha).astype(x.dtype)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ret
