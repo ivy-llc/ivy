@@ -2,6 +2,7 @@
 import math
 import itertools
 from typing import Optional, Union, Tuple, Literal, Sequence
+from functools import reduce
 
 # local
 import ivy
