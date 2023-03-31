@@ -292,6 +292,9 @@ class Tensor:
     def bitwise_right_shift(self, other, *, out=None):
         return torch_frontend.bitwise_right_shift(self._ivy_array, other)
 
+     def bitwise_left_shift(self, other, *, out=None):
+        return torch_frontend.bitwise_left_shift(self._ivy_array, other)
+
     @with_supported_dtypes({"1.11.0 and below": ("integer",)}, "torch")
     def bitwise_or_(self, other, *, out=None):
         self._ivy_array = self.bitwise_or(other, out=out).ivy_array
