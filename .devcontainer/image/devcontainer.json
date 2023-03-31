@@ -10,7 +10,8 @@
 		}
 	},
 
-	"postCreateCommand": "bash .devcontainer/post_create_commands.sh"
+	"postCreateCommand": "bash .devcontainer/post_create_commands.sh",
+	"postStartCommand": "git config --global --add safe.directory ${containerWorkspaceFolder}"
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
