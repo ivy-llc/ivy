@@ -164,5 +164,20 @@ def outputs_to_native_arrays(fn: Callable):
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         ret = fn(*args, **kwargs)
-        return ivy.to_native(_to_ivy_array(ret))
+        if isinstance(ret, jax_frontend.DeviceArray):
+            ret = ret.ivy_array.data
+        return ret
+        #return ivy.to_native(_to_ivy_array(ret))
     return  new_fn
+
+
+def inputs_to_frontend_arrays(fn: Callable):
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        args = ivy.nested_map(args, lambda x: jax_frontend.DeviceArray(ivy.array(x)))
+        kwargs = ivy.nested_map(kwargs, lambda x: jax_frontend.DeviceArray(ivy.array(x)))
+        return fn(*args, **kwargs)
+    return new_fn
+
+def to_frontend_arrays_and_back(fn: Callable) -> Callable:
+    return outputs_to_native_arrays(inputs_to_frontend_arrays(fn))
