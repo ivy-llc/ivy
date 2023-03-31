@@ -229,7 +229,7 @@ def test_numpy_reciprocal(
         order="K",
         dtype=dtype,
         subok=True,
-    )    
+    )
 
 
 # square
