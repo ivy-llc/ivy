@@ -320,8 +320,20 @@ Ubuntu
    d. Choosing "Docker" from the left panel.
       Type python3 (with the number) in python interpreter path and press ok.
 
-For questions, please reach out on `discord`_ in the `docker channel`_!
+**Docker Connection not Successfull**
 
+This is a common error which you might face. If you are not successfully able to connect docker with Pycharm(point 4a) and your docker is also running, the issue is that you are not able to use your docker socket. So, executing the below two commands should solve this.
+    
+    .. code-block:: none
+        
+        sudo chmod a+rwx /var/run/docker.sock
+        
+    .. code-block:: none
+    
+        sudo chmod a+rwx /var/run/docker.pid  
+
+
+For questions, please reach out on `discord`_ in the `docker channel`_!
 
 **Video**
 
