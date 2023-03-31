@@ -104,10 +104,11 @@ def batch_norm(
 
     runningmean = mean
     runningvariance = variance
-    ndims = len(x.shape)
     if training:
-        n = x.size if ndims == 1 else x.size / x.shape[-1]
-        dims = (0, *range(2, ndims))
+        ndims = len(x.shape)
+        numel = x.size if ivy.current_backend_str() != "torch" else x.numel()
+        n = numel if ndims == 1 else numel / x.shape[-1]
+        dims = (0, *range(1, ndims - 1))
         mean = ivy.mean(x, axis=dims)
         variance = ivy.var(x, axis=dims)
         runningmean = (1 - momentum) * runningmean + momentum * mean
@@ -177,7 +178,17 @@ def instance_norm(
          Tuple of arrays containing
           the normalized input, running mean, and running variance.
     """
-    return current_backend(x).instance_norm(
+    N = x.shape[0]
+    C = x.shape[-1]
+    S = x.shape[1:-1]
+    xdims = len(x.shape)
+    x = ivy.permute_dims(x, axes=(*range(1, xdims - 1), 0, xdims - 1))
+    x = x.reshape((1, *S, N * C))
+    mean = ivy.tile(mean, N)
+    variance = ivy.tile(variance, N)
+    scale = ivy.tile(scale, N)
+    offset = ivy.tile(offset, N)
+    xnormalized, runningmean, runningvariance = batch_norm(
         x,
         mean,
         variance,
@@ -188,6 +199,17 @@ def instance_norm(
         momentum=momentum,
         out=out,
     )
+    xnormalized = xnormalized.reshape((*S, N, C))
+    return (
+        ivy.permute_dims(
+            xnormalized, axes=(xdims - 2, *range(0, xdims - 2), xdims - 1)
+        ),
+        runningmean.reshape((N, C)).mean(axis=0),
+        runningvariance.reshape((N, C)).mean(axis=0),
+    )
+
+
+instance_norm.mixed_function = True
 
 
 @to_native_arrays_and_back
