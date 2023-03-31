@@ -365,7 +365,8 @@ def vmap(
     in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
     out_axes: int = 0,
 ) -> Callable:
-    @ivy.to_native_arrays_and_back
+    @ivy.output_to_native_arrays
+    @ivy.inputs_to_native_arrays
     def _vmap(*args):
 
         # convert args tuple to list to allow mutability using moveaxis ahead.

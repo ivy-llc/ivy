@@ -83,15 +83,22 @@ def float_power(
     return paddle.cast(paddle.pow(x1, x2), dtype=paddle.float64)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def exp2(
     x: Union[paddle.Tensor, float, list, tuple],
     /,
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    with ivy.ArrayMode(False):
+        return ivy.pow(2, x)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def copysign(
     x1: Union[paddle.Tensor, Number],
     x2: Union[paddle.Tensor, Number],
@@ -99,7 +106,10 @@ def copysign(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    with ivy.ArrayMode(False):
+        x2 = ivy.where(ivy.equal(x2, 0), ivy.divide(1, x2), x2)
+        signs = ivy.sign(x2)
+        return ivy.multiply(ivy.abs(x1), signs)
 
 
 def count_nonzero(
@@ -190,6 +200,10 @@ def imag(
     return paddle.imag(val)
 
 
+@with_unsupported_dtypes(
+    {"2.4.2 and below": ("uint16", "bfloat16")},
+    backend_version,
+)
 def nan_to_num(
     x: paddle.Tensor,
     /,
@@ -200,9 +214,38 @@ def nan_to_num(
     neginf: Optional[Union[float, int]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    with ivy.ArrayMode(False):
+        if ivy.is_int_dtype(x):
+            if posinf == None:
+                posinf = ivy.iinfo(x).max
+            if neginf == None:
+                neginf = ivy.iinfo(x).min
+        elif ivy.is_float_dtype(x) or ivy.is_complex_dtype(x):
+            if posinf == None:
+                posinf = ivy.finfo(x).max
+            if neginf == None:
+                neginf = ivy.finfo(x).min
+        ret = ivy.where(ivy.isnan(x), paddle.to_tensor(nan, dtype=x.dtype), x)
+        ret = ivy.where(
+            ivy.logical_and(ivy.isinf(ret), ret > 0),
+            paddle.to_tensor(posinf, dtype=x.dtype),
+            ret,
+        )
+        ret = ivy.where(
+            ivy.logical_and(ivy.isinf(ret), ret < 0),
+            paddle.to_tensor(neginf, dtype=x.dtype),
+            ret,
+        )
+        if copy:
+            return ret.clone()
+        else:
+            x = ret
+            return x
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def logaddexp2(
     x1: Union[paddle.Tensor, float, list, tuple],
     x2: Union[paddle.Tensor, float, list, tuple],
@@ -210,7 +253,8 @@ def logaddexp2(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    with ivy.ArrayMode(False):
+        return ivy.log2(ivy.exp2(x1) + ivy.exp2(x2))
 
 
 def diff(
@@ -342,7 +386,6 @@ def xlogy(
     backend_version,
 )
 def real(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-
     return paddle.real(x)
 
 

@@ -236,9 +236,6 @@ def conv_general_dilated(
 
 @to_ivy_arrays_and_back
 def convert_element_type(operand, new_dtype):
-    assert can_cast(
-        ivy.dtype(operand), ivy.as_ivy_dtype(new_dtype)
-    ), "Cannot cast from {} to {}".format(ivy.dtype(operand), new_dtype)
     return ivy.astype(operand, new_dtype, copy=False)
 
 
@@ -533,6 +530,11 @@ def top_k(operand, k):
     values, indices = ivy.top_k(operand, k, axis=-1)
     indices = ivy.astype(indices, ivy.int32, copy=False)
     return [values, indices]
+
+
+@to_ivy_arrays_and_back
+def squeeze(array, dimensions):
+    return ivy.squeeze(array, dimensions)
 
 
 @to_ivy_arrays_and_back
