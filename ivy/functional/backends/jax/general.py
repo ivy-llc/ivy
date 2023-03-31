@@ -421,6 +421,7 @@ def vmap(
     in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
     out_axes: int = 0,
 ) -> Callable:
-    return ivy.to_native_arrays_and_back(
+    func = ivy.output_to_native_arrays(func)
+    return ivy.inputs_to_native_arrays(
         jax.vmap(func, in_axes=in_axes, out_axes=out_axes)
     )
