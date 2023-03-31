@@ -37,8 +37,18 @@ def concatenate(arrays, axis=0, dtype=None):
 
 
 @to_ivy_arrays_and_back
+def repeat(a, repeats, axis=None, *, total_repeat_length=None):
+    return ivy.repeat(a, repeats, axis=axis)
+
+
+@to_ivy_arrays_and_back
 def reshape(a, newshape, order="C"):
     return ivy.reshape(a, shape=newshape, order=order)
+
+
+@to_ivy_arrays_and_back
+def ravel(a, order="C"):
+    return ivy.reshape(a, shape=(-1,), order=order)
 
 
 @to_ivy_arrays_and_back
@@ -238,3 +248,12 @@ def row_stack(tup):
             xs += [ivy.reshape(t, (1, ivy.shape(t)[0]))]
         return ivy.concat(xs, axis=0)
     return ivy.concat(tup, axis=0)
+
+
+@to_ivy_arrays_and_back
+def hamming(M):
+    if M <= 1:
+        return ivy.ones([M], dtype=ivy.float64)
+    n = ivy.arange(M)
+    ret = 0.54 - 0.46 * ivy.cos(2.0 * ivy.pi * n / (M - 1))
+    return ret

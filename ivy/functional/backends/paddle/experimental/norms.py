@@ -8,7 +8,6 @@ from .. import backend_version
 def l2_normalize(
     x: paddle.Tensor, /, *, axis: int = None, out: paddle.Tensor = None
 ) -> paddle.Tensor:
-
     raise IvyNotImplementedException()
 
 

@@ -19,10 +19,10 @@ def _dtype_helper(x: paddle.Tensor):
 
 
 def logit(x: paddle.Tensor, /, *, eps: Optional[float] = None, out=None):
-    x , x_dtype = _dtype_helper(x)
+    x, x_dtype = _dtype_helper(x)
 
     if eps is None:
-        nan = paddle.to_tensor([float('nan')]).cast(x.dtype)
+        nan = paddle.to_tensor([float("nan")]).cast(x.dtype)
         x = paddle.where(paddle.logical_or(x > 1, x < 0), nan, x)
     else:
         x = paddle.clip(x, eps, 1 - eps)
@@ -36,12 +36,12 @@ def thresholded_relu(
     threshold: Optional[Union[int, float]] = 0,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    x , x_dtype = _dtype_helper(x)
+    x, x_dtype = _dtype_helper(x)
 
     return F.thresholded_relu(x, threshold=threshold).cast(x_dtype)
 
 
 def relu6(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    x , x_dtype = _dtype_helper(x)
+    x, x_dtype = _dtype_helper(x)
 
     return F.relu6(x).cast(x_dtype)
