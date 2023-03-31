@@ -281,8 +281,7 @@ def strided_slice(
         )
     )
     begin, end, strides = map(
-        lambda x: ivy.array(x) if isinstance(x, int) else x,
-        [begin, end, strides]
+        lambda x: ivy.array(x) if isinstance(x, int) else x, [begin, end, strides]
     )
     num_defined = len(begin)
     strides = ivy.repeat(ivy.array(1), num_defined) if strides is None else strides
@@ -292,7 +291,7 @@ def strided_slice(
     )
     begin, end, strides = map(
         lambda x: [ivy.to_scalar(i) for i in x] if ivy.is_ivy_array(x) else x,
-        [begin, end, strides]
+        [begin, end, strides],
     )
     for i, v in enumerate(shrink_axis_mask):
         if v == 1:
@@ -320,12 +319,21 @@ def strided_slice(
                 end = end + [None] * num_missing
                 strides = strides + [1] * num_missing
             else:
-                begin = begin[:ellipsis_index] + [None] * (num_missing + 1) + \
-                    begin[ellipsis_index + 1:]
-                end = end[:ellipsis_index] + [None] * (num_missing + 1) + \
-                    end[ellipsis_index + 1:]
-                strides = strides[:ellipsis_index] + [1] * (num_missing + 1) + \
-                    strides[ellipsis_index + 1:]
+                begin = (
+                    begin[:ellipsis_index]
+                    + [None] * (num_missing + 1)
+                    + begin[ellipsis_index + 1 :]
+                )
+                end = (
+                    end[:ellipsis_index]
+                    + [None] * (num_missing + 1)
+                    + end[ellipsis_index + 1 :]
+                )
+                strides = (
+                    strides[:ellipsis_index]
+                    + [1] * (num_missing + 1)
+                    + strides[ellipsis_index + 1 :]
+                )
     full_slice = ()
     for i, _ in enumerate(begin):
         if new_axis_mask[i]:
@@ -345,8 +353,11 @@ def strided_slice(
     if all(i is None for i in full_slice):
         full_slice += (...,)
     ret = input_[full_slice]
-    shrink_indices = [i for i, v in enumerate(shrink_axis_mask)
-                      if v and i < len(ret.shape) and ret.shape[i] == 1]
+    shrink_indices = [
+        i
+        for i, v in enumerate(shrink_axis_mask)
+        if v and i < len(ret.shape) and ret.shape[i] == 1
+    ]
     ret = ivy.squeeze(ret, axis=shrink_indices)
     return ret
 

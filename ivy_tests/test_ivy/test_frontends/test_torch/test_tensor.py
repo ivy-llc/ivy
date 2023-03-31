@@ -5879,6 +5879,7 @@ def test_torch_instance_bitwise_xor(
         on_device=on_device,
     )
 
+
 # cumprod
 @handle_frontend_method(
     class_tree=CLASS_TREE,

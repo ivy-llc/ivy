@@ -1455,7 +1455,7 @@ def test_jax_numpy_row_stack(
 # hamming
 @handle_frontend_test(
     fn_tree="jax.numpy.hamming",
-    m=helpers.ints(min_value=0,max_value=20),
+    m=helpers.ints(min_value=0, max_value=20),
 )
 def test_jax_numpy_hamming(
     m,
