@@ -28,9 +28,10 @@ def install_pkg(path, pkg, base="fw/"):
             f"pip3 install {pkg} --default-timeout=100   --no-cache-dir", shell=True
         )
 
-if __name__=="__main__":
-    arg_lis=sys.argv
-    directory_generator(arg_lis[1:],"")
+
+if __name__ == "__main__":
+    arg_lis = sys.argv
+    directory_generator(arg_lis[1:], "")
 
 
 # torch_req = ["torch/1.13.1"]

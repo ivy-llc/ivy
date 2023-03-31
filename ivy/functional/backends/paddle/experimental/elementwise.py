@@ -85,7 +85,7 @@ def float_power(
 
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-) 
+)
 def exp2(
     x: Union[paddle.Tensor, float, list, tuple],
     /,
@@ -93,7 +93,7 @@ def exp2(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     with ivy.ArrayMode(False):
-        return ivy.pow(2,x)
+        return ivy.pow(2, x)
 
 
 @with_unsupported_device_and_dtypes(
@@ -107,9 +107,9 @@ def copysign(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     with ivy.ArrayMode(False):
-        x2 = ivy.where(ivy.equal(x2, 0),ivy.divide(1, x2),x2)
+        x2 = ivy.where(ivy.equal(x2, 0), ivy.divide(1, x2), x2)
         signs = ivy.sign(x2)
-        return ivy.multiply(ivy.abs(x1),signs)
+        return ivy.multiply(ivy.abs(x1), signs)
 
 
 def count_nonzero(
@@ -214,24 +214,32 @@ def nan_to_num(
     neginf: Optional[Union[float, int]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-     with ivy.ArrayMode(False):
+    with ivy.ArrayMode(False):
         if ivy.is_int_dtype(x):
-            if posinf==None:
+            if posinf == None:
                 posinf = ivy.iinfo(x).max
-            if neginf==None:
-                neginf= ivy.iinfo(x).min
+            if neginf == None:
+                neginf = ivy.iinfo(x).min
         elif ivy.is_float_dtype(x) or ivy.is_complex_dtype(x):
-            if posinf==None:
+            if posinf == None:
                 posinf = ivy.finfo(x).max
-            if neginf==None:
-                neginf=ivy.finfo(x).min     
+            if neginf == None:
+                neginf = ivy.finfo(x).min
         ret = ivy.where(ivy.isnan(x), paddle.to_tensor(nan, dtype=x.dtype), x)
-        ret = ivy.where(ivy.logical_and(ivy.isinf(ret), ret > 0), paddle.to_tensor(posinf, dtype=x.dtype), ret)
-        ret = ivy.where(ivy.logical_and(ivy.isinf(ret), ret < 0), paddle.to_tensor(neginf, dtype=x.dtype), ret)
+        ret = ivy.where(
+            ivy.logical_and(ivy.isinf(ret), ret > 0),
+            paddle.to_tensor(posinf, dtype=x.dtype),
+            ret,
+        )
+        ret = ivy.where(
+            ivy.logical_and(ivy.isinf(ret), ret < 0),
+            paddle.to_tensor(neginf, dtype=x.dtype),
+            ret,
+        )
         if copy:
             return ret.clone()
         else:
-            x= ret
+            x = ret
             return x
 
 

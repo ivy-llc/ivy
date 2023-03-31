@@ -122,7 +122,7 @@ def test_fmod(
 @handle_test(
     fn_tree="functional.ivy.experimental.fmax",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_value=-10,
         max_value=10,
         num_arrays=2,
@@ -149,7 +149,7 @@ def test_fmax(
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
-        ground_truth_backend=ground_truth_backend,
+        ground_truth_backend="jax",
         fn_name=fn_name,
         x1=x[0],
         x2=x[1],
@@ -1109,9 +1109,7 @@ def test_hypot(
 
 @handle_test(
     fn_tree="functional.ivy.experimental.binarizer",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid")
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
     threshold=helpers.floats(),
     container_flags=st.just([False]),
 )

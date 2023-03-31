@@ -45,6 +45,7 @@ def fmod(
 fmod.support_native_out = True
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def fmax(
     x1: torch.Tensor,
     x2: torch.Tensor,

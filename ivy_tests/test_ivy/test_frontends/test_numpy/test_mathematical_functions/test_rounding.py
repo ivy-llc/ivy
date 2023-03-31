@@ -88,7 +88,7 @@ def test_numpy_fix(
         get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
-    number_positional_args = np_frontend_helpers.get_num_positional_args_ufunc(
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
         fn_name="floor"
     ),
 )
@@ -121,7 +121,7 @@ def test_numpy_floor(
         subok=True,
     )
 
-    
+
 # trunc
 @handle_frontend_test(
     fn_tree="numpy.trunc",
