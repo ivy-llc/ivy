@@ -1,7 +1,9 @@
 # global
 import math
 import itertools
+import functools
 from typing import Optional, Union, Tuple, Literal, Sequence
+from functools import reduce
 
 # local
 import ivy
