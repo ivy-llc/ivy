@@ -30,6 +30,7 @@ __all__ = [
         name.startswith("_")
         or name == "ivy"
         or (isinstance(thing, types.ModuleType) and "ivy" not in thing.__name__)
+        or name == "reduce"
     )
 ]
 del types
