@@ -4,16 +4,47 @@ from hypothesis import strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_norms import (
-    _instance_and_batch_norm_helper,
-)
 
-# batch_norm
+
+@st.composite
+def _instance_and_batch_norm_helper(draw, *, min_num_dims=1, min_dim_size=1):
+    x_dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            large_abs_safety_factor=24,
+            small_abs_safety_factor=24,
+            safety_factor_scale="log",
+            min_num_dims=min_num_dims,
+            max_num_dims=4,
+            min_dim_size=min_dim_size,
+            ret_shape=True,
+            max_value=999,
+            min_value=-1001,
+        )
+    )
+    _, variance = draw(
+        helpers.dtype_and_values(
+            dtype=x_dtype,
+            shape=(shape[1],),
+            max_value=999,
+            min_value=0,
+        )
+    )
+    _, others = draw(
+        helpers.dtype_and_values(
+            dtype=x_dtype * 3,
+            shape=(shape[1],),
+            max_value=999,
+            min_value=-1001,
+            num_arrays=3,
+        )
+    )
+    return x_dtype, x[-1], others[0], others[1], others[2], variance[0]
 
 
 @handle_frontend_test(
     fn_tree="torch.nn.functional.batch_norm",
-    data=_instance_and_batch_norm_helper(),
+    data=_instance_and_batch_norm_helper(min_num_dims=2, min_dim_size=2),
     momentum=helpers.floats(min_value=0.01, max_value=0.1),
     eps=helpers.floats(min_value=1e-5, max_value=0.1),
     training=st.booleans(),
@@ -49,7 +80,7 @@ def test_torch_batch_norm(
 
 @handle_frontend_test(
     fn_tree="torch.nn.functional.instance_norm",
-    data=_instance_and_batch_norm_helper(),
+    data=_instance_and_batch_norm_helper(min_num_dims=3, min_dim_size=2),
     momentum=helpers.floats(min_value=0.01, max_value=0.1),
     eps=helpers.floats(min_value=1e-5, max_value=0.1),
     use_input_stats=st.booleans(),
