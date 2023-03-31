@@ -6,7 +6,10 @@ from ivy.functional.backends.jax import JaxArray
 import jax.numpy as jnp
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("complex64", "complex128")}, backend_version)
+@with_unsupported_dtypes(
+    {"1.11.0 and below": ("complex64", "complex128")},
+    backend_version
+)
 def median(
     input: JaxArray,
     /,
