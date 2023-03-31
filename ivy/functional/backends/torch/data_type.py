@@ -207,7 +207,7 @@ def as_native_dtype(
 
 def dtype(x: Union[torch.tensor, np.ndarray], *, as_native: bool = False) -> ivy.Dtype:
     if as_native:
-        return ivy.as_native_dtype(as_ivy_dtype(x.dtype))
+        return ivy.as_native_dtype(x.dtype)
     return as_ivy_dtype(x.dtype)
 
 
