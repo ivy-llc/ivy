@@ -296,6 +296,9 @@ class Tensor:
     def bitwise_or(self, other, *, out=None):
         return torch_frontend.bitwise_or(self._ivy_array, other)
 
+    def bitwise_left_shift(self, other, *, out=None):
+        return torch_frontend.bitwise_left_shift(self._ivy_array, other)
+
     @with_supported_dtypes({"1.11.0 and below": ("integer",)}, "torch")
     def bitwise_or_(self, other, *, out=None):
         self._ivy_array = self.bitwise_or(other, out=out).ivy_array
@@ -754,6 +757,9 @@ class Tensor:
     def atan2_(self, other):
         self._ivy_array = self.atan2(other).ivy_array
         return self
+    
+    def fmin(self, other, out=None):
+        return torch_frontend.fmin(self._ivy_array, other, out=out)
 
     # Special Methods #
     # -------------------#
