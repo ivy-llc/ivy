@@ -150,6 +150,7 @@ def logspace(start, stop, num=50, endpoint=True, base=10.0, dtype=None, axis=0):
         stop -= interval
     return ivy.logspace(start, stop, num, base=base, axis=axis, dtype=dtype)
 
+
 @to_ivy_arrays_and_back
 def meshgrid(*x, sparse=False, indexing='xy'):
     ivy_meshgrid = ivy.meshgrid(*x, sparse=sparse, indexing=indexing)
