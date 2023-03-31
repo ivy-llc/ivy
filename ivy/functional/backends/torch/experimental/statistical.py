@@ -79,7 +79,7 @@ def quantile(
         qt = q
     for i in axis:
         keepdim_shape[i] = 1
-    axis = [num_dim+x if x<0 else x for x in axis]
+    axis = [num_dim + x if x < 0 else x for x in axis]
     axis.sort()
     dimension = len(a.size())
     while len(axis) > 0:
