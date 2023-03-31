@@ -124,8 +124,8 @@ def test_tensorflow_poisson(
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
-        shape=shape,
         lam=lam,
+        shape=shape,
         dtype=dtype[0],
         seed=seed,
     )
