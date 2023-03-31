@@ -2351,12 +2351,16 @@ def _squeeze_helper(draw):
     fn_tree="jax.lax.squeeze",
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        shape=st.shared(helpers.get_shape(
-            allow_none=False,
-            min_num_dims=1,
-            max_num_dims=10,
-            min_dim_size=1,
-            max_dim_size=5), key="value_shape")
+        shape=st.shared(
+            helpers.get_shape(
+                allow_none=False,
+                min_num_dims=1,
+                max_num_dims=10,
+                min_dim_size=1,
+                max_dim_size=5,
+            ),
+            key="value_shape",
+        ),
     ),
     dim=_squeeze_helper(),
 )

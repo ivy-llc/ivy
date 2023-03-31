@@ -146,7 +146,7 @@ def asarray(
         if dtype is None:
             dtype = ivy.default_dtype(item=obj)
         with ivy.ArrayMode(False):
-            return ivy.squeeze(paddle.to_tensor(obj,dtype=dtype),0)
+            return ivy.squeeze(paddle.to_tensor(obj, dtype=dtype), 0)
 
     else:
         dtype = ivy.as_native_dtype((ivy.default_dtype(dtype=dtype, item=obj)))

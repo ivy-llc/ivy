@@ -174,9 +174,7 @@ def broadcast_to(
         paddle.uint8,
         paddle.float16,
     ]:
-        return paddle.broadcast_to(x.cast("float32"), shape).cast(
-            x.dtype
-        )
+        return paddle.broadcast_to(x.cast("float32"), shape).cast(x.dtype)
     elif x.dtype in [paddle.complex64, paddle.complex128]:
         x_real = paddle.broadcast_to(x.real(), shape)
         x_imag = paddle.broadcast_to(x.imag(), shape)
