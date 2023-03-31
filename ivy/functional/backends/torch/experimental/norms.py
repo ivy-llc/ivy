@@ -26,10 +26,8 @@ l2_normalize.support_native_out = True
         x.ndim > 1
         and mean.ndim == 1
         and variance.ndim == 1
-        and scale is None
-        or scale.ndim == 1
-        and offset is None
-        or offset.ndim == 1
+        and (scale is None or scale.ndim == 1)
+        and (offset is None or offset.ndim == 1)
     )
 )
 def batch_norm(
@@ -64,11 +62,20 @@ def batch_norm(
         eps=eps,
         momentum=momentum,
     )
-    xnormalized = torch.permute(x, dims=(0, *range(2, xdims), 1))
+    xnormalized = torch.permute(xnormalized, dims=(0, *range(2, xdims), 1))
     return xnormalized, runningmean, runningvariance
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
+@handle_mixed_function(
+    lambda x, mean, variance, scale, offset, **kwargs: (
+        x.ndim > 1
+        and mean.ndim == 1
+        and variance.ndim == 1
+        and (scale is None or scale.ndim == 1)
+        and (offset is None or offset.ndim == 1)
+    )
+)
 def instance_norm(
     x: torch.Tensor,
     mean: torch.Tensor,
@@ -88,7 +95,11 @@ def instance_norm(
     offset.requires_grad = False
     runningmean = mean.clone()
     runningvariance = variance.clone()
-    result = torch.nn.functional.instance_norm(
+    # reshape  from  N, *S, C to N, C, *S
+    xdims = x.ndim
+    x = torch.permute(x, dims=(0, xdims - 1, *range(1, xdims - 1)))
+
+    xnormalized = torch.nn.functional.instance_norm(
         x,
         runningmean,
         runningvariance,
@@ -98,7 +109,8 @@ def instance_norm(
         eps=eps,
         momentum=momentum,
     )
-    return result, runningmean, runningvariance
+    xnormalized = torch.permute(xnormalized, dims=(0, *range(2, xdims), 1))
+    return xnormalized, runningmean, runningvariance
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
