@@ -632,7 +632,7 @@ def test_jax_numpy_logspace(
     fn_tree="jax.numpy.meshgrid",
     dtype_and_arrays=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=st.integers(min_value=2, max_value=5),
+        num_arrays=st.integers(min_value=1, max_value=5),
         min_num_dims=1,
         max_num_dims=1,
         shared_dtype=True,
