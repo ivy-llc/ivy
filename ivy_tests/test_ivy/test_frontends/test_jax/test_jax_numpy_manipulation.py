@@ -1511,7 +1511,7 @@ def test_jax_numpy_kaiser(
     on_device,
 ):
     helpers.test_frontend_function(
-        input_dtypes=["int64","float64"],
+        input_dtypes=["int64", "float64"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
