@@ -151,10 +151,8 @@ def logspace(start, stop, num=50, endpoint=True, base=10.0, dtype=None, axis=0):
     return ivy.logspace(start, stop, num, base=base, axis=axis, dtype=dtype)
 
 @to_ivy_arrays_and_back
-def meshgrid(*x, copy=True, sparse=False, indexing='xy'):
+def meshgrid(*x, sparse=False, indexing='xy'):
     ivy_meshgrid = ivy.meshgrid(*x, sparse=sparse, indexing=indexing)
-    if copy:
-        ivy_meshgrid = (arr.copy() for arr in ivy_meshgrid)
     return ivy_meshgrid
 
 
