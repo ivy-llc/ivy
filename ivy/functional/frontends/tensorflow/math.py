@@ -275,6 +275,8 @@ def reduce_max(input_tensor, axis=None, keepdims=False, name="reduce_max"):
 
 @to_ivy_arrays_and_back
 def reduce_mean(input_tensor, axis=None, keepdims=False, name="reduce_mean"):
+    if ivy.exists(axis):
+        axis = ivy.to_list(axis)
     return ivy.mean(input_tensor, axis=axis, keepdims=keepdims)
 
 
@@ -472,6 +474,11 @@ def asin(x, name=None):
 @to_ivy_arrays_and_back
 def acos(x, name="acos"):
     return ivy.acos(x)
+
+
+@to_ivy_arrays_and_back
+def acosh(x, name="acosh"):
+    return ivy.acosh(x)
 
 
 @to_ivy_arrays_and_back
