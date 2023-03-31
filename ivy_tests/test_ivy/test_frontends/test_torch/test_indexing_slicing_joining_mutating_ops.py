@@ -1240,15 +1240,17 @@ def _arrays_dim_idx_n_dtypes(draw):
     )
 
     min_dim = min(unique_dims)
+    max_dim = max(unique_dims)
     _idx = draw(
         helpers.array_values(
             shape=min_dim,
             dtype="int64",
             min_value=0,
-            max_value=min_dim,
+            max_value=max_dim,
             exclude_min=False,
         )
     )
+
     xs = list()
     input_dtypes = draw(
         helpers.array_dtypes(
@@ -1265,6 +1267,8 @@ def _arrays_dim_idx_n_dtypes(draw):
                 large_abs_safety_factor=2.5,
                 small_abs_safety_factor=2.5,
                 safety_factor_scale="log",
+                min_value=-20,
+                max_value=20,
             )
         )
         xs.append(x)
