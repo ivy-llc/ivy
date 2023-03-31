@@ -123,7 +123,7 @@ def test_jax_lax_cholesky(
 
 # eig
 @handle_frontend_test(
-    fn_tree="jax.lax.linalg.eig",  # replace by "jax.lax.linalg.eigh"
+    fn_tree="jax.lax.linalg.eig",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
