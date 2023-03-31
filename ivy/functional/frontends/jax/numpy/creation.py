@@ -151,19 +151,10 @@ def logspace(start, stop, num=50, endpoint=True, base=10.0, dtype=None, axis=0):
     return ivy.logspace(start, stop, num, base=base, axis=axis, dtype=dtype)
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes(
-    {
-        "0.3.14 and below": (
-            "float16",
-            "bfloat16",
-        )
-    },
-    "jax",
-)
 def meshgrid(*x, copy=True, sparse=False, indexing='xy'):
     ivy_meshgrid = ivy.meshgrid(*x, sparse=sparse, indexing=indexing)
-    if not copy:
-        ivy_meshgrid = (ivy.array(arr, copy=False, subok=True) for arr in ivy_meshgrid)
+    if copy:
+        ivy_meshgrid = (arr.copy() for arr in ivy_meshgrid)
     return ivy_meshgrid
 
 
