@@ -250,8 +250,6 @@ def dtype(
 
 
 def dtype_bits(dtype_in: Union[tf.DType, str, np.dtype], /) -> int:
-    if isinstance(dtype_in, np.dtype):
-        dtype_in = dtype_in.name
     dtype_str = as_ivy_dtype(dtype_in)
     if "bool" in dtype_str:
         return 1

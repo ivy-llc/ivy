@@ -107,14 +107,14 @@ def broadcast_to(
 
 
 @_handle_nestable_dtype_info
-def finfo(type: Union[torch.dtype, str, torch.Tensor], /) -> Finfo:
+def finfo(type: Union[torch.dtype, str, torch.Tensor, np.ndarray], /) -> Finfo:
     if isinstance(type, (torch.Tensor, np.ndarray)):
         type = type.dtype
     return Finfo(torch.finfo(ivy.as_native_dtype(type)))
 
 
 @_handle_nestable_dtype_info
-def iinfo(type: Union[torch.dtype, str, torch.Tensor], /) -> torch.iinfo:
+def iinfo(type: Union[torch.dtype, str, torch.Tensor, np.ndarray], /) -> torch.iinfo:
     if isinstance(type, (torch.Tensor, np.ndarray)):
         type = type.dtype
     return torch.iinfo(ivy.as_native_dtype(type))
@@ -212,8 +212,6 @@ def dtype(x: Union[torch.tensor, np.ndarray], *, as_native: bool = False) -> ivy
 
 
 def dtype_bits(dtype_in: Union[torch.dtype, str, np.dtype], /) -> int:
-    if isinstance(dtype_in, np.ndarray):
-        dtype_in = dtype_in.name
     dtype_str = as_ivy_dtype(dtype_in)
     if "bool" in dtype_str:
         return 1
