@@ -56,3 +56,9 @@ def tensorsolve(a, b, axes=2):
 def kron(a, b):
     a, b = promote_types_of_numpy_inputs(a, b)
     return ivy.kron(a, b)
+
+@handle_numpy_out
+@to_ivy_arrays_and_back
+def multi_dot(arrays, *, out=None):
+    return ivy.multi_dot(arrays, out=out)
+
