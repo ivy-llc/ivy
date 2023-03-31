@@ -141,8 +141,8 @@ def diff(x, /, *, n=1, axis=-1, prepend=None, append=None):
 
 
 @to_ivy_arrays_and_back
-def ediff1d(x, /, *, to_end=None, to_begin=None):
-    ret = ivy.diff(ivy.flatten(x), n=1, axis=-1, prepend=None, append=None)
+def ediff1d(ary, /, *, to_end=None, to_begin=None):
+    ret = ivy.diff(ivy.flatten(ary), n=1, axis=-1, prepend=None, append=None)
     if to_begin:
         ret = ivy.concat((ivy.flatten(to_begin), ret))
     if to_end:
