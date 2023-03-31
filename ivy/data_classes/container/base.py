@@ -3678,7 +3678,7 @@ class ContainerBase(dict, abc.ABC):
                 "jax": "([",
                 "numpy": "([",
                 "tensorflow": "([",
-                "pytorch": "([",
+                "torch": "([",
                 "paddle": "])",
             }
             split_phrase = split_phrase_dict[self._cont_ivy.current_backend_str()]
