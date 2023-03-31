@@ -21,7 +21,7 @@ def _to_array(x):
         return _to_array(x.primal)
     elif isinstance(x, jax.interpreters.partial_eval.DynamicJaxprTracer):
         return _to_array(x.aval)
-    if isinstance(x, jax.interpreters.batching.BatchTracer):
+    elif isinstance(x, jax.interpreters.batching.BatchTracer):
         return _to_array(x.val)
     return x
 
