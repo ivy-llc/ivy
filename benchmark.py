@@ -4,6 +4,7 @@ import time
 import os
 import copy
 import importlib
+import warnings
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -310,13 +311,6 @@ def visualize_speed_up(
     df = df.query("label in @labels") if labels is not None else df
     backends = list(df["backend"].unique()) if backends == "all" else backends
     devices = list(df["device"].unique()) if devices == "all" else devices
-    labels = (
-        list(df["label"].unique())
-        if labels == "all"
-        else [labels]
-        if isinstance(labels, str)
-        else labels
-    )
     fig, axes = plt.subplots(len(devices), len(backends))
     fig.set_figwidth(30)
     fig.set_figheight(12)
@@ -333,7 +327,12 @@ def visualize_speed_up(
             ax.set_ylabel("Percent Speed up on compiling", {"fontsize": 18})
             ax.tick_params(axis="both", labelsize=15)
             query = df.query("backend == @backend and device == @device")
-            assert not query.empty, "No records matching the filters passed"
-            ax.violinplot(query["percent_speed_up"])
+            if not query.empty:
+                ax.violinplot(query["percent_speed_up"])
+            else:
+                warnings.warn(
+                    "No records matching the filters passed"
+                    "backend={} and device={}".format(backend, device)
+                )
     plt.savefig(output_path)
     print("plot saved to {} ...".format(output_path))
