@@ -272,3 +272,14 @@ def tensor(
     pin_memory=False,
 ):
     return ivy.array(data, dtype=dtype, device=device)
+
+
+@to_ivy_arrays_and_back
+def asarray(
+    obj,
+    *,
+    dtype=None,
+    device=None,
+    copy=None,
+):
+    return ivy.asarray(obj, copy=copy, dtype=dtype, device=device)

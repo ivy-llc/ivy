@@ -422,7 +422,7 @@ class _ContainerWithStatistical(ContainerBase):
         )
 
     @staticmethod
-    def static_var(
+    def _static_var(
         x: ivy.Container,
         /,
         *,
@@ -496,7 +496,7 @@ class _ContainerWithStatistical(ContainerBase):
         )
 
     @staticmethod
-    def static_prod(
+    def _static_prod(
         x: ivy.Container,
         /,
         *,
@@ -761,7 +761,7 @@ class _ContainerWithStatistical(ContainerBase):
             b: ivy.array([27., 64.])
         }
         """
-        return self.static_prod(
+        return self._static_prod(
             self,
             axis=axis,
             dtype=dtype,
@@ -774,7 +774,7 @@ class _ContainerWithStatistical(ContainerBase):
         )
 
     @staticmethod
-    def static_sum(
+    def _static_sum(
         x: ivy.Container,
         /,
         *,
@@ -813,7 +813,7 @@ class _ContainerWithStatistical(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.static_sum(
+        return self._static_sum(
             self,
             axis=axis,
             dtype=dtype,
@@ -977,7 +977,7 @@ class _ContainerWithStatistical(ContainerBase):
     # ----- #
 
     @staticmethod
-    def static_cumsum(
+    def _static_cumsum(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         axis: int = 0,
         exclusive: bool = False,
@@ -1261,7 +1261,7 @@ class _ContainerWithStatistical(ContainerBase):
                          [10, 10]])
         }
         """
-        return self.static_cumsum(
+        return self._static_cumsum(
             self,
             axis=axis,
             exclusive=exclusive,
@@ -1275,7 +1275,7 @@ class _ContainerWithStatistical(ContainerBase):
         )
 
     @staticmethod
-    def static_cumprod(
+    def _static_cumprod(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
@@ -1441,7 +1441,7 @@ class _ContainerWithStatistical(ContainerBase):
                           [1, 5]])
         }
         """
-        return self.static_cumprod(
+        return self._static_cumprod(
             self,
             axis=axis,
             exclusive=exclusive,

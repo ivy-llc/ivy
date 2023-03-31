@@ -81,8 +81,8 @@ def cross(
                 x1.real(), x2.real(), axisa, axisb, axisc, axis
             ) + 1j * _cross(x1.real(), x2.real(), axisa, axisb, axisc, axis)
         return _cross(
-            x1.cast(ivy.default_float_dtype()),
-            x2.cast(ivy.default_float_dtype()),
+            x1.cast("float32"),
+            x2.cast("float32"),
             axisa,
             axisb,
             axisc,
@@ -105,9 +105,7 @@ def det(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
         paddle.float16,
         paddle.bool,
     ]:
-        return (
-            paddle.linalg.det(x.cast(ivy.default_float_dtype())).squeeze().cast(x.dtype)
-        )
+        return paddle.linalg.det(x.cast("float32")).squeeze().cast(x.dtype)
     return paddle.linalg.det(x).squeeze()
 
 
@@ -136,7 +134,7 @@ def diagonal(
                 x.real(), offset=offset, axis1=axis1, axis2=axis2
             ) + 1j * paddle.diagonal(x.imag(), offset=offset, axis1=axis1, axis2=axis2)
         return paddle.diagonal(
-            x.cast(ivy.default_float_dtype()), offset=offset, axis1=axis1, axis2=axis2
+            x.cast("float32"), offset=offset, axis1=axis1, axis2=axis2
         ).cast(x.dtype)
     return paddle.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
 
@@ -187,7 +185,7 @@ def inner(
         paddle.float16,
         paddle.bool,
     ]:
-        x1, x2 = x1.cast(ivy.default_float_dtype()), x2.cast(ivy.default_float_dtype())
+        x1, x2 = x1.cast("float32"), x2.cast("float32")
     return paddle.inner(x1, x2).cast(ret_dtype)
 
 
@@ -212,7 +210,7 @@ def inv(
         paddle.float16,
         paddle.bool,
     ]:
-        x = x.cast(ivy.default_float_dtype())
+        x = x.cast("float32")
     if adjoint:
         x = paddle.moveaxis(x, -2, -1).conj()
     return paddle.inverse(x).cast(ret_dtype)
@@ -232,7 +230,8 @@ def matmul(
     adjoint_b: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    ret_dtype = x1.dtype
     if x1.dtype in [
         paddle.int8,
         paddle.int16,
@@ -242,7 +241,7 @@ def matmul(
         paddle.float16,
         paddle.bool,
     ]:
-        x1, x2 = x1.cast(ivy.default_float_dtype()), x2.cast(ivy.default_float_dtype())
+        x1, x2 = x1.cast("float32"), x2.cast("float32")
 
     if adjoint_a:
         x1 = paddle.moveaxis(x1, -2, -1).conj()
@@ -366,9 +365,7 @@ def matrix_rank(
             paddle.float16,
             paddle.bool,
         ]:
-            return paddle.linalg.matrix_rank(
-                x.cast(ivy.default_float_dtype()), tol=tol
-            ).cast(x.dtype)
+            return paddle.linalg.matrix_rank(x.cast("float32"), tol=tol).cast(x.dtype)
         return paddle.linalg.matrix_rank(x, tol=tol).cast(x.dtype)
 
 
@@ -385,6 +382,8 @@ def matrix_transpose(
 ) -> paddle.Tensor:
     perm = list(range(x.ndim))
     perm[-1], perm[-2] = perm[-2], perm[-1]
+    if x.dtype in [paddle.int8, paddle.int16, paddle.uint8]:
+        return paddle.transpose(x.cast("float32"), perm=perm).cast(x.dtype)
     return paddle.transpose(x, perm=perm)
 
 
@@ -404,7 +403,7 @@ def outer(
         paddle.float16,
         paddle.bool,
     ]:
-        x1, x2 = x1.cast(ivy.default_float_dtype()), x2.cast(ivy.default_float_dtype())
+        x1, x2 = x1.cast("float32"), x2.cast("float32")
     return paddle.outer(x1, x2).cast(ret_dtype)
 
 
@@ -510,9 +509,9 @@ def svd(
         paddle.float16,
         paddle.bool,
     ]:
-        ret = paddle.linalg.svd(
-            x.cast(ivy.default_float_dtype()), full_matrices=full_matrices
-        ).cast(x.dype)
+        ret = paddle.linalg.svd(x.cast("float32"), full_matrices=full_matrices).cast(
+            x.dype
+        )
     else:
         ret = paddle.linalg.svd(x, full_matrices=full_matrices)
     if compute_uv:
@@ -556,7 +555,7 @@ def tensordot(
         paddle.float16,
         paddle.bool,
     ]:
-        x1, x2 = x1.cast(ivy.default_float_dtype()), x2.cast(ivy.default_float_dtype())
+        x1, x2 = x1.cast("float32"), x2.cast("float32")
     return paddle.tensordot(x1, x2, axes=axes).cast(ret_dtype)
 
 
@@ -626,7 +625,7 @@ def vector_norm(
             ret = paddle.norm(x, p=ord, axis=axis, keepdim=keepdims).astype(dtype)
         else:
             ret = paddle.norm(
-                x.cast(ivy.default_float_dtype()), p=ord, axis=axis, keepdim=keepdims
+                x.cast("float32"), p=ord, axis=axis, keepdim=keepdims
             ).astype(dtype)
     else:
         ret = paddle.norm(x, p=ord, axis=axis, keepdim=keepdims).astype(dtype)
@@ -659,7 +658,7 @@ def diag(
             return paddle.diag(x.real(), offset=k) + 1j * paddle.diag(
                 x.imag(), offset=k
             )
-        return paddle.diag(x.cast(ivy.default_float_dtype()), offset=k).cast(x.dtype)
+        return paddle.diag(x.cast("float32"), offset=k).cast(x.dtype)
     return paddle.diag(x, offset=k)
 
 

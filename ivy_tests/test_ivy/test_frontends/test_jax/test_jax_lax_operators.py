@@ -2307,3 +2307,79 @@ def test_jax_lax_top_k(
         k=k,
         # test_values=False,
     )
+
+
+# real
+@handle_frontend_test(
+    fn_tree="jax.lax.real",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("complex")
+    ),
+)
+def test_jax_lax_real(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=True,
+        x=x[0],
+    )
+
+
+# squeeze
+@st.composite
+def _squeeze_helper(draw):
+    shape = draw(st.shared(helpers.get_shape(), key="value_shape"))
+    valid_axes = []
+    for index, axis in enumerate(shape):
+        if axis == 1:
+            valid_axes.append(index)
+    return valid_axes
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.squeeze",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.shared(
+            helpers.get_shape(
+                allow_none=False,
+                min_num_dims=1,
+                max_num_dims=10,
+                min_dim_size=1,
+                max_dim_size=5,
+            ),
+            key="value_shape",
+        ),
+    ),
+    dim=_squeeze_helper(),
+)
+def test_jax_lax_squeeze(
+    *,
+    dtype_and_values,
+    dim,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, value = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        array=value[0],
+        dimensions=dim,
+    )

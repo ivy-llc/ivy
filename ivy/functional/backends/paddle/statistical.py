@@ -41,9 +41,7 @@ def min(
             masked_x = ivy.to_native(ivy.greater_equal(x, paddle.amin(x.real())) * x)
             imag = paddle.amin(masked_x.imag(), axis=axis, keepdim=keepdims)
             return real + 1j * imag
-        return paddle.amin(
-            x.cast(ivy.default_float_dtype()), axis=axis, keepdim=keepdims
-        ).cast(x.dtype)
+        return paddle.amin(x.cast("float32"), axis=axis, keepdim=keepdims).cast(x.dtype)
     return paddle.amin(x, axis=axis, keepdim=keepdims)
 
 
@@ -72,9 +70,7 @@ def max(
             masked_x = ivy.to_native(ivy.greater_equal(x, paddle.amax(x.real())) * x)
             imag = paddle.amax(masked_x.imag(), axis=axis, keepdim=keepdims)
             return real + 1j * imag
-        return paddle.amax(
-            x.cast(ivy.default_float_dtype()), axis=axis, keepdim=keepdims
-        ).cast(x.dtype)
+        return paddle.amax(x.cast("float32"), axis=axis, keepdim=keepdims).cast(x.dtype)
     return paddle.amax(x, axis=axis, keepdim=keepdims)
 
 
@@ -104,9 +100,7 @@ def mean(
                 x.imag(), axis=axis, keepdim=keepdims
             )
             return ret if keepdims else ret.squeeze()
-        ret = paddle.mean(
-            x.cast(ivy.default_float_dtype()), axis=axis, keepdim=keepdims
-        )
+        ret = paddle.mean(x.cast("float32"), axis=axis, keepdim=keepdims)
         return ret.astype(x.dtype) if keepdims else ret.squeeze().astype(x.dtype)
     ret = paddle.mean(x, axis=axis, keepdim=keepdims)
     return ret if keepdims else ret.squeeze()
@@ -175,7 +169,7 @@ def sum(
     if x.dtype in [paddle.int8, paddle.uint8]:
         dtype = x.dtype if dtype is None else dtype
         return paddle.sum(
-            x.cast(ivy.default_float_dtype()), axis=axis, dtype=dtype, keepdim=keepdims
+            x.cast("float32"), axis=axis, dtype=dtype, keepdim=keepdims
         ).cast(dtype)
     return paddle.sum(x, axis=axis, dtype=dtype, keepdim=keepdims)
 
