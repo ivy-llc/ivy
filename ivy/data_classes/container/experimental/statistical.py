@@ -676,7 +676,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         *,
         axis: Optional[Union[Tuple[int], int]] = None,
         keepdims: bool = False,
-        overwrite_input: Optional[bool] = False,
+        overwrite_input: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -737,7 +737,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         *,
         axis: Optional[Union[Tuple[int], int]] = None,
         keepdims: bool = False,
-        overwrite_input: Optional[bool] = False,
+        overwrite_input: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.nanmedian. This method simply
