@@ -487,3 +487,7 @@ def relu6(features, name=None):
 @to_ivy_arrays_and_back
 def softmax(logits, axis=None, name=None):
     return ivy.softmax(logits, axis=axis)
+
+
+def leaky_relu(features, name=None):
+    return ivy.leaky_relu(features)
