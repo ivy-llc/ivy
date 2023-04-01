@@ -120,8 +120,6 @@ def test_tensorflow_shuffle(
     )
 
 
-
-
 #random_stateless_uniform
 @handle_frontend_test(
     fn_tree="tensorflow.random.stateless_uniform",
