@@ -193,7 +193,7 @@ def test_value_and_grad(x, dtype, func, backend_fw):
     value_np, grad_np = helpers.flatten_and_to_np(ret=value), helpers.flatten_and_to_np(
         ret=grad
     )
-    ivy.unset_backend()
+    ivy.previous_backend()
     ivy.set_backend("tensorflow")
     var = _variable(ivy.array(x, dtype=dtype))
     fn = ivy.value_and_grad(func)
@@ -226,7 +226,7 @@ def test_jac(x, dtype, func, backend_fw):
     fn = ivy.jac(func)
     jacobian = fn(var)
     jacobian_np = helpers.flatten_and_to_np(ret=jacobian)
-    ivy.unset_backend()
+    ivy.previous_backend()
     ivy.set_backend("tensorflow")
     var = _variable(ivy.array(x, dtype=dtype))
     fn = ivy.jac(func)
@@ -254,7 +254,7 @@ def test_grad(x, dtype, func, backend_fw):
     fn = ivy.grad(func)
     grad = fn(var)
     grad_np = helpers.flatten_and_to_np(ret=grad)
-    ivy.unset_backend()
+    ivy.previous_backend()
     ivy.set_backend("tensorflow")
     var = _variable(ivy.array(x, dtype=dtype))
     fn = ivy.grad(func)

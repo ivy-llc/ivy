@@ -522,3 +522,8 @@ def around(a, decimals=0, out=None):
 @to_ivy_arrays_and_back
 def frexp(x, /):
     return ivy.frexp(x)
+
+@to_ivy_arrays_and_back
+def ldexp(x1, x2, /):
+    return ivy.ldexp(x1, x2)
+

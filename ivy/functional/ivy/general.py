@@ -56,6 +56,29 @@ trace_mode_dict["none"] = ""
 show_func_wrapper_trace_mode_stack = list()
 
 
+# Extra #
+# ------#
+
+
+class ArrayMode:
+    """Array Mode Context Manager."""
+
+    # noinspection PyShadowingNames
+    def __init__(self, array_mode):
+        self._array_mode = array_mode
+
+    def __enter__(self):
+        set_array_mode(self._array_mode)
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        unset_array_mode()
+        if self and (exc_type is not None):
+            print(exc_tb)
+            raise exc_val
+        return self
+
+
 def _parse_ellipsis(so, ndims):
     pre = list()
     for s in so:
@@ -140,7 +163,7 @@ def is_native_array(
     x: Union[ivy.Array, ivy.NativeArray], /, *, exclusive: bool = False
 ) -> bool:
     """
-    Determines whether the input x is a Native Array.
+    Determines whether the input x is an :class:`ivy.NativeArray` instance.
 
     Parameters
     ----------
@@ -153,7 +176,7 @@ def is_native_array(
     Returns
     -------
     ret
-        Boolean, whether or not x is a native array.
+        Boolean, whether or not x is an :class:`ivy.NativeArray`.
 
     Examples
     --------
@@ -2654,6 +2677,7 @@ def inplace_update(
     /,
     *,
     ensure_in_backend: bool = False,
+    keep_input_dtype: bool = False,
 ) -> ivy.Array:
     """
     Perform in-place update for the input array. This will always be performed on
@@ -2672,6 +2696,9 @@ def inplace_update(
         Whether or not to ensure that the `ivy.NativeArray` is also inplace updated.
         In cases where it should be, backends which do not natively support inplace
         updates will raise an exception.
+    keep_input_dtype
+        Whether or not to preserve `x` data type after the update, otherwise `val`
+        data type will be applied. Defaults to False.
 
     Returns
     -------
@@ -2696,6 +2723,14 @@ def inplace_update(
     >>> ivy.inplace_update(x, y)
     >>> print(x)
     ivy.array([0])
+
+    With :class:`ivy.Array` input and default backend set as `numpy`:
+
+    >>> x = ivy.array([1, 2, 3], dtype=ivy.float32)
+    >>> y = ivy.array([0, 0, 0], dtype=ivy.int32)
+    >>> ivy.inplace_update(x, y, keep_input_dtype=True)
+    >>> print(x, x.dtype)
+    ivy.array([0., 0., 0.]) float32
 
     With :class:`ivy.Container` instances:, and backend set as `torch`:
 
@@ -2722,7 +2757,10 @@ def inplace_update(
 
     """
     return current_backend(x).inplace_update(
-        x, val, ensure_in_backend=ensure_in_backend
+        x,
+        val,
+        ensure_in_backend=ensure_in_backend,
+        keep_input_dtype=keep_input_dtype,
     )
 
 

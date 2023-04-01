@@ -71,3 +71,8 @@ def batch_norm(
         offset - mean * inv if offset is not None else -mean * inv
     ).astype(x.dtype)
     return np.transpose(ret, (0, ndims - 1, *range(1, ndims - 1)))
+
+
+@_scalar_output_to_0d_array
+def logsigmoid(input: np.ndarray) -> np.ndarray:
+    return -(np.log1p(np.exp(-(input))))

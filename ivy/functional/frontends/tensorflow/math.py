@@ -506,3 +506,9 @@ def add_n(inputs, name=None):
 @to_ivy_arrays_and_back
 def floormod(x, y, name=None):
     return ivy.remainder(x, y)
+
+
+@to_ivy_arrays_and_back
+def greater(x, y, name=None):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.greater(x, y)

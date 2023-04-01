@@ -1117,6 +1117,45 @@ def test_jax_numpy_dsplit(
     )
 
 
+# tile
+@handle_frontend_test(
+    fn_tree="jax.numpy.tile",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+    ),
+    repeat=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("signed_integer"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape").map(
+            lambda rep: (len(rep),)
+        ),
+        min_value=0,
+        max_value=10,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_tile(
+    *,
+    dtype_value,
+    repeat,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, value = dtype_value
+    repeat_dtype, repeat_list = repeat
+    helpers.test_frontend_function(
+        input_dtypes=dtype + repeat_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        A=value[0],
+        reps=repeat_list[0],
+    )
+
+
 # dstack
 @handle_frontend_test(
     fn_tree="jax.numpy.dstack",

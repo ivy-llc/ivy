@@ -61,3 +61,8 @@ def batch_norm(
     return torch.nn.functional.batch_norm(
         x, mean, variance, weight=scale, bias=offset, training=training, eps=eps
     )
+
+
+@with_unsupported_dtypes({"1.13.0 and below": ("float16", "bfloat16")}, backend_version)
+def logsigmoid(input: torch.Tensor) -> torch.Tensor:
+    return torch.nn.functional.logsigmoid(input)

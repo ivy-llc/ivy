@@ -331,3 +331,8 @@ def diff(input, n=1, dim=-1, prepend=None, append=None):
 @to_ivy_arrays_and_back
 def broadcast_shapes(*shapes):
     return ivy.broadcast_shapes(*shapes)
+
+
+@to_ivy_arrays_and_back
+def atleast_2d(*tensors):
+    return ivy.atleast_2d(*tensors)
