@@ -200,7 +200,7 @@ def test_numpy_kron(
 
 #multi_dot
 @handle_frontend_test(
-    fn_tree="numpy.multi_dot",
+    fn_tree="numpy.linalg.multi_dot",
     dtype_and_x=helpers.array_dtypes(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=5,
