@@ -1,7 +1,8 @@
 # global
 from typing import Optional, Union, Tuple, List
 from numbers import Number
-from math import pi
+
+# from math import pi
 import paddle
 from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
@@ -112,16 +113,16 @@ def copysign(
         return ivy.multiply(ivy.abs(x1), signs)
 
 
-def count_nonzero(
-    a: paddle.Tensor,
-    /,
-    *,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: Optional[bool] = False,
-    dtype: Optional[paddle.dtype] = None,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+# def count_nonzero(
+#     a: paddle.Tensor,
+#     /,
+#     *,
+#     axis: Optional[Union[int, Tuple[int, ...]]] = None,
+#     keepdims: Optional[bool] = False,
+#     dtype: Optional[paddle.dtype] = None,
+#     out: Optional[paddle.Tensor] = None,
+# ) -> paddle.Tensor:
+#     raise IvyNotImplementedException()
 
 
 def nansum(
@@ -216,14 +217,14 @@ def nan_to_num(
 ) -> paddle.Tensor:
     with ivy.ArrayMode(False):
         if ivy.is_int_dtype(x):
-            if posinf == None:
+            if posinf is None:
                 posinf = ivy.iinfo(x).max
-            if neginf == None:
+            if neginf is None:
                 neginf = ivy.iinfo(x).min
         elif ivy.is_float_dtype(x) or ivy.is_complex_dtype(x):
-            if posinf == None:
+            if posinf is None:
                 posinf = ivy.finfo(x).max
-            if neginf == None:
+            if neginf is None:
                 neginf = ivy.finfo(x).min
         ret = ivy.where(ivy.isnan(x), paddle.to_tensor(nan, dtype=x.dtype), x)
         ret = ivy.where(
