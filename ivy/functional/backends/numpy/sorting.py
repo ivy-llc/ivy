@@ -73,3 +73,11 @@ def searchsorted(
     else:
         ret = np.searchsorted(x, v, side=side, sorter=sorter)
     return ret.astype(ret_dtype)
+
+def byteswap(
+    /,
+    *,
+    inplace: bool = False,
+    out: np.ndarray = None,
+)
+    return np.byteswap(inplace=inplace)
