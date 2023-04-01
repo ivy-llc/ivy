@@ -469,5 +469,3 @@ class ndarray:
     def __mod__(self, value, /):
         return np_frontend.mod(self._ivy_array, value, out=self)
     
-    def byteswap(self, *, inplace=False):
-        return np_frontend.byteswap(self._ivy_array, inplace=inplace)
