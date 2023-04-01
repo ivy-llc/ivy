@@ -75,6 +75,7 @@ def rand(
         device=device,
     )
 
+
 @to_ivy_arrays_and_back
 def randn(
     size,
