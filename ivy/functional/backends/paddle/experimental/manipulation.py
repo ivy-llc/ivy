@@ -146,8 +146,12 @@ def top_k(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int8", "int16", "uint8",
-                                 "uint16", "bfloat16", "float16")}}, backend_version
+    {
+        "2.4.2 and below": {
+            "cpu": ("int8", "int16", "uint8", "uint16", "bfloat16", "float16")
+        }
+    },
+    backend_version,
 )
 def fliplr(
     m: paddle.Tensor,
@@ -241,7 +245,6 @@ def hsplit(
 
 
 def broadcast_shapes(shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
-
     if len(shapes[0]) == 0 and len(shapes[1]) == 0:
         return shapes[0]
     elif len(shapes[0]) == 0 and not len(shapes[1]) == 0:

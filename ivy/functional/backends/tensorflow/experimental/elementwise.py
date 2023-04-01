@@ -36,7 +36,9 @@ def lcm(
     return tf.math.abs(tf.experimental.numpy.lcm(x1, x2))
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("unsigned", "complex", "bool")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("unsigned", "complex", "bool")}, backend_version
+)
 def fmod(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -56,10 +58,9 @@ def fmax(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    temp = tf.constant(float("nan"))
     x1, x2 = promote_types_of_inputs(x1, x2)
-    x1 = tf.where(tf.math.is_nan(x1, temp), x2, x1)
-    x2 = tf.where(tf.math.is_nan(x2, temp), x1, x2)
+    x1 = tf.where(tf.math.is_nan(x1), x2, x1)
+    x2 = tf.where(tf.math.is_nan(x2), x1, x2)
     ret = tf.experimental.numpy.maximum(x1, x2)
     return ret
 
@@ -152,9 +153,8 @@ def count_nonzero(
         a, axis=axis, keepdims=keepdims, dtype=dtype, name=None
     )
 
-@with_unsupported_dtypes(
-    {"2.9.1 and below": ("complex",)}, backend_version
-)
+
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def nansum(
     x: Union[tf.Tensor, tf.Variable],
     /,

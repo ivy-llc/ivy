@@ -3730,7 +3730,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return _ContainerWithGeneral.static_supports_inplace_updates(
+        return _ContainerWithGeneral._static_supports_inplace_updates(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -3883,7 +3883,7 @@ class _ContainerWithGeneral(ContainerBase):
             c: ivy.array(2)
         }
         """
-        return _ContainerWithGeneral.static_get_num_dims(
+        return _ContainerWithGeneral._static_get_num_dims(
             self,
             as_array=as_array,
             key_chains=key_chains,
@@ -4015,7 +4015,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return _ContainerWithGeneral.static_array_equal(
+        return _ContainerWithGeneral._static_array_equal(
             self,
             x,
             key_chains=key_chains,
