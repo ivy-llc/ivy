@@ -2722,39 +2722,3 @@ def test_numpy_instance_mod__(
         method_flags=method_flags,
         on_device=on_device,
     )
-
-    
-# byteswap
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="numpy.array",
-    method_name="byteswap",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        inplace=False,
-    ),
-)
-def test_numpy_instance_byteswap(
-    dtype_x_axis,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    frontend,
-    on_device,
-):
-    input_dtypes, x, axis = dtype_x_axis
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtypes,
-        method_input_dtypes=input_dtypes,
-        init_all_as_kwargs_np={
-            "object": x[0],
-        },
-        frontend=frontend,
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        method_all_as_kwargs_np={
-            "inplace": inplace,
-        },
-        on_device=on_device,
-    )
