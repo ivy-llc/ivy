@@ -38,6 +38,17 @@ def clip_by_value(t, clip_value_min, clip_value_max):
 
 
 @to_ivy_arrays_and_back
+def clip_by_global_norm(t_list, clip_norm, use_norm=None):
+    if use_norm is not None:
+        global_norm = use_norm
+    else:
+        global_norm = ivy.sqrt(ivy.sum([ivy.vector_norm(t) ** 2 for t in t_list]))
+
+    max_clip_ratio = ivy.maximum(clip_norm, global_norm)
+    return [ivy.divide(t * clip_norm, max_clip_ratio) for t in t_list], global_norm
+
+
+@to_ivy_arrays_and_back
 def clip_by_norm(t, clip_norm, axes=None):
     t = ivy.array(t)
     l2sum = ivy.sum(t * t, axis=axes, keepdims=True)
