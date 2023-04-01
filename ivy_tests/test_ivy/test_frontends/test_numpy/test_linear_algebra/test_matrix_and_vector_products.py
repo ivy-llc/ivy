@@ -205,6 +205,7 @@ def test_numpy_kron(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=5,
         shared_dtype=True,
+    )
 )
 def test_numpy_multi_dot(
     dtype_and_x,
