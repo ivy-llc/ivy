@@ -405,7 +405,7 @@ def embedding(
 
 
 @handle_mixed_function(
-    lambda x, *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (
+    lambda x, *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # noqa
         not align_corners and (len(x.shape) - 2) < 2
     )
     and mode not in ["nearest", "area", "bicubic"]
