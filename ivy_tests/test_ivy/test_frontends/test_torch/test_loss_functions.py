@@ -443,7 +443,7 @@ def test_torch_huber_loss(
     pred_dtype, pred = input_dtype[0], x[0]
     true_dtype, true = input_dtype[1], x[1]
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=[pred_dtype, true_dtype],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
