@@ -204,6 +204,8 @@ def test_numpy_kron(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=5,
+        min_num_dims=2,
+        max_num_dims=2,
         shared_dtype=True,
     )
 )
