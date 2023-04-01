@@ -485,8 +485,8 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
         padding
     )
     if transpose:
-        return ret
-    return *ret, padding
+        return *ret, output_shape
+    return ret
 
 
 @st.composite
