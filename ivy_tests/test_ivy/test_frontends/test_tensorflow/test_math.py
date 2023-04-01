@@ -1665,8 +1665,8 @@ def test_tensorflow_acos(
         on_device=on_device,
         x=x[0],
     )
-    
-    
+
+
 # acosh
 @handle_frontend_test(
     fn_tree="tensorflow.math.acosh",
@@ -1692,7 +1692,7 @@ def test_tensorflow_acosh(
         on_device=on_device,
         x=x[0],
     )
-    
+
 
 # square
 @handle_frontend_test(
