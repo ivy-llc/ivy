@@ -544,24 +544,25 @@ def test_jax_numpy_fliplr(
 # expand_dims
 @handle_frontend_test(
     fn_tree="jax.numpy.expand_dims",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        shape=st.shared(helpers.get_shape(), key="expand_dims_axis"),
-    ),
-    axis=helpers.get_axis(
-        shape=st.shared(helpers.get_shape(), key="expand_dims_axis"),
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=10,
+        force_int_axis=True,
+        valid_axis=True,
     ),
 )
-def test_jax_expand_dims(
+def test_jax_numpy_expand_dims(
     *,
-    dtype_and_x,
-    axis,
+    dtype_x_axis,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
