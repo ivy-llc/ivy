@@ -3149,7 +3149,9 @@ class ContainerBase(dict, abc.ABC):
         """
         return_dict = self if inplace else dict()
         for key, value in self.items():
-            this_key_chain = key if key_chain == "" else (key_chain + "/" + key)
+            this_key_chain = (
+                key if key_chain == "" else (str(key_chain) + "/" + str(key))
+            )
             if isinstance(value, ivy.Container):
                 ret = value.cont_map(
                     func,
@@ -3673,12 +3675,14 @@ class ContainerBase(dict, abc.ABC):
         indent_str = " " * self._print_indent
 
         def _align_array(array_str_in):
-            split_phrase_dict = {'': "([",
-                                'jax': "([",
-                                'numpy': "([",
-                                'tensorflow': "([",
-                                'pytorch': "([",
-                                'paddle': "])"}
+            split_phrase_dict = {
+                "": "([",
+                "jax": "([",
+                "numpy": "([",
+                "tensorflow": "([",
+                "torch": "([",
+                "paddle": "])",
+            }
             split_phrase = split_phrase_dict[self._cont_ivy.current_backend_str()]
             array_str_in_split = array_str_in.split(split_phrase)
             leading_str_to_keep = array_str_in_split[0].replace("\\n", "")

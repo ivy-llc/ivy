@@ -173,7 +173,7 @@ def as_ivy_dtype(
         else:
             raise ivy.utils.exceptions.IvyException(
                 "Cannot convert to ivy dtype."
-                f" {dtype_in} is not supported by PyTorch backend."
+                f" {dtype_in} is not supported by JAX backend."
             )
     else:
         dtype_str = ivy_dtype_dict[dtype_in]

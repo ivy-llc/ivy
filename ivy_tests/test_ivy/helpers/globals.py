@@ -31,7 +31,7 @@ if "torch" in available_frameworks:
 
 if "paddle" in available_frameworks:
     FWS_DICT["paddle"] = lambda x=None: _get_ivy_paddle(x)
-    
+
 
 # This is used to make sure the variable is not being overriden
 _Notsetval = object()

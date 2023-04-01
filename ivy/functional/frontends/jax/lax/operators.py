@@ -2,6 +2,7 @@
 from typing import Any
 import itertools
 import string
+from builtins import slice as py_slice
 
 # local
 import ivy
@@ -127,11 +128,11 @@ def conv(
 
 def _set_dimension_numbers(dims):
     if dims == 1:
-        return "NHC", "HIO", "NHC"
+        return "NCH", "OIH", "NCH"
     elif dims == 2:
-        return "NHWC", "HWIO", "NHWC"
+        return "NCHW", "OIHW", "NCHW"
     elif dims == 3:
-        return "NDHWC", "DHWIO", "NDHWC"
+        return "NCDHW", "OIDHW", "NCDHW"
 
 
 def _get_general_df(data_format):
@@ -236,9 +237,6 @@ def conv_general_dilated(
 
 @to_ivy_arrays_and_back
 def convert_element_type(operand, new_dtype):
-    assert can_cast(ivy.dtype(operand), new_dtype), "Cannot cast from {} to {}".format(
-        ivy.dtype(operand), new_dtype
-    )
     return ivy.astype(operand, new_dtype, copy=False)
 
 
@@ -283,7 +281,6 @@ def dot_general(
     lhs, rhs, dimension_numbers, precision=None, preferred_element_type=None
 ):
     (lhs_contracting, rhs_contracting), (lhs_batch, rhs_batch) = dimension_numbers
-    assert len(lhs.shape) == len(rhs.shape)
     ivy.utils.assertions.check_less(
         len(lhs.shape), 52, "number of dimensions greater than 52 is not supported"
     )
@@ -479,6 +476,53 @@ def sinh(x):
 
 
 @to_ivy_arrays_and_back
+def slice(operand, start_indices, limit_indices, strides=None):
+    if operand.ndim != len(start_indices):
+        msg = (
+            "slice start_indices must have length equal to the number of "
+            "dimensions of the operand, got indices {} for operand shape {}."
+        )
+        raise TypeError(msg.format(start_indices, operand.shape))
+
+    if len(start_indices) != len(limit_indices):
+        msg = (
+            "slice limit_indices must have the same length as start_indices, "
+            "got start_indices {} and limit_indices {}."
+        )
+        raise TypeError(msg.format(start_indices, limit_indices))
+
+    if not len(operand.shape) <= len(limit_indices):
+        msg = (
+            "slice limit_indices must be less than or equal to operand shape, "
+            "got limit_indices {} for operand shape {}."
+        )
+        raise TypeError(msg.format(limit_indices, operand.shape))
+
+    if not all(si >= 0 for si in start_indices):
+        msg = (
+            "slice start_indices must be greater than or equal to zero, "
+            "got start_indices of {}."
+        )
+        raise TypeError(msg.format(start_indices))
+
+    start_indices, limit_indices = map(
+        lambda x: ivy.array(x) if isinstance(x, int) else x,
+        [start_indices, limit_indices],
+    )
+    strides = [1] * len(operand.shape) if strides is None else strides
+
+    full_slice = ()
+    for i, _ in enumerate(operand.shape):
+        strides_i = int(strides[i])
+        start_i = int(start_indices[i])
+        limit_i = int(limit_indices[i])
+        full_slice += (py_slice(start_i, limit_i, strides_i),)
+    ret = operand[full_slice] if full_slice else operand
+
+    return ivy.expand_dims(ret)
+
+
+@to_ivy_arrays_and_back
 def sort(operand, dimension=-1, is_stable=True, num_keys=1):
     return ivy.sort(operand, axis=dimension, stable=is_stable)
 
@@ -534,3 +578,13 @@ def top_k(operand, k):
     values, indices = ivy.top_k(operand, k, axis=-1)
     indices = ivy.astype(indices, ivy.int32, copy=False)
     return [values, indices]
+
+
+@to_ivy_arrays_and_back
+def squeeze(array, dimensions):
+    return ivy.squeeze(array, dimensions)
+
+
+@to_ivy_arrays_and_back
+def real(x):
+    return ivy.real(x)
