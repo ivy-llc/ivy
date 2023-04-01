@@ -99,11 +99,11 @@ def matrix_exp(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    eigvals, eigvecs = np.linalg.eig(x)
-    d = np.diag(np.exp(eigvals))
-    v = eigvecs
-    exp_A = v @ d @ np.linalg.inv(v)
-    return exp_A
+    eigenvalues, eigenvectors = np.linalg.eig(x)
+    dig_matrix = np.diag(eigenvalues)
+    exp_dig_matrix = np.exp(dig_matrix)
+    exp_x = eigenvectors @ exp_dig_matrix @ np.linalg.inv(eigenvectors)
+    return exp_x
 
 
 def eig(
