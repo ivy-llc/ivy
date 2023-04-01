@@ -197,3 +197,30 @@ def test_numpy_kron(
         a=xs[0],
         b=xs[1],
     )
+
+#multi_dot
+@handle_frontend_test(
+    fn_tree="numpy.multi_dot",
+    dtype_and_x=helpers.array_dtypes(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=5,
+        shared_dtype=True,
+    )
+)
+def test_numpy_multi_dot(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtypes, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_flags=test_flags,
+        x=(x[0], x[1], x[2], x[3], x[4]),
+        out=None,
+    )
