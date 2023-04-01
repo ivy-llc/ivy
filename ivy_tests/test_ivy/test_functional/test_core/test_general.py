@@ -1291,7 +1291,7 @@ def test_inplace_arrays_supported():
     cur_fw = ivy.current_backend_str()
     if cur_fw in ["numpy", "torch"]:
         assert ivy.inplace_arrays_supported()
-    elif cur_fw in ["jax", "tensorflow"]:
+    elif cur_fw in ["jax", "tensorflow", "paddle"]:
         assert not ivy.inplace_arrays_supported()
     else:
         raise Exception("Unrecognized framework")
@@ -1301,7 +1301,7 @@ def test_inplace_variables_supported():
     cur_fw = ivy.current_backend_str()
     if cur_fw in ["numpy", "torch", "tensorflow"]:
         assert ivy.inplace_variables_supported()
-    elif cur_fw in ["jax"]:
+    elif cur_fw in ["jax", "paddle"]:
         assert not ivy.inplace_variables_supported()
     else:
         raise Exception("Unrecognized framework")
@@ -1746,18 +1746,21 @@ _composition_1.test_unsupported_devices_and_dtypes = {
             "complex64",
             "complex128",
         ),
+        "paddle": ("uint16", "uint32", "uint64", "bfloat16", "complex64", "complex128"),
     },
     "gpu": {
         "numpy": ivy.all_dtypes,
         "jax": ("complex64", "complex128"),
         "tensorflow": ("complex64", "complex128"),
         "torch": ("complex64", "float16", "uint16", "complex128", "uint64", "uint32"),
+        "paddle": ivy.all_dtypes,
     },
     "tpu": {
         "numpy": ivy.all_dtypes,
         "jax": ivy.all_dtypes,
         "tensorflow": ivy.all_dtypes,
         "torch": ivy.all_dtypes,
+        "paddle": ivy.all_dtypes,
     },
 }
 
@@ -1772,18 +1775,26 @@ _composition_2.test_unsupported_devices_and_dtypes = {
         "jax": ("complex64", "complex128"),
         "tensorflow": ("complex64", "complex128"),
         "torch": ("uint16", "uint32", "uint64", "float16", "complex64", "complex128"),
+        "paddle": (
+            "uint16",
+            "uint32",
+            "uint64",
+            "bfloat16",
+        ),
     },
     "gpu": {
         "numpy": ivy.all_dtypes,
         "jax": ("complex64", "complex128"),
         "tensorflow": ("complex64", "complex128"),
         "torch": ("uint16", "uint64", "uint32", "complex128", "float16", "complex64"),
+        "paddle": ivy.all_dtypes,
     },
     "tpu": {
         "numpy": ivy.all_dtypes,
         "jax": ivy.all_dtypes,
         "tensorflow": ivy.all_dtypes,
         "torch": ivy.all_dtypes,
+        "paddle": ivy.all_dtypes,
     },
 }
 
@@ -2038,7 +2049,7 @@ def test_assert_supports_inplace(
     ground_truth_backend,
 ):
     dtype, x = x_val_and_dtypes
-    if ivy.current_backend_str() in ["tensorflow", "jax"]:
+    if ivy.current_backend_str() in ["tensorflow", "jax", "paddle"]:
         return
     assume("bfloat16" not in dtype)
     helpers.test_function(

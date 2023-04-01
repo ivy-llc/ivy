@@ -405,16 +405,10 @@ def embedding(
 
 
 @handle_mixed_function(
-    lambda x,
-    *args,
-    mode="linear",
-    scale_factor=None,
-    recompute_scale_factor=None,
-    align_corners=None,
-    **kwargs: (
+    lambda x, *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (
         not align_corners and (len(x.shape) - 2) < 2
     )
-    and mode not in ["nearest", "area"]
+    and mode not in ["nearest", "area", "bicubic"]
     and recompute_scale_factor
 )
 def interpolate(
@@ -431,6 +425,7 @@ def interpolate(
             "area",
             "nearest-exact",
             "tf_area",
+            "bicubic",
             "bicubic_tensorflow",
             "mitchellcubic",
             "lanczos3",
