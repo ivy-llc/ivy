@@ -11,6 +11,11 @@ def uniform(shape, minval=0, maxval=None, dtype=ivy.float32, seed=None, name=Non
     return ivy.random_uniform(
         shape=shape, low=minval, high=maxval, dtype=dtype, seed=seed
     )
+@to_ivy_arrays_and_back
+def stateless_uniform(shape, seed, minval=0, maxval=None, dtype=ivy.float32, name=None):
+    return ivy.random_uniform(
+        shape=shape, seed=seed, low=minval, high=maxval, dtype=dtype
+    )
 
 
 @with_unsupported_dtypes(

@@ -140,10 +140,10 @@ def test_tensorflow_shuffle(
 )
 def test_tensorflow_stateless_uniform(
     shape,
+    seed,
     minval,
     maxval,
     dtype,
-    seed,
     frontend,
     test_flags,
     fn_tree,
