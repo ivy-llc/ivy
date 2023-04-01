@@ -248,4 +248,4 @@ def norm(input, ord=2, dim=None, keepdim=False, *, out=None):
     elif dim is None and ord is not None:
         return ivy.vector_norm(input, ord=ord, axis=dim, keepdims=keepdim, out=out)
     else:
-        raise ValueError("Invalid axis or ord value.")
+        raise ValueError("Invalid axis or ord value")
