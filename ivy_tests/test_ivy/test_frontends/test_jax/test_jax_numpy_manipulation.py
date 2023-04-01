@@ -1500,7 +1500,7 @@ def test_jax_numpy_hanning(
 @handle_frontend_test(
     fn_tree="jax.numpy.kaiser",
     m=helpers.ints(min_value=0, max_value=100),
-    beta=helpers.floats(min_value=-10, max_value=10)
+    beta=helpers.floats(min_value=-10, max_value=10),
 )
 def test_jax_numpy_kaiser(
     m,
