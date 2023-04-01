@@ -1,7 +1,6 @@
 # global
 import sys
 import ivy
-import tenserflow as tf
 from hypothesis import assume, strategies as st
 from ivy.functional.frontends.tensorflow.nn import _convolution_broadcast_helper
 from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_nn import _x_and_filters
