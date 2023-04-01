@@ -221,6 +221,6 @@ def test_numpy_multi_dot(
         fn_tree=fn_tree,
         on_device=on_device,
         test_flags=test_flags,
-        x=(x[0], x[1], x[2], x[3], x[4]),
+        arrays=(x[0], x[1], x[2], x[3], x[4]),
         out=None,
     )
