@@ -163,6 +163,7 @@ def test_torch_rand(*, dtype, size, frontend, fn_tree, test_flags):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
 
+
 @handle_frontend_test(
     fn_tree="torch.randn",
     dtype=helpers.get_dtypes("float", full=False),
