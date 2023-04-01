@@ -160,14 +160,13 @@ def test_numpy_lexsort(
         keys=x[0],
         axis=axis,
     )
+
+
 @handle_frontend_test(
     fn_tree="numpy.byteswap",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_axis=-1,
-        max_axis=0,
-        min_num_dims=1,
-        force_int_axis=True,
+        inplace=False,
     ),
     test_with_out=st.just(False),
 )
@@ -187,5 +186,5 @@ def test_numpy_byteswap(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
-        axis=axis,
+        inplace=inplace,
     )
