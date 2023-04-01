@@ -80,7 +80,7 @@ def instance_norm(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
 def layer_norm(input, normalized_shape, weight=None, bias=None, eps=1e-05):
     shape = ivy.shape(input)
     if isinstance(normalized_shape, int) and normalized_shape == shape[-1]:
@@ -88,7 +88,7 @@ def layer_norm(input, normalized_shape, weight=None, bias=None, eps=1e-05):
     else:
         assert normalized_shape == shape[-len(normalized_shape) :]
         axis = list(range(len(shape) - len(normalized_shape), len(shape)))
-    return ivy.layer_norm(input, axis, scale=weight, b=bias, epsilon=eps)
+    return ivy.layer_norm(input, axis, scale=weight, offset=bias, eps=eps)
 
 
 @to_ivy_arrays_and_back
