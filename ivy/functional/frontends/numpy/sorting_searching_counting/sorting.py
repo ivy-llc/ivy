@@ -36,9 +36,8 @@ def lexsort(keys, /, *, axis=-1):
 
 @to_ivy_arrays_and_back
 def byteswap(
-    x,
     /,
     *,
     inplace=False,
 ):
-    return ivy.byteswap(x, inplace=inplace)
+    return ivy.byteswap(inplace=inplace)
