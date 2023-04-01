@@ -1043,9 +1043,7 @@ def _strided_slice_helper(draw):
     masks = draw(
         st.lists(
             st.integers(min_value=0, max_value=2**ndims - 1), min_size=5, max_size=5
-        ).filter(
-            lambda x: bin(x[2])[2:].count("1") <= min(len(shape)-1, 1)
-        )
+        ).filter(lambda x: bin(x[2])[2:].count("1") <= min(len(shape) - 1, 1))
     )
     begin, end, strides = [], [], []
     for i in shape:
@@ -1060,8 +1058,8 @@ def _strided_slice_helper(draw):
         if v == 1:
             skip = draw(st.integers(min_value=0, max_value=ndims))
             begin, end, strides = map(
-                lambda x: x[:i] + x[i+skip:] if i+skip < ndims else x[:i],
-                [begin, end, strides]
+                lambda x: x[:i] + x[i + skip :] if i + skip < ndims else x[:i],
+                [begin, end, strides],
             )
             break
     return dtype, x, np.array(begin), np.array(end), np.array(strides), masks
@@ -1624,7 +1622,7 @@ def test_tensorflow_unstack(
     )
 
 
-# reverse    
+# reverse
 @st.composite
 def reverse_helper(draw):
     dtype, x, shape = draw(
@@ -1670,4 +1668,4 @@ def test_tensorflow_reverse(
         on_device=on_device,
         tensor=x[0],
         axis=axis[0],
-    )    
+    )
