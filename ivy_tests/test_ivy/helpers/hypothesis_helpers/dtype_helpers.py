@@ -354,7 +354,7 @@ def get_castable_dtype(draw, available_dtypes, dtype: str, x: Optional[list] = N
     Returns
     -------
     ret
-        A strategy that draws a tuple of inputs and a castable dtype.
+        A tuple of inputs and castable dtype.
     """
     bound_dtype_bits = (
         lambda d: ivy.dtype_bits(d) / 2

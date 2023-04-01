@@ -995,19 +995,12 @@ def array_values(
     Examples
     --------
     >>> array_values(
-    ...     dtype=get_dtypes("float"),
-    ...     shape=st.shared(get_shape()),
+    ...     dtype=get_dtypes("valid"),
+    ...     shape=get_shape(),
     ... )
-    -1.0
-    [-2.44758124e-308]
-    [[ 5.26444487e+016]
-        [-6.16066656e-150]
-        [ 3.40282347e+038]
-        [-3.40282347e+038]
-        [-1.44711121e-285]
-        [ 9.99990000e-001]
-        [-2.44758124e-308]
-        [ 1.00000000e-005]]
+    [1806 87 36912 6955 59576]
+    1025
+    16803
     """
     assert small_abs_safety_factor >= 1, "small_abs_safety_factor must be >= 1"
     assert large_abs_safety_factor >= 1, "large_value_safety_factor must be >= 1"
@@ -1136,7 +1129,7 @@ def array_values(
 
             import paddle_bfloat  # noqa
 
-    array = np.asarray(values, dtype=dtype)  # TODO: This will break if kind_dtype not in ['bool', 'int', 'float']
+    array = np.asarray(values, dtype=dtype)
 
     if isinstance(shape, (tuple, list)):
         return array.reshape(shape)

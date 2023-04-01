@@ -244,7 +244,7 @@ def get_mean_std(draw, *, dtype):
 
 @st.composite
 def get_bounds(draw, *, dtype):
-    """Draws two floats; low and high, for a given data type such that low < high.
+    """Draws two numbers; low and high, for a given data type such that low < high.
 
     Parameters
     ----------
@@ -256,7 +256,7 @@ def get_bounds(draw, *, dtype):
 
     Returns
     -------
-        A strategy that can be used in the @given hypothesis decorator.
+        A strategy that draws a list of two numbers.
     """
     if "int" in dtype:
         values = draw(array_helpers.array_values(dtype=dtype, shape=2))
@@ -485,8 +485,8 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
         padding
     )
     if transpose:
-        return *ret, padding
-    return ret
+        return ret
+    return *ret, padding
 
 
 @st.composite
