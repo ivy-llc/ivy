@@ -61,7 +61,7 @@ def test_numpy_minimum(
 # fmin
 @handle_frontend_test(
     fn_tree="numpy.fmin",
-    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_2(
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arrs_shapes=[((2, 3),), ((2, 3),)],
         dtypes="all",
         dtype_="float",
