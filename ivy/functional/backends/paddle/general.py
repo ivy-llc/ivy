@@ -49,7 +49,7 @@ def get_item(x: paddle.Tensor, query: Union[paddle.Tensor, Tuple]) -> paddle.Ten
     # regular queries x[idx_1,idx_2,...,idx_i]
     if isinstance(query, tuple):
         if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
-            return x.cast(ivy.default_float_dtype()).__getitem__(query).cast(x.dtype)
+            return x.cast("float32").__getitem__(query).cast(x.dtype)
         return x.__getitem__(query)
 
     if not ivy.is_native_array(query):
@@ -71,9 +71,7 @@ def get_item(x: paddle.Tensor, query: Union[paddle.Tensor, Tuple]) -> paddle.Ten
                     paddle.masked_select(x.real(), query),
                     paddle.masked_select(x.imag(), query),
                 )
-            return paddle.masked_select(x.cast(ivy.default_float_dtype()), query).cast(
-                x.dtype
-            )
+            return paddle.masked_select(x.cast("float32"), query).cast(x.dtype)
         return paddle.masked_select(x, query)
 
     query = query.cast("int64")
@@ -91,7 +89,7 @@ def get_item(x: paddle.Tensor, query: Union[paddle.Tensor, Tuple]) -> paddle.Ten
             return paddle.complex(
                 x.real().__getitem__(query), x.imag().__getitem__(query)
             )
-        return x.cast(ivy.default_float_dtype()).__getitem__(query).cast(x.dtype)
+        return x.cast("float32").__getitem__(query).cast(x.dtype)
     return x.__getitem__(query)
 
 

@@ -202,7 +202,6 @@ def test_jax_numpy_tril_indices(
     )
 
 
-
 # triu_indices
 @handle_frontend_test(
     fn_tree="jax.numpy.triu_indices",
@@ -230,6 +229,7 @@ def test_jax_numpy_triu_indices(
         on_device=on_device,
     )
 
+
 # triu_indices_from
 @handle_frontend_test(
     fn_tree="jax.numpy.triu_indices_from",
@@ -242,7 +242,6 @@ def test_jax_numpy_triu_indices(
     k=helpers.ints(min_value=-5, max_value=5),
     test_with_out=st.just(False),
 )
-
 def test_jax_numpy_triu_indices_from(
     dtype_and_x,
     k,
@@ -261,7 +260,8 @@ def test_jax_numpy_triu_indices_from(
         arr=x[0],
         k=k,
     )
-    
+
+
 # tril_indices_from
 @handle_frontend_test(
     fn_tree="jax.numpy.tril_indices_from",
@@ -274,7 +274,6 @@ def test_jax_numpy_triu_indices_from(
     k=helpers.ints(min_value=-5, max_value=5),
     test_with_out=st.just(False),
 )
-
 def test_jax_numpy_tril_indices_from(
     dtype_and_x,
     k,
@@ -314,6 +313,8 @@ def max_value_as_shape_prod(draw):
         )
     )
     return dtype_and_x, shape
+
+
 @handle_frontend_test(
     fn_tree="jax.numpy.unravel_index",
     dtype_x_shape=max_value_as_shape_prod(),
