@@ -95,18 +95,22 @@ def test_integer_arrays_to_float(x, expected):
     ("x", "weight", "expected"),
     [
         ([[1, 1], [1, 1]], [[1, 1], [1, 1], [1, 1]], True),
-        ([[1, 1], [1, 1]], [
-            [[1, 1], [1, 1], [1, 1]],
-            [[1, 1], [1, 1], [1, 1]],
-            [[1, 1], [1, 1], [1, 1]]
-        ], False),
-    ]
+        (
+            [[1, 1], [1, 1]],
+            [
+                [[1, 1], [1, 1], [1, 1]],
+                [[1, 1], [1, 1], [1, 1]],
+                [[1, 1], [1, 1], [1, 1]],
+            ],
+            False,
+        ),
+    ],
 )
 def test_handle_mixed_function(x, weight, expected):
-    test_fn = 'torch.nn.functional.linear'
-    if ivy.current_backend_str() != 'torch':
+    test_fn = "torch.nn.functional.linear"
+    if ivy.current_backend_str() != "torch":
         # ivy.matmul is used inside the compositional implementation
-        test_fn = 'ivy.matmul'
+        test_fn = "ivy.matmul"
         expected = True
     with patch(test_fn) as test_mock_function:
         ivy.linear(x, weight)
