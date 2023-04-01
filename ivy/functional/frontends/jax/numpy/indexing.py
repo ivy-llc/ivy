@@ -51,3 +51,8 @@ def tril_indices_from(arr, k=0):
 def unravel_index(indices, shape):
     ret = [x.astype("int64") for x in ivy.unravel_index(indices, shape)]
     return tuple(ret)
+
+
+@to_ivy_arrays_and_back
+def mask_indices(n, mask_func, k=0):
+    return ivy.mask_indices(n, mask_func, k)
