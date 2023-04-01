@@ -74,7 +74,7 @@ def compile(
     ...     j = ivy.floor(b)
     ...     k = ivy.ceil(c)
     ...     return i, j, k
-    >>> graph = compile(fn, args=(x,))
+    >>> graph = ivy.compile(fn, args=(x,))
     Notice how the time taken to execute the compiled function is lower than
     the original function. A typical run:
     >>> start = time.time()
