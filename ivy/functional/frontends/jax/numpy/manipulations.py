@@ -257,3 +257,22 @@ def hamming(M):
     n = ivy.arange(M)
     ret = 0.54 - 0.46 * ivy.cos(2.0 * ivy.pi * n / (M - 1))
     return ret
+
+
+@to_ivy_arrays_and_back
+def hanning(M):
+    if M <= 1:
+        return ivy.ones([M], dtype=ivy.float64)
+    n = ivy.arange(M)
+    ret = 0.5 * (1 - ivy.cos(2.0 * ivy.pi * n / (M - 1)))
+    return ret
+
+
+@to_ivy_arrays_and_back
+def kaiser(M, beta):
+    if M <= 1:
+        return ivy.ones([M], dtype=ivy.float64)
+    n = ivy.arange(M)
+    alpha = 0.5 * (M - 1)
+    ret = ivy.i0(beta * ivy.sqrt(1 - ((n - alpha) / alpha) ** 2)) / ivy.i0(beta)
+    return ret

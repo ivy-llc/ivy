@@ -1472,3 +1472,50 @@ def test_jax_numpy_hamming(
         on_device=on_device,
         M=m,
     )
+
+
+# hanning
+@handle_frontend_test(
+    fn_tree="jax.numpy.hanning",
+    m=helpers.ints(min_value=0, max_value=20),
+)
+def test_jax_numpy_hanning(
+    m,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=["int64"],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        M=m,
+    )
+
+
+# kaiser
+@handle_frontend_test(
+    fn_tree="jax.numpy.kaiser",
+    m=helpers.ints(min_value=0, max_value=100),
+    beta=helpers.floats(min_value=-10, max_value=10),
+)
+def test_jax_numpy_kaiser(
+    m,
+    beta,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=["int64", "float64"],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        M=m,
+        beta=beta,
+    )

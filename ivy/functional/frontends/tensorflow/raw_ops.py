@@ -446,6 +446,13 @@ def Sign(*, x, name="Sign"):
     return ivy.sign(x)
 
 
+@to_ivy_arrays_and_back
+def Size(*, input, out_type=tf_frontend.int32, name="Size"):
+    out_type = to_ivy_dtype(out_type)
+    shape = ivy.shape(input, as_array=True)
+    return ivy.astype(ivy.prod(shape), out_type, copy=False)
+
+
 Split = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.split))
 
 
