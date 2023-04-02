@@ -276,3 +276,12 @@ def kaiser(M, beta):
     alpha = 0.5 * (M - 1)
     ret = ivy.i0(beta * ivy.sqrt(1 - ((n - alpha) / alpha) ** 2)) / ivy.i0(beta)
     return ret
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+def tri(N, M=None, k=0, dtype="float64"):
+    if M is None:
+        M = N
+    ones = ivy.ones((N, M), dtype=dtype)
+    return ivy.tril(ones, k=k)
