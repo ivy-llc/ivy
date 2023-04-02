@@ -30,7 +30,6 @@ def _get_seed(key):
     key1, key2 = int(key[0]), int(key[1])
     return ivy.to_scalar(int("".join(map(str, [key1, key2]))))
 
-
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
