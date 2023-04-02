@@ -22,16 +22,6 @@ def lcm(
     return paddle.lcm(x1, x2)
 
 
-def fmod(
-    x1: paddle.Tensor,
-    x2: paddle.Tensor,
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    raise IvyNotImplementedException()
-
-
 def fmax(
     x1: paddle.Tensor,
     x2: paddle.Tensor,

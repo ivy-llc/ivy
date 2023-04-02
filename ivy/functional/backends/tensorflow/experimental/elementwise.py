@@ -4,12 +4,13 @@ from numbers import Number
 import tensorflow as tf
 from tensorflow.python.ops.numpy_ops import np_math_ops
 
-from ivy import promote_types_of_inputs
+
 from .. import backend_version
 
 
 # local
 import ivy
+from ivy import promote_types_of_inputs
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 import tensorflow_probability as tfp
 
@@ -34,21 +35,6 @@ def lcm(
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = promote_types_of_inputs(x1, x2)
     return tf.math.abs(tf.experimental.numpy.lcm(x1, x2))
-
-
-@with_unsupported_dtypes(
-    {"2.9.1 and below": ("unsigned", "complex", "bool")}, backend_version
-)
-def fmod(
-    x1: Union[tf.Tensor, tf.Variable],
-    x2: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    res = tf.experimental.numpy.remainder(tf.math.abs(x1), tf.math.abs(x2))
-    return tf.where(x1 < 0, -res, res)
 
 
 def fmax(
