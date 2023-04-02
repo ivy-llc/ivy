@@ -23,3 +23,15 @@ def uniform(key, shape=(), dtype=None, minval=0.0, maxval=1.0):
 @to_ivy_arrays_and_back
 def normal(key, shape=(), dtype=None):
     return ivy.random_normal(shape=shape, dtype=dtype, seed=ivy.to_scalar(key[1]))
+
+
+def _get_seed(key):
+    key1, key2 = int(key[0]), int(key[1])
+    return ivy.to_scalar(int("".join(map(str, [key1, key2]))))
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+def beta(key, a, b, shape=None, dtype=None):
+    seed = _get_seed(key)
+    return ivy.beta(a, b, shape=shape, dtype=dtype, seed=seed)
