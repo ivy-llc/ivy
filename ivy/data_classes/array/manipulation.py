@@ -678,12 +678,12 @@ class _ArrayWithManipulation(abc.ABC):
 
     @handle_view
     def unstack(
-        self: ivy.Array, 
-        /, 
-        *, 
+        self: ivy.Array,
+        /,
+        *,
         copy: Optional[bool] = None,
-        axis: int = 0, 
-        keepdims: bool = False
+        axis: int = 0,
+        keepdims: bool = False,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.unstack. This method simply
         wraps the function, and so the docstring for ivy.unstack also applies to

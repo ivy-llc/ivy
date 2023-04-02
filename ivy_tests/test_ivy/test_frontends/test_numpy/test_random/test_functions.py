@@ -324,3 +324,28 @@ def test_numpy_shuffle(
         test_values=False,
         x=x[0],
     )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.random.standard_normal",
+    input_dtypes=helpers.get_dtypes("integer", full=False),
+    size=helpers.get_shape(allow_none=True),
+    test_with_out=st.just(False),
+)
+def test_numpy_standard_normal(
+    input_dtypes,
+    size,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        size=size,
+    )

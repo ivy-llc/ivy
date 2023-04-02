@@ -8,7 +8,7 @@ import ivy
 
 class _ContainerWithSet(ContainerBase):
     @staticmethod
-    def static_unique_all(
+    def _static_unique_all(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -138,7 +138,7 @@ class _ContainerWithSet(ContainerBase):
             ]
         }
         """
-        return self.static_unique_all(
+        return self._static_unique_all(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -147,7 +147,7 @@ class _ContainerWithSet(ContainerBase):
         )
 
     @staticmethod
-    def static_unique_counts(
+    def _static_unique_counts(
         x: ivy.Container,
         /,
         *,
@@ -267,7 +267,7 @@ class _ContainerWithSet(ContainerBase):
             a:[values=ivy.array([0.,1.,2.,3.]),counts=ivy.array([2,2,1,1])],
             b:[values=ivy.array([1,2,3,4]),counts=ivy.array([3,1,2,1])]}
         """
-        return self.static_unique_counts(
+        return self._static_unique_counts(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -276,7 +276,7 @@ class _ContainerWithSet(ContainerBase):
         )
 
     @staticmethod
-    def static_unique_values(
+    def _static_unique_values(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -306,7 +306,67 @@ class _ContainerWithSet(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.static_unique_values(
+        """
+        ivy.Container instance method variant of ivy.unique_values.
+        This method simply wraps the function and applies it on the container.
+        Parameters
+        ----------
+        self : ivy.Container
+            input container
+        key_chains : list or dict, optional
+            The key-chains to apply or not apply the method to. Default is `None`.
+        to_apply : bool, optional
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is `True`.
+        prune_unapplied : bool, optional
+            Whether to prune key_chains for which the function was not applied.
+            Default is `False`.
+        map_sequences : bool, optional
+            Whether to also map method to sequences (lists, tuples).
+            Default is `False`.
+        out : ivy.Container, optional
+            The container to return the results in. Default is `None`.
+        Returns
+        -------
+        ivy.Container
+            The result container with the unique values for each input key-chain.
+        Raises
+        ------
+        TypeError
+            If the input container is not an instance of ivy.Container.
+        ValueError
+        If the key_chains parameter is not None, and it is not a list or a dictionary.
+        Example
+        -------
+        1. Get the unique values of a container.
+        >>> x = ivy.Container(a=[1, 2, 3], b=[2, 2, 3], c=[4, 4, 4])
+        >>> y = x.unique_values()
+        >>> print(y)
+        {
+            'a': [1, 2, 3],
+            'b': [2, 3],
+            'c': [4]
+        }
+        2. Get the unique values of a container along a specific key chain.
+        >>> x = ivy.Container(a=[1, 2, 3], b=[2, 2, 3], c=[4, 4, 4])
+        >>> y = x.unique_values(key_chains=["a", "b"])
+        >>> print(y)
+        {
+            'a': [1, 2, 3],
+            'b': [2, 3]
+        }
+        3. Get the unique values of a container and store them in a new container.
+        >>> x = ivy.Container(a=[1, 2, 3], b=[2, 2, 3], c=[4, 4, 4])
+        >>> y = ivy.Container()
+        >>> y = x.unique_values(out=y)
+        >>> print(y)
+        {
+            'a': [1, 2, 3],
+            'b': [2, 3],
+            'c': [4]
+        }
+        """
+        return self._static_unique_values(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -316,7 +376,7 @@ class _ContainerWithSet(ContainerBase):
         )
 
     @staticmethod
-    def static_unique_inverse(
+    def _static_unique_inverse(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -438,7 +498,7 @@ class _ContainerWithSet(ContainerBase):
         }
 
         """
-        return self.static_unique_inverse(
+        return self._static_unique_inverse(
             self,
             key_chains=key_chains,
             to_apply=to_apply,

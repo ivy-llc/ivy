@@ -4,6 +4,14 @@ ivy/func_wrapper.py @VedPatwardhan
 ivy/utils/backend @VedPatwardhan @CatB1t
 ivy/utils/backend/ast_helpers.py @CatB1t
 
-
 # Ivy Testing
 ivy_tests/test_ivy/helpers/ @CatB1t
+
+# Docs builder
+docs/index.rst @KareemMAX
+docs/make_docs.sh @KareemMAX
+docs/partial_conf.py @KareemMAX
+docs/prebuild.sh @KareemMAX
+docs/overview/contributing/building_the_docs.rst @KareemMAX
+docs/overview/deep_dive/building_the_docs_pipline.rst @KareemMAX
+docs/_templates @KareemMAX

@@ -93,7 +93,11 @@ def _infer_dtype(dtype: torch.dtype) -> torch.dtype:
 # Function does support uint8, but allowing support for unsigned will cause
 # the function to break the upcasting rule defined in the Array API Standard
 @with_unsupported_dtypes(
-    {"1.11.0 and below": ("float16", "bfloat16", "uint8")}, backend_version
+    {
+        "1.12.0 and below": ("uint8", "float16", "bfloat16"),
+        "1.12.1 and above": ("uint8", "float16"),
+    },
+    backend_version,
 )
 def prod(
     x: torch.Tensor,
@@ -216,7 +220,11 @@ def var(
 # the function to break the upcasting rule defined in the Array API Standard
 # TODO: bfloat16 support is added in PyTorch 1.12.1
 @with_unsupported_dtypes(
-    {"1.11.0 and below": ("uint8", "float16", "bfloat16")}, backend_version
+    {
+        "1.12.0 and below": ("uint8", "float16", "bfloat16"),
+        "1.12.1 and above": ("uint8", "float16"),
+    },
+    backend_version,
 )
 def cumprod(
     x: torch.Tensor,
@@ -260,7 +268,10 @@ cumprod.support_native_out = True
 # the function to break the upcasting rule defined in the Array API Standard
 # TODO: bfloat16 support is added in PyTorch 1.12.1
 @with_unsupported_dtypes(
-    {"1.11.0 and below": ("uint8", "bfloat16", "float16")},
+    {
+        "1.12.0 and below": ("uint8", "float16", "bfloat16"),
+        "1.12.1 and above": ("uint8", "float16"),
+    },
     backend_version,
 )
 def cumsum(
