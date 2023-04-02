@@ -202,10 +202,12 @@ def test_numpy_kron(
 @handle_frontend_test(
     fn_tree="numpy.linalg.multi_dot",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=5,
         min_num_dims=2,
         max_num_dims=2,
+        min_dim_size=2,
+        max_dim_size=2,
         shared_dtype=True,
     )
 )
