@@ -9,6 +9,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from ivy import promote_types_of_inputs
 from . import backend_version
 
+
 def _cast_for_unary_op(x):
     if not isinstance(x, torch.Tensor):
         x = torch.tensor(x)
@@ -772,6 +773,8 @@ def trunc_divide(
 
 def isreal(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.isreal(x)
+
+
 @with_unsupported_dtypes(
     {"2.9.1 and below": ("bfloat16", "complex")},
     backend_version,

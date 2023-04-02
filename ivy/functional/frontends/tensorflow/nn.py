@@ -490,7 +490,6 @@ def softmax(logits, axis=None, name=None):
 
 
 @to_ivy_arrays_and_back
-def crelu(features, axis = -1, name=None):
-    c = ivy.concat([features, -features], axis = axis)
+def crelu(features, axis=-1, name=None):
+    c = ivy.concat([features, -features], axis=axis)
     return ivy.relu(c)
-
