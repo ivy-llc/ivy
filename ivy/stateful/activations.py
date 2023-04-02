@@ -151,7 +151,7 @@ class Softmax(Module):
             The outputs following the SOFTMAX activation *[batch_shape, d]*
 
         """
-        return ivy.softmax(x, axis)
+        return ivy.softmax(x, axis=axis)
 
 
 class Softplus(Module):
