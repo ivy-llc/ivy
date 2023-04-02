@@ -709,7 +709,6 @@ from ivy.utils.backend import (
     current_backend,
     compiled_backends,
     with_backend,
-    get_backend,
     set_backend,
     set_numpy_backend,
     set_jax_backend,
