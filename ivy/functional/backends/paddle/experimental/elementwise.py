@@ -4,7 +4,10 @@ from numbers import Number
 from math import pi
 import paddle
 from ivy.utils.exceptions import IvyNotImplementedException
-from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    with_supported_dtypes,
+    with_unsupported_device_and_dtypes)
 
 # local
 import ivy
@@ -22,16 +25,6 @@ def lcm(
     return paddle.lcm(x1, x2)
 
 
-def fmod(
-    x1: paddle.Tensor,
-    x2: paddle.Tensor,
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    raise IvyNotImplementedException()
-
-
 def fmax(
     x1: paddle.Tensor,
     x2: paddle.Tensor,
@@ -42,6 +35,15 @@ def fmax(
     return paddle.fmax(x1, x2)
 
 
+@with_supported_dtypes(
+    {
+        "2.4.2 and below": ("float64",
+                            "float32",
+                            "int64",
+                            "int64")
+    },
+    backend_version,
+)
 def fmin(
     x1: paddle.Tensor,
     x2: paddle.Tensor,
