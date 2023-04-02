@@ -93,31 +93,40 @@ def test_jax_devicearray_property_at(x_y_index):
     class_tree=CLASS_TREE,
     init_tree="jax.numpy.array",
     method_name="argmax",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_axis=-1,
+        max_axis=0,
+        min_num_dims=1,
+        force_int_axis=True,
     ),
+    keep_dims=st.booleans(),
 )
 def test_jax_devicearray_argmax(
-    dtype_and_x,
-    frontend,
+    dtype_x_axis,
+    keep_dims,
     frontend_method_data,
     init_flags,
     method_flags,
+    frontend,
     on_device,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtypes, x, axis = dtype_x_axis
     helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        on_device=on_device,
+        init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
             "object": x[0],
         },
-        method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={},
+        method_input_dtypes=input_dtypes,
+        method_all_as_kwargs_np={
+            "axis": axis,
+            "keepdims": keep_dims,
+        },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
     )
 
 
