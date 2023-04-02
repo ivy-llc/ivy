@@ -93,6 +93,7 @@ def binary_cross_entropy(
     *,
     epsilon: float = 1e-7,
     reduction: str = "none",
+    weight: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes the binary cross entropy loss.
@@ -106,6 +107,12 @@ def binary_cross_entropy(
     epsilon
         a float in [0.0, 1.0] specifying the amount of smoothing when calculating the
         loss. If epsilon is ``0``, no smoothing will be applied. Default: ``1e-7``.
+    reduction
+        a string specifying the reduction to apply to the output: 'none' | 'sum' | 'mean'.
+        If 'none', no reduction will be applied. Default: 'none'.
+    weight
+        a 1D array of weights for each class in the binary classification problem.
+        If None, all classes will have equal weight. Default: None.
     out
         optional output array, for writing the result to. It must have a shape
         that the inputs broadcast to.
@@ -151,6 +158,8 @@ def binary_cross_entropy(
 
     With :class:`ivy.Container` input:
 
+     With :class:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([1, 0, 0]),b=ivy.array([0, 0, 1]))
     >>> y = ivy.Container(a=ivy.array([0.6, 0.2, 0.3]),b=ivy.array([0.8, 0.2, 0.2]))
     >>> z = ivy.binary_cross_entropy(x, y)
@@ -181,10 +190,14 @@ def binary_cross_entropy(
     """
     ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
+    if weight is None:
+        loss = ivy.add(ivy.log(pred) * true, ivy.log(1 - pred) * (1 - true))
+    else:
+        loss = ivy.add(ivy.log(pred) * true * weight[1], ivy.log(1 - pred) * (1 - true) * weight[0])
     return _reduce_loss(
         reduction,
-        ivy.add(ivy.log(pred) * true, ivy.log(1 - pred) * (1 - true)),
-        None,
+        loss,
+        weight,
         out,
     )
 
@@ -303,3 +316,5 @@ def sparse_cross_entropy(
     return ivy.cross_entropy(
         true, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out
     )
+
+
