@@ -339,3 +339,31 @@ def test_jax_numpy_unravel_index(
         indices=x[0],
         shape=shape,
     )
+
+
+# Mask_indices
+@handle_frontend_test(
+    fn_tree="jax.numpy.mask_indices",
+    n_rows=helpers.ints(min_value=1, max_value=10),
+    k=helpers.ints(min_value=2, max_value=10),
+    dtype=helpers.get_dtypes("valid", full=False),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_mask_indices(
+    n_rows,
+    k,
+    dtype,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        n_rows=n_rows,
+        k=k,
+    )
