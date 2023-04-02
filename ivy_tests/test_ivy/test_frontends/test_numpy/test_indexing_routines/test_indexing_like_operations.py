@@ -243,7 +243,7 @@ def test_numpy_unravel_index(
 @handle_frontend_test(
     fn_tree="numpy.fill_diagonal",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=2,
         min_dim_size=2,
     ),
