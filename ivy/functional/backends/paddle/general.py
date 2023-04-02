@@ -140,8 +140,6 @@ def to_list(x: paddle.Tensor, /) -> list:
                 "bfloat16",
                 "int8",
                 "int16",
-                "int32",
-                "int64",
                 "float16",
                 "complex64",
                 "complex128",
@@ -166,11 +164,11 @@ def gather(
     if batch_dims == 0:
         result = paddle.gather(params, paddle.reshape(indices, shape=[-1]), axis=axis)
     else:
-        params_list = [p for p in params]
-        indices_list = [i for i in indices]
+        params_list = paddle.split(params, params.shape[0], axis=0)
+        indices_list = paddle.split(indices, indices.shape[0], axis=0)
         for b in range(1, batch_dims):
-            params_list = [p1 for p in params_list for p1 in p]
-            indices_list = [i1 for i in indices_list for i1 in i]
+            params_list = [p1 for p in params_list for p1 in paddle.split(p, p.shape[b], axis=b)]
+            indices_list = [i1 for i in indices_list for i1 in paddle.split(i, i.shape[b], axis=b)]
         result = []
         for p, i in zip(params_list, indices_list):
             result.append(
