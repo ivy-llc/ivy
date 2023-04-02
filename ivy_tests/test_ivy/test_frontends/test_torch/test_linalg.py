@@ -1147,3 +1147,66 @@ def test_torch_vander(
         x=x[0],
         N=N,
     )
+    
+    
+@st.composite
+def _generate_multi_dot_dtype_and_arrays(draw):
+    input_dtype = [draw(
+        st.sampled_from(draw(helpers.get_dtypes("numeric")))
+    )]
+    matrices_dims = draw(
+        st.lists(st.integers(min_value=2, max_value=10), min_size=4, max_size=4)
+    )
+    shape_1 = (matrices_dims[0], matrices_dims[1])
+    shape_2 = (matrices_dims[1], matrices_dims[2])
+    shape_3 = (matrices_dims[2], matrices_dims[3])
+
+    matrix_1 = draw(
+        helpers.dtype_and_values(
+            shape=shape_1,
+            dtype=input_dtype,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+    matrix_2 = draw(
+        helpers.dtype_and_values(
+            shape=shape_2,
+            dtype=input_dtype,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+    matrix_3 = draw(
+        helpers.dtype_and_values(
+            shape=shape_3,
+            dtype=input_dtype,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+
+    return input_dtype, [matrix_1[1][0], matrix_2[1][0], matrix_3[1][0]]
+
+
+@handle_frontend_test(
+    fn_tree="torch.linalg.multi_dot",
+    dtype_x=_generate_multi_dot_dtype_and_arrays(),
+)
+def test_torch_multi_dot(
+    dtype_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x = dtype_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        test_values=True,
+        tensors=x,
+    )
