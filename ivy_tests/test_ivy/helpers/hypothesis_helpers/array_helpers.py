@@ -36,17 +36,29 @@ def array_bools(
     --------
     >>> array_bools(size=5)
     [False, True, False, False, False]
+
+    >>> array_bools(size=5)
     [False, False, False, False, False]
+
+    >>> array_bools(size=5)
     [True, False, False, False, False]
 
     >>> array_bools(size=1)
     [True]
+
+    >>> array_bools(size=1)
     [False]
+
+    >>> array_bools(size=1)
     [True]
 
     >>> array_bools()
     [False, False, False, False]
+
+    >>> array_bools()
     [True, True, True, False]
+
+    >>> array_bools()
     [True]
 
     """
@@ -77,7 +89,17 @@ def list_of_size(*, x, size):
     ...     size=4,
     ... )
     [-1, 5, -1, -1]
+
+    >>> list_of_size(
+    ...     x=st.sampled_from([-1, 5, 9]),
+    ...     size=4,
+    ... )
     [9, -1, -1, -1]
+
+    >>> list_of_size(
+    ...     x=st.sampled_from([-1, 5, 9]),
+    ...     size=4,
+    ... )
     [9, 9, -1, 9]
 
     >>> list_of_size(
@@ -85,7 +107,17 @@ def list_of_size(*, x, size):
     ...     size=10,
     ... )
     [3, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+    >>> list_of_size(
+    ...     x=st.integers(min_value=0, max_value=4),
+    ...     size=10,
+    ... )
     [3, 3, 2, 4, 1, 0, 4, 2, 1, 2]
+
+    >>> list_of_size(
+    ...     x=st.integers(min_value=0, max_value=4),
+    ...     size=10,
+    ... )
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
     >>> list_of_size(
@@ -93,9 +125,18 @@ def list_of_size(*, x, size):
     ...     size=3,
     ... )
     [False, False, False]
-    [True, True, False]
-    [False, True, False]
 
+    >>> list_of_size(
+    ...     x=st.booleans(),
+    ...     size=3,
+    ... )
+    [True, True, False]
+
+    >>> list_of_size(
+    ...     x=st.booleans(),
+    ...     size=3,
+    ... )
+    [False, True, False]
     """
     return lists(x=x, min_size=size, max_size=size)
 
@@ -139,7 +180,19 @@ def lists(
     ...     max_size=5,
     ... )
     [5, 5, 5, 9, 9]
+
+    >>> lists(
+    ...     x=st.sampled_from([-1, 5, 9]),
+    ...     min_size=4,
+    ...     max_size=5,
+    ... )
     [5, 9, -1, -1]
+
+    >>> lists(
+    ...     x=st.sampled_from([-1, 5, 9]),
+    ...     min_size=4,
+    ...     max_size=5,
+    ... )
     [5, 9, 5, 9]
 
     >>> lists(
@@ -147,7 +200,17 @@ def lists(
     ...     size_bounds=(9, 10),
     ... )
     [0, 2, 4, 3, 3, 3, 3, 2, 1, 4]
+
+    >>> lists(
+    ...     x=st.integers(min_value=0, max_value=4),
+    ...     size_bounds=(9, 10),
+    ... )
     [1, 0, 1, 2, 1, 4, 1, 3, 1]
+
+    >>> lists(
+    ...     x=st.integers(min_value=0, max_value=4),
+    ...     size_bounds=(9, 10),
+    ... )
     [1, 0, 1, 2, 1, 4, 1, 3, 1]
 
     >>> lists(
@@ -155,7 +218,17 @@ def lists(
     ...     size_bounds=[9, 10],
     ... )
     [1, 3, 0, 2, 0, 0, 1, 4, 2, 3]
+
+    >>> lists(
+    ...     x=st.integers(min_value=0, max_value=4),
+    ...     size_bounds=[9, 10],
+    ... )
     [0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+    >>> lists(
+    ...     x=st.integers(min_value=0, max_value=4),
+    ...     size_bounds=[9, 10],
+    ... )
     [1, 2, 4, 1, 1, 1, 4, 3, 2]
 
     >>> lists(
@@ -168,7 +241,27 @@ def lists(
     ...     max_size=5,
     ... )
     [1.1, 1.0, 1.0, 1.0, 1.0]
+
+    >>> lists(
+    ...     x=st.floats(
+    ...         min_value=1,
+    ...         max_value=3,
+    ...         exclude_max=True,
+    ...     ),
+    ...     min_size=5,
+    ...     max_size=5,
+    ... )
     [2.00001, 2.00001, 1.0, 2.999999999999999, 1.9394938006792373]
+
+    >>> lists(
+    ...     x=st.floats(
+    ...         min_value=1,
+    ...         max_value=3,
+    ...         exclude_max=True,
+    ...     ),
+    ...     min_size=5,
+    ...     max_size=5,
+    ... )
     [1.0, 2.00001, 1.0, 2.999999999999999, 1.9394938006792373]
 
     """
@@ -297,8 +390,16 @@ def dtype_and_values(
         26986, 34665], dtype=uint16), array([-5.000e-01, -5.000e-01,
         -2.000e+00, -6.711e-05, -1.100e+00, -5.955e+04], dtype=float16),
         array([40817, 56193, 29200, 0, 5851, 9746], dtype=uint16)])
+
+    >>> dtype_and_values(
+    ...     num_arrays=3,
+    ... )
     (['bool', 'uint32', 'bool'], [array(False), array(0, dtype=uint32),
         array(False)])
+
+    >>> dtype_and_values(
+    ...     num_arrays=3,
+    ... )
     (['int8', 'int8', 'int8'], [array(0, dtype=int8), array(0, dtype=int8),
         array(0, dtype=int8)])
 
@@ -311,7 +412,23 @@ def dtype_and_values(
     ... ),
     (['float32', 'float32'], [array([1.1, 1.5], dtype=float32),
         array([-5.9604645e-08, 5.9604645e-08], dtype=float32)])
+
+    >>> dtype_and_values(
+    ...     available_dtypes=get_dtypes("numeric"),
+    ...     min_value=-10,
+    ...     max_value=10,
+    ...     num_arrays=2,
+    ...     shared_dtype=True,
+    ... ),
     (['int32', 'int32'], [array(-5, dtype=int32), array(-1, dtype=int32)])
+
+    >>> dtype_and_values(
+    ...     available_dtypes=get_dtypes("numeric"),
+    ...     min_value=-10,
+    ...     max_value=10,
+    ...     num_arrays=2,
+    ...     shared_dtype=True,
+    ... ),
     (['uint64', 'uint64'], [array([0], dtype=uint64), array([0],
         dtype=uint64)])
 
@@ -322,8 +439,20 @@ def dtype_and_values(
     ... )
     (['int8', 'int32'], [array([27], dtype=int8), array([192],
         dtype=int32)], (1,))
+
+    >>> dtype_and_values(
+    ...     available_dtypes=get_dtypes("numeric"),
+    ...     num_arrays=2,
+    ...     ret_shape=True
+    ... )
     (['int32', 'int16'], [array(0, dtype=int32), array(0,
         dtype=int16)], ())
+
+    >>> dtype_and_values(
+    ...     available_dtypes=get_dtypes("numeric"),
+    ...     num_arrays=2,
+    ...     ret_shape=True
+    ... )
     (['int32', 'int16'], [array([[-103, 12, -41795, 1170789994,
         44251, 44209, 433075925]], dtype=int32), array([[24791,
         -24691, 24892, 16711, 7696, 972, 15357]], dtype=int16)],
@@ -335,7 +464,19 @@ def dtype_and_values(
     ...     ret_shape=True,
     ... )
     (['uint8'], [array([0], dtype=uint8)], (1,))
+
+    >>> dtype_and_values(
+    ...     available_dtypes=get_dtypes("numeric"),
+    ...     num_arrays=1,
+    ...     ret_shape=True,
+    ... )
     (['float32'], [array(-1., dtype=float32)], ())
+
+    >>> dtype_and_values(
+    ...     available_dtypes=get_dtypes("numeric"),
+    ...     num_arrays=1,
+    ...     ret_shape=True,
+    ... )
     (['int64'], [array(72057594037927936)], ())
 
     """
@@ -520,7 +661,11 @@ def dtype_values_axis(
     --------
     >>> dtype_values_axis()
     (['int16'], [array(29788, dtype=int16)])
+
+    >>> dtype_values_axis()
     (['complex128'], [array(1.62222885e+156-2.68281172e-257j)])
+
+    >>> dtype_values_axis()
     (['float64'], [array(-1.40129846e-45)])
 
     >>> dtype_values_axis(
@@ -528,7 +673,17 @@ def dtype_values_axis(
     ...     num_arrays=2,
     ... )
     (['int8', 'int16'], [array([[0]], dtype=int8), array([[1]], dtype=int16)], 0)
+
+    >>> dtype_values_axis(
+    ...     available_dtypes=get_dtypes("numeric"),
+    ...     num_arrays=2,
+    ... )
     (['uint16', 'uint16'], [array(0, dtype=uint16), array(0, dtype=uint16)], 0)
+
+    >>> dtype_values_axis(
+    ...     available_dtypes=get_dtypes("numeric"),
+    ...     num_arrays=2,
+    ... )
     (['float64', 'int16'], [array(-2.44758124e-308), array(0, dtype=int16)], 0)
 
     >>> dtype_values_axis(
@@ -542,8 +697,28 @@ def dtype_values_axis(
     ... )
     (['float64'], [array([[1.90000000e+000, 1.63426649e+308],
         [-1.50000000e+000, -1.91931887e+234]])], -1)
+
+    >>> dtype_values_axis(
+    ...     available_dtypes=get_dtypes("float"),
+    ...     min_num_dims=2,
+    ...     max_num_dims=3,
+    ...     min_dim_size=2,
+    ...     max_dim_size=5,
+    ...     min_axis=-2,
+    ...     max_axis=1,
+    ... )
     (['bfloat16'], [array([[-1.29488e-38, -1.29488e-38],
         [-1.29488e-38, -1.29488e-38]], dtype=bfloat16)], 0)
+
+    >>> dtype_values_axis(
+    ...     available_dtypes=get_dtypes("float"),
+    ...     min_num_dims=2,
+    ...     max_num_dims=3,
+    ...     min_dim_size=2,
+    ...     max_dim_size=5,
+    ...     min_axis=-2,
+    ...     max_axis=1,
+    ... )
     (['float64'], [array([[-2.44758124e-308, -2.44758124e-308],
         [-2.44758124e-308, -2.44758124e-308]])], 0)
 
@@ -554,7 +729,21 @@ def dtype_values_axis(
     ...     allow_nan=True,
     ... )
     (['float64'], [array([inf, -5.14361019e+16, 5.96046448e-08, 1.50000000e+00])], -51)
+
+    >>> dtype_values_axis(
+    ...     available_dtypes=get_dtypes("numeric"),
+    ...     num_arrays=1,
+    ...     allow_inf=True,
+    ...     allow_nan=True,
+    ... )
     (['int16'], [array(12445, dtype=int16)], 171)
+
+    >>> dtype_values_axis(
+    ...     available_dtypes=get_dtypes("numeric"),
+    ...     num_arrays=1,
+    ...     allow_inf=True,
+    ...     allow_nan=True,
+    ... )
     (['uint32'], [array([0], dtype=uint32)], 0)
 
     """
@@ -681,9 +870,27 @@ def array_indices_axis(
     ...     axis_zero=True,
     ... )
     (['int64', 'int64'], array([-65536]), array([0]))
+
+    >>> array_indices_axis(
+    ...    array_dtypes=get_dtypes("valid"),
+    ...     indices_dtypes=["int64"],
+    ...     max_num_dims=1,
+    ...     indices_same_dims=True,
+    ...     disable_random_axis=True,
+    ...     axis_zero=True,
+    ... )
     (['bool', 'int64'], array([False, False, False, True,
         False, False, False, False]), array([0, 0, 2, 4,
         0, 0, 0, 1]))
+
+    >>> array_indices_axis(
+    ...    array_dtypes=get_dtypes("valid"),
+    ...     indices_dtypes=["int64"],
+    ...     max_num_dims=1,
+    ...     indices_same_dims=True,
+    ...     disable_random_axis=True,
+    ...     axis_zero=True,
+    ... )
     (['int64', 'int64'], array([0]), array([0]))
 
     >>> array_indices_axis(
@@ -694,7 +901,21 @@ def array_indices_axis(
     ... )
     (['float64', 'uint64'], array([-2.44758124e-308]),
         array([0], dtype=uint64))
+
+    >>> array_indices_axis(
+    ...     array_dtypes=get_dtypes("valid"),
+    ...     indices_dtypes=get_dtypes("integer"),
+    ...     disable_random_axis=True,
+    ...     first_dimension_only=True,
+    ... )
     (['bool', 'uint64'], array([False]), array([0], dtype=uint64))
+
+    >>> array_indices_axis(
+    ...     array_dtypes=get_dtypes("valid"),
+    ...     indices_dtypes=get_dtypes("integer"),
+    ...     disable_random_axis=True,
+    ...     first_dimension_only=True,
+    ... )
     (['bool', 'int8'], array([False]), array([[0, 0, 0, 0],
        [0, 0, 0, 0],
        [0, 0, 0, 0],
@@ -708,11 +929,24 @@ def array_indices_axis(
     ... )
     (['float16', 'int64'], array([-256.], dtype=float16),
         array([0]), 0, 0)
+
+    >>> array_indices_axis(
+    ...     array_dtypes=get_dtypes("valid"),
+    ...     indices_dtypes=["int64"],
+    ...     max_num_dims=1,
+    ...     indices_same_dims=True,
+    ... )
     (['uint8', 'int64'], array([1], dtype=uint8),
         array([0]), -1, 0)
+
+    >>> array_indices_axis(
+    ...     array_dtypes=get_dtypes("valid"),
+    ...     indices_dtypes=["int64"],
+    ...     max_num_dims=1,
+    ...     indices_same_dims=True,
+    ... )
     (['uint64', 'int64'], array([0], dtype=uint64),
         array([0]), 0, 0)
-
     """
     x_dtype, x, x_shape = draw(
         dtype_and_values(
@@ -843,10 +1077,30 @@ def arrays_and_axes(
     (['float16', 'float16'], [array([[-1., -1.],
         [-1., -1.]], dtype=float16), array([[-1., -1.],
         [-1., -1.]], dtype=float16)], (None, None))
+
+    >>> arrays_and_axes(
+    ...     allow_none=False,
+    ...     min_num_dims=1,
+    ...     max_num_dims=2,
+    ...     min_dim_size=2,
+    ...     max_dim_size=4,
+    ...     num=2,
+    ...     return_dtype=True,
+    ... )
     (['float16', 'float32'],
         [array([ 1.5 , -8.33], dtype=float16),
         array([8.26e+00, 9.10e+00, 6.72e-05], dtype=float16)],
         (0, None))
+
+    >>> arrays_and_axes(
+    ...     allow_none=False,
+    ...     min_num_dims=1,
+    ...     max_num_dims=2,
+    ...     min_dim_size=2,
+    ...     max_dim_size=4,
+    ...     num=2,
+    ...     return_dtype=True,
+    ... )
     (['float64', 'float32'],
         [array([-1.1, -12.24322108]),
         array([[-2.44758124e-308, 8.26446279e+000, 5.96046448e-008],
@@ -858,7 +1112,17 @@ def arrays_and_axes(
     ...     force_int_axis=True,
     ... )
     ([array([0.07143888])], 0)
+
+    >>> arrays_and_axes(
+    ...     num=1,
+    ...     force_int_axis=True,
+    ... )
     ([array([-2.44758124e-308])], None)
+
+    >>> arrays_and_axes(
+    ...     num=1,
+    ...     force_int_axis=True,
+    ... )
     ([array([-6.72e-05, -6.72e-05, -6.72e-05, -6.72e-05, -6.72e-05],
         dtype=float16)], 0)
     """
@@ -999,8 +1263,12 @@ def array_values(
     ...     shape=get_shape(),
     ... )
     [1806 87 36912 6955 59576]
+
+    >>> array_values(
+    ...     dtype=get_dtypes("valid"),
+    ...     shape=get_shape(),
+    ... )
     1025
-    16803
     """
     assert small_abs_safety_factor >= 1, "small_abs_safety_factor must be >= 1"
     assert large_abs_safety_factor >= 1, "large_value_safety_factor must be >= 1"
@@ -1302,6 +1570,8 @@ def arrays_for_pooling(
     else:
         padding = draw(st.sampled_from(["VALID", "SAME"]))
     strides = draw(st.tuples(st.integers(1, in_shape[1])))
+
+    ret = {dtype, x, kernel, strides, padding}
     if return_dilation:
-        return dtype, x, kernel, strides, padding, dilations
-    return dtype, x, kernel, strides, padding
+        return *ret, dilations
+    return ret

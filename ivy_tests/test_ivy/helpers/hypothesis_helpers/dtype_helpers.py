@@ -130,7 +130,17 @@ def get_dtypes(
     ...     full=False,
     ... )
     ['int16']
+
+    >>> get_dtypes(
+    ...     kind='numeric',
+    ...     full=False,
+    ... )
     ['uint16']
+
+    >>> get_dtypes(
+    ...     kind='numeric',
+    ...     full=False,
+    ... )
     ['complex64']
 
     # TODO: Needs an example that utilizes key and prune_function
@@ -286,7 +296,17 @@ def array_dtypes(
     ...     shared_dtype=True,
     ... )
     ['float64']
+
+    >>> array_dtypes(
+    ...     available_dtypes=get_dtypes("numeric"),
+    ...     shared_dtype=True,
+    ... )
     ['int8', 'int8']
+
+    >>> array_dtypes(
+    ...     available_dtypes=get_dtypes("numeric"),
+    ...     shared_dtype=True,
+    ... )
     ['int32', 'int32', 'int32', 'int32']
 
     >>> array_dtypes(
@@ -295,7 +315,19 @@ def array_dtypes(
     ...     shared_dtype=False,
     ... )
     ['int8', 'float64', 'complex64', 'int8', 'bool']
+
+    >>> array_dtypes(
+    ...     num_arrays=5,
+    ...     available_dtypes=get_dtypes("valid"),
+    ...     shared_dtype=False,
+    ... )
     ['bool', 'complex64', 'bool', 'complex64', 'bool']
+
+    >>> array_dtypes(
+    ...     num_arrays=5,
+    ...     available_dtypes=get_dtypes("valid"),
+    ...     shared_dtype=False,
+    ... )
     ['float64', 'int8', 'float64', 'int8', 'float64']
     """
     if isinstance(available_dtypes, st._internal.SearchStrategy):
