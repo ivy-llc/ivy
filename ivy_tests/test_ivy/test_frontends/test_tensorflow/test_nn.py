@@ -1307,3 +1307,39 @@ def test_tensorflow_crelu(
         features=x[0],
         axis=axis,
     )
+
+
+# conv_transpose
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.conv_transpose",
+        x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["channels_last"]),
+        padding=st.sampled_from(["SAME", "VALID"]),
+        dilation_max=1,
+        type=None,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_conv_transpose(
+    *,
+    x_f_d_df,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+        filters=filters,
+        strides=stride,
+        padding=padding,
+        data_format=data_format,
+        dilations=dilation,
+    )

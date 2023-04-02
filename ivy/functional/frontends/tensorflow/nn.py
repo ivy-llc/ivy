@@ -493,3 +493,22 @@ def softmax(logits, axis=None, name=None):
 def crelu(features, axis=-1, name=None):
     c = ivy.concat([features, -features], axis=axis)
     return ivy.relu(c)
+
+
+@to_ivy_arrays_and_back
+def conv_transpose(
+    value,
+    filters,
+    output_shape,
+    strides,
+    padding="VALID",
+    data_format="channels_last",
+):
+    return ivy.conv_general_transpose(
+        value,
+        filters,
+        strides,
+        padding,
+        output_shape=output_shape,
+        data_format=data_format,
+    )
