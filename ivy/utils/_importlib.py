@@ -1,7 +1,25 @@
+import sys
+from .backend import ast_helpers
+
 from importlib.util import resolve_name, module_from_spec
+
 
 import_cache = {}
 path_hooks = []
+
+
+class LocalIvyImporter:
+    def __init__(self):
+        self.finder = ast_helpers.IvyPathFinder()
+
+    def __enter__(self):
+        sys.meta_path.insert(0, self.finder)
+        path_hooks.insert(0, self.finder)
+
+    def __exit__(self, *exc):
+        path_hooks.remove(self.finder)
+        sys.meta_path.remove(self.finder)
+        _clear_cache()
 
 
 def _clear_cache():
