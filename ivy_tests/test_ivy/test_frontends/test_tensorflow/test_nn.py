@@ -247,8 +247,10 @@ def _x_and_filters(
     )
     if type == "separable":
         p_filter_shape = (
-            1, 1, filter_shape[-1] * filter_shape[-2],
-            draw(helpers.ints(min_value=1, max_value=3))
+            1,
+            1,
+            filter_shape[-1] * filter_shape[-2],
+            draw(helpers.ints(min_value=1, max_value=3)),
         )
         p_filters = draw(
             helpers.array_values(
