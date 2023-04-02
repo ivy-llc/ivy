@@ -208,6 +208,8 @@ def test_numpy_kron(
         max_num_dims=2,
         min_dim_size=2,
         max_dim_size=2,
+        min_value=-100,
+        max_value=100,
         shared_dtype=True,
     )
 )
