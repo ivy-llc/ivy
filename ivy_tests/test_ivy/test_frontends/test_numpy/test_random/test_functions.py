@@ -351,7 +351,7 @@ def test_numpy_standard_normal(
     )
     
     
-    @handle_frontend_test(
+@handle_frontend_test(
     fn_tree="numpy.random.standard_exponential",
     input_dtypes=helpers.get_dtypes("integer", full=False),
     bta=st.floats(
@@ -359,7 +359,6 @@ def test_numpy_standard_normal(
         allow_infinity=False,
         width=32,
         min_value=1,
-
     ),
     test_with_out=st.just(False),
 )
