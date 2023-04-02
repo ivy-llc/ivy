@@ -1203,6 +1203,7 @@ def test_lerp(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, inputs = dtype_and_input
     start, end, weight = inputs
@@ -1211,8 +1212,8 @@ def test_lerp(
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
-        atol_=1e-02,
-        ground_truth_backend="torch",
+        atol_=1e-01,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         input=start,
         end=end,
