@@ -75,7 +75,7 @@ class RELU(Module):
         return ivy.relu(x)
 
 
-class LRELU(Module):
+class LEAKY_RELU(Module):
     def __init__(self, alpha: float = 0.2):
         """
         Applies the LEAKY RELU activation function

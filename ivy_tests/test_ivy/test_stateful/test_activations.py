@@ -93,3 +93,217 @@ def test_geglu(
         test_gradients=test_gradients,
         on_device=on_device,
     )
+
+
+@handle_method(
+    method_tree="stateful.activations.RELU.__call__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
+    ),
+    method_num_positional_args=helpers.num_positional_args(fn_name="RELU._forward"),
+    test_gradients=st.just(True),
+)
+def test_relu(
+    *,
+    dtype_and_x,
+    test_gradients,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_input_dtypes=input_dtype,
+        method_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={},
+        method_all_as_kwargs_np={"inputs": x[0]},
+        class_name=class_name,
+        method_name=method_name,
+        rtol_=1e-2,
+        atol_=1e-2,
+        test_gradients=test_gradients,
+        on_device=on_device,
+    )
+
+
+@handle_method(
+    method_tree="stateful.activations.LEAKY_RELU.__call__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", full=False, key="leaky_relu"),
+        large_abs_safety_factor=16,
+        small_abs_safety_factor=16,
+        safety_factor_scale="log",
+    ),
+    alpha=st.floats(min_value=-1e-4, max_value=1e-4),
+    method_num_positional_args=helpers.num_positional_args(
+        fn_name="LEAKY_RELU._forward"
+    ),
+    test_gradients=st.just(True),
+)
+def test_leaky_relu(
+    *,
+    dtype_and_x,
+    alpha,
+    test_gradients,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_input_dtypes=input_dtype,
+        method_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={"alpha": alpha},
+        method_all_as_kwargs_np={"inputs": x[0]},
+        class_name=class_name,
+        method_name=method_name,
+        rtol_=1e-2,
+        atol_=1e-2,
+        test_gradients=test_gradients,
+        on_device=on_device,
+    )
+
+
+@handle_method(
+    method_tree="stateful.activations.LOG_SOFTMAX.__call__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
+    ),
+    axis=helpers.ints(min_value=-1, max_value=0),
+    method_num_positional_args=helpers.num_positional_args(
+        fn_name="LOG_SOFTMAX._forward"
+    ),
+    test_gradients=st.just(True),
+)
+def test_log_softmax(
+    *,
+    dtype_and_x,
+    axis,
+    test_gradients,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_input_dtypes=input_dtype,
+        method_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={"axis": axis},
+        method_all_as_kwargs_np={"inputs": x[0]},
+        class_name=class_name,
+        method_name=method_name,
+        rtol_=1e-2,
+        atol_=1e-2,
+        test_gradients=test_gradients,
+        on_device=on_device,
+    )
+
+
+@handle_method(
+    method_tree="stateful.activations.SOFTPLUS.__call__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
+    ),
+    beta=st.one_of(helpers.number(min_value=0.1, max_value=10), st.none()),
+    threshold=st.one_of(helpers.number(min_value=0.1, max_value=30), st.none()),
+    method_num_positional_args=helpers.num_positional_args(fn_name="SOFTPLUS._forward"),
+    test_gradients=st.just(True),
+)
+def test_softplus(
+    *,
+    dtype_and_x,
+    beta,
+    threshold,
+    test_gradients,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_input_dtypes=input_dtype,
+        method_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={"beta": beta, "threshold": threshold},
+        method_all_as_kwargs_np={"inputs": x[0]},
+        class_name=class_name,
+        method_name=method_name,
+        rtol_=1e-2,
+        atol_=1e-2,
+        test_gradients=test_gradients,
+        on_device=on_device,
+    )
+
+
+@handle_method(
+    method_tree="stateful.activations.MISH.__call__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
+    ),
+    method_num_positional_args=helpers.num_positional_args(fn_name="MISH._forward"),
+    test_gradients=st.just(True),
+)
+def test_mish(
+    *,
+    dtype_and_x,
+    test_gradients,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_input_dtypes=input_dtype,
+        method_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={},
+        method_all_as_kwargs_np={"inputs": x[0]},
+        class_name=class_name,
+        method_name=method_name,
+        rtol_=1e-2,
+        atol_=1e-2,
+        test_gradients=test_gradients,
+        on_device=on_device,
+    )
