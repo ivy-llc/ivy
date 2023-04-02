@@ -68,39 +68,20 @@ def test_torch_dropout(
     test_with_out=st.just(False),
     test_inplace=st.booleans(),
 )
-class TestTorchDropout3d(unittest.TestCase):
+def test_torch_dropout3d(*, dtype_and_x, prob, training, on_device, fn_tree, frontend, test_flags):
+    input_dtype, x = dtype_and_x
+    dropout = torch.nn.Dropout3d(p=prob)
+    x = torch.tensor(x[0], dtype=input_dtype[0])
 
-    def test_torch_dropout3d(
-        self,
-        dtype_and_x,
-        prob,
-        training,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
-    ):
+    if training:
+        dropout.train()
+    else:
+        dropout.eval()
 
-        input_dtype, x = dtype_and_x
-        dropout = torch.nn.Dropout3d(p=prob)
+    y = dropout(x)
+    y = helpers.flatten_and_to_np(ret=y)
 
-        x_torch = torch.tensor(x[0], dtype=torch.float32)
-        output_torch = dropout(x_torch)
-
-        output_np = output_torch.detach().numpy()
-
-        self.assertEqual(output_np.shape, x[0].shape)
-
-        self.assertFalse(np.allclose(output_np, x[0]))
-
-        if training:
-            dropout.train()
-            output_torch_train = dropout(x_torch)
-            output_np_train = output_torch_train.detach().numpy()
-            self.assertFalse(np.allclose(output_np, output_np_train))
-
-        else:
-            dropout.eval()
-            output_torch_eval = dropout(x_torch)
-            output_np_eval = output_torch_eval.detach().numpy()
-            self.assertTrue(np.allclose(output_np, output_np_eval)))
+    assert y.shape == x.shape
+    num_nonzero = np.sum(y != 0.0)
+    expected_num_nonzero = np.prod(x.shape) * (1 - prob)
+    assert np.abs(num_nonzero - expected_num_nonzero) <= 0.1 * expected_num_nonzero
