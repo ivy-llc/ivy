@@ -465,6 +465,9 @@ class Tensor:
         self._ivy_array = self.unsqueeze(dim).ivy_array
         return self
 
+    def ravel(self):
+        return torch_frontend.ravel(self)
+
     def split(self, split_size, dim=0):
         return torch_frontend.split(self, split_size, dim)
 
