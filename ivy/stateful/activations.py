@@ -85,7 +85,7 @@ class LEAKY_RELU(Module):
              Negative slope for ReLU.
         """
         self._alpha = alpha
-        Module.__init__()
+        Module.__init__(self)
 
     def _forward(self, x, *, alpha=None):
         """
