@@ -215,23 +215,26 @@ def leaky_relu(
     /,
     *,
     alpha: float = 0.2,
+    apply_negative_slope_to_positives: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Applies the leaky rectified linear unit function element-wise.
 
     Parameters
     ----------
-    x
+    x : Union[ivy.Array, ivy.NativeArray]
         Input array.
-    alpha
-        Negative slope for ReLU.
-    out
-        optional output array, for writing the result to. It must have a shape that the
+    alpha : float, optional
+        Negative slope for ReLU, default is 0.2.
+    apply_negative_slope_to_positives : bool, optional
+        Whether to apply the negative slope to positive values or not, default is True.
+    out : Optional[ivy.Array], optional
+        Optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
 
     Returns
     -------
-    ret
+    ret : ivy.Array
         The input array with leaky relu applied element-wise.
 
     Examples
@@ -266,7 +269,13 @@ def leaky_relu(
         b: ivy.array([0.40000001, -0.04])
     }
     """
-    return current_backend(x).leaky_relu(x, alpha=alpha, out=out)
+
+    if apply_negative_slope_to_positives:
+        return current_backend(x).leaky_relu(x, alpha=alpha, out=out)
+    else:
+        neg_part = current_backend(x).leaky_relu(-x, alpha=alpha, out=out)
+        return -neg_part + x
+
 
 
 @to_native_arrays_and_back
