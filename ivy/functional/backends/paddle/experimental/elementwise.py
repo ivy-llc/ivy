@@ -51,6 +51,8 @@ def fmin(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if x1.dtype != x2.dtype:
+        x1, x2 = promote_types_of_inputs(x1, x2)
     return paddle.fmin(x1, x2)
 
 
