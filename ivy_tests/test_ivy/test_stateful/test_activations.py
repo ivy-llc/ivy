@@ -96,14 +96,14 @@ def test_geglu(
 
 
 @handle_method(
-    method_tree="stateful.activations.RELU.__call__",
+    method_tree="stateful.activations.ReLU.__call__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
         safety_factor_scale="log",
     ),
-    method_num_positional_args=helpers.num_positional_args(fn_name="RELU._forward"),
+    method_num_positional_args=helpers.num_positional_args(fn_name="ReLU._forward"),
     test_gradients=st.just(True),
 )
 def test_relu(
@@ -136,7 +136,7 @@ def test_relu(
 
 
 @handle_method(
-    method_tree="stateful.activations.LEAKY_RELU.__call__",
+    method_tree="stateful.activations.LeakyReLU.__call__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float", full=False, key="leaky_relu"),
         large_abs_safety_factor=16,
@@ -145,7 +145,7 @@ def test_relu(
     ),
     alpha=st.floats(min_value=-1e-4, max_value=1e-4),
     method_num_positional_args=helpers.num_positional_args(
-        fn_name="LEAKY_RELU._forward"
+        fn_name="LeakyReLU._forward"
     ),
     test_gradients=st.just(True),
 )
@@ -180,7 +180,7 @@ def test_leaky_relu(
 
 
 @handle_method(
-    method_tree="stateful.activations.LOG_SOFTMAX.__call__",
+    method_tree="stateful.activations.LogSoftmax.__call__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
@@ -190,7 +190,7 @@ def test_leaky_relu(
     ),
     axis=helpers.ints(min_value=-1, max_value=0),
     method_num_positional_args=helpers.num_positional_args(
-        fn_name="LOG_SOFTMAX._forward"
+        fn_name="LogSoftmax._forward"
     ),
     test_gradients=st.just(True),
 )
@@ -225,7 +225,7 @@ def test_log_softmax(
 
 
 @handle_method(
-    method_tree="stateful.activations.SOFTPLUS.__call__",
+    method_tree="stateful.activations.Softplus.__call__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
@@ -235,7 +235,7 @@ def test_log_softmax(
     ),
     beta=st.one_of(helpers.number(min_value=0.1, max_value=10), st.none()),
     threshold=st.one_of(helpers.number(min_value=0.1, max_value=30), st.none()),
-    method_num_positional_args=helpers.num_positional_args(fn_name="SOFTPLUS._forward"),
+    method_num_positional_args=helpers.num_positional_args(fn_name="Softplus._forward"),
     test_gradients=st.just(True),
 )
 def test_softplus(
@@ -270,14 +270,14 @@ def test_softplus(
 
 
 @handle_method(
-    method_tree="stateful.activations.MISH.__call__",
+    method_tree="stateful.activations.Mish.__call__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
         safety_factor_scale="log",
     ),
-    method_num_positional_args=helpers.num_positional_args(fn_name="MISH._forward"),
+    method_num_positional_args=helpers.num_positional_args(fn_name="Mish._forward"),
     test_gradients=st.just(True),
 )
 def test_mish(

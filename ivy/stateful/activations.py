@@ -52,7 +52,7 @@ class GEGLU(Module):
         return ivy.gelu(gates) * x
 
 
-class RELU(Module):
+class ReLU(Module):
     def __init__(self):
         """
         Applies the RELU activation function
@@ -75,7 +75,7 @@ class RELU(Module):
         return ivy.relu(x)
 
 
-class LEAKY_RELU(Module):
+class LeakyReLU(Module):
     def __init__(self, alpha: float = 0.2):
         """
         Applies the LEAKY RELU activation function
@@ -105,7 +105,7 @@ class LEAKY_RELU(Module):
         return ivy.leaky_relu(x, alpha=ivy.default(alpha, self._alpha))
 
 
-class LOG_SOFTMAX(Module):
+class LogSoftmax(Module):
     def __init__(self):
         """
         Applies the LOG SOFTMAX activation function
@@ -129,7 +129,7 @@ class LOG_SOFTMAX(Module):
         return ivy.log_softmax(x, axis=axis)
 
 
-class SOFTMAX(Module):
+class Softmax(Module):
     def __init__(self):
         """
         Applies the SOFTMAX activation function
@@ -154,7 +154,7 @@ class SOFTMAX(Module):
         return ivy.softmax(x, axis)
 
 
-class SOFTPLUS(Module):
+class Softplus(Module):
     def __init__(self):
         """
         Applies the SOFTPLUS activation function
@@ -183,7 +183,7 @@ class SOFTPLUS(Module):
         return ivy.softplus(x, beta=beta, threshold=threshold)
 
 
-class MISH(Module):
+class Mish(Module):
     def __init__(self):
         """
         Applies the MISH activation function
