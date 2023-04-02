@@ -14,22 +14,22 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_nestable
 @handle_exceptions
 def histogramdd(
-        a: Union[ivy.Array, ivy.NativeArray],
+        input: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
         bins: Optional[Union[Tuple[int], int,Tuple[float]]] = 10,
         range: Optional[Tuple[float]] = None,
         weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         density: Optional[bool] = False
-) -> ivy.Array:
+) -> Tuple[ivy.Array]:
     """
-    Compute the histogramdd of the NxD array ``a``.
+    Compute the histogramdd of the NxD array ``input``.
     .. note::
         Given bins = [c0, ..., cK], defining intervals I0 = [c0, c1), I1 = [c1, c2),
         ..., I_{K-1} = [c_{K-1}, cK].
     Parameters
     ----------
-    a
+    input
         input array.
     bins
         if ``bins`` is an int, it defines the number of equal-width bins in the given
@@ -40,7 +40,7 @@ def histogramdd(
         the lower and upper range of the bins. The first element of the range must be
         less than or equal to the second.
     weights
-        each value in ``a`` only contributes its associated weight towards the bin count
+        each value in ``input`` only contributes its associated weight towards the bin count
         (instead of 1). Must be of the same shape as a.
     density
         if True, the result is the value of the probability density function at the
@@ -90,8 +90,8 @@ def histogramdd(
     (ivy.array([1, 1, 1, 0, 0]), ivy.array([0., 1., 2., 3., 4., 5.]))
     (ivy.array([0, 0, 0, 1, 2]), ivy.array([0., 1., 2., 3., 4., 5.]))
     """
-    return ivy.current_backend(a).histogramdd(
-        a,
+    return ivy.current_backend(input).histogramdd(
+        input,
         bins=bins,
         range=range,
         weights=weights,

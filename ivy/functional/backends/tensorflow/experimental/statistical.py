@@ -7,14 +7,14 @@ from ivy.func_wrapper import with_supported_dtypes
 from . import backend_version
 
 def histogramdd(
-        input: Union[tf.Tensor, tf.Variable],
+        input: tf.Tensor,
         /,
         *,
-        bins: Optional[Union[Tuple[int],int,Tuple[float]]] = 10,
-        weights : Optional[Tuple[int]] = None,
-        range: Optional[Union[Tuple[int], int]] = [0., 1., 0., 1.],
+        bins: Optional[Union[Sequence[float],float]] = 10,
+        weights : Optional[Sequence[float]] = None,
+        range: Optional[Sequence[float]] = None,
         density: Optional[bool] = False
-) -> Union[tf.Tensor, tf.Variable]:
+) -> Tuple[tf.Tensor]:
     if type(bins)==int:
 
         bins = tf.convert_to_tensor(bins, dtype=tf.int32)

@@ -6,9 +6,9 @@ def histogramdd(
         input: JaxArray,
         /,
         *,
-        bins: Optional[Union[Tuple[int],int]] = 10,
-        range: Optional[Union[Tuple[int], int]] = None,
-        weights : Optional[Tuple[int]] = None,
+        bins: Optional[Union[Sequence[float],float]] = 10,
+        range: Optional[Sequence[float]] = None,
+        weights : Optional[Sequence[float]] = None,
         density: Optional[bool] = None
 ) -> Tuple[JaxArray]:
     return jnp.histogramdd(

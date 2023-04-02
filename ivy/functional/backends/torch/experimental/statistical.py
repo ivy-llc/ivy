@@ -10,9 +10,9 @@ def histogramdd(
         input: torch.tensor,
         /,
         *,
-        bins: Optional[Union[Tuple[int],int,torch.Tensor]] = 10,
-        range: Optional[Union[Tuple[int], int]] = [0., 1., 0., 1.],
-        weights : torch.tensor,
+        bins: Optional[Union[Sequence[float],float]] = 10,
+        range: Optional[Sequence[float]] = None,
+        weights : Optional[Sequence[float]] = None,
         density: Optional[bool] = False
 ) -> Tuple[torch.tensor]:
     return torch.histogramdd(
