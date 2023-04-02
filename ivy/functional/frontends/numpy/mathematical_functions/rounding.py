@@ -19,8 +19,8 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 def _ceil(
     x,
     /,
-    out=None,
     *,
+    out=None,
     where=True,
     casting="same_kind",
     order="k",
