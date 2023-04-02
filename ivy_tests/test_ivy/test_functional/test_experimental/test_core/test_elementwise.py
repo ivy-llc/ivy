@@ -118,7 +118,7 @@ def test_fmax(
 
 # fmin
 @handle_test(
-    fn_tree="functional.ivy.experimental.fmax",
+    fn_tree="functional.ivy.experimental.fmin",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
