@@ -238,3 +238,37 @@ def test_numpy_unravel_index(
         indices=x[0],
         shape=shape,
     )
+    
+    
+@handle_frontend_test(
+    fn_tree="numpy.fill_diagonal",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=2,
+        min_dim_size=2,
+    ),
+    val=helpers.ints(min_value=1, max_value=10),
+    wrap=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_fill_diagonal(
+        *,
+        dtype_and_x,
+        val,
+        wrap,
+        test_flags,
+        frontend,
+        fn_tree,
+        on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        val=val,
+        wrap=wrap,
+    )
