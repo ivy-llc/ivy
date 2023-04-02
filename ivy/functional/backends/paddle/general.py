@@ -337,3 +337,14 @@ def vmap(
     out_axes: Optional[int] = 0,
 ) -> Callable:
     raise IvyNotImplementedException()
+
+
+def isin(
+    elements: paddle.Tensor,
+    test_elements: paddle.Tensor,
+    /,
+    *,
+    assume_unique: Optional[bool] = False,
+    invert: Optional[bool] = False,
+) -> paddle.Tensor:
+    raise IvyNotImplementedException()
