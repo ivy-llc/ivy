@@ -180,6 +180,49 @@ def test_leaky_relu(
 
 
 @handle_method(
+    method_tree="stateful.activations.Softmax.__call__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
+    ),
+    axis=helpers.ints(min_value=-1, max_value=0),
+    method_num_positional_args=helpers.num_positional_args(fn_name="Softmax._forward"),
+    test_gradients=st.just(True),
+)
+def test_softmax(
+    *,
+    dtype_and_x,
+    axis,
+    test_gradients,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_input_dtypes=input_dtype,
+        method_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={},
+        method_all_as_kwargs_np={"x": x[0], "axis": axis},
+        class_name=class_name,
+        method_name=method_name,
+        rtol_=1e-2,
+        atol_=1e-2,
+        test_gradients=test_gradients,
+        on_device=on_device,
+    )
+
+
+@handle_method(
     method_tree="stateful.activations.LogSoftmax.__call__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
@@ -213,8 +256,8 @@ def test_log_softmax(
         method_flags=method_flags,
         init_input_dtypes=input_dtype,
         method_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={"axis": axis},
-        method_all_as_kwargs_np={"x": x[0]},
+        init_all_as_kwargs_np={},
+        method_all_as_kwargs_np={"x": x[0], "axis": axis},
         class_name=class_name,
         method_name=method_name,
         rtol_=1e-2,
@@ -258,8 +301,8 @@ def test_softplus(
         method_flags=method_flags,
         init_input_dtypes=input_dtype,
         method_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={"beta": beta, "threshold": threshold},
-        method_all_as_kwargs_np={"x": x[0]},
+        init_all_as_kwargs_np={},
+        method_all_as_kwargs_np={"x": x[0], "beta": beta, "threshold": threshold},
         class_name=class_name,
         method_name=method_name,
         rtol_=1e-2,
