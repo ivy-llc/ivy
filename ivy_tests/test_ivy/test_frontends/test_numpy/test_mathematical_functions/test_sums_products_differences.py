@@ -336,7 +336,10 @@ def test_numpy_diff(
     fn_tree="numpy.ediff1d",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=1,
+        max_dim_size=10,
         valid_axis=True,
         force_int_axis=True,
     ),
@@ -356,4 +359,6 @@ def test_numpy_ediff1d(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        to_end=x[1],
+        to_begin=x[2],
     )
