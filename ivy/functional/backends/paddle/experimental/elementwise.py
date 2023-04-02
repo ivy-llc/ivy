@@ -327,7 +327,11 @@ def fix(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    floor_tensor = paddle.floor(paddle.abs(x))  
+    sign_tensor = paddle.sign(x)
+    tensor = floor_tensor * sign_tensor
+    return tensor
+
 
 
 def nextafter(
