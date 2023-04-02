@@ -54,3 +54,23 @@ def indices(dimensions, dtype=int, sparse=False):
 def unravel_index(indices, shape, order="C"):
     ret = [x.astype("int64") for x in ivy.unravel_index(indices, shape)]
     return tuple(ret)
+
+
+# fill_diagonal
+@to_ivy_arrays_and_back
+def fill_diagonal(a, val, wrap=False):
+    if a.ndim < 2:
+        raise ValueError("array must be at least 2-d")
+    end = None
+    if a.ndim == 2:
+        step = a.shape[1] + 1
+        if not wrap:
+            end = a.shape[1] * a.shape[1]
+    else:
+        if not ivy.all(ivy.diff(ivy.shape(a)) == 0):
+            raise ValueError("All dimensions of input must be of equal length")
+        step = 1 + (ivy.cumprod(a.shape[:-1])).sum()
+
+    # Write the value out into the diagonal.
+    a.flatten()
+    a[:end:step] = val
