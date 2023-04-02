@@ -54,7 +54,7 @@ class DeviceArray:
         out=None,
         keepdims=False,
     ):
-        return jax_frontend.argmax(
+        return jax_frontend.numpy.argmax(
             self._ivy_array,
             axis=axis,
             out=out,
