@@ -541,6 +541,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functio
     _rad2deg,
     _sin,
     _tan,
+    _degrees,
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.handling_complex_numbers import (
@@ -555,6 +556,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.hyperbolic_functions 
     _cosh,
     _sinh,
     _tanh,
+    
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.rounding import (
@@ -641,6 +643,7 @@ deg2rad = ufunc("_deg2rad")
 rad2deg = ufunc("_rad2deg")
 sin = ufunc("_sin")
 tan = ufunc("_tan")
+degrees = ufunc("_degrees")
 arccosh = ufunc("_arccosh")
 arcsinh = ufunc("_arcsinh")
 arctanh = ufunc("_arctanh")
