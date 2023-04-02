@@ -7,6 +7,7 @@ import math
 # local
 import ivy
 from . import backend_version
+from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
 
 
@@ -1094,3 +1095,13 @@ def isreal(
         return paddle.logical_not(x.imag().astype(bool))
     else:
         return paddle.ones_like(x, dtype="bool")
+
+
+def fmod(
+    x1: paddle.Tensor,
+    x2: paddle.Tensor,
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    raise IvyNotImplementedException()
