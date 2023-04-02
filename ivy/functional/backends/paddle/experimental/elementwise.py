@@ -7,7 +7,8 @@ from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.func_wrapper import (
     with_unsupported_dtypes,
     with_supported_dtypes,
-    with_unsupported_device_and_dtypes)
+    with_unsupported_device_and_dtypes,
+)
 
 # local
 import ivy
@@ -24,13 +25,9 @@ def lcm(
 ) -> paddle.Tensor:
     return paddle.lcm(x1, x2)
 
+
 @with_supported_dtypes(
-    {
-        "2.4.2 and below": ("float64",
-                            "float32",
-                            "int64",
-                            "int64")
-    },
+    {"2.4.2 and below": ("float64", "float32", "int64", "int64")},
     backend_version,
 )
 def fmax(
@@ -46,12 +43,7 @@ def fmax(
 
 
 @with_supported_dtypes(
-    {
-        "2.4.2 and below": ("float64",
-                            "float32",
-                            "int64",
-                            "int64")
-    },
+    {"2.4.2 and below": ("float64", "float32", "int64", "int64")},
     backend_version,
 )
 def fmin(

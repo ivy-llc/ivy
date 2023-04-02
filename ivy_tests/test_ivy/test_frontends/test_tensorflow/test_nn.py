@@ -1305,5 +1305,5 @@ def test_tensorflow_crelu(
         fn_tree=fn_tree,
         on_device=on_device,
         features=x[0],
-        axis=axis
+        axis=axis,
     )
