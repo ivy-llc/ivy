@@ -487,3 +487,8 @@ def nextafter(input, *, out=None):
 @to_ivy_arrays_and_back
 def fmod(x1, x2, out=None):
     return ivy.fmod(x1, x2, out=out)
+
+
+@to_ivy_arrays_and_back
+def imag(input):
+    return ivy.imag(input)

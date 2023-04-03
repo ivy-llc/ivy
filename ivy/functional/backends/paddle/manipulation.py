@@ -200,9 +200,7 @@ def squeeze(
             "tried to squeeze a zero-dimensional input by axis {}".format(axis)
         )
     if x.dtype in [paddle.int16, paddle.float16]:
-        return paddle.squeeze(x.cast("float32"), axis=axis).cast(
-            x.dtype
-        )
+        return paddle.squeeze(x.cast("float32"), axis=axis).cast(x.dtype)
     return paddle.squeeze(x, axis=axis)
 
 
