@@ -695,8 +695,7 @@ def test_jax_numpy_copy(
 # single
 @handle_frontend_test(
     fn_tree="jax.numpy.single",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
 def test_jax_numpy_single(
     dtype_and_x,
@@ -712,5 +711,5 @@ def test_jax_numpy_single(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0]
+        x=x[0],
     )
