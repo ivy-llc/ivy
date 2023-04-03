@@ -19,7 +19,7 @@ from ivy.utils.exceptions import handle_exceptions
 
 @to_ivy_arrays_and_back
 def argmax(a, axis=None, out=None, keepdims=False):
-    return ivy.argmax(a, axis=axis, keepdims=keepdims, out=out)
+    return ivy.argmax(a, axis=axis, keepdims=keepdims, out=out, dtype=ivy.int64)
 
 
 @to_ivy_arrays_and_back
