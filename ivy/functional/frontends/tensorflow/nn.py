@@ -491,3 +491,9 @@ def softmax(logits, axis=None, name=None):
 
 def leaky_relu(features, alpha, name=None):
     return ivy.leaky_relu(features, alpha)
+
+@to_ivy_arrays_and_back
+def crelu(features, axis=-1, name=None):
+    c = ivy.concat([features, -features], axis=axis)
+    return ivy.relu(c)
+
