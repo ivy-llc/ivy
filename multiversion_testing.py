@@ -25,7 +25,7 @@ jax_req = ["jax/0.1.60"]
 numpy_req = ["numpy/1.17.3", "numpy/1.17.4", "numpy/1.23.1"]
 
 # we create a directory for each framework and install different versions in different directories as per requirements
-def direcotry_generator(req, base="fw/"):
+def directory_generator(req, base="fw/"):
     for versions in req:
         pkg, ver = versions.split("/")
         path = base + pkg + "/" + ver
@@ -40,10 +40,17 @@ def install_pkg(path, pkg, base="fw/"):
 
 
 # to import a specific pkg along with version name, to be used by the test functions
-def custom_import(
-    pkg, base="fw/", globally_done=None
-):  # format is pkg_name/version , globally_done means if we have imported any framework before globally
-    if globally_done:  # i.e import numpy etc
+def custom_import(pkg, base="fw/", globally_done=None):
+    """
+    Import a specific package with version.
+    
+    :param pkg: package name and version separated by "/"
+    :param base: base directory for the package installation
+    :param globally_done: the previously imported framework
+    :return: the imported module
+    """
+    if globally_done:
+        # i.e import numpy etc
         if pkg == globally_done:
             ret = importlib.import_module(pkg.split("/")[0])
             return ret
@@ -74,6 +81,11 @@ global_temp_sys_module = {}
 
 
 def allow_global_framework_imports(fw=["numpy/1.23.1/"]):
+    """
+    Allow importing frameworks globally.
+    
+    :param fw: list of frameworks
+    """
     # since no framework installed right now we quickly store a copy of the sys.modules
     global global_temp_sys_module
     global_temp_sys_module = sys.modules.copy()
@@ -83,13 +95,11 @@ def allow_global_framework_imports(fw=["numpy/1.23.1/"]):
 
 
 # we install numpy requirements
-direcotry_generator(numpy_req)
-direcotry_generator(tensorflow_req)
+directory_generator(numpy_req)
+directory_generator(tensorflow_req)
 
 allow_global_framework_imports(fw=["numpy/1.23.1/"])
 
-# numpy_v1=custom_import('numpy/1.23.1/','numpy/1.23.1/')
-# numpy_v2=custom_import('numpy/1.17.3/','numpy/1.23.1/')
 tens_v1 = custom_import("tensorflow/2.2.0")
 tens_v2 = custom_import("tensorflow/2.2.1")
 
