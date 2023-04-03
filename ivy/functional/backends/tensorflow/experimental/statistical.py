@@ -126,9 +126,8 @@ def nanquantile(
     keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    tf.cast(a, tf.float64)
     if isinstance(q, tf.Tensor):
-        tf.cast(q, tf.float64)
+        tf.cast(q, a.dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
     return tfp.stats.percentile(
         a,
