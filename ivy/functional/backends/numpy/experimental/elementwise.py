@@ -37,26 +37,6 @@ lcm.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
-def fmod(
-    x1: np.ndarray,
-    x2: np.ndarray,
-    /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    return np.fmod(
-        x1,
-        x2,
-        out=None,
-    )
-
-
-fmod.support_native_out = True
-
-
-@_scalar_output_to_0d_array
 def fmax(
     x1: np.ndarray,
     x2: np.ndarray,

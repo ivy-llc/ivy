@@ -6,6 +6,7 @@ import torch
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
+from ivy import promote_types_of_inputs
 from . import backend_version
 
 
@@ -772,3 +773,21 @@ def trunc_divide(
 
 def isreal(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.isreal(x)
+
+
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("bfloat16", "complex")},
+    backend_version,
+)
+def fmod(
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    return torch.fmod(x1, x2, out=None)
+
+
+fmod.support_native_out = True

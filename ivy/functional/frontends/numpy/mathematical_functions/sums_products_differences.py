@@ -138,3 +138,19 @@ def nancumsum(a, /, axis=None, dtype=None, out=None):
 @to_ivy_arrays_and_back
 def diff(x, /, *, n=1, axis=-1, prepend=None, append=None):
     return ivy.diff(x, n=n, axis=axis, prepend=prepend, append=append)
+
+
+@to_ivy_arrays_and_back
+def ediff1d(ary, to_end=None, to_begin=None):
+    diffs = ivy.diff(ary)
+    if to_begin is not None:
+        if not isinstance(to_begin, (list, tuple)):
+            to_begin = [to_begin]
+        to_begin = ivy.array(to_begin)
+        diffs = ivy.concat((to_begin, diffs))
+    if to_end is not None:
+        if not isinstance(to_end, (list, tuple)):
+            to_end = [to_end]
+        to_end = ivy.array(to_end)
+        diffs = ivy.concat((diffs, to_end))
+    return diffs
