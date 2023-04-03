@@ -106,6 +106,7 @@ def test_jax_devicearray_argmax(
     keepdims,
     on_device,
     frontend,
+    frontend_method_data,
     init_flags,
     method_flags,
 ):
@@ -121,6 +122,7 @@ def test_jax_devicearray_argmax(
             "keepdims": keepdims,
         },
         frontend=frontend,
+        frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
         on_device=on_device,
