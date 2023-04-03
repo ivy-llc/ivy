@@ -360,5 +360,4 @@ def test_numpy_ediff1d(
         x=x[0],
         to_end=x[1],
         to_begin=x[2],
-        axis=axis
     )
