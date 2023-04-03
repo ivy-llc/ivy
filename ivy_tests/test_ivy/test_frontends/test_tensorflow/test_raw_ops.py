@@ -11,6 +11,10 @@ import math
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
+from hypothesis import given
+import hypothesis.strategies as st
+
+
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.LeakyRelu",
     dtype_and_x=helpers.dtype_and_values(
@@ -18,17 +22,19 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         min_num_dims=1,
     ),
     test_with_out=st.just(False),
+    alpha=st.floats(min_value=0, max_value=1)
 )
 def test_tensorflow_LeakyReLU(  # NOQA
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        alpha,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     dtype, x = dtype_and_x
-    alpha = 0.2  # set the alpha value for LeakyReLU
+    alpha = alpha
 
     return helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -37,7 +43,9 @@ def test_tensorflow_LeakyReLU(  # NOQA
         fn_tree=fn_tree,
         on_device=on_device,
         features=x[0],
+        alpha=alpha
     )
+
 
 # Acos
 @handle_frontend_test(
