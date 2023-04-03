@@ -5,6 +5,7 @@ import numpy as np
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
+from ivy import promote_types_of_inputs
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 from . import backend_version
 
@@ -775,3 +776,23 @@ def isreal(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 
 isreal.support_native_out = False
+
+
+@_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
+def fmod(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    return np.fmod(
+        x1,
+        x2,
+        out=None,
+    )
+
+
+fmod.support_native_out = True
