@@ -106,6 +106,44 @@ def avg_pool2d(
         data_format=data_format,
     )
 
+@to_ivy_arrays_and_back
+def avg_pool3d(
+    input,
+    kernel_size,
+    stride=None,
+    padding=0,
+    ceil_mode=False,
+    count_include_pad=True,
+    divisor_override=None,
+):
+    kernel_size = _broadcast_pooling_helper(kernel_size, "3d", name="kernel_size")
+    stride = _broadcast_pooling_helper(stride, "3d", name="stride")
+    padding = _broadcast_pooling_helper(padding, "3d", name="padding")
+    kernel_pads = list(zip(kernel_size, padding))
+
+    data_format = "NCDHW"
+
+
+    # Padding should be less than or equal to half of kernel size
+    if not all([pad <= kernel / 2 for kernel, pad in kernel_pads]):
+        raise ValueError(
+            "pad should be smaller than or equal to half of kernel size, "
+            f"but got padding={padding}, kernel_size={kernel_size}. "
+        )
+
+    # Figure out padding string
+    if all([pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in kernel_pads]):
+        padding_str = "SAME"
+    else:
+        padding_str = "VALID"
+
+    return ivy.avg_pool3d(
+        input,
+        kernel_size,
+        stride,
+        padding_str,
+        data_format=data_format,
+    )
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
