@@ -680,6 +680,10 @@ class Tensor:
         self._ivy_array = self.clamp(min=min, max=max, out=out).ivy_array
         return self
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16")}, "torch")
+    def clip(self, min=None, max=None, *, out=None):
+        return torch_frontend.clip(self._ivy_array, min=min, max=max, out=out)
+
     @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
     def sqrt(self):
         return torch_frontend.sqrt(self._ivy_array)

@@ -5289,6 +5289,77 @@ def test_torch_instance_clamp_(
     )
 
 
+@st.composite
+def _get_clip_inputs(draw):
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=1, max_num_dims=5, min_dim_size=2, max_dim_size=10
+        )
+    )
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=shape,
+        )
+    )
+    min = draw(st.booleans())
+    if min:
+        max = draw(st.booleans())
+        min = draw(
+            helpers.array_values(
+                dtype=x_dtype[0], shape=shape, min_value=-25, max_value=0
+            )
+        )
+        max = (
+            draw(
+                helpers.array_values(
+                    dtype=x_dtype[0], shape=shape, min_value=1, max_value=25
+                )
+            )
+            if max
+            else None
+        )
+    else:
+        min = None
+        max = draw(
+            helpers.array_values(
+                dtype=x_dtype[0], shape=shape, min_value=1, max_value=25
+            )
+        )
+    return x_dtype, x, min, max
+
+
+# clip
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="clip",
+    input_and_ranges=_get_clip_inputs(),
+)
+def test_torch_instance_clip(
+    input_and_ranges,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x, min, max = input_and_ranges
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"min": min, "max": max},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # __gt__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
