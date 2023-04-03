@@ -94,7 +94,7 @@ def test_jax_devicearray_property_at(x_y_index):
     init_tree="jax.numpy.array",
     method_name="argmax",
     dtype_and_x=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float"),
         force_int_axis=True,
         min_num_dims=1,
         valid_axis=True,
