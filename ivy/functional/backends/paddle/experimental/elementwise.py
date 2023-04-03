@@ -378,21 +378,13 @@ def zeta(
    with ivy.ArrayMode(False):
         s,a=ivy.promote_types_of_inputs(x,q)
         s_, a_ = paddle.unsqueeze(x, -1), paddle.unsqueeze(q, -1)
-
         N = M = np.float64(8) if q.dtype == np.float32 else np.float64(16)
-
         assert M <= len(_BERNOULLI_COEFS)
-
         k = paddle.unsqueeze(ivy.arange(N, dtype=q.dtype), tuple(range(q.ndim)))
-
         S = paddle.sum((a_ + k) ** -s_, -1)
-
         I = ivy.divide((q + N) ** (1 - x), x - 1)
-
         T0 = (q + N) ** -x
-
         m = paddle.unsqueeze(ivy.arange(2 * M, dtype=s.dtype), tuple(range(s.ndim)))
-
         s_over_a = (s_ + m) / (a_ + N)
         s_over_a = ivy.where(s_over_a == 0, paddle.ones_like(s_over_a) * 1e-20, s_over_a)
         T1 = paddle.cumprod(s_over_a, -1)[..., ::2]
