@@ -333,6 +333,7 @@ def logsigmoid(
     return ivy.current_backend(input).logsigmoid(input)
 
 
+
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -358,9 +359,11 @@ def selu(
         an array containing the scaled exponential linear unit activation of each
         element in ``x``.
 
+
     Examples
     --------
     With :class:`ivy.Array` input:
+
     >>> x = ivy.array([-1.,  0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.])
     >>> y = ivy.selu(x)
     >>> print(y)
@@ -388,3 +391,4 @@ def selu(
     }
     """
     return current_backend(x).selu(x, out=out)
+
