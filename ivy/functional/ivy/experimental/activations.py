@@ -14,11 +14,11 @@ from ivy.func_wrapper import (
 )
 
 
-@handle_out_argument
-@handle_nestable
 @to_native_arrays_and_back
-@handle_exceptions
+@handle_out_argument
 @handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
 def logit(
     x: Union[float, int, ivy.Array],
     /,
@@ -61,11 +61,11 @@ def logit(
     return current_backend(x).logit(x, eps=eps, out=out)
 
 
-@handle_out_argument
-@handle_nestable
 @to_native_arrays_and_back
-@handle_exceptions
+@handle_out_argument
 @handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
 def prelu(
     x: Union[ivy.NativeArray, ivy.Array],
     slope: Union[float, ivy.NativeArray, ivy.Array],
@@ -120,9 +120,9 @@ def prelu(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
 def thresholded_relu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -176,12 +176,12 @@ def thresholded_relu(
     return current_backend(x).thresholded_relu(x, threshold=threshold, out=out)
 
 
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
-@handle_array_function
 def relu6(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -232,11 +232,11 @@ def relu6(
     return current_backend(x).relu6(x, out=out)
 
 
-@handle_out_argument
-@handle_nestable
 @to_native_arrays_and_back
-@handle_exceptions
+@handle_out_argument
 @handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
 def batch_norm(
     x: Union[ivy.NativeArray, ivy.Array],
     mean: Union[ivy.NativeArray, ivy.Array],
@@ -333,48 +333,3 @@ def logsigmoid(
     return ivy.current_backend(input).logsigmoid(input)
 
 
-@handle_out_argument
-@handle_nestable
-@to_native_arrays_and_back
-@handle_exceptions
-@handle_array_like_without_promotion
-def selu(
-    input: Union[ivy.NativeArray, ivy.Array],
-) -> ivy.Array:
-    """
-    Applies SELU of x i.e. selu(x) = λ α (exp (x) − 1)
-
-    Parameters
-    ----------
-    input
-        Input array.
-
-    Returns
-    -------
-        Array with same shape as input with SELU applied to every element.
-
-    Examples
-    --------
-    With :class:`ivy.Array` input:
-
-    >>> x = ivy.array([-1., 0., 1.])
-    >>> z = x.selu()
-    >>> print(z)
-    ivy.array([-1.31326175, -0.69314718, -0.31326169])
-
-    >>> x = ivy.array([1.5, 0.7, -2.4])
-    >>> z = x.selu()
-    >>> print(z)
-    ivy.array([-0.20141329, -0.40318608, -2.48683619])
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.2, 0.6]))
-    >>> x = ivy.selu(x)
-    >>> print(x)
-    {
-        a: ivy.array([-0.31326169, -1.46328247]),
-        b: ivy.array([-0.59813893, -0.43748799])
-    }
-    """
-    return ivy.current_backend(input).selu(input)

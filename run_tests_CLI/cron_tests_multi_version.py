@@ -64,7 +64,7 @@ framework_versions = {
 
 run_iter = int(sys.argv[1])
 os.system(
-    "docker run -v `pwd`:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/multiversion:latest /opt/miniconda/envs/multienv/bin/python -m pytest --disable-pytest-warnings ivy_tests/test_ivy --my_test_dump true > test_names" # noqa
+    "docker run -v `pwd`:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --disable-pytest-warnings ivy_tests/test_ivy --my_test_dump true > test_names"  # noqa
 )
 test_names_without_backend = []
 test_names = []

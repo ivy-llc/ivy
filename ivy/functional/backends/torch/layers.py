@@ -18,12 +18,12 @@ from ivy.functional.ivy.layers import _handle_padding, _deconv_length
 )
 @handle_mixed_function(lambda x, weight, **kwargs: weight.ndim == 2)
 def linear(
-        x: torch.Tensor,
-        weight: torch.Tensor,
-        /,
-        *,
-        bias: Optional[torch.Tensor] = None,
-        out: Optional[torch.Tensor] = None,
+    x: torch.Tensor,
+    weight: torch.Tensor,
+    /,
+    *,
+    bias: Optional[torch.Tensor] = None,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.nn.functional.linear(x, weight, bias)
 
