@@ -188,9 +188,11 @@ def logical_and(x, y, name="LogicalAnd"):
 def logical_xor(x, y, name="LogicalXor"):
     return ivy.logical_xor(x, y)
 
+
 @to_ivy_arrays_and_back
 def logical_or(*, x, y, name="logical_or"):
     return ivy.logical_or(x, y)
+
 
 @to_ivy_arrays_and_back
 def multiply(x, y, name=None):

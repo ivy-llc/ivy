@@ -384,6 +384,7 @@ def test_tensorflow_logical_and(
         y=x[1],
     )
 
+
 # logical_or
 @handle_frontend_test(
     fn_tree="tensorflow.math.logical_or",
@@ -412,6 +413,7 @@ def test_tensorflow_logical_or(
         x=x[0],
         y=x[1],
     )
+
     
 # log_sigmoid
 @handle_frontend_test(
