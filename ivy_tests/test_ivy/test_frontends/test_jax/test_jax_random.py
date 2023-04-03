@@ -171,7 +171,6 @@ def test_jax_beta(
             dtype=dtype[0],
         )
 
-
     ret = call()
 
     if not ivy.exists(ret):

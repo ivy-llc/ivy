@@ -1147,13 +1147,11 @@ def test_torch_vander(
         x=x[0],
         N=N,
     )
-    
-    
+
+
 @st.composite
 def _generate_multi_dot_dtype_and_arrays(draw):
-    input_dtype = [draw(
-        st.sampled_from(draw(helpers.get_dtypes("numeric")))
-    )]
+    input_dtype = [draw(st.sampled_from(draw(helpers.get_dtypes("numeric"))))]
     matrices_dims = draw(
         st.lists(st.integers(min_value=2, max_value=10), min_size=4, max_size=4)
     )
