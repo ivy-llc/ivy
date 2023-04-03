@@ -342,7 +342,7 @@ def test_numpy_diff(
     ),
 )
 def test_numpy_ediff1d(
-        dtype_x_axis,
+        dtype_x,
         frontend,
         test_flags,
         fn_tree,
