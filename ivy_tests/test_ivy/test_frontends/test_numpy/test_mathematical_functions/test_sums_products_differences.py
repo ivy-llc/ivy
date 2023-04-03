@@ -337,7 +337,8 @@ def test_numpy_diff(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=3,
-        min_num_dims=1
+        min_num_dims=1,
+        min_dim_size=1
     ),
 )
 def test_numpy_ediff1d(
