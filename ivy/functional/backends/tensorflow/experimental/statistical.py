@@ -126,10 +126,15 @@ def nanquantile(
     keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    temp = a.to(tf.float64)
+    if isinstance(q, tf.Tensor):
+        qt = q.to(tf.float64)
+    else:
+        qt = q
     axis = tuple(axis) if isinstance(axis, list) else axis
     return tfp.stats.percentile(
-        a,
-        tf.math.multiply(q, 100),
+        temp,
+        tf.math.multiply(qt, 100),
         axis=axis,
         interpolation=interpolation,
         keepdims=keepdims,
