@@ -807,10 +807,10 @@ def all_nested_indices(
         Whether to also include indices of the nests themselves, not only
         leaves. Default is ``False``.
     _index
-        The indices detected so far. None at the beginning. Used internally, 
+        The indices detected so far. None at the beginning. Used internally,
         do not set manually.
     _base
-        Whether the current function call is the first function call in the 
+        Whether the current function call is the first function call in the
         recursive stack. Used internally, do not set manually.
     extra_nest_types
         Types to recursively check when deciding whether to go deeper into the
@@ -823,9 +823,9 @@ def all_nested_indices(
     -------
     ret
         A set of indices of all elements in nest
-    
-    Both the description and the type hints above assumes an array input 
-    for simplicity, but this function is nestable, and therefore also 
+
+    Both the description and the type hints above assumes an array input
+    for simplicity, but this function is nestable, and therefore also
     accepts :class:ivy.Container instances in place of the arguments.
 
     Examples
