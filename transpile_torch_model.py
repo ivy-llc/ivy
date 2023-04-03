@@ -23,9 +23,9 @@ model = torch.hub.load(
 ivy.set_backend("jax")
 x = ivy.random_uniform(shape=(1, 3, 224, 224))
 
-model.blocks = torch.nn.Sequential(*[model.blocks[i] for i in range(2)])
-model = torch.nn.Sequential(*(list(model.children())[:-3]))
-model.eval()
+# model.blocks = torch.nn.Sequential(*[model.blocks[i] for i in range(2)])
+# model = torch.nn.Sequential(*(list(model.children())[:-3]))
+# model.eval()
 
 jax_deit = tc.transpile(model, source="torch", to="jax", args=(x,))
 
