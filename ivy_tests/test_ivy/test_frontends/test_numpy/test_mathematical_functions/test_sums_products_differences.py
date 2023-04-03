@@ -334,12 +334,9 @@ def test_numpy_diff(
 # ediff1d
 @handle_frontend_test(
     fn_tree="numpy.ediff1d",
-    dtype_x_axis=helpers.dtype_values_axis(
+    dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=2,
-        max_num_dims=2,
-        min_dim_size=1,
-        max_dim_size=10,
+        num_arrays=3,
         valid_axis=True,
         force_int_axis=True,
     ),
@@ -351,7 +348,7 @@ def test_numpy_ediff1d(
         fn_tree,
         on_device,
 ):
-    input_dtype, x, axis = dtype_x_axis
+    input_dtype, x = dtype_x
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
