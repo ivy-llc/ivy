@@ -244,22 +244,27 @@ def test_logsigmoid(
 # selu
 @handle_test(
     fn_tree="functional.ivy.experimental.selu",
+
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         safety_factor_scale="log",
         small_abs_safety_factor=20,
+
     ),
     test_with_out=st.just(False),
 )
 def test_selu(
     *,
+
     dtype_and_input,
+
     test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
+
     input_dtype, input = dtype_and_input
     test_flags.num_positional_args = len(input)
     helpers.test_function(
@@ -271,4 +276,5 @@ def test_selu(
         on_device=on_device,
         atol_=1e-5,
         x=input[0],
+
     )
