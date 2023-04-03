@@ -365,7 +365,6 @@ def test_numpy_standard_normal(
 )
 def test_numpy_standard_exponential(
         input_dtypes,
-        size,
         frontend,
         test_flags,
         fn_tree,
