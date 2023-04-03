@@ -350,7 +350,7 @@ def test_jax_numpy_unravel_index(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_mask_indices(
-    n_rows,
+    n,
     k,
     dtype,
     test_flags,
@@ -364,6 +364,6 @@ def test_jax_numpy_mask_indices(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        n_rows=n_rows,
+        n=n,
         k=k,
     )
