@@ -107,6 +107,7 @@ def test_torch_avg_pool2d(
         divisor_override=None,
     )
 
+
 # avg_pool3d
 @handle_frontend_test(
     fn_tree="torch.nn.functional.avg_pool3d",
