@@ -316,12 +316,12 @@ def _get_symmetrix_matrix(draw):
     test_with_out=st.just(False),
 )
 def test_torch_eigvals(
-        *,
-        dtype_x,
-        frontend,
-        test_flags,
-        fn_tree,
-        on_device,
+    *,
+    dtype_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_x
 
@@ -361,9 +361,9 @@ def test_torch_eigvals(
     frontend_ret = np.sort(frontend_ret)
     frontend_ret_modulus = np.zeros(len(frontend_ret), dtype=np.float64)
     for i in range(len(frontend_ret)):
-        frontend_ret_modulus[i] = math.sqrt(math.pow(frontend_ret[i].real,
-                                                     2) + math.pow(frontend_ret[i].imag,
-                                                                   2))
+        frontend_ret_modulus[i] = math.sqrt(
+            math.pow(frontend_ret[i].real, 2) + math.pow(frontend_ret[i].imag, 2)
+        )
 
     ret = ivy.to_numpy(ret).astype(str(frontend_ret.dtype))
     ret = np.sort(ret)
@@ -994,9 +994,7 @@ def test_torch_tensorsolve(
 def _lu_factor_helper(draw):
     # generate input matrix of shape (*, m, n) and where '*' is one or more
     # batch dimensions
-    input_dtype = draw(
-        helpers.get_dtypes("float")
-    )
+    input_dtype = draw(helpers.get_dtypes("float"))
 
     dim1 = draw(helpers.ints(min_value=2, max_value=3))
     dim2 = draw(helpers.ints(min_value=2, max_value=3))
@@ -1058,7 +1056,7 @@ def test_torch_lu_factor(
     assert_all_close(
         ret_np=[LU, pivot],
         ret_from_gt_np=[frontend_LU, frontend_pivot],
-        ground_truth_backend=frontend
+        ground_truth_backend=frontend,
     )
 
 
@@ -1102,15 +1100,16 @@ def _vander_helper(draw):
     # generate input matrix of shape (*, n) and where '*' is one or more
     # batch dimensions
     N = draw(helpers.ints(min_value=2, max_value=5))
-    if draw(helpers.floats(min_value=0, max_value=1.)) < 0.5:
+    if draw(helpers.floats(min_value=0, max_value=1.0)) < 0.5:
         N = None
 
-    shape = draw(helpers.get_shape(min_num_dims=1,
-                                   max_num_dims=5,
-                                   min_dim_size=2,
-                                   max_dim_size=10))
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=1, max_num_dims=5, min_dim_size=2, max_dim_size=10
+        )
+    )
     dtype = "float"
-    if draw(helpers.floats(min_value=0, max_value=1.)) < 0.5:
+    if draw(helpers.floats(min_value=0, max_value=1.0)) < 0.5:
         dtype = "integer"
 
     x = draw(
@@ -1145,5 +1144,67 @@ def test_torch_vander(
         fn_tree=fn_tree,
         on_device=on_device,
         test_flags=test_flags,
-        x=x[0], N=N
+        x=x[0],
+        N=N,
+    )
+
+
+@st.composite
+def _generate_multi_dot_dtype_and_arrays(draw):
+    input_dtype = [draw(st.sampled_from(draw(helpers.get_dtypes("numeric"))))]
+    matrices_dims = draw(
+        st.lists(st.integers(min_value=2, max_value=10), min_size=4, max_size=4)
+    )
+    shape_1 = (matrices_dims[0], matrices_dims[1])
+    shape_2 = (matrices_dims[1], matrices_dims[2])
+    shape_3 = (matrices_dims[2], matrices_dims[3])
+
+    matrix_1 = draw(
+        helpers.dtype_and_values(
+            shape=shape_1,
+            dtype=input_dtype,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+    matrix_2 = draw(
+        helpers.dtype_and_values(
+            shape=shape_2,
+            dtype=input_dtype,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+    matrix_3 = draw(
+        helpers.dtype_and_values(
+            shape=shape_3,
+            dtype=input_dtype,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+
+    return input_dtype, [matrix_1[1][0], matrix_2[1][0], matrix_3[1][0]]
+
+
+@handle_frontend_test(
+    fn_tree="torch.linalg.multi_dot",
+    dtype_x=_generate_multi_dot_dtype_and_arrays(),
+)
+def test_torch_multi_dot(
+    dtype_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x = dtype_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        test_values=True,
+        tensors=x,
     )

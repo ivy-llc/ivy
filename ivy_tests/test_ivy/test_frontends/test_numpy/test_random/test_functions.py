@@ -333,12 +333,12 @@ def test_numpy_shuffle(
     test_with_out=st.just(False),
 )
 def test_numpy_standard_normal(
-        input_dtypes,
-        size,
-        frontend,
-        test_flags,
-        fn_tree,
-        on_device,
+    input_dtypes,
+    size,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,

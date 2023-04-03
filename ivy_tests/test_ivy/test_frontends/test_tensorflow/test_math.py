@@ -1310,6 +1310,36 @@ def test_tensorflow_equal(
     )
 
 
+# not_equal
+@handle_frontend_test(
+    fn_tree="tensorflow.math.not_equal",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_not_equal(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
+
+
 # floor
 @handle_frontend_test(
     fn_tree="tensorflow.math.floor",
@@ -1619,6 +1649,33 @@ def test_tensorflow_asin(
     test_with_out=st.just(False),
 )
 def test_tensorflow_acos(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# acosh
+@handle_frontend_test(
+    fn_tree="tensorflow.math.acosh",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_acosh(
     *,
     dtype_and_x,
     on_device,
