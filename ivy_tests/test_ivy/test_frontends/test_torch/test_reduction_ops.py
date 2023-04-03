@@ -731,26 +731,30 @@ def test_torch_count_nonzero(
         dim=axis,
     )
 
-    
+
 @handle_frontend_test(
-    fn_tree="torch.mode",
-    dtype_and_x=statistical_dtype_values(
-        function="mode",
-        min_value=-1e04,
-        max_value=1e04,
+    fn_tree="torch.logsumexp",
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_value=-50,
+        max_value=50,
+        min_num_dims=1,
+        max_num_dims=5,
+        valid_axis=True,
+        force_int_axis=True,
     ),
     keepdims=st.booleans(),
 )
-def test_torch_mode(
+def test_torch_logsumexp(
     *,
-    dtype_and_x,
+    dtype_input_axis,
     keepdims,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
-    input_dtype, x, axis = dtype_and_x
+    input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,

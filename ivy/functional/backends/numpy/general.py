@@ -12,6 +12,8 @@ from numbers import Number
 import ivy
 from ivy.functional.backends.numpy.device import _to_device
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 
 def array_equal(x0: np.ndarray, x1: np.ndarray, /) -> bool:
@@ -443,3 +445,23 @@ def vmap(
         return res
 
     return _vmap
+
+
+@with_unsupported_dtypes({"1.23.0 and below": ("bfloat16",)}, backend_version)
+def isin(
+    elements: np.ndarray,
+    test_elements: np.ndarray,
+    /,
+    *,
+    assume_unique: bool = False,
+    invert: bool = False,
+) -> np.ndarray:
+    return np.isin(
+        elements,
+        test_elements,
+        assume_unique=assume_unique,
+        invert=invert,
+    )
+
+
+isin.support_native_out = True
