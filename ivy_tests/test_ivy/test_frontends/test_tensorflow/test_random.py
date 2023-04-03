@@ -3,7 +3,6 @@ from hypothesis import strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-import ivy
 
 
 # random_sample
@@ -125,14 +124,14 @@ def test_tensorflow_shuffle(
 @handle_frontend_test(
     fn_tree="tensorflow.random.stateless_uniform",
     shape=helpers.dtype_and_values(
-        available_dtypes=tuple([ivy.int64, ivy.int32]),
+        available_dtypes=tuple(["int64", "int32"]),
         min_value=1,
         max_value=5,
         min_num_dims=1,
         max_num_dims=1,
     ),
     seed=helpers.dtype_and_values(
-        available_dtypes=tuple([ivy.int64, ivy.int32]),
+        available_dtypes=tuple(["int64", "int32"]),
         min_value=0,
         max_value=10,
         min_num_dims=1,
@@ -169,9 +168,6 @@ def test_tensorflow_stateless_uniform(
 
     if len(seed[0]) < 2:
         return
-
-    print(seed[0])
-    print(dtype[0])
 
     helpers.test_frontend_function(
         input_dtypes=shape_input_dtypes,
