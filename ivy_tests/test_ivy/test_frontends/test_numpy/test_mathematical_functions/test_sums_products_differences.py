@@ -339,14 +339,8 @@ def test_numpy_diff(
         min_num_dims=1, 
         max_num_dims=1
     ),
-    to_end=helpers.ints(
-        min_value=-1,
-        max_value=10,
-    ),
-    to_begin=helpers.ints(
-        min_value=-1,
-        max_value=10,
-    ),
+    to_end=st.one_of(st.integers(-1, 10), st.lists(st.integers(-1, 10), min_size=1, max_size=10)),
+    to_begin=st.one_of(st.integers(-1, 10), st.lists(st.integers(-1, 10), min_size=1, max_size=10)),
 )
 def test_numpy_ediff1d(
     *,
