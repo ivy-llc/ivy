@@ -50,32 +50,6 @@ def test_numpy_ceil(
     )
 
 
-# fix
-@handle_frontend_test(
-    fn_tree="numpy.fix",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-    ),
-)
-def test_numpy_fix(
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        test_values=False,
-        a=x[0],
-    )
-
-
 # floor
 @handle_frontend_test(
     fn_tree="numpy.floor",
@@ -88,7 +62,7 @@ def test_numpy_fix(
         get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
-    number_positional_args = np_frontend_helpers.get_num_positional_args_ufunc(
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
         fn_name="floor"
     ),
 )
@@ -121,7 +95,33 @@ def test_numpy_floor(
         subok=True,
     )
 
-    
+
+# fix
+@handle_frontend_test(
+    fn_tree="numpy.fix",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_numpy_fix(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        a=x[0],
+    )
+
+
 # trunc
 @handle_frontend_test(
     fn_tree="numpy.trunc",
@@ -208,4 +208,33 @@ def test_numpy_rint(
         order="K",
         dtype=dtype,
         subok=True,
+    )
+
+
+# around
+@handle_frontend_test(
+    fn_tree="numpy.around",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    decimals=helpers.ints(min_value=0, max_value=5),
+)
+def test_numpy_around(
+    *,
+    dtype_and_x,
+    decimals,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        decimals=decimals,
     )

@@ -366,3 +366,8 @@ def searchsorted(
     if out_int32:
         ret = ivy.astype(ret, "int32")
     return ret
+
+
+@to_ivy_arrays_and_back
+def atleast_3d(*tensors):
+    return ivy.atleast_3d(*tensors)
