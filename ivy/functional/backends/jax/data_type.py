@@ -230,3 +230,10 @@ def dtype_bits(dtype_in: Union[jnp.dtype, str], /) -> int:
         .replace("float", "")
         .replace("complex", "")
     )
+
+
+def is_native_dtype(dtype_in: Union[jnp.dtype, str], /) -> bool:
+    if dtype_in in ivy_dtype_dict:
+        return True
+    else:
+        return False
