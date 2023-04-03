@@ -253,3 +253,13 @@ def einsum(
 
 
 einsum.support_native_out = True
+
+def ptp(
+    x: np.ndarray,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return np.asarray(np.std(x, axis=axis, keepdims=keepdims, out=out))

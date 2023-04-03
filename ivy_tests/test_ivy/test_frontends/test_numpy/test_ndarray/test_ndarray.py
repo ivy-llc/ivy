@@ -2722,3 +2722,38 @@ def test_numpy_instance_mod__(
         method_flags=method_flags,
         on_device=on_device,
     )
+
+# ptp
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="ptp",
+    dtype_x_axis_dtype=_get_castable_dtypes_values(use_where=True),
+    keep_dims=st.booleans(),
+)
+def test_numpy_ndarray_ptp(
+    dtype_x_axis_dtype,
+    keep_dims,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtypes, x, axis, dtype, where = dtype_x_axis_dtype
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtypes,
+        method_all_as_kwargs_np={
+            "axis": axis,
+            "keepdims": keep_dims,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
