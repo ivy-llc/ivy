@@ -14,7 +14,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.LeakyRelu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
     ),
     test_with_out=st.just(False),
@@ -3625,4 +3625,4 @@ def test_tensorflow_BatchMatMulV3(
         Tout=Tout,
         adj_x=adj_x,
         adj_y=adj_y,
-    )    
+    )

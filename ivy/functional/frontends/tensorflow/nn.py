@@ -489,5 +489,5 @@ def softmax(logits, axis=None, name=None):
     return ivy.softmax(logits, axis=axis)
 
 
-def leaky_relu(features, name=None):
-    return ivy.leaky_relu(features)
+def leaky_relu(features, alpha, name=None):
+    return ivy.leaky_relu(features, alpha)

@@ -751,5 +751,4 @@ Slice = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.slice))
 LeakyRelu = to_ivy_arrays_and_back(
     map_raw_ops_alias(
         tf_frontend.nn.leaky_relu,
-        kwargs_to_update={"x":"features"},
     ))
