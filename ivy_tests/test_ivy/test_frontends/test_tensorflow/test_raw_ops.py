@@ -34,8 +34,6 @@ def test_tensorflow_LeakyReLU(  # NOQA
         on_device,
 ):
     dtype, x = dtype_and_x
-    alpha = alpha
-
     return helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
