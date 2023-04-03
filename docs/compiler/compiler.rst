@@ -16,7 +16,7 @@ or composition of both, and produces a simplified executable computation graph c
 of functions from the backend functional API only, which results in:
 
 - Simplified code: The Graph Compiler simplifies the code by removing all the wrapping 
-  and functions that don't contribute to the output: print statements, logger, etc.
+  and functions that don't contribute to the output: print statements, loggers, etc.
 - Improved performance: The compiled graph has no performance overhead due to Ivy's 
   function wrapping, likewise, redundant operations from the original function are also 
   removed, increasing its overall performance.
@@ -38,7 +38,7 @@ Compiler API
     :param kwarg_stateful_idxs: Keyword arguments to be considered stateful during the graph compilation.
     :type kwarg_stateful_idxs: ``Optional[List]``
     :param to: Backend that the graph will be compiled to. If not specified, the current backend will be used.
-    :type to: ```Optional[str]``
+    :type to: ``Optional[str]``
     :param include_generators: Include array creation/generation functions as part of the graph.
     :type include_generators: ``bool``
     :param array_caching: Cache the constant arrays that appear as arguments to the functions in the graph.
@@ -83,9 +83,6 @@ Let's start with a simple function:
 
     # Compile the function
     compiled_fn = ivy.compile(fn, args=(x, y))
-
-    # View the graph
-    compiled_fn.show()
 
 In this case, the compiled graph would be:
 
@@ -174,7 +171,7 @@ default, which returns the following graph.
 
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/compiler/figure2.png
 
-This shows that by catching the constant operation in the graph, a simpler graph can be 
+This shows that by caching the constant operation in the graph, a simpler graph can be 
 obtained. However, if desired, this argument can be set to ``False``, which results in the 
 graph below. This ultimately results in a trade-off between time and memory, as 
 cached results need to be stored in memory but if they are not cached these operations 
