@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, List, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 import functools
 import time
 import os
@@ -91,12 +91,13 @@ def _write_to_csv(df, row_list, output_path="./report.csv"):
 
 def eager_benchmark(
     obj: Union[Callable, str],
-    label: str = None,
-    backends: List[str] = None,
-    devices: List[str] = None,
     functional_api: bool = False,
-    args: Tuple[Any] = None,
-    kwargs: Dict[str, Any] = None,
+    num_experiments: int = 1,
+    label: Optional[str] = None,
+    backends: Optional[List[str]] = None,
+    devices: Optional[List[str]] = None,
+    args: Optional[Tuple[Any]] = None,
+    kwargs: Optional[Dict[str, Any]] = None,
     output_path="./report.csv",
 ):
     """
@@ -109,6 +110,12 @@ def eager_benchmark(
         The function or module to be benchmarked with and without graph compilation.
         In case of a function from ivy's functional API, this parameter would receive
         a string which is the function name, along with functional_api set to True.
+    functional_api
+        Should only be set to ``True`` if the obj being passed is a part of ivy's
+        functional API. (Default value = ``False``).
+    num_experimenta
+        Option to run benchmarking multiple times to account for subtle variations.
+        (Default value = 1).
     label
         The preferred name for the experiment as would be added to the csv. If no
         name is provided, then the __name__ of the obj would be picked by default
@@ -120,9 +127,6 @@ def eager_benchmark(
         A list of target devices that ivy supports with the backends. The devices that
         are invalid for a particular backend would be ignored
         (Default value  = ``None``).
-    functional_api
-        Should only be set to ``True`` if the obj being passed is a part of ivy's
-        functional API. (Default value = ``False``).
     args
         The positional arguments to be passed to the obj.
     kwargs
@@ -204,57 +208,67 @@ def eager_benchmark(
     backends = ivy.default(backends, [])
     devices = ivy.default(devices, [])
     output_path = ivy.default(output_path, "./report.csv")
-    print("\nBenchmarking backends : " + " ".join(backends) + "\n")
-    for backend in backends:
-        with _AvoidGPUPreallocation(backend) as _:
-            print("------------------------------------------------\n")
-            print("backend : {}".format(backend))
-            ivy.set_backend(backend, dynamic=True)
-            valid_devices = [
-                device
-                for device in devices
-                if device.split(":")[0] not in ivy.invalid_devices
-            ]
-            for device in valid_devices:
-                print("device : {}".format(device))
-            obj_call = obj
-            if functional_api:
-                obj_call = ivy.__dict__[obj]
-            for i, device in enumerate(valid_devices):
-                args, kwargs = _move_to_device(args=args, kwargs=kwargs, device=device)
-                if isinstance(obj_call, ivy.Module):
-                    obj_call_copy = copy.deepcopy(obj_call)
-                    obj_call_copy.compile(args=args, kwargs=kwargs)
-                    compiled_fn = obj_call_copy
-                else:
-                    compiled_fn = ivy.compile(obj_call, args=args, kwargs=kwargs)
-                kwargs = ivy.default(kwargs, {})
-                args = ivy.default(args, ())
-                uncompiled_time = _compute_time(obj_call)(*args, **kwargs)
-                compiled_time = _compute_time(compiled_fn)(*args, **kwargs)
-                label = obj_call.__name__ if label is None else label
-                percent_speed_up = round(
-                    abs(uncompiled_time - compiled_time) / uncompiled_time * 100, 6
-                )
-                df = _read_or_create_csv(output_path)
-                _write_to_csv(
-                    df,
-                    [
-                        len(df.index),
-                        label,
-                        backend,
-                        device,
-                        uncompiled_time,
-                        compiled_time,
-                        percent_speed_up,
-                    ],
-                    output_path,
-                )
-                args, kwargs = _move_to_device(args=args, kwargs=kwargs, device="cpu")
-                ivy.clear_cached_mem_on_dev(device)
-                print(LINE_UP * (len(valid_devices) - i), end=LINE_CLEAR)
-                print("device : {}\t --> done\n".format(device))
-            ivy.unset_backend()
+    print("\nBenchmarking backends : " + " ".join(backends))
+    print("Number of experiments : {}".format(num_experiments) + "\n")
+    for i in range(num_experiments):
+        if num_experiments > 1:
+            print("====================")
+            print("Experiment {}".format(i + 1))
+            print("====================\n")
+        for backend in backends:
+            with _AvoidGPUPreallocation(backend) as _:
+                print("------------------------------------------------\n")
+                print("backend : {}".format(backend))
+                ivy.set_backend(backend, dynamic=True)
+                valid_devices = [
+                    device
+                    for device in devices
+                    if device.split(":")[0] not in ivy.invalid_devices
+                ]
+                for device in valid_devices:
+                    print("device : {}".format(device))
+                obj_call = obj
+                if functional_api:
+                    obj_call = ivy.__dict__[obj]
+                for i, device in enumerate(valid_devices):
+                    args, kwargs = _move_to_device(
+                        args=args, kwargs=kwargs, device=device
+                    )
+                    if isinstance(obj_call, ivy.Module):
+                        obj_call_copy = copy.deepcopy(obj_call)
+                        obj_call_copy.compile(args=args, kwargs=kwargs)
+                        compiled_fn = obj_call_copy
+                    else:
+                        compiled_fn = ivy.compile(obj_call, args=args, kwargs=kwargs)
+                    kwargs = ivy.default(kwargs, {})
+                    args = ivy.default(args, ())
+                    uncompiled_time = _compute_time(obj_call)(*args, **kwargs)
+                    compiled_time = _compute_time(compiled_fn)(*args, **kwargs)
+                    label = obj_call.__name__ if label is None else label
+                    percent_speed_up = round(
+                        abs(uncompiled_time - compiled_time) / uncompiled_time * 100, 6
+                    )
+                    df = _read_or_create_csv(output_path)
+                    _write_to_csv(
+                        df,
+                        [
+                            len(df.index),
+                            label,
+                            backend,
+                            device,
+                            uncompiled_time,
+                            compiled_time,
+                            percent_speed_up,
+                        ],
+                        output_path,
+                    )
+                    args, kwargs = _move_to_device(
+                        args=args, kwargs=kwargs, device="cpu"
+                    )
+                    ivy.clear_cached_mem_on_dev(device)
+                    print(LINE_UP * (len(valid_devices) - i), end=LINE_CLEAR)
+                    print("device : {}\t --> done\n".format(device))
+                ivy.unset_backend()
     print("Results written to {} ...".format(output_path))
 
 
