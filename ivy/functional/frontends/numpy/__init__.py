@@ -538,7 +538,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functio
     _arctan,
     _cos,
     _deg2rad,
-    _rad2deg,
+    _degrees,
     _sin,
     _tan,
     _degrees,
@@ -639,7 +639,7 @@ arcsin = ufunc("_arcsin")
 arctan = ufunc("_arctan")
 cos = ufunc("_cos")
 deg2rad = ufunc("_deg2rad")
-rad2deg = ufunc("_rad2deg")
+degrees = ufunc("_degrees")
 sin = ufunc("_sin")
 tan = ufunc("_tan")
 degrees = ufunc("_degrees")
