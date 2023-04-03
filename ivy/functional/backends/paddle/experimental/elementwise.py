@@ -3,6 +3,7 @@ from typing import Optional, Union, Tuple, List
 from numbers import Number
 from math import pi
 import paddle
+import numpy as np
 from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.func_wrapper import (
     with_unsupported_dtypes,
@@ -346,8 +347,26 @@ def nextafter(
     raise IvyNotImplementedException()
 
 
+_BERNOULLI_COEFS = [
+    12,
+    -720,
+    30240,
+    -1209600,
+    47900160,
+    -1307674368000 / 691,
+    74724249600,
+    -10670622842880000 / 3617,
+    5109094217170944000 / 43867,
+    -802857662698291200000 / 174611,
+    14101100039391805440000 / 77683,
+    -1693824136731743669452800000 / 236364091,
+    186134520519971831808000000 / 657931,
+    -37893265687455865519472640000000 / 3392780147,
+    759790291646040068357842010112000000 / 1723168255201,
+    -134196726836183700385281186201600000000 / 7709321041217,
+]    
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16",  "int8","int16","int32","int64","uint8","uint16","float16","bool",)}}, backend_version
 )
 def zeta(
     x: paddle.Tensor,
@@ -356,22 +375,37 @@ def zeta(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    with ivy.ArrayMode(False):
-        temp = ivy.logical_and(ivy.greater(x, 0), paddle.equal(ivy.remainder(x, 2), 0))
-        temp = ivy.logical_and(temp, ivy.less_equal(q, 0))
-        temp = ivy.logical_and(temp, paddle.equal(ivy.remainder(q, 1), 0))
-        inf_indices = ivy.logical_or(temp, ivy.equal(x, 1))
-        temp = ivy.logical_and(ivy.not_equal(ivy.remainder(x, 2), 0), ivy.greater(x, 1))
-        temp = ivy.logical_and(temp, ivy.less_equal(q, 0))
-        nan_indices = ivy.logical_or(temp, ivy.less(x, 1))
-        n, res = 1, 1 / q**x
-        while n < 10000:
-            term = 1 / (q + n) ** x
-            n, res = n + 1, res + term
-        ret=ivy.round(res)
-        ret = ivy.where(nan_indices, paddle.to_tensor(ivy.nan), ret)
-        ret = ivy.where(inf_indices, paddle.to_tensor(ivy.inf), ret)
-        return ret
+   with ivy.ArrayMode(False):
+        s,a=ivy.promote_types_of_inputs(x,q)
+        s_, a_ = paddle.unsqueeze(x, -1), paddle.unsqueeze(q, -1)
+
+        N = M = np.float64(8) if q.dtype == np.float32 else np.float64(16)
+
+        assert M <= len(_BERNOULLI_COEFS)
+
+        k = paddle.unsqueeze(ivy.arange(N, dtype=q.dtype), tuple(range(q.ndim)))
+
+        S = paddle.sum((a_ + k) ** -s_, -1)
+
+        I = ivy.divide((q + N) ** (1 - x), x - 1)
+
+        T0 = (q + N) ** -x
+
+        m = paddle.unsqueeze(ivy.arange(2 * M, dtype=s.dtype), tuple(range(s.ndim)))
+
+        s_over_a = (s_ + m) / (a_ + N)
+        s_over_a = ivy.where(s_over_a == 0, paddle.ones_like(s_over_a) * 1e-20, s_over_a)
+        T1 = paddle.cumprod(s_over_a, -1)[..., ::2]
+        # t=np.array(T1)
+        T1 = paddle.clip(T1, max=ivy.finfo(T1.dtype).max)
+        coefs = paddle.unsqueeze(paddle.to_tensor(_BERNOULLI_COEFS[:T1.shape[-1]], dtype=T1.dtype),
+                             tuple(range(a.ndim)))
+        T1 = T1 / coefs
+        T = T0 * (0.5 + paddle.sum(T1, -1))
+        ans= S + I + T
+        mask = x < 1
+        ans[mask]=ivy.nan
+        return ans
 
 
 def gradient(
