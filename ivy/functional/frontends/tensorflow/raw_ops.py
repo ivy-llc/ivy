@@ -272,10 +272,7 @@ def Log1p(*, x, name="Log1p"):
     return ivy.log1p(x)
 
 
-@to_ivy_arrays_and_back
-def LogicalOr(*, x, y, name="LogicalOr"):
-    x, y = check_tensorflow_casting(x, y)
-    return ivy.logical_or(x, y)
+LogicalOr = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.logical_or))
 
 
 @to_ivy_arrays_and_back
