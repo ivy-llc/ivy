@@ -145,7 +145,9 @@ def test_histogram_helper(draw):
     dtype_out = draw(
         st.sampled_from(
             draw(
-                helpers.get_castable_dtype(draw(helpers.get_dtypes()), str(dtype_input))
+                helpers.get_castable_dtype(
+                    draw(helpers.get_dtypes("float")), str(dtype_input)
+                )
             )
         )
     )

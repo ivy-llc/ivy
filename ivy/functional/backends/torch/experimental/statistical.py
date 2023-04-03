@@ -57,9 +57,9 @@ def histogram(
         raise ivy.exceptions.IvyException("bins must have at least 1 bin (size > 1)")
     bins_out = bins.clone()
     if extend_lower_interval and min_a < bins[0]:
-        bins[0] = min_a
+        bins.data[0] = min_a
     if extend_upper_interval and max_a > bins[-1]:
-        bins[-1] = max_a
+        bins.data[-1] = max_a
     if a.ndim > 0 and axis is not None:
         inverted_shape_dims = list(torch.flip(torch.arange(a.ndim), dims=[0]))
         if isinstance(axis, int):
@@ -107,9 +107,9 @@ def histogram(
         dim = 0
         i = 0
         if index.tolist() == (torch.tensor(out_shape) - 1).tolist():
-            ret_shaped[tuple(index)] = ret[i]
+            ret_shaped.data[tuple(index)] = ret[i]
         while index.tolist() != (torch.tensor(out_shape) - 1).tolist():
-            ret_shaped[tuple(index)] = ret[i]
+            ret_shaped.data[tuple(index)] = ret[i]
             dim_full_flag = False
             while index[dim] == out_shape[dim] - 1:
                 index[dim] = 0
@@ -120,7 +120,7 @@ def histogram(
             if dim_full_flag:
                 dim = 0
         if index.tolist() == (torch.tensor(out_shape) - 1).tolist():
-            ret_shaped[tuple(index)] = ret[i]
+            ret_shaped.data[tuple(index)] = ret[i]
         ret = ret_shaped
     else:
         ret = torch.histogram(
