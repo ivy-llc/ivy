@@ -5,6 +5,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 import ivy
 
+
 # random_sample
 @handle_frontend_test(
     fn_tree="tensorflow.random.uniform",
@@ -120,7 +121,7 @@ def test_tensorflow_shuffle(
     )
 
 
-#random_stateless_uniform
+# random_stateless_uniform
 @handle_frontend_test(
     fn_tree="tensorflow.random.stateless_uniform",
     shape=helpers.dtype_and_values(
@@ -137,7 +138,7 @@ def test_tensorflow_shuffle(
         min_num_dims=1,
         max_num_dims=1,
         min_dim_size=2,
-        max_dim_size=2
+        max_dim_size=2,
     ),
     minval=helpers.ints(min_value=0, max_value=3),
     maxval=helpers.ints(min_value=4, max_value=10),
@@ -155,13 +156,18 @@ def test_tensorflow_stateless_uniform(
     fn_tree,
     on_device,
 ):
-    if('complex' in dtype[0] or 'int8' in dtype[0] or 'int16' in dtype[0] or 'uint' in dtype[0]):
+    if (
+        "complex" in dtype[0]
+        or "int8" in dtype[0]
+        or "int16" in dtype[0]
+        or "uint" in dtype[0]
+    ):
         return
 
     shape_input_dtypes, shape = shape
     seed_input_dtypes, seed = seed
 
-    if(len(seed[0]) < 2):
+    if len(seed[0]) < 2:
         return
 
     print(seed[0])
@@ -178,6 +184,5 @@ def test_tensorflow_stateless_uniform(
         seed=(seed[0][0], seed[0][1]),
         minval=minval,
         maxval=maxval,
-        dtype=dtype[0]
+        dtype=dtype[0],
     )
-
