@@ -417,8 +417,6 @@ def multinomial(
     )
 
 
-
-
 @infer_device
 @handle_array_function
 @to_native_arrays_and_back

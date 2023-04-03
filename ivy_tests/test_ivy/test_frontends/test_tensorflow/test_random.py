@@ -130,10 +130,18 @@ def test_tensorflow_shuffle(
         min_num_dims=1,
         max_num_dims=1,
     ),
+    seed=helpers.dtype_and_values(
+        available_dtypes=tuple([ivy.int64, ivy.int32]),
+        min_value=0,
+        max_value=10,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2
+    ),
     minval=helpers.ints(min_value=0, max_value=3),
     maxval=helpers.ints(min_value=4, max_value=10),
-    dtype=helpers.get_dtypes("float", full=False),
-    seed=helpers.ints(min_value=0, max_value=10),
+    dtype=helpers.get_dtypes("numeric", full=False),
     test_with_out=st.just(False),
 )
 def test_tensorflow_stateless_uniform(
@@ -147,22 +155,98 @@ def test_tensorflow_stateless_uniform(
     fn_tree,
     on_device,
 ):
-    seed = ivy.array([seed,seed], dtype = "int32").data
-    #print(ivy.dtype(seed))
+    if('complex' in dtype[0] or 'int8' in dtype[0] or 'int16' in dtype[0]):
+        return
 
+    shape_input_dtypes, shape = shape
+    seed_input_dtypes, seed = seed
 
-    input_dtypes, shape = shape
+    if(len(seed[0]) < 2):
+        return
+
+    print(seed[0])
+    print(dtype[0])
+
     helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
+        input_dtypes=shape_input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
         shape=shape[0],
-        seed=seed,
+        seed=(seed[0][0], seed[0][1]),
         minval=minval,
         maxval=maxval,
         dtype=dtype[0]
     )
+
+
+
+import ivy.functional.frontends.tensorflow as tf
+
+#
+# @handle_frontend_test(
+#     fn_tree="tensorflow.random.stateless_uniform",
+#     seed=helpers.dtype_and_values(
+#         available_dtypes=tuple([ivy.int64, ivy.int32]),
+#         min_value=0,
+#         max_value=10,
+#         min_num_dims=1,
+#         max_num_dims=1,
+#         min_dim_size = 2,
+#         max_dim_size = 2
+#     ),
+#     dtype=helpers.get_dtypes("numeric", full=False),
+#     test_with_out=st.just(False)
+# )
+# def test(seed, dtype):
+#     #print(dtype)
+#     #print('complex' in dtype[0] or 'int8' in dtype[0])
+#
+#     if('complex' in dtype[0] or 'int8' in dtype[0]):
+#         pass
+#
+#     seed_input_dtypes, seed = seed
+#     seed = (seed[0][0],seed[0][1])
+#     print(seed)
+#
+#     # print(tf.random.stateless_uniform(
+#     #     [10], seed=seed, minval=1, maxval=5, dtype=dtype[0]
+#     # ))
+#
+#
+
+
+#incorrect dtype_and_values
+@handle_frontend_test(
+    fn_tree="tensorflow.random.stateless_uniform",
+    shape=helpers.dtype_and_values(
+        available_dtypes=tuple([ivy.int64, ivy.int32]),
+        min_value=1,
+        max_value=5,
+        min_num_dims=1,
+        max_num_dims=1,
+    ),
+    # seed=helpers.dtype_and_values(
+    #     available_dtypes=tuple([ivy.int64, ivy.int32]),
+    #     min_value=0,
+    #     max_value=10,
+    #     min_num_dims=1,
+    #     max_num_dims=1,
+    #     min_dim_size=2,
+    #     max_dim_size=2
+    # ),
+    test_with_out=st.just(False),
+)
+def test(
+    shape,
+    #seed,
+):
+    #seed_input_dtypes, seed = seed
+    #print(seed[0])
+    shape_input_dtypes, shape = shape
+    print(shape)
+
+
 
