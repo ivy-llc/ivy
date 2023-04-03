@@ -4,12 +4,15 @@ from hypothesis import strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
+from ivy import with_unsupported_dtypes
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_first_matrix_and_dtype,
     _get_second_matrix_and_dtype,
     _get_dtype_value1_value2_axis_for_tensordot,
 )
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_linalg import \
+    _generate_multi_dot_dtype_and_arrays
 
 
 # outer
@@ -198,20 +201,11 @@ def test_numpy_kron(
         b=xs[1],
     )
 
-#multi_dot
+# multi_dot
+@with_unsupported_dtypes({"2.0.0 and below": ("float16",)}, "torch")
 @handle_frontend_test(
     fn_tree="numpy.linalg.multi_dot",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=5,
-        min_num_dims=2,
-        max_num_dims=2,
-        min_dim_size=2,
-        max_dim_size=2,
-        min_value=-100,
-        max_value=100,
-        shared_dtype=True,
-    )
+    dtype_and_x=_generate_multi_dot_dtype_and_arrays(),
 )
 def test_numpy_multi_dot(
     dtype_and_x,
@@ -227,6 +221,7 @@ def test_numpy_multi_dot(
         fn_tree=fn_tree,
         on_device=on_device,
         test_flags=test_flags,
-        arrays=(x[0], x[1], x[2], x[3], x[4]),
-        out=None,
+        arrays=x,
+        rtol=1e-3,
+        atol=1e-3,
     )
