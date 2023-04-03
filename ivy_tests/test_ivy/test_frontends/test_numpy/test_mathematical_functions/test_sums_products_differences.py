@@ -334,7 +334,7 @@ def test_numpy_diff(
 # ediff1d
 @handle_frontend_test(
     fn_tree="numpy.ediff1d",
-    dtype_and_values=helpers.dtype_values_axis(
+    dtype_and_values=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=3,
         min_num_dims=1,
