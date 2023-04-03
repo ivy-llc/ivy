@@ -890,3 +890,6 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def exp(self, *, out=None):
         return torch_frontend.exp(self._ivy_array)
+    
+    def mul(self, other, *, out=None):
+        return torch_frontend.mul(self._ivy_array, other)
