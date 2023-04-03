@@ -270,7 +270,6 @@ def test_bincount(
     )
 
 
-# nanquantile
 @handle_test(
     fn_tree="functional.ivy.experimental.nanquantile",
     dtype_and_x=statistical_dtype_values(function="nanquantile"),
