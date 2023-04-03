@@ -3,7 +3,7 @@ from builtins import slice as py_slice, range as py_range
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.tensorflow.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_tf_dtype,
@@ -35,6 +35,20 @@ def clip_by_value(t, clip_value_min, clip_value_max):
     )
     t = ivy.array(t)
     return ivy.clip(t, clip_value_min, clip_value_max)
+
+
+@with_supported_dtypes({"2.9.1 and below": ("float32",)}, "tensorflow")
+@to_ivy_arrays_and_back
+def clip_by_global_norm(t_list, clip_norm, use_norm=None):
+    if use_norm is not None:
+        global_norm = use_norm
+    else:
+        global_norm = ivy.sqrt(ivy.sum([ivy.vector_norm(t) ** 2 for t in t_list]))
+
+    max_clip_ratio = ivy.maximum(clip_norm, global_norm)
+    return [
+        ivy.multiply(t, ivy.divide(clip_norm, max_clip_ratio)) for t in t_list
+    ], global_norm
 
 
 @to_ivy_arrays_and_back
