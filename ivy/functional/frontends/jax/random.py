@@ -1,9 +1,9 @@
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_jax_dtype,
-    with_unsupported_dtypes
 )
 
 
@@ -33,12 +33,15 @@ def _get_seed(key):
 
 @handle_jax_dtype
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"0.3.14 and below": (
+@with_unsupported_dtypes(
+    {
+        "0.3.14 and below": (
             "float16",
             "bfloat16",
         )
     },
-    "jax")
+    "jax",
+)
 def beta(key, a, b, shape=None, dtype=None):
     seed = _get_seed(key)
     return ivy.beta(a, b, shape=shape, dtype=dtype, seed=seed)
