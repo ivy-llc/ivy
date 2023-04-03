@@ -359,6 +359,7 @@ def test_numpy_standard_normal(
         allow_infinity=False,
         width=32,
         min_value=1,
+        exclude_min=True
     ),
     test_with_out=st.just(False),
 )
@@ -369,6 +370,7 @@ def test_numpy_standard_exponential(
         test_flags,
         fn_tree,
         on_device,
+        bta
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
