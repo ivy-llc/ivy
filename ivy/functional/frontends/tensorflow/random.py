@@ -31,5 +31,5 @@ def shuffle(value, seed=None, name=None):
 @to_ivy_arrays_and_back
 def stateless_uniform(shape, seed, minval=0, maxval=None, dtype=ivy.float32, name=None, alg='auto_select'):
     return ivy.random_uniform(
-        shape=shape, seed=seed[0], low=minval, high=maxval, dtype=dtype
+        shape=shape, seed=seed[0]+seed[1], low=minval, high=maxval, dtype=dtype
     )
