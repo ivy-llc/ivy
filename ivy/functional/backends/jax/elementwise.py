@@ -503,3 +503,15 @@ def fmod(
 ) -> JaxArray:
     x1, x2 = promote_types_of_inputs(x1, x2)
     return jnp.fmod(x1, x2)
+
+
+@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
+def isin(
+    elements: JaxArray,
+    test_elements: JaxArray,
+    /,
+    *,
+    assume_unique: bool = False,
+    invert: bool = False,
+) -> JaxArray:
+    return jnp.isin(elements, test_elements, assume_unique=assume_unique, invert=invert)

@@ -4,15 +4,12 @@ from numbers import Number
 import tensorflow as tf
 from tensorflow.python.ops.numpy_ops import np_math_ops
 
-
-from .. import backend_version
-
-
 # local
 import ivy
 from ivy import promote_types_of_inputs
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 import tensorflow_probability as tfp
+from .. import backend_version
 
 
 def sinc(
@@ -51,6 +48,7 @@ def fmax(
     return ret
 
 
+@with_supported_dtypes({"2.11.0 and below": ("float",)}, backend_version)
 def fmin(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -58,10 +56,9 @@ def fmin(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    temp = tf.constant(float("nan"))
     x1, x2 = promote_types_of_inputs(x1, x2)
-    x1 = tf.where(tf.math.is_nan(x1, temp), x2, x1)
-    x2 = tf.where(tf.math.is_nan(x2, temp), x1, x2)
+    x1 = tf.where(tf.math.is_nan(x1), x2, x1)
+    x2 = tf.where(tf.math.is_nan(x2), x1, x2)
     ret = tf.experimental.numpy.minimum(x1, x2)
     return ret
 

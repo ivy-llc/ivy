@@ -7,7 +7,8 @@ from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.func_wrapper import (
     with_unsupported_dtypes,
     with_supported_dtypes,
-    with_unsupported_device_and_dtypes)
+    with_unsupported_device_and_dtypes,
+)
 
 # local
 import ivy
@@ -25,6 +26,10 @@ def lcm(
     return paddle.lcm(x1, x2)
 
 
+@with_supported_dtypes(
+    {"2.4.2 and below": ("float64", "float32", "int64", "int64")},
+    backend_version,
+)
 def fmax(
     x1: paddle.Tensor,
     x2: paddle.Tensor,
@@ -32,16 +37,13 @@ def fmax(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if x1.dtype != x2.dtype:
+        x1, x2 = promote_types_of_inputs(x1, x2)
     return paddle.fmax(x1, x2)
 
 
 @with_supported_dtypes(
-    {
-        "2.4.2 and below": ("float64",
-                            "float32",
-                            "int64",
-                            "int64")
-    },
+    {"2.4.2 and below": ("float64", "float32", "int64", "int64")},
     backend_version,
 )
 def fmin(
@@ -51,6 +53,8 @@ def fmin(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if x1.dtype != x2.dtype:
+        x1, x2 = promote_types_of_inputs(x1, x2)
     return paddle.fmin(x1, x2)
 
 
