@@ -471,3 +471,17 @@ class ndarray:
 
     def __mod__(self, value, /):
         return np_frontend.mod(self._ivy_array, value, out=self)
+    
+    def ptp(
+        self,
+        axis=None,
+        out=None,
+        keepdims=False,
+    ):
+        return np_frontend.ptp(
+            self._ivy_array,
+            axis=axis,
+            keepdims=keepdims,
+            out=out,
+        )
+    
