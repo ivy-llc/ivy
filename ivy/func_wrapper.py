@@ -19,9 +19,9 @@ import inspect
 
 # for wrapping (sequence matters)
 FN_DECORATORS = [
-    "handle_array_function",
     "infer_device",
     "infer_dtype",
+    "handle_array_function",
     "integer_arrays_to_float",
     "outputs_to_ivy_arrays",
     "outputs_to_native_arrays",
