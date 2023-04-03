@@ -165,6 +165,22 @@ def var(
 
 var.support_native_out = True
 
+@_scalar_output_to_0d_array
+def ptp(
+    x: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return ivy.astype(
+        np.ptp(x, axis=axis, keepdims=keepdims, out=out), x.dtype, copy=False
+    )
+
+
+ptp.support_native_out = True
 
 # Extra #
 # ------#
