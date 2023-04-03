@@ -1,7 +1,6 @@
 # global
 import math
 import itertools
-import functools
 from typing import Optional, Union, Tuple, Literal, Sequence
 from functools import reduce
 
@@ -456,7 +455,7 @@ def dct(
     type
         The type of the dct. Must be 1, 2, 3 or 4.
     n
-        The lenght of the transform. If n is less than the input signal lenght,
+        The length of the transform. If n is less than the input signal length,
         then x is truncated, if n is larger then x is zero-padded.
     axis
         The axis to compute the DCT along.
@@ -1773,3 +1772,68 @@ def adaptive_avg_pool2d(
     if squeeze:
         return ivy.squeeze(pooled_output, axis=0)
     return pooled_output
+
+
+def quantize(
+    input: Union[ivy.Array, ivy.NativeArray],
+    scale: Union[ivy.Array, ivy.NativeArray],
+    zero_point: Union[ivy.Array, ivy.NativeArray],
+    dtype: Literal["quint8", "qint8", "qint32"],
+) -> ivy.Array:
+    """
+    Converts a float tensor to a quantized tensor with given
+    scale and zero point.
+
+    Parameters
+    ----------
+    input(Tensor)
+        Float tensor or list of tensors to quantize
+
+    scale (float or Tensor)
+        scale to apply in quantization formula
+
+    zero_point (int or Tensor)
+        offset in integer value that maps to float zero
+
+    dtype (torch.dtype)
+        the desired data type of returned tensor.
+        Has to be one of the quantized dtypes: torch.quint8,
+        torch.qint8, torch.qint32
+
+    Returns
+    -------
+        A newly quantized tensor or list of quantized tensors.
+
+    """
+
+    ivy.set_current_backend("torch")
+    return ivy.current_backend().quantize(input, scale, zero_point, dtype)
+
+
+def dequantize(tensor) -> ivy.Array:
+    """
+    Dequantizing a quantized Tensor
+
+    Parameters
+    ----------
+    tensor (Tensor)
+        A quantized Tensor
+
+
+    torch.dequantize(tensors) -> sequence of Tensors
+
+        Given a list of quantized Tensors, dequantize them
+        and return a list of fp32 Tensors
+
+        Parameters:
+
+        tensors (sequence of Tensors)
+            A list of quantized Tensors
+
+    Returns
+    -------
+        Returns an fp32 Tensor by dequantizing a quantized Tensor
+
+    """
+    ivy.set_current_backend("torch")
+    return ivy.current_backend().dequantize(tensor)
