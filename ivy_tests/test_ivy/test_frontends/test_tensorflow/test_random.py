@@ -158,13 +158,6 @@ def test_tensorflow_stateless_uniform(
     if('complex' in dtype[0] or 'int8' in dtype[0] or 'int16' in dtype[0] or 'uint' in dtype[0]):
         return
 
-    # if('uint' in dtype[0]):
-    #   #gives error ivy.utils.exceptions.IvyBackendException: tensorflow: random_uniform: low and high bounds must be numerics when shape is specified
-    #   #so I ignore all uints
-    #     minval = None
-    #     maxval = None
-
-
     shape_input_dtypes, shape = shape
     seed_input_dtypes, seed = seed
 
@@ -187,73 +180,4 @@ def test_tensorflow_stateless_uniform(
         maxval=maxval,
         dtype=dtype[0]
     )
-
-
-
-import ivy.functional.frontends.tensorflow as tf
-
-#
-# @handle_frontend_test(
-#     fn_tree="tensorflow.random.stateless_uniform",
-#     seed=helpers.dtype_and_values(
-#         available_dtypes=tuple([ivy.int64, ivy.int32]),
-#         min_value=0,
-#         max_value=10,
-#         min_num_dims=1,
-#         max_num_dims=1,
-#         min_dim_size = 2,
-#         max_dim_size = 2
-#     ),
-#     dtype=helpers.get_dtypes("numeric", full=False),
-#     test_with_out=st.just(False)
-# )
-# def test(seed, dtype):
-#     #print(dtype)
-#     #print('complex' in dtype[0] or 'int8' in dtype[0])
-#
-#     if('complex' in dtype[0] or 'int8' in dtype[0]):
-#         pass
-#
-#     seed_input_dtypes, seed = seed
-#     seed = (seed[0][0],seed[0][1])
-#     print(seed)
-#
-#     # print(tf.random.stateless_uniform(
-#     #     [10], seed=seed, minval=1, maxval=5, dtype=dtype[0]
-#     # ))
-#
-#
-
-
-#incorrect dtype_and_values
-@handle_frontend_test(
-    fn_tree="tensorflow.random.stateless_uniform",
-    shape=helpers.dtype_and_values(
-        available_dtypes=tuple([ivy.int64, ivy.int32]),
-        min_value=1,
-        max_value=5,
-        min_num_dims=1,
-        max_num_dims=1,
-    ),
-    # seed=helpers.dtype_and_values(
-    #     available_dtypes=tuple([ivy.int64, ivy.int32]),
-    #     min_value=0,
-    #     max_value=10,
-    #     min_num_dims=1,
-    #     max_num_dims=1,
-    #     min_dim_size=2,
-    #     max_dim_size=2
-    # ),
-    test_with_out=st.just(False),
-)
-def test(
-    shape,
-    #seed,
-):
-    #seed_input_dtypes, seed = seed
-    #print(seed[0])
-    shape_input_dtypes, shape = shape
-    print(shape)
-
-
 
