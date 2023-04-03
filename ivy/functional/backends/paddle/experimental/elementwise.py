@@ -378,7 +378,7 @@ def zeta(
    with ivy.ArrayMode(False):
         s,a=ivy.promote_types_of_inputs(x,q)
         s_, a_ = paddle.unsqueeze(x, -1), paddle.unsqueeze(q, -1)
-        N = M = np.float64(8) if q.dtype == np.float32 else np.float64(16)
+        N = M = paddle.to_tensor(8., dtype="float32") if q.dtype == paddle.float32 else paddle.to_tensor(8., dtype="float64")
         assert M <= len(_BERNOULLI_COEFS)
         k = paddle.unsqueeze(ivy.arange(N, dtype=q.dtype), tuple(range(q.ndim)))
         S = paddle.sum((a_ + k) ** -s_, -1)
