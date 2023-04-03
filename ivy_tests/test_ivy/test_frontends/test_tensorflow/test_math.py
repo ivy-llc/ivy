@@ -389,7 +389,7 @@ def test_tensorflow_logical_and(
 @handle_frontend_test(
     fn_tree="tensorflow.math.logical_or",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=tuple([ivy.bool]),
+        available_dtypes=helpers.get_dtypes("bool"),
         num_arrays=2,
         shared_dtype=True,
     ),
