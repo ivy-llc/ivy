@@ -247,8 +247,10 @@ def _x_and_filters(
     )
     if type == "separable":
         p_filter_shape = (
-            1, 1, filter_shape[-1] * filter_shape[-2],
-            draw(helpers.ints(min_value=1, max_value=3))
+            1,
+            1,
+            filter_shape[-1] * filter_shape[-2],
+            draw(helpers.ints(min_value=1, max_value=3)),
         )
         p_filters = draw(
             helpers.array_values(
@@ -1012,6 +1014,38 @@ def test_tensorflow_max_pool1d(
     )
 
 
+# max_pool2d
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.max_pool2d",
+    data_format=df(data_format=st.sampled_from(["NHWC"])),
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=4, max_dims=4, min_side=1, max_side=4),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_max_pool2d(
+    *,
+    x_k_s_p,
+    data_format,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, ksize, strides, padding = x_k_s_p
+    data_format = data_format
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        ksize=ksize,
+        strides=strides,
+        padding=padding,
+        data_format=data_format,
+    )
+
+
 # moments
 @handle_frontend_test(
     fn_tree="tensorflow.nn.moments",
@@ -1240,4 +1274,36 @@ def test_tensorflow_embedding_lookup(
         ids=indices,
         max_norm=max_norm,
         atol=1e-4,
+    )
+
+
+# crelu
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.crelu",
+    dtype_x_and_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=4,
+        max_axes_size=3,
+        force_int_axis=True,
+        valid_axis=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_crelu(
+    *,
+    dtype_x_and_axis,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, axis = dtype_x_and_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        features=x[0],
+        axis=axis,
     )

@@ -627,6 +627,48 @@ def test_jax_numpy_logspace(
     )
 
 
+# meshgrid
+@handle_frontend_test(
+    fn_tree="jax.numpy.meshgrid",
+    dtype_and_arrays=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=st.integers(min_value=1, max_value=5),
+        min_num_dims=1,
+        max_num_dims=1,
+        shared_dtype=True,
+    ),
+    sparse=st.booleans(),
+    indexing=st.sampled_from(['xy', 'ij']),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_meshgrid(
+        dtype_and_arrays,
+        sparse,
+        indexing,
+        test_flags,
+        frontend,
+        fn_tree,
+        on_device,
+):
+    dtype, arrays = dtype_and_arrays
+    kw = {}
+    i = 0
+    for x_ in arrays:
+        kw["x{}".format(i)] = x_
+        i += 1
+    test_flags.num_positional_args = len(arrays)
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        **kw,
+        sparse=sparse,
+        indexing=indexing,
+    )
+
+
 # linspace
 @handle_frontend_test(
     fn_tree="jax.numpy.linspace",
@@ -695,8 +737,7 @@ def test_jax_numpy_copy(
 # single
 @handle_frontend_test(
     fn_tree="jax.numpy.single",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
 def test_jax_numpy_single(
     dtype_and_x,
@@ -712,5 +753,5 @@ def test_jax_numpy_single(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0]
+        x=x[0],
     )

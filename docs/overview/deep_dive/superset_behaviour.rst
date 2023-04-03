@@ -151,6 +151,40 @@ This new implementation will be compiled to a graph of either one, three, four o
 This does mean we do not adopt the default values used by PyTorch, but that's okay.
 Implementing the superset does not mean adopting the same default values for arguments, it simply means equipping the Ivy function with the capabilities to execute the superset of behaviours.
 
+More Examples
+-------------
+
+We now take a look at some examples, and explain our rational for deciding upon the function signature that we should use in Ivy.
+The first three examples are more-or-less superset examples, while the last example involves a deliberate decision to not implement the full superset, for some of the reasons explained above.
+
+**ivy.linspace**
+
+When looking at the :func:`linspace` (or closest equivalent) implementations for `Ivy <https://lets-unify.ai/ivy/functional/ivy/creation/linspace/linspace_functional.html>`_, `JAX <https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.linspace.html>`_, `NumPy <https://numpy.org/doc/stable/reference/generated/numpy.linspace.html>`_, `TensorFlow <https://www.tensorflow.org/api_docs/python/tf/linspace>`_, and `PyTorch <https://pytorch.org/docs/stable/generated/torch.linspace.html>`_, we can see that torch does not support arrays for the :code:`start` and :code:`end` arguments, while JAX, numpy and tensorflow all do.
+Likewise, Ivy also supports arrays for the :code:`start` and :code:`stop` arguments, and in doing so provides the generalized superset implementation among the backend frameworks.
+
+
+**ivy.eye**
+
+When looking at the :func:`eye` (or closest equivalent) implementations for `Ivy <https://lets-unify.ai/ivy/functional/ivy/creation/eye/eye_functional.html>`_, `JAX <https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.eye.html>`_, `NumPy <https://numpy.org/devdocs/reference/generated/numpy.eye.html>`_, `TensorFlow <https://www.tensorflow.org/api_docs/python/tf/eye>`_, and `PyTorch <https://pytorch.org/docs/stable/generated/torch.eye.html>`_, we can see that tensorflow is the only framework which supports a :code:`batch_shape` argument.
+Likewise, Ivy also supports a :code:`batch_shape` argument, and in doing so provides the generalized superset implementation among the backend frameworks.
+
+
+**ivy.scatter_nd**
+
+When looking at the :func:`scatter_nd` (or closest equivalent) implementations for `Ivy <https://lets-unify.ai/ivy/functional/ivy/general/scatter_nd/scatter_nd_functional.html>`_, `JAX <https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.ndarray.at.html#jax.numpy.ndarray.at>`_, `NumPy <https://numpy.org/doc/stable/reference/generated/numpy.ufunc.at.html>`_, `TensorFlow <https://www.tensorflow.org/api_docs/python/tf/scatter_nd>`_, and `PyTorch <https://pytorch.org/docs/stable/generated/torch.scatter.html>`_, we can see that torch only supports scattering along a single dimension, while all other frameworks support scattering across multiple dimensions at once.
+Likewise, Ivy also supports scattering across multiple dimensions at once, and in doing so provides the generalized superset implementation among the backend frameworks.
+
+
+**ivy.logical_and**
+
+When looking at the :func:`logical_and` (or closest equivalent) implementations for `Ivy <https://lets-unify.ai/ivy/functional/ivy/elementwise/logical_and/logical_and_functional.html>`_, `JAX <https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.logical_and.html>`_, `NumPy <https://numpy.org/doc/stable/reference/generated/numpy.logical_and.html>`_, `TensorFlow <https://www.tensorflow.org/api_docs/python/tf/math/logical_and>`_, and `PyTorch <https://pytorch.org/docs/stable/generated/torch.logical_and.html>`_, we can see that numpy and torch support the :code:`out` argument for performing inplace updates, while JAX and tensorflow do not.
+With regards to the supported data types, JAX, numpy and torch support numeric arrays, while tensorflow supports only boolean arrays.
+With regards to both of these points, Ivy provides the generalized superset implementation among the backend frameworks, with support for the :code:`out` argument and also support for both numeric and boolean arrays in the input.
+
+However, as discussed above, :func:`np.logical_and` also supports the :code:`where` argument, which we opt to **not** support in Ivy.
+This is because the behaviour can easily be created as a composition like so :code:`ivy.where(mask, ivy.logical_and(x, y), ivy.zeros_like(mask))`, and we prioritize the simplicity, clarity, and function uniqueness in Ivy's API in this case, which comes at the cost of reduced runtime efficiency for some functions when using a NumPy backend.
+However, in future releases our automatic graph compilation and graph simplification processes will alleviate these minor inefficiencies entirely from the final computation graph, by fusing multiple operations into one at the API level where possible.
+
 Maximizing Usage of Native Functionality
 ----------------------------------------
 
@@ -230,40 +264,6 @@ Ivy allows this using the `handle_mixed_function`_ wrapper on the backend-specif
 The :code:`@handle_mixed_function` accepts a function as an input that receives the arguments and keyword arguments passed to the backend-specific implementation.
 The input function is expected to be a boolean function where we'd use the backend-specific implementation if :code:`True` and the compositional implementation if :code:`False`.
 This provides the flexibility to add any custom logic based on the use-case for maximal use of framework-specific implementations while achieving superset generalization.
-
-More Examples
--------------
-
-We now take a look at some examples, and explain our rational for deciding upon the function signature that we should use in Ivy.
-The first three examples are more-or-less superset examples, while the last example involves a deliberate decision to not implement the full superset, for some of the reasons explained above.
-
-**ivy.linspace**
-
-When looking at the :func:`linspace` (or closest equivalent) implementations for `Ivy <https://lets-unify.ai/ivy/functional/ivy/creation/linspace/linspace_functional.html>`_, `JAX <https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.linspace.html>`_, `NumPy <https://numpy.org/doc/stable/reference/generated/numpy.linspace.html>`_, `TensorFlow <https://www.tensorflow.org/api_docs/python/tf/linspace>`_, and `PyTorch <https://pytorch.org/docs/stable/generated/torch.linspace.html>`_, we can see that torch does not support arrays for the :code:`start` and :code:`end` arguments, while JAX, numpy and tensorflow all do.
-Likewise, Ivy also supports arrays for the :code:`start` and :code:`stop` arguments, and in doing so provides the generalized superset implementation among the backend frameworks.
-
-
-**ivy.eye**
-
-When looking at the :func:`eye` (or closest equivalent) implementations for `Ivy <https://lets-unify.ai/ivy/functional/ivy/creation/eye/eye_functional.html>`_, `JAX <https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.eye.html>`_, `NumPy <https://numpy.org/devdocs/reference/generated/numpy.eye.html>`_, `TensorFlow <https://www.tensorflow.org/api_docs/python/tf/eye>`_, and `PyTorch <https://pytorch.org/docs/stable/generated/torch.eye.html>`_, we can see that tensorflow is the only framework which supports a :code:`batch_shape` argument.
-Likewise, Ivy also supports a :code:`batch_shape` argument, and in doing so provides the generalized superset implementation among the backend frameworks.
-
-
-**ivy.scatter_nd**
-
-When looking at the :func:`scatter_nd` (or closest equivalent) implementations for `Ivy <https://lets-unify.ai/ivy/functional/ivy/general/scatter_nd/scatter_nd_functional.html>`_, `JAX <https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.ndarray.at.html#jax.numpy.ndarray.at>`_, `NumPy <https://numpy.org/doc/stable/reference/generated/numpy.ufunc.at.html>`_, `TensorFlow <https://www.tensorflow.org/api_docs/python/tf/scatter_nd>`_, and `PyTorch <https://pytorch.org/docs/stable/generated/torch.scatter.html>`_, we can see that torch only supports scattering along a single dimension, while all other frameworks support scattering across multiple dimensions at once.
-Likewise, Ivy also supports scattering across multiple dimensions at once, and in doing so provides the generalized superset implementation among the backend frameworks.
-
-
-**ivy.logical_and**
-
-When looking at the :func:`logical_and` (or closest equivalent) implementations for `Ivy <https://lets-unify.ai/ivy/functional/ivy/elementwise/logical_and/logical_and_functional.html>`_, `JAX <https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.logical_and.html>`_, `NumPy <https://numpy.org/doc/stable/reference/generated/numpy.logical_and.html>`_, `TensorFlow <https://www.tensorflow.org/api_docs/python/tf/math/logical_and>`_, and `PyTorch <https://pytorch.org/docs/stable/generated/torch.logical_and.html>`_, we can see that numpy and torch support the :code:`out` argument for performing inplace updates, while JAX and tensorflow do not.
-With regards to the supported data types, JAX, numpy and torch support numeric arrays, while tensorflow supports only boolean arrays.
-With regards to both of these points, Ivy provides the generalized superset implementation among the backend frameworks, with support for the :code:`out` argument and also support for both numeric and boolean arrays in the input.
-
-However, as discussed above, :func:`np.logical_and` also supports the :code:`where` argument, which we opt to **not** support in Ivy.
-This is because the behaviour can easily be created as a composition like so :code:`ivy.where(mask, ivy.logical_and(x, y), ivy.zeros_like(mask))`, and we prioritize the simplicity, clarity, and function uniqueness in Ivy's API in this case, which comes at the cost of reduced runtime efficiency for some functions when using a NumPy backend.
-However, in future releases our automatic graph compilation and graph simplification processes will alleviate these minor inefficiencies entirely from the final computation graph, by fusing multiple operations into one at the API level where possible.
 
 
 **Round Up**

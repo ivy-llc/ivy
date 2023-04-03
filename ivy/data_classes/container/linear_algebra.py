@@ -14,7 +14,7 @@ inf = float("inf")
 # noinspection PyMissingConstructor,PyMethodParameters
 class _ContainerWithLinearAlgebra(ContainerBase):
     @staticmethod
-    def static_matmul(
+    def _static_matmul(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -147,7 +147,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
                           [3., 2.]])
         }
         """
-        return self.static_matmul(
+        return self._static_matmul(
             self,
             x2,
             transpose_a=transpose_a,
@@ -162,7 +162,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_cholesky(
+    def _static_cholesky(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -312,7 +312,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
                             [0., 0.707]])
         }
         """
-        return self.static_cholesky(
+        return self._static_cholesky(
             self,
             upper=upper,
             key_chains=key_chains,
@@ -323,7 +323,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_cross(
+    def _static_cross(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
@@ -470,7 +470,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
             b: ivy.array([0., 6., 0.])
         }
         """
-        return self.static_cross(
+        return self._static_cross(
             self,
             x2,
             axis=axis,
@@ -482,7 +482,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_det(
+    def _static_det(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -521,7 +521,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> print(y)
         {a:ivy.array(8.),b:ivy.array(1.)}
         """
-        return self.static_det(
+        return self._static_det(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -531,7 +531,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_diagonal(
+    def _static_diagonal(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -690,7 +690,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
             b:ivy.array([-3., 6.])
         }
         """
-        return self.static_diagonal(
+        return self._static_diagonal(
             self,
             offset=offset,
             axis1=axis1,
@@ -703,7 +703,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_diag(
+    def _static_diag(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -751,7 +751,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
             a: ivy.array([1, 5])
         }
         """
-        return self.static_diag(
+        return self._static_diag(
             self,
             k=k,
             key_chains=key_chains,
@@ -762,7 +762,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_eigh(
+    def _static_eigh(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -795,7 +795,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.static_eigh(
+        return self._static_eigh(
             self,
             UPLO=UPLO,
             key_chains=key_chains,
@@ -806,7 +806,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_eigvalsh(
+    def _static_eigvalsh(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -935,7 +935,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         }
 
         """
-        return self.static_eigvalsh(
+        return self._static_eigvalsh(
             self,
             UPLO=UPLO,
             key_chains=key_chains,
@@ -946,7 +946,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_inner(
+    def _static_inner(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -979,7 +979,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.static_inner(
+        return self._static_inner(
             self,
             x2,
             key_chains=key_chains,
@@ -990,7 +990,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_inv(
+    def _static_inv(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -1118,7 +1118,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         }
 
         """
-        return self.static_inv(
+        return self._static_inv(
             self,
             adjoint=adjoint,
             key_chains=key_chains,
@@ -1129,7 +1129,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_pinv(
+    def _static_pinv(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -1241,14 +1241,14 @@ class _ContainerWithLinearAlgebra(ContainerBase):
                           [1.5, -0.5]])
         }
         """
-        return self.static_pinv(
+        return self._static_pinv(
             self,
             rtol=rtol,
             out=out,
         )
 
     @staticmethod
-    def static_matrix_norm(
+    def _static_matrix_norm(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -1413,7 +1413,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
             b: ivy.array([4., 12.])
         }
         """
-        return self.static_matrix_norm(
+        return self._static_matrix_norm(
             self,
             ord=ord,
             axis=axis,
@@ -1426,7 +1426,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_matrix_power(
+    def _static_matrix_power(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         n: int,
         /,
@@ -1459,7 +1459,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.static_matrix_power(
+        return self._static_matrix_power(
             self,
             n,
             key_chains=key_chains,
@@ -1470,7 +1470,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_matrix_rank(
+    def _static_matrix_rank(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -1627,7 +1627,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
             b: ivy.array(1)
         }
         """
-        return self.static_matrix_rank(
+        return self._static_matrix_rank(
             self,
             atol=atol,
             rtol=rtol,
@@ -1639,7 +1639,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_matrix_transpose(
+    def _static_matrix_transpose(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -1741,7 +1741,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
                           [4., 1.]])
         }
         """
-        return self.static_matrix_transpose(
+        return self._static_matrix_transpose(
             self,
             conjugate=conjugate,
             key_chains=key_chains,
@@ -1752,7 +1752,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_outer(
+    def _static_outer(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -1888,7 +1888,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
                     [15., 18., 21., 24.],
                     [20., 24., 28., 32.]])
         """
-        return self.static_outer(
+        return self._static_outer(
             self,
             x2,
             key_chains=key_chains,
@@ -1899,7 +1899,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_qr(
+    def _static_qr(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -2040,7 +2040,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
             The first x.ndim-2 dimensions must have the same size as those of the input
             x.
         """
-        return self.static_qr(
+        return self._static_qr(
             self,
             mode=mode,
             key_chains=key_chains,
@@ -2051,7 +2051,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_slogdet(
+    def _static_slogdet(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -2188,7 +2188,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         }
 
         """
-        return self.static_slogdet(
+        return self._static_slogdet(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -2197,7 +2197,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_solve(
+    def _static_solve(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -2233,7 +2233,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.static_solve(
+        return self._static_solve(
             self,
             x2,
             adjoint=adjoint,
@@ -2245,7 +2245,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_svd(
+    def _static_svd(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -2378,7 +2378,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         (9, 9) (6,) (6, 6) (2, 2) (2,) (4, 4)
 
         """
-        return self.static_svd(
+        return self._static_svd(
             self,
             compute_uv=compute_uv,
             full_matrices=full_matrices,
@@ -2390,7 +2390,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_svdvals(
+    def _static_svdvals(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -2420,7 +2420,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.static_svdvals(
+        return self._static_svdvals(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -2430,7 +2430,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_tensordot(
+    def _static_tensordot(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -2466,7 +2466,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.static_tensordot(
+        return self._static_tensordot(
             self,
             x2,
             axes=axes,
@@ -2478,7 +2478,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_tensorsolve(
+    def _static_tensorsolve(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -2514,7 +2514,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.static_tensorsolve(
+        return self._static_tensorsolve(
             self,
             x2,
             axes=axes,
@@ -2526,7 +2526,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_trace(
+    def _static_trace(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -2684,7 +2684,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
             b: ivy.array(19)
         }
         """
-        return self.static_trace(
+        return self._static_trace(
             self,
             offset=offset,
             axis1=axis1,
@@ -2697,7 +2697,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_vecdot(
+    def _static_vecdot(
         x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
@@ -2733,7 +2733,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.static_vecdot(
+        return self._static_vecdot(
             self,
             x2,
             axis=axis,
@@ -2745,7 +2745,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_vector_norm(
+    def _static_vector_norm(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -2959,7 +2959,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
             b: ivy.array([3.77359247])
         }
         """
-        return self.static_vector_norm(
+        return self._static_vector_norm(
             self,
             axis=axis,
             keepdims=keepdims,
@@ -2973,7 +2973,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_vector_to_skew_symmetric_matrix(
+    def _static_vector_to_skew_symmetric_matrix(
         vector: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -3003,7 +3003,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self.static_vector_to_skew_symmetric_matrix(
+        return self._static_vector_to_skew_symmetric_matrix(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -3013,7 +3013,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def static_vander(
+    def _static_vander(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -3139,7 +3139,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
                     )
         }
         """
-        return self.static_vander(
+        return self._static_vander(
             self,
             N=N,
             increasing=increasing,

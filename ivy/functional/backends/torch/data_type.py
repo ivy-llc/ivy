@@ -1,6 +1,6 @@
 # global
 from typing import Optional, Union, Sequence, List
-
+import numpy as np
 import torch
 
 # local
@@ -107,15 +107,15 @@ def broadcast_to(
 
 
 @_handle_nestable_dtype_info
-def finfo(type: Union[torch.dtype, str, torch.Tensor], /) -> Finfo:
-    if isinstance(type, torch.Tensor):
+def finfo(type: Union[torch.dtype, str, torch.Tensor, np.ndarray], /) -> Finfo:
+    if isinstance(type, (torch.Tensor, np.ndarray)):
         type = type.dtype
     return Finfo(torch.finfo(ivy.as_native_dtype(type)))
 
 
 @_handle_nestable_dtype_info
-def iinfo(type: Union[torch.dtype, str, torch.Tensor], /) -> torch.iinfo:
-    if isinstance(type, torch.Tensor):
+def iinfo(type: Union[torch.dtype, str, torch.Tensor, np.ndarray], /) -> torch.iinfo:
+    if isinstance(type, (torch.Tensor, np.ndarray)):
         type = type.dtype
     return torch.iinfo(ivy.as_native_dtype(type))
 
@@ -140,7 +140,7 @@ def result_type(*arrays_and_dtypes: Union[torch.tensor, torch.dtype]) -> ivy.Dty
 
 
 def as_ivy_dtype(
-    dtype_in: Union[torch.dtype, str, int, float, complex, bool],
+    dtype_in: Union[torch.dtype, str, int, float, complex, bool, np.dtype],
     /,
 ) -> ivy.Dtype:
     if dtype_in is int:
@@ -151,7 +151,8 @@ def as_ivy_dtype(
         return ivy.default_complex_dtype()
     if dtype_in is bool:
         return ivy.Dtype("bool")
-
+    if isinstance(dtype_in, np.dtype):
+        dtype_in = dtype_in.name
     if isinstance(dtype_in, str):
         if dtype_in in native_dtype_dict:
             dtype_str = dtype_in
@@ -180,7 +181,9 @@ def as_ivy_dtype(
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("uint16",)}, backend_version)
-def as_native_dtype(dtype_in: Union[torch.dtype, str, bool, int, float]) -> torch.dtype:
+def as_native_dtype(
+    dtype_in: Union[torch.dtype, str, bool, int, float, np.dtype]
+) -> torch.dtype:
     if dtype_in is int:
         return ivy.default_int_dtype(as_native=True)
     if dtype_in is float:
@@ -189,6 +192,8 @@ def as_native_dtype(dtype_in: Union[torch.dtype, str, bool, int, float]) -> torc
         return ivy.default_complex_dtype(as_native=True)
     if dtype_in is bool:
         return torch.bool
+    if isinstance(dtype_in, np.dtype):
+        dtype_in = dtype_in.name
     if not isinstance(dtype_in, str):
         return dtype_in
     if dtype_in in native_dtype_dict.keys():
@@ -200,13 +205,13 @@ def as_native_dtype(dtype_in: Union[torch.dtype, str, bool, int, float]) -> torc
         )
 
 
-def dtype(x: torch.tensor, *, as_native: bool = False) -> ivy.Dtype:
+def dtype(x: Union[torch.tensor, np.ndarray], *, as_native: bool = False) -> ivy.Dtype:
     if as_native:
-        return ivy.to_native(x).dtype
+        return ivy.as_native_dtype(x.dtype)
     return as_ivy_dtype(x.dtype)
 
 
-def dtype_bits(dtype_in: Union[torch.dtype, str], /) -> int:
+def dtype_bits(dtype_in: Union[torch.dtype, str, np.dtype], /) -> int:
     dtype_str = as_ivy_dtype(dtype_in)
     if "bool" in dtype_str:
         return 1
@@ -218,3 +223,10 @@ def dtype_bits(dtype_in: Union[torch.dtype, str], /) -> int:
         .replace("float", "")
         .replace("complex", "")
     )
+
+
+def is_native_dtype(dtype_in: Union[torch.dtype, str], /) -> bool:
+    if dtype_in in ivy_dtype_dict:
+        return True
+    else:
+        return False
