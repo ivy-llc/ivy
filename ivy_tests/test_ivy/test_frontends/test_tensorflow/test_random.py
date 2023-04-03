@@ -124,24 +124,23 @@ def test_tensorflow_shuffle(
 @handle_frontend_test(
     fn_tree="tensorflow.random.stateless_uniform",
     shape=helpers.dtype_and_values(
-        available_dtypes=tuple(["int64", "int32"]),
+        available_dtypes=("int64", "int32"),
         min_value=1,
         max_value=5,
         min_num_dims=1,
         max_num_dims=1,
     ),
     seed=helpers.dtype_and_values(
-        available_dtypes=tuple(["int64", "int32"]),
-        min_value=0,
-        max_value=10,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_dim_size=2,
-        max_dim_size=2,
+        available_dtypes=("int64", "int32"), min_value=0, max_value=10, shape=[2]
     ),
     minval=helpers.ints(min_value=0, max_value=3),
     maxval=helpers.ints(min_value=4, max_value=10),
-    dtype=helpers.get_dtypes("numeric", full=False),
+    dtype=helpers.dtype_and_values(
+        available_dtypes=("int32", "int64", "float16", "float32", "float64"),
+        min_value=0,
+        max_value=0,
+        shape=[1],
+    ),
     test_with_out=st.just(False),
 )
 def test_tensorflow_stateless_uniform(
@@ -155,22 +154,12 @@ def test_tensorflow_stateless_uniform(
     fn_tree,
     on_device,
 ):
-    if (
-        "complex" in dtype[0]
-        or "int8" in dtype[0]
-        or "int16" in dtype[0]
-        or "uint" in dtype[0]
-    ):
-        return
-
+    dtype, _ = dtype
     shape_input_dtypes, shape = shape
     seed_input_dtypes, seed = seed
 
-    if len(seed[0]) < 2:
-        return
-
     helpers.test_frontend_function(
-        input_dtypes=shape_input_dtypes,
+        input_dtypes=shape_input_dtypes + shape_input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
