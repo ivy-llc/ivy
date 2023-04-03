@@ -344,6 +344,7 @@ def test_numpy_fmax(
         out=None,
         where=where,
     )
+    
 
 # fmin
 @handle_frontend_test(
