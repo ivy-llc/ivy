@@ -6,6 +6,7 @@ import jax.numpy as jnp
 
 # local
 import ivy
+from ivy import promote_types_of_inputs
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
 from . import backend_version
@@ -490,3 +491,27 @@ def rad2deg(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 def isreal(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.isreal(x)
+
+
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
+def fmod(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    return jnp.fmod(x1, x2)
+
+
+@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
+def isin(
+    elements: JaxArray,
+    test_elements: JaxArray,
+    /,
+    *,
+    assume_unique: bool = False,
+    invert: bool = False,
+) -> JaxArray:
+    return jnp.isin(elements, test_elements, assume_unique=assume_unique, invert=invert)
