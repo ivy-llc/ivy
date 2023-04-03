@@ -3633,7 +3633,6 @@ def test_tensorflow_BatchMatMulV3(
         Tout=Tout,
         adj_x=adj_x,
         adj_y=adj_y,
-
     )
 
 
@@ -3658,4 +3657,3 @@ def test_tensorflow_Size(  # NOQA
         input=x[0],
         out_type=output_dtype,
     )
-
