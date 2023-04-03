@@ -46,23 +46,51 @@ def current_backend_str() -> str:
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def get_item(x: paddle.Tensor, query: Union[paddle.Tensor, Tuple]) -> paddle.Tensor:
+    # regular queries x[idx_1,idx_2,...,idx_i]
     if isinstance(query, tuple):
+        if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
+            return x.cast("float32").__getitem__(query).cast(x.dtype)
         return x.__getitem__(query)
 
     if not ivy.is_native_array(query):
-        query = paddle.to_tensor(query)
+        query = paddle.to_tensor(query, dtype="int64")
 
-    dtype = ivy.dtype(query, as_native=True)
-    x_dtype = ivy.dtype(x, as_native=True)
-
-    if dtype is paddle.bool:
+    # masked queries x[bool_1,bool_2,...,bool_i]
+    if query.dtype == paddle.bool:
+        if x.dtype in [
+            paddle.int8,
+            paddle.int16,
+            paddle.uint8,
+            paddle.float16,
+            paddle.complex64,
+            paddle.complex128,
+            paddle.bool,
+        ]:
+            if paddle.is_complex(x):
+                return paddle.complex(
+                    paddle.masked_select(x.real(), query),
+                    paddle.masked_select(x.imag(), query),
+                )
+            return paddle.masked_select(x.cast("float32"), query).cast(x.dtype)
         return paddle.masked_select(x, query)
 
-    if x_dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
-        ret = paddle.cast(x, "float32").__getitem__(tuple(query))
-        return paddle.cast(ret, x_dtype)
-
-    return x.__getitem__(tuple(query))
+    query = query.cast("int64")
+    # array queries idx = Tensor(idx_1,idx_2,...,idx_i), x[idx]
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+        paddle.complex64,
+        paddle.complex128,
+        paddle.bool,
+    ]:
+        if paddle.is_complex(x):
+            return paddle.complex(
+                x.real().__getitem__(query), x.imag().__getitem__(query)
+            )
+        return x.cast("float32").__getitem__(query).cast(x.dtype)
+    return x.__getitem__(query)
 
 
 @with_unsupported_device_and_dtypes(
@@ -295,7 +323,7 @@ def shape(
     x: paddle.Tensor, /, *, as_array: bool = False
 ) -> Union[ivy.Shape, ivy.Array]:
     if as_array:
-        return ivy.array(paddle.shape(x), dtype=ivy.default_int_dtype())
+        return ivy.array(x.shape, dtype=ivy.default_int_dtype())
     else:
         return ivy.Shape(x.shape)
 
@@ -308,4 +336,15 @@ def vmap(
     in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
     out_axes: Optional[int] = 0,
 ) -> Callable:
+    raise IvyNotImplementedException()
+
+
+def isin(
+    elements: paddle.Tensor,
+    test_elements: paddle.Tensor,
+    /,
+    *,
+    assume_unique: Optional[bool] = False,
+    invert: Optional[bool] = False,
+) -> paddle.Tensor:
     raise IvyNotImplementedException()

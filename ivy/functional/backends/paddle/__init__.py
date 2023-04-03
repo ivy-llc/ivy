@@ -35,7 +35,6 @@ native_int16 = paddle.int16
 native_int32 = paddle.int32
 native_int64 = paddle.int64
 native_uint8 = paddle.uint8
-native_bfloat16 = paddle.bfloat16
 native_float16 = paddle.float16
 native_float32 = paddle.float32
 native_float64 = paddle.float64
@@ -52,7 +51,6 @@ valid_dtypes = (
     ivy.int32,
     ivy.int64,
     ivy.uint8,
-    ivy.bfloat16,
     ivy.float16,
     ivy.float32,
     ivy.float64,
