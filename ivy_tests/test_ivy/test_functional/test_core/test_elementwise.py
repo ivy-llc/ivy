@@ -2092,3 +2092,43 @@ def test_isreal(
         on_device=on_device,
         x=x[0],
     )
+
+
+# fmod
+@handle_test(
+    fn_tree="functional.ivy.fmod",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=False,
+        large_abs_safety_factor=6,
+        small_abs_safety_factor=6,
+        safety_factor_scale="log",
+    ),
+    test_gradients=st.just(False),
+)
+def test_fmod(
+    dtype_and_x,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    # Make sure values is not too close to zero
+    assume(not np.any(np.isclose(x[0], 0)))
+    assume(not np.any(np.isclose(x[1], 0)))
+    # jax raises inconsistent gradients for negative numbers in x1
+    if (np.any(x[0] < 0) or np.any(x[1] < 0)) and ivy.current_backend_str() == "jax":
+        test_flags.test_gradients = False
+    test_flags.as_variable = [test_flags.as_variable, False]
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        ground_truth_backend="jax",
+        fw=backend_fw,
+        fn_name=fn_name,
+        x1=x[0],
+        x2=x[1],
+    )
