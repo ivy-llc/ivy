@@ -3032,6 +3032,7 @@ def test_torch_instance_logical_and(
         on_device=on_device,
     )
 
+
 # logical_or
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -3066,6 +3067,7 @@ def test_torch_instance_logical_or(
         frontend=frontend,
         on_device=on_device,
     )
+
 
 # bitwise_not
 @handle_frontend_method(
