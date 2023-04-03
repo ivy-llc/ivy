@@ -256,6 +256,13 @@ def dtype_bits(dtype_in: Union[tf.DType, str], /) -> int:
     )
 
 
+def is_native_dtype(dtype_in: Union[tf.DType, str], /) -> bool:
+    if dtype_in in ivy_dtype_dict:
+        return True
+    else:
+        return False
+
+
 # ToDo:
 # 1. result_type: Add support for bfloat16 with int16
 # 2. can_cast : Add support for complex64, complex128
