@@ -5,6 +5,7 @@ import tensorflow as tf
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
+from ivy import promote_types_of_inputs
 from . import backend_version
 
 
@@ -799,3 +800,18 @@ def isreal(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.isreal(x)
+
+
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("unsigned", "complex", "bool")}, backend_version
+)
+def fmod(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    res = tf.experimental.numpy.remainder(tf.math.abs(x1), tf.math.abs(x2))
+    return tf.where(x1 < 0, -res, res)

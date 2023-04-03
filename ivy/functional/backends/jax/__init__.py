@@ -1,7 +1,6 @@
 # global
 import sys
 from packaging import version
-from jax.config import config
 import jaxlib
 import jax
 import jax.numpy as jnp

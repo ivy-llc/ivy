@@ -152,7 +152,7 @@ def test_numpy_logspace(
     fn_tree="numpy.meshgrid",
     dtype_and_arrays=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
+        num_arrays=st.integers(min_value=1, max_value=4),
         min_num_dims=1,
         max_num_dims=1,
         min_dim_size=1,

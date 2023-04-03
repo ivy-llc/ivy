@@ -8,6 +8,7 @@ matplotlib # unpinned
 opencv-python # unpinned , mod_name=cv2
 jax[cpu] # unpinned, we test for latest version now
 jaxlib # unpinned, we test for latest version now
+paddlepaddle # unpinned , mod_name=paddle
 tensorflow-cpu  # unpinned, we test for latest version now
 tensorflow-addons # unpinned, we test for latest version now, mod_name=tensorflow_addons
 tensorflow-probability # unpinned, we test for latest version now, mod_name=tensorflow_probability
@@ -22,6 +23,5 @@ coverage
 scikit-learn
 pandas
 pyspark
-paddlepaddle
 mxnet
 autoflake # for backend generation

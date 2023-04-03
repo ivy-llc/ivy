@@ -83,13 +83,13 @@ def _check_shapes_broadcastable(out, inp):
 # ------#
 
 
-@to_native_arrays_and_back
-@handle_out_argument
 @infer_device
 @infer_dtype
+@handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_function
 def random_uniform(
     *,
     low: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
@@ -197,13 +197,13 @@ def random_uniform(
     )
 
 
-@to_native_arrays_and_back
-@handle_out_argument
 @infer_device
 @infer_dtype
+@handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_function
 def random_normal(
     *,
     mean: Union[float, ivy.NativeArray, ivy.Array] = 0.0,
@@ -308,12 +308,12 @@ def random_normal(
     )
 
 
+@infer_device
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
-@infer_device
 @handle_nestable
 @handle_exceptions
-@handle_array_function
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -417,12 +417,12 @@ def multinomial(
     )
 
 
+@infer_device
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
-@infer_device
 @handle_nestable
 @handle_exceptions
-@handle_array_function
 def randint(
     low: Union[int, ivy.NativeArray, ivy.Array],
     high: Union[int, ivy.NativeArray, ivy.Array],
@@ -514,11 +514,11 @@ def seed(*, seed_value: int = 0) -> None:
     return ivy.current_backend().seed(seed_value=seed_value)
 
 
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_array_function
 def shuffle(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
