@@ -681,12 +681,12 @@ class Tensor:
         return self
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16")}, "torch")
-    def clip(self, min=None, max=None, *, out=None):
-        return torch_frontend.clip(self._ivy_array, min=min, max=max, out=out)
+    def clip(self, min=None, max=None):
+        return torch_frontend.clip(self._ivy_array, min=min, max=max)
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16")}, "torch")
-    def clip_(self, min=None, max=None, *, out=None):
-        self._ivy_array = self.clip(min=min, max=max, out=out).ivy_array
+    def clip_(self, min=None, max=None):
+        self._ivy_array = self.clip(min=min, max=max).ivy_array
         return self
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
