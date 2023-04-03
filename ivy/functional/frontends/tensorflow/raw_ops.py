@@ -208,12 +208,7 @@ def Greater(*, x, y, name="Greater"):
     x, y = check_tensorflow_casting(x, y)
     return ivy.greater(x, y)
 
-
-@to_ivy_arrays_and_back
-def GreaterEqual(*, x, y, name="GreaterEqual"):
-    x, y = check_tensorflow_casting(x, y)
-    return ivy.greater_equal(x, y)
-
+GreaterEqual = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.greater_equal))
 
 Identity = to_ivy_arrays_and_back(
     map_raw_ops_alias(tf_frontend.general_functions.identity)

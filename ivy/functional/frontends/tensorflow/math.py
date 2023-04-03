@@ -409,6 +409,10 @@ def not_equal(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return ivy.not_equal(x, y)
 
+@to_ivy_arrays_and_back
+def greater_equal(x, y, name="greater_equal"):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.greater_equal(x, y)
 
 @to_ivy_arrays_and_back
 def floor(x, name=None):
