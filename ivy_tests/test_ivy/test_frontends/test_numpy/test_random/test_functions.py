@@ -354,10 +354,10 @@ def test_numpy_standard_normal(
 @handle_frontend_test(
     fn_tree="numpy.random.standard_exponential",
     input_dtypes=helpers.get_dtypes("integer", full=False),
-    bta=st.floats(
+    beta=st.floats(
         allow_nan=False,
         allow_infinity=False,
-        width=32,
+        width=64,
         min_value=1,
         exclude_min=True
     ),
@@ -369,7 +369,7 @@ def test_numpy_standard_exponential(
         test_flags,
         fn_tree,
         on_device,
-        bta
+        beta
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
@@ -378,5 +378,5 @@ def test_numpy_standard_exponential(
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
-        bta=bta,
+        beta=beta,
     )
