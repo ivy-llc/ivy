@@ -200,15 +200,7 @@ def var(
 # Extra #
 # ----- #
 @with_unsupported_device_and_dtypes(
-    {
-        "2.4.2 and below": {
-            "cpu": (
-                "uint16",
-                "bfloat16",
-            )
-        }
-    },
-    backend_version,
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def cumprod(
     x: paddle.Tensor,
@@ -220,11 +212,9 @@ def cumprod(
     dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    dtype = ivy.as_native_dtype(dtype)
-    if dtype is None:
-        dtype = x.dtype
+    dtype = dtype if dtype is not None else x.dtype
     if dtype in [paddle.uint8, paddle.int8, paddle.int16]:
-        x = paddle.cast(x, ivy.default_int_dtype())
+        x = paddle.cast(x, "int32")
     else:
         x = paddle.cast(x, dtype)
     if not (exclusive or reverse):
