@@ -8,10 +8,9 @@ Transpiler
 
 Ivy's Transpiler converts a function written in any framework into your framework of 
 choice, preserving all the logic between frameworks. 
-As the output of transpilation is native code in the target framework, the 
-transpiled code can be used as if it was originally developed in that framework, 
-applying framework-specific optimizations or tools and making a whole new level of code 
-available to you.
+As the output of transpilation is native code in the target framework, it
+can be used as if it was originally developed in that framework, 
+allowing you to apply and use framework-specific optimizations or tools.
 
 This makes all ML-related projects available to you, independently of the framework you 
 want to use to research, develop, or deploy systems. So if you want to:
@@ -25,7 +24,7 @@ want to use to research, develop, or deploy systems. So if you want to:
 
 Ivy's Transpiler is definitely the tool for the job 🔧
 
-To convert the code, Ivy traces a computational graph using the Graph Compiler and 
+To convert the code, it traces a computational graph using the Graph Compiler and 
 leverages Ivy's frontends and backends to link one framework to another. After swapping 
 each function node in the computational graph with their equivalent Ivy frontend 
 functions, the compiler removes all the wrapping in the frontends and replaces them with the native
@@ -71,6 +70,7 @@ Transpiler API
   :param args: If specified, arguments that will be used to unify eagerly.
   :type args: ``Optional[Tuple]``
   :param kwargs: If specified, keyword arguments that will be used to unify eagerly.
+  :type kwargs: ``Optional[dict]``
   :param transpile_kwargs: Arbitrary keyword arguments that will be passed to ``ivy.transpile``.
 
   :rtype: ``Union[Graph, LazyGraph, ModuleType, ivy.Module]``
@@ -85,7 +85,7 @@ instantly, otherwise, transpilation will happen the first time you invoke the fu
 with the proper arguments. 
 
 In both cases, arguments or keyword arguments can be arrays from 
-either the ``source`` framework or the ``to`` framework.
+either the ``source`` framework or the target (``to``) framework.
 
 Transpiling functions
 ~~~~~~~~~~~~~~~~~~~~~
@@ -235,9 +235,10 @@ still working on some rough edges. These include:
    not be correctly transpiled.
 4. **Array format between frameworks**: As the compiler outputs a 1-to-1 mapping of the 
    compiled function, the format of the tensors is preserved when transpiling from a 
-   framework to another. This means that if you transpile a convolutional block from 
-   PyTorch (which uses ``N, C, H, W``) to TensorFlow (which uses ``N, H, W, C``), you'll
-   need to include a permute statement for the inference to be correct. 
+   framework to another. As an example, if you transpile a convolutional block from 
+   PyTorch (which uses ``N, C, H, W``) to TensorFlow (which uses ``N, H, W, C``) and want
+   to use it as part of a bigger (TensorFlow) model, you'll need to include a permute statement for 
+   the inference to be correct. 
 
 Keep in mind that the transpiler uses the graph compiler under the hood, so the 
 `sharp bits of the compiler <https://lets-unify.ai/ivy/compiler/compiler.html#sharp-bits>`_ 
