@@ -28,7 +28,7 @@ def argmax(
 ) -> paddle.Tensor:
     dtype = dtype if dtype is not None else x.dtype
     if x.dtype in [paddle.int8, paddle.float16, paddle.bool]:
-        x = x.cast(ivy.default_float_dtype())
+        x = x.cast("float32")
     if select_last_index:
         with ivy.ArrayMode(False):
             x = ivy.flip(x, axis=axis)
@@ -59,7 +59,7 @@ def argmin(
 ) -> paddle.Tensor:
     output_dtype = output_dtype if output_dtype is not None else x.dtype
     if x.dtype in [paddle.int8, paddle.float16, paddle.bool]:
-        x = x.cast(ivy.default_float_dtype())
+        x = x.cast("float32")
     if select_last_index:
         with ivy.ArrayMode(False):
             x = ivy.flip(x, axis=axis)
@@ -99,7 +99,7 @@ def nonzero(
             idx = paddle.concat([real_idx, imag_idx], axis=0)
             res = paddle.unique(idx, axis=0)
         else:
-            res = paddle.nonzero(x.cast(ivy.default_float_dtype()))
+            res = paddle.nonzero(x.cast("float32"))
     else:
         res = paddle.nonzero(x)
 
@@ -152,8 +152,8 @@ def where(
         paddle.float16,
         paddle.bool,
     ]:
-        x1 = x1.cast(ivy.default_float_dtype())
-        x2 = x2.cast(ivy.default_float_dtype())
+        x1 = x1.cast("float32")
+        x2 = x2.cast("float32")
         result = paddle.where(condition, x1, x2)
     elif ret_dtype in [paddle.complex64, paddle.complex128]:
         result_real = paddle.where(condition, paddle.real(x1), paddle.real(x2))
@@ -190,5 +190,5 @@ def argwhere(
             imag_idx = paddle.nonzero(x.imag())
             idx = paddle.concat([real_idx, imag_idx], axis=0)
             return paddle.unique(idx, axis=0)
-        return paddle.nonzero(x.cast(ivy.default_float_dtype()))
+        return paddle.nonzero(x.cast("float32"))
     return paddle.nonzero(x)

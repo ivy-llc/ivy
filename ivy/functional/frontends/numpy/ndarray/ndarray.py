@@ -33,6 +33,9 @@ class ndarray:
             "ivy.array", "ivy.frontends.numpy.ndarray"
         )
 
+    def __str__(self):
+        return str(self._ivy_array)
+
     # Properties #
     # ---------- #
 

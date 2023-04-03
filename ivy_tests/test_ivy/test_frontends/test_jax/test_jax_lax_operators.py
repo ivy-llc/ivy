@@ -2143,6 +2143,56 @@ def test_jax_lax_shift_right_logical(
     )
 
 
+@st.composite
+def _slice_helper(draw):
+    dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=1,
+            ret_shape=True,
+        ),
+    )
+    start_indices, limit_indices, strides = [], [], []
+    for i in shape:
+        start_indices += [draw(st.integers(min_value=0, max_value=i - 1))]
+        limit_indices += [
+            draw(
+                st.integers(min_value=0, max_value=i - 1).filter(
+                    lambda _x: _x > start_indices[-1]
+                )
+            )
+        ]
+        strides += [draw(st.integers(min_value=1, max_value=i))]
+    return dtype, x, start_indices, limit_indices, strides
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.slice",
+    dtype_x_params=_slice_helper(),
+    test_with_out=st.just(False),
+)
+def test_jax_lax_slice(
+    *,
+    dtype_x_params,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x, start_indices, limit_indices, strides = dtype_x_params
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        operand=x[0],
+        start_indices=start_indices,
+        limit_indices=limit_indices,
+        strides=strides,
+    )
+
+
 # expand_dims
 @handle_frontend_test(
     fn_tree="jax.lax.expand_dims",
@@ -2351,12 +2401,16 @@ def _squeeze_helper(draw):
     fn_tree="jax.lax.squeeze",
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        shape=st.shared(helpers.get_shape(
-            allow_none=False,
-            min_num_dims=1,
-            max_num_dims=10,
-            min_dim_size=1,
-            max_dim_size=5), key="value_shape")
+        shape=st.shared(
+            helpers.get_shape(
+                allow_none=False,
+                min_num_dims=1,
+                max_num_dims=10,
+                min_dim_size=1,
+                max_dim_size=5,
+            ),
+            key="value_shape",
+        ),
     ),
     dim=_squeeze_helper(),
 )
