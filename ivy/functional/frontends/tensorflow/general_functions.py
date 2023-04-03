@@ -399,7 +399,7 @@ def tile(input, multiples, name=None):
 
 @to_ivy_arrays_and_back
 def one_hot(
-    indices: ivy.array,
+    indices: ivy.Array,
     depth: int,
     on_value=None,
     off_value=None,
@@ -412,7 +412,7 @@ def one_hot(
 
 
 @to_ivy_arrays_and_back
-def where(condition: ivy.array, x=None, y=None, name=None):
+def where(condition: ivy.Array, x=None, y=None, name=None):
     if x is None and y is None:
         return ivy.argwhere(condition)
     else:
@@ -441,7 +441,7 @@ def repeat(
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @to_ivy_arrays_and_back
-def unstack(value: ivy.array, axis=0, num=None, name=None):
+def unstack(value: ivy.Array, axis=0, num=None, name=None):
     return ivy.unstack(value, axis=axis)
 
 
