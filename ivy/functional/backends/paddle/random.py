@@ -154,7 +154,5 @@ def shuffle(
             shuffled_real = paddle.index_select(x.real(), indices)
             shuffled_imag = paddle.index_select(x.imag(), indices)
             return shuffled_real + 1j * shuffled_imag
-        return paddle.index_select(x.cast("float32"), indices).cast(
-            x.dtype
-        )
+        return paddle.index_select(x.cast("float32"), indices).cast(x.dtype)
     return paddle.index_select(x, indices)

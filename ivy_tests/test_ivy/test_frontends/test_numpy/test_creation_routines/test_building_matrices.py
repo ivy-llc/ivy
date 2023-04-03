@@ -148,14 +148,7 @@ def test_numpy_diag(
     test_with_out=st.just(False),
 )
 def test_numpy_vander(
-    *,
-    fn_tree,
-    dtype_and_x,
-    N,
-    increasing,
-    test_flags,
-    frontend,
-    on_device
+    *, fn_tree, dtype_and_x, N, increasing, test_flags, frontend, on_device
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -168,4 +161,3 @@ def test_numpy_vander(
         N=N,
         increasing=increasing,
     )
-

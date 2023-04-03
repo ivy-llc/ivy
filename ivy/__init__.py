@@ -709,7 +709,6 @@ from ivy.utils.backend import (
     current_backend,
     compiled_backends,
     with_backend,
-    get_backend,
     set_backend,
     set_numpy_backend,
     set_jax_backend,
@@ -733,7 +732,7 @@ add_array_specs()
 
 _imported_frameworks_before_compiler = list(sys.modules.keys())
 try:
-    from .compiler.compiler import transpile, compile, unify
+    from .compiler._compiler import transpile, compile, unify
 except:  # noqa: E722
     compile, transpile, unify = None, None, None
 finally:
