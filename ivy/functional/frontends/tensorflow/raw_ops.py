@@ -19,11 +19,6 @@ def Acos(*, x, name="Acos"):
     return ivy.acos(x)
 
 
-@to_ivy_arrays_and_back
-def Acosh(*, x, name="Acosh"):
-    return ivy.acosh(x)
-
-
 Acosh = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.acosh))
 
 
