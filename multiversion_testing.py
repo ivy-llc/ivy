@@ -86,8 +86,8 @@ def allow_global_framework_imports(fw=["numpy/1.23.1/"]):
     
     :param fw: list of frameworks
     """
-    # since no framework installed right 
-    # Now we quickly store a copy of the sys.modules
+    # since no framework installed right Now we quickly store a copy of the sys.modules
+    
     global global_temp_sys_module
     global_temp_sys_module = sys.modules.copy()
     for framework in fw:
