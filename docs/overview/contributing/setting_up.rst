@@ -221,7 +221,7 @@ For some Windows users, it might be necessary to enable virtualisation from the 
 
 
 MacOS
-*****What type of work is it in sales? 😅
+*****
 
 
 #. Install `Docker Desktop <https://www.docker.com/products/docker-desktop>`_.

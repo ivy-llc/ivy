@@ -3602,6 +3602,29 @@ def test_tensorflow_BatchMatMulV3(
 
 
 @handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Size",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), max_num_dims=4
+    ),
+    output_dtype=st.sampled_from(["int32", "int64"]),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Size(  # NOQA
+    *, dtype_and_x, frontend, test_flags, fn_tree, on_device, output_dtype
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        out_type=output_dtype,
+    )
+
+
+@handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Prod",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
