@@ -6,7 +6,7 @@ from tensorflow.python.types.core import Tensor
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from . import backend_version
 
 
@@ -63,6 +63,7 @@ def batch_norm(
     return tf.transpose(ret, perm=(0, ndims - 1, *range(1, ndims - 1)))
 
 
+@with_supported_dtypes({"2.9.1 and below": ("float",)}, backend_version)
 def logsigmoid(input: Tensor) -> Tensor:
     return tf.math.log_sigmoid(input)
 
