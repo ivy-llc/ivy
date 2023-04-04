@@ -19,11 +19,6 @@ def Acos(*, x, name="Acos"):
     return ivy.acos(x)
 
 
-@to_ivy_arrays_and_back
-def Acosh(*, x, name="Acosh"):
-    return ivy.acosh(x)
-
-
 Acosh = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.acosh))
 
 
@@ -272,10 +267,7 @@ def Log1p(*, x, name="Log1p"):
     return ivy.log1p(x)
 
 
-@to_ivy_arrays_and_back
-def LogicalOr(*, x, y, name="LogicalOr"):
-    x, y = check_tensorflow_casting(x, y)
-    return ivy.logical_or(x, y)
+LogicalOr = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.logical_or))
 
 
 @to_ivy_arrays_and_back
@@ -753,3 +745,8 @@ def BatchMatMulV3(x, y, Tout=ivy.Dtype, adj_x=False, adj_y=False, name="BatchMat
 
 
 Slice = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.slice))
+
+
+@to_ivy_arrays_and_back
+def Prod(*, input, axis, keep_dims=False, name="Prod"):
+    return ivy.astype(ivy.prod(input, axis=axis, keepdims=keep_dims), input.dtype)
