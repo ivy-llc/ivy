@@ -24,7 +24,7 @@ import hypothesis.strategies as st
     test_with_out=st.just(False),
     alpha=helpers.floats(min_value=0, max_value=1)
 )
-def test_tensorflow_LeakyReLU(  # NOQA
+def test_tensorflow_LeakyReLU(
         *,
         dtype_and_x,
         alpha,
