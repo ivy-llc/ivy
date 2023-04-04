@@ -35,7 +35,7 @@ def test_numpy_iftt(
     fn_tree="numpy.fft.ifft2",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        shape=(4,), array_api_dtypes=True
+        shape=(4,4), array_api_dtypes=True
     )
 )
 def test_numpy_ifft2(
