@@ -379,11 +379,13 @@ def remainder(
     return jnp.remainder(x1, x2)
 
 
-def round(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def round(
+    x: JaxArray, /, *, decimals: int = 0, out: Optional[JaxArray] = None
+) -> JaxArray:
     if "int" in str(x.dtype):
         return x
     else:
-        return jnp.round(x)
+        return jnp.round(x, decimals=decimals)
 
 
 def sign(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:

@@ -566,12 +566,13 @@ def round(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    decimals: int = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if "int" in str(x.dtype):
         return x
     else:
-        return tf.round(x)
+        return tf.round(x * (10**decimals)) / 10**decimals
 
 
 def sign(
