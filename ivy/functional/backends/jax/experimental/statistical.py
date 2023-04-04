@@ -110,4 +110,4 @@ def nanquantile(
     axis = tuple(axis) if isinstance(axis, list) else axis
     return jnp.nanquantile(
         a, q, axis=axis, method=interpolation, keepdims=keepdims, out=out
-    )
+    ).astype(a.dtype)
