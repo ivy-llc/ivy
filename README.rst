@@ -126,7 +126,7 @@ Ivy as a transpiler
 
 Ivy's transpiler allows you to use code from any other framework (or from any other version of the same framework!) in your own code, by just adding one line of code. Under the hood, Ivy traces a computational graph and leverages the frontends and backends to link one framework to another. 
 
-This way, Ivy makes all ML-related projects available for you, independently of the framework you want to use to research, develop, or deploy systems. Feel free to head over to the docs for the full API reference, but the functions you'd most likely wanto to use are:
+This way, Ivy makes all ML-related projects available for you, independently of the framework you want to use to research, develop, or deploy systems. Feel free to head over to the docs for the full API reference, but the functions you'd most likely want to use are:
 
 .. code-block:: python
 
@@ -177,7 +177,7 @@ If you want to learn more, you can find more information in the `Ivy as a transp
 When should I use Ivy as a transpiler?
 ######################################
 
-If you want to use building blocks published in other frameworks (neural networks, layers, array computing libraries, training pipelines...), you want to integrate code developed in various frameworks, or maybe straight up move code from one framework to another, the transpiler is definitely the tool 🔧 for the job! As the output of transpilation is native code in the target framework, you can use the converted code just as if it was code originally developed in that framework, appliying framework-specific optimizations or tools, instantly exposing your project to all of the unique perks of a different framework.
+If you want to use building blocks published in other frameworks (neural networks, layers, array computing libraries, training pipelines...), you want to integrate code developed in various frameworks, or maybe straight up move code from one framework to another, the transpiler is definitely the tool 🔧 for the job! As the output of transpilation is native code in the target framework, you can use the converted code just as if it was code originally developed in that framework, applying framework-specific optimizations or tools, instantly exposing your project to all of the unique perks of a different framework.
 
 Ivy as a framework
 -------------------
@@ -222,7 +222,7 @@ The `Ivy Stateful API <https://lets-unify.ai/ivy/overview/design/ivy_as_a_framew
             return ivy.sigmoid(self.linear1(x))
 
 
-If we put it all toghether, we'll have something like this. This example uses PyTorch as the backend,
+If we put it all together, we'll have something like this. This example uses PyTorch as the backend,
 but this can easily be changed to your favorite framework, such as TensorFlow, or JAX.
 
 .. code-block:: python
@@ -404,7 +404,7 @@ Documentation
 
 The `Ivy Docs page <https://lets-unify.ai/ivy/>`_ holds all the relevant information about Ivy's and it's framework API reference. 
 
-There, you will find the `Design <https://lets-unify.ai/ivy/overview/design.html>`_ page, which is an user-focused guide about the architecture and the building blocks of Ivy. Likewise, you can take a look at the `Deep dive <https://lets-unify.ai/ivy/overview/deep_dive.html>`_, which is oriented towards potential contributors of the code base and explains the nuances of Ivy in full detail 🔎
+There, you will find the `Design <https://lets-unify.ai/ivy/overview/design.html>`_ page, which is a user-focused guide about the architecture and the building blocks of Ivy. Likewise, you can take a look at the `Deep dive <https://lets-unify.ai/ivy/overview/deep_dive.html>`_, which is oriented towards potential contributors of the code base and explains the nuances of Ivy in full detail 🔎
 
 Another important sections of the docs is `Background <https://lets-unify.ai/ivy/overview/background.html>`_, which contextualises the problem Ivy is trying to solve and the current `ML Explosion <https://lets-unify.ai/ivy/overview/background/ml_explosion.html#ml-explosion>`_, explaining both (1) why is important `to solve this problem <https://lets-unify.ai/ivy/overview/background/why_unify.html#why-unify>`_ and (2) how we are adhering to existing `standards <https://lets-unify.ai/ivy/overview/background/standardization.html#standardization>`_ to make this happen.
 
