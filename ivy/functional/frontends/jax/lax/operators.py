@@ -478,27 +478,36 @@ def sinh(x):
 @to_ivy_arrays_and_back
 def slice(operand, start_indices, limit_indices, strides=None):
     if operand.ndim != len(start_indices):
-        msg = ("slice start_indices must have length equal to the number of "
-               "dimensions of the operand, got indices {} for operand shape {}.")
+        msg = (
+            "slice start_indices must have length equal to the number of "
+            "dimensions of the operand, got indices {} for operand shape {}."
+        )
         raise TypeError(msg.format(start_indices, operand.shape))
 
     if len(start_indices) != len(limit_indices):
-        msg = ("slice limit_indices must have the same length as start_indices, "
-               "got start_indices {} and limit_indices {}.")
+        msg = (
+            "slice limit_indices must have the same length as start_indices, "
+            "got start_indices {} and limit_indices {}."
+        )
         raise TypeError(msg.format(start_indices, limit_indices))
 
     if not len(operand.shape) <= len(limit_indices):
-        msg = ("slice limit_indices must be less than or equal to operand shape, "
-               "got limit_indices {} for operand shape {}.")
+        msg = (
+            "slice limit_indices must be less than or equal to operand shape, "
+            "got limit_indices {} for operand shape {}."
+        )
         raise TypeError(msg.format(limit_indices, operand.shape))
 
     if not all(si >= 0 for si in start_indices):
-        msg = ("slice start_indices must be greater than or equal to zero, "
-               "got start_indices of {}.")
+        msg = (
+            "slice start_indices must be greater than or equal to zero, "
+            "got start_indices of {}."
+        )
         raise TypeError(msg.format(start_indices))
 
     start_indices, limit_indices = map(
-        lambda x: ivy.array(x) if isinstance(x, int) else x, [start_indices, limit_indices]
+        lambda x: ivy.array(x) if isinstance(x, int) else x,
+        [start_indices, limit_indices],
     )
     strides = [1] * len(operand.shape) if strides is None else strides
 

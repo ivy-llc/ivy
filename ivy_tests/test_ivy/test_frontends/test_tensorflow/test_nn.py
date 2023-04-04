@@ -1316,3 +1316,35 @@ def test_tensorflow_embedding_lookup(
         max_norm=max_norm,
         atol=1e-4,
     )
+
+
+# crelu
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.crelu",
+    dtype_x_and_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=4,
+        max_axes_size=3,
+        force_int_axis=True,
+        valid_axis=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_crelu(
+    *,
+    dtype_x_and_axis,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, axis = dtype_x_and_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        features=x[0],
+        axis=axis,
+    )
