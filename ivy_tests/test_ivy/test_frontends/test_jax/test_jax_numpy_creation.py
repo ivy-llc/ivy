@@ -721,7 +721,7 @@ def test_jax_numpy_single(
 
 @handle_frontend_test(
     fn_tree="jax.numpy.geomspace",
-    dtype_start_stop=_get_dtype_and_range(dimension=0),
+    dtype_start_stop=_get_dtype_and_range(),
     num=helpers.ints(min_value=5, max_value=50),
     endpoint=st.booleans(),
     test_with_out=st.just(False),
