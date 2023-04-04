@@ -114,7 +114,7 @@ def _dimension_numbers(dimension_numbers, lhs_len, as_jax=False):
     if dimension_numbers is None:
         iota = tuple(range(lhs_len))
         lhs_spec, rhs_spec, out_spec = iota, iota, iota
-    elif isinstance(dimension_numbers[0], tuple):
+    elif isinstance(dimension_numbers[0], (tuple, list)):
         lhs_spec, rhs_spec, out_spec = dimension_numbers
     else:
         lhs_spec, rhs_spec, out_spec = dimension_numbers
