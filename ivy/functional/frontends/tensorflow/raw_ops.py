@@ -747,7 +747,7 @@ Slice = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.slice))
 Zeta = to_ivy_arrays_and_back(
     with_supported_dtypes(
         {
-            "2.11.0 and below": ("float32", "float64"),
+            "all": ("float32", "float64"),
         },
         "tensorflow",
     )(map_raw_ops_alias(tf_frontend.math.zeta))
