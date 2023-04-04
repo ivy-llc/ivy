@@ -350,7 +350,7 @@ def test_numpy_deg2rad(
         fn_name="degrees"
     ),
 )
-def test_numpy_rad2deg(
+def test_numpy_degrees(
     dtypes_values_casting,
     where,
     frontend,

@@ -556,7 +556,6 @@ from ivy.functional.frontends.numpy.mathematical_functions.hyperbolic_functions 
     _cosh,
     _sinh,
     _tanh,
-    
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.rounding import (
