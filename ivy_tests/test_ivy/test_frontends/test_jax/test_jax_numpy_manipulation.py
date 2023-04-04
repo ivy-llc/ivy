@@ -1520,3 +1520,35 @@ def test_jax_numpy_kaiser(
         M=m,
         beta=beta,
     )
+
+
+# tri
+@handle_frontend_test(
+    fn_tree="jax.numpy.tri",
+    rows=helpers.ints(min_value=3, max_value=10),
+    cols=helpers.ints(min_value=3, max_value=10),
+    k=helpers.ints(min_value=-10, max_value=10),
+    dtype=helpers.get_dtypes("valid", full=False),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_tri(
+    rows,
+    cols,
+    k,
+    dtype,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        N=rows,
+        M=cols,
+        k=k,
+        dtype=dtype[0],
+    )

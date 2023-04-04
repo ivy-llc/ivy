@@ -3622,3 +3622,38 @@ def test_tensorflow_Size(  # NOQA
         input=x[0],
         out_type=output_dtype,
     )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Prod",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        valid_axis=True,
+        force_int_axis=True,
+        min_num_dims=1,
+        min_value=-5,
+        max_value=5,
+    ),
+    keep_dims=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Prod(  # NOQA
+    *,
+    dtype_x_axis,
+    keep_dims,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        axis=axis,
+        keep_dims=keep_dims,
+    )

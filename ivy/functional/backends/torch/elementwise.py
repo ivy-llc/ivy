@@ -9,6 +9,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from ivy import promote_types_of_inputs
 from . import backend_version
 
+
 def _cast_for_unary_op(x):
     if not isinstance(x, torch.Tensor):
         x = torch.tensor(x)
@@ -492,12 +493,14 @@ pow.support_native_out = True
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, backend_version)
-def round(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def round(
+    x: torch.Tensor, /, *, decimals: int = 0, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     if "int" in str(x.dtype):
         if ivy.exists(out):
             return ivy.inplace_update(out, x)
         return x
-    return torch.round(x, out=out)
+    return torch.round(x, decimals=decimals, out=out)
 
 
 round.support_native_out = True
@@ -772,6 +775,8 @@ def trunc_divide(
 
 def isreal(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.isreal(x)
+
+
 @with_unsupported_dtypes(
     {"2.9.1 and below": ("bfloat16", "complex")},
     backend_version,

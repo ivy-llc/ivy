@@ -2090,7 +2090,9 @@ class _ArrayWithElementwise(abc.ABC):
         """
         return ivy.remainder(self._data, x2, modulus=modulus, out=out)
 
-    def round(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def round(
+        self: ivy.Array, *, decimals: int = 0, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.round. This method simply wraps the
         function, and so the docstring for ivy.round also applies to this method
@@ -2100,6 +2102,8 @@ class _ArrayWithElementwise(abc.ABC):
         ----------
         self
             input array. Should have a numeric data type.
+        decimals
+            number of decimal places to round to. Default is ``0``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -2136,7 +2140,7 @@ class _ArrayWithElementwise(abc.ABC):
         ivy.array([[-1., -67., 0., 16., 1.],
         [3., -45., 25., -678., 33.]])
         """
-        return ivy.round(self._data, out=out)
+        return ivy.round(self._data, decimals=decimals, out=out)
 
     def sign(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
