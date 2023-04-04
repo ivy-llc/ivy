@@ -745,3 +745,8 @@ def BatchMatMulV3(x, y, Tout=ivy.Dtype, adj_x=False, adj_y=False, name="BatchMat
 
 
 Slice = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.slice))
+
+
+@to_ivy_arrays_and_back
+def Prod(*, input, axis, keep_dims=False, name="Prod"):
+    return ivy.astype(ivy.prod(input, axis=axis, keepdims=keep_dims), input.dtype)
