@@ -190,6 +190,13 @@ class Container(
     def __rpow__(self, power):
         return self.cont_map(lambda x, kc: power**x, map_sequences=True)
 
+    def __ipow__(self, power):
+        if isinstance(power, ivy.Container):
+            return ivy.Container.cont_multi_map(
+                lambda xs, _: operator.ipow(xs[0], xs[1]), [self, power], map_nests=True
+            )
+        return self.cont_map(lambda x, _: operator.ipow(x, power), map_sequences=True)
+
     def __add__(self, other):
         """
         ivy.Container special method for the add operator, calling :code:`operator.add`
@@ -289,6 +296,11 @@ class Container(
             lambda xs, _: operator.add(xs[0], xs[1]), [other, self], map_nests=True
         )
 
+    def __iadd__(self, other):
+        return ivy.Container.cont_multi_map(
+            lambda xs, _: operator.iadd(xs[0], xs[1]), [self, other], map_nests=True
+        )
+
     def __sub__(self, other):
         """
         ivy.Container special method for the subtract operator, calling
@@ -354,6 +366,11 @@ class Container(
             lambda xs, _: operator.sub(xs[0], xs[1]), [self, other], map_nests=True
         )
 
+    def __isub__(self, other):
+        return ivy.Container.cont_multi_map(
+            lambda xs, _: operator.isub(xs[0], xs[1]), [self, other], map_nests=True
+        )
+
     def __rsub__(self, other):
         """
         ivy.Container reverse special method for the subtract operator, calling
@@ -396,6 +413,44 @@ class Container(
     def __rmul__(self, other):
         return ivy.Container.cont_multi_map(
             lambda xs, _: operator.mul(xs[0], xs[1]), [other, self], map_nests=True
+        )
+
+    def __imul__(self, other):
+        return ivy.Container.cont_multi_map(
+            lambda xs, _: operator.imul(xs[0], xs[1]), [self, other], map_nests=True
+        )
+
+    def __mod__(self, other):
+        return ivy.Container.cont_multi_map(
+            lambda xs, _: operator.mod(xs[0], xs[1]), [self, other], map_nests=True
+        )
+
+    def __rmod__(self, other):
+        return ivy.Container.cont_multi_map(
+            lambda xs, _: operator.mod(xs[0], xs[1]), [other, self], map_nests=True
+        )
+
+    def __imod__(self, other):
+        return ivy.Container.cont_multi_map(
+            lambda xs, _: operator.imod(xs[0], xs[1]), [self, other], map_nests=True
+        )
+
+    def __divmod__(self, other):
+        return ivy.Container.cont_multi_map(
+            lambda xs, _: tuple(
+                [operator.truediv(xs[0], xs[1]), operator.mod(xs[0], xs[1])]
+            ),
+            [self, other],
+            map_nests=True,
+        )
+
+    def __rdivmod__(self, other):
+        return ivy.Container.cont_multi_map(
+            lambda xs, _: tuple(
+                [operator.truediv(xs[0], xs[1]), operator.mod(xs[0], xs[1])]
+            ),
+            [other, self],
+            map_nests=True,
         )
 
     def __truediv__(self, other):
@@ -454,6 +509,11 @@ class Container(
             lambda xs, _: operator.truediv(xs[0], xs[1]), [other, self], map_nests=True
         )
 
+    def __itruediv__(self, other):
+        return ivy.Container.cont_multi_map(
+            lambda xs, _: operator.itruediv(xs[0], xs[1]), [self, other], map_nests=True
+        )
+
     def __floordiv__(self, other):
         if isinstance(other, ivy.Container):
             return ivy.Container.cont_multi_map(
@@ -465,6 +525,50 @@ class Container(
 
     def __rfloordiv__(self, other):
         return self.cont_map(lambda x, kc: other // x, map_sequences=True)
+
+    def __ifloordiv__(self, other):
+        if isinstance(other, ivy.Container):
+            return ivy.Container.cont_multi_map(
+                lambda xs, _: operator.ifloordiv(xs[0], xs[1]),
+                [self, other],
+                map_nests=True,
+            )
+        return self.cont_map(
+            lambda x, kc: operator.ifloordiv(x, other), map_sequences=True
+        )
+
+    def __matmul__(self, other):
+        if isinstance(other, ivy.Container):
+            return ivy.Container.cont_multi_map(
+                lambda xs, _: operator.matmul(xs[0], xs[1]),
+                [self, other],
+                map_nests=True,
+            )
+        return self.cont_map(
+            lambda x, kc: operator.matmul(x, other), map_sequences=True
+        )
+
+    def __rmatmul__(self, other):
+        if isinstance(other, ivy.Container):
+            return ivy.Container.cont_multi_map(
+                lambda xs, _: operator.matmul(xs[0], xs[1]),
+                [other, self],
+                map_nests=True,
+            )
+        return self.cont_map(
+            lambda x, kc: operator.matmul(other, x), map_sequences=True
+        )
+
+    def __imatmul__(self, other):
+        if isinstance(other, ivy.Container):
+            return ivy.Container.cont_multi_map(
+                lambda xs, _: operator.imatmul(xs[0], xs[1]),
+                [other, self],
+                map_nests=True,
+            )
+        return self.cont_map(
+            lambda x, kc: operator.imatmul(x, other), map_sequences=True
+        )
 
     def __abs__(self):
         """
@@ -781,6 +885,13 @@ class Container(
             )
         return self.cont_map(lambda x, kc: x and other, map_sequences=True)
 
+    def __iand__(self, other):
+        if isinstance(other, ivy.Container):
+            return ivy.Container.cont_multi_map(
+                lambda xs, _: operator.iand(xs[0], xs[1]), [self, other], map_nests=True
+            )
+        return self.cont_map(lambda x, kc: operator.iand(x, other), map_sequences=True)
+
     def __rand__(self, other):
         return self.cont_map(lambda x, kc: other and x, map_sequences=True)
 
@@ -793,6 +904,11 @@ class Container(
 
     def __ror__(self, other):
         return self.cont_map(lambda x, kc: other or x, map_sequences=True)
+
+    def __ior__(self, other):
+        return ivy.Container.cont_multi_map(
+            lambda xs, _: operator.ior(xs[0], xs[1]), [self, other], map_nests=True
+        )
 
     def __invert__(self):
         return self.cont_map(lambda x, kc: operator.not_(x), map_sequences=True)
@@ -838,6 +954,40 @@ class Container(
 
     def __rxor__(self, other):
         return self.cont_map(lambda x, kc: other != x, map_sequences=True)
+
+    def __ixor__(self, other):
+        if isinstance(other, ivy.Container):
+            return ivy.Container.cont_multi_map(
+                lambda xs, _: operator.ixor(xs[0], xs[1]), [self, other], map_nests=True
+            )
+        return self.cont_map(lambda x, kc: operator.ixor(x, other), map_sequences=True)
+
+    def __lshift__(self, other):
+        if isinstance(other, ivy.Container):
+            return ivy.Container.cont_multi_map(
+                lambda xs, _: operator.lshift(xs[0], xs[1]),
+                [self, other],
+                map_nests=True,
+            )
+        return self.cont_map(
+            lambda x, kc: operator.lshift(x, other), map_sequences=True
+        )
+
+    def __rlshift__(self, other):
+        return self.cont_map(
+            lambda x, kc: operator.lshift(other, x), map_sequences=True
+        )
+
+    def __ilshift__(self, other):
+        if isinstance(other, ivy.Container):
+            return ivy.Container.cont_multi_map(
+                lambda xs, _: operator.ilshift(xs[0], xs[1]),
+                [self, other],
+                map_nests=True,
+            )
+        return self.cont_map(
+            lambda x, kc: operator.ilshift(x, other), map_sequences=True
+        )
 
     def __rshift__(self, other):
         """
@@ -943,50 +1093,13 @@ class Container(
         """
         return self.cont_map(lambda x, kc: other >> x, map_sequences=True)
 
-    def __getstate__(self):
-        state_dict = copy.copy(self.__dict__)
-        state_dict["_local_ivy"] = (
-            state_dict["_local_ivy"].current_backend_str()
-            if state_dict["_local_ivy"] is not None
-            else None
+    def __irshift__(self, other):
+        if isinstance(other, ivy.Container):
+            return ivy.Container.cont_multi_map(
+                lambda xs, _: operator.irshift(xs[0], xs[1]),
+                [self, other],
+                map_nests=True,
+            )
+        return self.cont_map(
+            lambda x, kc: operator.irshift(x, other), map_sequences=True
         )
-        config_in = copy.copy(state_dict["_config_in"])
-        config_in["ivyh"] = (
-            config_in["ivyh"].current_backend_str()
-            if config_in["ivyh"] is not None
-            else None
-        )
-        state_dict["_config_in"] = config_in
-        config = copy.copy(state_dict["_config"])
-        config["ivyh"] = (
-            config["ivyh"].current_backend_str() if config["ivyh"] is not None else None
-        )
-        state_dict["_config"] = config
-        return state_dict
-
-    def __setstate__(self, state_dict):
-        if "_local_ivy" in state_dict:
-            if ivy.exists(state_dict["_local_ivy"]):
-                if len(state_dict["_local_ivy"]) > 0:
-                    state_dict["_local_ivy"] = ivy.get_backend(state_dict["_local_ivy"])
-                else:
-                    state_dict["_local_ivy"] = ivy
-        if "_config_in" in state_dict:
-            config_in = copy.copy(state_dict["_config_in"])
-            if "ivyh" in config_in:
-                if ivy.exists(config_in["ivyh"]):
-                    if len(config_in["ivyh"]) > 0:
-                        config_in["ivyh"] = ivy.get_backend(config_in["ivyh"])
-                    else:
-                        config_in["ivyh"] = ivy
-            state_dict["_config_in"] = config_in
-        if "_config" in state_dict:
-            config = copy.copy(state_dict["_config"])
-            if "ivyh" in config:
-                if ivy.exists(config["ivyh"]):
-                    if len(config["ivyh"]) > 0:
-                        config["ivyh"] = ivy.get_backend(config["ivyh"])
-                    else:
-                        config["ivyh"] = ivy
-            state_dict["_config"] = config
-        self.__dict__.update(state_dict)

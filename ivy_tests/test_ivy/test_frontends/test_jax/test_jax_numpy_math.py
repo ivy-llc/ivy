@@ -11,7 +11,10 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_second_matrix_and_dtype,
     _get_dtype_value1_value2_axis_for_tensordot,
 )
-from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_elementwise import ldexp_args
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_elementwise import (  # noqa
+    ldexp_args,
+)
+
 
 # absolute
 @handle_frontend_test(
@@ -2498,11 +2501,16 @@ def test_jax_numpy_subtract(
     fn_tree="jax.numpy.around",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        min_value=-100,
+        max_value=100,
+        min_num_dims=1,
     ),
+    decimals=helpers.ints(min_value=0, max_value=3),
 )
 def test_jax_numpy_around(
     *,
     dtype_and_x,
+    decimals,
     on_device,
     fn_tree,
     frontend,
@@ -2516,6 +2524,7 @@ def test_jax_numpy_around(
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
+        decimals=decimals,
     )
 
 
@@ -2570,4 +2579,3 @@ def test_jax_numpy_ldexp(
         x1=x[0],
         x2=x[1],
     )
-

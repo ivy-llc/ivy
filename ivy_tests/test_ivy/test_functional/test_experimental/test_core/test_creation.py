@@ -11,6 +11,7 @@ from ivy_tests.test_ivy.helpers import handle_test
     n_cols=st.none() | helpers.ints(min_value=0, max_value=10),
     k=helpers.ints(min_value=-10, max_value=10),
     test_instance_method=st.just(False),
+    test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
 def test_triu_indices(
@@ -65,7 +66,7 @@ def test_vorbis_window(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        x=x[0],
+        window_length=x[0],
         dtype=input_dtype[0],
     )
 

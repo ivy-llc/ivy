@@ -25,12 +25,17 @@ jobs:
     if: ${{ github.event.inputs.gpu == 'true' }}
     runs-on: self-hosted
     steps:
+      - name: Clean repository
+        run:
+          sudo rm -fr $GITHUB_WORKSPACE && mkdir $GITHUB_WORKSPACE
+
       - name: Checkout Ivy 🛎
         uses: actions/checkout@v2
         with:
           path: ivy
           persist-credentials: false
           submodules: "recursive"
+          set-safe-directory: false
 
       - name: Get Job URL
         uses: Tiryoh/gha-jobid-action@v0
@@ -81,7 +86,7 @@ jobs:
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          python setup_tests.py ${{ github.event.inputs.test }} 
+          python setup_tests.py "${{ github.event.inputs.test }}" 
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ github.event.inputs.version}} 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 

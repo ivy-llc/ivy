@@ -50,6 +50,52 @@ def test_numpy_ceil(
     )
 
 
+# floor
+@handle_frontend_test(
+    fn_tree="numpy.floor",
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("float"),
+            )
+        ],
+        get_dtypes_kind="float",
+    ),
+    where=np_frontend_helpers.where(),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="floor"
+    ),
+)
+def test_numpy_floor(
+    dtypes_values_casting,
+    where,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, x, casting, dtype = dtypes_values_casting
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        out=None,
+        where=where,
+        casting=casting,
+        order="K",
+        dtype=dtype,
+        subok=True,
+    )
+
+
 # fix
 @handle_frontend_test(
     fn_tree="numpy.fix",
@@ -162,4 +208,33 @@ def test_numpy_rint(
         order="K",
         dtype=dtype,
         subok=True,
+    )
+
+
+# around
+@handle_frontend_test(
+    fn_tree="numpy.around",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    decimals=helpers.ints(min_value=0, max_value=5),
+)
+def test_numpy_around(
+    *,
+    dtype_and_x,
+    decimals,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        decimals=decimals,
     )
