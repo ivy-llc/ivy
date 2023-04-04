@@ -311,6 +311,7 @@ def test_tensorflow_Cos(  # NOQA
         x=x[0],
     )
 
+
 # Cross
 @handle_frontend_test(
         fn_tree='tensorflow.raw_ops.Cross',
@@ -320,6 +321,7 @@ def test_tensorflow_Cos(  # NOQA
         max_num_dims=5,
         min_dim_size=3,
         max_dim_size=3,
+        safety_factor_scale="log",
         num_arrays=2,
         shared_dtype=True,
 
