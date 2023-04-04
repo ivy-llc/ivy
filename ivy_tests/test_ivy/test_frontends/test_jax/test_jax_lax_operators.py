@@ -1839,7 +1839,7 @@ def x_and_filters(draw, dim=2, transpose=False, general=False):
         dilations = (dilations, x_dilation)
     if draw(st.booleans()):
         p_dtype, pref = draw(
-            helpers.get_castable_dtype(draw(helpers.get_dtypes("numeric")), dtype[0])
+            helpers.get_castable_dtype(draw(helpers.get_dtypes("float")), dtype[0])
         )
         assume(can_cast(p_dtype, pref))
     else:
