@@ -20,11 +20,6 @@ def Acos(*, x, name="Acos"):
     return ivy.acos(x)
 
 
-@to_ivy_arrays_and_back
-def Acosh(*, x, name="Acosh"):
-    return ivy.acosh(x)
-
-
 Acosh = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.acosh))
 
 
@@ -747,6 +742,7 @@ def BatchMatMulV3(x, y, Tout=ivy.Dtype, adj_x=False, adj_y=False, name="BatchMat
 
 
 Slice = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.slice))
+
 
 Zeta = to_ivy_arrays_and_back(
     with_supported_dtypes(

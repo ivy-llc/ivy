@@ -1665,8 +1665,8 @@ def test_tensorflow_acos(
         on_device=on_device,
         x=x[0],
     )
-    
-    
+
+
 # acosh
 @handle_frontend_test(
     fn_tree="tensorflow.math.acosh",
@@ -1692,7 +1692,7 @@ def test_tensorflow_acosh(
         on_device=on_device,
         x=x[0],
     )
-    
+
 
 # square
 @handle_frontend_test(
@@ -1970,12 +1970,11 @@ def test_tensorflow_sinh(
 # zeta
 @handle_frontend_test(
     fn_tree="tensorflow.math.zeta",
+    aliases=["tensorflow.math_ops.Zeta"],
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=[
-            "float32",
-            "float64",
-        ],
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
+        min_num_dims=1,
         shared_dtype=True,
     ),
     test_with_out=st.just(False),
