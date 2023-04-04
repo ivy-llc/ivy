@@ -42,8 +42,8 @@ def _getRNG():
 
 def random_uniform(
     *,
-    low: Union[float, int, JaxArray] = 0.0,
-    high: Union[float, int, JaxArray] = 1.0,
+    low: Union[float, JaxArray] = 0.0,
+    high: Union[float, JaxArray] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     device: jaxlib.xla_extension.Device,
     dtype: jnp.dtype,
