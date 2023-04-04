@@ -39,6 +39,7 @@ def thresholded_relu(
     if x.dtype in [paddle.float32, paddle.float64]:
         return F.thresholded_relu(x, threshold=threshold)
     with ivy.ArrayMode(False):
+        x, threshold = ivy.promote_types_of_inputs(x, threshold)
         return ivy.where(ivy.greater_equal(x, threshold), x, 0)
 
 
