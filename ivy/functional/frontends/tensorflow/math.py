@@ -190,6 +190,11 @@ def logical_xor(x, y, name="LogicalXor"):
 
 
 @to_ivy_arrays_and_back
+def logical_or(x, y, name="logical_or"):
+    return ivy.logical_or(x, y)
+
+
+@to_ivy_arrays_and_back
 def multiply(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return ivy.multiply(x, y)
