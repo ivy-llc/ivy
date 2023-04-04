@@ -8,7 +8,7 @@ import torch
 import ivy
 from ivy import promote_types_of_inputs
 from ivy.functional.backends.torch.elementwise import _cast_for_unary_op
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, handle_mixed_function
 from .. import backend_version
 
 
@@ -443,6 +443,13 @@ def ldexp(
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
+@handle_mixed_function(
+    lambda input, end, weight, **kwargs: (
+        isinstance(input, (float, int))
+        and isinstance(end, (float, int))
+        and isinstance(weight, float)
+    )
+)
 def lerp(
     input: torch.Tensor,
     end: torch.Tensor,

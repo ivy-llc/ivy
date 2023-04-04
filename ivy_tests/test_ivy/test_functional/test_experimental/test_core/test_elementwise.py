@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import strategies as st, assume
+from hypothesis import strategies as st
 
 # local
 import ivy
@@ -1185,7 +1185,7 @@ def test_ldexp(
 @handle_test(
     fn_tree="functional.ivy.experimental.lerp",
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=["float32", "float64"],
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=3,
         shared_dtype=True,
         large_abs_safety_factor=2.5,
