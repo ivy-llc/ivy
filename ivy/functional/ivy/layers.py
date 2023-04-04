@@ -28,6 +28,7 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+@inputs_to_ivy_arrays
 def linear(
     x: Union[ivy.Array, ivy.NativeArray],
     weight: Union[ivy.Array, ivy.NativeArray],
@@ -177,6 +178,7 @@ linear.mixed_function = True
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+@inputs_to_ivy_arrays
 def dropout(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -348,6 +350,7 @@ def dropout(
 @handle_array_function
 @handle_array_like_without_promotion
 @handle_exceptions
+@inputs_to_ivy_arrays
 def scaled_dot_product_attention(
     q: Union[ivy.Array, ivy.NativeArray],
     k: Union[ivy.Array, ivy.NativeArray],
@@ -553,6 +556,7 @@ def scaled_dot_product_attention(
 @handle_array_function
 @handle_array_like_without_promotion
 @handle_exceptions
+@inputs_to_ivy_arrays
 def multi_head_attention(
     x: Union[ivy.Array, ivy.NativeArray],
     scale: float,
