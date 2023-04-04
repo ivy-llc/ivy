@@ -145,9 +145,8 @@ def nanquantile(
     interpolation: str = "linear",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    temp = a.to(torch.float64)
     if isinstance(q, torch.Tensor):
-        qt = q.to(torch.float64)
+        qt = q.to(a.dtype)
     else:
         qt = q
     if isinstance(axis, list) or isinstance(axis, tuple):
@@ -155,14 +154,14 @@ def nanquantile(
         for x in axis:
             axis1 = x
             for axis2 in range(x + 1, dimension):
-                temp = torch.transpose(temp, axis1, axis2)
+                temp = torch.transpose(a, axis1, axis2)
                 axis1 = axis2
         temp = torch.flatten(temp, start_dim=dimension - len(axis))
         return torch.nanquantile(
             temp, qt, dim=-1, keepdim=keepdims, interpolation=interpolation, out=out
         )
     return torch.nanquantile(
-        temp, qt, dim=axis, keepdim=keepdims, interpolation=interpolation, out=out
+        a, qt, dim=axis, keepdim=keepdims, interpolation=interpolation, out=out
     )
 
 
