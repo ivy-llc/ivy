@@ -190,6 +190,11 @@ def logical_xor(x, y, name="LogicalXor"):
 
 
 @to_ivy_arrays_and_back
+def logical_or(x, y, name="logical_or"):
+    return ivy.logical_or(x, y)
+
+
+@to_ivy_arrays_and_back
 def multiply(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return ivy.multiply(x, y)
@@ -275,6 +280,8 @@ def reduce_max(input_tensor, axis=None, keepdims=False, name="reduce_max"):
 
 @to_ivy_arrays_and_back
 def reduce_mean(input_tensor, axis=None, keepdims=False, name="reduce_mean"):
+    if ivy.exists(axis):
+        axis = ivy.to_list(axis)
     return ivy.mean(input_tensor, axis=axis, keepdims=keepdims)
 
 
@@ -403,6 +410,12 @@ def equal(x, y, name=None):
 
 
 @to_ivy_arrays_and_back
+def not_equal(x, y, name=None):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.not_equal(x, y)
+
+
+@to_ivy_arrays_and_back
 def floor(x, name=None):
     return ivy.floor(x)
 
@@ -469,6 +482,11 @@ def acos(x, name="acos"):
 
 
 @to_ivy_arrays_and_back
+def acosh(x, name="acosh"):
+    return ivy.acosh(x)
+
+
+@to_ivy_arrays_and_back
 def square(x, name=None):
     return ivy.square(x)
 
@@ -512,3 +530,13 @@ def floormod(x, y, name=None):
 def greater(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return ivy.greater(x, y)
+
+
+@to_ivy_arrays_and_back
+def cos(x, name=None):
+    return ivy.cos(x)
+
+
+@to_ivy_arrays_and_back
+def sinh(x, name=None):
+    return ivy.sinh(x)

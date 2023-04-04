@@ -250,13 +250,12 @@ class _ArrayWithGeneral(abc.ABC):
         --------
         >>> x = ivy.array([0., 1., 2.])
         >>> y = ivy.array([0, 1])
-        >>> x.gather(y)
+        >>> gather = x.gather(y)
+        >>> print(gather)
         ivy.array([0., 1.])
 
         """
-        return ivy.gather(
-            self._data, indices, axis=axis, batch_dims=batch_dims, out=out
-        )
+        return ivy.gather(self, indices, axis=axis, batch_dims=batch_dims, out=out)
 
     def scatter_nd(
         self: ivy.Array,
@@ -332,6 +331,8 @@ class _ArrayWithGeneral(abc.ABC):
             The array from which to gather values.
         indices
             Index array.
+        batch_dims
+            optional int, lets you gather different items from each element of a batch.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -509,16 +510,23 @@ class _ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
+        With :class:`ivy.Array` inputs:
+
         >>> x = ivy.array([5,4])
         >>> y = x.einops_repeat('a -> a c', c=3)
         >>> print(y)
-        ivy.array([[5,5,5],[4,4,4]])
+        ivy.array([[5, 5, 5],
+                   [4, 4, 4]])
+
+        With :class:`ivy.Array` inputs:
 
         >>> x = ivy.array([[5,4],
         ...                [2, 3]])
         >>> y = x.einops_repeat('a b ->  a b c', c=3)
         >>> print(y)
-        ivy.array([[5,5,5],[4,4,4]])
+        ivy.array([[[5, 5, 5], [4, 4, 4]], [[2, 2, 2], [3, 3, 3]]])
+        >>> print(y.shape)
+        (2, 2, 3)
 
         """
         return ivy.einops_repeat(self._data, pattern, out=out, **axes_lengths)
@@ -1103,7 +1111,7 @@ class _ArrayWithGeneral(abc.ABC):
             In cases where it should be, backends which do not natively support inplace
             updates will raise an exception.
         keep_input_dtype
-            Whether or not to preserve `x` data type after the update, otherwise `val` 
+            Whether or not to preserve `x` data type after the update, otherwise `val`
             data type will be applied. Defaults to False.
 
         Returns

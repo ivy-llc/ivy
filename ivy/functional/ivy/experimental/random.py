@@ -175,10 +175,10 @@ def gamma(
     )
 
 
-@to_native_arrays_and_back
-@handle_out_argument
 @infer_device
 @infer_dtype
+@to_native_arrays_and_back
+@handle_out_argument
 @handle_nestable
 @handle_exceptions
 def poisson(
@@ -240,10 +240,10 @@ def poisson(
     )
 
 
-@to_native_arrays_and_back
-@handle_out_argument
 @infer_device
 @infer_dtype
+@to_native_arrays_and_back
+@handle_out_argument
 @handle_nestable
 @handle_exceptions
 def bernoulli(
