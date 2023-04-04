@@ -34,6 +34,7 @@ def thresholded_relu(
     threshold: Union[int, float] = 0,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    x, threshold = ivy.promote_types_of_inputs(x, threshold)
     return np.where(x > threshold, x, 0).astype(x.dtype)
 
 

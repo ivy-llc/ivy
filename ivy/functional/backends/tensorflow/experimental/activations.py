@@ -25,7 +25,7 @@ def logit(
     return tf.cast(tf.math.log(x / (1 - x)), x_dtype)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("complex", "bool")}, backend_version)
 def thresholded_relu(
     x: Tensor,
     /,
@@ -33,7 +33,8 @@ def thresholded_relu(
     threshold: Union[int, float] = 0,
     out: Optional[Tensor] = None,
 ) -> Tensor:
-    return tf.where(x > threshold, x, 0)
+    x, threshold = ivy.promote_types_of_inputs(x, threshold)
+    return tf.cast(tf.where(x > threshold, x, 0), x.dtype)
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
