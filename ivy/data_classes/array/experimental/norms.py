@@ -51,7 +51,7 @@ class _ArrayWithNormsExperimental(abc.ABC):
         eps: float = 1e-5,
         momentum: float = 1e-1,
         out: Optional[Tuple[ivy.Array, ivy.Array, ivy.Array]] = None,
-    ) -> ivy.Array:
+    ) -> Tuple[ivy.Array, ivy.Array, ivy.Array]:
         """
             ivy.Array instance method variant of ivy.batch_norm. This method
             simply wraps the function, and so the docstring for ivy.batch_norm
@@ -124,7 +124,7 @@ class _ArrayWithNormsExperimental(abc.ABC):
         eps: float = 1e-5,
         momentum: float = 1e-1,
         out: Optional[Tuple[ivy.Array, ivy.Array, ivy.Array]] = None,
-    ):
+    ) -> Tuple[ivy.Array, ivy.Array, ivy.Array]:
         """
         ivy.Array instance method variant of ivy.instance_norm. This method
         simply wraps the function, and so the docstring for ivy.instance_norm
