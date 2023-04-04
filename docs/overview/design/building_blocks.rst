@@ -104,7 +104,7 @@ Instead, we allow these backends to be bound to the single shared namespace ivy.
 The backend can then be changed by calling :code:`ivy.set_backend(‘torch’)` for example.
 
 :mod:`ivy.functional.ivy` is the submodule where all the doc strings and argument typing reside for the functional Ivy API.
-For example, The function :func:`prod`  is shown below:
+For example, the function :func:`prod`  is shown below:
 
 .. code-block:: python
 
