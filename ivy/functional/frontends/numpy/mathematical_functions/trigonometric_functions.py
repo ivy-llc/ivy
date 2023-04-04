@@ -158,6 +158,8 @@ def _deg2rad(
     order="K",
     dtype=None,
     subok=True,
+    signature=None,
+    extobj=None,
 ):
     ret = ivy.deg2rad(x, out=out)
     if ivy.is_array(where):
@@ -180,8 +182,6 @@ def _degrees(
     order="K",
     dtype=None,
     subok=True,
-    signature=None,
-    extobj=None,
 ):
     ret = ivy.degrees(x, out=out)
     if ivy.is_array(where):
