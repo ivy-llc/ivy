@@ -572,6 +572,8 @@ def round(
     if "int" in str(x.dtype):
         return x
     else:
+        if decimals == 0:
+            return tf.cast(tf.round(x), x.dtype)
         ret_dtype = x.dtype
         factor = tf.constant(10**decimals, dtype=ret_dtype)
         factor_deno = tf.where(

@@ -385,6 +385,8 @@ def round(
     if "int" in str(x.dtype):
         return x
     else:
+        if decimals == 0:
+            return jnp.round(x)
         ret_dtype = x.dtype
         factor = jnp.power(10, decimals).astype(ret_dtype)
         factor_denom = jnp.where(jnp.isinf(factor), 1.0, factor)
