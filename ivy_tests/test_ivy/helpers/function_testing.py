@@ -1982,7 +1982,7 @@ def get_ret_and_flattened_np_array(fn, *args, test_compile: bool = False, **kwar
     def map_fn(x):
         if _is_frontend_array(x):
             return x.ivy_array
-        elif ivy.is_native_array(x):
+        elif ivy.is_native_array(x) or isinstance(x, np.ndarray):
             return ivy.to_ivy(x)
         return x
 
