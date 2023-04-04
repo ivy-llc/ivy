@@ -319,15 +319,20 @@ class Tensor:
 
     def to(self, *args, **kwargs):
         if len(args) > 0:
-            if isinstance(args[0], (ivy.Dtype, ivy.NativeDtype)):
-                if self.dtype == args[0]:
+            if (
+                isinstance(args[0], (ivy.Dtype, ivy.NativeDtype))
+                or args[0] in ivy._all_ivy_dtypes_str
+            ):
+                if self.dtype == ivy.as_ivy_dtype(args[0]):
                     return self
                 else:
                     cast_tensor = self.clone()
                     cast_tensor.ivy_array = ivy.asarray(self._ivy_array, dtype=args[0])
                     return cast_tensor
             if isinstance(args[0], (ivy.Device, ivy.NativeDevice, str)):
-                if isinstance(args[0], str):
+                if isinstance(args[0], str) and not isinstance(
+                    args[0], (ivy.Device, ivy.NativeDevice)
+                ):
                     ivy.utils.assertions.check_elem_in_list(
                         args[0],
                         [
@@ -349,7 +354,7 @@ class Tensor:
                             "hpu",
                         ],
                     )
-                if self.device == args[0]:
+                if self.device == ivy.as_ivy_dev(args[0]):
                     return self
                 else:
                     cast_tensor = self.clone()
