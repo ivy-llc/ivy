@@ -138,7 +138,7 @@ def test_torch_avg_pool3d(
     # or a tuple of integers, not a string
     padding = tuple(
         [
-            ivy.handle_padding(x_shape[i], stride[0], kernel_size[i], padding)
+            ivy._handle_padding(x_shape[i], stride[0], kernel_size[i], padding)
             for i in range(len(x_shape))
         ]
     )
