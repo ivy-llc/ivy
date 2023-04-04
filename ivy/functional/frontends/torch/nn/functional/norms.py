@@ -119,10 +119,12 @@ def group_norm(input, num_groups, weight=None, bias=None, eps=1e-05):
                 )
                 if weight is not None
                 else None,
-                b=ivy.expand_dims(bias[i * groups : (i + 1) * groups], axis=expand_dims)
+                offset=ivy.expand_dims(
+                    bias[i * groups : (i + 1) * groups], axis=expand_dims
+                )
                 if bias is not None
                 else None,
-                epsilon=eps,
+                eps=eps,
             )
             for i in range(num_groups)
         ],
