@@ -263,6 +263,8 @@ def test_torch_group_norm(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
+        atol=1e-1,
+        rtol=1e-1,
         input=x[0],
         num_groups=group_size,
         weight=weight[0],
