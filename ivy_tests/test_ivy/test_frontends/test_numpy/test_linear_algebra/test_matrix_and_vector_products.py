@@ -4,7 +4,6 @@ from hypothesis import strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
-from ivy import with_unsupported_dtypes
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_first_matrix_and_dtype,
@@ -202,7 +201,6 @@ def test_numpy_kron(
     )
 
 # multi_dot
-@with_unsupported_dtypes({"2.0.0 and below": ("float16",)}, "torch")
 @handle_frontend_test(
     fn_tree="numpy.linalg.multi_dot",
     dtype_and_x=_generate_multi_dot_dtype_and_arrays(),
