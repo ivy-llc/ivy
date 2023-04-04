@@ -2102,6 +2102,8 @@ class _ArrayWithElementwise(abc.ABC):
         ----------
         self
             input array. Should have a numeric data type.
+        decimals
+            number of decimal places to round to. Default is ``0``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.

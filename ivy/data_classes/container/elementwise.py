@@ -6411,6 +6411,8 @@ class _ContainerWithElementwise(ContainerBase):
         ----------
         x
             input container. Should have a numeric data type.
+        decimals
+            number of decimal places to round to. Default is ``0``.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -6475,6 +6477,8 @@ class _ContainerWithElementwise(ContainerBase):
         ----------
         self
             input container. Should have a numeric data type.
+        decimals
+            number of decimal places to round to. Default is ``0``.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
