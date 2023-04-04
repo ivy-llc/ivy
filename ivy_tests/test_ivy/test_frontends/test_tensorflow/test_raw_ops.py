@@ -322,6 +322,8 @@ def test_tensorflow_Cos(  # NOQA
         min_dim_size=3,
         max_dim_size=3,
         safety_factor_scale="log",
+         max_value=1e5,
+
         num_arrays=2,
         shared_dtype=True,
 
