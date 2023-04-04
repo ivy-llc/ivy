@@ -42,8 +42,8 @@ def _getRNG():
 
 def random_uniform(
     *,
-    low: Union[float, JaxArray] = 0.0,
-    high: Union[float, JaxArray] = 1.0,
+    low: Union[float, int, JaxArray] = 0.0,
+    high: Union[float, int, JaxArray] = 1.0,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     device: jaxlib.xla_extension.Device,
     dtype: jnp.dtype,
@@ -57,7 +57,13 @@ def random_uniform(
     else:
         RNG_, rng_input = jax.random.split(_getRNG())
         _setRNG(RNG_)
-
+    if dtype in [jnp.int32, jnp.int64]:
+        return to_device(
+            jax.random.uniform(
+                rng_input, shape, minval=low, maxval=high, dtype=jnp.float32
+            ),
+            device,
+        ).astype(jnp.int64)
     return to_device(
         jax.random.uniform(rng_input, shape, minval=low, maxval=high, dtype=dtype),
         device,

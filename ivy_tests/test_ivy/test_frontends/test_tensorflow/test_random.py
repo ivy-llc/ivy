@@ -129,12 +129,12 @@ def test_tensorflow_shuffle(
         max_value=5,
         min_num_dims=1,
         max_num_dims=1,
+        max_dim_size=9,
     ),
     seed=helpers.dtype_and_values(
         available_dtypes=("int64", "int32"), min_value=0, max_value=10, shape=[2]
     ),
-    minval=helpers.ints(min_value=0, max_value=3),
-    maxval=helpers.ints(min_value=4, max_value=10),
+    minmaxval=helpers.get_bounds(dtype="int32"),
     dtype=helpers.dtype_and_values(
         available_dtypes=("int32", "int64", "float16", "float32", "float64"),
         min_value=0,
@@ -146,8 +146,7 @@ def test_tensorflow_shuffle(
 def test_tensorflow_stateless_uniform(
     shape,
     seed,
-    minval,
-    maxval,
+    minmaxval,
     dtype,
     frontend,
     test_flags,
@@ -159,7 +158,7 @@ def test_tensorflow_stateless_uniform(
     seed_input_dtypes, seed = seed
 
     helpers.test_frontend_function(
-        input_dtypes=shape_input_dtypes + shape_input_dtypes,
+        input_dtypes=shape_input_dtypes + seed_input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -167,7 +166,7 @@ def test_tensorflow_stateless_uniform(
         test_values=False,
         shape=shape[0],
         seed=(seed[0][0], seed[0][1]),
-        minval=minval,
-        maxval=maxval,
+        minval=int(minmaxval[0]),
+        maxval=int(minmaxval[1]),
         dtype=dtype[0],
     )
