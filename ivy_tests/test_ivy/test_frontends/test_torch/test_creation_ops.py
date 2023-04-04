@@ -641,7 +641,7 @@ def test_torch_asarray(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
 )
-def test_from_dlpack(
+def test_torch_from_dlpack(
     *,
     dtype_and_x,
     on_device,
