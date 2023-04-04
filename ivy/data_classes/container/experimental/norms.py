@@ -156,7 +156,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-    ) -> ivy.Container:
+    ) -> Tuple[ivy.Container, ivy.Container, ivy.Container]:
         """
         ivy.Container static method variant of ivy.batch_norm.
         This method simply wraps the function, and so the docstring
@@ -256,7 +256,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-    ) -> ivy.Container:
+    ) -> Tuple[ivy.Container, ivy.Container, ivy.Container]:
         """
         ivy.Container instance method variant of ivy.batch_norm.
         This method simply wraps the function, and so the docstring
@@ -356,7 +356,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-    ):
+    ) -> Tuple[ivy.Container, ivy.Container, ivy.Container]:
         """
         ivy.Container static method variant of ivy.instance_norm.
         This method simply wraps the function, and so the docstring
@@ -456,7 +456,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-    ):
+    ) -> Tuple[ivy.Container, ivy.Container, ivy.Container]:
         """
         ivy.Container instance method variant of ivy.instance_norm.
         This method simply wraps the function, and so the docstring
