@@ -364,9 +364,27 @@ _BERNOULLI_COEFS = [
     -37893265687455865519472640000000 / 3392780147,
     759790291646040068357842010112000000 / 1723168255201,
     -134196726836183700385281186201600000000 / 7709321041217,
-]    
+]
+
+
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16",  "int8","int16","int32","int64","uint8","uint16","float16","bool",)}}, backend_version
+    {
+        "2.4.2 and below": {
+            "cpu": (
+                "uint16",
+                "bfloat16",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "uint8",
+                "uint16",
+                "float16",
+                "bool",
+            )
+        }
+    },
+    backend_version,
 )
 def zeta(
     x: paddle.Tensor,
@@ -375,10 +393,14 @@ def zeta(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-   with ivy.ArrayMode(False):
-        s,a=ivy.promote_types_of_inputs(x,q)
+    with ivy.ArrayMode(False):
+        s, a = ivy.promote_types_of_inputs(x, q)
         s_, a_ = paddle.unsqueeze(x, -1), paddle.unsqueeze(q, -1)
-        N = M = paddle.to_tensor(8., dtype="float32") if q.dtype == paddle.float32 else paddle.to_tensor(8., dtype="float64")
+        N = M = (
+            paddle.to_tensor(8.0, dtype="float32")
+            if q.dtype == paddle.float32
+            else paddle.to_tensor(8.0, dtype="float64")
+        )
         assert M <= len(_BERNOULLI_COEFS)
         k = paddle.unsqueeze(ivy.arange(N, dtype=q.dtype), tuple(range(q.ndim)))
         S = paddle.sum((a_ + k) ** -s_, -1)
@@ -386,17 +408,21 @@ def zeta(
         T0 = (q + N) ** -x
         m = paddle.unsqueeze(ivy.arange(2 * M, dtype=s.dtype), tuple(range(s.ndim)))
         s_over_a = (s_ + m) / (a_ + N)
-        s_over_a = ivy.where(s_over_a == 0, paddle.ones_like(s_over_a) * 1e-20, s_over_a)
+        s_over_a = ivy.where(
+            s_over_a == 0, paddle.ones_like(s_over_a) * 1e-20, s_over_a
+        )
         T1 = paddle.cumprod(s_over_a, -1)[..., ::2]
         # t=np.array(T1)
         T1 = paddle.clip(T1, max=ivy.finfo(T1.dtype).max)
-        coefs = paddle.unsqueeze(paddle.to_tensor(_BERNOULLI_COEFS[:T1.shape[-1]], dtype=T1.dtype),
-                             tuple(range(a.ndim)))
+        coefs = paddle.unsqueeze(
+            paddle.to_tensor(_BERNOULLI_COEFS[: T1.shape[-1]], dtype=T1.dtype),
+            tuple(range(a.ndim)),
+        )
         T1 = T1 / coefs
         T = T0 * (0.5 + paddle.sum(T1, -1))
-        ans= S + I + T
+        ans = S + I + T
         mask = x < 1
-        ans[mask]=ivy.nan
+        ans[mask] = ivy.nan
         return ans
 
 

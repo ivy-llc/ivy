@@ -602,7 +602,7 @@ class Tensor:
     def transpose_(self, dim0, dim1):
         self._ivy_array = self.transpose(dim0, dim1).ivy_array
         return self
-    
+
     def t(self):
         return torch_frontend.t(self._ivy_array)
 
@@ -893,6 +893,6 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def exp(self, *, out=None):
         return torch_frontend.exp(self._ivy_array)
-    
+
     def mul(self, other, *, out=None):
         return torch_frontend.mul(self._ivy_array, other)

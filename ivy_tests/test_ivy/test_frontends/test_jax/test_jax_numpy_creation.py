@@ -638,17 +638,17 @@ def test_jax_numpy_logspace(
         shared_dtype=True,
     ),
     sparse=st.booleans(),
-    indexing=st.sampled_from(['xy', 'ij']),
+    indexing=st.sampled_from(["xy", "ij"]),
     test_with_out=st.just(False),
 )
 def test_jax_numpy_meshgrid(
-        dtype_and_arrays,
-        sparse,
-        indexing,
-        test_flags,
-        frontend,
-        fn_tree,
-        on_device,
+    dtype_and_arrays,
+    sparse,
+    indexing,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     dtype, arrays = dtype_and_arrays
     kw = {}
