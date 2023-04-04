@@ -385,7 +385,10 @@ def round(
     if "int" in str(x.dtype):
         return x
     else:
-        return jnp.round(x, decimals=decimals)
+        ret_dtype = x.dtype
+        factor = jnp.power(10, decimals).astype(ret_dtype)
+        factor_denom = jnp.where(jnp.isinf(factor), 1.0, factor)
+        return jnp.round(x * factor) / factor_denom
 
 
 def sign(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:

@@ -572,7 +572,12 @@ def round(
     if "int" in str(x.dtype):
         return x
     else:
-        return tf.round(x * (10**decimals)) / 10**decimals
+        ret_dtype = x.dtype
+        factor = tf.constant(10**decimals, dtype=ret_dtype)
+        factor_deno = tf.where(
+            tf.math.is_finite(factor), factor, tf.constant(1, dtype=ret_dtype)
+        )
+        return tf.cast(tf.round(x * factor) / factor_deno, ret_dtype)
 
 
 def sign(
