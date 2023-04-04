@@ -10,7 +10,7 @@ import paddle
 import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
 from . import backend_version
-from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
 
 # Array API Standard #
 # -------------------#
@@ -206,7 +206,30 @@ def cumprod(
     dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    dtype = dtype if dtype is not None else x.dtype
+    if dtype in [paddle.uint8, paddle.int8, paddle.int16]:
+        x = paddle.cast(x, "int32")
+    else:
+        x = paddle.cast(x, dtype)
+    if not (exclusive or reverse):
+        return paddle.cumprod(x, dim=axis).cast(dtype)
+    elif exclusive and reverse:
+        with ivy.ArrayMode(False):
+            x = paddle.cumprod(ivy.flip(x, axis=(axis,)), dim=axis)
+            x = ivy.swapaxes(x, axis, -1)
+            x = ivy.concat((ivy.ones_like(x[..., -1:]), x[..., :-1]), axis=-1)
+            x = ivy.swapaxes(x, axis, -1)
+            return ivy.flip(x, axis=(axis,)).cast(dtype)
+    elif exclusive:
+        with ivy.ArrayMode(False):
+            x = ivy.swapaxes(x, axis, -1)
+            x = ivy.concat((ivy.ones_like(x[..., -1:]), x[..., :-1]), axis=-1)
+            x = paddle.cumprod(x, -1)
+            return ivy.swapaxes(x, axis, -1).cast(dtype)
+    else:
+        with ivy.ArrayMode(False):
+            x = paddle.cumprod(ivy.flip(x, axis=(axis,)), dim=axis)
+            return ivy.flip(x, axis=axis).cast(dtype)
 
 
 @with_unsupported_device_and_dtypes(
