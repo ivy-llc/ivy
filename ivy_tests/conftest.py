@@ -10,7 +10,6 @@ from hypothesis.database import (
 from hypothesis.extra.redis import RedisExampleDatabase
 
 
-
 hypothesis_cache = os.getcwd() + "/.hypothesis/examples/"
 redis_connect_dev = None
 redis_connect_master = None
@@ -115,6 +114,3 @@ def pytest_configure(config):
         print_blob=True,
     )
     settings.load_profile("ivy_profile")
-
-
-

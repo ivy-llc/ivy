@@ -185,11 +185,6 @@ Windows
 #. Install `WSL 2 <https://docs.microsoft.com/en-us/windows/wsl/install>`_.
    For most, it will only require running the command :code:`wsl --install` in powershell admin mode.
    Visit the link if it doesn't.
-#. Get the latest Docker Image for Ivy by:
-
-   a. Running Docker desktop.
-   b. Opening cmd, and running the command: :code:`docker pull unifyai/ivy:latest`
-   
 #. Install `Pycharm Professional Version <https://www.jetbrains.com/pycharm/>`_, make sure to only install the Professional version of PyCharm, not the Community version.
 #. Open pycharm with your cloned Ivy repository.
    Add the remote python interpreter by:
@@ -197,10 +192,19 @@ Windows
    a. Going to the settings -> Build, Execution, Deployment -> Docker
       Click the "+" on top left and it should add a docker connection.
    b. Going to settings -> project -> Python Interpreter
-   c. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
-   d. Choosing "Docker" from the left panel.
-      Type python3 (with the number) in python interpreter path and press ok.
-   e. Opening "Edit Run/Debug configurations" dialog -> "Edit Configurations..." and making sure that "Working directory" is empty in case of getting the "Can't run process: the working directory '\ivy' is invalid, it needs to be an absolute path" error.
+   c. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new small drop down menu. Select "On Docker...".A         window will open which will have three steps.
+#. It will ask to create a new Docker target, at this step you have to select the following:
+
+   a. Docker image -> Docker
+   b. Image -> Pull
+   c. Image tag -> unifyai/ivy:latest
+   d. Select "Next"
+#. The image will start pulling. It will take a respectible amount of time to complete. Once you see "Introspection Completed" message, select "Next". 
+#. Another window will appear, at this step select the following:
+
+   a. In the left panel select "System Interpreter".
+   b. For Interpreter, select the default option which will be "/usr/bin/python3" the select "Create".   
+#. Opening "Edit Run/Debug configurations" dialog -> "Edit Configurations..." and making sure that "Working directory" is empty in case of getting the "Can't run process: the working directory '\ivy' is invalid, it needs to be an absolute path" error.
 
 Once these steps are finished, your interpreter should be set up correctly!
 If Docker's latest version causes error, try using an earlier version by visiting `Docker release note <https://docs.docker.com/desktop/release-notes/>`_.
@@ -316,8 +320,20 @@ Ubuntu
    d. Choosing "Docker" from the left panel.
       Type python3 (with the number) in python interpreter path and press ok.
 
-For questions, please reach out on `discord`_ in the `docker channel`_!
+**Docker Connection not Successfull**
 
+This is a common error which you might face. If you are not successfully able to connect docker with Pycharm(point 4a) and your docker is also running, the issue is that you are not able to use your docker socket. So, executing the below two commands should solve this.
+    
+    .. code-block:: none
+        
+        sudo chmod a+rwx /var/run/docker.sock
+        
+    .. code-block:: none
+    
+        sudo chmod a+rwx /var/run/docker.pid  
+
+
+For questions, please reach out on `discord`_ in the `docker channel`_!
 
 **Video**
 

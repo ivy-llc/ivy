@@ -14,6 +14,16 @@
     overview/faq.rst
     overview/glossary.rst
 
+
+.. toctree::
+    :hidden:
+    :maxdepth: -1
+    :caption: Compiling and Transpiling
+
+    compiler/compiler.rst
+    compiler/transpiler.rst
+
+
 .. autosummary::
   :toctree: docs/functional
   :template: top_functional_toc.rst

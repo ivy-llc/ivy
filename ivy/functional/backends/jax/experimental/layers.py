@@ -508,8 +508,7 @@ def interpolate(
         "area",
         "nearest_exact",
         "tf_area",
-        "bicubic_tensorflow"
-        "bicubic",
+        "bicubic_tensorflow" "bicubic",
         "mitchellcubic",
         "lanczos3",
         "lanczos5",
@@ -526,8 +525,7 @@ def interpolate(
     mode = (
         "nearest"
         if mode == "nearest-exact"
-        else "bicubic"
-        "bicubic"
+        else "bicubic" "bicubic"
         if mode == "bicubic_tensorflow"
         else mode
     )

@@ -2,7 +2,6 @@
 from hypothesis import strategies as st, assume
 import numpy as np
 
-
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy.functional.frontends.tensorflow.general_functions import _num_to_bit_list
@@ -96,6 +95,88 @@ def test_tensorflow_clip_by_value(
         t=x[0],
         clip_value_min=min,
         clip_value_max=max,
+    )
+
+
+@st.composite
+def _get_global_norm_clip_inputs(draw):
+
+    t_list_dtype, t_list = draw(
+        helpers.dtype_and_values(
+            num_arrays=2,
+            min_num_dims=1,
+            shared_dtype=True,
+            min_value=-100,
+            max_value=100,
+            dtype=["float32"] * 2,
+        )
+    )
+
+    norm_dtype, norm = draw(
+        helpers.dtype_and_values(
+            shape=(1,),
+            shared_dtype=True,
+            min_value=0,
+            exclude_min=True,
+            max_value=100,
+            dtype=["float32"],
+        )
+    )
+
+    global_norm_dtype, global_norm = draw(
+        helpers.dtype_and_values(
+            shape=(1,),
+            shared_dtype=True,
+            min_value=0,
+            exclude_min=True,
+            max_value=100,
+            dtype=["float32"],
+        )
+    )
+    include_global = draw(st.booleans())
+    if not include_global:
+        global_norm_dtype, global_norm = None, None
+    return t_list_dtype, t_list, norm_dtype, norm, global_norm_dtype, global_norm
+
+
+# clip_by_global_norm
+@handle_frontend_test(
+    fn_tree="tensorflow.clip_by_global_norm",
+    input_and_norm=_get_global_norm_clip_inputs(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_clip_by_global_norm(
+    *,
+    input_and_norm,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    (
+        t_list_dtype,
+        t_list,
+        norm_dtype,
+        norm,
+        global_norm_dtype,
+        global_norm,
+    ) = input_and_norm
+
+    input_dtypes = [t_list_dtype[0], norm_dtype[0]]
+    use_norm = None
+    if global_norm_dtype:
+        input_dtypes.append(global_norm_dtype[0])
+        use_norm = global_norm[0]
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        t_list=t_list,
+        clip_norm=norm[0],
+        use_norm=use_norm,
     )
 
 
@@ -1043,9 +1124,7 @@ def _strided_slice_helper(draw):
     masks = draw(
         st.lists(
             st.integers(min_value=0, max_value=2**ndims - 1), min_size=5, max_size=5
-        ).filter(
-            lambda x: bin(x[2])[2:].count("1") <= min(len(shape)-1, 1)
-        )
+        ).filter(lambda x: bin(x[2])[2:].count("1") <= min(len(shape) - 1, 1))
     )
     begin, end, strides = [], [], []
     for i in shape:
@@ -1060,8 +1139,8 @@ def _strided_slice_helper(draw):
         if v == 1:
             skip = draw(st.integers(min_value=0, max_value=ndims))
             begin, end, strides = map(
-                lambda x: x[:i] + x[i+skip:] if i+skip < ndims else x[:i],
-                [begin, end, strides]
+                lambda x: x[:i] + x[i + skip :] if i + skip < ndims else x[:i],
+                [begin, end, strides],
             )
             break
     return dtype, x, np.array(begin), np.array(end), np.array(strides), masks
@@ -1624,7 +1703,7 @@ def test_tensorflow_unstack(
     )
 
 
-# reverse    
+# reverse
 @st.composite
 def reverse_helper(draw):
     dtype, x, shape = draw(
@@ -1670,4 +1749,4 @@ def test_tensorflow_reverse(
         on_device=on_device,
         tensor=x[0],
         axis=axis[0],
-    )    
+    )
