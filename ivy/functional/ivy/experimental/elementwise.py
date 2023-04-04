@@ -1438,7 +1438,6 @@ def lerp(
     Returns a linear interpolation of two arrays start (given by input) and end
     based on a scalar or array weight.
         input + weight * (end - input),  element-wise.
-    <https://pytorch.org/docs/stable/generated/torch.lerp.html>
     Parameters
     ----------
     input
