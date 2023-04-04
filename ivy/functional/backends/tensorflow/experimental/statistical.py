@@ -10,16 +10,11 @@ def histogramdd(
         input: tf.Tensor,
         /,
         *,
-        bins: Optional[Union[Sequence[float],float]] = 10,
+        bins: Optional[Union[Sequence[float],float]] = [10],
         weights : Optional[Sequence[float]] = None,
         range: Optional[Sequence[float]] = None,
         density: Optional[bool] = False
 ) -> Tuple[tf.Tensor]:
-    if type(bins)==int:
-
-        bins = tf.convert_to_tensor(bins, dtype=tf.int32)
-    else:
-        bins = tf.cast(bins, dtype=input.dtype)
     return tfp.stats.histogram(
         x=input,
         edges=bins,

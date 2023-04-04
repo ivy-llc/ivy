@@ -8,6 +8,177 @@ from ivy.data_classes.container.base import ContainerBase
 
 class _ContainerWithStatisticalExperimental(ContainerBase):
     @staticmethod
+    def static_histogramdd(
+        input: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        Compute the histogramdd of the NxD array ``input``.
+        .. note::
+            Given bins = [c0, ..., cK], defining intervals I0 = [c0, c1), I1 = [c1, c2),
+            ..., I_{K-1} = [c_{K-1}, cK].
+        Parameters
+        ----------
+        input
+            input array.
+        bins
+            if ``bins`` is an int, it defines the number of equal-width bins in the given
+            range.
+            if ``bins`` is an array, it defines a monotonically increasing array of bin
+            edges, including the rightmost edge, allowing for non-uniform bin widths.
+        range
+            the lower and upper range of the bins. The first element of the range must be
+            less than or equal to the second.
+        weights
+            each value in ``input`` only contributes its associated weight towards the bin count
+            (instead of 1). Must be of the same shape as a.
+        density
+            if True, the result is the value of the probability density function at the
+            bin, normalized such that the integral over the range of bins is 1.
+        Returns
+        -------
+        ret
+            a tuple containing the values of the histogramdd and the bin edges.
+        Both the description and the type hints above assumes an array input for simplicity,
+        but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+        instances in place of any of the arguments.
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+        >>> x = ivy.array([0, 0, 1, 1,2,2,2],[1,1,1,1,2,2])
+        >>> y = ivy.array([0., 0.5, 1., 1.5, 2.])
+        >>> z = ivy.histogramdd(x, bins=y)
+        >>> print(z)
+        (ivy.array([1, 0, 1, 1]), ivy.array([0. , 0.5, 1. , 1.5, 2. ]))
+        >>> x = ivy.array([[1.1, 2.2, 3.3],
+        ...                [4.4, 5.5, .6]])
+        >>> bins = 4
+        >>> range = (0., 5.)
+        >>> dtype = ivy.int32
+        >>> y = ivy.histogramdd(x, bins=bins, range=range, dtype=dtype)
+        >>> print(y)
+        (ivy.array([0, 0, 0, 0]), ivy.array([0.   , 0.125, 0.25 , 0.375, 0.5  ]))
+        >>> x = ivy.array([[1.1, 2.2, 3.3],
+        ...                [-4.4, -5.5, -6.6]])
+        >>> y = ivy.array([0., 1., 2., 3., 4., 5.])
+        >>> weights = ivy.array([[1., 1., 1.], [1., 1., 1.]])
+        >>> z = ivy.histogramdd(
+        >>>                     x,
+        >>>                     bins=y,
+        >>>                     weights=weights)
+        >>> print(z)
+        (ivy.array([[0., 3.],
+        [1., 0.],
+        [1., 0.],
+        [1., 0.],
+        [0., 0.]]), ivy.array([0., 1., 2., 3., 4., 5.]))
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+        >>> y = ivy.array([0., 1., 2., 3., 4., 5.])
+        >>> z = ivy.histogramdd(x, bins=y, dtype=dtype)
+        >>> print(z.a)
+        >>> print(z.b)
+        (ivy.array([1, 1, 1, 0, 0]), ivy.array([0., 1., 2., 3., 4., 5.]))
+        (ivy.array([0, 0, 0, 1, 2]), ivy.array([0., 1., 2., 3., 4., 5.]))
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "histogramdd",
+            input,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences
+        )
+    
+    def histogramdd(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        Compute the histogramdd of the NxD array ``input``.
+        .. note::
+            Given bins = [c0, ..., cK], defining intervals I0 = [c0, c1), I1 = [c1, c2),
+            ..., I_{K-1} = [c_{K-1}, cK].
+        Parameters
+        ----------
+        input
+            input array.
+        bins
+            if ``bins`` is an int, it defines the number of equal-width bins in the given
+            range.
+            if ``bins`` is an array, it defines a monotonically increasing array of bin
+            edges, including the rightmost edge, allowing for non-uniform bin widths.
+        range
+            the lower and upper range of the bins. The first element of the range must be
+            less than or equal to the second.
+        weights
+            each value in ``input`` only contributes its associated weight towards the bin count
+            (instead of 1). Must be of the same shape as a.
+        density
+            if True, the result is the value of the probability density function at the
+            bin, normalized such that the integral over the range of bins is 1.
+        Returns
+        -------
+        ret
+            a tuple containing the values of the histogramdd and the bin edges.
+        Both the description and the type hints above assumes an array input for simplicity,
+        but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+        instances in place of any of the arguments.
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+        >>> x = ivy.array([0, 0, 1, 1,2,2,2],[1,1,1,1,2,2])
+        >>> y = ivy.array([0., 0.5, 1., 1.5, 2.])
+        >>> z = ivy.histogramdd(x, bins=y)
+        >>> print(z)
+        (ivy.array([1, 0, 1, 1]), ivy.array([0. , 0.5, 1. , 1.5, 2. ]))
+        >>> x = ivy.array([[1.1, 2.2, 3.3],
+        ...                [4.4, 5.5, .6]])
+        >>> bins = 4
+        >>> range = (0., 5.)
+        >>> dtype = ivy.int32
+        >>> y = ivy.histogramdd(x, bins=bins, range=range, dtype=dtype)
+        >>> print(y)
+        (ivy.array([0, 0, 0, 0]), ivy.array([0.   , 0.125, 0.25 , 0.375, 0.5  ]))
+        >>> x = ivy.array([[1.1, 2.2, 3.3],
+        ...                [-4.4, -5.5, -6.6]])
+        >>> y = ivy.array([0., 1., 2., 3., 4., 5.])
+        >>> weights = ivy.array([[1., 1., 1.], [1., 1., 1.]])
+        >>> z = ivy.histogramdd(
+        >>>                     x,
+        >>>                     bins=y,
+        >>>                     weights=weights)
+        >>> print(z)
+        (ivy.array([[0., 3.],
+        [1., 0.],
+        [1., 0.],
+        [1., 0.],
+        [0., 0.]]), ivy.array([0., 1., 2., 3., 4., 5.]))
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+        >>> y = ivy.array([0., 1., 2., 3., 4., 5.])
+        >>> z = ivy.histogramdd(x, bins=y, dtype=dtype)
+        >>> print(z.a)
+        >>> print(z.b)
+        (ivy.array([1, 1, 1, 0, 0]), ivy.array([0., 1., 2., 3., 4., 5.]))
+        (ivy.array([0, 0, 0, 1, 2]), ivy.array([0., 1., 2., 3., 4., 5.]))
+        """
+        return self.static_histogramdd(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+    @staticmethod
     def static_median(
         input: ivy.Container,
         /,

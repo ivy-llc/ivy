@@ -19,7 +19,7 @@ def histogramdd(
         input=input,
         bins=bins,
         range=range,
-        weights=weights,
+        weight=weights,
         density=density
     )
 
