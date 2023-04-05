@@ -293,3 +293,11 @@ def clip(
 
 
 clip.support_native_out = True
+
+
+def as_strided(x: np.ndarray, strides: Sequence[int]):
+    return np.lib.stride_tricks.as_strided(
+        x,
+        shape=something,
+        strides=strides,
+    )
