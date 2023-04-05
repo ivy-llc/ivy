@@ -64,19 +64,13 @@ def _get_type_dict(framework, kind):
     kind
         The kind of data type being queried. Possible values are:
             -"valid": all valid data types for the framework
-            -"numeric": all valid numeric data types for the framework
-            -"integer": all valid integer data types for the framework
-            -"float": all valid floating-point data types for the framework
-            -"unsigned": all valid unsigned integer data types for the framework
-            -"signed_integer": all valid signed integer data types for the framework
-            -"complex": all valid complex data types for the framework
-            -"real_and_complex": all valid numeric and complex data types for the framework
-            -"float_and_complex": all valid floating-point and complex data types for the framework
-            -"bool": all valid boolean data types for the framework
-
+            -numeric, integer, float, unsigned, signed_integer, complex, real_and_complex, float_and_complex, bool: 
+             for all valid numeric, integer, float, unsigned, signed_integer, complex, real_and_complex, 
+             float_and_complex, bool data types for the framework respectively.
+   
     Returns
     -------
-        dict: A dictionary of valid data types for the specified framework and kind of data type.
+        dict: A dictionary of all accepted data types for the specified framework and kind of data type.
     """
     if kind == "valid":
         return framework.valid_dtypes
@@ -383,7 +377,7 @@ def get_castable_dtype(draw, available_dtypes, dtype: str, x: Optional[list] = N
 
     def cast_filter(d):
         """
-           Filters available data type based on the maximum value of iinput
+           Filters available data type based on the maximum value of input
             array 'x' and the number of bits required to represent the data type.
         Parameters
         ----------
