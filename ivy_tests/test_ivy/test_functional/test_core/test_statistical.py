@@ -407,7 +407,7 @@ def test_cumprod(
         ]
     ),
     test_instance_method=st.just(False),
-    dtype=helpers.get_dtypes("float", full=False),
+    dtype=helpers.get_dtypes("numeric", full=False),
 )
 def test_einsum(
     *,
@@ -422,8 +422,9 @@ def test_einsum(
     eq, operands, true_shape = eq_n_op_n_shp
     kw = {}
     i = 0
+    x_dtype = np.dtype(dtype[0])
     for x_ in operands:
-        kw["x{}".format(i)] = x_
+        kw["x{}".format(i)] = x_.astype(x_dtype)
         i += 1
     # len(operands) + 1 because of the equation
     test_flags.num_positional_args = len(operands) + 1

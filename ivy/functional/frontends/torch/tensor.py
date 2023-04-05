@@ -296,6 +296,9 @@ class Tensor:
     def bitwise_or(self, other, *, out=None):
         return torch_frontend.bitwise_or(self._ivy_array, other)
 
+    def bitwise_left_shift(self, other, *, out=None):
+        return torch_frontend.bitwise_left_shift(self._ivy_array, other)
+
     @with_supported_dtypes({"1.11.0 and below": ("integer",)}, "torch")
     def bitwise_or_(self, other, *, out=None):
         self._ivy_array = self.bitwise_or(other, out=out).ivy_array
@@ -316,15 +319,20 @@ class Tensor:
 
     def to(self, *args, **kwargs):
         if len(args) > 0:
-            if isinstance(args[0], (ivy.Dtype, ivy.NativeDtype)):
-                if self.dtype == args[0]:
+            if (
+                isinstance(args[0], (ivy.Dtype, ivy.NativeDtype))
+                or args[0] in ivy._all_ivy_dtypes_str
+            ):
+                if self.dtype == ivy.as_ivy_dtype(args[0]):
                     return self
                 else:
                     cast_tensor = self.clone()
                     cast_tensor.ivy_array = ivy.asarray(self._ivy_array, dtype=args[0])
                     return cast_tensor
             if isinstance(args[0], (ivy.Device, ivy.NativeDevice, str)):
-                if isinstance(args[0], str):
+                if isinstance(args[0], str) and not isinstance(
+                    args[0], (ivy.Device, ivy.NativeDevice)
+                ):
                     ivy.utils.assertions.check_elem_in_list(
                         args[0],
                         [
@@ -346,7 +354,7 @@ class Tensor:
                             "hpu",
                         ],
                     )
-                if self.device == args[0]:
+                if self.device == ivy.as_ivy_dev(args[0]):
                     return self
                 else:
                     cast_tensor = self.clone()
@@ -461,6 +469,9 @@ class Tensor:
     def unsqueeze_(self, dim):
         self._ivy_array = self.unsqueeze(dim).ivy_array
         return self
+
+    def ravel(self):
+        return torch_frontend.ravel(self)
 
     def split(self, split_size, dim=0):
         return torch_frontend.split(self, split_size, dim)
@@ -599,6 +610,9 @@ class Tensor:
     def transpose_(self, dim0, dim1):
         self._ivy_array = self.transpose(dim0, dim1).ivy_array
         return self
+
+    def t(self):
+        return torch_frontend.t(self._ivy_array)
 
     def flatten(self, start_dim=0, end_dim=-1):
         return torch_frontend.flatten(self._ivy_array, start_dim, end_dim)
@@ -754,7 +768,7 @@ class Tensor:
     def atan2_(self, other):
         self._ivy_array = self.atan2(other).ivy_array
         return self
-    
+
     def fmin(self, other, out=None):
         return torch_frontend.fmin(self._ivy_array, other, out=out)
 
@@ -883,3 +897,10 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def cumprod(self, dim, dtype):
         return torch_frontend.cumprod(self._ivy_array, dim, dtype=dtype)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
+    def exp(self, *, out=None):
+        return torch_frontend.exp(self._ivy_array)
+
+    def mul(self, other, *, out=None):
+        return torch_frontend.mul(self._ivy_array, other)
