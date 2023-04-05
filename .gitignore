@@ -3,3 +3,4 @@
 .idea/*
 **/.ipynb_checkpoints/*
 **pem**
+**fn_path_cache**
