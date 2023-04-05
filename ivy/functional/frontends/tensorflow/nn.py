@@ -488,7 +488,7 @@ def relu6(features, name=None):
 def softmax(logits, axis=None, name=None):
     return ivy.softmax(logits, axis=axis)
 
-
+@with_unsupported_dtypes({"2.9.0 and below": "float16"}, "tensorflow")
 def leaky_relu(features, alpha, name=None):
     return ivy.leaky_relu(features, alpha=alpha)
 

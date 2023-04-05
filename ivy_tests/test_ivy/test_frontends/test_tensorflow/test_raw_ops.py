@@ -15,36 +15,6 @@ from hypothesis import given
 import hypothesis.strategies as st
 
 
-@handle_frontend_test(
-    fn_tree="tensorflow.raw_ops.LeakyRelu",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
-    ),
-    test_with_out=st.just(False),
-    alpha=helpers.floats(min_value=0, max_value=1)
-)
-def test_tensorflow_LeakyReLU(
-        *,
-        dtype_and_x,
-        alpha,
-        frontend,
-        test_flags,
-        fn_tree,
-        on_device,
-):
-    dtype, x = dtype_and_x
-    return helpers.test_frontend_function(
-        input_dtypes=dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        features=x[0],
-        alpha=alpha
-    )
-
-
 # Acos
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Acos",
@@ -3689,4 +3659,34 @@ def test_tensorflow_Prod(  # NOQA
         input=x[0],
         axis=axis,
         keep_dims=keep_dims,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.LeakyRelu",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+    ),
+    test_with_out=st.just(False),
+    alpha=helpers.floats(min_value=0, max_value=1)
+)
+def test_tensorflow_LeakyReLU(
+        *,
+        dtype_and_x,
+        alpha,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
+):
+    dtype, x = dtype_and_x
+    return helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        features=x[0],
+        alpha=alpha
     )
