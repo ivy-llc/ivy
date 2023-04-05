@@ -220,3 +220,12 @@ def iscomplexobj(x):
             return True
         else:
             return False
+
+@to_ivy_arrays_and_back
+def setxor1d(ar1, ar2, assume_unique=False):
+    if assume_unique:
+        ret = set(ar1).union(ar2)      
+    else:
+        ret = set(ar1).union(ar2)
+        ret = ret - set(ar1).intersection(ar2) 
+    return ret
