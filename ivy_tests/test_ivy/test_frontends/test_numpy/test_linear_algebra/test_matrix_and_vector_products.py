@@ -10,8 +10,9 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_second_matrix_and_dtype,
     _get_dtype_value1_value2_axis_for_tensordot,
 )
-from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_linalg import \
-    _generate_multi_dot_dtype_and_arrays
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_linalg import (
+    _generate_multi_dot_dtype_and_arrays,
+)
 
 
 # outer
@@ -199,6 +200,7 @@ def test_numpy_kron(
         a=xs[0],
         b=xs[1],
     )
+
 
 # multi_dot
 @handle_frontend_test(

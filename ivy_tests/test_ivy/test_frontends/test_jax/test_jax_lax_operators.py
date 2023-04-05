@@ -12,7 +12,10 @@ from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
     _assume_tf_dilation_gt_1,
 )
 from ivy.functional.frontends.jax.numpy import can_cast
-from ivy.functional.frontends.jax.lax.operators import _dimension_numbers, _argsort_tuple
+from ivy.functional.frontends.jax.lax.operators import (
+    _dimension_numbers,
+    _argsort_tuple,
+)
 
 
 # add
@@ -1800,17 +1803,33 @@ def x_and_filters(draw, dim=2, transpose=False, general=False):
             dim_num_st1 = st.sampled_from(["NDHWC", "NCDHW"])
             dim_num_st2 = st.sampled_from(["OIDHW", "DHWIO"])
         dim_seq = [*range(0, dim + 2)]
-        dimension_numbers = draw(st.sampled_from([
-            None,
-            (draw(dim_num_st1), draw(dim_num_st2), draw(dim_num_st1)),
-            ConvDimensionNumbers(*map(tuple, draw(
-                st.lists(st.permutations(dim_seq), min_size=3, max_size=3)))),
-        ]))
+        dimension_numbers = draw(
+            st.sampled_from(
+                [
+                    None,
+                    (draw(dim_num_st1), draw(dim_num_st2), draw(dim_num_st1)),
+                    ConvDimensionNumbers(
+                        *map(
+                            tuple,
+                            draw(
+                                st.lists(
+                                    st.permutations(dim_seq), min_size=3, max_size=3
+                                )
+                            ),
+                        )
+                    ),
+                ]
+            )
+        )
     else:
-        dimension_numbers = ("NCH", "OIH", "NCH") if dim == 1 \
-            else ("NCHW", "OIHW", "NCHW") if dim == 2 \
+        dimension_numbers = (
+            ("NCH", "OIH", "NCH")
+            if dim == 1
+            else ("NCHW", "OIHW", "NCHW")
+            if dim == 2
             else ("NCDHW", "OIDHW", "NCDHW")
-    dim_nums = _dimension_numbers(dimension_numbers, dim+2, as_jax=True)
+        )
+    dim_nums = _dimension_numbers(dimension_numbers, dim + 2, as_jax=True)
     if not transpose:
         output_channels = output_channels * fc
         channel_shape = (output_channels, input_channels // fc)

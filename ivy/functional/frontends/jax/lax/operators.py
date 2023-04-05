@@ -99,7 +99,7 @@ def conv(
         lhs = ivy.astype(lhs, preferred_element_type)
         rhs = ivy.astype(rhs, preferred_element_type)
     dims = len(lhs.shape) - 2
-    rhs = ivy.permute_dims(rhs, axes=(*range(2, dims+2), 1, 0))
+    rhs = ivy.permute_dims(rhs, axes=(*range(2, dims + 2), 1, 0))
     return ivy.conv_general_dilated(
         lhs,
         rhs,
@@ -118,11 +118,13 @@ def _dimension_numbers(dimension_numbers, lhs_len, as_jax=False):
         lhs_spec, rhs_spec, out_spec = dimension_numbers
     else:
         lhs_spec, rhs_spec, out_spec = dimension_numbers
+
         def getperm(spec, charpair):
             spatial = (i for i, c in enumerate(spec) if c not in charpair)
             if spec is not rhs_spec:
                 spatial = sorted(spatial, key=lambda i: rhs_spec.index(spec[i]))
             return (spec.index(charpair[0]), spec.index(charpair[1])) + tuple(spatial)
+
         charpairs = ("N", "C"), ("O", "I"), ("N", "C")
         lhs_spec, rhs_spec, out_spec = map(getperm, dimension_numbers, charpairs)
     if not as_jax:
@@ -167,7 +169,7 @@ def conv_transpose(
         lhs = ivy.astype(lhs, preferred_element_type)
         rhs = ivy.astype(rhs, preferred_element_type)
     dims = len(lhs.shape) - 2
-    dim_nums = _dimension_numbers(dimension_numbers, dims+2)
+    dim_nums = _dimension_numbers(dimension_numbers, dims + 2)
     k_sdims = [rhs.shape[i] for i in dim_nums[1][2:]]
     rhs_dilation = 1 if rhs_dilation is None else rhs_dilation
     if isinstance(padding, str) and padding in {"SAME", "VALID"}:
@@ -210,7 +212,7 @@ def conv_general_dilated(
         lhs = ivy.astype(lhs, preferred_element_type)
         rhs = ivy.astype(rhs, preferred_element_type)
     dims = len(lhs.shape) - 2
-    dim_nums = _dimension_numbers(dimension_numbers, dims+2)
+    dim_nums = _dimension_numbers(dimension_numbers, dims + 2)
     return ivy.permute_dims(
         ivy.conv_general_dilated(
             ivy.permute_dims(lhs, axes=dim_nums[0]),
