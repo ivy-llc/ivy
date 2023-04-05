@@ -17,9 +17,26 @@ website:
     collapse-level: 1
     contents:
       - quickstart.ipynb
-      - auto: "*learn_the_basics/"
-      - auto: "*guides/"
-      - auto: "*examples_and_demos/"
+      - section: "Learn the Basics"
+        contents:
+          - "learn_the_basics/01_write_ivy_code.ipynb"
+          - "learn_the_basics/02_unify_code.ipynb"
+          - "learn_the_basics/03_compile_code.ipynb"
+          - "learn_the_basics/04_transpile_code.ipynb"
+          - "learn_the_basics/05_lazy_vs_eager.ipynb"
+          - "learn_the_basics/06_how_to_use_decorators.ipynb"
+          - "learn_the_basics/07_transpile_any_library.ipynb"
+          - "learn_the_basics/08_transpile_any_model.ipynb"
+          - "learn_the_basics/09_write_a_model_using_ivy.ipynb"
+      - section: "Guides"
+        contents:
+          - "guides/01_transpiling_a_torch_model.ipynb"
+          - "guides/02_transpiling_a_haiku_model.ipynb"
+          - "guides/03_transpiling_a_tf_model.ipynb"
+          - "guides/04_developing_a_convnet_with_ivy.ipynb"
+      - section: "Examples and Demos"
+          
+
 
 format:
   html:
