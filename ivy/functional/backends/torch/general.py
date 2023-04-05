@@ -594,9 +594,33 @@ def vmap(
     in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
     out_axes: int = 0,
 ) -> Callable:
+    @ivy.output_to_native_arrays
+    @ivy.inputs_to_native_arrays
     def _vmap(*args):
         new_fun = lambda *args: ivy.to_native(func(*args))
         new_func = functorch.vmap(new_fun, in_axes, out_axes)
-        return ivy.to_ivy(new_func(*args))
+        return new_func(*args)
 
     return _vmap
+
+
+@with_unsupported_dtypes(
+    {"1.11.0 and below": ("bfloat16", "float16", "complex", "bool")}, backend_version
+)
+def isin(
+    elements: torch.tensor,
+    test_elements: torch.tensor,
+    /,
+    *,
+    assume_unique: bool = False,
+    invert: bool = False,
+) -> torch.tensor:
+    return torch.isin(
+        elements,
+        test_elements,
+        assume_unique=assume_unique,
+        invert=invert,
+    )
+
+
+isin.support_native_out = True

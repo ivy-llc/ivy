@@ -118,6 +118,8 @@ def pinv(a, rcond=None, validate_args=False, name=None):
 )
 def tensordot(a, b, axes, name=None):
     a, b = check_tensorflow_casting(a, b)
+    if not ivy.isscalar(axes):
+        axes = ivy.to_list(axes)
     return ivy.tensordot(a, b, axes=axes)
 
 
