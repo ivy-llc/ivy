@@ -29,6 +29,7 @@ def thresholded_relu(
     threshold: Optional[Union[int, float]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    x, threshold = ivy.promote_types_of_inputs(x, threshold)
     return torch.threshold(x, threshold=threshold, value=0)
 
 

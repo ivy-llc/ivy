@@ -45,6 +45,7 @@ def thresholded_relu(
     threshold: Union[int, float] = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    x, threshold = ivy.promote_types_of_inputs(x, threshold)
     return jnp.where(x > threshold, x, 0).astype(x.dtype)
 
 
