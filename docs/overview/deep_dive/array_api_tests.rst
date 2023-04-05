@@ -12,7 +12,7 @@ Array API Tests
 .. _`test_array_api.sh`: https://github.com/unifyai/ivy/blob/d76f0f5ab02d608864eb2c4012af2404da5806c2/test_array_api.sh
 .. _`array-api test repository`: https://github.com/data-apis/array-api/tree/main
 .. _`issue`: https://github.com/numpy/numpy/issues/21213
-.. _`ivy_tests/test_array_api/array_api_tests/test_special_cases.py`: https://github.com/data-apis/array-api-tests/blob/ddd3b7a278cd0c0b68c0e4666b2c9f4e67b7b284/array_api_tests/test_special_cases.py
+.. _`ivy_tests/array_api_testing/test_array_api/array_api_tests/test_special_cases.py`: https://github.com/data-apis/array-api-tests/blob/ddd3b7a278cd0c0b68c0e4666b2c9f4e67b7b284/array_api_tests/test_special_cases.py
 .. _`here`: https://lets-unify.ai/docs/ivy/contributing/setting_up.html#setting-up-testing
 .. _`git website`: https://www.git-scm.com/book/en/v2/Git-Tools-Submodules
 .. _`hypothesis`: https://hypothesis.readthedocs.io/en/latest/
@@ -64,7 +64,7 @@ Using the terminal, you can run all array-api tests in a given file for a certai
         # /ivy
         /bin/bash -e ./run_tests_CLI/test_array_api.sh jax test_linalg
 
-You can change the argument with any of our supported frameworks - tensorflow, numpy, torch or jax - and the individual test function categories in :code:`ivy/ivy_tests/test_array_api/array_api_tests`, e.g. *test_set_functions*, *test_signatures* etc.
+You can change the argument with any of our supported frameworks - tensorflow, numpy, torch or jax - and the individual test function categories in :code:`ivy/ivy_tests/array_api_testing/test_array_api/array_api_tests`, e.g. *test_set_functions*, *test_signatures* etc.
 
 You can also run a specific test, as often running *all* tests in a file is excessive.
 To make this work, you should set the backend explicitly in the `_array_module.py` file, which you can find in the `array_api_tests` submodule.
@@ -81,10 +81,10 @@ You should now be able to run the following commands via terminal:
 .. code-block:: none
 
         # run all tests in a file
-        pytest -vv ivy_tests/test_array_api/array_api_tests/test_manipulation_functions.py
+        pytest -vv ivy_tests/array_api_testing/test_array_api/array_api_tests/test_manipulation_functions.py
 
         # run a single test
-        pytest -vv ivy_tests/test_array_api/array_api_tests/test_manipulation_functions.py -k "test_concat"
+        pytest -vv ivy_tests/array_api_testing/test_array_api/array_api_tests/test_manipulation_functions.py -k "test_concat"
 
 Using the IDE
 *************
@@ -107,13 +107,13 @@ Fortunately, it is possible to regenerate test failures using a unique decorator
 
     =================================== FAILURES ===================================
     ______________________ test_remainder[remainder(x1, x2)] _______________________
-    ivy_tests/test_array_api/array_api_tests/test_operators_and_elementwise_functions.py:1264: in test_remainder
+    ivy_tests/array_api_testing/test_array_api/array_api_tests/test_operators_and_elementwise_functions.py:1264: in test_remainder
         @given(data=st.data())
-    ivy_tests/test_array_api/array_api_tests/test_operators_and_elementwise_functions.py:1277: in test_remainder
+    ivy_tests/array_api_testing/test_array_api/array_api_tests/test_operators_and_elementwise_functions.py:1277: in test_remainder
         binary_param_assert_against_refimpl(ctx, left, right, res, "%", operator.mod)
-    ivy_tests/test_array_api/array_api_tests/test_operators_and_elementwise_functions.py:620: in binary_param_assert_against_refimpl
+    ivy_tests/array_api_testing/test_array_api/array_api_tests/test_operators_and_elementwise_functions.py:620: in binary_param_assert_against_refimpl
         binary_assert_against_refimpl(
-    ivy_tests/test_array_api/array_api_tests/test_operators_and_elementwise_functions.py:324: in binary_assert_against_refimpl
+    ivy_tests/array_api_testing/test_array_api/array_api_tests/test_operators_and_elementwise_functions.py:324: in binary_assert_against_refimpl
         assert isclose(scalar_o, expected), (
     E   AssertionError: out=-2.0, but should be roughly (x1 % x2)=1.0 [remainder()]
     E     x1=17304064.0, x2=3.0
@@ -183,12 +183,12 @@ This is done by identifying any references to a backend in the commented-out lin
 
 The latter method, on the other hand, skips a test on *all* backends, even if it is just failing on one.
 The :code:`ivy_tests/skips.txt` scheme was implemented to skip *specific test cases*.
-The array-api test suite contains a set of special tests which aim to cover edge-case input and particular data type promotion rules (see :code:`ivy_tests/test_array_api/array_api_tests/test_special_cases.py`).
+The array-api test suite contains a set of special tests which aim to cover edge-case input and particular data type promotion rules (see :code:`ivy_tests/array_api_testing/test_array_api/array_api_tests/test_special_cases.py`).
 In :code:`ivy_tests/skips.txt`, tests are skipped by writing the filepath + conditions on the input of the test e.g.,
 
 .. code-block:: bash
 
-    ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_iop[__ipow__(x1_i is -infinity and x2_i > 0 and not (x2_i.is_integer() and x2_i % 2 == 1)) -> +infinity]
+    ivy_tests/array_api_testing/test_array_api/array_api_tests/test_special_cases.py::test_iop[__ipow__(x1_i is -infinity and x2_i > 0 and not (x2_i.is_integer() and x2_i % 2 == 1)) -> +infinity]
 
 is skipping the in-place operations test on the :code:`pow` instance method when x1 is -infinity and x2 is a positive, odd float.
 The result should be +infinity, however there is a known problem with the numpy instance method and an `issue`_ has been raised on the numpy repository.

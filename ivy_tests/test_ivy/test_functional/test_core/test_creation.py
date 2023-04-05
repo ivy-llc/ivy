@@ -397,7 +397,6 @@ def test_eye(
         max_dim_size=5,
     ),
     container_flags=st.just([False]),
-    as_variable_flags=st.just([False]),  # can't convert variables
     test_gradients=st.just(False),
 )
 def test_from_dlpack(

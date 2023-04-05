@@ -57,9 +57,9 @@ def kron(a, b):
     a, b = promote_types_of_numpy_inputs(a, b)
     return ivy.kron(a, b)
 
+
 @with_unsupported_dtypes({"2.0.0 and below": ("float16",)}, "torch")
 @handle_numpy_out
 @to_ivy_arrays_and_back
 def multi_dot(arrays, *, out=None):
     return ivy.multi_dot(arrays, out=out)
-
