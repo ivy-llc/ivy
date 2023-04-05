@@ -22,6 +22,7 @@ from ivy_tests.test_ivy.helpers.test_parameter_flags import (
     BuiltWithOutStrategy,
     BuiltInplaceStrategy,
     BuiltCompileStrategy,
+    BuiltFrontendArrayStrategy,
 )
 from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
 from ivy_tests.test_ivy.helpers.available_frameworks import (
@@ -387,6 +388,7 @@ def handle_frontend_test(
     test_inplace=BuiltInplaceStrategy,
     as_variable_flags=BuiltAsVariableStrategy,
     native_array_flags=BuiltNativeArrayStrategy,
+    generate_frontend_arrays=BuiltFrontendArrayStrategy,
     **_given_kwargs,
 ):
     """
@@ -417,6 +419,10 @@ def handle_frontend_test(
     native_array_flags
         A search strategy that generates a list of boolean flags for array inputs to be
         passed as a native array
+
+    generate_frontend_arrays
+        A search strategy that generates a list of boolean flags for array inputs to
+        be frontend array
     """
     fn_tree = "ivy.functional.frontends." + fn_tree
     if aliases is not None:
@@ -435,6 +441,7 @@ def handle_frontend_test(
             inplace=test_inplace,
             as_variable=as_variable_flags,
             native_arrays=native_array_flags,
+            generate_frontend_arrays=generate_frontend_arrays,
         )
 
     def test_wrapper(test_fn):
@@ -456,7 +463,15 @@ def handle_frontend_test(
                 # extend Hypothesis given kwargs with our strategies
                 _given_kwargs[key] = possible_arguments[key]
             # Wrap the test with the @given decorator
-            wrapped_test = given(**_given_kwargs)(test_fn)
+            hypothesis_test_fn = given(**_given_kwargs)(test_fn)
+
+            @functools.wraps(hypothesis_test_fn)
+            def wrapped_test(*args, **kwargs):
+                try:
+                    hypothesis_test_fn(*args, **kwargs)
+                except ivy.utils.exceptions.IvyNotImplementedException:
+                    pytest.skip("Function not implemented in backend.")
+
         else:
             wrapped_test = test_fn
 
@@ -688,7 +703,16 @@ def handle_frontend_method(
             for key in filtered_args:
                 # extend Hypothesis given kwargs with our strategies
                 _given_kwargs[key] = possible_arguments[key]
-            wrapped_test = given(**_given_kwargs)(test_fn)
+
+            hypothesis_test_fn = given(**_given_kwargs)(test_fn)
+
+            @functools.wraps(hypothesis_test_fn)
+            def wrapped_test(*args, **kwargs):
+                try:
+                    hypothesis_test_fn(*args, **kwargs)
+                except ivy.utils.exceptions.IvyNotImplementedException:
+                    pytest.skip("Function not implemented in backend.")
+
         else:
             wrapped_test = test_fn
 

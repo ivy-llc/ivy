@@ -27,12 +27,7 @@ def _broadcast_pooling_helper(x, pool_dims: str = "2d", name: str = "padding"):
 
 @to_ivy_arrays_and_back
 def avg_pool1d(
-    input,
-    kernel_size,
-    stride=None,
-    padding=0,
-    ceil_mode=False,
-    count_include_pad=True
+    input, kernel_size, stride=None, padding=0, ceil_mode=False, count_include_pad=True
 ):
     kernel_size = _broadcast_pooling_helper(kernel_size, "1d", name="kernel_size")
     stride = _broadcast_pooling_helper(stride, "1d", name="stride")
@@ -53,12 +48,9 @@ def avg_pool1d(
         padding_str = "VALID"
 
     return ivy.avg_pool1d(
-        input,
-        kernel_size,
-        stride,
-        padding_str,
-        data_format=data_format)
-    
+        input, kernel_size, stride, padding_str, data_format=data_format
+    )
+
 
 @to_ivy_arrays_and_back
 def avg_pool2d(

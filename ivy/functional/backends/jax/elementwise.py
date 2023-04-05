@@ -6,6 +6,7 @@ import jax.numpy as jnp
 
 # local
 import ivy
+from ivy import promote_types_of_inputs
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
 from . import backend_version
@@ -36,9 +37,8 @@ def add(
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if alpha not in (1, None):
-        ivy.set_array_mode(False)
-        x2 = multiply(x2, alpha)
-        ivy.unset_array_mode()
+        with ivy.ArrayMode(False):
+            x2 = multiply(x2, alpha)
     return jnp.add(x1, x2)
 
 
@@ -379,11 +379,18 @@ def remainder(
     return jnp.remainder(x1, x2)
 
 
-def round(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def round(
+    x: JaxArray, /, *, decimals: int = 0, out: Optional[JaxArray] = None
+) -> JaxArray:
     if "int" in str(x.dtype):
         return x
     else:
-        return jnp.round(x)
+        if decimals == 0:
+            return jnp.round(x)
+        ret_dtype = x.dtype
+        factor = jnp.power(10, decimals).astype(ret_dtype)
+        factor_denom = jnp.where(jnp.isinf(factor), 1.0, factor)
+        return jnp.round(x * factor) / factor_denom
 
 
 def sign(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
@@ -491,3 +498,27 @@ def rad2deg(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 def isreal(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.isreal(x)
+
+
+@with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
+def fmod(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    return jnp.fmod(x1, x2)
+
+
+@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
+def isin(
+    elements: JaxArray,
+    test_elements: JaxArray,
+    /,
+    *,
+    assume_unique: bool = False,
+    invert: bool = False,
+) -> JaxArray:
+    return jnp.isin(elements, test_elements, assume_unique=assume_unique, invert=invert)

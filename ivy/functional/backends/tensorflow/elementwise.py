@@ -5,6 +5,7 @@ import tensorflow as tf
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
+from ivy import promote_types_of_inputs
 from . import backend_version
 
 
@@ -50,9 +51,8 @@ def add(
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if alpha not in (1, None):
-        ivy.set_array_mode(False)
-        x2 = multiply(x2, alpha)
-        ivy.unset_array_mode()
+        with ivy.ArrayMode(False):
+            x2 = multiply(x2, alpha)
     return tf.add(x1, x2)
 
 
@@ -566,12 +566,20 @@ def round(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    decimals: int = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if "int" in str(x.dtype):
         return x
     else:
-        return tf.round(x)
+        if decimals == 0:
+            return tf.cast(tf.round(x), x.dtype)
+        ret_dtype = x.dtype
+        factor = tf.constant(10**decimals, dtype=ret_dtype)
+        factor_deno = tf.where(
+            tf.math.is_finite(factor), factor, tf.constant(1, dtype=ret_dtype)
+        )
+        return tf.cast(tf.round(x * factor) / factor_deno, ret_dtype)
 
 
 def sign(
@@ -800,3 +808,18 @@ def isreal(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.isreal(x)
+
+
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("unsigned", "complex", "bool")}, backend_version
+)
+def fmod(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    res = tf.experimental.numpy.remainder(tf.math.abs(x1), tf.math.abs(x2))
+    return tf.where(x1 < 0, -res, res)
