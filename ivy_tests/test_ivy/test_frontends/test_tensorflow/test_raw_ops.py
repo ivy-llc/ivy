@@ -11,9 +11,6 @@ import math
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
-from hypothesis import given
-import hypothesis.strategies as st
-
 
 # Acos
 @handle_frontend_test(

@@ -774,7 +774,7 @@ LeakyRelu.supported_dtypes = {
     ),
 }
 
+
 @to_ivy_arrays_and_back
 def Prod(*, input, axis, keep_dims=False, name="Prod"):
     return ivy.astype(ivy.prod(input, axis=axis, keepdims=keep_dims), input.dtype)
-

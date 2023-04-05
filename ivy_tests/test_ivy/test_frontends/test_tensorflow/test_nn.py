@@ -16,7 +16,7 @@ from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
 
 
 @handle_frontend_test(
-    fn_tree="tensorflow.raw_ops.LeakyRelu",
+    fn_tree="tensorflow.nn.leaky_relu",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
@@ -24,7 +24,7 @@ from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
     test_with_out=st.just(False),
     alpha=helpers.floats(min_value=0, max_value=1)
 )
-def test_tensorflow_LeakyReLU(  # NOQA
+def test_tensorflow_leaky_relu(
         *,
         dtype_and_x,
         alpha,
@@ -1337,5 +1337,3 @@ def test_tensorflow_crelu(
         features=x[0],
         axis=axis,
     )
-
-
