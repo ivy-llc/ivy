@@ -568,9 +568,9 @@ def vmap(
     in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
     out_axes: int = 0,
 ) -> Callable:
-    @ivy.to_native_arrays_and_back
+    @ivy.output_to_native_arrays
+    @ivy.inputs_to_native_arrays
     def _vmap(*args, **kwargs):
-
         # convert args tuple to list to allow mutability using moveaxis ahead.
         args = list(args)
 
@@ -645,3 +645,30 @@ def vmap(
         return res
 
     return _vmap
+
+
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
+def isin(
+    elements: tf.Tensor,
+    test_elements: tf.Tensor,
+    /,
+    *,
+    assume_unique: bool = False,
+    invert: bool = False,
+) -> tf.Tensor:
+    input_shape = elements.shape
+
+    if tf.rank(elements) == 0:
+        elements = tf.reshape(elements, [1])
+    if tf.rank(test_elements) == 0:
+        test_elements = tf.reshape(test_elements, [1])
+    if not assume_unique:
+        test_elements = tf.unique(tf.reshape(test_elements, [-1]))[0]
+
+    elements = tf.reshape(elements, [-1])
+    test_elements = tf.reshape(test_elements, [-1])
+
+    output = tf.reduce_any(
+        tf.equal(tf.expand_dims(elements, -1), test_elements), axis=-1
+    )
+    return tf.reshape(output, input_shape) ^ invert

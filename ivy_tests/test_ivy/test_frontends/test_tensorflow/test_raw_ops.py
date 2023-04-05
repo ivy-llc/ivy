@@ -3599,33 +3599,3 @@ def test_tensorflow_BatchMatMulV3(
         adj_x=adj_x,
         adj_y=adj_y,
     )
-
-
-@handle_frontend_test(
-    fn_tree="tensorflow.raw_ops.Zeta",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=["float32", "float64"],
-        min_num_dims=1,
-        num_arrays=2,
-        shared_dtype=True,
-    ),
-    test_with_out=st.just(False),
-)
-def test_tensorflow_Zeta(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-        q=x[1],
-    )

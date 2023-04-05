@@ -35,7 +35,7 @@ def add(
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     if x1.dtype in [paddle.int8, paddle.uint8, paddle.float16, paddle.bool]:
-        x1, x2 = x1.cast(ivy.default_float_dtype()), x2.cast(ivy.default_float_dtype())
+        x1, x2 = x1.cast("float32"), x2.cast("float32")
     if alpha not in (1, None):
         x2 = ivy.to_native(multiply(x2, alpha))
         x1, x2 = ivy.promote_types_of_inputs(x1, x2)
@@ -142,9 +142,7 @@ def less_equal(
                 real = paddle.less_equal(x1.real(), x2.real())
                 imag = paddle.less_equal(x1.imag(), x2.imag())
                 return logical_and(real, imag)
-        return paddle.less_equal(
-            x1.cast(ivy.default_float_dtype()), x2.cast(ivy.default_float_dtype())
-        )
+        return paddle.less_equal(x1.cast("float32"), x2.cast("float32"))
 
     return paddle.less_equal(x1, x2)
 
@@ -177,7 +175,7 @@ def ceil(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     ]:
         if paddle.is_complex(x):
             return paddle.ceil(x.real()) + paddle.ceil(x.imag()) * 1j
-        return paddle.ceil(x.cast(ivy.default_float_dtype())).cast(x.dtype)
+        return paddle.ceil(x.cast("float32")).cast(x.dtype)
     return paddle.ceil(x)
 
 
@@ -198,7 +196,7 @@ def floor(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
     ]:
         if paddle.is_complex(x):
             return paddle.floor(x.real()) + paddle.ceil(x.imag()) * 1j
-        return paddle.floor(x.cast(ivy.default_float_dtype())).cast(x.dtype)
+        return paddle.floor(x.cast("float32")).cast(x.dtype)
     return paddle.floor(x)
 
 
@@ -220,7 +218,7 @@ def asin(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
         paddle.float16,
     ]:
         ret_dtype = x.dtype
-        return paddle.asin(x.cast(ivy.default_float_dtype())).cast(ret_dtype)
+        return paddle.asin(x.cast("float32")).cast(ret_dtype)
     return paddle.asin(x)
 
 
@@ -242,7 +240,7 @@ def asinh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
         paddle.float16,
     ]:
         ret_dtype = x.dtype
-        return paddle.asinh(x.cast(ivy.default_float_dtype())).cast(ret_dtype)
+        return paddle.asinh(x.cast("float32")).cast(ret_dtype)
     return paddle.asinh(x)
 
 
@@ -259,7 +257,7 @@ def sign(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
         paddle.float16,
         paddle.bool,
     ]:
-        return paddle.sgn(x.cast(ivy.default_float_dtype())).cast(x.dtype)
+        return paddle.sgn(x.cast("float32")).cast(x.dtype)
     return paddle.sgn(x)
 
 
@@ -284,7 +282,7 @@ def sqrt(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
                 _complex_modulus(x)
             )
             return result
-        return paddle.sqrt(x.cast(ivy.default_float_dtype())).cast(x.dtype)
+        return paddle.sqrt(x.cast("float32")).cast(x.dtype)
     return paddle.sqrt(x)
 
 
@@ -306,7 +304,7 @@ def cosh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
         paddle.float16,
     ]:
         ret_dtype = x.dtype
-        return paddle.cosh(x.cast(ivy.default_float_dtype())).cast(ret_dtype)
+        return paddle.cosh(x.cast("float32")).cast(ret_dtype)
     return paddle.cosh(x)
 
 
@@ -343,7 +341,7 @@ def log1p(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
     ]:
         if paddle.is_complex(x):
             return paddle.log1p(_complex_modulus(x)) + 1j * paddle.angle(x + 1)
-        return paddle.log1p(x.cast(ivy.default_float_dtype())).cast(x.dtype)
+        return paddle.log1p(x.cast("float32")).cast(x.dtype)
     return paddle.log1p(x)
 
 
@@ -367,9 +365,7 @@ def less(
             real = paddle.less_than(x1.real(), x2.real())
             imag = paddle.less_than(x1.imag(), x2.imag())
             return logical_and(real, imag)
-        return paddle.less_than(
-            x1.cast(ivy.default_float_dtype()), x2.cast(ivy.default_float_dtype())
-        )
+        return paddle.less_than(x1.cast("float32"), x2.cast("float32"))
 
     return paddle.less_than(x1, x2)
 
@@ -386,7 +382,7 @@ def multiply(
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     if x1.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
-        x1, x2 = x1.cast(ivy.default_float_dtype()), x2.cast(ivy.default_float_dtype())
+        x1, x2 = x1.cast("float32"), x2.cast("float32")
     return paddle.multiply(x1, x2).cast(ret_dtype)
 
 
@@ -408,7 +404,7 @@ def cos(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
         paddle.float16,
     ]:
         ret_dtype = x.dtype
-        return paddle.cos(x.cast(ivy.default_float_dtype())).cast(ret_dtype)
+        return paddle.cos(x.cast("float32")).cast(ret_dtype)
     return paddle.cos(x)
 
 
@@ -430,7 +426,7 @@ def divide(
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     if x1.dtype in [paddle.float16]:
-        x1, x2 = x1.cast(ivy.default_float_dtype()), x2.cast(ivy.default_float_dtype())
+        x1, x2 = x1.cast("float32"), x2.cast("float32")
     if not (ivy.is_float_dtype(ret_dtype) or ivy.is_complex_dtype(ret_dtype)):
         ret_dtype = ivy.default_float_dtype(as_native=True)
     return (x1 / x2).cast(ret_dtype)
@@ -453,9 +449,7 @@ def greater(
                 real = paddle.greater_than(x1.real(), x2.real())
                 imag = paddle.greater_than(x1.imag(), x2.imag())
                 return logical_and(real, imag)
-        return paddle.greater_than(
-            x1.cast(ivy.default_float_dtype()), x2.cast(ivy.default_float_dtype())
-        )
+        return paddle.greater_than(x1.cast("float32"), x2.cast("float32"))
 
     return paddle.greater_than(x1, x2)
 
@@ -477,9 +471,7 @@ def greater_equal(
                 real = paddle.greater_equal(x1.real(), x2.real())
                 imag = paddle.greater_equal(x1.imag(), x2.imag())
                 return logical_and(real, imag)
-        return paddle.greater_equal(
-            x1.cast(ivy.default_float_dtype()), x2.cast(ivy.default_float_dtype())
-        )
+        return paddle.greater_equal(x1.cast("float32"), x2.cast("float32"))
 
     return paddle.greater_equal(x1, x2)
 
@@ -502,7 +494,7 @@ def acos(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
         paddle.float16,
     ]:
         ret_dtype = x.dtype
-        return paddle.acos(x.cast(ivy.default_float_dtype())).cast(ret_dtype)
+        return paddle.acos(x.cast("float32")).cast(ret_dtype)
     return paddle.acos(x)
 
 
@@ -545,7 +537,7 @@ def acosh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
         paddle.float16,
     ]:
         ret_dtype = x.dtype
-        return paddle.acosh(x.cast(ivy.default_float_dtype())).cast(ret_dtype)
+        return paddle.acosh(x.cast("float32")).cast(ret_dtype)
     return paddle.acosh(x)
 
 
@@ -567,7 +559,7 @@ def sin(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
         paddle.float16,
     ]:
         ret_dtype = x.dtype
-        return paddle.sin(x.cast(ivy.default_float_dtype())).cast(ret_dtype)
+        return paddle.sin(x.cast("float32")).cast(ret_dtype)
     return paddle.sin(x)
 
 
@@ -614,7 +606,7 @@ def tanh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
         paddle.float16,
     ]:
         ret_dtype = x.dtype
-        return paddle.tanh(x.cast(ivy.default_float_dtype())).cast(ret_dtype)
+        return paddle.tanh(x.cast("float32")).cast(ret_dtype)
     return paddle.tanh(x)
 
 
@@ -666,7 +658,7 @@ def sinh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
         paddle.float16,
     ]:
         ret_dtype = x.dtype
-        return paddle.sinh(x.cast(ivy.default_float_dtype())).cast(ret_dtype)
+        return paddle.sinh(x.cast("float32")).cast(ret_dtype)
     return paddle.sinh(x)
 
 
@@ -743,7 +735,7 @@ def round(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
     if x.dtype not in [paddle.float32, paddle.float64]:
         if paddle.is_complex(x):
             return _np_round(x.real()) + _np_round(x.imag()) * 1j
-        return _np_round(x.cast(ivy.default_float_dtype())).cast(x.dtype)
+        return _np_round(x.cast("float32")).cast(x.dtype)
     return _np_round(x)
 
 
@@ -762,7 +754,7 @@ def trunc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
     ]:
         if paddle.is_complex(x):
             return paddle.trunc(x.real()) + 1j * paddle.trunc(x.imag())
-        return paddle.trunc(x.cast(ivy.default_float_dtype())).cast(x.dtype)
+        return paddle.trunc(x.cast("float32")).cast(x.dtype)
     return paddle.trunc(x)
 
 
@@ -779,7 +771,7 @@ def abs(
         paddle.float16,
         paddle.bool,
     ]:
-        return paddle.abs(x.cast(ivy.default_float_dtype())).cast(x.dtype)
+        return paddle.abs(x.cast("float32")).cast(x.dtype)
     return paddle.abs(x)
 
 
@@ -811,7 +803,7 @@ def tan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
         paddle.float16,
     ]:
         ret_dtype = x.dtype
-        return paddle.tan(x.cast(ivy.default_float_dtype())).cast(ret_dtype)
+        return paddle.tan(x.cast("float32")).cast(ret_dtype)
     return paddle.tan(x)
 
 
@@ -833,7 +825,7 @@ def atan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
         paddle.float16,
     ]:
         ret_dtype = x.dtype
-        return paddle.atan(x.cast(ivy.default_float_dtype())).cast(ret_dtype)
+        return paddle.atan(x.cast("float32")).cast(ret_dtype)
     return paddle.atan(x)
 
 
@@ -850,7 +842,7 @@ def atan2(
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     if x1.dtype in [paddle.int8, paddle.int16, paddle.uint8]:
-        x1, x2 = x1.cast(ivy.default_float_dtype()), x2.cast(ivy.default_float_dtype())
+        x1, x2 = x1.cast("float32"), x2.cast("float32")
     return paddle.atan2(x1, x2).cast(ret_dtype)
 
 
@@ -868,7 +860,7 @@ def log(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
     ]:
         if paddle.is_complex(x):
             return paddle.log(_complex_modulus(x)) + 1j * paddle.angle(x)
-        return paddle.log(x.cast(ivy.default_float_dtype())).cast(x.dtype)
+        return paddle.log(x.cast("float32")).cast(x.dtype)
     return paddle.log(x)
 
 
@@ -889,7 +881,7 @@ def subtract(
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     if x1.dtype in [paddle.int8, paddle.uint8, paddle.float16, paddle.bool]:
-        x1, x2 = x1.cast(ivy.default_float_dtype()), x2.cast(ivy.default_float_dtype())
+        x1, x2 = x1.cast("float32"), x2.cast("float32")
     if alpha not in (1, None):
         x2 = ivy.to_native(multiply(x2, alpha))
         x1, x2 = ivy.promote_types_of_inputs(x1, x2)
@@ -920,7 +912,7 @@ def remainder(
         return round(multiply(diff, x2)).cast(x1.dtype)
 
     if x1.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
-        x1, x2 = x1.cast(ivy.default_float_dtype()), x2.cast(ivy.default_float_dtype())
+        x1, x2 = x1.cast("float32"), x2.cast("float32")
     return paddle.remainder(x1, x2).cast(ret_dtype)
 
 
@@ -942,7 +934,7 @@ def atanh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
         paddle.float16,
     ]:
         ret_dtype = x.dtype
-        return paddle.atanh(x.cast(ivy.default_float_dtype())).cast(ret_dtype)
+        return paddle.atanh(x.cast("float32")).cast(ret_dtype)
     return paddle.atanh(x)
 
 
@@ -983,7 +975,7 @@ def bitwise_left_shift(
 def erf(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     # TODO: add support for complex x, supported in scipy only atm
     if x.dtype in [paddle.int8, paddle.int16, paddle.int32, paddle.int64, paddle.uint8]:
-        return paddle.erf(x.cast(ivy.default_float_dtype())).cast(x.dtype)
+        return paddle.erf(x.cast("float32")).cast(x.dtype)
     return paddle.erf(x)
 
 
@@ -1011,9 +1003,7 @@ def minimum(
         if paddle.is_complex(x1):
             use_where = True
         else:
-            x1, x2 = x1.cast(ivy.default_float_dtype()), x2.cast(
-                ivy.default_float_dtype()
-            )
+            x1, x2 = x1.cast("float32"), x2.cast("float32")
 
     if use_where:
         return ivy.where(less_equal(x1, x2), x1, x2).cast(ret_dtype)
@@ -1045,9 +1035,7 @@ def maximum(
         if paddle.is_complex(x1):
             use_where = True
         else:
-            x1, x2 = x1.cast(ivy.default_float_dtype()), x2.cast(
-                ivy.default_float_dtype()
-            )
+            x1, x2 = x1.cast("float32"), x2.cast("float32")
     if use_where:
         return ivy.where(greater_equal(x1, x2), x1, x2).cast(ret_dtype)
     return paddle.maximum(x1, x2).cast(ret_dtype)
@@ -1069,7 +1057,7 @@ def deg2rad(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     if x.dtype in [paddle.int32, paddle.int64, paddle.bool]:
-        return paddle.deg2rad(x.cast(ivy.default_float_dtype())).cast(x.dtype)
+        return paddle.deg2rad(x.cast("float32")).cast(x.dtype)
     return paddle.deg2rad(x)
 
 
@@ -1080,7 +1068,7 @@ def rad2deg(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     if x.dtype in [paddle.int32, paddle.int64, paddle.bool]:
-        return paddle.rad2deg(x.cast(ivy.default_float_dtype())).cast(x.dtype)
+        return paddle.rad2deg(x.cast("float32")).cast(x.dtype)
     return paddle.rad2deg(x)
 
 
@@ -1107,3 +1095,13 @@ def isreal(
         return paddle.logical_not(x.imag().astype(bool))
     else:
         return paddle.ones_like(x, dtype="bool")
+
+
+def fmod(
+    x1: paddle.Tensor,
+    x2: paddle.Tensor,
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    raise IvyNotImplementedException()
