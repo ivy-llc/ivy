@@ -56,18 +56,12 @@ def softsign(x):
 
 @to_ivy_arrays_and_back
 def swish(x):
-    return ivy.multiply(x, ivy.sigmoid(x))
+    return ivy.silu(x)
 
 
 @to_ivy_arrays_and_back
 def elu(x, alpha=1.0):
-    zeros = ivy.zeros_like(x, dtype=ivy.dtype(x))
-    ones = ivy.ones_like(x, dtype=ivy.dtype(x))
-    alpha = ivy.astype(ivy.array(alpha), ivy.dtype(x))
-    ret_val = ivy.where(
-        x > zeros, x, ivy.multiply(alpha, ivy.subtract(ivy.exp(x), ones))
-    )
-    return ret_val
+    return ivy.elu(x, alpha=alpha)
 
 
 elu.supported_dtypes = {
@@ -98,9 +92,7 @@ elu.supported_dtypes = {
 
 @to_ivy_arrays_and_back
 def selu(x):
-    alpha = 1.6732632423543772848170429916717
-    scale = ivy.astype(ivy.array(1.0507009873554804934193349852946), ivy.dtype(x))
-    return ivy.multiply(scale, elu(x=x, alpha=alpha).ivy_array)
+    return ivy.selu(x)
 
 
 selu.supported_dtypes = {

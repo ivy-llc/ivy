@@ -22,6 +22,29 @@ def logit(
     return jnp.log(x / (1 - x))
 
 
+def hardshrink(
+    x: JaxArray,
+    /,
+    *,
+    lambd: Optional[float] = 0.5,
+    out: Optional[JaxArray] = None,
+):
+    mask = jnp.logical_or(jnp.greater(x, lambd), jnp.less(x, -lambd))
+    return jnp.where(mask, x, 0.0)
+
+
+def softshrink(
+    x: JaxArray,
+    /,
+    *,
+    lambd: Optional[float] = 0.5,
+    out: Optional[JaxArray] = None,
+):
+    low = jnp.where(jnp.less(x, -lambd), jnp.add(x, lambd), 0)
+    up = jnp.where(jnp.greater(x, lambd), jnp.subtract(x, lambd), 0)
+    return jnp.add(low, up)
+
+
 def relu6(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     relu6_func = jax.nn.relu6
 
@@ -46,6 +69,17 @@ def thresholded_relu(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.where(x > threshold, x, 0).astype(x.dtype)
+
+
+def threshold(
+    x: JaxArray,
+    threshold: Union[int, float],
+    value: Union[int, float],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.where(x > threshold, x, value).astype(x.dtype)
 
 
 def batch_norm(
@@ -76,5 +110,58 @@ def batch_norm(
     return jnp.transpose(ret, (0, ndims - 1, *range(1, ndims - 1)))
 
 
-def logsigmoid(input: JaxArray) -> JaxArray:
-    return jax.nn.log_sigmoid(input)
+def logsigmoid(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jax.nn.log_sigmoid(x)
+
+
+def hard_tanh(
+    x: JaxArray,
+    /,
+    *,
+    min_value: float = -1.0,
+    max_value: float = 1.0,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.clip(x, a_min=min_value, a_max=max_value)
+
+
+def softsign(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jax.nn.soft_sign(x)
+
+
+def silu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jax.nn.silu(x)
+
+
+def selu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jax.nn.selu(x)
+
+
+def elu(
+    x: JaxArray, /, *, alpha: float = 1.0, out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jax.nn.elu(x, alpha=alpha)
+
+
+def parametric_relu(
+    x: JaxArray, weight: Union[float, JaxArray], /, *, out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jnp.where(x >= 0, x, weight * x).astype(x.dtype)
+
+
+def celu(
+    x: JaxArray, /, *, alpha: float = 1.0, out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jax.nn.celu(x, alpha=alpha)
+
+
+def hard_sigmoid(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jax.nn.hard_sigmoid(x)
+
+
+def hard_silu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jax.nn.hard_silu(x)
+
+
+def glu(x: JaxArray, /, *, axis: int = -1, out: Optional[JaxArray] = None) -> JaxArray:
+    return jax.nn.glu(x, axis=axis)

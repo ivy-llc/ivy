@@ -558,21 +558,22 @@ def softplus(
 def mish(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Applies the rectified linear unit function element-wise.
+    """Applies the self regularized non-monotonic neural activation
+    function element-wise.
 
     Parameters
     ----------
     x
-        input array
+        Input array
     out
-        optional output array, for writing the result to. It must have a shape that the
+        Optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
 
     Returns
     -------
     ret
-        an array containing the rectified linear unit activation of each element in
-        ``x``.
+        An array containing the self regularized non-monotonic neural 
+        activation function of each element in ``x``.
 
     Examples
     --------

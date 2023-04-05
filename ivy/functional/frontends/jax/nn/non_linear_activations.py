@@ -78,13 +78,6 @@ def _canonicalize_axis(axis, ndim):
     return axis
 
 
-def _len(x):
-    shape = ivy.shape(x)
-    if len(shape) == 0:
-        return 0
-    return shape[0]
-
-
 def _reduction_dims(a, axis):
     ndims = len(ivy.shape(a))
     if axis is None:
@@ -124,16 +117,12 @@ def _mean(x, axis=None, keepdims=False, where=None):
 
 @to_ivy_arrays_and_back
 def celu(x, alpha=1.0):
-    ret = ivy.where(x > 0, x, alpha * ivy.expm1(x / alpha))
-    dtype = _batch_promotion(x, alpha, default_dtype="float64")
-    return ivy.asarray(ret, dtype=dtype)
+    return ivy.celu(x, alpha=alpha)
 
 
 @to_ivy_arrays_and_back
 def elu(x, alpha=1.0):
-    ret = ivy.where(x > 0, x, alpha * ivy.expm1(x))
-    dtype = _batch_promotion(x, alpha, default_dtype="float64")
-    return ivy.asarray(ret, dtype=dtype)
+    return ivy.elu(x, alpha=alpha)
 
 
 @to_ivy_arrays_and_back
@@ -143,30 +132,17 @@ def gelu(x, approximate=True):
 
 @to_ivy_arrays_and_back
 def glu(x, axis=-1):
-    size = x.shape[axis]
-    ivy.utils.assertions.check_equal(
-        size % 2, 0, message="axis size must be divisible by 2"
-    )
-    x1, x2 = ivy.split(x, num_or_size_splits=2, axis=axis)
-    return ivy.multiply(x1, ivy.sigmoid(x2))
+    return ivy.glu(x, axis=axis)
 
 
 @to_ivy_arrays_and_back
 def hard_swish(x):
-    res = (x * ivy.minimum(ivy.maximum(x + 3, 0.0), 6.0)) / 6
-    return ivy.asarray(res, dtype=x.dtype)
+    return ivy.hard_silu(x)
 
 
 @to_ivy_arrays_and_back
 def hard_tanh(x):
-    x = ivy.asarray(x)
-    n1 = -1
-    if "uint" in str(x.dtype):
-        dtype = x.dtype
-        # tensorflow can't use -1 for uint
-        n1 = ivy.asarray((1 << ivy.dtype_bits(dtype)) - 1, dtype=dtype)
-
-    return ivy.where(x > 1, 1, ivy.where(x < n1, n1, x))
+    return ivy.hard_tanh(x)
 
 
 @to_ivy_arrays_and_back
@@ -177,8 +153,7 @@ def leaky_relu(x, negative_slope=0.01):
 
 @to_ivy_arrays_and_back
 def log_sigmoid(x):
-    x = _type_conversion(x)
-    return ivy.negative(ivy.softplus(ivy.negative(x))).astype(x.dtype)
+    return ivy.log_sigmoid(x)
 
 
 @to_ivy_arrays_and_back
@@ -288,11 +263,19 @@ def silu(x):
     return ivy.multiply(x, ivy.sigmoid(x))
 
 
+swish = silu
+
+
 @to_ivy_arrays_and_back
 def soft_sign(x):
-    dtype = _type_conversion(x).dtype
-    ret = x / (ivy.abs(x) + 1)
-    return ret.astype(dtype)
+    return ivy.softsign(x)
+
+
+@to_ivy_arrays_and_back
+def hard_sigmoid(x):
+    x = _type_conversion(x)
+    ret = ivy.hard_sigmoid(x)
+    return ivy.astype(ret, x.dtype)
 
 
 @to_ivy_arrays_and_back
@@ -308,25 +291,9 @@ def softplus(x):
 
 @to_ivy_arrays_and_back
 def selu(x):
-    alpha = 1.6732632423543772848170429916717
-    scale = 1.0507009873554804934193349852946
-    return scale * elu(x, alpha)
-
-
-@to_ivy_arrays_and_back
-def swish(x):
-    ret = x / (1 + ivy.exp(-x))
-    return ivy.asarray(ret, dtype=x.dtype)
+    return ivy.selu(x)
 
 
 @to_ivy_arrays_and_back
 def hard_silu(x):
-    dtype = _batch_promotion(x, default_dtype="float64")
-    sig = ivy.divide(ivy.minimum(ivy.maximum(ivy.add(x, 3), 0), 6), 6)
-    return ivy.multiply(x, sig).astype(dtype)
-
-
-@to_ivy_arrays_and_back
-def hard_sigmoid(x):
-    dtype = _batch_promotion(x, default_dtype="float64")
-    return ivy.divide(ivy.minimum(ivy.maximum(ivy.add(x, 3), 0), 6), 6).astype(dtype)
+    return ivy.hard_silu(x)

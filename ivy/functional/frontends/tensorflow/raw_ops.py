@@ -613,15 +613,7 @@ def Conv3D(
 
 @to_ivy_arrays_and_back
 def Elu(features, name=None):
-    zeros = ivy.zeros_like(features, dtype=ivy.dtype(features))
-    ones = ivy.ones_like(features, dtype=ivy.dtype(features))
-    ret_val = ivy.where(
-        # if x > 0 => x; else e^x - 1
-        features > zeros,
-        features,
-        ivy.subtract(ivy.exp(features), ones),
-    )
-    return ret_val
+    return ivy.elu(features, alpha=1.0)
 
 
 Elu.supported_dtypes = {
