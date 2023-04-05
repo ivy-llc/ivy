@@ -2500,12 +2500,9 @@ def test_jax_numpy_subtract(
 @handle_frontend_test(
     fn_tree="jax.numpy.around",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=-100,
-        max_value=100,
-        min_num_dims=1,
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
-    decimals=helpers.ints(min_value=0, max_value=3),
+    decimals=st.integers(min_value=0, max_value=5),
 )
 def test_jax_numpy_around(
     *,

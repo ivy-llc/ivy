@@ -116,6 +116,4 @@ def rint(
 def around(a, decimals=0, out=None):
     if ivy.shape(a) == ():
         a = ivy.expand_dims(a, axis=0)
-    factor = ivy.pow(10, decimals)
-    a = ivy.multiply(a, factor)
-    return ivy.divide(ivy.round(a), factor)
+    return ivy.round(a, decimals=decimals, out=out)

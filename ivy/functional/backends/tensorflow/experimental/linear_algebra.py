@@ -90,7 +90,7 @@ def matrix_exp(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.exp(x)
+    return tf.linalg.expm(x)
 
 
 def eig(

@@ -1309,6 +1309,51 @@ def test_tensorflow_crelu(
     )
 
 
+@st.composite
+def _average_pool_args(draw):
+    dims = draw(st.integers(min_value=1, max_value=3))
+    data_formats = ["NWC", "NHWC", "NDHWC"]
+    data_format = data_formats[dims - 1]
+    return (
+        draw(
+            helpers.arrays_for_pooling(
+                min_dims=dims + 2, max_dims=dims + 2, min_side=1, max_side=4
+            )
+        ),
+        data_format,
+    )
+
+
+# average_pool
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.avg_pool",
+    x_k_s_p_df=_average_pool_args(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_avg_pool(
+    *,
+    x_k_s_p_df,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    (input_dtype, x, ksize, strides, padding), data_format = x_k_s_p_df
+    data_format = data_format
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        ksize=ksize,
+        strides=strides,
+        padding=padding,
+        data_format=data_format,
+    )
+
+
 @handle_frontend_test(
     fn_tree="tensorflow.nn.avg_pool1d",
     data_format=df(data_format=st.sampled_from(["NWC"])),

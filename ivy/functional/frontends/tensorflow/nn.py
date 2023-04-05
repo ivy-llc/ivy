@@ -496,5 +496,14 @@ def crelu(features, axis=-1, name=None):
 
 
 @to_ivy_arrays_and_back
+def avg_pool(input, ksize, strides, padding, data_format="NWC", name=None):
+    if len(ivy.shape(input)) == 3:
+        return ivy.avg_pool1d(input, ksize, strides, padding, data_format=data_format)
+    elif len(ivy.shape(input)) == 4:
+        return ivy.avg_pool2d(input, ksize, strides, padding, data_format=data_format)
+    return ivy.avg_pool3d(input, ksize, strides, padding, data_format=data_format)
+
+
+@to_ivy_arrays_and_back
 def avg_pool1d(input, ksize, strides, padding, data_format="NWC", name=None):
     return ivy.avg_pool1d(input, ksize, strides, padding, data_format=data_format)

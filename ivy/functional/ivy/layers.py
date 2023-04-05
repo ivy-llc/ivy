@@ -28,6 +28,7 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+@inputs_to_ivy_arrays
 def linear(
     x: Union[ivy.Array, ivy.NativeArray],
     weight: Union[ivy.Array, ivy.NativeArray],
@@ -177,6 +178,7 @@ linear.mixed_function = True
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+@inputs_to_ivy_arrays
 def dropout(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -348,6 +350,7 @@ def dropout(
 @handle_array_function
 @handle_array_like_without_promotion
 @handle_exceptions
+@inputs_to_ivy_arrays
 def scaled_dot_product_attention(
     q: Union[ivy.Array, ivy.NativeArray],
     k: Union[ivy.Array, ivy.NativeArray],
@@ -553,6 +556,7 @@ def scaled_dot_product_attention(
 @handle_array_function
 @handle_array_like_without_promotion
 @handle_exceptions
+@inputs_to_ivy_arrays
 def multi_head_attention(
     x: Union[ivy.Array, ivy.NativeArray],
     scale: float,
@@ -1999,3 +2003,26 @@ def _get_x_data_format(dims: int = 2, data_format: str = "channel_first"):
             return "NCDHW"
         else:
             return "NDHWC"
+
+
+def _get_num_padded_values(i, p, n, k, s):
+    """
+        Get number of padded values in a specific window.
+    Parameters
+    ----------
+    i window index
+    p total amount of padding
+    n input size
+    k kernel size
+    s stride
+
+    Returns
+    -------
+        number of padded values in a particular window represented by i
+
+    """
+    current_index = s * i
+    left_padding = p // 2
+    return max(0, left_padding - current_index) + max(
+        0, current_index + k - n - left_padding
+    )
