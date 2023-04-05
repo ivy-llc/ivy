@@ -245,7 +245,10 @@ def as_strided(
     a_buffer = x.numpy().tobytes()
     b = tf.io.decode_raw(a_buffer, x.dtype)
     b = tf.reshape(b, shape, 'F')
-    return tf.raw_ops.StridedSlice(
-        input=b,
+    dims = len(shape)
+    return tf.strided_slice(
+        b,
+        [0]*dims,
+        [-1]*dims,
         strides=strides,
     )

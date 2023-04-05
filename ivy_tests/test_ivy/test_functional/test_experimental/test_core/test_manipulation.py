@@ -1019,17 +1019,21 @@ def test_expand(
 
 @st.composite
 def _as_strided_helper(draw):
-    dims = draw(st.integers(min_value=1, max_value=5))
-    dtype, x = draw(helpers.dtype_and_values(
+    dtype, x, x_shape = draw(helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
+        ret_shape=True,
     ))
-    _, strides = draw(helpers.dtype_and_values(
-        dtype=dtype,
-        shape=(dims,)
+    dims = len(x_shape)
+    strides = draw(st.lists(
+        st.integers(min_value=1, max_value=5),
+        min_size=dims,
+        max_size=dims,
     ))
-    strides = strides[0].tolist()
-    shape = draw(helpers.get_shape(min_num_dims=1))
+    shape = [
+        draw(st.integers(min_value=1, max_value=x_shape[i]))
+        for i in range(dims)
+    ]   # not sure about the valid shapes
     return dtype, x, shape, strides
 
 
@@ -1040,6 +1044,7 @@ def _as_strided_helper(draw):
     test_instance_method=st.just(False),   # for now
     test_with_out=st.just(False),
     test_gradients=st.just(False),
+    ground_truth_backend="numpy",
 )
 def test_as_strided(
     *,

@@ -4,6 +4,7 @@ from numbers import Number
 from typing import Union, Tuple, Optional, List, Sequence, Iterable
 import jax.numpy as jnp
 import jax.lax as jlax
+import jax
 
 # local
 import ivy
@@ -268,17 +269,13 @@ def as_strided(
     strides: Sequence[int],
     /,
 ) -> JaxArray:
-    start_indices = [
-        -(strides[i] * (shape[i] - 1)) // strides[-1]
-        for i in range(len(shape))
-    ]
-    limit_indices = [
-        start_indices[i] + (shape[i] - 1)
-        for i in range(len(shape))
-    ]
-    return jlax.slice(
-        x,
-        start_indices=start_indices,
-        limit_indices=limit_indices,
-        strides=strides,
-    )
+    new_shape = tuple(shape)
+    new_strides = tuple(strides)
+    offset = jnp.sum(jnp.array(shape) * jnp.array(strides)) - \
+        jnp.sum(jnp.array(new_shape) * jnp.array(new_strides))
+    new_array = x[offset:]
+    for i in range(len(new_shape)):
+        idx = (slice(None),) * i + (jnp.arange(new_shape[i]) * new_strides[i],)
+        new_array = new_array.at[idx].set(
+            jnp.ravel(x)[offset::new_strides[i]][:new_shape[i]])
+        return new_array
