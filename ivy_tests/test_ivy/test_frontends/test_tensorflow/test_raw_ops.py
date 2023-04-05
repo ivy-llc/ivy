@@ -354,7 +354,7 @@ def test_tensorflow_Cross(  # NOQA
         available_dtypes=helpers.get_dtypes("float"),
     ),
     test_with_out=st.just(False),
-    )
+)
 def test_tensorflow_Rsqrt(
     *,
     dtype_and_x,
