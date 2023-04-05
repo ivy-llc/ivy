@@ -2007,7 +2007,8 @@ def _get_x_data_format(dims: int = 2, data_format: str = "channel_first"):
 
 def _get_num_padded_values(i, p, n, k, s):
     """
-        Get number of padded values in a specific window.
+    Get number of padded values in a specific window.
+
     Parameters
     ----------
     i window index

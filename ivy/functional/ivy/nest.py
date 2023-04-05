@@ -1046,9 +1046,7 @@ def nested_map(
     ret
         x following the applicable of fn to it's nested leaves, or x itself if x is not
         nested.
-
     """
-
     to_ignore = ivy.default(to_ignore, ())
     extra_nest_types = ivy.default(extra_nest_types, ())
     if include_derived is True:
