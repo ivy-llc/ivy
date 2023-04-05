@@ -859,9 +859,10 @@ def test_jax_numpy_logical_xor(
 @handle_frontend_test(
     fn_tree="jax.numpy.setxor1d",
     dtypes_values=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("bool"),
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
     ),
+    assume_unique=st.booleans(),
 )
 def test_jax_numpy_setxor1d(
     dtypes_values,
@@ -869,6 +870,7 @@ def test_jax_numpy_setxor1d(
     fn_tree,
     frontend,
     test_flags,
+    assume_unique,
 ):
     x_dtypes, x = dtypes_values
     np_helpers.test_frontend_function(
@@ -879,5 +881,5 @@ def test_jax_numpy_setxor1d(
         on_device=on_device,
         x1=x[0],
         x2=x[1],
+        assume_unique=assume_unique,
     )
-     
