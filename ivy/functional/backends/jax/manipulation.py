@@ -3,6 +3,7 @@ import math
 from numbers import Number
 from typing import Union, Tuple, Optional, List, Sequence, Iterable
 import jax.numpy as jnp
+import jax.lax as jlax
 
 # local
 import ivy
@@ -259,3 +260,12 @@ def swapaxes(
     x: JaxArray, axis0: int, axis1: int, /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.swapaxes(x, axis0, axis1)
+
+
+def as_strided(x: JaxArray, strides: Sequence[int]):
+    return jlax.slice(
+        x,
+        start_indices=something,
+        limit_indices=something,
+        strides=strides
+    )

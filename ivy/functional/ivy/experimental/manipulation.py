@@ -1592,3 +1592,29 @@ def expand(
         Output Array
     """
     return ivy.current_backend(x).expand(x, shape, out=out)
+
+
+@to_native_arrays_and_back
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
+def as_strided(
+        x: Union[ivy.Array, ivy.NativeArray],
+        strides: Sequence[int],
+) -> ivy.Array:
+    """
+    Create a copy of the input array with the desired strides inserted between elements.
+
+    Parameters
+    ----------
+    x
+        Input Array.
+    strides
+        A sequence that indicates the strides you want to insert.
+
+    Returns
+    -------
+    ret
+        Output Array
+    """
+    return ivy.current_backend(x).as_strided(x, strides)
