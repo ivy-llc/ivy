@@ -885,3 +885,134 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
+    
+    @staticmethod
+    def solve_triangular(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        b: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        lower: bool = True,
+        transpose: bool = False,
+        unit_diagonal: bool = False,
+        out: Optional[ivy.Container] = None,
+    ):
+        """
+        ivy.Container static method variant of ivy.solve_triangular.
+        This method simply wraps the function, and so the docstring for
+        ivy.solve_triangular also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+            self
+                container with input arrays.
+            b
+                container with input arrays.
+            lower
+                whether the triangular matrix is lower triangular.
+            transpose
+                whether to solve with the transpose of the matrix.
+            unit_diagonal
+                whether the diagonal is assumed to be 1.
+
+        Returns
+        -------
+            ret
+                container including array corresponding
+                to solution of triangular system of equations.
+
+        Examples
+        --------
+        >>> a = ivy.array([[1, 0, 0], [2, 1, 0], [3, 2, 1]])
+        >>> b = ivy.array([1, 2, 3])
+        >>> ivy.Container.static_solve_triangular(a, b)
+        ivy.array([1., 1., 1.])
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "solve_triangular",
+            self,
+            b=b,
+            lower=lower,
+            transpose=transpose,
+            unit_diagonal=unit_diagonal,
+            out=out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+    
+    def solve_triangular(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        b: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        lower: bool = True,
+        transpose: bool = False,
+        unit_diagonal: bool = False,
+    ):
+        """
+        ivy.Container instance method variant of ivy.solve_triangular.
+        This method simply wraps the function, and so the docstring for
+        ivy.solve_triangular also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+            self
+                container with input arrays.
+            b
+                container with input arrays.
+            lower
+                whether the triangular matrix is lower triangular.
+            transpose
+                whether to solve with the transpose of the matrix.
+            unit_diagonal
+                whether the diagonal is assumed to be 1.
+
+        Returns
+        -------
+            ret
+                container including array corresponding
+                to solution of triangular system of equations.
+
+        Examples
+        --------
+        >>> a = ivy.array([[1, 0, 0], [2, 1, 0], [3, 2, 1]])
+        >>> b = ivy.array([1, 2, 3])
+        >>> c = ivy.Container(a=a)
+        >>> c.solve_triangular(b)
+        ivy.array([1., 1., 1.])
+
+        With :class:`ivy.Container` input:
+
+        >>> a = ivy.Container(x=ivy.arange(2 * 3).reshape((2, 3)),
+        ...                   y=ivy.arange(2 * 3).reshape((2, 3)))
+        >>> b = ivy.Container(x=ivy.arange(2 * 3).reshape((2, 3)),
+        ...                   y=ivy.arange(2 * 3).reshape((2, 3)))
+        >>> a.solve_triangular(b)
+        {
+            x: ivy.array([[ 0.,  1.,  2.],
+                          [ 0.,  1.,  2.]]),
+            y: ivy.array([[ 0.,  1.,  2.],
+                          [ 0.,  1.,  2.]])
+        }
+        """
+        return self.static_solve_triangular(
+            self,
+            b=b,
+            lower=lower,
+            transpose=transpose,
+            unit_diagonal=unit_diagonal,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )

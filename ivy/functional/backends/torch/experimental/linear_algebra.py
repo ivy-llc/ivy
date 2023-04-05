@@ -177,3 +177,28 @@ def cond(
 
 
 cond.support_native_out = False
+
+
+def solve_triangular(
+    a: torch.Tensor,
+    b: torch.Tensor,
+    /,
+    *,
+    lower: bool = True,
+    transpose: bool = False,
+    conjugate: bool = False,
+    unit_diagonal: bool = False,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.linalg.solve_triangular(
+        a,
+        b,
+        lower=lower,
+        transpose=transpose,
+        conjugate=conjugate,
+        unit_diagonal=unit_diagonal,
+        out=out,
+    )
+
+
+solve_triangular.support_native_out = True

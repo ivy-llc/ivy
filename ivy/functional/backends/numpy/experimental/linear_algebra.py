@@ -172,3 +172,22 @@ def cond(
 
 
 cond.support_native_out = False
+
+
+def solve_triangular(
+    a: np.ndarray,
+    b: np.ndarray,
+    /,
+    *,
+    lower: bool = True,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if lower:
+        res = np.linalg.tensorsolve(np.tril(a), b)
+    else:
+        res = np.linalg.tensorsolve(np.triu(a), b)
+    
+    return res
+
+
+solve_triangular.support_native_out = False

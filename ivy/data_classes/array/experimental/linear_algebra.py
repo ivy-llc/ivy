@@ -258,3 +258,35 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         ivy.array(21.0)
         """
         return ivy.cond(self._data, p=p)
+    
+    def solve_triangular(
+        self: ivy.Array,
+        b: ivy.Array,
+        /,
+        *,
+        lower: bool = True,
+        transpose: bool = False,
+        unit_diagonal: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.solve_triangular.
+        This method simply wraps the function, and so the docstring for
+        ivy.solve_triangular also applies to this method with minimal changes.
+
+        Examples
+        --------
+        >>> a = ivy.array([[1, 0, 0], [2, 1, 0], [3, 4, 1]])
+        >>> b = ivy.array([1, 2, 3])
+        >>> a.solve_triangular(b)
+        ivy.array([1., 1., 1.])
+        """
+        return ivy.solve_triangular(
+            self._data,
+            b,
+            lower=lower,
+            transpose=transpose,
+            unit_diagonal=unit_diagonal,
+            out=out,
+        )
+    

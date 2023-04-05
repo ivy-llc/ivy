@@ -148,3 +148,15 @@ def cond(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.linalg.cond(x, p=p)
+
+
+def solve_triangular(
+    a: JaxArray,
+    b: JaxArray,
+    /,
+    *,
+    lower: bool = True,
+    unit_diagonal: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jla.solve_triangular(a, b, lower=lower, unit_diagonal=unit_diagonal)
