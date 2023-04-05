@@ -321,12 +321,12 @@ def test_tensorflow_Cos(  # NOQA
     test_with_out=st.just(False),
 )
 def test_tensorflow_Rsqrt(
-    *,
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
