@@ -17,6 +17,7 @@ def einsum(
     optimize="optimal",
     precision=None,
     _use_xeinsum=False,
+    _dot_general=None,
 ):
     return ivy.einsum(subscripts, *operands, out=out)
 
@@ -387,6 +388,20 @@ def nanvar(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=
 
 
 @handle_jax_dtype
+@to_ivy_arrays_and_back
+def nancumsum(a, axis=None, dtype=None, out=None):
+    a = ivy.where(ivy.isnan(a), ivy.zeros_like(a), a)
+    return ivy.cumsum(a, axis=axis, dtype=dtype, out=out)
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+def nancumprod(a, axis=None, dtype=None, out=None):
+    a = ivy.where(ivy.isnan(a), ivy.zeros_like(a), a)
+    return ivy.cumprod(a, axis=axis, dtype=dtype, out=out)
+
+
+@handle_jax_dtype
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16")}, "jax")
 @to_ivy_arrays_and_back
 def std(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=None):
@@ -400,3 +415,8 @@ def std(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=Non
             where, std_a, ivy.default(out, ivy.zeros_like(std_a)), out=out
         )
     return ivy.astype(std_a, ivy.as_ivy_dtype(dtype), copy=False)
+
+
+@to_ivy_arrays_and_back
+def corrcoef(x, y=None, rowvar=True):
+    return ivy.corrcoef(x, y=y, rowvar=rowvar)

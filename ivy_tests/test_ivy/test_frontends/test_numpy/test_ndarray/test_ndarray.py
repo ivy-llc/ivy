@@ -572,6 +572,60 @@ def test_numpy_instance_min(
     )
 
 
+# prod
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="prod",
+    dtype_x_axis_dtype=_get_castable_dtypes_values(use_where=True),
+    keep_dims=st.booleans(),
+    initial=st.one_of(st.floats(min_value=-100, max_value=100)),
+)
+def test_numpy_ndarray_prod(
+    dtype_x_axis_dtype,
+    keep_dims,
+    initial,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtypes, x, axis, dtype, where = dtype_x_axis_dtype
+    if ivy.current_backend_str() == "torch":
+        assume(not method_flags.as_variable[0])
+
+    (
+        where,
+        input_dtypes,
+        method_flags,
+    ) = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=method_flags,
+    )
+    where = ivy.array(where, dtype="bool")
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtypes,
+        method_all_as_kwargs_np={
+            "axis": axis,
+            "dtype": dtype,
+            "keepdims": keep_dims,
+            "initial": initial,
+            "where": where,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
@@ -1130,7 +1184,7 @@ def test_numpy_instance_std(
         on_device=on_device,
     )
 
-    
+
 # fill
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -1166,7 +1220,7 @@ def test_numpy_ndarray_fill(
         on_device=on_device,
     )
 
-    
+
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
@@ -2436,6 +2490,9 @@ def test_numpy_instance_imod__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
+        allow_inf=False,
+        large_abs_safety_factor=4,
+        safety_factor_scale="linear",
     ),
 )
 def test_numpy_instance_abs__(
@@ -2451,7 +2508,7 @@ def test_numpy_instance_abs__(
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "object": x[0],
         },
         method_input_dtypes=input_dtypes,
         method_all_as_kwargs_np={},
@@ -2627,7 +2684,7 @@ def test_numpy_instance_view(
         frontend_method_data=frontend_method_data,
         on_device=on_device,
     )
-    
+
 
 # mod
 @handle_frontend_method(

@@ -3,6 +3,8 @@ from typing import Optional, Tuple, Sequence, Union, Any
 import numpy as np
 
 import ivy
+from ivy.func_wrapper import with_supported_dtypes
+from .. import backend_version
 
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
 
@@ -92,15 +94,18 @@ def kron(
 
 kron.support_native_out = False
 
-
+@with_supported_dtypes({"1.11.0 and below": ("float32", "float64", "complex64", "complex128")}, backend_version)
 def matrix_exp(
     x: np.ndarray,
     /,
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.exp(x)
-
+    eig_vals, eig_vecs = np.linalg.eig(x)
+    exp_diag = np.exp(eig_vals)
+    exp_diag_mat = np.diag(exp_diag)
+    exp_mat = eig_vecs @ exp_diag_mat @ np.linalg.inv(eig_vecs)
+    return exp_mat.astype(x.dtype)
 
 def eig(
     x: np.ndarray,
