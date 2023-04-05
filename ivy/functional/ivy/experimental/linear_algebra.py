@@ -551,3 +551,62 @@ def cond(
         ivy.array(21.0)
     """
     return current_backend(x).cond(x, p=p, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
+def solve_triangular(
+    a: Union[ivy.Array, ivy.NativeArray],
+    b: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    lower: bool = True,
+    transpose: bool = False,
+    unit_diagonal: bool = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Solves a linear matrix equation, or system of linear scalar equations for x,
+    assuming a is a triangular matrix.
+
+    Parameters
+    ----------
+    a
+        A triangular matrix.
+    b
+        Right-hand side matrix in a linear system of equations. Has to be of shape
+        (..., M, K) if a has shape (..., M, M), or of shape (..., M) if a has shape
+        (..., M, M).
+    lower
+        Whether a is a lower or upper triangular matrix.
+    transpose
+        Whether to solve with a or a.T.
+    unit_diagonal
+        Whether the main diagonal of a consists of ones, such that it is not
+        referenced in the solution.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        Solution to the system a x = b. Shape of return matches shape of b.
+
+    Examples
+    --------
+        >>> a = ivy.array([[1., 0., 0.],
+                           [2., 1., 0.],
+                           [3., 2., 1.]])
+        >>> b = ivy.array([[1.],
+                           [2.],
+                           [3.]])
+        >>> ivy.solve_triangular(a, b)
+        ivy.array([[1.],
+                   [1.],
+                   [1.]])
+    """
+    return current_backend(a).solve_triangular(a, b, lower=lower, transpose=transpose,
+                                               unit_diagonal=unit_diagonal, out=out)
