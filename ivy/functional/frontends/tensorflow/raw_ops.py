@@ -143,6 +143,7 @@ def Cross(*, a, b, name='Cross'):
 def Cosh(*, x, name="Cosh"):
     return ivy.cosh(x)
 
+
 Div = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.divide))
 
 

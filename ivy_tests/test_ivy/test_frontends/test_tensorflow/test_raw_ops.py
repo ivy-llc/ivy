@@ -314,21 +314,21 @@ def test_tensorflow_Cos(  # NOQA
 
 # Cross
 @handle_frontend_test(
-        fn_tree='tensorflow.raw_ops.Cross',
-        dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=3,
-        max_dim_size=3,
-        safety_factor_scale="log",
-        num_arrays=2,
-        shared_dtype=True,
-        ),
-        test_with_out=st.just(False),
+    fn_tree='tensorflow.raw_ops.Cross',
+    dtype_and_x=helpers.dtype_and_values(
+    available_dtypes=helpers.get_dtypes("float"),
+    min_num_dims=1,
+    max_num_dims=5,
+    min_dim_size=3,
+    max_dim_size=3,
+    safety_factor_scale="log",
+    num_arrays=2,
+    shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_Cross(  # NOQA
-     *,
+    *,
     dtype_and_x,
     frontend,
     test_flags,
@@ -346,13 +346,14 @@ def test_tensorflow_Cross(  # NOQA
         b=xs[1],
     )
 
+
 # Rsqrt
 @handle_frontend_test(fn_tree="tensorflow.raw_ops.Rsqrt",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     test_with_out=st.just(False),
-                      )
+    )
 def test_tensorflow_Rsqrt(
     *,
     dtype_and_x,
@@ -390,12 +391,12 @@ def test_tensorflow_Cosh(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
-    input_dtypes=input_dtype,
-    frontend=frontend,
-    test_flags=test_flags,
-    fn_tree=fn_tree,
-    on_device=on_device,
-    x=x[0],
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
     )
 
 
