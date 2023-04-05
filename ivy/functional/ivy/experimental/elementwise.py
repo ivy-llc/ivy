@@ -1499,10 +1499,12 @@ def lerp(
     if (
         not isinstance(input, (float, int, complex))
         or not isinstance(end, (float, int, complex))
-        or not isinstance(weight, float)
     ):
         input = ivy.astype(input, "float64")
-        end = ivy.astype(end, "float64")
+        end = ivy.astype(end, "float64")        
+    if (
+        not isinstance(weight, float)
+    ):
         weight = ivy.astype(weight, "float64")
     return ivy.add(input, ivy.multiply(weight, ivy.subtract(end, input)), out=out)
 
