@@ -49,8 +49,7 @@ def ediff1d(ary, to_end=None, to_begin=None):
 
 @to_ivy_arrays_and_back
 def arctan(x):
-    ret = ivy.atan(x)
-    return ret
+    return ivy.atan(x)
 
 
 @to_ivy_arrays_and_back
@@ -331,6 +330,7 @@ def exp(
     return ivy.exp(x)
 
 
+@to_ivy_arrays_and_back
 def expm1(
     x,
     /,
@@ -512,13 +512,17 @@ def subtract(x1, x2):
 
 @to_ivy_arrays_and_back
 def around(a, decimals=0, out=None):
-    factor = ivy.pow(10, decimals)
-    a = ivy.multiply(a, factor)
-    a = ivy.round(a)
-    a = ivy.divide(a, factor)
-    return a
+    if ivy.shape(a) == ():
+        a = ivy.expand_dims(a, axis=0)
+    ret_dtype = a.dtype
+    return ivy.round(a, decimals=decimals, out=out).astype(ret_dtype, copy=False)
 
 
 @to_ivy_arrays_and_back
 def frexp(x, /):
     return ivy.frexp(x)
+
+
+@to_ivy_arrays_and_back
+def ldexp(x1, x2, /):
+    return ivy.ldexp(x1, x2)

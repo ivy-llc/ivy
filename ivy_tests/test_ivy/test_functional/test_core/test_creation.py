@@ -397,7 +397,6 @@ def test_eye(
         max_dim_size=5,
     ),
     container_flags=st.just([False]),
-    as_variable_flags=st.just([False]),  # can't convert variables
     test_gradients=st.just(False),
 )
 def test_from_dlpack(
@@ -819,7 +818,7 @@ def test_copy_array(
     else:
         assert ivy.is_native_array(ret)
     # cardinality test
-    assert ret.shape == x.shape
+    assert list(ret.shape) == list(x.shape)
     # value test
     helpers.assert_all_close(ivy.to_numpy(ret), ivy.to_numpy(x))
     assert id(x) != id(ret)

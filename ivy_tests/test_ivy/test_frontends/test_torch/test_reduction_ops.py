@@ -8,8 +8,9 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     statistical_dtype_values,
 )
-from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_statistical\
-    import statistical_dtype_values as statistical_dtype_values_experimental
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_statistical import (
+    statistical_dtype_values as statistical_dtype_values_experimental,
+)
 
 
 @handle_frontend_test(
@@ -728,4 +729,39 @@ def test_torch_count_nonzero(
         on_device=on_device,
         input=x[0],
         dim=axis,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="torch.logsumexp",
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_value=-50,
+        max_value=50,
+        min_num_dims=1,
+        max_num_dims=5,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    keepdims=st.booleans(),
+)
+def test_torch_logsumexp(
+    *,
+    dtype_input_axis,
+    keepdims,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x, axis = dtype_input_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        dim=axis,
+        keepdim=keepdims,
     )
