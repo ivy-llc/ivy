@@ -7,9 +7,9 @@ from ivy.utils.exceptions import handle_exceptions
 from numbers import Number
 from typing import Union, Tuple, Iterable
 
-from ivy.utils.backend.handler import _FrontendImporter
+from ivy.utils.backend.handler import _FrontendDictHandler
 
-with _FrontendImporter() as importer:
+with _FrontendDictHandler() as importer:
 
     # type aliases
     char = ivy.int8
