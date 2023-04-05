@@ -319,6 +319,17 @@ class Tensor:
 
     def to(self, *args, **kwargs):
         if len(args) > 0:
+            if hasattr(args[0], "ivy_array") or ivy.is_array(args[0]):
+                if self.dtype == ivy.dtype(args[0]) and self.device == ivy.dev(args[0]):
+                    return self
+                else:
+                    cast_tensor = self.clone()
+                    cast_tensor.ivy_array = ivy.asarray(
+                        self._ivy_array,
+                        dtype=ivy.dtype(args[0]),
+                        device=ivy.dev(args[0]),
+                    )
+                    return cast_tensor
             if (
                 isinstance(args[0], (ivy.Dtype, ivy.NativeDtype))
                 or args[0] in ivy._all_ivy_dtypes_str
@@ -359,17 +370,6 @@ class Tensor:
                 else:
                     cast_tensor = self.clone()
                     cast_tensor.ivy_array = ivy.asarray(self._ivy_array, device=args[0])
-                    return cast_tensor
-            else:
-                if self.dtype == args[0].dtype and self.device == ivy.dev(args[0]):
-                    return self
-                else:
-                    cast_tensor = self.clone()
-                    cast_tensor.ivy_array = ivy.asarray(
-                        self._ivy_array,
-                        dtype=args[0].dtype,
-                        device=args[0].device,
-                    )
                     return cast_tensor
         else:
             if (
