@@ -350,7 +350,7 @@ def test_numpy_fmax(
 @handle_frontend_test(
     fn_tree="numpy.fmin",
     dtype_and_inputs=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         min_value=-np.inf,
         max_value=np.inf,
@@ -385,4 +385,8 @@ def test_numpy_fmin(
         x2=xs[1],
         out=None,
         where=where,
+        casting=casting,
+        dtype=dtype,
+        order="K",
+        subok=True,
     )

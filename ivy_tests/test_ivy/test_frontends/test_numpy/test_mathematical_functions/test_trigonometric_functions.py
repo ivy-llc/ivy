@@ -340,10 +340,10 @@ def test_numpy_deg2rad(
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[
             lambda: helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("numeric"),
+                available_dtypes=helpers.get_dtypes("float"),
             )
         ],
-        get_dtypes_kind="numeric",
+        get_dtypes_kind="float",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
