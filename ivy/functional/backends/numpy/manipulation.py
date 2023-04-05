@@ -295,9 +295,14 @@ def clip(
 clip.support_native_out = True
 
 
-def as_strided(x: np.ndarray, strides: Sequence[int]):
+def as_strided(
+    x: np.ndarray,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    strides: Sequence[int],
+    /,
+) -> np.ndarray:
     return np.lib.stride_tricks.as_strided(
         x,
-        shape=something,
+        shape=shape,
         strides=strides,
     )

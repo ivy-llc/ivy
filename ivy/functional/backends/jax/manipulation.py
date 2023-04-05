@@ -262,10 +262,23 @@ def swapaxes(
     return jnp.swapaxes(x, axis0, axis1)
 
 
-def as_strided(x: JaxArray, strides: Sequence[int]):
+def as_strided(
+    x: JaxArray,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    strides: Sequence[int],
+    /,
+) -> JaxArray:
+    start_indices = [
+        -(strides[i] * (shape[i] - 1)) // strides[-1]
+        for i in range(len(shape))
+    ]
+    limit_indices = [
+        start_indices[i] + (shape[i] - 1)
+        for i in range(len(shape))
+    ]
     return jlax.slice(
         x,
-        start_indices=something,
-        limit_indices=something,
-        strides=strides
+        start_indices=start_indices,
+        limit_indices=limit_indices,
+        strides=strides,
     )
