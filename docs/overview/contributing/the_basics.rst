@@ -400,19 +400,19 @@ With Docker
 
                 .. code-block:: none
                 
-                    pytest ivy_tests/test_array_api/array_api_tests/test_creation_functions.py::test_arange --no-header --no-summary -q
+                    pytest ivy_tests/array_api_testing/test_array_api/array_api_tests/test_creation_functions.py::test_arange --no-header --no-summary -q
             
             #. For a single file:
 
                 .. code-block:: none
                 
-                    pytest ivy_tests/test_array_api/array_api_tests/test_creation_functions.py --no-header --no-summary -q
+                    pytest ivy_tests/array_api_testing/test_array_api/array_api_tests/test_creation_functions.py --no-header --no-summary -q
             
             #. For all tests:
 
                 .. code-block:: none
 
-                    pytest ivy_tests/test_array_api/ --no-header --no-summary -q
+                    pytest ivy_tests/array_api_testing/test_array_api/ --no-header --no-summary -q
         
         #. For the entire project:
 
@@ -465,19 +465,19 @@ With Docker
 
                 .. code-block:: none
                 
-                    python -m pytest ivy_tests/test_array_api/array_api_tests/test_creation_functions.py::test_arange --no-header --no-summary -q
+                    python -m pytest ivy_tests/array_api_testing/test_array_api/array_api_tests/test_creation_functions.py::test_arange --no-header --no-summary -q
             
             #. For a single file:
 
                 .. code-block:: none
                 
-                    python -m pytest ivy_tests/test_array_api/array_api_tests/test_creation_functions.py --no-header --no-summary -q
+                    python -m pytest ivy_tests/array_api_testing/test_array_api/array_api_tests/test_creation_functions.py --no-header --no-summary -q
             
             #. For all tests:
 
                 .. code-block:: none
 
-                    python -m pytest ivy_tests/test_array_api/ --no-header --no-summary -q
+                    python -m pytest ivy_tests/array_api_testing/test_array_api/ --no-header --no-summary -q
         
         #. For the entire project
 
