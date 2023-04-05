@@ -2,6 +2,7 @@
 import numpy as np
 from hypothesis import assume, strategies as st
 import random
+from jax.lax import ConvDimensionNumbers
 
 # local
 import ivy
@@ -11,6 +12,10 @@ from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
     _assume_tf_dilation_gt_1,
 )
 from ivy.functional.frontends.jax.numpy import can_cast
+from ivy.functional.frontends.jax.lax.operators import (
+    _dimension_numbers,
+    _argsort_tuple,
+)
 
 
 # add
@@ -1787,37 +1792,56 @@ def x_and_filters(draw, dim=2, transpose=False, general=False):
     fc = draw(st.sampled_from(group_list)) if general else 1
     strides = draw(st.lists(st.integers(1, 3), min_size=dim, max_size=dim))
     dilations = draw(st.lists(st.integers(1, 3), min_size=dim, max_size=dim))
-    if dim == 2:
-        data_format = draw(st.sampled_from(["NCHW", "NHWC"]))
-    elif dim == 1:
-        data_format = draw(st.sampled_from(["NWC", "NCW"]))
+    if general:
+        if dim == 2:
+            dim_num_st1 = st.sampled_from(["NCHW", "NHWC"])
+            dim_num_st2 = st.sampled_from(["OIHW", "HWIO"])
+        elif dim == 1:
+            dim_num_st1 = st.sampled_from(["NWC", "NCW"])
+            dim_num_st2 = st.sampled_from(["OIW", "WIO"])
+        else:
+            dim_num_st1 = st.sampled_from(["NDHWC", "NCDHW"])
+            dim_num_st2 = st.sampled_from(["OIDHW", "DHWIO"])
+        dim_seq = [*range(0, dim + 2)]
+        dimension_numbers = draw(
+            st.sampled_from(
+                [
+                    None,
+                    (draw(dim_num_st1), draw(dim_num_st2), draw(dim_num_st1)),
+                    ConvDimensionNumbers(
+                        *map(
+                            tuple,
+                            draw(
+                                st.lists(
+                                    st.permutations(dim_seq), min_size=3, max_size=3
+                                )
+                            ),
+                        )
+                    ),
+                ]
+            )
+        )
     else:
-        data_format = draw(st.sampled_from(["NDHWC", "NCDHW"]))
-    x_dim = []
-    for i in range(dim):
-        min_x = filter_shape[i] + (filter_shape[i] - 1) * (dilations[i] - 1)
-        x_dim.append(draw(st.integers(min_x, min_x + 1)))
-    x_dim = tuple(x_dim)
-    if dim == 1:
-        filter_df = draw(st.sampled_from(["OIW", "WIO"]))
-    elif dim == 2:
-        filter_df = draw(st.sampled_from(["OIHW", "HWIO"]))
-    else:
-        filter_df = draw(st.sampled_from(["OIDHW", "DHWIO"]))
+        dimension_numbers = (
+            ("NCH", "OIH", "NCH")
+            if dim == 1
+            else ("NCHW", "OIHW", "NCHW")
+            if dim == 2
+            else ("NCDHW", "OIDHW", "NCDHW")
+        )
+    dim_nums = _dimension_numbers(dimension_numbers, dim + 2, as_jax=True)
     if not transpose:
         output_channels = output_channels * fc
         channel_shape = (output_channels, input_channels // fc)
     else:
         input_channels = input_channels * fc
         channel_shape = (output_channels // fc, input_channels)
-    if filter_df[0] == "O":
-        filter_shape = channel_shape + filter_shape
-    else:
-        filter_shape = filter_shape + channel_shape[::-1]
-    if data_format == "NHWC" or data_format == "NWC" or data_format == "NDHWC":
-        x_shape = (batch_size,) + x_dim + (input_channels,)
-    else:
-        x_shape = (batch_size, input_channels) + x_dim
+    x_dim = []
+    for i in range(dim):
+        min_x = filter_shape[i] + (filter_shape[i] - 1) * (dilations[i] - 1)
+        x_dim.append(draw(st.integers(min_x, min_x + 1)))
+    x_shape = (batch_size, input_channels, *x_dim)
+    filter_shape = channel_shape + filter_shape
     vals = draw(
         helpers.array_values(
             dtype=dtype[0],
@@ -1826,6 +1850,7 @@ def x_and_filters(draw, dim=2, transpose=False, general=False):
             max_value=1.0,
         )
     )
+    vals = ivy.permute_dims(vals, axes=_argsort_tuple(dim_nums[0]))
     filters = draw(
         helpers.array_values(
             dtype=dtype[0],
@@ -1834,12 +1859,13 @@ def x_and_filters(draw, dim=2, transpose=False, general=False):
             max_value=1.0,
         )
     )
+    filters = ivy.permute_dims(filters, axes=_argsort_tuple(dim_nums[1]))
     if general and not transpose:
         x_dilation = draw(st.lists(st.integers(1, 3), min_size=dim, max_size=dim))
         dilations = (dilations, x_dilation)
     if draw(st.booleans()):
         p_dtype, pref = draw(
-            helpers.get_castable_dtype(draw(helpers.get_dtypes("numeric")), dtype[0])
+            helpers.get_castable_dtype(draw(helpers.get_dtypes("float")), dtype[0])
         )
         assume(can_cast(p_dtype, pref))
     else:
@@ -1849,7 +1875,7 @@ def x_and_filters(draw, dim=2, transpose=False, general=False):
         vals,
         filters,
         dilations,
-        (data_format, filter_df, data_format),
+        dimension_numbers,
         strides,
         padding,
         fc,
@@ -1872,7 +1898,6 @@ def test_jax_lax_conv(
 ):
     dtype, x, filters, dilation, dim_num, stride, pad, fc, pref = x_f_d_other
     _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilation)
-    assume(dim_num[0][1] == "C" and dim_num[1][0] == "O")
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
