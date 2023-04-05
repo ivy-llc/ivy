@@ -94,10 +94,10 @@ def kron(
 
 kron.support_native_out = False
 
-@with_supported_dtypes({"1.11.0 and below": ("float16", "float32", "float64", "complex64", "complex128")}, backend_version)
+@with_supported_dtypes({"1.11.0 and below": ("float32", "float64", "complex64", "complex128")}, backend_version)
 def matrix_exp(
     x: np.ndarray,
-    /,complex64
+    /,
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
