@@ -121,7 +121,7 @@ def _test_frontend_function_ignoring_unitialized(*args, **kwargs):
     ivy.previous_backend()
 
     # get flattened arrays from returned value
-    ret_np_flat = helpers.flatten_fw_and_to_np(ret=ret, fw=kwargs["frontend"])
+    ret_np_flat = helpers.flatten_and_to_np(ret=ret, fw=kwargs["frontend"])
 
     # handling where size
     where = np.asarray(where)
