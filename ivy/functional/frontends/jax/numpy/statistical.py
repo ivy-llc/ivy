@@ -17,6 +17,7 @@ def einsum(
     optimize="optimal",
     precision=None,
     _use_xeinsum=False,
+    _dot_general=None,
 ):
     return ivy.einsum(subscripts, *operands, out=out)
 
@@ -384,6 +385,20 @@ def nanvar(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=
     if ivy.all(all_nan):
         ret = ivy.astype(ret, ivy.array([float("inf")]))
     return ret
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+def nancumsum(a, axis=None, dtype=None, out=None):
+    a = ivy.where(ivy.isnan(a), ivy.zeros_like(a), a)
+    return ivy.cumsum(a, axis=axis, dtype=dtype, out=out)
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+def nancumprod(a, axis=None, dtype=None, out=None):
+    a = ivy.where(ivy.isnan(a), ivy.zeros_like(a), a)
+    return ivy.cumprod(a, axis=axis, dtype=dtype, out=out)
 
 
 @handle_jax_dtype

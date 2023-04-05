@@ -12,9 +12,9 @@ import inspect
 
 # for wrapping (sequence matters)
 FN_DECORATORS = [
-    "handle_array_function",
     "infer_device",
     "infer_dtype",
+    "handle_array_function",
     "integer_arrays_to_float",
     "outputs_to_ivy_arrays",
     "outputs_to_native_arrays",
@@ -638,8 +638,8 @@ def handle_nestable(fn: Callable) -> Callable:
         # if any of the arguments or keyword arguments passed to the function contains
         # a container, get the container's version of the function and call it using
         # the passed arguments.
-        if hasattr(ivy.Container, "static_" + fn_name):
-            cont_fn = getattr(ivy.Container, "static_" + fn_name)
+        if hasattr(ivy.Container, "_static_" + fn_name):
+            cont_fn = getattr(ivy.Container, "_static_" + fn_name)
         else:
             cont_fn = lambda *args, **kwargs: ivy.Container.cont_multi_map_in_function(
                 fn, *args, **kwargs

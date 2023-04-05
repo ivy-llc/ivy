@@ -126,7 +126,7 @@ def asarray(
 
                 dtype = ivy.as_ivy_dtype(ivy.default_dtype(dtype=dtype, item=obj))
                 return tf.convert_to_tensor(
-                    ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
+                    ivy.nested_map(obj, lambda x: tf.cast(x, dtype), shallow=False),
                     dtype=dtype,
                 )
             else:
@@ -222,6 +222,8 @@ def from_dlpack(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if isinstance(x, tf.Variable):
+        x = x.read_value()
     dlcapsule = tf.experimental.dlpack.to_dlpack(x)
     return tf.experimental.dlpack.from_dlpack(dlcapsule)
 
