@@ -32,7 +32,7 @@ _dtype_kind_keys = {
 
 def _get_fn_dtypes(framework, kind="valid"):
     """
-    Return a list of supported data types for a specified machine learning framework and kind of data type.
+    Return a list of supported data types for a specified framework and kind of data type.
 
     Parameters
     ----------
