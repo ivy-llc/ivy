@@ -60,4 +60,4 @@ def kron(a, b):
 
 @to_ivy_arrays_and_back
 def cross(a, b, *, axisa=-1, axisb=-1, axisc=-1, axis=None):
-    return ivy.cross(a, b, axisa, axisb, axisc, axis)
+    return ivy.cross(a, b, axisa=axisa, axisb=axisb, axisc=axisc, axis=axis)
