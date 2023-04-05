@@ -147,6 +147,7 @@ def relu_(input):
     return input
 
 
+@to_ivy_arrays_and_back
 def selu(input, inplace=False):
     out = input if inplace else None
     return ivy.selu(input, out=out)

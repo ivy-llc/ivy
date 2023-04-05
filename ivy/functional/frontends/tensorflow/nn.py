@@ -331,9 +331,14 @@ def max_pool1d(input, ksize, strides, padding, data_format="NWC", name=None):
 
 
 @to_ivy_arrays_and_back
+def max_pool2d(input, ksize, strides, padding, data_format="NHWC", name=None):
+    return ivy.max_pool2d(input, ksize, strides, padding, data_format=data_format)
+
+
+@to_ivy_arrays_and_back
 def moments(x, axes, shift=None, keepdims=False, name=None):
-    return ivy.mean(x, axis=axes, keepdims=keepdims), ivy.var(
-        x, axis=axes, keepdims=keepdims
+    return ivy.mean(x, axis=ivy.to_list(axes), keepdims=keepdims), ivy.var(
+        x, axis=ivy.to_list(axes), keepdims=keepdims
     )
 
 
@@ -488,3 +493,8 @@ def softmax(logits, axis=None, name=None):
 @to_ivy_arrays_and_back
 def softsign(features, name=None):
     return ivy.softsign(features)
+
+
+def crelu(features, axis=-1, name=None):
+    c = ivy.concat([features, -features], axis=axis)
+    return ivy.relu(c)

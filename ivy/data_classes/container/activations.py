@@ -10,7 +10,7 @@ from typing import Optional, Union, List, Dict
 # noinspection PyMissingConstructor
 class _ContainerWithActivations(ContainerBase):
     @staticmethod
-    def static_relu(
+    def _static_relu(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -122,7 +122,7 @@ class _ContainerWithActivations(ContainerBase):
         }
 
         """
-        return self.static_relu(
+        return self._static_relu(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -132,7 +132,7 @@ class _ContainerWithActivations(ContainerBase):
         )
 
     @staticmethod
-    def static_leaky_relu(
+    def _static_leaky_relu(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -249,7 +249,7 @@ class _ContainerWithActivations(ContainerBase):
         }
 
         """
-        return self.static_leaky_relu(
+        return self._static_leaky_relu(
             self,
             alpha=alpha,
             key_chains=key_chains,
@@ -260,7 +260,7 @@ class _ContainerWithActivations(ContainerBase):
         )
 
     @staticmethod
-    def static_gelu(
+    def _static_gelu(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -375,7 +375,7 @@ class _ContainerWithActivations(ContainerBase):
             }
 
         """
-        return self.static_gelu(
+        return self._static_gelu(
             self,
             approximate=approximate,
             key_chains=key_chains,
@@ -386,7 +386,7 @@ class _ContainerWithActivations(ContainerBase):
         )
 
     @staticmethod
-    def static_sigmoid(
+    def _static_sigmoid(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -495,7 +495,7 @@ class _ContainerWithActivations(ContainerBase):
             b: ivy.array([0.62245935, 0.5, 0.4750208])
         }
         """
-        return self.static_sigmoid(
+        return self._static_sigmoid(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -505,7 +505,7 @@ class _ContainerWithActivations(ContainerBase):
         )
 
     @staticmethod
-    def static_softmax(
+    def _static_softmax(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -622,7 +622,7 @@ class _ContainerWithActivations(ContainerBase):
         }
 
         """
-        return self.static_softmax(
+        return self._static_softmax(
             self,
             axis=axis,
             key_chains=key_chains,
@@ -633,7 +633,7 @@ class _ContainerWithActivations(ContainerBase):
         )
 
     @staticmethod
-    def static_softplus(
+    def _static_softplus(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -768,7 +768,7 @@ class _ContainerWithActivations(ContainerBase):
             a: ivy.array([0.948, 2.63, 4.25])
         }
         """
-        return self.static_softplus(
+        return self._static_softplus(
             self,
             beta=beta,
             threshold=threshold,
@@ -780,7 +780,7 @@ class _ContainerWithActivations(ContainerBase):
         )
 
     @staticmethod
-    def static_log_softmax(
+    def _static_log_softmax(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -909,7 +909,7 @@ class _ContainerWithActivations(ContainerBase):
             b: ivy.array([-0.371, -1.17])
         }
         """
-        return self.static_log_softmax(
+        return self._static_log_softmax(
             self,
             axis=axis,
             key_chains=key_chains,
@@ -920,7 +920,7 @@ class _ContainerWithActivations(ContainerBase):
         )
 
     @staticmethod
-    def static_mish(
+    def _static_mish(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -1032,7 +1032,7 @@ class _ContainerWithActivations(ContainerBase):
         }
 
         """
-        return self.static_mish(
+        return self._static_mish(
             self,
             key_chains=key_chains,
             to_apply=to_apply,

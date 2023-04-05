@@ -12,7 +12,7 @@ import ivy
 # noinspection PyMissingConstructor
 class _ContainerWithGeneral(ContainerBase):
     @staticmethod
-    def static_is_native_array(
+    def _static_is_native_array(
         x: ivy.Container,
         /,
         *,
@@ -121,7 +121,7 @@ class _ContainerWithGeneral(ContainerBase):
             b: true
         }
         """
-        return self.static_is_native_array(
+        return self._static_is_native_array(
             self,
             exclusive=exclusive,
             key_chains=key_chains,
@@ -131,7 +131,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_is_ivy_array(
+    def _static_is_ivy_array(
         x: ivy.Container,
         /,
         *,
@@ -235,7 +235,7 @@ class _ContainerWithGeneral(ContainerBase):
             b: false
         }
         """
-        return self.static_is_ivy_array(
+        return self._static_is_ivy_array(
             self,
             exclusive=exclusive,
             key_chains=key_chains,
@@ -245,7 +245,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_is_array(
+    def _static_is_array(
         x: ivy.Container,
         /,
         *,
@@ -356,7 +356,7 @@ class _ContainerWithGeneral(ContainerBase):
             b: true
         }
         """
-        return self.static_is_array(
+        return self._static_is_array(
             self,
             exclusive=exclusive,
             key_chains=key_chains,
@@ -366,7 +366,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_clip_vector_norm(
+    def _static_clip_vector_norm(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         max_norm: float,
         /,
@@ -501,7 +501,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return self.static_clip_vector_norm(
+        return self._static_clip_vector_norm(
             self,
             max_norm,
             p=p,
@@ -513,7 +513,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_inplace_update(
+    def _static_inplace_update(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         val: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
@@ -542,7 +542,7 @@ class _ContainerWithGeneral(ContainerBase):
             In cases where it should be, backends which do not natively support inplace
             updates will raise an exception.
         keep_input_dtype
-            Whether or not to preserve `x` data type after the update, otherwise `val` 
+            Whether or not to preserve `x` data type after the update, otherwise `val`
             data type will be applied. Defaults to False.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
@@ -612,7 +612,7 @@ class _ContainerWithGeneral(ContainerBase):
             In cases where it should be, backends which do not natively support inplace
             updates will raise an exception.
         keep_input_dtype
-            Whether or not to preserve `x` data type after the update, otherwise `val` 
+            Whether or not to preserve `x` data type after the update, otherwise `val`
             data type will be applied. Defaults to False.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
@@ -648,7 +648,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return self.static_inplace_update(
+        return self._static_inplace_update(
             self,
             val,
             ensure_in_backend=ensure_in_backend,
@@ -661,7 +661,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_inplace_decrement(
+    def _static_inplace_decrement(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         val: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -793,7 +793,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return self.static_inplace_decrement(
+        return self._static_inplace_decrement(
             self,
             val,
             key_chains=key_chains,
@@ -803,7 +803,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_inplace_increment(
+    def _static_inplace_increment(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         val: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -935,7 +935,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return self.static_inplace_increment(
+        return self._static_inplace_increment(
             self,
             val,
             key_chains=key_chains,
@@ -945,7 +945,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_assert_supports_inplace(
+    def _static_assert_supports_inplace(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -1045,7 +1045,7 @@ class _ContainerWithGeneral(ContainerBase):
         with jax backend
         
         """
-        return self.static_assert_supports_inplace(
+        return self._static_assert_supports_inplace(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -1054,7 +1054,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_all_equal(
+    def _static_all_equal(
         x1: ivy.Container,
         *xs: Iterable[Any],
         equality_matrix: bool = False,
@@ -1221,7 +1221,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return self.static_all_equal(
+        return self._static_all_equal(
             self,
             *xs,
             equality_matrix=equality_matrix,
@@ -1232,7 +1232,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_fourier_encode(
+    def _static_fourier_encode(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         max_freq: Union[float, ivy.Array, ivy.NativeArray],
         /,
@@ -1406,7 +1406,7 @@ class _ContainerWithGeneral(ContainerBase):
                     1.00000000e+00,  1.00000000e+00,  1.00000000e+00]])
         }
         """
-        return self.static_fourier_encode(
+        return self._static_fourier_encode(
             self,
             max_freq,
             num_bands=num_bands,
@@ -1419,7 +1419,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_gather(
+    def _static_gather(
         params: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
@@ -1489,7 +1489,8 @@ class _ContainerWithGeneral(ContainerBase):
         >>> x = ivy.Container(a = ivy.array([0., 1., 2.]),
         ...                   b = ivy.array([4., 5., 6.]))
         >>> y = ivy.array([0, 1])
-        >>> print(ivy.Container.static_gather(x, y))
+        >>> z = ivy.Container.static_gather(x, y)
+        >>> print(z)
         {
             a: ivy.array([0., 1.]),
             b: ivy.array([4., 5.])
@@ -1565,14 +1566,15 @@ class _ContainerWithGeneral(ContainerBase):
         ...                   b = ivy.array([4., 5., 6.]))
         >>> y = ivy.Container(a = ivy.array([0, 1]),
         ...                   b = ivy.array([1, 2]))
-        >>> print(x.gather(y))
+        >>> z = x.gather(y)
+        >>> print(z)
         {
             a: ivy.array([0., 1.]),
             b: ivy.array([5., 6.])
         }
 
         """
-        return self.static_gather(
+        return self._static_gather(
             self,
             indices,
             axis=axis,
@@ -1585,7 +1587,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_has_nans(
+    def _static_has_nans(
         self: ivy.Container,
         /,
         *,
@@ -1605,6 +1607,17 @@ class _ContainerWithGeneral(ContainerBase):
             The container to check for nans.
         include_infs
             Whether to include infs and -infs in the check. Default is True.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -1613,7 +1626,7 @@ class _ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.container(a=ivy.array([1, 2]), b=ivy.array([float('nan'), 2]))
+        >>> x = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([float('nan'), 2]))
         >>> y = ivy.Container.static_has_nans(x)
         >>> print(y)
         {
@@ -1649,6 +1662,17 @@ class _ContainerWithGeneral(ContainerBase):
         ----------
         include_infs
             Whether to include infs and -infs in the check. Default is True.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -1656,7 +1680,7 @@ class _ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.container(a=ivy.array([1, 2]), b=ivy.array([float('nan'), 2]))
+        >>> x = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([float('nan'), 2]))
         >>> y = x.has_nans(x)
         >>> print(y)
         {
@@ -1665,7 +1689,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return self.static_has_nans(
+        return self._static_has_nans(
             self,
             include_infs=include_infs,
             key_chains=key_chains,
@@ -1675,7 +1699,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_scatter_nd(
+    def _static_scatter_nd(
         indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         updates: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -1855,7 +1879,7 @@ class _ContainerWithGeneral(ContainerBase):
             b: ivy.array([1, 2, 20, 30, 40, 6, 7, 8, 9, 10])
         }
         """
-        return self.static_scatter_nd(
+        return self._static_scatter_nd(
             self,
             updates,
             shape=shape,
@@ -1868,7 +1892,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_scatter_flat(
+    def _static_scatter_flat(
         indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         updates: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -1996,7 +2020,7 @@ class _ContainerWithGeneral(ContainerBase):
             b: ivy.array([8, 7, 5, 4, 0, 0, 0, 0])
         }
         """
-        return self.static_scatter_flat(
+        return self._static_scatter_flat(
             self,
             updates,
             size=size,
@@ -2009,7 +2033,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_gather_nd(
+    def _static_gather_nd(
         params: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
@@ -2026,8 +2050,12 @@ class _ContainerWithGeneral(ContainerBase):
 
         Parameters
         ----------
+        params
+            The container from which to gather values.
         indices
             Index array.
+        batch_dims
+            optional int, lets you gather different items from each element of a batch.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -2039,6 +2067,9 @@ class _ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        out
+            optional array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
 
         Returns
         -------
@@ -2093,6 +2124,8 @@ class _ContainerWithGeneral(ContainerBase):
             The container from which to gather values.
         indices
             Index array or container.
+        batch_dims
+            optional int, lets you gather different items from each element of a batch.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -2129,7 +2162,7 @@ class _ContainerWithGeneral(ContainerBase):
                         [200., 300.]])
         }
         """
-        return self.static_gather_nd(
+        return self._static_gather_nd(
             self,
             indices,
             batch_dims=batch_dims,
@@ -2141,7 +2174,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_einops_reduce(
+    def _static_einops_reduce(
         x: ivy.Container,
         pattern: str,
         reduction: str,
@@ -2158,6 +2191,8 @@ class _ContainerWithGeneral(ContainerBase):
 
         Parameters
         ----------
+        x
+            input container.
         pattern
             Reduction pattern.
         reduction
@@ -2176,6 +2211,9 @@ class _ContainerWithGeneral(ContainerBase):
             Default is ``False``.
         axes_lengths
             Any additional specifications for dimensions.
+        out
+            optional array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
 
         Returns
         -------
@@ -2280,7 +2318,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return self.static_einops_reduce(
+        return self._static_einops_reduce(
             self,
             pattern,
             reduction,
@@ -2293,7 +2331,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_einops_repeat(
+    def _static_einops_repeat(
         x: ivy.Container,
         pattern: str,
         /,
@@ -2309,6 +2347,8 @@ class _ContainerWithGeneral(ContainerBase):
 
         Parameters
         ----------
+        x
+            input container.
         pattern
             Rearrangement pattern.
         key_chains
@@ -2420,7 +2460,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return self.static_einops_repeat(
+        return self._static_einops_repeat(
             self,
             pattern,
             key_chains=key_chains,
@@ -2432,7 +2472,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_value_is_nan(
+    def _static_value_is_nan(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -2578,7 +2618,7 @@ class _ContainerWithGeneral(ContainerBase):
             b: False
         }
         """
-        return self.static_value_is_nan(
+        return self._static_value_is_nan(
             self,
             include_infs=include_infs,
             key_chains=key_chains,
@@ -2588,7 +2628,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_to_numpy(
+    def _static_to_numpy(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -2725,7 +2765,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return self.static_to_numpy(
+        return self._static_to_numpy(
             self,
             copy=copy,
             key_chains=key_chains,
@@ -2735,7 +2775,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_to_scalar(
+    def _static_to_scalar(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -2843,7 +2883,7 @@ class _ContainerWithGeneral(ContainerBase):
             c: -1
         }
         """
-        return self.static_to_scalar(
+        return self._static_to_scalar(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -2852,7 +2892,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_to_list(
+    def _static_to_list(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -2952,7 +2992,7 @@ class _ContainerWithGeneral(ContainerBase):
         {a:[0,1,2]}
 
         """
-        return self.static_to_list(
+        return self._static_to_list(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -2961,7 +3001,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_stable_divide(
+    def _static_stable_divide(
         numerator: ivy.Container,
         denominator: Union[Number, ivy.Array, ivy.Container],
         /,
@@ -3143,7 +3183,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return self.static_stable_divide(
+        return self._static_stable_divide(
             self,
             denominator,
             min_denominator=min_denominator,
@@ -3154,7 +3194,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_stable_pow(
+    def _static_stable_pow(
         base: ivy.Container,
         exponent: Union[Number, ivy.Array, ivy.Container],
         /,
@@ -3251,7 +3291,7 @@ class _ContainerWithGeneral(ContainerBase):
             numerically stable power.
 
         """
-        return self.static_stable_pow(
+        return self._static_stable_pow(
             self,
             exponent,
             min_base=min_base,
@@ -3262,7 +3302,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_einops_rearrange(
+    def _static_einops_rearrange(
         x: ivy.Container,
         pattern: str,
         /,
@@ -3427,7 +3467,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return self.static_einops_rearrange(
+        return self._static_einops_rearrange(
             self,
             pattern,
             key_chains=key_chains,
@@ -3439,7 +3479,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_clip_matrix_norm(
+    def _static_clip_matrix_norm(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         max_norm: float,
         /,
@@ -3569,7 +3609,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return self.static_clip_matrix_norm(
+        return self._static_clip_matrix_norm(
             self,
             max_norm,
             p=p,
@@ -3581,7 +3621,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_supports_inplace_updates(
+    def _static_supports_inplace_updates(
         x: ivy.Container,
         /,
         *,
@@ -3690,7 +3730,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return _ContainerWithGeneral.static_supports_inplace_updates(
+        return _ContainerWithGeneral._static_supports_inplace_updates(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -3699,7 +3739,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_get_num_dims(
+    def _static_get_num_dims(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -3843,7 +3883,7 @@ class _ContainerWithGeneral(ContainerBase):
             c: ivy.array(2)
         }
         """
-        return _ContainerWithGeneral.static_get_num_dims(
+        return _ContainerWithGeneral._static_get_num_dims(
             self,
             as_array=as_array,
             key_chains=key_chains,
@@ -3853,7 +3893,7 @@ class _ContainerWithGeneral(ContainerBase):
         )
 
     @staticmethod
-    def static_array_equal(
+    def _static_array_equal(
         x0: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -3975,7 +4015,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return _ContainerWithGeneral.static_array_equal(
+        return _ContainerWithGeneral._static_array_equal(
             self,
             x,
             key_chains=key_chains,

@@ -11,7 +11,7 @@ from ivy_tests.test_ivy.test_frontends.test_torch.test_non_linear_activation_fun
 )
 
 
-# relu
+# logit
 @handle_test(
     fn_tree="functional.ivy.experimental.logit",
     dtype_and_x=helpers.dtype_and_values(
@@ -46,7 +46,7 @@ def test_logit(
 @handle_test(
     fn_tree="functional.ivy.experimental.thresholded_relu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
         safety_factor_scale="log",
@@ -279,7 +279,7 @@ def test_batch_norm(
 @handle_test(
     fn_tree="functional.ivy.experimental.logsigmoid",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         safety_factor_scale="log",
         large_abs_safety_factor=120,
     ),

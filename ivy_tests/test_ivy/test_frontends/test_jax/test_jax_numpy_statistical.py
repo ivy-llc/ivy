@@ -4,6 +4,7 @@ import numpy as np
 
 
 # local
+import ivy
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_helpers
@@ -685,6 +686,85 @@ def test_jax_numpy_nanvar(
     )
 
 
+@st.composite
+def _get_castable_dtypes_values(draw, *, allow_nan=False, use_where=False):
+    available_dtypes = helpers.get_dtypes("numeric")
+    shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=4, max_dim_size=6))
+    dtype, values = draw(
+        helpers.dtype_and_values(
+            available_dtypes=available_dtypes,
+            num_arrays=1,
+            large_abs_safety_factor=24,
+            small_abs_safety_factor=24,
+            safety_factor_scale="log",
+            shape=shape,
+            allow_nan=allow_nan,
+        )
+    )
+    axis = draw(helpers.get_axis(shape=shape, force_int=True))
+    dtype1, values, dtype2 = draw(
+        helpers.get_castable_dtype(draw(available_dtypes), dtype[0], values[0])
+    )
+    if use_where:
+        where = draw(np_frontend_helpers.where(shape=shape))
+        return [dtype1], [values], axis, dtype2, where
+    return [dtype1], [values], axis, dtype2
+
+
+# nancumprod
+@handle_frontend_test(
+    fn_tree="jax.numpy.nancumprod",
+    dtype_and_x_axis_dtype=_get_castable_dtypes_values(allow_nan=True),
+)
+def test_jax_numpy_nancumprod(
+    dtype_and_x_axis_dtype,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, x, axis, dtype = dtype_and_x_axis_dtype
+    if ivy.current_backend_str() == "torch":
+        assume(not test_flags.as_variable[0])
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        axis=axis,
+        dtype=dtype,
+    )
+
+
+# nancumsum
+@handle_frontend_test(
+    fn_tree="jax.numpy.nancumsum",
+    dtype_and_x_axis_dtype=_get_castable_dtypes_values(allow_nan=True),
+)
+def test_jax_numpy_nancumsum(
+    dtype_and_x_axis_dtype,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, x, axis, dtype = dtype_and_x_axis_dtype
+    if ivy.current_backend_str() == "torch":
+        assume(not test_flags.as_variable[0])
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        axis=axis,
+        dtype=dtype,
+    )
+
+
 # std
 @handle_frontend_test(
     fn_tree="jax.numpy.std",
@@ -728,4 +808,42 @@ def test_jax_numpy_std(
         where=where,
         atol=1e-3,
         rtol=1e-3,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.corrcoef",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float32", "float64"],
+        num_arrays=2,
+        shared_dtype=True,
+        abs_smallest_val=1e-5,
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=3,
+        max_dim_size=3,
+        min_value=-100,
+        max_value=100,
+        allow_nan=False,
+    ),
+    rowvar=st.booleans(),
+)
+def test_jax_numpy_corrcoef(
+    dtype_and_x,
+    rowvar,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, x = dtype_and_x
+    np_helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+        rowvar=rowvar,
     )
