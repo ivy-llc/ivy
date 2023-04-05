@@ -266,7 +266,7 @@ def avg_pool1d(
             (pad_w // 2, pad_w - pad_w // 2),
             (0, 0),
         ],
-        "edge",
+        constant_values=0.0,
     )
 
     x_shape = x.shape
@@ -289,7 +289,7 @@ def avg_pool1d(
         _get_num_padded_values,
         constant={
             "p": pad_w,
-            "n": x_shape[1],
+            "n": x.shape[1] - pad_w,
             "k": kernel[0],
             "s": strides[0],
         },
@@ -297,7 +297,9 @@ def avg_pool1d(
             "i": np.arange(res.shape[1]),
         },
     )
-    res = kernel[0] * res / (kernel[0] - num_padded_values)
+    res = (kernel[0] * res) / (
+        kernel[0] - np.array(num_padded_values, dtype=res.dtype)
+    )[:, None]
 
     if data_format == "NCW":
         return res.swapaxes(1, 2)
