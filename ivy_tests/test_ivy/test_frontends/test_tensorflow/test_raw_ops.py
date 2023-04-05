@@ -3487,9 +3487,9 @@ def test_tensorflow_BandedTriangularSolve(
     test_flags,
     fn_tree,
     on_device,
-    matrix, 
-    rhs, 
-    lower, 
+    matrix,
+    rhs,
+    lower,
     adjoint,
 ):
     input_dtype, x = dtype_and_x
@@ -3499,11 +3499,11 @@ def test_tensorflow_BandedTriangularSolve(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        matrix=x[0], 
-        rhs=x[1], 
-        lower=lower, 
+        matrix=x[0],
+        rhs=x[1],
+        lower=lower,
         adjoint=adjoint,
-    )    
+    )
 
 
 # BatchMatMul
@@ -3520,7 +3520,7 @@ def test_tensorflow_BatchMatMul(
     test_flags,
     fn_tree,
     on_device,
-    adj_x, 
+    adj_x,
     adj_y,
 ):
     input_dtype, x = dtype_and_x
@@ -3532,9 +3532,9 @@ def test_tensorflow_BatchMatMul(
         on_device=on_device,
         x=x[0],
         y=x[1],
-        adj_x=adj_x, 
+        adj_x=adj_x,
         adj_y=adj_y,
-    )  
+    )
 
 
 # BatchMatMulV2
@@ -3551,7 +3551,7 @@ def test_tensorflow_BatchMatMulV2(
     test_flags,
     fn_tree,
     on_device,
-    adj_x, 
+    adj_x,
     adj_y,
 ):
     input_dtype, x = dtype_and_x
@@ -3563,9 +3563,9 @@ def test_tensorflow_BatchMatMulV2(
         on_device=on_device,
         x=x[0],
         y=x[1],
-        adj_x=adj_x, 
+        adj_x=adj_x,
         adj_y=adj_y,
-    )  
+    )
 
 
 # BatchMatMulV3
@@ -3583,7 +3583,7 @@ def test_tensorflow_BatchMatMulV3(
     fn_tree,
     on_device,
     Tout,
-    adj_x, 
+    adj_x,
     adj_y,
 ):
     input_dtype, x = dtype_and_x
@@ -3596,6 +3596,36 @@ def test_tensorflow_BatchMatMulV3(
         x=x[0],
         y=x[1],
         Tout=Tout,
-        adj_x=adj_x, 
+        adj_x=adj_x,
         adj_y=adj_y,
-    )    
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Zeta",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float32", "float64"],
+        min_num_dims=1,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Zeta(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        q=x[1],
+    )
