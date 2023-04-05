@@ -1024,16 +1024,13 @@ def _as_strided_helper(draw):
         min_num_dims=1,
         ret_shape=True,
     ))
-    dims = len(x_shape)
+    shape = draw(helpers.reshape_shapes(shape=x_shape))
+    new_ndim = len(shape)
     strides = draw(st.lists(
         st.integers(min_value=1, max_value=5),
-        min_size=dims,
-        max_size=dims,
+        min_size=new_ndim,
+        max_size=new_ndim,
     ))
-    shape = [
-        draw(st.integers(min_value=1, max_value=x_shape[i]))
-        for i in range(dims)
-    ]   # not sure about the valid shapes
     return dtype, x, shape, strides
 
 
