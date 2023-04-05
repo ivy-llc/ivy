@@ -6,43 +6,46 @@ from numbers import Number
 from typing import Union, Tuple, Iterable
 from .dtypes import DType
 
-tensorflow_enum_to_type = {
-    1: ivy.float32,
-    2: ivy.float64,
-    3: ivy.int32,
-    4: ivy.uint8,
-    5: ivy.int16,
-    6: ivy.int8,
-    8: ivy.complex64,
-    9: ivy.int64,
-    10: ivy.bool,
-    14: ivy.bfloat16,
-    17: ivy.uint16,
-    18: ivy.complex128,
-    19: ivy.float16,
-    22: ivy.uint32,
-    23: ivy.uint64,
-}
+from ivy.utils.backend.handler import _FrontendDictHandler
 
-tensorflow_type_to_enum = {v: k for k, v in tensorflow_enum_to_type.items()}
+with _FrontendDictHandler() as importer:
+    tensorflow_enum_to_type = {
+        1: ivy.float32,
+        2: ivy.float64,
+        3: ivy.int32,
+        4: ivy.uint8,
+        5: ivy.int16,
+        6: ivy.int8,
+        8: ivy.complex64,
+        9: ivy.int64,
+        10: ivy.bool,
+        14: ivy.bfloat16,
+        17: ivy.uint16,
+        18: ivy.complex128,
+        19: ivy.float16,
+        22: ivy.uint32,
+        23: ivy.uint64,
+    }
 
-float32 = DType(1)
-float64 = DType(2)
-int32 = DType(3)
-uint8 = DType(4)
-int16 = DType(5)
-int8 = DType(6)
-int64 = DType(9)
-bool = DType(10)
-bfloat16 = DType(14)
-uint16 = DType(17)
-float16 = DType(19)
-uint32 = DType(22)
-uint64 = DType(23)
+    tensorflow_type_to_enum = {v: k for k, v in tensorflow_enum_to_type.items()}
 
-# type aliases
-double = float64
-half = float16
+    float32 = DType(1)
+    float64 = DType(2)
+    int32 = DType(3)
+    uint8 = DType(4)
+    int16 = DType(5)
+    int8 = DType(6)
+    int64 = DType(9)
+    bool = DType(10)
+    bfloat16 = DType(14)
+    uint16 = DType(17)
+    float16 = DType(19)
+    uint32 = DType(22)
+    uint64 = DType(23)
+
+    # type aliases
+    double = float64
+    half = float16
 
 
 @handle_exceptions

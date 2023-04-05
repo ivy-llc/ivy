@@ -566,11 +566,13 @@ remainder.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-def round(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def round(
+    x: np.ndarray, /, *, decimals: int = 0, out: Optional[np.ndarray] = None
+) -> np.ndarray:
     if "int" in str(x.dtype):
         ret = np.copy(x)
     else:
-        return np.round(x, out=out)
+        ret = np.round(x, decimals=decimals, out=out)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret

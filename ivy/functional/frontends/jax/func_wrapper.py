@@ -160,6 +160,7 @@ def handle_jax_dtype(fn: Callable) -> Callable:
     dtype_pos = list(inspect.signature(fn).parameters).index("dtype")
     return new_fn
 
+
 def outputs_to_native_arrays(fn: Callable):
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
@@ -167,5 +168,5 @@ def outputs_to_native_arrays(fn: Callable):
         if isinstance(ret, jax_frontend.DeviceArray):
             ret = ret.ivy_array.data
         return ret
-    return  new_fn
 
+    return new_fn

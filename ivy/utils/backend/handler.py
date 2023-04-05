@@ -6,6 +6,7 @@ import types
 import ivy
 import importlib
 import functools
+import inspect
 import numpy as np
 import gc
 from ivy.utils import _importlib, verbosity
@@ -608,3 +609,44 @@ def with_backend(backend: str, cached: bool = False):
     except KeyError:
         compiled_backends[backend] = [ivy_pack]
     return ivy_pack
+
+
+# Frontend Helpers ##########
+
+
+class _FrontendDictHandler:
+    """
+    Allow for frontends to bypass Ivy backend bindings for classes and attributes
+    """
+
+    def __init__(self):
+        self._temp_replaced_keys = {}
+        self._temp_added_keys = []
+
+    def __enter__(self):
+        if ivy.backend == "none":
+            return
+
+        for k, v in ivy_original_dict.items():
+            if inspect.isfunction(v) or inspect.ismodule(v) or k.startswith("_"):
+                continue
+            # If it the attribute exists in the original backend and has the same value
+            if hasattr(ivy.__dict__, k) and v == ivy.__dict__[k]:
+                continue
+            if k in ivy.__dict__.keys():
+                self._temp_replaced_keys[k] = ivy.__dict__[k]
+            else:
+                self._temp_added_keys.append(k)
+            ivy.__dict__[k] = ivy_original_dict[k]
+
+    def __exit__(self, *exc):
+        if ivy.backend == "none":
+            return
+
+        for k, v in self._temp_replaced_keys.items():
+            ivy.__dict__[k] = v
+        self._temp_replaced_keys.clear()
+
+        for k in self._temp_added_keys:
+            del ivy.__dict__[k]
+        self._temp_added_keys.clear()
