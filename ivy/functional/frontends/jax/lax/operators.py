@@ -110,10 +110,15 @@ def conv(
     )
 
 
-def _dimension_numbers(dimension_numbers, lhs_len):
+def _dimension_numbers(dimension_numbers, lhs_len, transp=False):
     if dimension_numbers is None:
-        iota = tuple(range(lhs_len))
-        return iota, iota, iota
+        if transp:
+            iota = (0, lhs_len-1, *range(1, lhs_len-1))
+            iotb = (lhs_len-1, lhs_len-2, *range(0, lhs_len-2))
+            return iota, iotb, iota
+        else:
+            iota = tuple(range(lhs_len))
+            return iota, iota, iota
     elif isinstance(dimension_numbers[0], (tuple, list)):
         return dimension_numbers
     else:
@@ -167,7 +172,7 @@ def conv_transpose(
         lhs = ivy.astype(lhs, preferred_element_type)
         rhs = ivy.astype(rhs, preferred_element_type)
     dims = len(lhs.shape) - 2
-    dim_nums = _dimension_numbers(dimension_numbers, dims+2)
+    dim_nums = _dimension_numbers(dimension_numbers, dims+2, transp=True)
     rhs_spec = tuple([dim_nums[1][i] for i in (*range(2, dims+2), 1, 0)])
     rhs_dilation = 1 if rhs_dilation is None else rhs_dilation
     if isinstance(padding, str):
