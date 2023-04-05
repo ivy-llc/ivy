@@ -1015,3 +1015,50 @@ def test_expand(
         x=x[0],
         shape=shape,
     )
+
+
+@st.composite
+def _as_strided_helper(draw):
+    dims = draw(st.integers(min_value=1, max_value=5))
+    dtype, x = draw(helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+    ))
+    _, strides = draw(helpers.dtype_and_values(
+        dtype=dtype,
+        shape=(dims,)
+    ))
+    strides = strides[0].tolist()
+    shape = draw(helpers.get_shape(min_num_dims=1))
+    return dtype, x, shape, strides
+
+
+@handle_test(
+    fn_tree="as_strided",
+    all_args=_as_strided_helper(),
+    container_flags=st.just([False]),      # for now
+    test_instance_method=st.just(False),   # for now
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_as_strided(
+    *,
+    all_args,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    dtype, x, shape, strides = all_args
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+        shape=shape,
+        strides=strides,
+    )
