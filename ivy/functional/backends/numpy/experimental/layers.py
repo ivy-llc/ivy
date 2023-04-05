@@ -6,7 +6,7 @@ from typing import Optional, Union, Tuple, Literal
 
 # local
 import ivy
-from ivy.functional.ivy.layers import _handle_padding
+from ivy.functional.ivy.layers import _handle_padding, _get_num_padded_values
 from ivy.functional.backends.numpy.layers import _add_dilations
 from ivy.functional.ivy.experimental.layers import _padding_ceil_mode
 
@@ -284,6 +284,20 @@ def avg_pool1d(
     )
 
     res = np.mean(sub_matrices, axis=2)
+
+    num_padded_values = ivy.map(
+        _get_num_padded_values,
+        constant={
+            "p": pad_w,
+            "n": x_shape[1],
+            "k": kernel[0],
+            "s": strides[0],
+        },
+        unique={
+            "i": np.arange(res.shape[1]),
+        },
+    )
+    res = kernel[0] * res / (kernel[0] - num_padded_values)
 
     if data_format == "NCW":
         return res.swapaxes(1, 2)
