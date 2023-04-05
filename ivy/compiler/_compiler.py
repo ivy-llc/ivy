@@ -30,6 +30,7 @@ def compile(
     kwargs: Optional[dict] = None,
 ) -> Union[Graph, LazyGraph]:
     """Takes `fn` and compiles it into a more efficient composition of backend operations.
+
     Parameters
     ----------
     objs
@@ -56,9 +57,11 @@ def compile(
         positional arguments for `obj`
     kwargs
         keyword arguments for `obj`
+
     Returns
     -------
     the compiled `Graph` object.
+
     Examples
     --------
     >>> import ivy, time
@@ -119,6 +122,7 @@ def transpile(
     """Transpiles Callable objects passed as arguments.
     If args and kwargs are specified, transpilation is performed eagerly,
     otherwise, transpilation will happen lazily.
+
     Parameters
     ----------
     objs
@@ -135,6 +139,7 @@ def transpile(
         If specified, arguments that will be used to transpile eagerly.
     kwargs
         If specified, keyword arguments that will be used to transpile eagerly.
+
     Returns
     -------
     Either a transpiled Graph or a non-initialized LazyGraph.
