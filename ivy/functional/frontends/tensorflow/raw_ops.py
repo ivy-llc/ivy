@@ -132,11 +132,9 @@ def Concat(*, concat_dim, values, name="Concat"):
 
 Cos = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.cos))
 
-
 @to_ivy_arrays_and_back
 def Cosh(*, x, name="Cosh"):
     return ivy.cosh(x)
-
 
 Div = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.divide))
 
