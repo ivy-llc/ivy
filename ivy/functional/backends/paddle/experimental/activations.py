@@ -126,4 +126,3 @@ def selu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
             )
             return ret
     return F.selu(x.cast("float32")).cast(x.dtype)
-

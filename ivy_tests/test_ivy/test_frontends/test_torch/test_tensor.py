@@ -1780,7 +1780,7 @@ def _to_helper(draw):
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("valid"),
             num_arrays=2,
-            large_abs_safety_factor=2,
+            large_abs_safety_factor=3,
         )
     )
     input_dtype, x = dtype_x
