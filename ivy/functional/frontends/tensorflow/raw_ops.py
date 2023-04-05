@@ -132,6 +132,7 @@ def Concat(*, concat_dim, values, name="Concat"):
     return ivy.concat(values, axis=concat_dim)
 
 
+
 @to_ivy_arrays_and_back
 def Cos(*, x, name="Cos"):
     return ivy.cos(x)
@@ -716,3 +717,8 @@ def DebugGradientIdentity(input, name="DebugGradientIdentity"):
 @to_ivy_arrays_and_back
 def Real(input, Tout=ivy.float32, name="Real"):
     return ivy.Real(input, Tout=Tout)
+
+
+
+def Conj(*,x, name = 'Conj'):
+    return ivy.conj(x)
