@@ -1970,11 +1970,10 @@ def test_tensorflow_sinh(
 # zeta
 @handle_frontend_test(
     fn_tree="tensorflow.math.zeta",
-    aliases=["tensorflow.raw_ops.Zeta"],
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=2,
         min_num_dims=1,
+        num_arrays=2,
         shared_dtype=True,
     ),
     test_with_out=st.just(False),
