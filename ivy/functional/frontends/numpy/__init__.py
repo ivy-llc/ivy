@@ -604,6 +604,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.extrema_finding impor
     _maximum,
     _minimum,
     _fmax,
+    _amax
 )
 
 _frontend_array = array
@@ -677,5 +678,6 @@ minimum = ufunc("_minimum")
 real = ufunc("_real")
 divmod = ufunc("_divmod")
 fmax = ufunc("_fmax")
+amax = ufunc("_amax")
 ldexp = ufunc("_ldexp")
 floor = ufunc("_floor")
