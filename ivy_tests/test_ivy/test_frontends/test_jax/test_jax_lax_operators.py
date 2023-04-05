@@ -1822,7 +1822,7 @@ def x_and_filters(draw, dim=2, transpose=False, general=False):
             if dim == 2
             else ("NCDHW", "OIDHW", "NCDHW")
         )
-    dim_nums = _dimension_numbers(dimension_numbers, dim + 2)
+    dim_nums = _dimension_numbers(dimension_numbers, dim + 2, transp=transpose)
     if not transpose:
         output_channels = output_channels * fc
         channel_shape = (output_channels, input_channels // fc)
