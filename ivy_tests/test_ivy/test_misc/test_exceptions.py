@@ -2,11 +2,11 @@ import sys
 import os
 import contextlib
 import pytest
-from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
+from ivy_tests.test_ivy.helpers.available_frameworks import get_available_frameworks
 
 import ivy
 
-available_frameworks = available_frameworks()
+get_available_frameworks = get_available_frameworks()
 
 
 @pytest.mark.parametrize("trace_mode", ["full", "ivy", "frontend"])

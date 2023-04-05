@@ -10,7 +10,7 @@ from ivy_tests.test_ivy.helpers.testing_helpers import (
 )
 
 
-def available_frameworks():
+def get_available_frameworks():
     available_frameworks_lis = ["numpy", "jax", "tensorflow", "torch"]
     try:
         import jax

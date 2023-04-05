@@ -27,9 +27,9 @@ import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
 from ivy import DefaultDevice
 from ivy import set_exception_trace_mode
 from ivy_tests.test_ivy.helpers import globals as test_globals
-from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
+from ivy_tests.test_ivy.helpers.available_frameworks import get_available_frameworks
 
-available_frameworks = available_frameworks()
+available_frameworks = get_available_frameworks()
 GENERAL_CONFIG_DICT = {}
 UNSET_TEST_CONFIG = {"list": [], "flag": []}
 UNSET_TEST_API_CONFIG = {"list": [], "flag": []}
@@ -49,8 +49,6 @@ def pytest_report_header(config):
 
 
 def pytest_configure(config):
-    global available_frameworks
-
     # Ivy Exception traceback
     set_exception_trace_mode(config.getoption("--ivy-tb"))
 
@@ -163,7 +161,9 @@ def pytest_configure(config):
                         TEST_PARAMS_CONFIG.append(
                             (
                                 device,
-                                test_globals.FWS_DICT[backend_str](),
+                                importlib.import_module(
+                                    f"ivy.functional.backends.{backend_str}"
+                                ),
                                 compile_graph,
                                 implicit,
                             )

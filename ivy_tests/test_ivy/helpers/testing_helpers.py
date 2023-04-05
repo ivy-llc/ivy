@@ -26,7 +26,7 @@ from ivy_tests.test_ivy.helpers.test_parameter_flags import (
 )
 from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
 from ivy_tests.test_ivy.helpers.available_frameworks import (
-    available_frameworks,
+    get_available_frameworks,
     ground_truth,
 )
 from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import (
@@ -181,7 +181,7 @@ def _get_method_supported_devices_dtypes(
     for the method
     """
     supported_device_dtypes = {}
-    backends = available_frameworks()
+    backends = get_available_frameworks()
     for b in backends:  # ToDo can optimize this ?
         ivy.set_backend(b)
         _fn = getattr(class_module.__dict__[class_name], method_name)
@@ -221,7 +221,7 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
         if isinstance(getattr(fn_module_, fn_name), fn_module_.ufunc):
             fn_name = "_" + fn_name
 
-    backends = available_frameworks()
+    backends = get_available_frameworks()
     for b in backends:  # ToDo can optimize this ?
         ivy.set_backend(b)
         _tmp_mod = importlib.import_module(fn_module)

@@ -44,9 +44,7 @@ except ImportError:
 import ivy
 from ivy_tests.test_ivy.helpers.test_parameter_flags import FunctionTestFlags
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
-from ivy_tests.test_ivy.helpers.available_frameworks import (
-    available_frameworks as available_frameworkss,
-)
+from ivy_tests.test_ivy.helpers.available_frameworks import get_available_frameworks
 from ivy.functional.ivy.gradients import _variable
 from ivy.functional.ivy.data_type import _get_function_list, _get_functions_from_string
 from ivy_tests.test_ivy.test_frontends import NativeClass
@@ -69,7 +67,7 @@ def compiled_if_required(fn, test_compile=False, args=None, kwargs=None):
     return fn
 
 
-available_frameworks = available_frameworkss()
+available_frameworks = get_available_frameworks()
 
 
 def make_json_pickable(s):
@@ -80,35 +78,6 @@ def make_json_pickable(s):
 
 def empty_func(*args, **kwargs):
     return None
-
-
-try:
-    from ivy.functional.backends.jax.general import (
-        is_native_array as is_jax_native_array,
-    )
-except ImportError:
-    is_jax_native_array = empty_func
-
-try:
-    from ivy.functional.backends.numpy.general import (
-        is_native_array as is_numpy_native_array,
-    )
-except ImportError:
-    is_numpy_native_array = empty_func
-
-try:
-    from ivy.functional.backends.tensorflow.general import (
-        is_native_array as is_tensorflow_native_array,
-    )
-except ImportError:
-    is_tensorflow_native_array = empty_func
-
-try:
-    from ivy.functional.backends.torch.general import (
-        is_native_array as is_torch_native_array,
-    )
-except ImportError:
-    is_torch_native_array = empty_func
 
 
 # Ivy Function testing ##########################

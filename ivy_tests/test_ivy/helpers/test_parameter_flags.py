@@ -8,7 +8,7 @@ from ivy.functional.ivy.gradients import _variable
 
 @st.composite
 def _gradient_strategy(draw):
-    if test_globals.CURRENT_BACKEND().backend == "numpy":
+    if test_globals.CURRENT_BACKEND.backend == "numpy":
         draw(st.just(False))
     draw(st.booleans())
 
@@ -17,14 +17,14 @@ def _gradient_strategy(draw):
 def _as_varaible_strategy(draw):
     if (
         test_globals.CURRENT_BACKEND is not test_globals._Notsetval
-        and test_globals.CURRENT_BACKEND().backend == "numpy"
+        and test_globals.CURRENT_BACKEND.backend == "numpy"
     ):
         return draw(st.just([False]))
     if not test_globals.CURRENT_FRONTEND_STR:
         # non multiversion changes go here
         if (
             test_globals.CURRENT_FRONTEND is not test_globals._Notsetval
-            and test_globals.CURRENT_FRONTEND().backend == "numpy"
+            and test_globals.CURRENT_FRONTEND.backend == "numpy"
         ):
             return draw(st.just([False]))
     elif test_globals.CURRENT_FRONTEND_STR[0].split("/")[0] == "numpy":
@@ -35,7 +35,7 @@ def _as_varaible_strategy(draw):
 
 @st.composite
 def _compile_strategy(draw):  # TODO remove later when paddle is supported
-    if test_globals.CURRENT_BACKEND().backend == "paddle":
+    if test_globals.CURRENT_BACKEND.backend == "paddle":
         draw(st.just(False))
     draw(st.booleans())
 

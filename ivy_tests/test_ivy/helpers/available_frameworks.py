@@ -1,40 +1,19 @@
+from importlib.util import find_spec
+from ivy.utils.backend.handler import _backend_dict
+
 # A list of available backends that can be used for testing.
 
 
-def available_frameworks():
-    available_frameworks_lis = ["numpy", "jax", "tensorflow", "torch", "paddle"]
-    try:
-        import jax
-
-        assert jax, "jax is imported to see if the user has it installed"
-    except ImportError:
-        available_frameworks_lis.remove("jax")
-
-    try:
-        import tensorflow as tf
-
-        assert tf, "tensorflow is imported to see if the user has it installed"
-    except ImportError:
-        available_frameworks_lis.remove("tensorflow")
-
-    try:
-        import torch
-
-        assert torch, "torch is imported to see if the user has it installed"
-    except ImportError:
-        available_frameworks_lis.remove("torch")
-
-    try:
-        import paddle
-
-        assert paddle, "Paddle is imported to see if the user has it installed"
-    except ImportError:
-        available_frameworks_lis.remove("paddle")
-    return available_frameworks_lis
+def get_available_frameworks():
+    available_frameworks = []
+    for framework in _backend_dict:
+        if find_spec(framework) is not None:
+            available_frameworks.append(framework)
+    return available_frameworks
 
 
 def ground_truth():
-    available_framework_lis = available_frameworks()
+    available_framework_lis = get_available_frameworks()
     g_truth = ""
     if "tensorflow" in available_framework_lis:
         g_truth = "tensorflow"

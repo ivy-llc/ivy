@@ -108,7 +108,7 @@ def get_dtypes(
     if prune_function:
         retrieval_fn = _get_fn_dtypes
         if test_globals.CURRENT_RUNNING_TEST is not test_globals._Notsetval:
-            valid_dtypes = set(retrieval_fn(test_globals.CURRENT_BACKEND(), kind))
+            valid_dtypes = set(retrieval_fn(test_globals.CURRENT_BACKEND, kind))
         else:
             raise RuntimeError(
                 "No function is set to prune, calling "
@@ -134,8 +134,8 @@ def get_dtypes(
         # as backend, i.e eg: --backend=torch/1.13.0 --frontend=torch/1.13.0
         # in such cases we don't need to use subprocess
         ver = True
-        if test_globals.CURRENT_FRONTEND():
-            ver = test_globals.CURRENT_FRONTEND().backend_version["version"]
+        if test_globals.CURRENT_FRONTEND:
+            ver = test_globals.CURRENT_FRONTEND.backend_version["version"]
 
             if isinstance(test_globals.CURRENT_FRONTEND_STR, list):
                 ver = test_globals.CURRENT_FRONTEND_STR[0].split("/")[1] != ver
@@ -179,7 +179,7 @@ def get_dtypes(
             valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
 
         else:
-            frontend_dtypes = retrieval_fn(test_globals.CURRENT_FRONTEND(), kind)
+            frontend_dtypes = retrieval_fn(test_globals.CURRENT_FRONTEND, kind)
             valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
 
     # Make sure we return dtypes that are compatiable with ground truth backend
@@ -217,7 +217,7 @@ def get_dtypes(
             valid_dtypes = valid_dtypes.intersection(backend_ret)
         else:
             valid_dtypes = valid_dtypes.intersection(
-                retrieval_fn(test_globals.CURRENT_GROUND_TRUTH_BACKEND(), kind)
+                retrieval_fn(test_globals.CURRENT_GROUND_TRUTH_BACKEND, kind)
             )
 
     valid_dtypes = list(valid_dtypes)
