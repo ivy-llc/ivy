@@ -122,7 +122,12 @@ def equal(
 ) -> paddle.Tensor:
     with ivy.ArrayMode(False):
         diff = ivy.subtract(x1, x2)
-        return ivy.logical_and(ivy.less_equal(diff, 0), ivy.greater_equal(diff, 0))
+        ret = ivy.logical_and(ivy.less_equal(diff, 0), ivy.greater_equal(diff, 0))
+
+    # ret result is sufficient for all cases except where the value is +/-INF of NaN
+    return ivy.to_native(
+        ivy.where(ivy.isnan(diff), ~ivy.logical_or(ivy.isnan(x1), ivy.isnan(x2)), ret)
+    )
 
 
 @with_unsupported_device_and_dtypes(
