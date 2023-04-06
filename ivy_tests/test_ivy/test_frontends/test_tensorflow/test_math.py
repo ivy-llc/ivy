@@ -445,7 +445,7 @@ def test_tensorflow_log_sigmoid(
     )
 
 
-#reciprocal
+# reciprocal
 @handle_frontend_test(
     fn_tree="tensorflow.math.reciprocal",
     dtype_and_x=helpers.dtype_and_values(
