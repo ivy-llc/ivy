@@ -490,7 +490,7 @@ def slice(operand, start_indices, limit_indices, strides=None):
         )
         raise TypeError(msg.format(start_indices, limit_indices))
 
-    if not len(operand.shape) <= len(limit_indices):
+    if not tuple(limit_indices) <= operand.shape:
         msg = (
             "slice limit_indices must be less than or equal to operand shape, "
             "got limit_indices {} for operand shape {}."
@@ -503,6 +503,11 @@ def slice(operand, start_indices, limit_indices, strides=None):
             "got start_indices of {}."
         )
         raise TypeError(msg.format(start_indices))
+
+    if not limit_indices >= start_indices:
+      msg = ("slice limit_indices must be greater than or equal to start_indices,"
+            " got start_indices {} and limit_indices {}.")
+      raise TypeError(msg.format(start_indices, limit_indices))
 
     start_indices, limit_indices = map(
         lambda x: ivy.array(x) if isinstance(x, int) else x,
@@ -519,6 +524,28 @@ def slice(operand, start_indices, limit_indices, strides=None):
     ret = operand[full_slice] if full_slice else operand
 
     return ivy.expand_dims(ret)
+
+
+@to_ivy_arrays_and_back
+def slice_in_dim(operand, start_index, limit_index, stride=1, axis=0):
+  start_indices = [0] * operand.ndim
+  limit_indices = list(operand.shape)
+  strides = [1] * operand.ndim
+
+  len_axis = operand.shape[axis]
+  start_index_int = start_index if start_index is not None else 0
+  limit_index_int = limit_index if limit_index is not None else len_axis
+
+  if start_index_int < 0:
+    start_index_int = start_index_int + len_axis
+  if limit_index_int < 0:
+    limit_index_int = limit_index_int + len_axis
+
+  axis = int(axis)
+  start_indices[axis] = start_index_int
+  limit_indices[axis] = limit_index_int
+  strides[axis] = int(stride)
+  return slice(operand, start_indices, limit_indices, strides)
 
 
 @to_ivy_arrays_and_back
