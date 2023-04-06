@@ -200,7 +200,7 @@ def floor(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
         paddle.bool,
     ]:
         if paddle.is_complex(x):
-            return paddle.floor(x.real()) + paddle.ceil(x.imag()) * 1j
+            return paddle.floor(x.real()) + paddle.floor(x.imag()) * 1j
         return paddle.floor(x.cast("float32")).cast(x.dtype)
     return paddle.floor(x)
 
@@ -670,11 +670,7 @@ def tanh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
 
 
 @with_unsupported_device_and_dtypes(
-    {
-        "2.4.2 and below": {
-            "cpu": ("uint16", "bfloat16", "float16", "complex64", "complex128")
-        }
-    },
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}},
     backend_version,
 )
 def floor_divide(
@@ -685,7 +681,8 @@ def floor_divide(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
-    return paddle.floor(ivy.to_native(divide(x1, x2))).cast(ret_dtype)
+    with ivy.ArrayMode(False):
+        return floor(divide(x1, x2)).cast(ret_dtype)
 
 
 def bitwise_or(
@@ -965,10 +962,11 @@ def remainder(
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     if not modulus:
-        res = divide(x1, x2)
-        res_floored = ivy.where(res >= 0, floor(res), ceil(res))
-        diff = subtract(res, res_floored).astype(res.dtype)
-        return round(multiply(diff, x2)).cast(x1.dtype)
+        with ivy.ArrayMode(False):
+            res = divide(x1, x2)
+            res_floored = ivy.where(greater_equal(res, 0), floor(res), ceil(res))
+            diff = subtract(res, res_floored).astype(res.dtype)
+            return round(multiply(diff, x2)).cast(x1.dtype)
 
     if x1.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
         x1, x2 = x1.cast("float32"), x2.cast("float32")
@@ -1163,4 +1161,8 @@ def fmod(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    with ivy.ArrayMode(False):
+        res = ivy.floor_divide(ivy.abs(x1), ivy.abs(x2))
+        res = ivy.multiply(res, ivy.abs(x2))
+        return ivy.multiply(ivy.abs(ivy.subtract(ivy.abs(x1), res)), ivy.sign(x1))
