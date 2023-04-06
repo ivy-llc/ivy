@@ -180,13 +180,29 @@ def solve_triangular(
     /,
     *,
     lower: bool = True,
+    trans: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if lower:
-        res = np.linalg.solve(np.tril(a), b)
+        a = np.tril(a)
     else:
-        res = np.linalg.solve(np.triu(a), b)
-    return res
+        a = np.triu(a)
+
+    if trans:
+        a = a.T
+        b = b.T
+
+    n = a.shape[0]
+    x = np.zeros_like(b)
+
+    if lower:
+        for i in range(n):
+            x[i] = (b[i] - np.dot(a[i,:i], x[:i])) / a[i,i]
+    else:
+        for i in range(n-1, -1, -1):
+            x[i] = (b[i] - np.dot(a[i,i+1:], x[i+1:])) / a[i,i]
+
+    return x
 
 
 solve_triangular.support_native_out = False
