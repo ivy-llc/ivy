@@ -2,8 +2,8 @@
     function generateBadges() {
         var url = window.location.href; // get the current URL
 
-        // get everything after the root domain
-        var path = url.split('/').slice(3).join('/');
+        // get everything after /demos/
+        var path = url.split('/').slice(url.split('/').indexOf("demos") + 1).join('/');
 
         // replace ".html" ending with ".ipynb"
         if (path.endsWith('.html')) {
