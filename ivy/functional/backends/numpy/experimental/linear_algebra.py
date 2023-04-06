@@ -178,10 +178,9 @@ def solve_triangular(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if lower:
-        res = np.linalg.tensorsolve(np.tril(a), b)
+        res = np.linalg.solve(np.tril(a), b)
     else:
-        res = np.linalg.tensorsolve(np.triu(a), b)
-    
+        res = np.linalg.solve(np.triu(a), b)
     return res
 
 
