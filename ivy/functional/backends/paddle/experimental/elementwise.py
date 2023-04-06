@@ -1,9 +1,7 @@
 # global
 from typing import Optional, Union, Tuple, List
 from numbers import Number
-from math import pi
 import paddle
-import numpy as np
 from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.func_wrapper import (
     with_unsupported_dtypes,
