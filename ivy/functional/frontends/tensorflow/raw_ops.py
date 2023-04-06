@@ -200,6 +200,11 @@ def FloorMod(*, x, y, name="FloorMod"):
 
 
 @to_ivy_arrays_and_back
+def FFT(*, input, name='FFT'):
+    return ivy.fft(input,1)
+
+
+@to_ivy_arrays_and_back
 def Gather(*, params, indices, validate_indices=None, name="Gather"):
     return ivy.gather(params, indices, axis=0, batch_dims=0)
 
