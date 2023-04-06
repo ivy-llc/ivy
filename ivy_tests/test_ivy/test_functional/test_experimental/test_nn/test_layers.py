@@ -98,6 +98,7 @@ def test_avg_pool1d(
     x_k_s_p,
     test_flags,
     backend_fw,
+    on_device,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
@@ -108,6 +109,7 @@ def test_avg_pool1d(
         fn_name="avg_pool1d",
         rtol_=1e-2,
         atol_=1e-2,
+        on_device=on_device,
         x=x[0],
         kernel=kernel,
         strides=stride,
