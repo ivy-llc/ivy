@@ -1328,6 +1328,25 @@ def test_tensorflow_FloorMod(  # NOQA
     )
 
 
+def test_tensorflow_FFT( # NOQA
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+    )
+
+
 # Exp
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Exp",
