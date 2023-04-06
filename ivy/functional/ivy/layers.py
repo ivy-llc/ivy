@@ -2003,3 +2003,27 @@ def _get_x_data_format(dims: int = 2, data_format: str = "channel_first"):
             return "NCDHW"
         else:
             return "NDHWC"
+
+
+def _get_num_padded_values(i, p, n, k, s):
+    """
+    Get number of padded values in a specific window.
+
+    Parameters
+    ----------
+    i window index
+    p total amount of padding
+    n input size
+    k kernel size
+    s stride
+
+    Returns
+    -------
+        number of padded values in a particular window represented by i
+
+    """
+    current_index = s * i
+    left_padding = p // 2
+    return max(0, left_padding - current_index) + max(
+        0, current_index + k - n - left_padding
+    )

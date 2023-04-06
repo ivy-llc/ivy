@@ -7,7 +7,7 @@ import math
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, handle_mixed_function
 from . import backend_version
-from ivy.functional.ivy.layers import _handle_padding
+from ivy.functional.ivy.layers import _handle_padding, _get_num_padded_values
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, backend_version)
@@ -200,9 +200,23 @@ def avg_pool1d(
         x = x.permute(0, 2, 1)
     x_shape = x.shape[2]
     pad_w = _handle_padding(x_shape, strides[0], kernel[0], padding)
-    x = torch.nn.functional.pad(x, [pad_w // 2, pad_w - pad_w // 2], mode="replicate")
+    x = torch.nn.functional.pad(x, [pad_w // 2, pad_w - pad_w // 2], value=0.0)
 
     res = torch.nn.functional.avg_pool1d(x, kernel, strides, 0)
+
+    num_padded_values = ivy.map(
+        _get_num_padded_values,
+        constant={
+            "p": pad_w,
+            "n": x_shape,
+            "k": kernel[0],
+            "s": strides[0],
+        },
+        unique={
+            "i": torch.arange(res.shape[2]),
+        },
+    )
+    res = (kernel[0] * res) / (kernel[0] - torch.tensor(num_padded_values))
 
     if data_format == "NWC":
         res = res.permute(0, 2, 1)
