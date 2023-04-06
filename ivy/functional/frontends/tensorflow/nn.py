@@ -489,6 +489,12 @@ def softmax(logits, axis=None, name=None):
     return ivy.softmax(logits, axis=axis)
 
 
+@with_unsupported_dtypes({"2.9.0 and below": "float16"}, "tensorflow")
+@to_ivy_arrays_and_back
+def leaky_relu(features, alpha, name=None):
+    return ivy.leaky_relu(features, alpha=alpha)
+
+
 @to_ivy_arrays_and_back
 def crelu(features, axis=-1, name=None):
     c = ivy.concat([features, -features], axis=axis)
