@@ -2211,6 +2211,69 @@ def test_jax_lax_slice(
     )
 
 
+@st.composite
+def _slice_in_dim_helper(draw):
+    dtype, x, axis = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=1,
+            force_int_axis=True,
+            valid_axis=True,
+        ),
+    )
+    operand = x[0]
+    start_index = draw(
+        st.integers(
+            min_value=-abs(operand.shape[axis]),
+            max_value=operand.shape[axis]
+        )
+    )
+    if start_index < 0:
+        limit_index = draw(
+            st.integers(
+                min_value=start_index + operand.shape[axis] ,
+                max_value=operand.shape[axis]
+            )
+        )
+    else:
+        limit_index = draw(
+            st.integers(
+                min_value=-abs(operand.shape[axis]),
+                max_value=operand.shape[axis]
+            ).filter(lambda _x: _x >= start_index)
+        )
+    stride = draw(st.integers(min_value=1, max_value=abs(limit_index + 1)))
+    return dtype, x, start_index, limit_index, stride, axis
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.slice_in_dim",
+    dtype_x_params=_slice_in_dim_helper(),
+    test_with_out=st.just(False),
+)
+def test_jax_lax_slice_in_dim(
+    *,
+    dtype_x_params,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x, start_index, limit_index, stride, axis = dtype_x_params
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        operand=x[0],
+        start_index=start_index,
+        limit_index=limit_index,
+        stride=stride,
+        axis=axis,
+    )
+
+
 # expand_dims
 @handle_frontend_test(
     fn_tree="jax.lax.expand_dims",
