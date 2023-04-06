@@ -29,17 +29,16 @@ for backend in os.listdir(
         backend,
         "sub_backends",
     )
-    if os.path.isdir(sub_backends_dir):
-        for sub_backend in os.listdir(sub_backends_dir):
-            if sub_backend.startswith("__"):
-                continue
-            _sub_backend_dict[
-                sub_backend
-            ] = f"{_backends_subpackage_path}.{backend}.sub_backends.{sub_backend}"
-            try:
-                _backend_to_sub_backends_dict[backend].append(sub_backend)
-            except KeyError:
-                _backend_to_sub_backends_dict[backend] = [sub_backend]
+    for sub_backend in os.listdir(sub_backends_dir):
+        if sub_backend.startswith("__"):
+            continue
+        _sub_backend_dict[
+            sub_backend
+        ] = f"{_backends_subpackage_path}.{backend}.sub_backends.{sub_backend}"
+        try:
+            _backend_to_sub_backends_dict[backend].append(sub_backend)
+        except KeyError:
+            _backend_to_sub_backends_dict[backend] = [sub_backend]
 
 
 _all_sub_backends = []
