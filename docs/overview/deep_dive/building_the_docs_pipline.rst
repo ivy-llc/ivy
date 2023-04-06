@@ -197,7 +197,7 @@ before building the docs.
 Custom Extensions
 -----------------
 
-As of writing this documentation, Ivy's doc-builder is using 3 custom extensions:
+As of writing this documentation, Ivy's doc-builder is using 4 custom extensions:
 
 1. ``custom_autosummary``
 2. ``custom_builder``
