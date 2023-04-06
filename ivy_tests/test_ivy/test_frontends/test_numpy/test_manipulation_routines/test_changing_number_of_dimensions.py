@@ -176,3 +176,35 @@ def test_numpy_atleast_1d(
         on_device=on_device,
         **arys,
     )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.broadcast_arrays",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=helpers.ints(min_value=1, max_value=10),
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_numpy_broadcast_arrays(
+    *,
+    dtype_value,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, value = dtype_value
+    arrys = {}
+    for i, v in enumerate(value):
+        arrys[f"array{i}"] = v
+    test_flags.num_positional_args = len(arrys)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        **arrys,
+    )
