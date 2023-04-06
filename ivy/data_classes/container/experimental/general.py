@@ -1,4 +1,3 @@
-import ivy
 from ivy.data_classes.container.base import ContainerBase
 
 
