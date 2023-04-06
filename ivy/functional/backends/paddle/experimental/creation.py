@@ -203,3 +203,12 @@ def tril_indices(
     return to_device(
         paddle.tril_indices(n_rows, col=n_cols, offset=k, dtype="int64"), device
     )
+
+
+def frombuffer(
+    buffer: bytes,
+    dtype: Optional[paddle.dtype] = float,
+    count: Optional[int] = -1,
+    offset: Optional[int] = 0,
+) -> paddle.Tensor:
+    raise IvyNotImplementedException

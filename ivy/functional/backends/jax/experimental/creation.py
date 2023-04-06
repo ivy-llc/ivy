@@ -85,3 +85,12 @@ def tril_indices(
         jnp.tril_indices(n=n_rows, k=k, m=n_cols),
         device=device,
     )
+
+
+def frombuffer(
+    buffer: bytes,
+    dtype: Optional[jnp.dtype] = float,
+    count: Optional[int] = -1,
+    offset: Optional[int] = 0,
+) -> JaxArray:
+    return jnp.frombuffer(buffer, dtype=dtype, count=count, offset=offset)

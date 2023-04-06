@@ -134,3 +134,14 @@ def tril_indices(
             row=n_rows, col=n_cols, offset=k, dtype=torch.int64, device=device
         )
     )
+
+
+def frombuffer(
+        buffer: bytes,
+        dtype: Optional[torch.dtype] = float,
+        count: Optional[int] = -1,
+        offset: Optional[int] = 0,
+) -> torch.Tensor:
+    dtype = ivy.as_native_dtype(dtype)
+
+    return torch.frombuffer(buffer, dtype=dtype, count=count, offset=offset)
