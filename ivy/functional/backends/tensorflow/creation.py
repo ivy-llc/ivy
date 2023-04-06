@@ -361,12 +361,13 @@ def triu(
 
 
 def zeros(
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    *,
+    *shape: Union[ivy.NativeShape, Sequence[int]],
     dtype: tf.DType,
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if isinstance(shape[0], (list, tuple)):
+        shape = shape[0]
     with tf.device(device):
         return tf.zeros(shape, dtype)
 

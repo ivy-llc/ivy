@@ -278,12 +278,13 @@ def triu(x: JaxArray, /, *, k: int = 0, out: Optional[JaxArray] = None) -> JaxAr
 
 
 def zeros(
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    *,
+    *shape: Union[ivy.NativeShape, Sequence[int]],
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if isinstance(shape[0], ivy.NativeShape):
+        shape = shape[0]
     return _to_device(
         jnp.zeros(shape, dtype),
         device=device,
