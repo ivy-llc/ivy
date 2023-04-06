@@ -70,12 +70,16 @@ def asarray(
 
 
 def empty(
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    *,
+    *args: Union[int, Sequence[int]],
+    shape: Optional[ivy.NativeShape] = None,
     dtype: np.dtype,
     device: str,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if args and shape:
+        raise TypeError("empty() got multiple values for argument 'shape'")
+    if shape is None:
+        shape = args[0] if isinstance(args[0], (tuple, list)) else args
     return _to_device(np.empty(shape, dtype), device=device)
 
 

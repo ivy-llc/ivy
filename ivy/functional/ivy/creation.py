@@ -947,8 +947,8 @@ def triu(
 @handle_array_like_without_promotion
 @handle_nestable
 def empty(
-    shape: Union[ivy.Shape, ivy.NativeShape],
-    *,
+    *args: Union[int, Sequence[int]],
+    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
@@ -957,8 +957,10 @@ def empty(
 
     Parameters
     ----------
+    args
+        list, tuple or a sequence of integers representing the output array shape.
     shape
-        output array shape.
+       output array shape.
     dtype
         output array data type. If dtype is None, the output array data type must be the
         default floating-point data type. Default: ``None``.
@@ -984,7 +986,7 @@ def empty(
     instances in place of any of the arguments.
 
     """
-    return current_backend().empty(shape, dtype=dtype, device=device, out=out)
+    return current_backend().empty(*args, shape, dtype=dtype, device=device, out=out)
 
 
 @infer_device

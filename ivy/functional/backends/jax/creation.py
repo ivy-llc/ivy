@@ -89,12 +89,16 @@ def asarray(
 
 
 def empty(
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    *,
+    *args: Union[int, Sequence[int]],
+    shape: Optional[ivy.NativeShape] = None,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if args and shape:
+        raise TypeError("empty() got multiple values for argument 'shape'")
+    if shape is None:
+        shape = args[0] if isinstance(args[0], (tuple, list)) else args
     return _to_device(jnp.empty(shape, dtype), device=device)
 
 
