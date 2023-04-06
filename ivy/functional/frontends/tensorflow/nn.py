@@ -489,10 +489,17 @@ def softmax(logits, axis=None, name=None):
     return ivy.softmax(logits, axis=axis)
 
 
+@with_unsupported_dtypes({"2.9.0 and below": "float16"}, "tensorflow")
+@to_ivy_arrays_and_back
+def leaky_relu(features, alpha, name=None):
+    return ivy.leaky_relu(features, alpha=alpha)
+
+
 @to_ivy_arrays_and_back
 def crelu(features, axis=-1, name=None):
     c = ivy.concat([features, -features], axis=axis)
     return ivy.relu(c)
+
 
 @with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, "tensorflow")
 @to_ivy_arrays_and_back
@@ -512,3 +519,12 @@ def conv_transpose(
         output_shape=output_shape,
         data_format=data_format,
     )
+
+
+@to_ivy_arrays_and_back
+def avg_pool(input, ksize, strides, padding, data_format="NWC", name=None):
+    if len(ivy.shape(input)) == 3:
+        return ivy.avg_pool1d(input, ksize, strides, padding, data_format=data_format)
+    elif len(ivy.shape(input)) == 4:
+        return ivy.avg_pool2d(input, ksize, strides, padding, data_format=data_format)
+    return ivy.avg_pool3d(input, ksize, strides, padding, data_format=data_format)
