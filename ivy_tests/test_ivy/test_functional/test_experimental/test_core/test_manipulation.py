@@ -1,6 +1,7 @@
 # global
 from hypothesis import strategies as st
 import hypothesis.extra.numpy as nph
+import math
 
 # local
 import numpy as np
@@ -1017,15 +1018,40 @@ def test_expand(
     )
 
 
+def _factorize(n):
+    factors = []
+    for i in range(2, int(math.sqrt(n)) + 1):
+        if n == 1:
+            break
+        while n % i == 0:
+            factors.append(i)
+            n //= i
+    if n > 1:
+        factors.append(n)
+    return factors
+
+
+@st.composite
+def _get_reshape(draw, shape):
+    size = 1 if len(shape) == 0 else math.prod(shape)
+    new_shape = draw(st.permutations(_factorize(size)))
+    reduct = draw(st.integers(min_value=1, max_value=len(new_shape)))
+    new_shape = (math.prod(new_shape[:reduct]), *new_shape[reduct:])
+    if shape == new_shape:
+        ones = draw(st.integers(min_value=1, max_value=5))
+        new_shape = tuple(draw(st.permutations(new_shape + (1,) * ones)))
+    return new_shape
+
+
 @st.composite
 def _as_strided_helper(draw):
     dtype, x, x_shape = draw(helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=2,
-        min_dim_size=5,
+        min_dim_size=2,
         ret_shape=True,
     ))
-    shape = draw(helpers.reshape_shapes(shape=x_shape))
+    shape = draw(_get_reshape(x_shape))
     new_ndim = len(shape)
     strides = draw(st.lists(
         st.integers(min_value=1, max_value=5),
