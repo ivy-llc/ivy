@@ -19,9 +19,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 )
 def test_triu_indices(
     *,
-    n_rows,
-    n_cols,
-    k,
+    dtype_and_x,
     test_flags,
     backend_fw,
     fn_name,
@@ -39,7 +37,6 @@ def test_triu_indices(
         n_rows=x[0],
         n_cols=x[1],
         k=x[2],
-        device=on_device,
     )
 
 
