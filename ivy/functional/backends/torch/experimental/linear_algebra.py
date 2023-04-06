@@ -6,6 +6,7 @@ from typing import Optional, Tuple, Sequence, Union
 
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_supported_dtypes
 from .. import backend_version
 
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
@@ -179,26 +180,25 @@ def cond(
 cond.support_native_out = False
 
 
+@with_supported_dtypes({"1.13.0 and below": ("float32", "float64", "complex64", "complex128")}, backend_version)
 def solve_triangular(
     a: torch.Tensor,
     b: torch.Tensor,
     /,
     *,
-    lower: bool = True,
-    transpose: bool = False,
-    conjugate: bool = False,
-    unit_diagonal: bool = False,
+    upper: bool = False,
+    left: bool = False,
+    unitriangular: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.linalg.solve_triangular(
         a,
         b,
-        lower=lower,
-        transpose=transpose,
-        conjugate=conjugate,
-        unit_diagonal=unit_diagonal,
+        upper=upper,
+        left=left,
+        unitriangular=unitriangular,
         out=out,
     )
 
 
-solve_triangular.support_native_out = True
+solve_triangular.support_native_out = False
