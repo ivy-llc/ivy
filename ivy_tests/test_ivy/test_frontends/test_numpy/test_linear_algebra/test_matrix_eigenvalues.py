@@ -51,18 +51,18 @@ def test_numpy_eigvalsh(
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
     ).filter(
         lambda x: "float16" not in x[0]
-                  and "bfloat16" not in x[0]
-                  and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
-                  and np.linalg.det(np.asarray(x[1][0])) != 0
+        and "bfloat16" not in x[0]
+        and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(np.asarray(x[1][0])) != 0
     ),
     test_with_out=st.just(False),
 )
 def test_numpy_eig(
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     dtype, x = dtype_and_x
     x = np.array(x[0], dtype=dtype[0])
@@ -105,9 +105,9 @@ def test_numpy_eig(
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
     ).filter(
         lambda x: "float16" not in x[0]
-                  and "bfloat16" not in x[0]
-                  and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
-                  and np.linalg.det(np.asarray(x[1][0])) != 0
+        and "bfloat16" not in x[0]
+        and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(np.asarray(x[1][0])) != 0
     ),
     UPLO=st.sampled_from(("L", "U")),
     test_with_out=st.just(False),

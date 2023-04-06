@@ -249,3 +249,9 @@ def norm(input, ord=2, dim=None, keepdim=False, *, out=None):
         return ivy.vector_norm(input, ord=ord, axis=dim, keepdims=keepdim, out=out)
     else:
         raise ValueError("Invalid axis or ord value")
+
+        
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+def multi_dot(tensors, *, out=None):
+    return ivy.multi_dot(tensors, out=out)
