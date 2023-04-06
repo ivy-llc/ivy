@@ -144,7 +144,7 @@ This is a builtin package and doesn't require explicit installation.
 
         pip install git+https://github.com/unifyai/ivy.git
 
-#. Setup the interpreter from you environment in Pycharm by:
+#. Setup the interpreter from your environment in Pycharm by:
 
    a. Going to settings -> project -> Python Interpreter
 
@@ -192,7 +192,7 @@ Windows
    a. Going to the settings -> Build, Execution, Deployment -> Docker
       Click the "+" on top left and it should add a docker connection.
    b. Going to settings -> project -> Python Interpreter
-   c. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new small drop down menu. Select "On Docker...".A         window will open which will have three steps.
+   c. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new small drop down menu. Select "On Docker...". A         window will open which will have three steps.
 #. It will ask to create a new Docker target, at this step you have to select the following:
 
    a. Docker image -> Docker
