@@ -7,7 +7,7 @@ project:
 website:
   title: "Tutorials and Examples - Ivy"
   favicon: "assets/img/ivy_logo_only.png"
-  
+
   page-navigation: true
 
   sidebar:
@@ -35,12 +35,12 @@ website:
           - "guides/03_transpiling_a_tf_model.ipynb"
           - "guides/04_developing_a_convnet_with_ivy.ipynb"
       - section: "Examples and Demos"
-          
-
 
 format:
   html:
     toc: true
+    include-after-body:
+      - file: assets/generate_badges.html
     theme: assets/css/custom.scss
     page-layout: full
     code-overflow: scroll
