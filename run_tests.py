@@ -162,6 +162,7 @@ if __name__ == "__main__":
         f"mongodb+srv://deep-ivy:{mongo_key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa
     )
     db = cluster["Ivy_tests"]
+    db_multi = cluster["Ivy_tests_multi"]
     with open("tests_to_run", "r") as f:
         for line in f:
             test, backend = line.split(",")
@@ -181,16 +182,23 @@ if __name__ == "__main__":
                 )
             if ret != 0:
                 res = make_clickable(run_id, result_config["failure"])
-                update_individual_test_results(
-                    db[coll[0]], coll[1], submod, backend, test_fn, res
-                )
                 failed = True
             else:
                 res = make_clickable(run_id, result_config["success"])
-                update_individual_test_results(
-                    db[coll[0]], coll[1], submod, backend, test_fn, res
-                )
-
+            update_individual_test_results(
+                db[coll[0]], coll[1], submod, backend, test_fn, res
+            )
+            update_individual_test_results(
+                db_multi[coll[0]],
+                coll[1],
+                submod,
+                backend,
+                test_fn,
+                res,
+                "latest-stable",
+                "latest-stable",
+            )
+            
     try:
         with open("tests_to_remove", "r") as f:
             for line in f:
