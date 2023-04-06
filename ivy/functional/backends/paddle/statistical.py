@@ -2,8 +2,6 @@
 
 torch_scatter = None
 from typing import Union, Optional, Sequence
-
-
 import paddle
 
 # local
@@ -215,8 +213,7 @@ def cumprod(
     raise IvyNotImplementedException()
 
 
-
-@with_unsupported_device_and_dtypes(
+@with_unsupported_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def cumsum(
@@ -228,15 +225,32 @@ def cumsum(
     dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if exclusive:
-        x = paddle.concat((paddle.zeros_like(x.slice([None] * axis + [slice(0, 1)], [-1] * (axis + 1))),
-                           x.slice([None] * axis + [slice(0, -1)], [-1] * (axis + 1))), axis=axis)
-    out = paddle.cumsum(x, axis=axis)
-    if reverse:
-        out = paddle.flip(out, axis=[axis])
-    return out
-    
-    
+    dtype = dtype if dtype is not None else x.dtype
+    if dtype in [paddle.uint8, paddle.int8, paddle.int16, paddle.float16]:
+        x = paddle.cast(x, "float32")
+    else:
+        x = paddle.cast(x, dtype)
+    if not (exclusive or reverse):
+        return paddle.cumsum(x, axis=axis).cast(dtype)
+    elif exclusive and reverse:
+        with ivy.ArrayMode(False):
+            x = paddle.cumsum(ivy.flip(x, axis=(axis,)), axis=axis)
+            x = ivy.swapaxes(x, axis, -1)
+            x = ivy.concat((ivy.ones_like(x[..., -1:]), x[..., :-1]), axis=-1)
+            x = ivy.swapaxes(x, axis, -1)
+            return ivy.flip(x, axis=(axis,)).cast(dtype)
+    elif exclusive:
+        with ivy.ArrayMode(False):
+            x = ivy.swapaxes(x, axis, -1)
+            x = ivy.concat((ivy.ones_like(x[..., -1:]), x[..., :-1]), axis=-1)
+            x = paddle.cumsum(x, -1)
+            return ivy.swapaxes(x, axis, -1).cast(dtype)
+    else:
+        with ivy.ArrayMode(False):
+            x = paddle.cumsum(ivy.flip(x, axis=(axis,)), axis=axis)
+            return ivy.flip(x, axis=axis).cast(dtype)
+
+
 def einsum(
     equation: str,
     *operands: paddle.Tensor,
