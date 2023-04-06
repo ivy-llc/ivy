@@ -11,7 +11,6 @@ from typing import (
     Callable,
     Protocol,
     TypeVar,
-    Iterable,
 )
 import numpy as np
 
@@ -363,8 +362,7 @@ def asarray(
 @handle_array_like_without_promotion
 @handle_nestable
 def zeros(
-    shape: Union[ivy.Shape, ivy.NativeShape],
-    *,
+    *shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,

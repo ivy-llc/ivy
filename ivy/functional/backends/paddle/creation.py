@@ -531,12 +531,13 @@ def triu(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def zeros(
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    *,
+    *shape: Union[ivy.NativeShape, Sequence[int]],
     dtype: paddle.dtype,
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if isinstance(shape[0], (list, tuple)):
+        shape = shape[0]
     return to_device(paddle.zeros(shape=shape).cast(dtype), device)
 
 
