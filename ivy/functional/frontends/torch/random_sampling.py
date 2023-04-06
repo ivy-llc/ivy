@@ -88,3 +88,23 @@ def rand(
 @to_ivy_arrays_and_back
 def normal(mean, std, *, generator=None, out=None):
     return ivy.random_normal(mean=mean, std=std, out=out)
+    
+
+@to_ivy_arrays_and_back
+def randn(
+    size,
+    *,
+    generator=None,
+    out=None,
+    dtype=None,
+    layout=None,
+    device=None,
+    requires_grad=False,
+    pin_memory=False
+):
+    return ivy.random_normal(
+        shape=size,
+        out=out,
+        dtype=dtype,
+        device=device,
+    )

@@ -5,7 +5,9 @@ import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
-from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_elementwise import ldexp_args
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_elementwise import (
+    ldexp_args,
+)
 
 # exp
 @handle_frontend_test(
@@ -469,6 +471,7 @@ def test_numpy_i0(
         on_device=on_device,
         x=x[0],
     )
+
 
 # ldexp
 @handle_frontend_test(
