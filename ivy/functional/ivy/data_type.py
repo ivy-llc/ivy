@@ -2369,15 +2369,6 @@ def promote_types_of_inputs(
     return ivy.to_native(x1), ivy.to_native(x2)
 
 
-# global
-from typing import Union
-
-# local
-import ivy
-from ivy.utils.backend import current_backend
-from ivy.utils.exceptions import handle_exceptions
-
-
 @handle_exceptions
 def is_native_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> bool:
     """

@@ -11,7 +11,6 @@ from typing import (
     Callable,
     Protocol,
     TypeVar,
-    Iterable,
 )
 import numpy as np
 
