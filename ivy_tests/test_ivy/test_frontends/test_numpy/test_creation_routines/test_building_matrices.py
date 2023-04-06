@@ -6,6 +6,7 @@ import ivy_tests.test_ivy.helpers as helpers
 
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _diag_helper
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_linalg import _generate_diag_args
 
 
 # tril
@@ -160,4 +161,39 @@ def test_numpy_vander(
         x=x[0],
         N=N,
         increasing=increasing,
+    )
+
+
+# diagflat
+@handle_frontend_test(
+    fn_tree="numpy.diagflat",
+    args_packet=_generate_diag_args(),
+    test_with_out=st.just(False),
+)
+def test_numpy_diagflat(
+    *,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    args_packet
+):
+    dtype_x, offset, dtype_padding_value, align, num_rows, num_cols = args_packet
+
+    x_dtype, x = dtype_x
+    padding_value_dtype, padding_value = dtype_padding_value
+    padding_value = padding_value[0][0]
+
+    helpers.test_frontend_function(
+        input_dtypes=x_dtype + ["int64"] + padding_value_dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        v=x[0],
+        offset=offset,
+        padding_value=padding_value,
+        align=align,
+        num_rows=num_rows,
+        num_cols=num_cols,
     )
