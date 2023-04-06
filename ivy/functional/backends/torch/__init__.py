@@ -201,9 +201,5 @@ from .control_flow_ops import *
 
 
 # sub-backends
-try:
-    from . import sub_backends
-    from .sub_backends import *
-
-except ImportError:
-    pass
+from . import sub_backends
+from .sub_backends import *

@@ -1,12 +1,11 @@
 import os
 from types import ModuleType, FunctionType
-import warnings
+import logging
+import importlib
 
 import ivy
 from ivy.func_wrapper import _wrap_function
 from ivy.utils.exceptions import IvyException
-
-warnings.simplefilter("always", UserWarning)
 
 
 _backends_subpackage_path = "ivy.functional.backends"
@@ -45,7 +44,8 @@ for backend in os.listdir(
 
 _all_sub_backends = []
 
-[_all_sub_backends.extend(v) for v in _backend_to_sub_backends_dict.values()]
+for v in _backend_to_sub_backends_dict.values():
+    _all_sub_backends.extend(v)
 
 
 original_backend_dict = None
@@ -53,23 +53,26 @@ original_backend_dict = None
 
 def set_sub_backend(sub_backend_str: str):
     if ivy.backend == "none":
-        warnings.warn("You must set a backend first:")
+        logging.warn("You must set a backend first")
         return
 
     if ivy.current_backend_str() not in _backend_to_sub_backends_dict.keys():
-        warnings.warn(
-            f"backend {ivy.current_backend_str()} does not have any supported sub_backends"  # noqa
+        logging.warn(
+            f"backend {ivy.current_backend_str()}\
+                  does not have any supported sub_backends"
         )
         return
 
     if sub_backend_str not in _all_sub_backends:
         raise IvyException(
-            f"sub_backend must be one from {_backend_to_sub_backends_dict[ivy.current_backend_str()]}"  # noqa
+            f"sub_backend must be one from\
+                  {_backend_to_sub_backends_dict[ivy.current_backend_str()]}"
         )
 
     if sub_backend_str not in _backend_to_sub_backends_dict[ivy.current_backend_str()]:
-        warnings.warn(
-            f"{ivy.current_backend_str()} does not support {sub_backend_str} as a sub_backend"  # noqa
+        logging.warn(
+            f"{ivy.current_backend_str()} does not support\
+                  {sub_backend_str} as a sub_backend"
         )
         return
 
@@ -185,3 +188,17 @@ def _clear_current_sub_backends():
 def available_sub_backends():
     for k, v in _backend_to_sub_backends_dict.items():
         print(f"backend: {k} supports sub_backends: {v}")
+
+
+def find_available_sub_backends(sub_backends_loc):
+    available_sub_backends = []
+    for sub_backend in os.listdir(sub_backends_loc):
+        if sub_backend.startswith("__") or not os.path.isdir(
+            os.path.join(sub_backends_loc, sub_backend)
+        ):
+            continue
+
+        elif importlib.util.find_spec(sub_backend):
+            available_sub_backends.append(sub_backend)
+
+    return available_sub_backends
