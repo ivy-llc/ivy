@@ -72,17 +72,14 @@ def update_individual_test_results(
         key += "." + frontend_version
     key += "." + test
     collection.update_one(
-        {"_id": id},
-        {"$set": {key: result}},
-        upsert=True,
+        {"_id": id}, {"$set": {key: result}}, upsert=True,
     )
     return
 
 
 def remove_from_db(collection, id, submod, backend, test):
     collection.update_one(
-        {"_id": id},
-        {"$unset": {submod + "." + backend + ".": test}},
+        {"_id": id}, {"$unset": {submod + "." + backend + ".": test}},
     )
     return
 
@@ -172,12 +169,10 @@ if __name__ == "__main__":
                 ret = os.system(
                     f'docker run --rm --gpus all --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multicuda:latest python3 -m pytest --tb=short {test} --device=gpu:0 -B={backend}'
                     # noqa
-                    # noqa
                 )
             else:
                 ret = os.system(
                     f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --tb=short {test} --backend {backend}'
-                    # noqa
                     # noqa
                 )
             if ret != 0:
@@ -189,7 +184,12 @@ if __name__ == "__main__":
                 db[coll[0]], coll[1], submod, backend, test_fn, res
             )
             frontend_version = None
-            if coll[0] == "numpy" or coll[0] == "jax" or coll[0] == "tensorflow" or coll[0] == "torch":
+            if (
+                coll[0] == "numpy"
+                or coll[0] == "jax"
+                or coll[0] == "tensorflow"
+                or coll[0] == "torch"
+            ):
                 frontend_version = "latest-stable"
             update_individual_test_results(
                 db_multi[coll[0]],
@@ -199,9 +199,9 @@ if __name__ == "__main__":
                 test_fn,
                 res,
                 "latest-stable",
-                frontend_version
+                frontend_version,
             )
-            
+
     try:
         with open("tests_to_remove", "r") as f:
             for line in f:
