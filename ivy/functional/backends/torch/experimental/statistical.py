@@ -107,9 +107,7 @@ def nanmedian(
     overwrite_input: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.nanmedian(
-        input, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out
-    )
+    return torch.nanmedian(input,  dim=axis, keepdim=keepdims, out=out)
 
 
 nanmedian.support_native_out = True
