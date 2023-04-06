@@ -283,7 +283,7 @@ def zeros(
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if isinstance(shape[0], ivy.NativeShape):
+    if isinstance(shape[0], (list, tuple)):
         shape = shape[0]
     return _to_device(
         jnp.zeros(shape, dtype),
