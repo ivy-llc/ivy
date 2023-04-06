@@ -1,6 +1,5 @@
 # global
 import os
-import sys
 import copy
 import types
 import ivy
@@ -9,7 +8,6 @@ import functools
 import numpy as np
 import gc
 from ivy.utils import _importlib, verbosity
-from ivy.utils.backend import ast_helpers
 
 # local
 from ivy.func_wrapper import _wrap_function
@@ -587,25 +585,22 @@ def with_backend(backend: str, cached: bool = False):
     # Use already compiled object
     if cached and backend in compiled_backends.keys():
         return compiled_backends[backend][-1]
-    # TODO do error handling if finder fails
-    finder = ast_helpers.IvyPathFinder()
-    sys.meta_path.insert(0, finder)
-    _importlib.path_hooks.insert(0, finder)
-    ivy_pack = _importlib._import_module("ivy")
-    ivy_pack._is_local_pkg = True
-    backend_module = _importlib._import_module(
-        ivy_pack.utils.backend.handler._backend_dict[backend], ivy_pack.__package__
-    )
-    _handle_backend_specific_vars(ivy_pack)
-    # We know for sure that the backend stack is empty, no need to do backend unsetting
-    ivy_pack.utils.backend.handler._set_backend_as_ivy(
-        ivy_pack.__dict__.copy(), ivy_pack, backend_module
-    )
-    ivy_pack.backend_stack.append(backend_module)
-    ivy_pack.utils.backend._importlib.import_cache = copy.copy(_importlib.import_cache)
-    _importlib.path_hooks.remove(finder)
-    sys.meta_path.remove(finder)
-    _importlib._clear_cache()
+    with _importlib.LocalIvyImporter():
+        ivy_pack = _importlib._import_module("ivy")
+        ivy_pack._is_local_pkg = True
+        backend_module = _importlib._import_module(
+            ivy_pack.utils.backend.handler._backend_dict[backend], ivy_pack.__package__
+        )
+        _handle_backend_specific_vars(ivy_pack)
+        # We know for sure that the backend stack is empty
+        # no need to do backend unsetting
+        ivy_pack.utils.backend.handler._set_backend_as_ivy(
+            ivy_pack.__dict__.copy(), ivy_pack, backend_module
+        )
+        ivy_pack.backend_stack.append(backend_module)
+        ivy_pack.utils.backend._importlib.import_cache = copy.copy(
+            _importlib.import_cache
+        )
     try:
         compiled_backends[backend].append(ivy_pack)
     except KeyError:
