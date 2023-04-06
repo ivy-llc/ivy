@@ -287,6 +287,9 @@ class Tensor:
     def logical_and(self, other):
         return torch_frontend.logical_and(self._ivy_array, other)
 
+    def logical_or(self, other):
+        return torch_frontend.logical_or(self._ivy_array, other)
+
     def bitwise_not(self, *, out=None):
         return torch_frontend.bitwise_not(self._ivy_array)
 
@@ -319,15 +322,31 @@ class Tensor:
 
     def to(self, *args, **kwargs):
         if len(args) > 0:
-            if isinstance(args[0], (ivy.Dtype, ivy.NativeDtype)):
-                if self.dtype == args[0]:
+            if hasattr(args[0], "ivy_array") or ivy.is_array(args[0]):
+                if self.dtype == ivy.dtype(args[0]) and self.device == ivy.dev(args[0]):
+                    return self
+                else:
+                    cast_tensor = self.clone()
+                    cast_tensor.ivy_array = ivy.asarray(
+                        self._ivy_array,
+                        dtype=ivy.dtype(args[0]),
+                        device=ivy.dev(args[0]),
+                    )
+                    return cast_tensor
+            if (
+                isinstance(args[0], (ivy.Dtype, ivy.NativeDtype))
+                or args[0] in ivy._all_ivy_dtypes_str
+            ):
+                if self.dtype == ivy.as_ivy_dtype(args[0]):
                     return self
                 else:
                     cast_tensor = self.clone()
                     cast_tensor.ivy_array = ivy.asarray(self._ivy_array, dtype=args[0])
                     return cast_tensor
             if isinstance(args[0], (ivy.Device, ivy.NativeDevice, str)):
-                if isinstance(args[0], str):
+                if isinstance(args[0], str) and not isinstance(
+                    args[0], (ivy.Device, ivy.NativeDevice)
+                ):
                     ivy.utils.assertions.check_elem_in_list(
                         args[0],
                         [
@@ -349,22 +368,11 @@ class Tensor:
                             "hpu",
                         ],
                     )
-                if self.device == args[0]:
+                if self.device == ivy.as_ivy_dev(args[0]):
                     return self
                 else:
                     cast_tensor = self.clone()
                     cast_tensor.ivy_array = ivy.asarray(self._ivy_array, device=args[0])
-                    return cast_tensor
-            else:
-                if self.dtype == args[0].dtype and self.device == ivy.dev(args[0]):
-                    return self
-                else:
-                    cast_tensor = self.clone()
-                    cast_tensor.ivy_array = ivy.asarray(
-                        self._ivy_array,
-                        dtype=args[0].dtype,
-                        device=args[0].device,
-                    )
                     return cast_tensor
         else:
             if (
@@ -464,6 +472,9 @@ class Tensor:
     def unsqueeze_(self, dim):
         self._ivy_array = self.unsqueeze(dim).ivy_array
         return self
+
+    def ravel(self):
+        return torch_frontend.ravel(self)
 
     def split(self, split_size, dim=0):
         return torch_frontend.split(self, split_size, dim)
@@ -602,7 +613,7 @@ class Tensor:
     def transpose_(self, dim0, dim1):
         self._ivy_array = self.transpose(dim0, dim1).ivy_array
         return self
-    
+
     def t(self):
         return torch_frontend.t(self._ivy_array)
 
@@ -893,6 +904,6 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def exp(self, *, out=None):
         return torch_frontend.exp(self._ivy_array)
-    
+
     def mul(self, other, *, out=None):
         return torch_frontend.mul(self._ivy_array, other)

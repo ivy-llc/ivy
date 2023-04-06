@@ -1692,7 +1692,7 @@ def native_array(
         A native array interpretation of x.
 
     Examples
-    -------
+    --------
     With :class:`List[Number]` input:
 
     >>> x = [1, 2, 3]

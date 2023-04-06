@@ -1,6 +1,7 @@
 import math
 from typing import Optional, Tuple, Sequence, Union
 import jax.numpy as jnp
+import jax.scipy.linalg as jla
 from ivy.functional.backends.jax import JaxArray
 
 import ivy
@@ -100,7 +101,7 @@ def matrix_exp(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.exp(x)
+    return jla.expm(x)
 
 
 def eig(
