@@ -196,8 +196,8 @@ def solve_triangular(
     else:
         for i in range(n-1, -1, -1):
             x[i] = (b[i] - np.dot(a[i,i+1:], x[i+1:])) / a[i,i]
-
-    return x
+    
+    return x.T
 
 
 solve_triangular.support_native_out = False
