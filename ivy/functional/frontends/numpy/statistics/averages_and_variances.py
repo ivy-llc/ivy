@@ -391,7 +391,6 @@ def nanpercentile(
         return resultarray
     
 @handle_numpy_out
-@handle_numpy_dtype
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def nanmedian(
@@ -403,13 +402,6 @@ def nanmedian(
     out=None,
     overwrite_input=False,
 ):
-    is_nan = ivy.isnan(a)
     axis = tuple(axis) if isinstance(axis, list) else axis
-
-    if not ivy.any(is_nan):
-        ret = ivy.median(a, keepdims=keepdims, out=out)
-
-    else:
-        a = [i for i in a if ivy.isnan(i) is False]
-        ret = ivy.median(a, axis=axis, keepdims=keepdims, out=out)
+    ret = ivy.nanmedian(a, keepdims=keepdims, out=out, overwrite_input=overwrite_input)
     return ret
