@@ -628,7 +628,6 @@ def with_backend(backend: str, cached: bool = False):
     # Use already compiled object
     if cached and backend in compiled_backends.keys():
         return compiled_backends[backend][-1]
-    # TODO do error handling if finder fails
     with _importlib.LocalIvyImporter():
         ivy_pack = _importlib._import_module("ivy")
         ivy_pack._is_local_pkg = True

@@ -1,7 +1,6 @@
 import sys
-from .backend import ast_helpers
-
 from importlib.util import resolve_name, module_from_spec
+from ivy.utils.backend import ast_helpers
 
 
 import_cache = {}
