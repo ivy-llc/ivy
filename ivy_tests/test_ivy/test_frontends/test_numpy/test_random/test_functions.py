@@ -349,3 +349,32 @@ def test_numpy_standard_normal(
         test_values=False,
         size=size,
     )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.random.standard_gamma",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.tuples(st.integers(min_value=1, max_value=2)),
+        min_value=1,
+        max_value=100,
+    ),
+    test_with_out=st.just(False),
+)
+def test_numpy_standard_gamma(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        alpha=x[0],
+        test_values=False,
+    )
