@@ -379,5 +379,4 @@ def test_numpy_nanmedian(
         overwrite_input=None,
         out=None,
         keepdims=keep_dims,
-        test_values=test_values,
     )
