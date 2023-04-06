@@ -22,16 +22,16 @@ from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
         min_num_dims=1,
     ),
     test_with_out=st.just(False),
-    alpha=helpers.floats(min_value=0, max_value=1)
+    alpha=helpers.floats(min_value=0, max_value=1),
 )
 def test_tensorflow_leaky_relu(
-        *,
-        dtype_and_x,
-        alpha,
-        frontend,
-        test_flags,
-        fn_tree,
-        on_device,
+    *,
+    dtype_and_x,
+    alpha,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     dtype, x = dtype_and_x
     return helpers.test_frontend_function(
@@ -41,7 +41,7 @@ def test_tensorflow_leaky_relu(
         fn_tree=fn_tree,
         on_device=on_device,
         features=x[0],
-        alpha=alpha
+        alpha=alpha,
     )
 
 
