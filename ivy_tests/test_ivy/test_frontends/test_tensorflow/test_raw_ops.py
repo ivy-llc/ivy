@@ -1327,7 +1327,14 @@ def test_tensorflow_FloorMod(  # NOQA
         y=xs[1],
     )
 
-
+#FFT
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.FFT",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("complex"),
+         ),
+    test_with_out=st.just(False),
+)
 def test_tensorflow_FFT( # NOQA
     *,
     dtype_and_x,
