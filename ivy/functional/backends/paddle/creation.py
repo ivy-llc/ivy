@@ -460,12 +460,16 @@ def meshgrid(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def ones(
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    *,
+    *args: Union[int, Sequence[int]],
+    shape: Optional[ivy.NativeShape] = None,
     dtype: paddle.dtype,
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if args and shape:
+        raise TypeError("ones() got multiple values for argument 'shape'")
+    if shape is None:
+        shape = args[0] if isinstance(args[0], (tuple, list)) else args
     return to_device(paddle.ones(shape=shape).cast(dtype), device)
 
 
