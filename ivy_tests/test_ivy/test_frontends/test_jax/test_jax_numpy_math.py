@@ -2601,6 +2601,8 @@ def test_jax_numpy_gradient(
     frontend,
 ):
     input_dtype, x, axis = dtype_x_axis,
+    test_flags.num_positional_args = len(varargs) + 3,
+
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
