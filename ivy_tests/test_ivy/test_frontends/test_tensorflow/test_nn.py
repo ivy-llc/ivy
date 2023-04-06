@@ -1373,8 +1373,8 @@ def test_tensorflow_conv_transpose(
         data_format=data_format,
         dilations=dilation,
     )
-    
-    
+ 
+
 @st.composite
 def _average_pool_args(draw):
     dims = draw(st.integers(min_value=1, max_value=3))
