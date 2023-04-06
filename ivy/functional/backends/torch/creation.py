@@ -462,13 +462,17 @@ def meshgrid(
 
 
 def ones(
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    *,
+    *args: Union[int, Sequence[int]],
+    shape: Optional[ivy.NativeShape] = None,
     dtype: torch.dtype,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.ones(shape, dtype=dtype, device=device)
+    if args and shape:
+        raise TypeError("ones() got multiple values for argument 'shape'")
+    if shape is None:
+        shape = args[0] if isinstance(args[0], (tuple, list)) else args
+    return torch.ones(shape, dtype=dtype, device=device, out=out)
 
 
 ones.support_native_out = True

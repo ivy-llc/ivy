@@ -426,8 +426,8 @@ def zeros(
 @handle_array_like_without_promotion
 @handle_nestable
 def ones(
-    shape: Union[ivy.Shape, ivy.NativeShape],
-    *,
+    *args: Union[int, Sequence[int]],
+    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
@@ -436,6 +436,8 @@ def ones(
 
     Parameters
     ----------
+    args
+        list, tuple or a sequence of integers representing the output array shape.
     shape
         output array shape.
     dtype
@@ -499,7 +501,7 @@ def ones(
     ivy.array([[1.],
            [1., 1., 1., 1., 1.], [1., 1.]])
     """
-    return current_backend().ones(shape, dtype=dtype, device=device, out=out)
+    return current_backend().ones(*args, shape, dtype=dtype, device=device, out=out)
 
 
 @infer_device
