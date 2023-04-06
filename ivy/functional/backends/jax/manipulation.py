@@ -3,8 +3,6 @@ import math
 from numbers import Number
 from typing import Union, Tuple, Optional, List, Sequence, Iterable
 import jax.numpy as jnp
-import jax.lax as jlax
-import jax
 
 # local
 import ivy
