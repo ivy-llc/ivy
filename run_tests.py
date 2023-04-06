@@ -188,6 +188,9 @@ if __name__ == "__main__":
             update_individual_test_results(
                 db[coll[0]], coll[1], submod, backend, test_fn, res
             )
+            frontend_version = None
+            if coll[0] == "numpy" or coll[0] == "jax" or coll[0] == "tensorflow" or coll[0] == "torch":
+                frontend_version = "latest-stable"
             update_individual_test_results(
                 db_multi[coll[0]],
                 coll[1],
@@ -196,7 +199,7 @@ if __name__ == "__main__":
                 test_fn,
                 res,
                 "latest-stable",
-                "latest-stable",
+                frontend_version
             )
             
     try:
