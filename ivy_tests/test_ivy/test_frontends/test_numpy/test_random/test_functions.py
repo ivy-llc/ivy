@@ -350,7 +350,7 @@ def test_numpy_standard_normal(
         size=size,
     )
 
-    
+
 @handle_frontend_test(
     fn_tree="numpy.random.standard_gamma",
     dtype_and_x=helpers.dtype_and_values(
@@ -362,11 +362,11 @@ def test_numpy_standard_normal(
     test_with_out=st.just(False),
 )
 def test_numpy_standard_gamma(
-        dtype_and_x,
-        frontend,
-        test_flags,
-        fn_tree,
-        on_device,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
