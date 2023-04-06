@@ -413,9 +413,18 @@ def cos(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
     return paddle.cos(x)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def logical_not(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
+    if x.dtype in [paddle.uint8, paddle.float16, paddle.complex64, paddle.complex128]:
+        if paddle.is_complex(x):
+            return paddle.logical_and(
+                paddle.logical_not(x.real()), paddle.logical_not(x.imag())
+            )
+        return paddle.logical_not(x.cast("float32"))
     return paddle.logical_not(x)
 
 
@@ -503,24 +512,54 @@ def acos(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     return paddle.acos(x)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def logical_xor(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    if ret_dtype in [paddle.uint8, paddle.float16, paddle.complex64, paddle.complex128]:
+        if paddle.is_complex(x1):
+            return paddle.logical_xor(
+                paddle.logical_xor(x1.real(), x2.real()),
+                paddle.logical_xor(x1.imag(), x2.imag()),
+            )
+        return paddle.logical_xor(x1.cast("float32"), x2.cast("float32"))
     return paddle.logical_xor(x1, x2)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def logical_and(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    if ret_dtype in [paddle.uint8, paddle.float16, paddle.complex64, paddle.complex128]:
+        if paddle.is_complex(x1):
+            return paddle.logical_and(
+                paddle.logical_and(x1.real(), x2.real()),
+                paddle.logical_and(x1.imag(), x2.imag()),
+            )
+        return paddle.logical_and(x1.cast("float32"), x2.cast("float32"))
     return paddle.logical_and(x1, x2)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def logical_or(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    if ret_dtype in [paddle.uint8, paddle.float16, paddle.complex64, paddle.complex128]:
+        if paddle.is_complex(x1):
+            return paddle.logical_or(
+                paddle.logical_or(x1.real(), x2.real()),
+                paddle.logical_or(x1.imag(), x2.imag()),
+            )
+        return paddle.logical_or(x1.cast("float32"), x2.cast("float32"))
     return paddle.logical_or(x1, x2)
 
 
