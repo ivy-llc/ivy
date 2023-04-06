@@ -362,7 +362,8 @@ def asarray(
 @handle_array_like_without_promotion
 @handle_nestable
 def zeros(
-    *shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
+    *args: Union[int, Sequence[int]],
+    shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
@@ -371,6 +372,8 @@ def zeros(
 
     Parameters
     ----------
+    args
+        list, tuple or a sequence of integers representing the output array shape.
     shape
        output array shape.
     dtype
@@ -410,7 +413,9 @@ def zeros(
     >>> print(x)
     ivy.array([0., 0., 0., 0., 0.])
     """
-    return current_backend().zeros(shape, dtype=dtype, device=device, out=out)
+    return current_backend().zeros(
+        *args, shape=shape, dtype=dtype, device=device, out=out
+    )
 
 
 @infer_device

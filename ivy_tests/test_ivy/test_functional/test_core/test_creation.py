@@ -732,7 +732,6 @@ def test_triu(
     container_flags=st.just([False]),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
-    number_positional_args=st.just(1),
 )
 def test_zeros(
     *,
