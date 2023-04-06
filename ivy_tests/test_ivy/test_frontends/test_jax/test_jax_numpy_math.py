@@ -2606,5 +2606,5 @@ def test_jax_numpy_poly(
         on_device=on_device,
         seq_of_zeros=x[0],
         atol=1e-05,
-        rtol=1e-03
+        rtol=1e-03,
     )

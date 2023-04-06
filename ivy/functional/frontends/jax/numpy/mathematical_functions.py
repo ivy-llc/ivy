@@ -541,5 +541,7 @@ def poly(seq_of_zeros):
         return ivy.ones((), dtype=dt)
     a = ivy.ones((1,), dtype=dt)
     for k in range(len(seq_of_zeros)):
-        a = convolve(a, ivy.asarray([ivy.array(1), -seq_of_zeros[k]], dtype=dt), mode='full')
+        a = convolve(
+            a, ivy.asarray([ivy.array(1), -seq_of_zeros[k]], dtype=dt), mode="full"
+        )
     return a

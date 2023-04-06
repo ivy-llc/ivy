@@ -1804,16 +1804,24 @@ def x_and_filters(draw, dim=2, transpose=False, general=False):
             dim_num_st1 = st.sampled_from(["NDHWC", "NCDHW"])
             dim_num_st2 = st.sampled_from(["OIDHW", "DHWIO"])
         dim_seq = [*range(0, dim + 2)]
-        dimension_numbers = draw(st.sampled_from([
-            None,
-            (draw(dim_num_st1), draw(dim_num_st2), draw(dim_num_st1)),
-            ConvDimensionNumbers(
-                *map(
-                    tuple,
-                    draw(st.lists(st.permutations(dim_seq), min_size=3, max_size=3)),
-                )
+        dimension_numbers = draw(
+            st.sampled_from(
+                [
+                    None,
+                    (draw(dim_num_st1), draw(dim_num_st2), draw(dim_num_st1)),
+                    ConvDimensionNumbers(
+                        *map(
+                            tuple,
+                            draw(
+                                st.lists(
+                                    st.permutations(dim_seq), min_size=3, max_size=3
+                                )
+                            ),
+                        )
+                    ),
+                ]
             )
-        ]))
+        )
     else:
         dimension_numbers = (
             ("NCH", "OIH", "NCH")
@@ -2223,23 +2231,19 @@ def _slice_in_dim_helper(draw):
     )
     operand = x[0]
     start_index = draw(
-        st.integers(
-            min_value=-abs(operand.shape[axis]),
-            max_value=operand.shape[axis]
-        )
+        st.integers(min_value=-abs(operand.shape[axis]), max_value=operand.shape[axis])
     )
     if start_index < 0:
         limit_index = draw(
             st.integers(
-                min_value=start_index + operand.shape[axis] ,
-                max_value=operand.shape[axis]
+                min_value=start_index + operand.shape[axis],
+                max_value=operand.shape[axis],
             )
         )
     else:
         limit_index = draw(
             st.integers(
-                min_value=-abs(operand.shape[axis]),
-                max_value=operand.shape[axis]
+                min_value=-abs(operand.shape[axis]), max_value=operand.shape[axis]
             ).filter(lambda _x: _x >= start_index)
         )
     stride = draw(st.integers(min_value=1, max_value=abs(limit_index + 1)))

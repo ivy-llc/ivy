@@ -72,14 +72,17 @@ def update_individual_test_results(
         key += "." + frontend_version
     key += "." + test
     collection.update_one(
-        {"_id": id}, {"$set": {key: result}}, upsert=True,
+        {"_id": id},
+        {"$set": {key: result}},
+        upsert=True,
     )
     return
 
 
 def remove_from_db(collection, id, submod, backend, test):
     collection.update_one(
-        {"_id": id}, {"$unset": {submod + "." + backend + ".": test}},
+        {"_id": id},
+        {"$unset": {submod + "." + backend + ".": test}},
     )
     return
 

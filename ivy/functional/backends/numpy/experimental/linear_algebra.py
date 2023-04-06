@@ -94,7 +94,11 @@ def kron(
 
 kron.support_native_out = False
 
-@with_supported_dtypes({"1.11.0 and below": ("float32", "float64", "complex64", "complex128")}, backend_version)
+
+@with_supported_dtypes(
+    {"1.11.0 and below": ("float32", "float64", "complex64", "complex128")},
+    backend_version,
+)
 def matrix_exp(
     x: np.ndarray,
     /,
@@ -106,6 +110,7 @@ def matrix_exp(
     exp_diag_mat = np.diag(exp_diag)
     exp_mat = eig_vecs @ exp_diag_mat @ np.linalg.inv(eig_vecs)
     return exp_mat.astype(x.dtype)
+
 
 def eig(
     x: np.ndarray,
