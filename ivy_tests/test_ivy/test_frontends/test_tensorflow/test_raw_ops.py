@@ -1025,6 +1025,36 @@ def test_tensorflow_Tanh(  # NOQA
     )
 
 
+#TanhGrad
+@handle_frontend_test(
+    fn_tree='tensorflow.raw_ops.TanhGrad',
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes('float'),
+        num_arrays=2,
+        shared_dtype=True
+        ),
+        test_with_out=st.just(False)
+)
+def test_tensorflow_TanhGrad( #NOQA
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        y=xs[0],
+        dy=xs[1],
+    )
+
+
 @st.composite
 def _permute_dims_helper(draw):
     shape = draw(st.shared(helpers.get_shape(min_num_dims=1), key="shape"))
