@@ -274,7 +274,7 @@ def matmul(
             x2_padded = True
         ret = tf.matmul(x1, x2)
 
-    ret = ivy.astype(ret, dtype_from, copy=False).to_native()
+    ret = ivy.to_native(ivy.astype(ret, dtype_from, copy=False))
     if x1_padded_2:
         ret = ret[0]
     elif x1_padded:

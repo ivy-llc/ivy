@@ -1840,7 +1840,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        This is the instance method implementation of the static method static_outer
+        The instance method implementation of the static method static_outer
         of the ivy.Container class.
         It calculates the outer product of two input arrays or
         containers along the last dimension and returns the resulting container.
@@ -1877,6 +1877,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
             A new container of shape (..., M, N) representing
             the outer product of the input arrays or containers
             along the last dimension.
+
         Examples
         --------
         >>> x = ivy.array([[1., 2.],[3., 4.]])
