@@ -339,4 +339,5 @@ def nanpercentile(
     # print(q)
     if not _quantile_is_valid(q):
         raise ValueError("percentile s must be in the range [0, 100]")
-    return np.nanpercentile(a, q, axis=axis, out=out, overwrite_input=overwrite_input, method=method, keepdims=keepdims, interpolation=interpolation)
+    return np.nanpercentile(a, q, axis=axis, out=out, overwrite_input=overwrite_input, 
+    method=method, keepdims=keepdims, interpolation=interpolation)
