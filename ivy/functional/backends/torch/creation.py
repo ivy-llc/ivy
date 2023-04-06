@@ -532,12 +532,13 @@ triu.support_native_out = True
 
 
 def zeros(
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    *,
+    *shape: Union[ivy.NativeShape, Sequence[int]],
     dtype: torch.dtype,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> Tensor:
+    if isinstance(shape[0], (list, tuple)):
+        shape = shape[0]
     return torch.zeros(shape, dtype=dtype, device=device, out=out)
 
 

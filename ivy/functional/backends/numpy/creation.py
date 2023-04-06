@@ -203,12 +203,13 @@ def triu(
 
 
 def zeros(
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    *,
+    *shape: Union[ivy.NativeShape, Sequence[int]],
     dtype: np.dtype,
     device: str,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if isinstance(shape[0], (list, tuple)):
+        shape = shape[0]
     return _to_device(np.zeros(shape, dtype), device=device)
 
 
