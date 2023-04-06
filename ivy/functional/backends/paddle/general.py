@@ -169,8 +169,8 @@ def gather(
             return ivy.reshape(result, shape=new_shape)
         
     
-    axis = axis % paddle.Tensor.ndimension(params)
-    batch_dims = batch_dims % paddle.Tensor.ndimension(params)
+    axis = axis % params.ndim
+    batch_dims = batch_dims % params.ndim
     ivy.utils.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
     if params.dtype in [
         paddle.int8,
@@ -185,7 +185,7 @@ def gather(
                 _gather(params.real()),
                 _gather(params.imag())
             )
-        return _gather(params.cast("float64")).cast(params.dtype)
+        return _gather(params.cast("float32")).cast(params.dtype)
     return _gather(params)
     
 
