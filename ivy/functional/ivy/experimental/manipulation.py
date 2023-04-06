@@ -11,6 +11,7 @@ from typing import (
     List,
 )
 from numbers import Number
+import math
 import ivy
 from ivy.func_wrapper import (
     handle_out_argument,
@@ -21,6 +22,8 @@ from ivy.func_wrapper import (
 )
 from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
+# ToDo: remove this when ivy.frombuffer gets added
+import numpy as np
 
 
 @handle_out_argument
@@ -1621,4 +1624,32 @@ def as_strided(
     ret
         Output Array
     """
-    return ivy.current_backend(x).as_strided(x, shape, strides)
+    size = math.prod(shape)
+    x = ivy.to_numpy(x)
+    itemsize = x.dtype.itemsize
+    buffer_size = size * itemsize
+
+    offsets = []
+    for i, (dim, stride) in enumerate(zip(shape, strides)):
+        if stride < 0:
+            offsets += [stride * (dim - 1)]
+        else:
+            offsets += [0]
+
+    buffer = bytearray(buffer_size)
+
+    src = memoryview(x).cast("b")
+    dst = memoryview(buffer).cast("b")
+    strides_inv = list(strides[::-1])
+    cumprod = 1
+    for i, dim in enumerate(shape[::-1][:-1]):
+        cumprod *= dim
+        strides_inv[i + 1] = -cumprod * strides_inv[i]
+    for i in range(size):
+        src_index = sum((i // cumprod % sh) * st for sh, st in zip(shape, strides))
+        src_offset = src_index + offsets[i % len(offsets)]
+        dst_offset = i * itemsize
+        dst[dst_offset:dst_offset+itemsize] = src[src_offset:src_offset+itemsize]
+
+    # ToDo: need ivy.frombuffer
+    return ivy.to_ivy(np.frombuffer(buffer, dtype=x.dtype, count=size).reshape(shape))

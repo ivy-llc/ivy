@@ -234,21 +234,3 @@ def expand(
         if dim < 0:
             shape[i] = x.shape[i]
     return tf.broadcast_to(x, shape)
-
-
-def as_strided(
-    x: Union[tf.Tensor, tf.Variable],
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    strides: Sequence[int],
-    /,
-) -> Union[tf.Tensor, tf.Variable]:
-    a_buffer = x.numpy().tobytes()
-    b = tf.io.decode_raw(a_buffer, x.dtype)
-    b = tf.reshape(b, shape, 'F')
-    dims = len(shape)
-    return tf.strided_slice(
-        b,
-        [0]*dims,
-        [-1]*dims,
-        strides=strides,
-    )

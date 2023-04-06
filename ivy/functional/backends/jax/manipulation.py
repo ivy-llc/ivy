@@ -261,21 +261,3 @@ def swapaxes(
     x: JaxArray, axis0: int, axis1: int, /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.swapaxes(x, axis0, axis1)
-
-
-def as_strided(
-    x: JaxArray,
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    strides: Sequence[int],
-    /,
-) -> JaxArray:
-    new_shape = tuple(shape)
-    new_strides = tuple(strides)
-    offset = jnp.sum(jnp.array(shape) * jnp.array(strides)) - \
-        jnp.sum(jnp.array(new_shape) * jnp.array(new_strides))
-    new_array = x[offset:]
-    for i in range(len(new_shape)):
-        idx = (slice(None),) * i + (jnp.arange(new_shape[i]) * new_strides[i],)
-        new_array = new_array.at[idx].set(
-            jnp.ravel(x)[offset::new_strides[i]][:new_shape[i]])
-        return new_array

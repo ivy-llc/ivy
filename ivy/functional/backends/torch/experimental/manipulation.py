@@ -271,12 +271,3 @@ def expand(
 
 
 expand.support_native_out = False
-
-
-def as_strided(
-    x: torch.Tensor,
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    strides: Sequence[int],
-    /,
-) -> torch.Tensor:
-    return torch.as_strided(x, size=shape, stride=strides)
