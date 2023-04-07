@@ -11,6 +11,7 @@ jobs:
         with:
           repository: unifyai/ivy
           persist-credentials: false
+          fetch-depth: 0
 
       - name: Build Docs
         run: |
@@ -28,4 +29,20 @@ jobs:
           git-config-name: ivy-seed
           git-config-email: ivydl.team@gmail.com
           repository-name: unifyai/docs
-          clean: false
+          clean: true
+      
+      - name: Get Version
+        run: |
+          echo "version_folder=`git tag | sort -V | tail -1`/ivy" >> $GITHUB_ENV
+      
+      - name: Deploy for Multi-Version
+        uses: JamesIves/github-pages-deploy-action@v4.4.1
+        with:
+          folder: docs/build
+          target-folder: "${{ env.version_folder }}"
+          ssh-key: ${{ secrets.SSH_GH_PAGES }}
+          branch: master
+          git-config-name: ivy-seed
+          git-config-email: ivydl.team@gmail.com
+          repository-name: unifyai/docs
+          clean: true
