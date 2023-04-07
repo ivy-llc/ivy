@@ -44,7 +44,7 @@ class Profiler(cProfile.Profile):
                 if is_snakeviz:
                     # creates a temp file that gets automatically
                     # deleted when everything is done
-                    with NamedTemporaryFile() as f:
+                    with NamedTemporaryFile(suffix=".prof") as f:
                         stats.dump_stats(filename=f.name)
                         subprocess.run(["snakeviz", f"{f.name}"])
                 else:
