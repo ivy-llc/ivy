@@ -301,28 +301,32 @@ def matrix_norm(
 
     if ord == -float("inf"):
         reduce_min = tf.reduce_min(
-            tf.reduce_sum(tf.abs(x), axis=axis[1], keepdims=True), axis=axis
+            tf.reduce_sum(tf.abs(x), axis=axis[1], keepdims=True), axis=axis, keepdims=keepdims
         )
         ret = reduce_min
     elif ord == -1:
         ret = tf.reduce_min(
-            tf.reduce_sum(tf.abs(x), axis=axis[0], keepdims=True), axis=axis
+            tf.reduce_sum(tf.abs(x), axis=axis[0], keepdims=True), axis=axis, keepdims=keepdims
         )
     elif ord == -2:
         ret = tf.reduce_min(
-            tf.linalg.svd(x, compute_uv=False), axis=axis, keepdims=keepdims
+            tf.linalg.svd(x, compute_uv=False), axis=axis[1], keepdims=keepdims
         )
+        if keepdims:
+            ret = tf.expand_dims(ret,-1)
     elif ord == "nuc":
         if tf.size(x).numpy() == 0:
             ret = x
         else:
-            ret = tf.reduce_sum(tf.linalg.svd(x, compute_uv=False), axis=-1)
+            ret = tf.reduce_sum(tf.linalg.svd(x, compute_uv=False), axis=-1, keepdims=keepdims)
+            if keepdims:
+                ret = tf.expand_dims(ret,-1)
     else:
         ret = tf.linalg.norm(x, ord, axis, keepdims)
-    if keepdims:
-        ret = tf.reshape(ret, x.shape[:-2] + (1, 1))
-    else:
-        ret = tf.reshape(ret, x.shape[:-2])
+    #if keepdims:
+        #ret = tf.reshape(ret, x.shape[:-2] + (1, 1))
+    #else:
+        #ret = tf.reshape(ret, x.shape[:-2])
     if _expand_dims:
         ret = tf.squeeze(ret, axis=0)
     return ret
