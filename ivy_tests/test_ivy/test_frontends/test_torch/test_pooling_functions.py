@@ -295,7 +295,8 @@ def test_torch_lp_pool2d(
     input_dtype, x, kernel_size, stride, _ = dtype_x_k_s
     # Torch ground truth func expects input to be consistent
     # with a channels first format i.e. NCW
-    x[0] = x[0].reshape((x[0].shape[0], x[0].shape[-1], *x[0].shape[1:-1]))
+    x[0] = x[0].transpose((0, 3, 1, 2))
+
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
