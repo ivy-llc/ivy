@@ -142,16 +142,16 @@ def asarray(
 
 
 def empty(
-    *args: Union[int, Sequence[int]],
+    *size: Union[int, Sequence[int]],
     shape: Optional[ivy.NativeShape] = None,
     dtype: tf.DType,
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if args and shape:
+    if size and shape:
         raise TypeError("empty() got multiple values for argument 'shape'")
     if shape is None:
-        shape = args[0] if isinstance(args[0], (tuple, list)) else args
+        shape = size[0] if isinstance(size[0], (tuple, list)) else size
     with tf.device(device):
         return tf.experimental.numpy.empty(shape, dtype)
 
@@ -321,16 +321,16 @@ def meshgrid(
 
 
 def ones(
-    *args: Union[int, Sequence[int]],
+    *size: Union[int, Sequence[int]],
     shape: Optional[ivy.NativeShape] = None,
     dtype: tf.DType,
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if args and shape:
+    if size and shape:
         raise TypeError("ones() got multiple values for argument 'shape'")
     if shape is None:
-        shape = args[0] if isinstance(args[0], (tuple, list)) else args
+        shape = size[0] if isinstance(size[0], (tuple, list)) else size
     with tf.device(device):
         return tf.ones(shape, dtype)
 
@@ -369,16 +369,16 @@ def triu(
 
 
 def zeros(
-    *args: Union[int, Sequence[int]],
+    *size: Union[int, Sequence[int]],
     shape: Optional[ivy.NativeShape] = None,
     dtype: tf.DType,
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if args and shape:
+    if size and shape:
         raise TypeError("zeros() got multiple values for argument 'shape'")
     if shape is None:
-        shape = args[0] if isinstance(args[0], (tuple, list)) else args
+        shape = size[0] if isinstance(size[0], (tuple, list)) else size
     with tf.device(device):
         return tf.zeros(shape, dtype)
 
