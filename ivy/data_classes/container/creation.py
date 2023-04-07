@@ -113,7 +113,7 @@ class _ContainerWithCreation(ContainerBase):
 
     @staticmethod
     def _static_zeros(
-        *args: Union[int, Sequence[int]],
+        *size: Union[int, Sequence[int]],
         shape: Union[int, Sequence[int]],
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -125,7 +125,7 @@ class _ContainerWithCreation(ContainerBase):
     ) -> ivy.Container:
         return ContainerBase.cont_multi_map_in_function(
             "zeros",
-            *args,
+            *size,
             shape,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -138,7 +138,7 @@ class _ContainerWithCreation(ContainerBase):
 
     @staticmethod
     def _static_ones(
-        *args: Union[int, Sequence[int]],
+        *size: Union[int, Sequence[int]],
         shape: Union[int, Sequence[int]],
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -150,7 +150,7 @@ class _ContainerWithCreation(ContainerBase):
     ) -> ivy.Container:
         return ContainerBase.cont_multi_map_in_function(
             "ones",
-            *args,
+            *size,
             shape,
             key_chains,
             to_apply,

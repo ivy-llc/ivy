@@ -89,16 +89,16 @@ def asarray(
 
 
 def empty(
-    *args: Union[int, Sequence[int]],
+    *size: Union[int, Sequence[int]],
     shape: Optional[ivy.NativeShape] = None,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if args and shape:
+    if size and shape:
         raise TypeError("empty() got multiple values for argument 'shape'")
     if shape is None:
-        shape = args[0] if isinstance(args[0], (tuple, list)) else args
+        shape = size[0] if isinstance(size[0], (tuple, list)) else size
     return _to_device(jnp.empty(shape, dtype), device=device)
 
 
@@ -253,16 +253,16 @@ def meshgrid(
 
 
 def ones(
-    *args: Union[int, Sequence[int]],
+    *size: Union[int, Sequence[int]],
     shape: Optional[ivy.NativeShape] = None,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if args and shape:
+    if size and shape:
         raise TypeError("ones() got multiple values for argument 'shape'")
     if shape is None:
-        shape = args[0] if isinstance(args[0], (tuple, list)) else args
+        shape = size[0] if isinstance(size[0], (tuple, list)) else size
     return _to_device(jnp.ones(shape, dtype), device=device)
 
 
@@ -286,16 +286,16 @@ def triu(x: JaxArray, /, *, k: int = 0, out: Optional[JaxArray] = None) -> JaxAr
 
 
 def zeros(
-    *args: Union[int, Sequence[int]],
+    *size: Union[int, Sequence[int]],
     shape: Optional[ivy.NativeShape] = None,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if args and shape:
+    if size and shape:
         raise TypeError("zeros() got multiple values for argument 'shape'")
     if shape is None:
-        shape = args[0] if isinstance(args[0], (tuple, list)) else args
+        shape = size[0] if isinstance(size[0], (tuple, list)) else size
     return _to_device(
         jnp.zeros(shape, dtype),
         device=device,
