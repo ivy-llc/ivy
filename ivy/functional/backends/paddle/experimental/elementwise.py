@@ -457,7 +457,8 @@ def count_nonzero(
     *,
     axis: Optional[Union[int, list, tuple]] = None,
     keepdims: Optional[bool] = False,
+    dtype: Optional[paddle.dtype] = None,
     name: Optional[str] = None,
 ) -> paddle.Tensor:
     non_zero_count = paddle.sum(x != 0, axis=axis, keepdim=keepdims, name=name)
-    return non_zero_count
+    return paddle.to_tensor(non_zero_count, dtype=dtype)
