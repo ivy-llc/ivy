@@ -5,6 +5,7 @@ import numpy as np
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
+from ivy import promote_types_of_inputs
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 from . import backend_version
 
@@ -46,9 +47,8 @@ def add(
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if alpha not in (1, None):
-        ivy.set_array_mode(False)
-        x2 = multiply(x2, alpha)
-        ivy.unset_array_mode()
+        with ivy.ArrayMode(False):
+            x2 = multiply(x2, alpha)
     return np.add(x1, x2, out=out)
 
 
@@ -566,11 +566,13 @@ remainder.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-def round(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def round(
+    x: np.ndarray, /, *, decimals: int = 0, out: Optional[np.ndarray] = None
+) -> np.ndarray:
     if "int" in str(x.dtype):
         ret = np.copy(x)
     else:
-        return np.round(x, out=out)
+        ret = np.round(x, decimals=decimals, out=out)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
@@ -776,3 +778,23 @@ def isreal(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 
 isreal.support_native_out = False
+
+
+@_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
+def fmod(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    return np.fmod(
+        x1,
+        x2,
+        out=None,
+    )
+
+
+fmod.support_native_out = True

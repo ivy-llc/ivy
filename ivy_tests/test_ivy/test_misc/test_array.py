@@ -14,7 +14,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_first_matrix_and_dtype,
     _get_second_matrix_and_dtype,
 )
-from ivy.array import Array
+from ivy.data_classes.array import Array
 
 
 # getitem and setitem helper
@@ -333,6 +333,7 @@ def test_array__neg__(
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,

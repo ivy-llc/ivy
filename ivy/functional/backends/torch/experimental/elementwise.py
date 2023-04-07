@@ -27,24 +27,7 @@ def lcm(
 lcm.support_native_out = True
 
 
-@with_unsupported_dtypes(
-    {"2.9.1 and below": ("bfloat16",)},
-    backend_version,
-)
-def fmod(
-    x1: torch.Tensor,
-    x2: torch.Tensor,
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    return torch.fmod(x1, x2, out=None)
-
-
-fmod.support_native_out = True
-
-
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def fmax(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -176,16 +159,17 @@ def count_nonzero(
         return x
     if isinstance(axis, tuple):
         for d in sorted(axis):
-            x = x.unsqueeze(d-1)
+            x = x.unsqueeze(d - 1)
         return x
     elif isinstance(axis, int):
-        return x.unsqueeze(axis-1)
+        return x.unsqueeze(axis - 1)
     return x
 
 
 count_nonzero.support_native_out = False
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
 def nansum(
     x: torch.Tensor,
     /,
