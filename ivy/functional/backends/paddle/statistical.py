@@ -104,7 +104,7 @@ def mean(
             return ret
         ret = paddle.mean(x.cast("float32"), axis=axis, keepdim=keepdims)
         if x.ndim == 1 and not keepdims:
-                ret = ret.squeeze()
+            ret = ret.squeeze()
         return ret.astype(x.dtype)
     ret = paddle.mean(x, axis=axis, keepdim=keepdims)
     if x.ndim == 1 and not keepdims:
