@@ -5,9 +5,6 @@ from typing import Optional
 # local
 import ivy
 
-from . import backend_version
-from ivy.utils.exceptions import IvyNotImplementedException
-
 
 def argsort(
     x: paddle.Tensor,

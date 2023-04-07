@@ -1046,9 +1046,7 @@ def nested_map(
     ret
         x following the applicable of fn to it's nested leaves, or x itself if x is not
         nested.
-
     """
-
     to_ignore = ivy.default(to_ignore, ())
     extra_nest_types = ivy.default(extra_nest_types, ())
     if include_derived is True:
@@ -1132,6 +1130,7 @@ def nested_map(
         ]
         if shallow:
             x[:] = ret_list[:]
+            return x
         return class_instance(ret_list)
     elif (dict_check_fn(x, dict) or isinstance(x, UserDict)) and not isinstance(
         x, to_ignore
@@ -1155,9 +1154,9 @@ def nested_map(
             for k, v in x.items()
         }
         if shallow:
-            x.update(**ret)
+            x.update(ret)
             return x
-        return class_instance(**ret)
+        return class_instance(ret)
     return fn(x)
 
 
