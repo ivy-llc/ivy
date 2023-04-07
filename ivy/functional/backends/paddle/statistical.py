@@ -99,11 +99,17 @@ def mean(
             ret = paddle.mean(x.real(), axis=axis, keepdim=keepdims) + 1j * paddle.mean(
                 x.imag(), axis=axis, keepdim=keepdims
             )
-            return ret if keepdims else ret.squeeze()
+            if x.ndim == 1 and not keepdims:
+                ret = ret.squeeze()
+            return ret
         ret = paddle.mean(x.cast("float32"), axis=axis, keepdim=keepdims)
-        return ret.astype(x.dtype) if keepdims else ret.squeeze().astype(x.dtype)
+        if x.ndim == 1 and not keepdims:
+                ret = ret.squeeze()
+        return ret.astype(x.dtype)
     ret = paddle.mean(x, axis=axis, keepdim=keepdims)
-    return ret if keepdims else ret.squeeze()
+    if x.ndim == 1 and not keepdims:
+        ret = ret.squeeze()
+    return ret
 
 
 @with_unsupported_device_and_dtypes(
