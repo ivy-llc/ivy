@@ -6,6 +6,9 @@ from numbers import Number
 from typing import Union, Tuple, Iterable
 from .dtypes import DType
 
+
+# Constructing dtypes are required as ivy.<dtype>
+# will change dynamically on the backend and may not be available
 tensorflow_enum_to_type = {
     1: ivy.FloatDtype("float32"),
     2: ivy.FloatDtype("float64"),
