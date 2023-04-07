@@ -390,6 +390,7 @@ def nanpercentile(
                 resultarray.append(arrayofpercentiles)
         return resultarray
     
+# nanmedian   
 @handle_numpy_out
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
@@ -402,6 +403,8 @@ def nanmedian(
     out=None,
     overwrite_input=False,
 ):
+    # handling the axis
     axis = tuple(axis) if isinstance(axis, list) else axis
+    # using nanmedian implemented in the backend
     ret = ivy.nanmedian(a, keepdims=keepdims, out=out, overwrite_input=overwrite_input)
     return ret
