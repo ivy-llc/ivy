@@ -5,7 +5,8 @@ from hypothesis import strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 import ivy
-from ivy.functional.frontends.torch.nn.functional.loss_functions import cosine_similarity
+from ivy.functional.frontends.torch.nn.functional.loss_functions \
+    import cosine_similarity
 
 
 # cross_entropy
