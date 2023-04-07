@@ -380,7 +380,7 @@ def test_numpy_nanmedian(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        a=x[0]
+        a=x[0],
         axis=axis2,
         out=None,
         input_dtypes=input_dtype,
