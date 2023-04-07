@@ -2,7 +2,6 @@
 import ivy
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
-
 @to_ivy_arrays_and_back
 def adjoint(input):
     return ivy.adjoint(input)
@@ -12,9 +11,8 @@ def adjoint(input):
 def cat(tensors, dim=0, *, out=None):
     return ivy.concat(tensors, axis=dim, out=out)
 
-
 @to_ivy_arrays_and_back
-def chunk(input, chunks, dim=0):
+def Chunk(input, chunks, dim=0):
     if ivy.shape(input) == ():
         return [input]
     else:
@@ -235,7 +233,7 @@ def _get_indices_or_sections(indices_or_sections, indices, sections):
         elif ivy.exists(sections) and not ivy.exists(indices):
             indices_or_sections = sections
         else:
-            raise ivy.utils.exception.IvyError(
+            raise ivy.utils.exceptions.IvyError(
                 "got invalid argument for indices_or_sections"
             )
     return indices_or_sections
