@@ -134,14 +134,14 @@ def test_jax_normal(
             max_num_dims=1,
             min_dim_size=2,
             max_dim_size=2,
-        ),
+    ),
     alpha=st.floats(min_value=0, max_value=5, exclude_min=True),
     beta=st.floats(min_value=0, max_value=5, exclude_min=True),
     shape=helpers.get_shape(
-            min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=5
-        ),
-    dtype = helpers.get_dtypes("float", full=False),
-    test_with_out=st.just(False),
+        min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=5
+    ),
+    dtype=helpers.get_dtypes("float", full=False),
+    test_with_out=st.just(False)
 )
 def test_jax_beta(
     *,
@@ -155,7 +155,8 @@ def test_jax_beta(
     frontend,
     test_flags,
 ):
-    input_dtype, key=dtype_key
+    input_dtype, key = dtype_key
+
     def call():
         return helpers.test_frontend_function(
             input_dtypes=input_dtype,
