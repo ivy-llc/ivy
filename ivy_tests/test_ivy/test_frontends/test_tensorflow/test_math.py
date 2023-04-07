@@ -414,7 +414,7 @@ def test_tensorflow_logical_or(
         y=x[1],
     )
 
-    
+
 # log_sigmoid
 @handle_frontend_test(
     fn_tree="tensorflow.math.log_sigmoid",
