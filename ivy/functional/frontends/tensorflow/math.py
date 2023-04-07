@@ -24,6 +24,7 @@ def add(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return ivy.add(x, y)
 
+
 @to_ivy_arrays_and_back
 def exp(x, name=None):
     return ivy.exp(x)
