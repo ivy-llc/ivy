@@ -1496,16 +1496,37 @@ def lerp(
         }
     }
     """
+    input_end_allowed_types = [
+        "int8",
+        "int16",
+        "int32",
+        "int64",
+        "float16",
+        "bfloat16",
+        "float32",
+        "float64",
+        "complex",
+    ]
+    weight_allowed_types = ["float16", "bfloat16", "float32", "float64"]
+
+    if not ivy.is_array(input):
+        input = ivy.array([input])
+    if not ivy.is_array(end):
+        end = ivy.array([end])
     if (
-        not isinstance(input, (float, int, complex))
-        or not isinstance(end, (float, int, complex))
+        ivy.dtype(input) not in input_end_allowed_types
+        or ivy.dtype(end) not in input_end_allowed_types
     ):
         input = ivy.astype(input, "float64")
-        end = ivy.astype(end, "float64")        
-    if (
-        not isinstance(weight, float)
-    ):
-        weight = ivy.astype(weight, "float64")
+        end = ivy.astype(end, "float64")
+
+    if ivy.is_array(weight):
+        if ivy.dtype(weight) not in weight_allowed_types:
+            weight = ivy.astype(weight, "float64")
+    else:
+        if not isinstance(weight, float):
+            weight = ivy.astype(ivy.array([weight]), "float64")
+
     return ivy.add(input, ivy.multiply(weight, ivy.subtract(end, input)), out=out)
 
 
