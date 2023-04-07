@@ -315,6 +315,9 @@ class Tensor:
             size, dtype=dtype, device=device, requires_grad=requires_grad
         )
 
+    def floor(self, *, out=None):
+        return torch_frontend.floor(self._ivy_array)
+
     def new_zeros(self, size, *, dtype=None, device=None, requires_grad=False):
         return torch_frontend.zeros(
             size, dtype=dtype, device=device, requires_grad=requires_grad
