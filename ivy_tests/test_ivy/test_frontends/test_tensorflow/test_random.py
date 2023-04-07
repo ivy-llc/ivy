@@ -135,11 +135,8 @@ def test_tensorflow_shuffle(
         available_dtypes=("int64", "int32"), min_value=0, max_value=10, shape=[2]
     ),
     minmaxval=helpers.get_bounds(dtype="int32"),
-    dtype=helpers.dtype_and_values(
+    dtype=helpers.array_dtypes(
         available_dtypes=("int32", "int64", "float16", "float32", "float64"),
-        min_value=0,
-        max_value=0,
-        shape=[1],
     ),
     test_with_out=st.just(False),
 )
@@ -153,7 +150,6 @@ def test_tensorflow_stateless_uniform(
     fn_tree,
     on_device,
 ):
-    dtype, _ = dtype
     shape_input_dtypes, shape = shape
     seed_input_dtypes, seed = seed
 
