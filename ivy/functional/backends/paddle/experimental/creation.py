@@ -155,7 +155,7 @@ def hamming_window(
     dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    ##Implemented as a composite function in ivy.functional.experimental.creation
+    # Implemented as a composite function in ivy.functional.experimental.creation
     raise IvyNotImplementedException()
 
 
