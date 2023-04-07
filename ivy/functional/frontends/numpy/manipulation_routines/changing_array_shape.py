@@ -18,7 +18,7 @@ def resize(x, /, newshape, refcheck=True):
             raise ValueError('cannot resize an array that has been referenced by another array this way.\
                              Put refcheck to be False ')
 
-    x = ravel(x)
+    x_new = ravel(x)
 
     total_size = 1
     for diff_size in newshape:
@@ -26,16 +26,16 @@ def resize(x, /, newshape, refcheck=True):
         if diff_size < 0:
             raise ValueError('values must not be negative')
     
-    if x.size == 0 or total_size == 0:
-        return ivy.zeros_like(x)   
+    if x_new.size == 0 or total_size == 0:
+        return ivy.zeros_like(x_new)   
     
-    repetition = -(-total_size//x.size)
+    repetition = -(-total_size//x_new.size)
     zeros = ivy.zeros((repetition * repetition),dtype=int)
-    x = ivy.concat((x,zeros))[:total_size]
+    x_new = ivy.concat((x_new,zeros))[:total_size]
     # or
     # x = ivy.concat((x,) * repetition)[:total_size]
-    return ivy.reshape(x,newshape=newshape,order="C")
-    # return ivy.resize(x, newshape=newshape, refcheck=refcheck)
+    y = ivy.reshape(x_new,newshape=newshape,order="C")
+    ivy.inplace_update(x,y)
 
 
 
