@@ -332,9 +332,13 @@ class Array(
     def __repr__(self):
         sig_fig = ivy.array_significant_figures()
         dec_vals = ivy.array_decimal_values()
-        backend = (
-            ivy.get_backend(self.backend) if self.backend else ivy.current_backend()
-        )
+        if self.backend == "":
+            # If the array was constructed using implicit backend
+            backend = ivy.current_backend()
+        else:
+            # Requirerd in the case that backend is different
+            # from the currently set backend
+            backend = ivy.with_backend(self.backend, cached=True)
         arr_np = backend.to_numpy(self._data)
         rep = ivy.vec_sig_fig(arr_np, sig_fig) if self._size > 0 else np.array(arr_np)
         with np.printoptions(precision=dec_vals):
@@ -347,6 +351,9 @@ class Array(
 
     def __dir__(self):
         return self._data.__dir__()
+
+    def __getattribute__(self, item):
+        return super().__getattribute__(item)
 
     def __getattr__(self, item):
         try:
