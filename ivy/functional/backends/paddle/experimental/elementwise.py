@@ -451,6 +451,9 @@ def real(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     return paddle.real(x)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint8", "int8")}}, backend_version
+)
 def count_nonzero(
     x: paddle.Tensor,
     /,
@@ -459,6 +462,7 @@ def count_nonzero(
     keepdims: Optional[bool] = False,
     dtype: Optional[paddle.dtype] = None,
     name: Optional[str] = None,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     non_zero_count = paddle.sum(x != 0, axis=axis, keepdim=keepdims, name=name)
     return paddle.to_tensor(non_zero_count, dtype=dtype)
