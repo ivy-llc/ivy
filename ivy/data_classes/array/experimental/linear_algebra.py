@@ -240,7 +240,7 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         return ivy.multi_dot((self._data, *x), out=out)
 
     def cond(
-            self: ivy.Array, /, *, p: Optional[Union[int, float, str]] = None
+        self: ivy.Array, /, *, p: Optional[Union[int, float, str]] = None
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.cond.

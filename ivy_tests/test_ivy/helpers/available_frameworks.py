@@ -2,7 +2,7 @@
 
 
 def available_frameworks():
-    available_frameworks_lis = ["numpy", "jax", "tensorflow", "torch"]
+    available_frameworks_lis = ["numpy", "jax", "tensorflow", "torch", "paddle"]
     try:
         import jax
 
@@ -23,6 +23,13 @@ def available_frameworks():
         assert torch, "torch is imported to see if the user has it installed"
     except ImportError:
         available_frameworks_lis.remove("torch")
+
+    try:
+        import paddle
+
+        assert paddle, "Paddle is imported to see if the user has it installed"
+    except ImportError:
+        available_frameworks_lis.remove("paddle")
     return available_frameworks_lis
 
 
@@ -35,6 +42,8 @@ def ground_truth():
         g_truth = "torch"
     elif "jax" in available_framework_lis:
         g_truth = "jax"
+    elif "paddle" in available_framework_lis:
+        g_truth = "paddle"
     else:
         g_truth = "numpy"
     return g_truth

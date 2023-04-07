@@ -11,7 +11,7 @@ from ... import config
 from dataclasses import dataclass
 
 # needed for multiversion
-available_frameworks = ["numpy", "jax", "tensorflow", "torch"]
+available_frameworks = ["numpy", "jax", "tensorflow", "torch", "paddle"]
 FWS_DICT = {
     "": lambda: None,
 }
@@ -28,6 +28,9 @@ if "tensorflow" in available_frameworks:
 
 if "torch" in available_frameworks:
     FWS_DICT["torch"] = lambda x=None: _get_ivy_torch(x)
+
+if "paddle" in available_frameworks:
+    FWS_DICT["paddle"] = lambda x=None: _get_ivy_paddle(x)
 
 
 # This is used to make sure the variable is not being overriden
@@ -137,6 +140,17 @@ def _get_ivy_torch(version=None):
     except ImportError:
         return None
     return ivy.functional.backends.torch
+
+
+def _get_ivy_paddle(version=None):
+    """Import Paddle module from ivy"""
+    if version:
+        config.allow_global_framework_imports(fw=[version])
+    try:
+        import ivy.functional.backends.paddle
+    except ImportError:
+        return None
+    return ivy.functional.backends.paddle
 
 
 # Setup

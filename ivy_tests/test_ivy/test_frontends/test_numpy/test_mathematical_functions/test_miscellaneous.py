@@ -185,6 +185,7 @@ def test_numpy_sqrt(
         subok=True,
     )
 
+
 # reciprocal
 @handle_frontend_test(
     fn_tree="numpy.reciprocal",
@@ -228,7 +229,7 @@ def test_numpy_reciprocal(
         order="K",
         dtype=dtype,
         subok=True,
-    )    
+    )
 
 
 # square
