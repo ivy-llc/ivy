@@ -19,9 +19,7 @@ def Acos(*, x, name="Acos"):
     return ivy.acos(x)
 
 
-@to_ivy_arrays_and_back
-def Acosh(*, x, name="Acosh"):
-    return ivy.acosh(x)
+Acosh = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.acosh))
 
 
 Add = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add))
@@ -133,6 +131,12 @@ def Concat(*, concat_dim, values, name="Concat"):
 
 
 Cos = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.cos))
+
+
+@to_ivy_arrays_and_back
+def Cross(*, a, b, name="Cross"):
+    a, b = check_tensorflow_casting(a, b)
+    return ivy.cross(a, b)
 
 
 @to_ivy_arrays_and_back
@@ -269,10 +273,7 @@ def Log1p(*, x, name="Log1p"):
     return ivy.log1p(x)
 
 
-@to_ivy_arrays_and_back
-def LogicalOr(*, x, y, name="LogicalOr"):
-    x, y = check_tensorflow_casting(x, y)
-    return ivy.logical_or(x, y)
+LogicalOr = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.logical_or))
 
 
 @to_ivy_arrays_and_back
@@ -443,6 +444,13 @@ def Sign(*, x, name="Sign"):
     return ivy.sign(x)
 
 
+@to_ivy_arrays_and_back
+def Size(*, input, out_type=tf_frontend.int32, name="Size"):
+    out_type = to_ivy_dtype(out_type)
+    shape = ivy.shape(input, as_array=True)
+    return ivy.astype(ivy.prod(shape), out_type, copy=False)
+
+
 Split = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.split))
 
 
@@ -478,6 +486,11 @@ Tan = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.tan))
 
 
 Tanh = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.tanh))
+
+
+@to_ivy_arrays_and_back
+def TanhGrad(*, y, dy, name="TanhGrad"):
+    return ivy.multiply(dy, ivy.subtract(1, ivy.multiply(y, y)))
 
 
 @to_ivy_arrays_and_back
@@ -743,3 +756,37 @@ def BatchMatMulV3(x, y, Tout=ivy.Dtype, adj_x=False, adj_y=False, name="BatchMat
 
 
 Slice = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.slice))
+
+LeakyRelu = to_ivy_arrays_and_back(
+    map_raw_ops_alias(
+        tf_frontend.nn.leaky_relu,
+    )
+)
+
+LeakyRelu.supported_dtypes = {
+    "numpy": (
+        "float32",
+        "float64",
+    ),
+    "tensorflow": (
+        "bfloat16",
+        "float16",
+        "float32",
+        "float64",
+    ),
+    "torch": (
+        "float32",
+        "float64",
+    ),
+    "jax": (
+        "bfloat16",
+        "float16",
+        "float32",
+        "float64",
+    ),
+}
+
+
+@to_ivy_arrays_and_back
+def Prod(*, input, axis, keep_dims=False, name="Prod"):
+    return ivy.astype(ivy.prod(input, axis=axis, keepdims=keep_dims), input.dtype)

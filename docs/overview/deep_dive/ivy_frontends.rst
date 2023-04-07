@@ -18,14 +18,14 @@ Ivy Frontends
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`ivy frontends channel`: https://discord.com/channels/799879767196958751/998782045494976522
 .. _`ivy frontends forum`: https://discord.com/channels/799879767196958751/1028297849735229540
-.. _`open task`: https://lets-unify.ai/ivy/contributing/open_tasks.html#open-tasks
+.. _`open task`: https://lets-unify.ai/docs/ivy/contributing/open_tasks.html#open-tasks
 .. _`Array manipulation routines`: https://numpy.org/doc/stable/reference/routines.array-manipulation.html#
 .. _`Array creation routines`: https://numpy.org/doc/stable/reference/routines.array-creation.html
 
 Introduction
 ------------
 
-On top of the Ivy functional API and backend functional APIs, Ivy has another set of framework-specific frontend functional APIs, which play an important role in code transpilations, as explained `here <https://lets-unify.ai/ivy/design/ivy_as_a_transpiler.html>`_.
+On top of the Ivy functional API and backend functional APIs, Ivy has another set of framework-specific frontend functional APIs, which play an important role in code transpilations, as explained `here <https://lets-unify.ai/docs/ivy/design/ivy_as_a_transpiler.html>`_.
 
 Let's start with some examples to have a better idea on Ivy Frontends!
 
@@ -74,7 +74,7 @@ There will be some implicit discussion of the locations of frontend functions in
 The native arrays of each framework have their own attributes and instance methods which differ from the attributes and instance methods of :class:`ivy.Array`.
 As such we have implemented framework-specific array classes: :class:`tf_frontend.Tensor`, :class:`torch_frontend.Tensor`, :class:`numpy_frontend.ndarray`, and :class:`jax_frontend.DeviceArray`.
 These classes simply wrap an :class:`ivy.Array`, which is stored in the :code:`ivy_array` attribute, and behave as closely as possible to the native framework array classes.
-This is explained further in the `Classes and Instance Methods <https://lets-unify.ai/ivy/deep_dive/ivy_frontends.html#classes-and-instance-methods>`_ section.
+This is explained further in the `Classes and Instance Methods <https://lets-unify.ai/docs/ivy/deep_dive/ivy_frontends.html#classes-and-instance-methods>`_ section.
 
 As we aim to replicate the frontend frameworks as closely as possible, all functions accept their frontend array class (as well as :class:`ivy.Array` and :class:`ivy.NativeArray`) and return a frontend array.
 However, since most logic in each function is handled by Ivy, the :class:`ivy.Array` must be extracted from any frontend array inputs.
@@ -386,7 +386,7 @@ Temporary Compositions
 
 Alternatively, if after creating the new issue you would rather not wait around for a member of our team to review and possibly add to the "Extend Ivy Functional API" `ToDo list issue <https://github.com/unifyai/ivy/issues/3856>`_, you can instead go straight ahead add the frontend function as a heavy composition of the existing Ivy functions, with a :code:`#ToDo` comment included, explaining that this frontend implementation will be simplified if/when :func:`ivy.func_name` is add to Ivy.
 
-The entire workflow for extending the Ivy Frontends as an external contributor is explained in more detail in the `Open Tasks <https://lets-unify.ai/ivy/contributing/open_tasks.html#frontend-apis>`_ section.
+The entire workflow for extending the Ivy Frontends as an external contributor is explained in more detail in the `Open Tasks <https://lets-unify.ai/docs/ivy/contributing/open_tasks.html#frontend-apis>`_ section.
 
 
 Supported Data Types and Devices
