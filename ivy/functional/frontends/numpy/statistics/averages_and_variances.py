@@ -404,5 +404,6 @@ def nanmedian(
     out=None,
     overwrite_input=False,
 ):
-    ret = ivy.nanmedian(a, axis=axis, keepdims=keepdims, out=out, overwrite_input=overwrite_input)
+    ret = ivy.nanmedian(a, axis=axis, keepdims=keepdims, out=out, 
+                        overwrite_input=overwrite_input)
     return ret
