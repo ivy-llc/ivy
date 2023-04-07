@@ -117,18 +117,6 @@ def copysign(
         return ivy.multiply(ivy.abs(x1), signs)
 
 
-def count_nonzero(
-    a: paddle.Tensor,
-    /,
-    *,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: Optional[bool] = False,
-    dtype: Optional[paddle.dtype] = None,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    raise IvyNotImplementedException()
-
-
 def nansum(
     x: paddle.Tensor,
     /,
