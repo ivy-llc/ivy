@@ -208,7 +208,10 @@ def tril_indices(
     )
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "complex64", "complex128")}, backend_version)
+@with_unsupported_dtypes(
+    {"1.11.0 and below": ("bfloat16", "complex64", "complex128")},
+    backend_version
+)
 def frombuffer(
         buffer: bytes,
         dtype: Optional[paddle.dtype] = float,

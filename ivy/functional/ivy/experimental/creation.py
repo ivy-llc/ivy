@@ -594,8 +594,11 @@ def frombuffer(
 
     .. note::
         Note that either of the following must be true:
-        1. count is a positive non-zero number, and the total number of bytes in the buffer is equal or greater than offset plus count times the size (in bytes) of dtype.
-        2. count is negative, and the length (number of bytes) of the buffer subtracted by the offset is a multiple of the size (in bytes) of dtype.
+        1. count is a positive non-zero number, and the total number of bytes
+        in the buffer is equal or greater than offset plus count times the size
+        (in bytes) of dtype.
+        2. count is negative, and the length (number of bytes) of the buffer
+        subtracted by the offset is a multiple of the size (in bytes) of dtype.
 
     Parameters
     ----------
@@ -627,8 +630,8 @@ def frombuffer(
     >>> print(y)
     (ivy.array([2, 3, 4]))
 
-    >>> x = b'\x00\x00\x80?\x00\x00\x00@\x00\x00@@\x00\x00\x80@\x00\x00\xa0@\x00\x00\xc0@'
-    >>> y = ivy.frombuffer(x, dtype='float32', count=4, offset=4)
+    >>> x = b'\x00<\x00@\x00B\x00D\x00E'
+    >>> y = ivy.frombuffer(x, dtype='float16', count=4, offset=2)
     >>> print(y)
     (ivy.array([2., 3., 4., 5.]))
     """

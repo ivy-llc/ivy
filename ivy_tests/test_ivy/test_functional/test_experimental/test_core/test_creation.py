@@ -334,6 +334,8 @@ def _get_dtype_buffer_count_offset(draw):
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
+
+
 def test_frombuffer(
     dtype_buffer_count_offset,
     test_flags,
