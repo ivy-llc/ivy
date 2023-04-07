@@ -231,7 +231,9 @@ def Inv(*, x, name="Inv"):
     return ivy.astype(ivy.reciprocal(x), x.dtype)
 
 
-Reciprocal = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.reciprocal))
+Reciprocal = to_ivy_arrays_and_back(
+    map_raw_ops_alias(tf_frontend.math.reciprocal)
+)
 
 
 @to_ivy_arrays_and_back
