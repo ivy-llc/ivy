@@ -193,6 +193,27 @@ def test_indices(
     )
 
 
+# unravel_index
+@st.composite
+def max_value_as_shape_prod(draw):
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=1,
+            max_num_dims=5,
+            min_dim_size=1,
+            max_dim_size=5,
+        )
+    )
+    dtype_and_x = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_value=0,
+            max_value=np.prod(shape) - 1,
+        )
+    )
+    return dtype_and_x, shape
+
+
 @handle_frontend_test(
     fn_tree="numpy.unravel_index",
     dtype_x_shape=max_value_as_shape_prod(),
@@ -219,7 +240,7 @@ def test_numpy_unravel_index(
     )
     
  
- @handle_frontend_test(
+@handle_frontend_test(
     fn_tree="numpy.fill_diagonal",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
