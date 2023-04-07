@@ -389,7 +389,8 @@ def nanpercentile(
                     arrayofpercentiles.append(cpercentile(ii, i))
                 resultarray.append(arrayofpercentiles)
         return resultarray
-    
+
+
 # nanmedian   
 @handle_numpy_out
 @to_ivy_arrays_and_back
