@@ -380,6 +380,5 @@ def test_numpy_nanmedian(
         axis=axis[0],
         out=None,
         input_dtypes=input_dtype,
-        axis=axis,
         keepdims=keep_dims,
     )
