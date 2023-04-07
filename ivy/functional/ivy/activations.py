@@ -409,59 +409,39 @@ def relu(
 @handle_nestable
 @handle_exceptions
 def sigmoid(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None, derivative: bool = False
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """
     Applies the sigmoid function element-wise.
-
     Parameters
     ----------
-    x : array-like
+    x
         input array.
-    out : array-like, optional
-        output array, for writing the result to. It must have a shape that the
-        input broadcasts to. Default is None.
-    derivative : bool, optional
-        Whether to compute the derivative of the sigmoid function. Default is False.
-
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        input broadcast to.
+        default: None
     Returns
     -------
-    array-like
-        An array containing the sigmoid activation of each element in ``x``, or the derivative of the sigmoid function if
-        the `derivative` parameter is True.
-
+    ret
+        an array containing the sigmoid activation of each element in ``x``.
     Examples
     --------
     With :class:`ivy.Array` input:
-
     >>> x = ivy.array([-1.0, 1.0, 2.0])
     >>> y = ivy.sigmoid(x)
     >>> print(y)
     ivy.array([0.269, 0.731, 0.881])
-
     >>> x = ivy.array([-1.0, 1.0, 2.0])
     >>> y = x.sigmoid()
     >>> print(y)
     ivy.array([0.269, 0.731, 0.881])
-
-
     >>> x = ivy.array([[-1.3, 3.8, 2.1], [1.7, 4.2, -6.6]])
     >>> y = ivy.sigmoid(x)
     >>> print(y)
     ivy.array([[0.214, 0.978, 0.891], [0.846,0.985,0.001]] )
-
-    Computing the derivative of the sigmoid function:
-
-    >>> x = ivy.array([[-1.0, 0.0, 1.0]])
-    >>> y = ivy.sigmoid(x, derivative=True)
-    >>> print(y)
-    ivy.array([[0.196, 0.25 , 0.196]])
-
     """
-    if derivative:
-        return current_backend(x).sigmoid_derivative(x, out=out)
-    else:
-        return current_backend(x).sigmoid(x, out=out)
+    return current_backend(x).sigmoid(x, out=out)
 
 
 

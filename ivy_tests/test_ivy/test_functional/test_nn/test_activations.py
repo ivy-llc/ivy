@@ -49,11 +49,13 @@ def test_relu(
         safety_factor_scale="log",
     ),
     alpha=st.floats(min_value=-1e-4, max_value=1e-4),
+    apply_negative_slope_to_positives=st.booleans(),
 )
 def test_leaky_relu(
     *,
     dtype_and_x,
     alpha,
+    apply_negative_slope_to_positives,
     test_flags,
     backend_fw,
     fn_name,
@@ -72,6 +74,7 @@ def test_leaky_relu(
         atol_=1e-2,
         x=x[0],
         alpha=alpha,
+        apply_negative_slope_to_positives=apply_negative_slope_to_positives,
     )
 
 

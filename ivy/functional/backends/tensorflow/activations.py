@@ -23,9 +23,19 @@ def gelu(
 
 @with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
 def leaky_relu(
-    x: Tensor, /, *, alpha: float = 0.2, out: Optional[Tensor] = None
-) -> Tensor:
-    return tf.nn.leaky_relu(x, alpha)
+    x: tf.Tensor,
+    /,
+    *,
+    alpha: float = 0.2,
+    apply_negative_slope_to_positives: bool = True,
+    out: Optional[tf.Tensor] = None,
+) -> tf.Tensor:
+    
+    if apply_negative_slope_to_positives:
+        return tf.nn.leaky_relu(x, alpha=alpha, name=None if out is None else out.name)
+    else:
+        neg_part = tf.nn.leaky_relu(-x, alpha=alpha, name=None if out is None else out.name)
+        return -neg_part + x
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)

@@ -19,10 +19,22 @@ def relu(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 relu.support_native_out = True
 
 
+
 def leaky_relu(
-    x: np.ndarray, /, *, alpha: float = 0.2, out: Optional[np.ndarray] = None
+    x: np.ndarray, /,
+    *,
+    alpha: float = 0.2,
+    apply_negative_slope_to_positives: bool = True,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    return np.asarray(np.where(x > 0, x, np.multiply(x, alpha)), x.dtype)
+    if apply_negative_slope_to_positives:
+        return np.where(x > 0, x, x * alpha)
+    else:
+        if out is None:
+            out = np.empty_like(x)
+        np.multiply(x, np.where(x > 0, 0, alpha), out=out)
+        np.maximum(x, 0, out=out)
+        return out
 
 
 @with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)

@@ -44,15 +44,15 @@ def leaky_relu(
     /,
     *,
     alpha: float = 0.2,
+    apply_negative_slope_to_positives: bool = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if ivy.as_ivy_dtype(x.dtype) in unsupported_dtypes:
-        if paddle.is_complex(x):
-            return F.leaky_relu(x.real(), negative_slope=alpha) + 1j * F.leaky_relu(
-                x.imag(), negative_slope=alpha
-            )
-        return F.leaky_relu(x.cast("float32"), negative_slope=alpha).cast(x.dtype)
-    return F.leaky_relu(x, negative_slope=alpha)
+    
+    if apply_negative_slope_to_positives:
+        return paddle.nn.functional.leaky_relu(x, alpha=alpha, inplace=True, out=out)
+    else:
+        neg_part = paddle.nn.functional.leaky_relu(-x, alpha=alpha, inplace=True, out=out)
+        return -neg_part + x
 
 
 @with_unsupported_device_and_dtypes(

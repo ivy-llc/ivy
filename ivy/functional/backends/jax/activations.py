@@ -12,6 +12,8 @@ from typing import Optional, Union
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 from ivy.functional.backends.jax import JaxArray
+from typing import Optional
+
 
 
 @with_unsupported_dtypes({"0.3.14 and below": ("complex",)}, backend_version)
@@ -25,10 +27,18 @@ def gelu(
     return jax.nn.gelu(x, approximate)
 
 
+
 def leaky_relu(
-    x: JaxArray, /, *, alpha: float = 0.2, out: Optional[JaxArray] = None
+    x: JaxArray, /, *, alpha: float = 0.2,
+    apply_negative_slope_to_positives: bool = True,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.asarray(jnp.where(x > 0, x, jnp.multiply(x, alpha)), x.dtype)
+
+    if apply_negative_slope_to_positives:
+        return jnp.where(x > 0, x, alpha * x, out=out)
+    else:
+        neg_part = jnp.where(x > 0, 0, alpha * x, out=out)
+        return jnp.where(x > 0, x, neg_part, out=out)
 
 
 def relu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:

@@ -25,9 +25,14 @@ def leaky_relu(
     /,
     *,
     alpha: float = 0.2,
+    apply_negative_slope_to_positives: bool = True,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.nn.functional.leaky_relu(x, alpha)
+    if apply_negative_slope_to_positives:
+        return torch.nn.functional.leaky_relu(x, negative_slope=alpha, inplace=False)
+    else:
+        neg_part = torch.nn.functional.leaky_relu(-x, negative_slope=alpha, inplace=False)
+        return -neg_part + x
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("complex", "float16")}, backend_version)
