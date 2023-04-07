@@ -1,9 +1,9 @@
 # global
-from builtins import slice as py_slice
+from builtins import slice as py_slice, range as py_range
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.tensorflow.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_tf_dtype,
@@ -35,6 +35,20 @@ def clip_by_value(t, clip_value_min, clip_value_max):
     )
     t = ivy.array(t)
     return ivy.clip(t, clip_value_min, clip_value_max)
+
+
+@with_supported_dtypes({"2.9.1 and below": ("float32",)}, "tensorflow")
+@to_ivy_arrays_and_back
+def clip_by_global_norm(t_list, clip_norm, use_norm=None):
+    if use_norm is not None:
+        global_norm = use_norm
+    else:
+        global_norm = ivy.sqrt(ivy.sum([ivy.vector_norm(t) ** 2 for t in t_list]))
+
+    max_clip_ratio = ivy.maximum(clip_norm, global_norm)
+    return [
+        ivy.multiply(t, ivy.divide(clip_norm, max_clip_ratio)) for t in t_list
+    ], global_norm
 
 
 @to_ivy_arrays_and_back
@@ -256,6 +270,7 @@ def _num_to_bit_list(value, num_dims):
     return list(map(int, "{:0{size}b}".format(value, size=num_dims)))[::-1]
 
 
+# ToDo: find a way around for negative indexing, which torch does not support
 @to_ivy_arrays_and_back
 def strided_slice(
     input_,
@@ -270,43 +285,95 @@ def strided_slice(
     var=None,
     name=None,
 ):
+    input_shape = list(input_.shape)
+    input_rank = len(input_shape)
     begin_mask, end_mask, ellipsis_mask, new_axis_mask, shrink_axis_mask = list(
         map(
             _num_to_bit_list,
             [begin_mask, end_mask, ellipsis_mask, new_axis_mask, shrink_axis_mask],
-            [len(input_.shape)] * 5,
+            [input_rank] * 5,
         )
     )
-    ivy.assertions.check_true(
-        sum(ellipsis_mask) <= 1,
-        message="Only one non-zero bit is allowed in ellipsis_mask.",
+    begin, end, strides = map(
+        lambda x: ivy.array(x) if isinstance(x, int) else x, [begin, end, strides]
     )
-    begin, end = map(lambda x: ivy.array(x) if isinstance(x, int) else x, [begin, end])
-    strides = [1] * len(input_.shape) if strides is None else strides
-
-    full_slice = ()
-    new_dims = ()
-    for i, _ in enumerate(input_.shape):
-        if ellipsis_mask[i]:
-            full_slice += (...,)
+    num_defined = len(begin)
+    strides = ivy.repeat(ivy.array(1), num_defined) if strides is None else strides
+    ivy.assertions.check_true(
+        num_defined == len(end) == len(strides),
+        message="`begin`, `end`, and `strides` are expected to have the same length",
+    )
+    begin, end, strides = map(
+        lambda x: [ivy.to_scalar(i) for i in x] if ivy.is_ivy_array(x) else x,
+        [begin, end, strides],
+    )
+    for i, v in enumerate(shrink_axis_mask):
+        if v == 1:
+            begin_mask[i] = 0
+    ellipsis_indices = [i for i, v in enumerate(ellipsis_mask) if v]
+    if len(ellipsis_indices) > 1:
+        raise ValueError("Multiple ellipses are not allowed.")
+    elif len(ellipsis_indices) == 1:
+        ellipsis_index = ellipsis_indices[0]
+        num_missing = input_rank - len(begin)
+        if num_missing == 0:
+            begin_mask[ellipsis_index] = 1
+            end_mask[ellipsis_index] = 1
+            shrink_axis_mask[ellipsis_index] = 0
+            new_axis_mask[ellipsis_index] = 0
         else:
-            if new_axis_mask[i]:
-                new_dims += (i,)
+            for i in py_range(ellipsis_index, ellipsis_index + num_missing + 1, 1):
+                if i < input_rank:
+                    shrink_axis_mask[i] = 0
+                    new_axis_mask[i] = 0
+                else:
+                    break
+            if ellipsis_index >= len(begin):
+                begin = begin + [None] * num_missing
+                end = end + [None] * num_missing
+                strides = strides + [1] * num_missing
             else:
-                strides_i = int(strides[i])
-                if not begin_mask[i] or shrink_axis_mask[i]:
-                    begin_i = int(begin[i])
+                begin = (
+                    begin[:ellipsis_index]
+                    + [None] * (num_missing + 1)
+                    + begin[ellipsis_index + 1 :]
+                )
+                end = (
+                    end[:ellipsis_index]
+                    + [None] * (num_missing + 1)
+                    + end[ellipsis_index + 1 :]
+                )
+                strides = (
+                    strides[:ellipsis_index]
+                    + [1] * (num_missing + 1)
+                    + strides[ellipsis_index + 1 :]
+                )
+    full_slice = ()
+    for i, _ in enumerate(begin):
+        if new_axis_mask[i]:
+            full_slice += (ivy.newaxis,)
+        else:
+            b = begin[i] if not begin_mask[i] else None
+            e = end[i] if not end_mask[i] else None
+            s = strides[i]
+            if b is None and e is None:
+                s = 1 if ellipsis_mask[i] else s
+            elif shrink_axis_mask[i]:
+                if b is not None:
+                    e = b + 1 if s > 0 else b - 1
                 else:
-                    begin_i = None
-                if shrink_axis_mask[i]:
-                    end_i = begin_i + int(strides_i > 0)
-                elif end_mask[i]:
-                    end_i = None
-                else:
-                    end_i = int(end[i])
-                full_slice += (py_slice(begin_i, end_i, strides_i),)
-    ret = input_[full_slice] if full_slice else input_
-    return ivy.expand_dims(ret, axis=new_dims)
+                    e = 1 if s > 0 else input_shape[i] - 2
+            full_slice += (py_slice(b, e, s),)
+    if all(i is None for i in full_slice):
+        full_slice += (...,)
+    ret = input_[full_slice]
+    shrink_indices = [
+        i
+        for i, v in enumerate(shrink_axis_mask)
+        if v and i < len(ret.shape) and ret.shape[i] == 1
+    ]
+    ret = ivy.squeeze(ret, axis=shrink_indices)
+    return ret
 
 
 @to_ivy_arrays_and_back
@@ -332,7 +399,7 @@ def tile(input, multiples, name=None):
 
 @to_ivy_arrays_and_back
 def one_hot(
-    indices: ivy.array,
+    indices: ivy.Array,
     depth: int,
     on_value=None,
     off_value=None,
@@ -345,7 +412,7 @@ def one_hot(
 
 
 @to_ivy_arrays_and_back
-def where(condition: ivy.array, x=None, y=None, name=None):
+def where(condition: ivy.Array, x=None, y=None, name=None):
     if x is None and y is None:
         return ivy.argwhere(condition)
     else:
@@ -374,7 +441,7 @@ def repeat(
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @to_ivy_arrays_and_back
-def unstack(value: ivy.array, axis=0, num=None, name=None):
+def unstack(value: ivy.Array, axis=0, num=None, name=None):
     return ivy.unstack(value, axis=axis)
 
 

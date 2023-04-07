@@ -243,3 +243,40 @@ class _ArrayWithActivationsExperimental(abc.ABC):
 
         """
         return ivy.logsigmoid(self._data)
+
+    def selu(self, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """Applies the scaled exponential linear unit function element-wise.
+
+        Parameters
+        ----------
+        self
+            input array
+        out
+            optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the scaled exponential linear unit activation
+            of each element in input.
+
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+
+        >>> x = ivy.array([-1.,  0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.])
+        >>> y = x.selu()
+        >>> print(y)
+        ivy.array([-1.11133075,  0.,  1.05070102,  2.10140204,  3.15210295,
+                    4.20280409,  5.25350523,  6.30420589,  7.35490704])
+
+        >>> x = ivy.array([-1.,  0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.])
+        >>> y = ivy.zeros(9)
+        >>> x.selu(out = y)
+        >>> print(y)
+        ivy.array([-1.11133075,  0.,  1.05070102,  2.10140204,  3.15210295,
+                    4.20280409,  5.25350523,  6.30420589,  7.35490704])
+
+        """
+        return ivy.selu(self._data, out=out)
