@@ -221,14 +221,14 @@ def nan_to_num(
 ) -> paddle.Tensor:
     with ivy.ArrayMode(False):
         if ivy.is_int_dtype(x):
-            if posinf == None:
+            if posinf is None:
                 posinf = ivy.iinfo(x).max
-            if neginf == None:
+            if neginf is None:
                 neginf = ivy.iinfo(x).min
         elif ivy.is_float_dtype(x) or ivy.is_complex_dtype(x):
-            if posinf == None:
+            if posinf is None:
                 posinf = ivy.finfo(x).max
-            if neginf == None:
+            if neginf is None:
                 neginf = ivy.finfo(x).min
         ret = ivy.where(ivy.isnan(x), paddle.to_tensor(nan, dtype=x.dtype), x)
         ret = ivy.where(
