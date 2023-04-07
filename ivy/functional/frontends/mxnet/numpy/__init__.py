@@ -7,96 +7,96 @@ from typing import Union, Tuple, Iterable
 
 # Constructing dtypes are required as ivy.<dtype>
 # will change dynamically on the backend and may not be available
-int8 = ivy.IntDtype("int8")
-int16 = ivy.IntDtype("int16")
-int32 = ivy.IntDtype("int32")
-int64 = ivy.IntDtype("int64")
-uint8 = ivy.UintDtype("uint8")
-uint16 = ivy.UintDtype("uint16")
-uint32 = ivy.UintDtype("uint32")
-uint64 = ivy.UintDtype("uint64")
-bfloat16 = ivy.FloatDtype("bfloat16")
-float16 = ivy.FloatDtype("float16")
-float32 = ivy.FloatDtype("float32")
-float64 = ivy.FloatDtype("float64")
-complex64 = ivy.ComplexDtype("complex64")
-complex128 = ivy.ComplexDtype("complex128")
-bool = ivy.Dtype("bool")
+_int8 = ivy.IntDtype("int8")
+_int16 = ivy.IntDtype("int16")
+_int32 = ivy.IntDtype("int32")
+_int64 = ivy.IntDtype("int64")
+_uint8 = ivy.UintDtype("uint8")
+_uint16 = ivy.UintDtype("uint16")
+_uint32 = ivy.UintDtype("uint32")
+_uint64 = ivy.UintDtype("uint64")
+_bfloat16 = ivy.FloatDtype("bfloat16")
+_float16 = ivy.FloatDtype("float16")
+_float32 = ivy.FloatDtype("float32")
+_float64 = ivy.FloatDtype("float64")
+_complex64 = ivy.ComplexDtype("complex64")
+_complex128 = ivy.ComplexDtype("complex128")
+_bool = ivy.Dtype("bool")
 
 mxnet_promotion_table = {
-    (bool, bool): bool,
-    (bool, int8): int8,
-    (bool, int32): int32,
-    (bool, int64): int64,
-    (bool, uint8): uint8,
-    (bool, bfloat16): bfloat16,
-    (bool, float16): float16,
-    (bool, float32): float32,
-    (bool, float64): float64,
-    (bool, bool): bool,
-    (int8, bool): int8,
-    (int8, int8): int8,
-    (int8, int32): int32,
-    (int8, int64): int64,
-    (int32, bool): int32,
-    (int32, int8): int32,
-    (int32, int32): int32,
-    (int32, int64): int64,
-    (int64, bool): int64,
-    (int64, int8): int64,
-    (int64, int32): int64,
-    (int64, int64): int64,
-    (uint8, bool): uint8,
-    (uint8, uint8): uint8,
-    (int32, uint8): int32,
-    (int64, uint8): int64,
-    (uint8, int32): int32,
-    (uint8, int64): int64,
-    (float16, bool): float16,
-    (float16, float16): float16,
-    (float16, float32): float32,
-    (float16, float64): float64,
-    (float32, bool): float32,
-    (float32, float16): float32,
-    (float32, float32): float32,
-    (float32, float64): float64,
-    (float64, bool): float64,
-    (float64, float16): float64,
-    (float64, float32): float64,
-    (float64, float64): float64,
-    (int8, float16): float16,
-    (float16, int8): float16,
-    (int8, float32): float32,
-    (float32, int8): float32,
-    (int8, float64): float64,
-    (float64, int8): float64,
-    (int32, float16): float64,
-    (float16, int32): float64,
-    (int32, float32): float64,
-    (float32, int32): float64,
-    (int32, float64): float64,
-    (float64, int32): float64,
-    (int64, float16): float64,
-    (float16, int64): float64,
-    (int64, float32): float64,
-    (float32, int64): float64,
-    (int64, float64): float64,
-    (float64, int64): float64,
-    (uint8, float16): float16,
-    (float16, uint8): float16,
-    (uint8, float32): float32,
-    (float32, uint8): float32,
-    (uint8, float64): float64,
-    (float64, uint8): float64,
-    (bfloat16, bfloat16): bfloat16,
-    (bfloat16, uint8): bfloat16,
-    (uint8, bfloat16): bfloat16,
-    (bfloat16, int8): bfloat16,
-    (int8, bfloat16): bfloat16,
-    (bfloat16, float32): float32,
-    (float32, bfloat16): float32,
-    (bfloat16, float64): float64,
-    (float64, bfloat16): float64,
+    (_bool, _bool): _bool,
+    (_bool, _int8): _int8,
+    (_bool, _int32): _int32,
+    (_bool, _int64): _int64,
+    (_bool, _uint8): _uint8,
+    (_bool, _bfloat16): _bfloat16,
+    (_bool, _float16): _float16,
+    (_bool, _float32): _float32,
+    (_bool, _float64): _float64,
+    (_bool, _bool): _bool,
+    (_int8, _bool): _int8,
+    (_int8, _int8): _int8,
+    (_int8, _int32): _int32,
+    (_int8, _int64): _int64,
+    (_int32, _bool): _int32,
+    (_int32, _int8): _int32,
+    (_int32, _int32): _int32,
+    (_int32, _int64): _int64,
+    (_int64, _bool): _int64,
+    (_int64, _int8): _int64,
+    (_int64, _int32): _int64,
+    (_int64, _int64): _int64,
+    (_uint8, _bool): _uint8,
+    (_uint8, _uint8): _uint8,
+    (_int32, _uint8): _int32,
+    (_int64, _uint8): _int64,
+    (_uint8, _int32): _int32,
+    (_uint8, _int64): _int64,
+    (_float16, _bool): _float16,
+    (_float16, _float16): _float16,
+    (_float16, _float32): _float32,
+    (_float16, _float64): _float64,
+    (_float32, _bool): _float32,
+    (_float32, _float16): _float32,
+    (_float32, _float32): _float32,
+    (_float32, _float64): _float64,
+    (_float64, _bool): _float64,
+    (_float64, _float16): _float64,
+    (_float64, _float32): _float64,
+    (_float64, _float64): _float64,
+    (_int8, _float16): _float16,
+    (_float16, _int8): _float16,
+    (_int8, _float32): _float32,
+    (_float32, _int8): _float32,
+    (_int8, _float64): _float64,
+    (_float64, _int8): _float64,
+    (_int32, _float16): _float64,
+    (_float16, _int32): _float64,
+    (_int32, _float32): _float64,
+    (_float32, _int32): _float64,
+    (_int32, _float64): _float64,
+    (_float64, _int32): _float64,
+    (_int64, _float16): _float64,
+    (_float16, _int64): _float64,
+    (_int64, _float32): _float64,
+    (_float32, _int64): _float64,
+    (_int64, _float64): _float64,
+    (_float64, _int64): _float64,
+    (_uint8, _float16): _float16,
+    (_float16, _uint8): _float16,
+    (_uint8, _float32): _float32,
+    (_float32, _uint8): _float32,
+    (_uint8, _float64): _float64,
+    (_float64, _uint8): _float64,
+    (_bfloat16, _bfloat16): _bfloat16,
+    (_bfloat16, _uint8): _bfloat16,
+    (_uint8, _bfloat16): _bfloat16,
+    (_bfloat16, _int8): _bfloat16,
+    (_int8, _bfloat16): _bfloat16,
+    (_bfloat16, _float32): _float32,
+    (_float32, _bfloat16): _float32,
+    (_bfloat16, _float64): _float64,
+    (_float64, _bfloat16): _float64,
 }
 
 
