@@ -7,35 +7,36 @@ from ivy_tests.test_ivy.helpers import handle_test
 
 @handle_test(
     fn_tree="functional.ivy.experimental.triu_indices",
-    n_rows=helpers.ints(min_value=0, max_value=10),
-    n_cols=st.none() | helpers.ints(min_value=0, max_value=10),
-    k=helpers.ints(min_value=-10, max_value=10),
-    test_instance_method=st.just(False),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=3,
+        shape=(1),
+        min_value=0,
+        max_value=10,
+    ),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
 def test_triu_indices(
     *,
-    n_rows,
-    n_cols,
-    k,
+    dtype_and_x,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
+    input_dtype, x = dtype_and_x
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
-        input_dtypes=["int32"],
+        input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
-        n_rows=n_rows,
-        n_cols=n_cols,
-        k=k,
-        device=on_device,
+        n_rows=x[0],
+        n_cols=x[1],
+        k=x[2],
     )
 
 
@@ -194,21 +195,28 @@ def test_kaiser_bessel_derived_window(
 # hamming_window
 @handle_test(
     fn_tree="functional.ivy.experimental.hamming_window",
-    window_length=helpers.ints(min_value=1, max_value=10),
-    input_dtype=helpers.get_dtypes("integer"),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        shape=(1),
+        min_value=1,
+        max_value=10,
+    ),
     periodic=st.booleans(),
-    alpha=st.floats(min_value=1, max_value=5),
-    beta=st.floats(min_value=1, max_value=5),
+    dtype_and_f=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shape=(1),
+        min_value=0,
+        max_value=5,
+    ),
     dtype=helpers.get_dtypes("float", full=False),
     test_gradients=st.just(False),
 )
 def test_hamming_window(
     *,
-    window_length,
-    input_dtype,
+    dtype_and_x,
     periodic,
-    alpha,
-    beta,
+    dtype_and_f,
     dtype,
     test_flags,
     backend_fw,
@@ -216,17 +224,19 @@ def test_hamming_window(
     on_device,
     ground_truth_backend,
 ):
+    input_dtype1, x = dtype_and_x
+    input_dtype2, f = dtype_and_f
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtype1 + input_dtype2,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        window_length=window_length,
+        window_length=x[0],
         periodic=periodic,
-        alpha=alpha,
-        beta=beta,
+        alpha=f[0],
+        beta=f[1],
         dtype=dtype,
     )
 
