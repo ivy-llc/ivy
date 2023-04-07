@@ -242,9 +242,7 @@ def nanmax(
 
 
 @handle_numpy_out
-@handle_numpy_dtype
 @to_ivy_arrays_and_back
-@handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
 def _fmax(
     x1,
