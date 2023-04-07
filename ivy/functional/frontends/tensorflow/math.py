@@ -8,9 +8,11 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
     to_ivy_dtype,
 )
 
+
 @to_ivy_arrays_and_back
 def sign(x, name=None):
     return ivy.sign(x)
+
 
 @to_ivy_arrays_and_back
 def accumulate_n(inputs, input_type=None, shape=None, dtype=None, name=None):
