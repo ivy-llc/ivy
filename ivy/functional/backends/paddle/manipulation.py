@@ -6,7 +6,6 @@ import paddle
 
 # local
 import ivy
-from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
 
 # noinspection PyProtectedMember
