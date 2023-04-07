@@ -545,7 +545,6 @@ def sinh(x, name=None):
 @with_supported_dtypes(
     {
         "2.9.0 and below": (
-            "bfloat16",
             "float16",
             "float32",
             "float64",
