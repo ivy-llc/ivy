@@ -819,7 +819,6 @@ class _ContainerWithCreationExperimental(ContainerBase):
             device=device,
         )
 
-
     @staticmethod
     def static_frombuffer(
             buffer: ivy.Container,
@@ -900,7 +899,6 @@ class _ContainerWithCreationExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
-
 
     def frombuffer(
             self: ivy.Container,
