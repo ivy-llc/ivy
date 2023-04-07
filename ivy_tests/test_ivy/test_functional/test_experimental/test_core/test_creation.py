@@ -229,7 +229,7 @@ def test_hamming_window(
     input_dtype2, f = dtype_and_f
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
-        input_dtypes=input_dtype1+input_dtype2,
+        input_dtypes=input_dtype1 + input_dtype2,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
