@@ -1,6 +1,5 @@
 # Testing Function
 # global
-import numpy as np
 from hypothesis import strategies as st
 
 # local
