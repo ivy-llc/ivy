@@ -349,12 +349,15 @@ def test_numpy_fmax(
 # fmin
 @handle_frontend_test(
     fn_tree="numpy.fmin",
-    dtype_and_inputs=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=2,
-        min_value=-np.inf,
-        max_value=np.inf,
-        shared_dtype=True,
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("numeric"),
+                num_arrays=2,
+                shared_dtype=True,
+            )
+        ],
+        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -362,14 +365,14 @@ def test_numpy_fmax(
     ),
 )
 def test_numpy_fmin(
-    dtype_and_inputs,
+   dtypes_values_casting,
     where,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    input_dtypes, xs = dtype_and_inputs
+    input_dtypes, xs, casting, dtype = dtypes_values_casting
     where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
@@ -385,4 +388,8 @@ def test_numpy_fmin(
         x2=xs[1],
         out=None,
         where=where,
+        casting=casting,
+        order="K",
+        dtype=dtype,
+        subok=True,
     )
