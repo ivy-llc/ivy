@@ -442,12 +442,43 @@ def ldexp(
     return torch.ldexp(x1, x2, out=out)
 
 
+def _are_suitable_types_for_torch_lerp(input, end, weight):
+    suitable_types = [
+        torch.int8,
+        torch.int16,
+        torch.int32,
+        torch.int64,
+        torch.float16,
+        torch.bfloat16,
+        torch.float32,
+        torch.float64,
+    ]
+
+    if not isinstance(input, torch.Tensor) or not isinstance(end, torch.Tensor):
+        return False
+    else:
+        if input.dtype not in suitable_types or end.dtype not in suitable_types:
+            return False
+
+    if not isinstance(weight, float) and not isinstance(weight, torch.Tensor):
+        return False
+    else:
+        if isinstance(weight, torch.Tensor):
+            if weight.dtype not in [
+                torch.float16,
+                torch.bfloat16,
+                torch.float32,
+                torch.float64,
+            ]:
+                return False
+
+    return True
+
+
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 @handle_mixed_function(
     lambda input, end, weight, **kwargs: (
-        isinstance(input, (float, int))
-        and isinstance(end, (float, int))
-        and isinstance(weight, float)
+        _are_suitable_types_for_torch_lerp(input, end, weight)
     )
 )
 def lerp(
