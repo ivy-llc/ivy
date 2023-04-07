@@ -84,7 +84,6 @@ def solve(matrix, rhs):
     matrix, rhs = check_tensorflow_casting(matrix, rhs)
     return ivy.solve(matrix, rhs)
 
-
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
     {"2.9.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
