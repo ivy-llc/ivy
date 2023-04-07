@@ -1,3 +1,5 @@
+from ivy.functional.frontends.numpy import promote_types_of_numpy_inputs
+
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.jax.devicearray import DeviceArray
@@ -163,20 +165,9 @@ def single(x):
 
 @to_ivy_arrays_and_back
 def geomspace(start, stop, num=50, endpoint=True, dtype=None, axis=0):
-    start = ivy.array(start)
-    stop = ivy.array(stop)
-    n = len(start)
-    a = []
-    for i in range(n):
-        cr = ivy.log((stop[i] / start[i]), where=start[i] != 0 )/ (num - 1 if endpoint else num)
-        if dtype is None:
-            start, stop = promote_types_of_numpy_inputs(x1, x2)
-            dtype = start.dtype
-        x = ivy.linspace(0, cr * (num - 1 if endpoint else num), num, endpoint=endpoint, dtype=dtype, axis=axis)
-        x = ivy.exp(x)
-        x = start[i] * x
-        b = ivy.reshape(x, (num,1))
-        if endpoint:
-            b[-1] = stop[i]
-        a.append(b)
-    return ivy.concatenate(a, axis=1)
+    start, stop = promote_types_of_numpy_inputs(start, stop)
+    cr = ivy.log((stop / start), where=start != 0) / (num - 1 if endpoint else num)
+    x = ivy.linspace(0, cr * (num - 1 if endpoint else num), num, endpoint=endpoint, dtype=dtype, axis=axis)
+    x = ivy.exp(x)
+    x = start * x
+    return x
