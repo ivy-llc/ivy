@@ -76,4 +76,7 @@ def fill_diagonal(a, val, wrap=False):
         step = 1 + ivy.sum(ivy.cumprod(a.shape[:-1]))
 
     # Write the value out into the diagonal.
-    a.flat[:end:step] = val
+    shape = a.shape
+    a = ivy.reshape(a, a.size)
+    a[:end:step] = val
+    a = ivy.reshape(a, shape)
