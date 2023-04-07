@@ -578,11 +578,8 @@ def test_jax_numpy_full(
 
 
 @st.composite
-def _get_dtype_and_range(draw, dimension=None):
-    if dimension!=None:
-        dim = dimension
-    else:
-        draw(helpers.ints(min_value=2, max_value=5))
+def _get_dtype_and_range(draw):
+    dim = draw(helpers.ints(min_value=2, max_value=5))
     dtype = draw(helpers.get_dtypes("float", index=1, full=False))
     start = draw(
         helpers.array_values(dtype=dtype[0], shape=(dim,), min_value=-50, max_value=0)
