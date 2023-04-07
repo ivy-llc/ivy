@@ -79,6 +79,14 @@ def beta(a, b, size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
+def gamma(shape, scale=1.0, size=None):
+    # Numpy uses shape for the shape parameter k, which is alpha in Ivy.
+    # Numpy uses scale for the scale parameter theta, which is 1/beta in Ivy.
+    return ivy.gamma(shape, 1.0 / scale, dtype="float64")  # , shape=size)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def shuffle(x, /):
     if isinstance(x, int):
         x = ivy.arange(x)

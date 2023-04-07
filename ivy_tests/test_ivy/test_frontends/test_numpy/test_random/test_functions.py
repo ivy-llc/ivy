@@ -300,6 +300,43 @@ def test_numpy_beta(
     )
 
 
+# gamma
+@handle_frontend_test(
+    fn_tree="numpy.random.gamma",
+    input_dtypes=helpers.get_dtypes("float", index=2),
+    k=st.floats(
+        allow_nan=False, allow_infinity=False, width=32, min_value=0, exclude_min=True
+    ),
+    theta=st.floats(
+        allow_nan=False, allow_infinity=False, width=32, min_value=0, exclude_min=True
+    ),
+    size=st.tuples(
+        st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)
+    ),
+)
+def test_numpy_gamma(
+    input_dtypes,
+    size,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    k,
+    theta,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        shape=k,
+        scale=theta,
+        size=size,
+    )
+
+
 # shuffle
 @handle_frontend_test(
     fn_tree="numpy.random.shuffle",
