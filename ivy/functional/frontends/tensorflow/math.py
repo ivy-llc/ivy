@@ -546,7 +546,6 @@ def sinh(x, name=None):
     {
         "2.12.0 and below": (
             "half",
-            "bfloat16",
             "float16",
             "float32",
             "float64",
