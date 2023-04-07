@@ -390,7 +390,7 @@ def zeta(
         assert M <= len(_BERNOULLI_COEFS)
         k = paddle.unsqueeze(ivy.arange(N, dtype=q.dtype), tuple(range(q.ndim)))
         S = paddle.sum((a_ + k) ** -s_, -1)
-        I = ivy.divide((q + N) ** (1 - x), x - 1)
+        Q = ivy.divide((q + N) ** (1 - x), x - 1)
         T0 = (q + N) ** -x
         m = paddle.unsqueeze(ivy.arange(2 * M, dtype=s.dtype), tuple(range(s.ndim)))
         s_over_a = (s_ + m) / (a_ + N)
@@ -406,7 +406,7 @@ def zeta(
         )
         T1 = T1 / coefs
         T = T0 * (0.5 + paddle.sum(T1, -1))
-        ans = S + I + T
+        ans = S + Q + T
         mask = x < 1
         ans[mask] = ivy.nan
         return ans
