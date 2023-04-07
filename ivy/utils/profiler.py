@@ -11,13 +11,15 @@ is_snakeviz = find_spec("snakeviz")
 class Profiler(cProfile.Profile):
     """A Profiler class that allows code profiling.
 
-    Attributes:
+    Attributes
+    ----------
         print_stats (bool, optional): prints profiling statistics.
         viz (bool, optional): visualizes the results using `snakeviz`.
 
         Bonus args and kwargs are passed to cProfile.Profile __init__
 
-    Example:
+    Example
+    -------
         with Profiler(print_stats=False, viz=True):
             fn(x, y)
 
