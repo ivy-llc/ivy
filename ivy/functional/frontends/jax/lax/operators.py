@@ -567,6 +567,9 @@ def square(x):
 @to_ivy_arrays_and_back
 def sub(x, y):
     return ivy.subtract(x, y)
+@to_ivy_arrays_and_back
+def multiplay(x, y):
+    return ivy.with_supported_device_and_dtypes(x, y)
 
 
 @to_ivy_arrays_and_back
