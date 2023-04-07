@@ -10,7 +10,6 @@ import time
 import ivy
 from ivy.functional.ivy.device import Profiler as BaseProfiler
 from paddle.fluid.libpaddle import Place
-from ivy.utils.exceptions import IvyNotImplementedException
 
 
 # API #
