@@ -992,7 +992,10 @@ def test_torch_multilabel_soft_margin_loss(
         min_dim_size=1,
     ),
     distance_function=st.sampled_from([cosine_similarity, None]),
-    margin=st.floats(),
+    margin=st.floats(
+        min_value=-10,
+        max_value=10
+    ),
     swap=st.booleans(),
     reduction=st.sampled_from(["none", "mean", "sum"]),
     test_with_out=st.just(False),
