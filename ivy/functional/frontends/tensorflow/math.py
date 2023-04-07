@@ -515,11 +515,9 @@ def atan(x, name=None):
 def log(x, name=None):
     return ivy.log(x)
 
-
 @to_ivy_arrays_and_back
 def add_n(inputs, name=None):
     return ivy.sum(inputs, dtype=inputs.dtype, axis=0)
-
 
 
 @to_ivy_arrays_and_back
@@ -541,8 +539,3 @@ def cos(x, name=None):
 @to_ivy_arrays_and_back
 def sinh(x, name=None):
     return ivy.sinh(x)
-
-@to_ivy_arrays_and_back
-def mod(x, y, name=None):
-    # Tensorflow documents shows it is same as floor_mod, as floor_mod is implemented above
-    return ivy.remainder(x,y)
