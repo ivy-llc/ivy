@@ -174,16 +174,16 @@ def asarray(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def empty(
-    *args: Union[int, Sequence[int]],
+    *size: Union[int, Sequence[int]],
     shape: Optional[ivy.NativeShape] = None,
     dtype: paddle.dtype,
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if args and shape:
+    if size and shape:
         raise TypeError("empty() got multiple values for argument 'shape'")
     if shape is None:
-        shape = args[0] if isinstance(args[0], (tuple, list)) else args
+        shape = size[0] if isinstance(size[0], (tuple, list)) else size
     return to_device(paddle.empty(shape=shape).cast(dtype), device)
 
 
@@ -464,16 +464,16 @@ def meshgrid(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def ones(
-    *args: Union[int, Sequence[int]],
+    *size: Union[int, Sequence[int]],
     shape: Optional[ivy.NativeShape] = None,
     dtype: paddle.dtype,
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if args and shape:
+    if size and shape:
         raise TypeError("ones() got multiple values for argument 'shape'")
     if shape is None:
-        shape = args[0] if isinstance(args[0], (tuple, list)) else args
+        shape = size[0] if isinstance(size[0], (tuple, list)) else size
     return to_device(paddle.ones(shape=shape).cast(dtype), device)
 
 
@@ -539,16 +539,16 @@ def triu(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def zeros(
-    *args: Union[int, Sequence[int]],
+    *size: Union[int, Sequence[int]],
     shape: Optional[ivy.NativeShape] = None,
     dtype: paddle.dtype,
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if args and shape:
+    if size and shape:
         raise TypeError("zeros() got multiple values for argument 'shape'")
     if shape is None:
-        shape = args[0] if isinstance(args[0], (tuple, list)) else args
+        shape = size[0] if isinstance(size[0], (tuple, list)) else size
     return to_device(paddle.zeros(shape=shape).cast(dtype), device)
 
 

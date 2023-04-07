@@ -362,7 +362,7 @@ def asarray(
 @handle_array_like_without_promotion
 @handle_nestable
 def zeros(
-    *args: Union[int, Sequence[int]],
+    *size: Union[int, Sequence[int]],
     shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -372,7 +372,7 @@ def zeros(
 
     Parameters
     ----------
-    args
+    size
         list, tuple or a sequence of integers representing the output array shape.
     shape
        output array shape.
@@ -414,7 +414,7 @@ def zeros(
     ivy.array([0., 0., 0., 0., 0.])
     """
     return current_backend().zeros(
-        *args, shape=shape, dtype=dtype, device=device, out=out
+        *size, shape=shape, dtype=dtype, device=device, out=out
     )
 
 
@@ -426,7 +426,7 @@ def zeros(
 @handle_array_like_without_promotion
 @handle_nestable
 def ones(
-    *args: Union[int, Sequence[int]],
+    *size: Union[int, Sequence[int]],
     shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -436,7 +436,7 @@ def ones(
 
     Parameters
     ----------
-    args
+    size
         list, tuple or a sequence of integers representing the output array shape.
     shape
         output array shape.
@@ -501,7 +501,7 @@ def ones(
     ivy.array([[1.],
            [1., 1., 1., 1., 1.], [1., 1.]])
     """
-    return current_backend().ones(*args, shape, dtype=dtype, device=device, out=out)
+    return current_backend().ones(*size, shape, dtype=dtype, device=device, out=out)
 
 
 @infer_device
@@ -947,7 +947,7 @@ def triu(
 @handle_array_like_without_promotion
 @handle_nestable
 def empty(
-    *args: Union[int, Sequence[int]],
+    *size: Union[int, Sequence[int]],
     shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -957,7 +957,7 @@ def empty(
 
     Parameters
     ----------
-    args
+    size
         list, tuple or a sequence of integers representing the output array shape.
     shape
        output array shape.
@@ -986,7 +986,7 @@ def empty(
     instances in place of any of the arguments.
 
     """
-    return current_backend().empty(*args, shape, dtype=dtype, device=device, out=out)
+    return current_backend().empty(*size, shape, dtype=dtype, device=device, out=out)
 
 
 @infer_device
