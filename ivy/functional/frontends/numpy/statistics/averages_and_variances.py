@@ -409,4 +409,3 @@ def nanmedian(
     # using nanmedian implemented in the backend
     ret = ivy.nanmedian(a, keepdims=keepdims, out=out, overwrite_input=overwrite_input)
     return ret
-
