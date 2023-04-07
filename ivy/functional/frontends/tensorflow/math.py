@@ -549,6 +549,7 @@ def sinh(x, name=None):
             "float16",
             "float32",
             "float64",
+            "double",
             "complex64",
             "complex128",
         )
