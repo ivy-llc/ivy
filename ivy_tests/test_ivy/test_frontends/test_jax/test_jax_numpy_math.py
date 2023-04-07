@@ -2500,12 +2500,9 @@ def test_jax_numpy_subtract(
 @handle_frontend_test(
     fn_tree="jax.numpy.around",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=-100,
-        max_value=100,
-        min_num_dims=1,
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
-    decimals=helpers.ints(min_value=0, max_value=3),
+    decimals=st.integers(min_value=0, max_value=5),
 )
 def test_jax_numpy_around(
     *,
@@ -2578,4 +2575,36 @@ def test_jax_numpy_ldexp(
         on_device=on_device,
         x1=x[0],
         x2=x[1],
+    )
+
+
+# poly
+@handle_frontend_test(
+    fn_tree="jax.numpy.poly",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        min_num_dims=1,
+        max_num_dims=1,
+    ),
+)
+def test_jax_numpy_poly(
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    assume("float16" not in input_dtype)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        seq_of_zeros=x[0],
+        atol=1e-05,
+        rtol=1e-03,
     )

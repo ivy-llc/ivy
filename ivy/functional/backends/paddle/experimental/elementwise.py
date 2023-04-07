@@ -1,9 +1,7 @@
 # global
 from typing import Optional, Union, Tuple, List
 from numbers import Number
-from math import pi
 import paddle
-import numpy as np
 from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.func_wrapper import (
     with_unsupported_dtypes,
@@ -119,18 +117,6 @@ def copysign(
         return ivy.multiply(ivy.abs(x1), signs)
 
 
-def count_nonzero(
-    a: paddle.Tensor,
-    /,
-    *,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: Optional[bool] = False,
-    dtype: Optional[paddle.dtype] = None,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    raise IvyNotImplementedException()
-
-
 def nansum(
     x: paddle.Tensor,
     /,
@@ -223,14 +209,14 @@ def nan_to_num(
 ) -> paddle.Tensor:
     with ivy.ArrayMode(False):
         if ivy.is_int_dtype(x):
-            if posinf == None:
+            if posinf is None:
                 posinf = ivy.iinfo(x).max
-            if neginf == None:
+            if neginf is None:
                 neginf = ivy.iinfo(x).min
         elif ivy.is_float_dtype(x) or ivy.is_complex_dtype(x):
-            if posinf == None:
+            if posinf is None:
                 posinf = ivy.finfo(x).max
-            if neginf == None:
+            if neginf is None:
                 neginf = ivy.finfo(x).min
         ret = ivy.where(ivy.isnan(x), paddle.to_tensor(nan, dtype=x.dtype), x)
         ret = ivy.where(
@@ -364,9 +350,27 @@ _BERNOULLI_COEFS = [
     -37893265687455865519472640000000 / 3392780147,
     759790291646040068357842010112000000 / 1723168255201,
     -134196726836183700385281186201600000000 / 7709321041217,
-]    
+]
+
+
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16",  "int8","int16","int32","int64","uint8","uint16","float16","bool",)}}, backend_version
+    {
+        "2.4.2 and below": {
+            "cpu": (
+                "uint16",
+                "bfloat16",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "uint8",
+                "uint16",
+                "float16",
+                "bool",
+            )
+        }
+    },
+    backend_version,
 )
 def zeta(
     x: paddle.Tensor,
@@ -375,28 +379,36 @@ def zeta(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-   with ivy.ArrayMode(False):
-        s,a=ivy.promote_types_of_inputs(x,q)
+    with ivy.ArrayMode(False):
+        s, a = ivy.promote_types_of_inputs(x, q)
         s_, a_ = paddle.unsqueeze(x, -1), paddle.unsqueeze(q, -1)
-        N = M = paddle.to_tensor(8., dtype="float32") if q.dtype == paddle.float32 else paddle.to_tensor(8., dtype="float64")
+        N = M = (
+            paddle.to_tensor(8.0, dtype="float32")
+            if q.dtype == paddle.float32
+            else paddle.to_tensor(8.0, dtype="float64")
+        )
         assert M <= len(_BERNOULLI_COEFS)
         k = paddle.unsqueeze(ivy.arange(N, dtype=q.dtype), tuple(range(q.ndim)))
         S = paddle.sum((a_ + k) ** -s_, -1)
-        I = ivy.divide((q + N) ** (1 - x), x - 1)
+        Q = ivy.divide((q + N) ** (1 - x), x - 1)
         T0 = (q + N) ** -x
         m = paddle.unsqueeze(ivy.arange(2 * M, dtype=s.dtype), tuple(range(s.ndim)))
         s_over_a = (s_ + m) / (a_ + N)
-        s_over_a = ivy.where(s_over_a == 0, paddle.ones_like(s_over_a) * 1e-20, s_over_a)
+        s_over_a = ivy.where(
+            s_over_a == 0, paddle.ones_like(s_over_a) * 1e-20, s_over_a
+        )
         T1 = paddle.cumprod(s_over_a, -1)[..., ::2]
         # t=np.array(T1)
         T1 = paddle.clip(T1, max=ivy.finfo(T1.dtype).max)
-        coefs = paddle.unsqueeze(paddle.to_tensor(_BERNOULLI_COEFS[:T1.shape[-1]], dtype=T1.dtype),
-                             tuple(range(a.ndim)))
+        coefs = paddle.unsqueeze(
+            paddle.to_tensor(_BERNOULLI_COEFS[: T1.shape[-1]], dtype=T1.dtype),
+            tuple(range(a.ndim)),
+        )
         T1 = T1 / coefs
         T = T0 * (0.5 + paddle.sum(T1, -1))
-        ans= S + I + T
+        ans = S + Q + T
         mask = x < 1
-        ans[mask]=ivy.nan
+        ans[mask] = ivy.nan
         return ans
 
 
