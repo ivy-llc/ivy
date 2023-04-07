@@ -165,7 +165,7 @@ def test_tensorflow_stateless_uniform(
         on_device=on_device,
         test_values=False,
         shape=shape[0],
-        seed=(seed[0][0], seed[0][1]),
+        seed=seed[0],
         minval=int(minmaxval[0]),
         maxval=int(minmaxval[1]),
         dtype=dtype[0],

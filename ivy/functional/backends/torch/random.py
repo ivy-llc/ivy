@@ -37,7 +37,7 @@ def random_uniform(
     if dtype in [torch.int32, torch.int64, torch.int]:
         return (
             torch.rand(shape, device=device, dtype=torch.float) * rand_range + low
-        ).type(torch.int64)
+        ).type(dtype)
     return torch.rand(shape, device=device, dtype=dtype) * rand_range + low
 
 

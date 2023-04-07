@@ -63,7 +63,7 @@ def random_uniform(
                 rng_input, shape, minval=low, maxval=high, dtype=jnp.float32
             ),
             device,
-        ).astype(jnp.int64)
+        ).astype(dtype)
     return to_device(
         jax.random.uniform(rng_input, shape, minval=low, maxval=high, dtype=dtype),
         device,
