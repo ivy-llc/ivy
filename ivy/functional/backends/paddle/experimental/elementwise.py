@@ -125,6 +125,7 @@ def copysign(
         signs = ivy.sign(x2)
         return ivy.multiply(ivy.abs(x1), signs)
 
+
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint8",
                                  "int8",
@@ -143,6 +144,9 @@ def nansum(
     return paddle.nansum(x, axis=axis, dtype=dtype, keepdim=keepdims)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("int8", "int16")}}, backend_version
+)
 def gcd(
     x1: Union[paddle.Tensor, int, list, tuple],
     x2: Union[paddle.Tensor, float, list, tuple],
