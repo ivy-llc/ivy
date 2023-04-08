@@ -371,7 +371,7 @@ def test_numpy_nanmedian(
     on_device,
     keep_dims,
     axis,
-    overwrite_input=overwrite_input,
+    overwrite_input,
 ):
     input_dtypes, x, axis2 = dtype_x_axis
     np_frontend_helpers.test_frontend_function(
