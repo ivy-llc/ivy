@@ -1,14 +1,8 @@
 # global
-import math
-
 import paddle
-from ivy.utils.exceptions import IvyNotImplementedException
 from typing import Optional, Tuple
 
-import ivy
-
-from .. import backend_version
-
+# local
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
 
 

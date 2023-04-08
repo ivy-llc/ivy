@@ -5,6 +5,9 @@ from hypothesis import strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 import ivy
+from ivy.functional.frontends.torch.nn.functional.loss_functions import (
+    cosine_similarity,
+)
 
 
 # cross_entropy
@@ -971,5 +974,58 @@ def test_torch_multilabel_soft_margin_loss(
         target=target,
         size_average=size_average,
         reduce=reduce,
+        reduction=reduction,
+    )
+
+
+# triplet margin distance loss
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.triplet_margin_with_distance_loss",
+    dtype_and_inputs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=3,
+        allow_inf=False,
+        shared_dtype=True,
+        min_value=0.0,
+        max_value=1.0,
+        min_num_dims=1,
+        max_num_dims=2,
+        min_dim_size=1,
+    ),
+    distance_function=st.sampled_from([cosine_similarity, None]),
+    margin=st.floats(min_value=-10, max_value=10),
+    swap=st.booleans(),
+    reduction=st.sampled_from(["none", "mean", "sum"]),
+    test_with_out=st.just(False),
+)
+def test_torch_triplet_margin_with_distance_loss(
+    *,
+    dtype_and_inputs,
+    distance_function,
+    margin,
+    swap,
+    reduction,
+    test_flags,
+    fn_tree,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_inputs
+    anchor_dtype, anchor = input_dtype[0], x[0]
+    positive_dtype, positive = input_dtype[1], x[1]
+    negative_dtype, negative = input_dtype[2], x[2]
+    test_flags.num_positional_args = len(x)
+    helpers.test_frontend_function(
+        input_dtypes=[anchor_dtype, positive_dtype, negative_dtype],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        anchor=anchor,
+        positive=positive,
+        negative=negative,
+        distance_function=distance_function,
+        margin=margin,
+        swap=swap,
         reduction=reduction,
     )
