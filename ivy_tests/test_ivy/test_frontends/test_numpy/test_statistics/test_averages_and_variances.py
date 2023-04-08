@@ -364,7 +364,6 @@ def test_numpy_nanpercentile(
 )
 def test_numpy_nanmedian(
     dtype_values_axis,
-    where,
     frontend,
     test_flags,
     fn_tree,
@@ -376,7 +375,6 @@ def test_numpy_nanmedian(
         axis = axis[0]
 
     where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
         input_dtype=input_dtypes,
         test_flags=test_flags,
     )
