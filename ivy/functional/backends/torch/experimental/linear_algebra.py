@@ -188,7 +188,7 @@ def solve_triangular(
     *,
     upper: bool = False,
     left: bool = False,
-    unitriangular: bool = False,
+    unit_diagonal: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.linalg.solve_triangular(
@@ -196,7 +196,7 @@ def solve_triangular(
         b,
         upper=upper,
         left=left,
-        unitriangular=unitriangular,
+        unitriangular=unit_diagonal,
         out=out,
     )
 

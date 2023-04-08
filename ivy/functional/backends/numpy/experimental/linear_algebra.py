@@ -179,30 +179,24 @@ def solve_triangular(
     b: np.ndarray,
     /,
     *,
-    lower: bool = True,
-    trans: bool = False,
+    lower: bool = False,
+    transpose: bool = False,
+    unit_diagonal: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if transpose:
+        a = a.T
+        lower = not lower
+    if unit_diagonal:
+        if not lower:
+            b = b / np.diag(a)[:, None]
+        else:
+            b = b / np.diag(a)[None, :]
     if lower:
         a = np.tril(a)
     else:
         a = np.triu(a)
-
-    if trans:
-        a = a.T
-        b = b.T
-
-    n = a.shape[0]
-    x = np.zeros_like(b)
-
-    if lower:
-        for i in range(n):
-            x[i] = (b[i] - np.dot(a[i,:i], x[:i])) / a[i,i]
-    else:
-        for i in range(n-1, -1, -1):
-            x[i] = (b[i] - np.dot(a[i,i+1:], x[i+1:])) / a[i,i]
-    
-    return x.T
+    return (np.linalg.solve(a, b)).T
 
 
 solve_triangular.support_native_out = False

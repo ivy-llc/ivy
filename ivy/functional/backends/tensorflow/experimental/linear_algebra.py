@@ -198,7 +198,6 @@ def solve_triangular(
     *,
     lower: bool = True,
     transpose: bool = False,
-    conjugate: bool = False,
     unit_diagonal: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -207,6 +206,5 @@ def solve_triangular(
         b,
         lower=lower,
         adjoint=transpose,
-        conjugate_a=conjugate,
         unit_diagonal=unit_diagonal,
     )

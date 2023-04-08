@@ -83,7 +83,6 @@ def solve_triangular(
     *,
     lower: bool = True,
     transpose: bool = False,
-    conjugate: bool = False,
     unit_diagonal: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
