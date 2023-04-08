@@ -21,6 +21,11 @@ def det(input, name=None):
 
 
 @to_ivy_arrays_and_back
+def diag(x, name=None):
+    return ivy.diagonal(x)
+
+
+@to_ivy_arrays_and_back
 def eig(tensor, name=None):
     return ivy.eig(tensor)
 

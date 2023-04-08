@@ -76,6 +76,30 @@ def test_tensorflow_eigh(
 
 
 @handle_frontend_test(
+    fn_tree="tensorflow.linalg.diag",
+    dtype_and_input=_get_dtype_and_matrix(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_diag(
+    *,
+    dtype_and_input,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensor=x[0],
+    )
+
+
+@handle_frontend_test(
     fn_tree="tensorflow.linalg.eigvalsh",
     dtype_and_input=_get_dtype_and_matrix(),
     test_with_out=st.just(False),
