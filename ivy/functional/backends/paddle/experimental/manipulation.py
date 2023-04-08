@@ -245,11 +245,13 @@ def hsplit(
 
 
 def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
-    if len(shapes[0]) == 0 and len(shapes[1]) == 0:
+    len_shape_0 = len(shapes[0])
+    len_shape_1 = len(shapes[1])
+    if len_shape_0 == 0 and len_shape_1 == 0:
         return shapes[0]
-    elif len(shapes[0]) == 0 and not len(shapes[1]) == 0:
+    elif len_shape_0 == 0 and not len_shape_1 == 0:
         return shapes[1]
-    elif not len(shapes[0]) == 0 and len(shapes[1]) == 0:
+    elif not len_shape_0 == 0 and len_shape_1 == 0:
         return shapes[0]
     else:
         return paddle.broadcast_shape(*shapes)
