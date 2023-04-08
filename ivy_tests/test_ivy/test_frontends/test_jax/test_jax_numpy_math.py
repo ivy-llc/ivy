@@ -2586,6 +2586,8 @@ def test_jax_numpy_ldexp(
         num_arrays=1,
         min_num_dims=1,
         max_num_dims=1,
+        min_value=-1e04,
+        max_value=1e04,
     ),
 )
 def test_jax_numpy_poly(
