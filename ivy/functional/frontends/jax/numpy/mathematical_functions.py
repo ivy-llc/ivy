@@ -440,6 +440,11 @@ def trace(a, offset=0, axis1=0, axis2=1, out=None):
 
 
 @to_ivy_arrays_and_back
+def interp(x, xp, fp, left=None, right=None, period=None):
+    return ivy.interp(x, xp, fp, left=left, right=right, period=period)
+
+
+@to_ivy_arrays_and_back
 def log2(x):
     return ivy.log2(x)
 

@@ -864,6 +864,72 @@ def test_jax_numpy_trunc(
     )
 
 
+# interp
+@handle_frontend_test(
+    fn_tree="jax.numpy.interp",
+    xp_and_fp=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=3,
+        min_value=-10000,
+        max_value=10000,
+    ),
+    x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    left=st.one_of(st.none(), st.floats()),
+    right=st.one_of(st.none(), st.floats()),
+    period=st.one_of(
+        st.none(),
+        st.floats(
+            allow_nan=False,
+            allow_infinity=False,
+            allow_subnormal=False,
+            min_value=0.1,
+            max_value=1.0e5,
+            exclude_min=True,
+        ),
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_interp(
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    xp_and_fp,
+    x,
+    left,
+    right,
+    period,
+):
+    input_dtypes, xp_fp = xp_and_fp
+    xp = ivy.array(xp_fp[0])
+    fp = ivy.array(xp_fp[1])
+    if period is None:
+        xp_order = ivy.argsort(xp)
+        xp = xp[xp_order]
+        fp = fp[xp_order]
+        previous = xp[0]
+        for i in xp[1:]:
+            assume(i > previous)
+            previous = i
+    x_dtype, x = x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes + x_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        xp=xp,
+        fp=fp,
+        left=left,
+        right=right,
+        period=period,
+    )
+
+
 # ceil
 @handle_frontend_test(
     fn_tree="jax.numpy.ceil",
