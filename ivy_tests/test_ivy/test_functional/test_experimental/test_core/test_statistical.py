@@ -213,7 +213,7 @@ def _dtype_and_value_without_row_all_same_value(draw):
 # corrcoef
 @handle_test(
     fn_tree="functional.ivy.experimental.corrcoef",
-    dtype_and_x = _dtype_and_value_without_row_all_same_value(),
+    dtype_and_x=_dtype_and_value_without_row_all_same_value(),
     rowvar=st.booleans(),
     test_gradients=st.just(False),
 )
