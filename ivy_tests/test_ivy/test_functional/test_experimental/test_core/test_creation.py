@@ -334,6 +334,8 @@ def _get_dtype_buffer_count_offset(draw):
     offset = offset * np.dtype(dtype[0]).itemsize
 
     return dtype, value, count, offset
+
+
 @handle_test(
     fn_tree="functional.ivy.experimental.frombuffer",
     dtype_buffer_count_offset=_get_dtype_buffer_count_offset(),
@@ -341,8 +343,6 @@ def _get_dtype_buffer_count_offset(draw):
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-
-
 def test_frombuffer(
     dtype_buffer_count_offset,
     test_flags,

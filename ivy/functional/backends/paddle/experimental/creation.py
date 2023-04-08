@@ -249,4 +249,3 @@ def frombuffer(
     ret = paddle.to_tensor(ret, dtype=dtype)
 
     return ret
-    

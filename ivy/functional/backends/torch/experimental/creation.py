@@ -6,6 +6,7 @@ import torch
 
 # local
 import ivy
+import copy
 
 # noinspection PyProtectedMember
 
@@ -142,6 +143,7 @@ def frombuffer(
         count: Optional[int] = -1,
         offset: Optional[int] = 0,
 ) -> torch.Tensor:
+    buffer_copy = copy.deepcopy(buffer)
     dtype = ivy.as_native_dtype(dtype)
 
-    return torch.frombuffer(buffer, dtype=dtype, count=count, offset=offset)
+    return torch.frombuffer(buffer_copy, dtype=dtype, count=count, offset=offset)
