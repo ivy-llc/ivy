@@ -242,6 +242,7 @@ def avg_pool1d(
     /,
     *,
     data_format: str = "NWC",
+    count_include_pad: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
 
@@ -285,21 +286,22 @@ def avg_pool1d(
 
     res = np.mean(sub_matrices, axis=2)
 
-    num_padded_values = ivy.map(
-        _get_num_padded_values,
-        constant={
-            "p": pad_w,
-            "n": x.shape[1] - pad_w,
-            "k": kernel[0],
-            "s": strides[0],
-        },
-        unique={
-            "i": np.arange(res.shape[1]),
-        },
-    )
-    res = (kernel[0] * res) / (
-        kernel[0] - np.array(num_padded_values, dtype=res.dtype)
-    )[:, None]
+    if not count_include_pad:
+        num_padded_values = ivy.map(
+            _get_num_padded_values,
+            constant={
+                "p": pad_w,
+                "n": x.shape[1] - pad_w,
+                "k": kernel[0],
+                "s": strides[0],
+            },
+            unique={
+                "i": np.arange(res.shape[1]),
+            },
+        )
+        res = (kernel[0] * res) / (
+            kernel[0] - np.array(num_padded_values, dtype=res.dtype)
+        )[:, None]
 
     if data_format == "NCW":
         return res.swapaxes(1, 2)

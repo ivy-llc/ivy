@@ -7,7 +7,6 @@ from builtins import slice as py_slice
 # local
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
-from ivy.functional.frontends.jax.numpy import can_cast
 
 
 @to_ivy_arrays_and_back
@@ -113,8 +112,8 @@ def conv(
 def _dimension_numbers(dimension_numbers, lhs_len, transp=False):
     if dimension_numbers is None:
         if transp:
-            iota = (0, lhs_len-1, *range(1, lhs_len-1))
-            iotb = (lhs_len-1, lhs_len-2, *range(0, lhs_len-2))
+            iota = (0, lhs_len - 1, *range(1, lhs_len - 1))
+            iotb = (lhs_len - 1, lhs_len - 2, *range(0, lhs_len - 2))
             return iota, iotb, iota
         else:
             iota = tuple(range(lhs_len))
@@ -172,8 +171,8 @@ def conv_transpose(
         lhs = ivy.astype(lhs, preferred_element_type)
         rhs = ivy.astype(rhs, preferred_element_type)
     dims = len(lhs.shape) - 2
-    dim_nums = _dimension_numbers(dimension_numbers, dims+2, transp=True)
-    rhs_spec = tuple([dim_nums[1][i] for i in (*range(2, dims+2), 1, 0)])
+    dim_nums = _dimension_numbers(dimension_numbers, dims + 2, transp=True)
+    rhs_spec = tuple([dim_nums[1][i] for i in (*range(2, dims + 2), 1, 0)])
     rhs_dilation = 1 if rhs_dilation is None else rhs_dilation
     if isinstance(padding, str):
         k_sdims = [rhs.shape[i] for i in rhs_spec[:-2]]
@@ -217,7 +216,7 @@ def conv_general_dilated(
         rhs = ivy.astype(rhs, preferred_element_type)
     dims = len(lhs.shape) - 2
     dim_nums = _dimension_numbers(dimension_numbers, dims + 2)
-    rhs_spec = tuple([dim_nums[1][i] for i in (*range(2, dims+2), 1, 0)])
+    rhs_spec = tuple([dim_nums[1][i] for i in (*range(2, dims + 2), 1, 0)])
     return ivy.permute_dims(
         ivy.conv_general_dilated(
             ivy.permute_dims(lhs, axes=dim_nums[0]),
@@ -490,7 +489,7 @@ def slice(operand, start_indices, limit_indices, strides=None):
         )
         raise TypeError(msg.format(start_indices, limit_indices))
 
-    if not len(operand.shape) <= len(limit_indices):
+    if not tuple(limit_indices) <= operand.shape:
         msg = (
             "slice limit_indices must be less than or equal to operand shape, "
             "got limit_indices {} for operand shape {}."
@@ -503,6 +502,13 @@ def slice(operand, start_indices, limit_indices, strides=None):
             "got start_indices of {}."
         )
         raise TypeError(msg.format(start_indices))
+
+    if not limit_indices >= start_indices:
+        msg = (
+            "slice limit_indices must be greater than or equal to start_indices,"
+            " got start_indices {} and limit_indices {}."
+        )
+        raise TypeError(msg.format(start_indices, limit_indices))
 
     start_indices, limit_indices = map(
         lambda x: ivy.array(x) if isinstance(x, int) else x,
@@ -519,6 +525,28 @@ def slice(operand, start_indices, limit_indices, strides=None):
     ret = operand[full_slice] if full_slice else operand
 
     return ivy.expand_dims(ret)
+
+
+@to_ivy_arrays_and_back
+def slice_in_dim(operand, start_index, limit_index, stride=1, axis=0):
+    start_indices = [0] * operand.ndim
+    limit_indices = list(operand.shape)
+    strides = [1] * operand.ndim
+
+    len_axis = operand.shape[axis]
+    start_index_int = start_index if start_index is not None else 0
+    limit_index_int = limit_index if limit_index is not None else len_axis
+
+    if start_index_int < 0:
+        start_index_int = start_index_int + len_axis
+    if limit_index_int < 0:
+        limit_index_int = limit_index_int + len_axis
+
+    axis = int(axis)
+    start_indices[axis] = start_index_int
+    limit_indices[axis] = limit_index_int
+    strides[axis] = int(stride)
+    return slice(operand, start_indices, limit_indices, strides)
 
 
 @to_ivy_arrays_and_back
