@@ -21,8 +21,8 @@ def det(input, name=None):
 
 
 @to_ivy_arrays_and_back
-def diag(x, name=None):
-    return ivy.diagonal(x)
+def diag(x, offset=None, axis1=None, axis2=None, name=None):
+    return ivy.diagonal(x, offset, axis1, axis2)
 
 
 @to_ivy_arrays_and_back
