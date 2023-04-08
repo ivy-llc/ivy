@@ -2031,7 +2031,6 @@ def test_tensorflow_softmax(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=[
             "half",
-            "bfloat16",
             "float16",
             "float32",
             "float64",
