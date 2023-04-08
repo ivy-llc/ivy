@@ -362,7 +362,7 @@ def test_numpy_nanpercentile(
     where=np_frontend_helpers.where(),
     keep_dims=st.booleans(),
 )
-def test_numpy_nanpercentile(
+def test_numpy_nanmedian(
     dtype_values_axis,
     where,
     frontend,
