@@ -118,6 +118,7 @@ def around(a, decimals=0, out=None):
         a = ivy.expand_dims(a, axis=0)
     return ivy.round(a, decimals=decimals, out=out)
 
+
 @handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
