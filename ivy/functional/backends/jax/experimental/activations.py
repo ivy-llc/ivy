@@ -45,6 +45,7 @@ def thresholded_relu(
     threshold: Union[int, float] = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    x, threshold = ivy.promote_types_of_inputs(x, threshold)
     return jnp.where(x > threshold, x, 0).astype(x.dtype)
 
 
@@ -74,3 +75,14 @@ def batch_norm(
     ).astype(x.dtype)
 
     return jnp.transpose(ret, (0, ndims - 1, *range(1, ndims - 1)))
+
+
+def logsigmoid(input: JaxArray) -> JaxArray:
+    return jax.nn.log_sigmoid(input)
+
+
+def selu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    ret = jax.nn.selu(x).astype(x.dtype)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ret

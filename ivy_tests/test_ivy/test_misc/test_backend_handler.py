@@ -22,6 +22,11 @@ except ImportError:
     jnp = types.SimpleNamespace()
     jnp.array = lambda x: x
     jax = types.SimpleNamespace()
+try:
+    import paddle
+except ImportError:
+    paddle = types.SimpleNamespace()
+    paddle.Tensor = lambda x: x
 import numpy as np
 
 # local
@@ -50,7 +55,9 @@ if "tensorflow" in available_frameworks():
 if "jax" in available_frameworks():
     available_array_types_input.append(("jax", jnp.array(3.0)))
     if version.parse(jax.__version__) >= version.parse("0.4.1"):
-        available_array_types_class.append(("jax", "<class 'jax.Array'>"))
+        available_array_types_class.append(
+            ("jax", "<class 'jaxlib.xla_extension.ArrayImpl'>")
+        )
     else:
         available_array_types_class.append(
             ("jax", "<class 'jaxlib.xla_extension.DeviceArray'>")
@@ -60,6 +67,10 @@ if "jax" in available_frameworks():
 if "torch" in available_frameworks():
     available_array_types_input.append(("torch", torch.tensor([3.0])))
     available_array_types_class.append(("torch", "<class 'torch.Tensor'>"))
+
+if "paddle" in available_frameworks():
+    available_array_types_input.append(("paddle", paddle.to_tensor([3.0])))
+    available_array_types_class.append(("paddle", "<class 'paddle.Tensor'>"))
 
 
 @pytest.mark.parametrize(
@@ -89,38 +100,38 @@ def test_set_backend(backend, array_type):
 
 
 @pytest.mark.parametrize(("backend"), available_frameworks())
-def test_unset_backend(backend):
+def test_previous_backend(backend):
     if not ivy.backend_stack:
-        assert ivy.unset_backend() is None
+        assert ivy.previous_backend() is None
 
     ivy.set_backend(backend)
     stack_before_unset = []
     func_address_before_unset = id(ivy.sum)
     stack_before_unset.extend(ivy.backend_stack)
 
-    unset_backend = ivy.unset_backend()
+    previous_backend = ivy.previous_backend()
     stack_after_unset = ivy.backend_stack
     # check that the function id has changed as inverse=True.
     ivy.utils.assertions.check_equal(
         func_address_before_unset, id(ivy.sum), inverse=True
     )
     ivy.utils.assertions.check_equal(
-        unset_backend, importlib.import_module(_backend_dict[backend])
+        previous_backend, importlib.import_module(_backend_dict[backend])
     )
     ivy.utils.assertions.check_greater(len(stack_before_unset), len(stack_after_unset))
 
     # checking a previously set backend is still set
     ivy.set_backend(backend)
     ivy.set_backend("numpy")
-    ivy.unset_backend()
+    ivy.previous_backend()
     ivy.utils.assertions.check_equal(ivy.current_backend_str(), backend)
 
 
-def test_clear_backend_stack():
+def test_unset_backend():
     for backend_str in available_frameworks():
         ivy.set_backend(backend_str)
 
-    ivy.clear_backend_stack()
+    ivy.unset_backend()
     ivy.utils.assertions.check_equal(ivy.backend_stack, [])
 
 
@@ -130,7 +141,7 @@ def test_clear_backend_stack():
 )
 def test_current_backend(backend, array_type):
     # test backend inference from arguments when stack clear
-    ivy.clear_backend_stack()
+    ivy.unset_backend()
     assert ivy.current_backend(array_type) is importlib.import_module(
         _backend_dict[backend]
     )
@@ -176,7 +187,7 @@ def test_get_backend(backend):
 
 # Dynamic Backend
 
-backends = ["numpy", "torch", "tensorflow", "jax"]
+backends = list(_backend_dict.keys())
 backend_combinations = [(a, b) for a in backends for b in backends if a != b]
 
 
@@ -191,7 +202,7 @@ def test_dynamic_backend_all_combos(middle_backend, end_backend):
     )
 
     # clear the backend stack after initialization of inputs
-    ivy.clear_backend_stack()
+    ivy.unset_backend()
 
     # set dynamic_backend to false for all objects
     ivy_cont.dynamic_backend = False
@@ -214,44 +225,20 @@ def test_dynamic_backend_all_combos(middle_backend, end_backend):
     # add the necessary asserts to check if the data
     # of the objects are in the correct format
 
-    if end_backend == "numpy":
-        assert isinstance(a.data, np.ndarray)
-    elif end_backend == "torch":
-        assert isinstance(a.data, torch.Tensor)
-    elif end_backend == "jax":
-        assert isinstance(a.data, jax.interpreters.xla.DeviceArray)
-    elif end_backend == "tensorflow":
-        assert isinstance(a.data, tf.Tensor)
-
-    if end_backend == "numpy":
-        assert isinstance(ivy_cont["b"].data, np.ndarray)
-    elif end_backend == "torch":
-        assert isinstance(ivy_cont["b"].data, torch.Tensor)
-    elif end_backend == "jax":
-        assert isinstance(ivy_cont["b"].data, jax.interpreters.xla.DeviceArray)
-    elif end_backend == "tensorflow":
-        assert isinstance(ivy_cont["b"].data, tf.Tensor)
+    assert isinstance(a.data, ivy.current_backend().NativeArray)
+    assert isinstance(ivy_cont["b"].data, ivy.current_backend().NativeArray)
 
     if end_backend == "numpy":
         assert isinstance(nativ_cont["b"].data, np.ndarray)
     elif end_backend == "jax":
-        assert isinstance(nativ_cont["b"].data, jax.interpreters.xla.DeviceArray)
+        assert isinstance(nativ_cont["b"].data, jax.Array)
 
-    if middle_backend not in ("jax", "numpy"):
+    if middle_backend not in ("jax", "numpy") and end_backend not in ("jax", "numpy"):
         # these frameworks don't support native variables
-        if end_backend == "torch":
-            assert (
-                isinstance(nativ_cont["b"].data, torch.Tensor)
-                and nativ_cont["b"].data.requires_grad is True
-            )
-        if end_backend == "tensorflow":
-            assert isinstance(nativ_cont["b"].data, tf.Variable)
+        assert ivy.current_backend().gradients.is_variable(nativ_cont["b"].data)
 
     else:
-        if end_backend == "torch":
-            assert isinstance(nativ_cont["b"].data, torch.Tensor)
-        if end_backend == "tensorflow":
-            assert isinstance(nativ_cont["b"].data, tf.Tensor)
+        assert isinstance(nativ_cont["b"].data, ivy.current_backend().NativeArray)
 
 
 def test_dynamic_backend_setter():
@@ -260,7 +247,7 @@ def test_dynamic_backend_setter():
     a.dynamic_backend = False
 
     # clear the backend stack after initialization of inputs
-    ivy.clear_backend_stack()
+    ivy.unset_backend()
 
     ivy.set_backend("tensorflow", dynamic=True)
     assert type(a.data) == type_a
@@ -274,7 +261,7 @@ def test_dynamic_backend_setter():
 
 def test_variables():
     # clear the backend stack
-    ivy.clear_backend_stack()
+    ivy.unset_backend()
 
     ivy.set_backend("tensorflow", dynamic=True)
 
@@ -286,10 +273,10 @@ def test_variables():
     stat_cont.dynamic_backend = False
 
     ivy.set_backend("torch", dynamic=True)
-    assert (
-        isinstance(dyn_cont["w"].data, torch.Tensor)
-        and dyn_cont["w"].data.requires_grad is True
-    )
+    assert ivy.current_backend().gradients.is_variable(dyn_cont["w"].data)
+
+    ivy.set_backend("paddle", dynamic=True)
+    assert ivy.current_backend().gradients.is_variable(dyn_cont["w"].data)
 
     assert isinstance(stat_cont["w"], tf.Variable)
 

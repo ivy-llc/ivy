@@ -240,7 +240,7 @@ if __name__ == "__main__":
     try:
         ivy.set_backend(arg_lis[2].split("/")[0])
     except:  # noqa: E722
-        raise Exception(f"lalalalal {fw_lis}")
+        raise
     import numpy
 
     try:
