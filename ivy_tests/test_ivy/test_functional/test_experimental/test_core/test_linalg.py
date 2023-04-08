@@ -262,6 +262,7 @@ def test_diagflat(
     backend_fw,
     fn_name,
     args_packet,
+    on_device,
     ground_truth_backend,
 ):
     dtype_x, offset, dtype_padding_value, align, num_rows, num_cols = args_packet
@@ -282,6 +283,7 @@ def test_diagflat(
         align=align,
         num_rows=num_rows,
         num_cols=num_cols,
+        on_device=on_device,
         atol_=1e-01,
         rtol_=1 / 64,
     )
