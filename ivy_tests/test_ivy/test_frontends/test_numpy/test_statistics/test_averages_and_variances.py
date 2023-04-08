@@ -355,3 +355,28 @@ def test_numpy_nanpercentile(
         input_dtypes=input_dtypes,
     )
 
+
+    @handle_frontend_test(
+    fn_tree="numpy.nanmedian",
+    keep_dims=st.booleans(),
+)
+def test_numpy_nanmedian(
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    overwrite_input,
+    keep_dims,
+):
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=a[0],
+        axis=axis,
+        overwrite_input=False,
+        out=None,
+        keepdims=keep_dims,
+    )
