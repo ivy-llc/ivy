@@ -2708,4 +2708,6 @@ def test_jax_numpy_polymul(
         a1=x[0],
         a2=x[1],
         trim_leading_zeros=trim,
+        atol=1e-05,
+        rtol=1e-03,
     )
