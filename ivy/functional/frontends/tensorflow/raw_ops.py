@@ -134,7 +134,7 @@ Cos = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.cos))
 
 
 @to_ivy_arrays_and_back
-def Cross(*, a, b, name='Cross'):
+def Cross(*, a, b, name="Cross"):
     a, b = check_tensorflow_casting(a, b)
     return ivy.cross(a, b)
 
@@ -489,6 +489,11 @@ Tanh = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.tanh))
 
 
 @to_ivy_arrays_and_back
+def TanhGrad(*, y, dy, name="TanhGrad"):
+    return ivy.multiply(dy, ivy.subtract(1, ivy.multiply(y, y)))
+
+
+@to_ivy_arrays_and_back
 def Transpose(*, x, perm, name="Transpose"):
     ret = ivy.permute_dims(x, axes=perm)
     return ret
@@ -755,7 +760,8 @@ Slice = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.slice))
 LeakyRelu = to_ivy_arrays_and_back(
     map_raw_ops_alias(
         tf_frontend.nn.leaky_relu,
-    ))
+    )
+)
 
 LeakyRelu.supported_dtypes = {
     "numpy": (

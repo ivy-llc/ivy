@@ -1,5 +1,4 @@
 # global
-import copy
 import operator
 
 # local
