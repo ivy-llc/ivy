@@ -377,7 +377,7 @@ def test_numpy_nanmedian(
         on_device=on_device,
         a=x,
         axis=axis,
-        overwrite_input=False,
+        overwrite_input=overwrite_input,
         out=None,
         keepdims=keep_dims,
     )
