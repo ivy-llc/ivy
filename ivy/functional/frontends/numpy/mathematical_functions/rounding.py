@@ -123,11 +123,19 @@ def around(a, decimals=0, out=None):
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def round(arr):
-    # Round to the nearest integer
-    arr_rounded = ivy.floor(arr + 0.5)
-
-    # Cast back to input data type
-    arr_rounded = ivy.cast(arr_rounded, ivy.array.dtype(arr))
-
-    return arr_rounded
+def round(
+    x,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="k",
+    decimals=0,
+    dtype=None,
+    subok=True,
+):
+    ret = ivy.round(x, decimals=decimals, out=out)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret
