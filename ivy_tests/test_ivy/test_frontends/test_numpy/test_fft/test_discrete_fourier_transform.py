@@ -50,14 +50,13 @@ def test_numpy_ifft2(
     input_dtype, x = dtype_and_x
     a = ivy.array(x, dtype=ivy.complex128)
 
-    # Test `ifft2` function with different parameter values
-    for n in [None, 4]:
-        for axis in [(-1, -2), (-2, -1)]:
-            for norm in [None, "forward", "backward"]:
 
-                np_output = np.fft.ifft2(x, n=n, axes=axis, norm=norm)
+    helpers.test_frontend_function(
+        inputs=(a,),
+        fn=fn_tree,
+        np_fn=np.fft.ifft2,
+        keywords={'n': [None, 4], 'axes': [(-1, -2), (-2, -1)], 'norm': [None, "forward", "backward"]},
+        backend=ivy,
+    )
 
-                ivy_output = ivy.to_numpy(ivy.ifft2(a, n=n, axis=axis, norm=norm))
-
-                helpers.assert_allclose(np_output, ivy_output, rtol=1e-4, atol=1e-4, backend=frontend)
-
+    
