@@ -118,7 +118,11 @@ def around(a, decimals=0, out=None):
         a = ivy.expand_dims(a, axis=0)
     return ivy.round(a, decimals=decimals, out=out)
 
-
+@handle_numpy_out
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
 def round(arr):
     # Round to the nearest integer
     arr_rounded = ivy.floor(arr + 0.5)
