@@ -155,8 +155,9 @@ def solve_triangular(
     b: JaxArray,
     /,
     *,
-    lower: bool = True,
+    lower: bool = False,
+    transpose: bool = False,
     unit_diagonal: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jla.solve_triangular(a, b, lower=lower, unit_diagonal=unit_diagonal)
+    return jla.solve_triangular(a, b, trans=transpose, lower=lower, unit_diagonal=unit_diagonal)
