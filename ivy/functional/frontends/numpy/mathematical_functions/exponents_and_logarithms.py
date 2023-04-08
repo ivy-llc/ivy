@@ -222,28 +222,21 @@ def i0(x):
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
 def _frexp(
-    x,
-    /,
-    out = None,
-    *, 
-    where = True,
-    casting = "same_kind",
-    order = "K",
-    dtype = None,
-    subok = True,
+        x,
+        /,
+        out=None,
+        *,
+        where=True,
+        casting="same_kind",
+        order="K",
+        dtype=None,
+        subok=True
 ):
-    x = ivy.array(x)
-    m, e = ivy.frexpx(x)
+    mant, exp = ivy.frexp(x, out=out)
     if ivy.is_array(where):
-        m = ivy.where(where, m, ivy.default(out, ivy.zeros_like(m)), out=out)
-        e = ivy.where(where, e, ivy.default(out, ivy.zeros_like(e)), out=out)
-    if out is not None:
-        out[0][:] = m
-        out[1][:] = e
-        return out
-    else:
-        return m, e
-    
+        mant = ivy.where(where, mant, ivy.default(out[0], ivy.zeros_like(mant)), out=out[0])
+        exp = ivy.where(where, exp, ivy.default(out[1], ivy.zeros_like(exp)), out=out[1])
+    return mant, exp
     
 @handle_numpy_out
 @handle_numpy_dtype
