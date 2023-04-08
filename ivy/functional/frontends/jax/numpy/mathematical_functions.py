@@ -572,5 +572,5 @@ def polymul(a1, a2, *, trim_leading_zeros=False):
     if len(a1) == 0:
         a1 = ivy.asarray([0], dtype=a1.dtype)
     if len(a2) == 0:
-        a2 = asarray([0], dtype=a2.dtype)
+        a2 = ivy.asarray([0], dtype=a2.dtype)
     return convolve(a1, a2, mode='full')
