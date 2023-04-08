@@ -242,7 +242,6 @@ def corrcoef(
     return paddle.linalg.corrcoef(xarr, rowvar)
 
 
-
 def nanmedian(
     input: paddle.Tensor,
     /,
