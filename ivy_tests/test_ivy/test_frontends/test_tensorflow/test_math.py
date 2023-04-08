@@ -2007,7 +2007,7 @@ def test_tensorflow_sinh(
     ),
     test_with_out=st.just(False),
 )
-def test_tensorflow_xlogy( 
+def test_tensorflow_xlogy(
     *,
     dtype_and_x,
     frontend,
@@ -2051,9 +2051,5 @@ def test_tensorflow_softmax(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=xs[0],
-        y=xs[1],
-    )
         logits=x[0],
     )
-
