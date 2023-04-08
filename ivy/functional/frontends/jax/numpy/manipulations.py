@@ -37,8 +37,18 @@ def concatenate(arrays, axis=0, dtype=None):
 
 
 @to_ivy_arrays_and_back
+def repeat(a, repeats, axis=None, *, total_repeat_length=None):
+    return ivy.repeat(a, repeats, axis=axis)
+
+
+@to_ivy_arrays_and_back
 def reshape(a, newshape, order="C"):
     return ivy.reshape(a, shape=newshape, order=order)
+
+
+@to_ivy_arrays_and_back
+def ravel(a, order="C"):
+    return ivy.reshape(a, shape=(-1,), order=order)
 
 
 @to_ivy_arrays_and_back
@@ -151,6 +161,11 @@ def atleast_2d(*arys):
 
 
 @to_ivy_arrays_and_back
+def tril(m, k=0):
+    return ivy.tril(m, k=k)
+
+
+@to_ivy_arrays_and_back
 def block(arr, block_size):
     if isinstance(arr, ivy.Array):
         arr_blocks = ivy.reshape(
@@ -196,6 +211,11 @@ def array_split(ary, indices_or_sections, axis=0):
 
 
 @to_ivy_arrays_and_back
+def tile(A, reps):
+    return ivy.tile(A, reps)
+
+
+@to_ivy_arrays_and_back
 def dsplit(ary, indices_or_sections):
     return ivy.dsplit(ary, indices_or_sections)
 
@@ -233,3 +253,39 @@ def row_stack(tup):
 @to_ivy_arrays_and_back
 def pad(array, pad_width, mode="constant", **kwargs):
     return ivy.pad(array, pad_width, mode=mode, **kwargs)
+
+
+def hamming(M):
+    if M <= 1:
+        return ivy.ones([M], dtype=ivy.float64)
+    n = ivy.arange(M)
+    ret = 0.54 - 0.46 * ivy.cos(2.0 * ivy.pi * n / (M - 1))
+    return ret
+
+
+@to_ivy_arrays_and_back
+def hanning(M):
+    if M <= 1:
+        return ivy.ones([M], dtype=ivy.float64)
+    n = ivy.arange(M)
+    ret = 0.5 * (1 - ivy.cos(2.0 * ivy.pi * n / (M - 1)))
+    return ret
+
+
+@to_ivy_arrays_and_back
+def kaiser(M, beta):
+    if M <= 1:
+        return ivy.ones([M], dtype=ivy.float64)
+    n = ivy.arange(M)
+    alpha = 0.5 * (M - 1)
+    ret = ivy.i0(beta * ivy.sqrt(1 - ((n - alpha) / alpha) ** 2)) / ivy.i0(beta)
+    return ret
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+def tri(N, M=None, k=0, dtype="float64"):
+    if M is None:
+        M = N
+    ones = ivy.ones((N, M), dtype=dtype)
+    return ivy.tril(ones, k=k)

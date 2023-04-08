@@ -126,7 +126,7 @@ def tanh(input):
     "torch",
 )
 def logsigmoid(input):
-    return ivy.negative(ivy.softplus(ivy.negative(input)))
+    return ivy.logsigmoid(input)
 
 
 @to_ivy_arrays_and_back
@@ -207,8 +207,13 @@ def relu_(input):
     return input
 
 
+@to_ivy_arrays_and_back
 def selu(input, inplace=False):
-    return _selu_with_inplace(input, inplace=inplace)
+    ret = ivy.selu(input)
+    if inplace:
+        ivy.inplace_update(input, ret)
+        return input
+    return ret
 
 
 @to_ivy_arrays_and_back
