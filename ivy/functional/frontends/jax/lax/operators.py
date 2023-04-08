@@ -7,7 +7,6 @@ from builtins import slice as py_slice
 # local
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
-from ivy.functional.frontends.jax.numpy import can_cast
 
 
 @to_ivy_arrays_and_back
