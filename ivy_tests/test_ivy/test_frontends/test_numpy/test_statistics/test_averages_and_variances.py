@@ -359,6 +359,7 @@ def test_numpy_nanpercentile(
 @handle_frontend_test(
     fn_tree="numpy.nanmedian",
     keep_dims=st.booleans(),
+    dtype_x_axis=statistical_dtype_values(function="median"),
 )
 def test_numpy_nanmedian(
     frontend,
