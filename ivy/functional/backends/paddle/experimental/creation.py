@@ -209,8 +209,17 @@ def tril_indices(
 
 
 @with_unsupported_dtypes(
-    {"1.11.0 and below": ("bfloat16", "complex64", "complex128")},
-    backend_version
+    {
+        "2.4.2 and below": (
+                "bfloat16",
+                "complex64",
+                "complex128",
+                "uint16",
+                "uint32",
+                "uint64",
+        )
+    },
+    backend_version,
 )
 def frombuffer(
         buffer: bytes,
@@ -229,9 +238,6 @@ def frombuffer(
         'int32': 'i',
         'int64': 'q',
         'uint8': 'B',
-        'uint16': 'H',
-        'uint32': 'I',
-        'uint64': 'Q',
         'float16': 'e',
         'float32': 'f',
         'float64': 'd'
