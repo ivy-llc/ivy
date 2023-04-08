@@ -2030,7 +2030,7 @@ def test_tensorflow_softmax(
     fn_tree="tensorflow.math.xlogy",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=[
-            "half",
+            "bfloat16" "half",
             "float16",
             "float32",
             "float64",
