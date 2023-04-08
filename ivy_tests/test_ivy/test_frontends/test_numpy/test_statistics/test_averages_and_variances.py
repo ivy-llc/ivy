@@ -358,35 +358,31 @@ def test_numpy_nanpercentile(
 
 @handle_frontend_test(
     fn_tree="numpy.nanmedian",
-    dtype_values_axis=statistical_dtype_values(function="nanmedian"),
-    where=np_frontend_helpers.where(),
     keep_dims=st.booleans(),
+    overwrite_input=st.booleans(),
+    dtype_x_axis=statistical_dtype_values(function="median"),
+    axis=st.integers(),
 )
 def test_numpy_nanmedian(
-    dtype_values_axis,
+    dtype_x_axis,
     frontend,
     test_flags,
     fn_tree,
     on_device,
     keep_dims,
+    axis,
+    overwrite_input=overwrite_input,
 ):
-    input_dtypes, values, axis = dtype_values_axis
-    if isinstance(axis, tuple):
-        axis = axis[0]
-
-    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
-        input_dtype=input_dtypes,
-        test_flags=test_flags,
-    )
-
+    input_dtypes, x, axis2 = dtype_x_axis
     np_frontend_helpers.test_frontend_function(
-        a=values[0],
-        axis=axis,
-        out=None,
-        overwrite_input=False,
-        keepdims=keep_dims,
-        frontend=frontend,
-        fn_tree=fn_tree,
-        test_flags=test_flags,
         input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        axis=axis,
+        overwrite_input=overwrite_input,
+        out=None,
+        keepdims=keep_dims,
     )
