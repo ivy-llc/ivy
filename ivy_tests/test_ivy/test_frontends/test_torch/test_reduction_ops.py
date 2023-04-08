@@ -797,3 +797,34 @@ def test_torch_logsumexp(
         dim=axis,
         keepdim=keepdims,
     )
+
+    
+@handle_frontend_test(
+    fn_tree="torch.mode",
+    dtype_and_x=statistical_dtype_values(
+        function="mode",
+        min_value=-1e04,
+        max_value=1e04,
+    ),
+    keepdims=st.booleans(),
+)
+def test_torch_mode(
+    *,
+    dtype_and_x,
+    keepdims,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        dim=axis,
+        keepdim=keepdims,
+    )
