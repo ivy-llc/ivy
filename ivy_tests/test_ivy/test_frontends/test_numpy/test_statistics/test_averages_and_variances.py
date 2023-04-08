@@ -361,7 +361,6 @@ def test_numpy_nanpercentile(
     keep_dims=st.booleans(),
     overwrite_input=st.booleans(),
     dtype_x_axis=statistical_dtype_values(function="median"),
-    axis=st.integers(),
 )
 def test_numpy_nanmedian(
     dtype_x_axis,
@@ -370,10 +369,9 @@ def test_numpy_nanmedian(
     fn_tree,
     on_device,
     keep_dims,
-    axis,
     overwrite_input,
 ):
-    input_dtypes, x, axis2 = dtype_x_axis
+    input_dtypes, x, axis = dtype_x_axis
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
