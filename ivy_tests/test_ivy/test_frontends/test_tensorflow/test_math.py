@@ -2029,7 +2029,15 @@ def test_tensorflow_softmax(
 @handle_frontend_test(
     fn_tree="tensorflow.math.xlogy",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=[
+            "half",
+            "bfloat16",
+            "float16",
+            "float32",
+            "float64",
+            "complex64",
+            "complex128",
+        ],
         num_arrays=2,
         shared_dtype=True,
     ),
