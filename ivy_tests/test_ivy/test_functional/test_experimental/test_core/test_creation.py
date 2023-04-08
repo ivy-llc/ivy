@@ -352,9 +352,6 @@ def test_frombuffer(
     ground_truth_backend,
 ):
     input_dtype, buffer, count, offset = dtype_buffer_count_offset
-    dtype = input_dtype
-    if isinstance(dtype, list):
-        dtype = ivy.Dtype(dtype[0])
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
@@ -362,7 +359,7 @@ def test_frombuffer(
         fw=backend_fw,
         fn_name=fn_name,
         buffer=buffer,
-        dtype=dtype,
+        dtype=input_dtype[0],
         count=count,
         offset=offset,
         ground_truth_backend=ground_truth_backend,
