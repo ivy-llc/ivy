@@ -1366,7 +1366,7 @@ def test_tensorflow_conv_transpose(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x,
+        value=x,
         filters=filters,
         strides=stride,
         padding=padding,
