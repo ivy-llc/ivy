@@ -1454,6 +1454,54 @@ def test_jax_numpy_row_stack(
     )
 
 
+# pad
+@st.composite
+def _pad_helper(draw):
+    mode = draw(
+        st.sampled_from(
+            [
+                "constant",
+                "edge",
+                "linear_ramp",
+                "maximum",
+                "mean",
+                "median",
+                "minimum",
+                "reflect",
+                "symmetric",
+                "wrap",
+            ]
+        )
+    )
+    if mode == "median":
+        dtypes = "float"
+    else:
+        dtypes = "numeric"
+    dtype, input, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes(dtypes),
+            ret_shape=True,
+            min_num_dims=1,
+            min_value=-100,
+            max_value=100,
+        ).filter(
+            lambda x: x[0][0] not in ["float16", "bfloat16", "complex64", "complex128"]
+        ),
+    )
+    ndim = len(shape)
+    pad_width = draw(_st_tuples_or_int(ndim, min_val=0))
+    kwargs = {}
+    if mode == "reflect" or mode == "symmetric":
+        kwargs["reflect_type"] = draw(st.sampled_from(["even", "odd"]))
+    if mode in ["maximum", "mean", "median", "minimum"]:
+        kwargs["stat_length"] = draw(_st_tuples_or_int(ndim, min_val=2))
+    if mode in ["linear_ramp"]:
+        kwargs["end_values"] = draw(_st_tuples_or_int(ndim))
+    if mode == "constant":
+        kwargs["constant_values"] = draw(_st_tuples_or_int(ndim))
+    return dtype, input[0], pad_width, kwargs, mode
+
+
 @handle_frontend_test(
     fn_tree="jax.numpy.pad",
     dtype_and_input_and_other=_pad_helper(),
