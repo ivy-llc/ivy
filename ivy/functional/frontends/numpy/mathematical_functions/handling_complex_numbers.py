@@ -21,3 +21,8 @@ def _imag(val):
 @to_ivy_arrays_and_back
 def _real(val):
     return ivy.real(val)
+
+
+@to_ivy_arrays_and_back
+def _conj(val):
+    return ivy.conj(val)
