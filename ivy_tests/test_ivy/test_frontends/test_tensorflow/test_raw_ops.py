@@ -314,7 +314,7 @@ def test_tensorflow_Cos(  # NOQA
 
 # Cross
 @handle_frontend_test(
-    fn_tree='tensorflow.raw_ops.Cross',
+    fn_tree="tensorflow.raw_ops.Cross",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
@@ -1022,6 +1022,34 @@ def test_tensorflow_Tanh(  # NOQA
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+    )
+
+
+# TanhGrad
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.TanhGrad",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"), num_arrays=2, shared_dtype=True
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_TanhGrad(  # NOQA
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        y=xs[0],
+        dy=xs[1],
     )
 
 
@@ -3701,16 +3729,16 @@ def test_tensorflow_Prod(  # NOQA
         min_num_dims=1,
     ),
     test_with_out=st.just(False),
-    alpha=helpers.floats(min_value=0, max_value=1)
+    alpha=helpers.floats(min_value=0, max_value=1),
 )
 def test_tensorflow_LeakyReLU(
-        *,
-        dtype_and_x,
-        alpha,
-        frontend,
-        test_flags,
-        fn_tree,
-        on_device,
+    *,
+    dtype_and_x,
+    alpha,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     dtype, x = dtype_and_x
     return helpers.test_frontend_function(
@@ -3720,5 +3748,5 @@ def test_tensorflow_LeakyReLU(
         fn_tree=fn_tree,
         on_device=on_device,
         features=x[0],
-        alpha=alpha
+        alpha=alpha,
     )

@@ -106,9 +106,6 @@ def hann_window(
         size,
         periodic=periodic,
         dtype=dtype,
-        layout=torch.strided,
-        device=None,
-        requires_grad=None,
     )
 
 

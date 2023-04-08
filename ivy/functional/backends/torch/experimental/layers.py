@@ -184,6 +184,7 @@ def avg_pool1d(
     /,
     *,
     data_format: str = "NWC",
+    count_include_pad: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(strides, int):
@@ -204,19 +205,20 @@ def avg_pool1d(
 
     res = torch.nn.functional.avg_pool1d(x, kernel, strides, 0)
 
-    num_padded_values = ivy.map(
-        _get_num_padded_values,
-        constant={
-            "p": pad_w,
-            "n": x_shape,
-            "k": kernel[0],
-            "s": strides[0],
-        },
-        unique={
-            "i": torch.arange(res.shape[2]),
-        },
-    )
-    res = (kernel[0] * res) / (kernel[0] - torch.tensor(num_padded_values))
+    if not count_include_pad:
+        num_padded_values = ivy.map(
+            _get_num_padded_values,
+            constant={
+                "p": pad_w,
+                "n": x_shape,
+                "k": kernel[0],
+                "s": strides[0],
+            },
+            unique={
+                "i": torch.arange(res.shape[2]),
+            },
+        )
+        res = (kernel[0] * res) / (kernel[0] - torch.tensor(num_padded_values))
 
     if data_format == "NWC":
         res = res.permute(0, 2, 1)

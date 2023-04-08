@@ -1,6 +1,5 @@
 # global
 import paddle
-from ivy.utils.exceptions import IvyNotImplementedException
 from typing import Optional, Union
 
 

@@ -1,9 +1,7 @@
 # global
 from typing import Optional, Union, Tuple, List
 from numbers import Number
-from math import pi
 import paddle
-import numpy as np
 from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.func_wrapper import (
     with_unsupported_dtypes,
@@ -24,6 +22,15 @@ def lcm(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    x1_dtype = x1.dtype
+    x2_dtype = x2.dtype
+    if (x1_dtype, x2_dtype) == (paddle.int16, paddle.int16):
+        return paddle.cast(
+            paddle.lcm(paddle.cast(x1, paddle.int32), paddle.cast(x2, paddle.int32)),
+            paddle.int16,
+        )
+    elif x1_dtype != x2_dtype:
+        x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return paddle.lcm(x1, x2)
 
 
@@ -119,18 +126,6 @@ def copysign(
         return ivy.multiply(ivy.abs(x1), signs)
 
 
-def count_nonzero(
-    a: paddle.Tensor,
-    /,
-    *,
-    axis: Optional[Union[int, Tuple[int, ...]]] = None,
-    keepdims: Optional[bool] = False,
-    dtype: Optional[paddle.dtype] = None,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    raise IvyNotImplementedException()
-
-
 def nansum(
     x: paddle.Tensor,
     /,
@@ -223,14 +218,14 @@ def nan_to_num(
 ) -> paddle.Tensor:
     with ivy.ArrayMode(False):
         if ivy.is_int_dtype(x):
-            if posinf == None:
+            if posinf is None:
                 posinf = ivy.iinfo(x).max
-            if neginf == None:
+            if neginf is None:
                 neginf = ivy.iinfo(x).min
         elif ivy.is_float_dtype(x) or ivy.is_complex_dtype(x):
-            if posinf == None:
+            if posinf is None:
                 posinf = ivy.finfo(x).max
-            if neginf == None:
+            if neginf is None:
                 neginf = ivy.finfo(x).min
         ret = ivy.where(ivy.isnan(x), paddle.to_tensor(nan, dtype=x.dtype), x)
         ret = ivy.where(
@@ -404,7 +399,7 @@ def zeta(
         assert M <= len(_BERNOULLI_COEFS)
         k = paddle.unsqueeze(ivy.arange(N, dtype=q.dtype), tuple(range(q.ndim)))
         S = paddle.sum((a_ + k) ** -s_, -1)
-        I = ivy.divide((q + N) ** (1 - x), x - 1)
+        Q = ivy.divide((q + N) ** (1 - x), x - 1)
         T0 = (q + N) ** -x
         m = paddle.unsqueeze(ivy.arange(2 * M, dtype=s.dtype), tuple(range(s.ndim)))
         s_over_a = (s_ + m) / (a_ + N)
@@ -420,7 +415,7 @@ def zeta(
         )
         T1 = T1 / coefs
         T = T0 * (0.5 + paddle.sum(T1, -1))
-        ans = S + I + T
+        ans = S + Q + T
         mask = x < 1
         ans[mask] = ivy.nan
         return ans
@@ -465,13 +460,18 @@ def real(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     return paddle.real(x)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint8", "int8")}}, backend_version
+)
 def count_nonzero(
     x: paddle.Tensor,
     /,
     *,
     axis: Optional[Union[int, list, tuple]] = None,
     keepdims: Optional[bool] = False,
+    dtype: Optional[paddle.dtype] = None,
     name: Optional[str] = None,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     non_zero_count = paddle.sum(x != 0, axis=axis, keepdim=keepdims, name=name)
-    return non_zero_count
+    return paddle.to_tensor(non_zero_count, dtype=dtype)
