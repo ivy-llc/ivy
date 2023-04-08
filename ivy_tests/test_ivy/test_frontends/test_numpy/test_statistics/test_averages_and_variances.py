@@ -370,7 +370,6 @@ def test_numpy_nanmedian(
     fn_tree,
     keep_dims,
     on_device,
-    axis,
     overwrite_input=overwrite_input,
 ):
     input_dtype, x, axis = dtype_x_axis
