@@ -119,24 +119,6 @@ def around(a, decimals=0, out=None):
     return ivy.round(a, decimals=decimals, out=out)
 
 
-@handle_numpy_out
-@handle_numpy_dtype
-@to_ivy_arrays_and_back
-@handle_numpy_casting
-@from_zero_dim_arrays_to_scalar
-def round(
-    x,
-    /,
-    out=None,
-    *,
-    where=True,
-    casting="same_kind",
-    order="k",
-    decimals=0,
-    dtype=None,
-    subok=True,
-):
-    ret = ivy.round(x, decimals=decimals, out=out)
-    if ivy.is_array(where):
-        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-    return ret
+@ivy.numpy_wrap
+def round(x, /, decimals=0):
+    return ivy.round(x, decimals=decimals)
