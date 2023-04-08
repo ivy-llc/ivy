@@ -476,47 +476,36 @@ def test_numpy_i0(
 
 # frexp
 @handle_frontend_test(
-    fn_tree = "numpy.frexp",
-    dtypes_values_casting = np_frontend_helpers.dtypes_values_casting_dtype(
-        arr_func = [
-            lambda: helpers.dtype_and_values(
-                available_dtypes = helpers.get_dtypes("float"),
-            ),
-        ],
-        get_dtypes_kind = "float",
+    fn_tree="numpy.frexp",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float32", "float64"],
+        num_arrays=1,
+        shared_dtype=True,
+        min_value=-100,
+        max_value=100,
+        min_num_dims=1,
+        max_num_dims=3,
     ),
-    where = np_frontend_helpers.where(),
-    number_positional_args = np_frontend_helpers.get_num_positional_args_ufunc(
-        fn_name = "frexp"
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="frexp"
     ),
 )
 def test_numpy_frexp(
-    dtypes_values_casting,
-    where,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        *,
+        dtype_and_x,
+        test_flags,
+        on_device,
+        fn_tree,
+        frontend,
 ):
-    input_dtypes, x, casting, dtype = dtypes_values_casting
-    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
-        where = where,
-        input_dtype = input_dtypes,
-        test_flags = test_flags,
-    )
-    np_frontend_helpers.test_frontend_function(
-        input_dtypes = input_dtypes,
-        frontend = frontend,
-        test_flags = test_flags,
-        fn_tree = fn_tree,
-        on_device = on_device,
-        x = x[0],
-        out = None,
-        where = where,
-        casting = casting,
-        order = "K",
-        dtype = dtype,
-        subok = True,
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
     )
 
 
