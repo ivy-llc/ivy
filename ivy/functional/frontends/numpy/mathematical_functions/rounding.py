@@ -119,6 +119,11 @@ def around(a, decimals=0, out=None):
     return ivy.round(a, decimals=decimals, out=out)
 
 
-@ivy.numpy_wrap
-def round(x, /, decimals=0):
-    return ivy.round(x, decimals=decimals)
+def round(arr):
+    # Round to the nearest integer
+    arr_rounded = ivy.floor(arr + 0.5)
+
+    # Cast back to input data type
+    arr_rounded = ivy.cast(arr_rounded, ivy.array.dtype(arr))
+
+    return arr_rounded
