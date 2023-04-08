@@ -542,6 +542,11 @@ def sinh(x, name=None):
     return ivy.sinh(x)
 
 
+@to_ivy_arrays_and_back
+def softmax(logits, axis=-1):
+    return ivy.softmax(logits, axis=axis)
+
+
 @with_supported_dtypes(
     {
         "2.12.0 and below": (
@@ -559,9 +564,3 @@ def sinh(x, name=None):
 @to_ivy_arrays_and_back
 def xlogy(x, y, name=None):
     return ivy.xlogy(x, y)
-
-
-@to_ivy_arrays_and_back
-def softmax(logits, axis=-1):
-    return ivy.softmax(logits, axis=axis)
-
