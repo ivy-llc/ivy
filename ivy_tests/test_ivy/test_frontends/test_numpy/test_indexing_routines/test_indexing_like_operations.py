@@ -239,7 +239,7 @@ def test_numpy_unravel_index(
         shape=shape,
     )
 
- 
+
 @handle_frontend_test(
     fn_tree="numpy.fill_diagonal",
     dtype_x_axis=helpers.dtype_and_values(
@@ -247,7 +247,6 @@ def test_numpy_unravel_index(
         min_num_dims=2,
         min_dim_size=2,
         max_num_dims=2,
-
     ),
     val=helpers.floats(),
     wrap=helpers.get_dtypes(kind="bool"),
@@ -271,5 +270,5 @@ def test_numpy_fill_diagonal(
         fn_tree=fn_tree,
         a=x[0],
         val=val,
-        wrap=wrap
+        wrap=wrap,
     )
