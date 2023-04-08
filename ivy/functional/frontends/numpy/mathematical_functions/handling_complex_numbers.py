@@ -42,7 +42,6 @@ def _conj(
         order="K",
         dtype=None,
         subok=True,
-        **kwargs,
 ):
     ret = ivy.conj(x)
     if ivy.is_array(where):
