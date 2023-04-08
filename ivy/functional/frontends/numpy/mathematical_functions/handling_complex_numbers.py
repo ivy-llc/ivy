@@ -2,6 +2,10 @@
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
+    handle_numpy_out,
+    handle_numpy_dtype,
+    handle_numpy_casting,
+    from_zero_dim_arrays_to_scalar,
 )
 
 
@@ -23,6 +27,24 @@ def _real(val):
     return ivy.real(val)
 
 
+@handle_numpy_out
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
-def _conj(val):
-    return ivy.conj(val)
+@handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
+def _conj(
+        x,
+        /,
+        out=None,
+        *,
+        where=True,
+        casting="same_kind",
+        order="K",
+        dtype=None,
+        subok=True,
+        **kwargs,
+):
+    ret = ivy.conj(x)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret
