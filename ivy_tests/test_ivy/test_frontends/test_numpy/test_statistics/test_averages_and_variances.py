@@ -382,7 +382,7 @@ def test_numpy_nanmedian(
     )
 
     np_frontend_helpers.test_frontend_function(
-        a=values,
+        a=values[0],
         axis=axis,
         out=None,
         overwrite_input=False,
