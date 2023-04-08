@@ -508,8 +508,9 @@ def conv_transpose(
     filters,
     output_shape,
     strides,
-    padding="VALID",
-    data_format="channels_last",
+    padding,
+    data_format="NWC",
+    name=None,
 ):
     return ivy.conv_general_transpose(
         value,
