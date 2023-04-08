@@ -230,3 +230,16 @@ def logsumexp(input, dim, keepdim=False, *, out=None):
         c = ivy.squeeze(c, axis=dim)
     ret = ivy.add(ret, c, out=out)
     return ret
+
+
+@to_ivy_arrays_and_back
+def mode(input, dim=-1, keepdim=False, *, out=None):
+    sorted_data = sorted(input.items(), key=lambda x: x[1], reverse=True)
+    max_freq = sorted_data[0][1]
+    modes = [sorted_data[0][0]]
+    for item in sorted_data[1:]:
+        if item[1] == max_freq:
+            modes.append(item[0])
+        else:
+            break
+    return modes
