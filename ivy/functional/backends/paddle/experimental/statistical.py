@@ -233,7 +233,14 @@ def corrcoef(
     rowvar: Optional[bool] = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if y is None:
+        xarr = x
+    else:
+        axis = 0 if rowvar else 1
+        xarr = paddle.concat([x, y], axis=axis)
+
+    return paddle.linalg.corrcoef(xarr, rowvar)
+
 
 
 def nanmedian(

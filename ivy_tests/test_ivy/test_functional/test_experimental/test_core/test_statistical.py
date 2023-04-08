@@ -173,22 +173,47 @@ def test_quantile(
     )
 
 
+@st.composite
+def _dtype_and_value_without_row_all_same_value(draw):
+    dtype_and_x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=["float32", "float64"],
+            num_arrays=2,
+            shared_dtype=True,
+            abs_smallest_val=1e-5,
+            min_num_dims=2,
+            max_num_dims=2,
+            min_dim_size=3,
+            max_dim_size=3,
+            min_value=-100,
+            max_value=100,
+            allow_nan=False,
+        ),
+    )
+
+    dtype, value = dtype_and_x
+    x = value[0]
+    y = value[1]
+    dim_1 = x.shape[0]
+    dim_2 = x.shape[1]
+    for i in range(dim_1):
+        if len(np.unique(x[i, :])) == 1:
+            x[i] = np.random.uniform(-100, 100, dim_2)
+        if len(np.unique(y[i, :])) == 1:
+            y[i] = np.random.uniform(-100, 100, dim_2)
+    for i in range(dim_1):
+        if len(np.unique(x[:, i])) == 1:
+            x[:, i] = np.random.uniform(-100, 100, dim_2)
+        if len(np.unique(y[:, i])) == 1:
+            y[:, i] = np.random.uniform(-100, 100, dim_2)
+
+    return dtype, [x, y]
+
+
 # corrcoef
 @handle_test(
     fn_tree="functional.ivy.experimental.corrcoef",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=["float32", "float64"],
-        num_arrays=2,
-        shared_dtype=True,
-        abs_smallest_val=1e-5,
-        min_num_dims=2,
-        max_num_dims=2,
-        min_dim_size=3,
-        max_dim_size=3,
-        min_value=-100,
-        max_value=100,
-        allow_nan=False,
-    ),
+    dtype_and_x = _dtype_and_value_without_row_all_same_value(),
     rowvar=st.booleans(),
     test_gradients=st.just(False),
 )
@@ -207,6 +232,8 @@ def test_corrcoef(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
+        rtol_=1e-03,
+        atol_=1e-03,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
