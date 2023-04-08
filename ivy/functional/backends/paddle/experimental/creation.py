@@ -203,9 +203,11 @@ def tril_indices(
     *,
     device: Place,
 ) -> Tuple[paddle.Tensor, ...]:
-    return tuple(to_device(
-        paddle.tril_indices(n_rows, col=n_cols, offset=k, dtype="int64"), device
-    ))
+    return tuple(
+        to_device(
+            paddle.tril_indices(n_rows, col=n_cols, offset=k, dtype="int64"), device
+        )
+    )
 
 
 @with_unsupported_dtypes(
@@ -255,3 +257,4 @@ def frombuffer(
     ret = paddle.to_tensor(ret, dtype=dtype)
 
     return ret
+    
