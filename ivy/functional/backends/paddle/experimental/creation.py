@@ -213,12 +213,12 @@ def tril_indices(
 @with_unsupported_dtypes(
     {
         "2.4.2 and below": (
-                "bfloat16",
-                "complex64",
-                "complex128",
-                "uint16",
-                "uint32",
-                "uint64",
+            "bfloat16",
+            "complex64",
+            "complex128",
+            "uint16",
+            "uint32",
+            "uint64",
         )
     },
     backend_version,
