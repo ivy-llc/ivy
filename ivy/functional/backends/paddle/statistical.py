@@ -239,7 +239,8 @@ def cumprod(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "complex64", "complex128")}},
+    backend_version,
 )
 def cumsum(
     x: paddle.Tensor,
@@ -250,7 +251,35 @@ def cumsum(
     dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    dtype = dtype if dtype is not None else x.dtype
+    if ivy.as_native_dtype(dtype) in [
+        paddle.uint8,
+        paddle.int8,
+        paddle.float16,
+        paddle.bool,
+    ]:
+        x = paddle.cast(x, "float32")
+    else:
+        x = paddle.cast(x, dtype)
+    if not (exclusive or reverse):
+        return paddle.cumsum(x, axis=axis).cast(dtype)
+    elif exclusive and reverse:
+        with ivy.ArrayMode(False):
+            x = paddle.cumsum(ivy.flip(x, axis=(axis,)), axis=axis)
+            x = ivy.swapaxes(x, axis, -1)
+            x = ivy.concat((ivy.zeros_like(x[..., -1:]), x[..., :-1]), axis=-1)
+            x = ivy.swapaxes(x, axis, -1)
+            return ivy.flip(x, axis=(axis,)).cast(dtype)
+    elif exclusive:
+        with ivy.ArrayMode(False):
+            x = ivy.swapaxes(x, axis, -1)
+            x = ivy.concat((ivy.zeros_like(x[..., -1:]), x[..., :-1]), axis=-1)
+            x = paddle.cumsum(x, -1)
+            return ivy.swapaxes(x, axis, -1).cast(dtype)
+    else:
+        with ivy.ArrayMode(False):
+            x = paddle.cumsum(ivy.flip(x, axis=(axis,)), axis=axis)
+            return ivy.flip(x, axis=axis).cast(dtype)
 
 
 def einsum(
