@@ -238,9 +238,6 @@ def cumprod(
             return ivy.flip(x, axis=axis).cast(dtype)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def cumsum(
     x: paddle.Tensor,
     axis: int = 0,
@@ -250,7 +247,36 @@ def cumsum(
     dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if dtype is None:
+        if dtype is paddle.bool:
+            dtype = paddle.framework.get_default_dtype()
+        elif paddle.framework.in_dygraph_mode() and x.dtype in [
+            paddle.bool,
+            paddle.uint8,
+            paddle.int8,
+            paddle.int16,
+        ]:
+            dtype = paddle.int32
+        elif x.dtype in [paddle.uint8, paddle.int8, paddle.int16]:
+            dtype = paddle.framework.get_default_dtype()
+        else:
+            dtype = x.dtype
+    if exclusive or reverse:
+        if exclusive and reverse:
+            x = paddle.flip(x, [axis])
+            x = paddle.cumsum(x, axis=axis, dtype=dtype)
+            x = paddle.concat([paddle.zeros_like(x[..., -1:]), x[..., :-1]], axis=-1)
+            res = paddle.flip(x, [axis])
+        elif exclusive:
+            x = paddle.concat([paddle.zeros_like(x[..., -1:]), x[..., :-1]], axis=-1)
+            x = paddle.cumsum(x, axis=-1, dtype=dtype)
+            res = x
+        elif reverse:
+            x = paddle.flip(x, [axis])
+            x = paddle.cumsum(x, axis=axis, dtype=dtype)
+            res = paddle.flip(x, [axis])
+        return res
+    return paddle.cumsum(x, axis=axis, dtype=dtype)
 
 
 def einsum(
