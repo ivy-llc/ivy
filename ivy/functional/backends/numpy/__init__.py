@@ -188,3 +188,9 @@ from . import experimental
 from .experimental import *
 from . import control_flow_ops
 from .control_flow_ops import *
+
+
+# sub-backends
+
+from . import sub_backends
+from .sub_backends import *

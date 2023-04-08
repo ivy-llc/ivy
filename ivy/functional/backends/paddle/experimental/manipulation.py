@@ -244,7 +244,7 @@ def hsplit(
     raise IvyNotImplementedException()
 
 
-def broadcast_shapes(shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
+def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     if len(shapes[0]) == 0 and len(shapes[1]) == 0:
         return shapes[0]
     elif len(shapes[0]) == 0 and not len(shapes[1]) == 0:

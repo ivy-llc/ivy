@@ -30,7 +30,7 @@ characteristics:
 1. It should have a ``requirements.txt``, or alternatively a ``requirements`` folder,
    which includes a ``requirements.txt`` and an optional ``optional.txt`` file.
 
-2. It can have an optional ``optional.txt`` file, if not the script the script will
+2. It can have an optional ``optional.txt`` file, if not the script will
    simply ignore it.
 
 3. It should have a ``docs`` folder, which contains an ``index.rst`` file. This file
@@ -197,7 +197,7 @@ before building the docs.
 Custom Extensions
 -----------------
 
-As of writing this documentation, Ivy's doc-builder is using 3 custom extensions:
+As of writing this documentation, Ivy's doc-builder is using 4 custom extensions:
 
 1. ``custom_autosummary``
 2. ``custom_builder``
