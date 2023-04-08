@@ -389,3 +389,14 @@ def nanpercentile(
                     arrayofpercentiles.append(cpercentile(ii, i))
                 resultarray.append(arrayofpercentiles)
         return resultarray
+
+
+@handle_numpy_out
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+def ptp(a, axis=None, out=None, keepdims=False):
+    max_array = ivy.max(a, axis=axis, out=out, keepdims=keepdims)
+    min_array = ivy.min(a, axis=axis, out=None, keepdims=keepdims)
+    return ivy.subtract(max_array, min_array, out=out)
+
+print('we good?')
