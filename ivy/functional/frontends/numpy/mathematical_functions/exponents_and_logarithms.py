@@ -234,10 +234,18 @@ def _frexp(
 ):
     mant, exp = ivy.frexp(x, out=out)
     if ivy.is_array(where):
-        mant = ivy.where(where, mant, ivy.default(out[0], ivy.zeros_like(mant)), out=out[0])
-        exp = ivy.where(where, exp, ivy.default(out[1], ivy.zeros_like(exp)), out=out[1])
+        mant = ivy.where(where,
+                         mant,
+                         ivy.default(out[0], ivy.zeros_like(mant)),
+                         out=out[0])
+        exp = ivy.where(where,
+                        exp,
+                        ivy.default(out[1],
+                                    ivy.zeros_like(exp)),
+                        out=out[1])
     return mant, exp
-    
+
+
 @handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
