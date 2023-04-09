@@ -62,4 +62,3 @@ def apply_along_axis(func1d, axis, arr, *args, **kwargs):
             out[ii + out[...,] + kk] = func1d(arr[ii + out[:, ] + kk])
     return out
 
-
