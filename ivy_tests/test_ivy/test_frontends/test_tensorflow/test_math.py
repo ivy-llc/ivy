@@ -2050,3 +2050,4 @@ def test_tensorflow_cosh(
         on_device=on_device,
         x=x[0],
     )
+
