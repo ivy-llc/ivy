@@ -8,6 +8,7 @@ from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 from ivy.functional.frontends.numpy.manipulation_routines import trim_zeros
 from math import factorial
 
+
 @to_ivy_arrays_and_back
 def absolute(x):
     return ivy.abs(x)
@@ -568,7 +569,12 @@ def polyder(p, m=1):
         return p
     if m >= n:
         return ivy.array(0, dtype=p.dtype)
-    result = ivy.array([ivy.array(factorial(n - 1 - k) // factorial(n - 1 - k - m), dtype=p.dtype) * p[k] for k in range(n - m)])
+    result = ivy.array([
+        ivy.array(
+            factorial(n - 1 - k) // factorial(n - 1 - k - m), dtype=p.dtype
+        ) * p[k]
+        for k in range(n - m)
+    ])
     return result.astype(p.dtype)
 
 
