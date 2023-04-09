@@ -612,6 +612,7 @@ def nested_argwhere(
     nest: Iterable,
     fn: Callable,
     check_nests: bool = False,
+    check_attributes: bool = False,
     to_ignore: Optional[Union[type, Tuple[type]]] = None,
     _index: Optional[List] = None,
     _base: bool = True,
@@ -629,6 +630,9 @@ def nested_argwhere(
         The conditon function, returning True or False.
     check_nests
         Whether to also check the nests for the condition, not only nest leaves.
+        Default is ``False``.
+    check_attributes
+        Whether to also check the attributes of leaf objects for the condition.
         Default is ``False``.
     to_ignore
         Types to ignore when deciding whether to go deeper into the nest or not
@@ -707,6 +711,7 @@ def nested_argwhere(
                     item,
                     fn,
                     check_nests,
+                    check_attributes,
                     to_ignore,
                     _index + [i],
                     False,
@@ -718,6 +723,7 @@ def nested_argwhere(
                     item,
                     fn,
                     check_nests,
+                    check_attributes,
                     to_ignore,
                     _index + [i],
                     False,
@@ -749,6 +755,7 @@ def nested_argwhere(
                     v,
                     fn,
                     check_nests,
+                    check_attributes,
                     to_ignore,
                     _index + [k],
                     False,
@@ -760,6 +767,7 @@ def nested_argwhere(
                     v,
                     fn,
                     check_nests,
+                    check_attributes,
                     to_ignore,
                     _index + [k],
                     False,
@@ -778,6 +786,12 @@ def nested_argwhere(
         _indices = [idx for idxs in _indices if idxs for idx in idxs]
         if check_nests and fn(nest):
             _indices.append(_index)
+    elif check_attributes and hasattr(nest, "__dict__"):
+        for k, v in nest.__dict__.items():
+            if nested_any(
+                v, fn, check_nests, check_attributes, False, extra_nest_types
+            ):
+                return [_index]
     else:
         cond_met = fn(nest)
         if cond_met:
@@ -1165,6 +1179,7 @@ def nested_any(
     nest: Iterable,
     fn: Callable,
     check_nests: bool = False,
+    check_attributes: bool = False,
     _base: bool = True,
     extra_nest_types: Optional[Union[type, Tuple[type]]] = None,
 ) -> bool:
@@ -1179,6 +1194,9 @@ def nested_any(
         The conditon function, returning True or False.
     check_nests
         Whether to also check the nests for the condition, not only nest leaves.
+        Default is ``False``.
+    check_attributes
+        Whether to also check the attributes of leaf objects for the condition.
         Default is ``False``.
     _base
         Whether the current function call is the first function call in the recursive
@@ -1199,18 +1217,28 @@ def nested_any(
             if ivy.any(fn(nest)):
                 return True
         for i, item in enumerate(nest):
-            if nested_any(item, fn, check_nests, False, extra_nest_types):
+            if nested_any(
+                item, fn, check_nests, check_attributes, False, extra_nest_types
+            ):
                 return True
         if check_nests and fn(nest):
             return True
     elif isinstance(nest, dict):
         for k, v in nest.items():
-            if nested_any(v, fn, check_nests, False, extra_nest_types):
+            if nested_any(
+                v, fn, check_nests, check_attributes, False, extra_nest_types
+            ):
                 return True
         if check_nests and fn(nest):
             return True
     elif fn(nest):
         return True
+    elif check_attributes and hasattr(nest, "__dict__"):
+        for k, v in nest.__dict__.items():
+            if nested_any(
+                v, fn, check_nests, check_attributes, False, extra_nest_types
+            ):
+                return True
     return False
 
 
