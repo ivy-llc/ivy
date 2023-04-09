@@ -47,9 +47,6 @@ except ImportError:
     flax.linen = SimpleNamespace()
     flax.linen.Module = SimpleNamespace
     flax.linen.Dense = SimpleNamespace
-    flax.core = SimpleNamespace()
-    flax.core.freeze = SimpleNamespace
-    flax.core.unfreeze = SimpleNamespace
     jaxlib = SimpleNamespace()
     jaxlib.xla_extension = SimpleNamespace()
     jaxlib.xla_extension.Device = SimpleNamespace
