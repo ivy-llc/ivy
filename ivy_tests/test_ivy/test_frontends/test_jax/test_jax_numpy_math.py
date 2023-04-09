@@ -2652,7 +2652,7 @@ def test_jax_numpy_polyadd(
         max_num_dims=1,
         min_dim_size=1,
     ),
-    m=st.integers(min_value=1, max_value=10),
+    m=st.integers(min_value=0, max_value=10),
 )
 def test_jax_numpy_polyder(
         *,
