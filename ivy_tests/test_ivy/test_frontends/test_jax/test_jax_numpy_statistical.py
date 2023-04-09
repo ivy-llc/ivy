@@ -873,5 +873,5 @@ def test_jax_numpy_ptp(
         a=x[0],
         axis=axis,
         out=None,
-        keepdims=keep_dims
+        keepdims=keep_dims,
     )

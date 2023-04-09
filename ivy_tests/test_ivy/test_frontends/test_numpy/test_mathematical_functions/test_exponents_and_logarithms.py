@@ -491,12 +491,12 @@ def test_numpy_i0(
     ),
 )
 def test_numpy_frexp(
-        *,
-        dtype_and_x,
-        test_flags,
-        on_device,
-        fn_tree,
-        frontend,
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
