@@ -760,9 +760,6 @@ class Tensor:
     
     def fmin(self, other, out=None):
         return torch_frontend.fmin(self._ivy_array, other, out=out)
-    
-    def count_nonzero(self, dim=None):
-        return torch_frontend.count_nonzero(self._ivy_array, dim=dim)
 
     # Special Methods #
     # -------------------#
@@ -889,3 +886,6 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def cumprod(self, dim, dtype):
         return torch_frontend.cumprod(self._ivy_array, dim, dtype=dtype) 
+    
+    def count_nonzero(self, dim=None):
+        return torch_frontend.count_nonzero(self._ivy_array, dim=dim)
