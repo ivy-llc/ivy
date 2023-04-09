@@ -8,6 +8,7 @@ from ivy.func_wrapper import with_unsupported_device_and_dtypes
 from ivy.utils.exceptions import IvyNotImplementedException
 from .. import backend_version
 
+
 def diagflat(
     x: paddle.Tensor,
     /,
