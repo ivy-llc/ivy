@@ -188,15 +188,18 @@ def eig(input, *, out=None):
 def solve(input, other, *, out=None):
     return ivy.solve(input, other, out=out)
 
+
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
-def solve_triangular(input, other, upper=False, transpose=False):
+def solve_triangular(input, other, upper=False, transpose=False, out=None):
     if not ivy.is_array(input) or not ivy.is_array(other):
         raise TypeError('Input and other must be ivy arrays.')
     if ivy.shape(input)[-1] != ivy.shape(input)[-2]:
         raise ValueError('Input matrix `input` should be a square matrix.')
     if ivy.shape(input)[-2] != ivy.shape(other)[-2]:
-        raise ValueError('Input matrices `input` and `other` must have the same number of rows.')
+        raise ValueError(
+            'Input matrices `input` and `other` must have the same number of rows.'
+        )
     dtype = ivy.dtype(input)
     if dtype not in [ivy.float32, ivy.float64, ivy.complex64, ivy.complex128]:
         raise ValueError(f'Unsupported dtype for `solve_triangular`: {dtype}')
@@ -216,7 +219,6 @@ def solve_triangular(input, other, upper=False, transpose=False):
         output = output.T
 
     return output
-
 
 
 @to_ivy_arrays_and_back
