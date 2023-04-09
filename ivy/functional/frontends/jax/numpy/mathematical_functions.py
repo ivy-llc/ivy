@@ -561,21 +561,23 @@ def polyadd(a1, a2):
 def polyder(p, m=1):
     p = ivy.atleast_1d(p)
     n = p.size
-    if n == 1:
-        return ivy.array(0, dtype=p.dtype)
+
     if m < 0:
         raise ValueError("Order of derivative must be positive.")
+
     if m == 0:
         return p
-    if m >= n:
+
+    if n == 1 or m >= n:
         return ivy.array(0, dtype=p.dtype)
+
     result = ivy.array([
-        ivy.array(
-            factorial(n - 1 - k) // factorial(n - 1 - k - m), dtype=p.dtype
-        ) * p[k]
+        factorial(n - 1 - k) // factorial(n - 1 - k - m) * p[k]
         for k in range(n - m)
-    ])
-    return result.astype(p.dtype)
+    ], dtype=p.dtype)
+
+    return result
+
 
 
 @to_ivy_arrays_and_back
