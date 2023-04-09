@@ -545,3 +545,8 @@ def sinh(x, name=None):
 @to_ivy_arrays_and_back
 def softmax(logits, axis=-1):
     return ivy.softmax(logits, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def cosh(x, name=None):
+    return ivy.cosh(x)
