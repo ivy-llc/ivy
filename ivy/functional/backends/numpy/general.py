@@ -12,6 +12,8 @@ from numbers import Number
 import ivy
 from ivy.functional.backends.numpy.device import _to_device
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 
 def array_equal(x0: np.ndarray, x1: np.ndarray, /) -> bool:
@@ -179,9 +181,12 @@ def inplace_update(
     /,
     *,
     ensure_in_backend: bool = False,
+    keep_input_dtype: bool = False,
 ) -> ivy.Array:
     ivy.utils.assertions.check_inplace_sizes_valid(x, val)
     if ivy.is_array(x) and ivy.is_array(val):
+        if keep_input_dtype:
+            val = ivy.astype(val, x.dtype)
         (x_native, val_native), _ = ivy.args_to_native(x, val)
 
         # make both arrays contiguous if not already
@@ -362,7 +367,8 @@ def vmap(
     in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
     out_axes: int = 0,
 ) -> Callable:
-    @ivy.to_native_arrays_and_back
+    @ivy.output_to_native_arrays
+    @ivy.inputs_to_native_arrays
     def _vmap(*args):
 
         # convert args tuple to list to allow mutability using moveaxis ahead.
@@ -439,3 +445,23 @@ def vmap(
         return res
 
     return _vmap
+
+
+@with_unsupported_dtypes({"1.23.0 and below": ("bfloat16",)}, backend_version)
+def isin(
+    elements: np.ndarray,
+    test_elements: np.ndarray,
+    /,
+    *,
+    assume_unique: bool = False,
+    invert: bool = False,
+) -> np.ndarray:
+    return np.isin(
+        elements,
+        test_elements,
+        assume_unique=assume_unique,
+        invert=invert,
+    )
+
+
+isin.support_native_out = True

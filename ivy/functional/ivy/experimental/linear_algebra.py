@@ -21,11 +21,11 @@ def _check_valid_dimension_size(std):
     ivy.utils.assertions.check_dimensions(std)
 
 
+@handle_array_function
 @to_native_arrays_and_back
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
-@handle_array_function
 def eigh_tridiagonal(
     alpha: Union[ivy.Array, ivy.NativeArray],
     beta: Union[ivy.Array, ivy.NativeArray],
@@ -175,9 +175,9 @@ eigh_tridiagonal.mixed_function = True
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
 def diagflat(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -240,9 +240,9 @@ def diagflat(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
 def kron(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
@@ -280,9 +280,9 @@ def kron(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
 def matrix_exp(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -320,9 +320,9 @@ def matrix_exp(
 
 
 @to_native_arrays_and_back
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
 def eig(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -381,9 +381,9 @@ def eig(
 
 
 @to_native_arrays_and_back
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
 def eigvals(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -423,9 +423,9 @@ def eigvals(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
 def adjoint(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -511,9 +511,9 @@ def multi_dot(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
 def cond(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

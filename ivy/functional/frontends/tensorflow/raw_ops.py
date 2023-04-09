@@ -19,9 +19,7 @@ def Acos(*, x, name="Acos"):
     return ivy.acos(x)
 
 
-@to_ivy_arrays_and_back
-def Acosh(*, x, name="Acosh"):
-    return ivy.acosh(x)
+Acosh = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.acosh))
 
 
 Add = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add))
@@ -132,9 +130,13 @@ def Concat(*, concat_dim, values, name="Concat"):
     return ivy.concat(values, axis=concat_dim)
 
 
+Cos = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.cos))
+
+
 @to_ivy_arrays_and_back
-def Cos(*, x, name="Cos"):
-    return ivy.cos(x)
+def Cross(*, a, b, name="Cross"):
+    a, b = check_tensorflow_casting(a, b)
+    return ivy.cross(a, b)
 
 
 @to_ivy_arrays_and_back
@@ -271,10 +273,7 @@ def Log1p(*, x, name="Log1p"):
     return ivy.log1p(x)
 
 
-@to_ivy_arrays_and_back
-def LogicalOr(*, x, y, name="LogicalOr"):
-    x, y = check_tensorflow_casting(x, y)
-    return ivy.logical_or(x, y)
+LogicalOr = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.logical_or))
 
 
 @to_ivy_arrays_and_back
@@ -445,6 +444,13 @@ def Sign(*, x, name="Sign"):
     return ivy.sign(x)
 
 
+@to_ivy_arrays_and_back
+def Size(*, input, out_type=tf_frontend.int32, name="Size"):
+    out_type = to_ivy_dtype(out_type)
+    shape = ivy.shape(input, as_array=True)
+    return ivy.astype(ivy.prod(shape), out_type, copy=False)
+
+
 Split = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.split))
 
 
@@ -480,6 +486,11 @@ Tan = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.tan))
 
 
 Tanh = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.tanh))
+
+
+@to_ivy_arrays_and_back
+def TanhGrad(*, y, dy, name="TanhGrad"):
+    return ivy.multiply(dy, ivy.subtract(1, ivy.multiply(y, y)))
 
 
 @to_ivy_arrays_and_back
@@ -577,6 +588,36 @@ def EuclideanNorm(*, input, axis, keep_dims=False, name="EuclideanNorm"):
 
 
 ConcatV2 = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.concat))
+
+
+@to_ivy_arrays_and_back
+def Conv2D(
+    *,
+    input,
+    output,
+    strides,
+    padding,
+    data_format="NHWC",
+    dilations=[1, 1, 1, 1],
+    name="Conv2D",
+):
+    if data_format == "NDHWC":
+        strides = [1] + strides[1:-1] + [1]
+        dilations = [1] + dilations[1:-1] + [1]
+    elif data_format == "NCDHW":
+        strides = [1, 1] + strides[2:] + [1]
+        dilations = [1, 1] + dilations[2:] + [1]
+    filter = ivy.variable(ivy.random_normal(shape=output + input, stddev=0.1))
+    return ivy.conv2d(
+        input,
+        output,
+        filter,
+        strides,
+        padding,
+        data_format=data_format,
+        dilations=dilations,
+        name=name,
+    )
 
 
 @to_ivy_arrays_and_back
@@ -686,3 +727,66 @@ def DebugGradientIdentity(input, name="DebugGradientIdentity"):
 @to_ivy_arrays_and_back
 def Real(input, Tout=ivy.float32, name="Real"):
     return ivy.Real(input, Tout=Tout)
+
+
+@to_ivy_arrays_and_back
+def BandedTriangularSolve(
+    matrix,
+    rhs,
+    lower=True,
+    adjoint=False,
+    name="BandedTriangularSolve",
+):
+    return ivy.BandedTriangularSolve(matrix, rhs, lower=lower, adjoint=adjoint)
+
+
+@to_ivy_arrays_and_back
+def BatchMatMul(x, y, adj_x=False, adj_y=False, name="BatchMatMul"):
+    return ivy.BatchMatMul(x, y, adj_x=adj_x, adj_y=adj_y)
+
+
+@to_ivy_arrays_and_back
+def BatchMatMulV2(x, y, adj_x=False, adj_y=False, name="BatchMatMulV2"):
+    return ivy.BatchMatMulV2(x, y, adj_x=adj_x, adj_y=adj_y)
+
+
+@to_ivy_arrays_and_back
+def BatchMatMulV3(x, y, Tout=ivy.Dtype, adj_x=False, adj_y=False, name="BatchMatMulV3"):
+    return ivy.BatchMatMulV3(x, y, Tout=Tout, adj_x=adj_x, adj_y=adj_y)
+
+
+Slice = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.slice))
+
+LeakyRelu = to_ivy_arrays_and_back(
+    map_raw_ops_alias(
+        tf_frontend.nn.leaky_relu,
+    )
+)
+
+LeakyRelu.supported_dtypes = {
+    "numpy": (
+        "float32",
+        "float64",
+    ),
+    "tensorflow": (
+        "bfloat16",
+        "float16",
+        "float32",
+        "float64",
+    ),
+    "torch": (
+        "float32",
+        "float64",
+    ),
+    "jax": (
+        "bfloat16",
+        "float16",
+        "float32",
+        "float64",
+    ),
+}
+
+
+@to_ivy_arrays_and_back
+def Prod(*, input, axis, keep_dims=False, name="Prod"):
+    return ivy.astype(ivy.prod(input, axis=axis, keepdims=keep_dims), input.dtype)
