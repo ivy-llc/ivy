@@ -188,6 +188,29 @@ def eig(input, *, out=None):
 def solve(input, other, *, out=None):
     return ivy.solve(input, other, out=out)
 
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+def solve_triangular(input, other, upper=False, transpose=False):
+    if len(a.shape) != 2 or a.shape[0] != a.shape[1]:
+        raise ValueError('Input matrix `a` should be a square matrix.')
+    
+    if upper:
+        input = ivy.triu(input)
+    else:
+        input = ivy.tril(input)
+
+    if transpose:
+        input = input.T
+        other = other.T
+
+    output = ivy.solve(input, other, out=out)
+
+    if transpose:
+        output = output.T
+
+    return output
+
+
 
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
