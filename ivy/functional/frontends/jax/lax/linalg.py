@@ -65,16 +65,17 @@ def qdwh(x, *, is_hermitian=False, max_iterations=None, eps=None, dynamic_shape=
     num_iters = 0
     while True:
         h_prev = h.copy()
-        h2 = h @ h
-        h3 = h2 @ h
-        g = 1.5 * h - 0.5 * h @ h2
-        delta_h = np_frontend.linalg.solve(2 * g - h3, h2 - 2 * g @ h + g @ h3)
+        h2 = h @ h_prev
+        h3 = h2 @ h_prev
+        g = 1.5 * h_prev - 0.5 * h_prev @ h2
+        delta_h = np_frontend.linalg.solve(2 * g - h3, h2 - 2 * g @ h_prev + g @ h3)
         h += delta_h
         num_iters += 1
-
+        x = np_frontend.linalg.norm(delta_h)
+        y = np_frontend.linalg.norm(h) * (4 * eps)**(1/3)
         if eps:
             # Check for convergence
-            if np_frontend.linalg.norm(delta_h) < np_frontend.linalg.norm(h) * (4 * eps)**(1/3):
+            if x < y:
                 is_converged = True
                 break
 
