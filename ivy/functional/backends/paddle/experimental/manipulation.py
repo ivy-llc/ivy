@@ -218,7 +218,15 @@ def dstack(
 
 
 def atleast_2d(*arys: paddle.Tensor) -> List[paddle.Tensor]:
-    raise IvyNotImplementedException()
+    res=[]
+    for ary in arys:
+        if len(ary.shape)==0:
+            res.append(paddle.to_tensor([[ary]]))
+        elif len(ary.shape)==1:
+            res.append(paddle.unsqueeze(ary, axis=0))
+        else:
+            res.append(ary)
+    return res
 
 
 def atleast_3d(*arys: Union[paddle.Tensor, bool, Number]) -> List[paddle.Tensor]:
