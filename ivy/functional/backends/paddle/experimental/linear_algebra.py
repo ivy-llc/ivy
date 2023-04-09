@@ -1,12 +1,12 @@
 # global
 import paddle
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union, Any
 
 # local
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.utils.exceptions import IvyNotImplementedException
 from .. import backend_version
-
 
 def diagflat(
     x: paddle.Tensor,
@@ -79,3 +79,13 @@ def adjoint(
 ) -> paddle.Tensor:
     _check_valid_dimension_size(x)
     return paddle.moveaxis(x, -2, -1).conj()
+
+
+def cond(
+    x: paddle.Tensor,
+    /,
+    *,
+    p: Optional[Union[None, int, str]] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> Any:
+    raise IvyNotImplementedException()

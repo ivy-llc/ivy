@@ -572,6 +572,7 @@ def test_cond(
     dtype_x,
     test_flags,
     backend_fw,
+    on_device,
     fn_name,
     ground_truth_backend,
 ):
@@ -581,6 +582,7 @@ def test_cond(
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
+        on_device=on_device,
         fn_name=fn_name,
         x=x[0],
         p=x[1],
