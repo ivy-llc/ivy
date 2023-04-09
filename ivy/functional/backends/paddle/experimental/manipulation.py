@@ -231,6 +231,7 @@ def take_along_axis(
     axis: int,
     /,
     *,
+    mode: str = "fill",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()
