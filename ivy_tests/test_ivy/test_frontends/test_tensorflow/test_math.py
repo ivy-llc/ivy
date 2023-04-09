@@ -2023,6 +2023,7 @@ def test_tensorflow_softmax(
         on_device=on_device,
         logits=x[0],
     )
+<<<<<<< HEAD
 
 
 # cosh
@@ -2050,3 +2051,5 @@ def test_tensorflow_cosh(
         on_device=on_device,
         x=x[0],
     )
+=======
+>>>>>>> e714477e9b (lintfixbot: Auto-commit fixed lint errors in codebase)
