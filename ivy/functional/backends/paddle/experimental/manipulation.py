@@ -255,7 +255,6 @@ def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
         else:
             return paddle.broadcast_shape(s1, s2)
 
-    shapes = shapes[0]
     if len(shapes) == 0:
         raise ValueError("shapes=[] must be non-empty")
     elif len(shapes[0]) == 1:
