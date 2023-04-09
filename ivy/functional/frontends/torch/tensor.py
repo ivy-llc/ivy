@@ -887,5 +887,5 @@ class Tensor:
     def cumprod(self, dim, dtype):
         return torch_frontend.cumprod(self._ivy_array, dim, dtype=dtype) 
     
-    def count_nonzero(self, dim=None):
-        return torch_frontend.count_nonzero(self._ivy_array, dim=dim)
+    def count_nonzero(self, dim):
+            return torch_frontend.count_nonzero(self._ivy_array, dim=dim)
