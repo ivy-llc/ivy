@@ -360,7 +360,7 @@ def test_numpy_nanpercentile(
     fn_tree="numpy.nanmedian",
     keep_dims=st.booleans(),
     overwrite_input=st.booleans(),
-    dtype_x_axis=statistical_dtype_values(function="median"),
+    dtype_x_axis=statistical_dtype_values(function="nanmedian"),
 )
 def test_numpy_nanmedian(
     dtype_x_axis,
