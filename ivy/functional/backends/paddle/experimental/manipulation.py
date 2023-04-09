@@ -203,9 +203,17 @@ def dsplit(
 ) -> List[paddle.Tensor]:
     raise IvyNotImplementedException()
 
-
 def atleast_1d(*arys: paddle.Tensor) -> List[paddle.Tensor]:
-    raise IvyNotImplementedException()
+    res=[]
+    for ary in arys:
+        if len(ary.shape)==0:
+            res.append(paddle.to_tensor([[ary]]))
+        elif len(ary.shape)==1:
+            res.append(paddle.unsqueeze(ary, axis=0))
+        else:
+            res.append(ary)
+    return res
+            
 
 
 def dstack(
