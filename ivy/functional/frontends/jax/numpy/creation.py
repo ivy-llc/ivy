@@ -1,4 +1,3 @@
-from ivy.functional.frontends.numpy import promote_types_of_numpy_inputs
 
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
@@ -165,9 +164,11 @@ def single(x):
 
 @to_ivy_arrays_and_back
 def geomspace(start, stop, num=50, endpoint=True, dtype=None, axis=0):
-    start, stop = promote_types_of_numpy_inputs(start, stop)
-    cr = ivy.log((stop / start), where=start != 0) / (num - 1 if endpoint else num)
-    x = ivy.linspace(0, cr * (num - 1 if endpoint else num), num, endpoint=endpoint, dtype=dtype, axis=axis)
+    cr = ivy.log(stop / start) / (num - 1 if endpoint else num)
+    x = ivy.linspace(0, cr * (num - 1 if endpoint else num), num, endpoint=endpoint, axis=axis)
     x = ivy.exp(x)
     x = start * x
-    return x
+    x[0] = (start*cr)/cr
+    if endpoint:
+        x[-1] = stop
+    return x.asarray(dtype=dtype)
