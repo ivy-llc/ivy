@@ -156,6 +156,9 @@ def gcd(
     return paddle.gcd(x1, x2)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("float16",)}}, backend_version
+)
 def isclose(
     a: paddle.Tensor,
     b: paddle.Tensor,
