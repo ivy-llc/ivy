@@ -177,22 +177,27 @@ def test_torch_rand(*, dtype, size, frontend, fn_tree, test_flags):
 )
 def test_torch_rand_like(dtype_and_x, dtype, *, frontend, fn_tree, test_flags):
     input_dtype, input = dtype_and_x
-    ivy_ret, torch_ret = helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_values=False,
-        fn_tree=fn_tree,
-        test_flags=test_flags,
-        input=input[0],
-        dtype=dtype[0],
-    )
 
-    if not ivy.exists(ivy_ret):
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            frontend=frontend,
+            test_values=False,
+            fn_tree=fn_tree,
+            test_flags=test_flags,
+            input=input[0],
+            dtype=dtype[0],
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
         return
 
-    ivy_ret = helpers.flatten_and_to_np(ret=ivy_ret)
-    torch_ret = helpers.flatten_and_to_np(ret=torch_ret)
-    for (u, v) in zip(ivy_ret, torch_ret):
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    for (u, v) in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
 
