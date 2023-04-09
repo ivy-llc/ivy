@@ -47,7 +47,6 @@ except:
     flax.linen = SimpleNamespace()
     flax.linen.Module = SimpleNamespace
     flax.core = SimpleNamespace()
-    flax.core.FrozenDict = SimpleNamespace
     flax.core.freeze = SimpleNamespace
     flax.core.unfreeze = SimpleNamespace
     jaxlib = SimpleNamespace()
