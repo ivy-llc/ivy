@@ -42,7 +42,7 @@ except ImportError:
 try:
     import flax
     import jaxlib
-except:
+except ImportError:
     flax = SimpleNamespace()
     flax.linen = SimpleNamespace()
     flax.linen.Module = SimpleNamespace
