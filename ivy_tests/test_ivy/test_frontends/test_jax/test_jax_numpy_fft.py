@@ -9,12 +9,12 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 # fft
 @handle_frontend_test(
     fn_tree="jax.numpy.fft.fft",
-    dtype_and_x = helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid"),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid"),
                                            shape=helpers.ints(min_value=0).
                                            map(lambda x: tuple([x, ]))),
-    dim = helpers.ints(min_value=-1, max_value=0),
-    n = helpers.ints(min_value=2),
-    norm = st.sampled_from(["backward","ortho","forward"])
+    dim=helpers.ints(min_value=-1, max_value=0),
+    n=helpers.ints(min_value=2),
+    norm=st.sampled_from(["backward", "ortho", "forward"])
 )
 def test_jax_numpy_fft(
     dtype_and_x,
