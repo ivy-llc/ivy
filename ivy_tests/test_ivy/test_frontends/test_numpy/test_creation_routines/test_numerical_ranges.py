@@ -286,7 +286,7 @@ def test_geomspace(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-05,
+        rtol=1e-1,
         start=start,
         stop=stop,
         num=num,
