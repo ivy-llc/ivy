@@ -43,6 +43,19 @@ def meshgrid(*xi, copy=True, sparse=False, indexing="xy"):
     if copy:
         return [ivy.copy_array(x) for x in ret]
     return ret
+    
+
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+def geomspace(start, stop, num=50, endpoint=True, dtype=None, axis=0):
+    cr = ivy.log(stop / start) / (num - 1 if endpoint else num)
+    x = ivy.linspace(0, cr * (num - 1 if endpoint else num), num, endpoint=endpoint, axis=axis)
+    x = ivy.exp(x)
+    x = start * x
+    x[0] = (start*cr)/cr
+    if endpoint:
+        x[-1] = stop
+    return x.asarray(dtype=dtype)
 
 
 class nd_grid:
@@ -158,14 +171,3 @@ class OGrid(nd_grid):
 
 
 ogrid = OGrid()
-
-
-@handle_numpy_dtype
-@to_ivy_arrays_and_back
-def geomspace(start, stop, num=50, endpoint=True, dtype=None, axis=0):
-    start, stop = promote_types_of_numpy_inputs(start, stop)
-    cr = ivy.log((stop / start), where=start != 0) / (num - 1 if endpoint else num)
-    x = ivy.linspace(0, cr * (num - 1 if endpoint else num), num, endpoint=endpoint, dtype=dtype, axis=axis)
-    x = ivy.exp(x)
-    x = start * x
-    return x
