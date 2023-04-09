@@ -222,6 +222,8 @@ def from_dlpack(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if isinstance(x, tf.Variable):
+        x = x.read_value()
     dlcapsule = tf.experimental.dlpack.to_dlpack(x)
     return tf.experimental.dlpack.from_dlpack(dlcapsule)
 

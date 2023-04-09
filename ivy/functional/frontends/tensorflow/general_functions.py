@@ -3,7 +3,7 @@ from builtins import slice as py_slice, range as py_range
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.tensorflow.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_tf_dtype,
@@ -35,6 +35,20 @@ def clip_by_value(t, clip_value_min, clip_value_max):
     )
     t = ivy.array(t)
     return ivy.clip(t, clip_value_min, clip_value_max)
+
+
+@with_supported_dtypes({"2.9.1 and below": ("float32",)}, "tensorflow")
+@to_ivy_arrays_and_back
+def clip_by_global_norm(t_list, clip_norm, use_norm=None):
+    if use_norm is not None:
+        global_norm = use_norm
+    else:
+        global_norm = ivy.sqrt(ivy.sum([ivy.vector_norm(t) ** 2 for t in t_list]))
+
+    max_clip_ratio = ivy.maximum(clip_norm, global_norm)
+    return [
+        ivy.multiply(t, ivy.divide(clip_norm, max_clip_ratio)) for t in t_list
+    ], global_norm
 
 
 @to_ivy_arrays_and_back
@@ -281,8 +295,7 @@ def strided_slice(
         )
     )
     begin, end, strides = map(
-        lambda x: ivy.array(x) if isinstance(x, int) else x,
-        [begin, end, strides]
+        lambda x: ivy.array(x) if isinstance(x, int) else x, [begin, end, strides]
     )
     num_defined = len(begin)
     strides = ivy.repeat(ivy.array(1), num_defined) if strides is None else strides
@@ -292,7 +305,7 @@ def strided_slice(
     )
     begin, end, strides = map(
         lambda x: [ivy.to_scalar(i) for i in x] if ivy.is_ivy_array(x) else x,
-        [begin, end, strides]
+        [begin, end, strides],
     )
     for i, v in enumerate(shrink_axis_mask):
         if v == 1:
@@ -320,12 +333,21 @@ def strided_slice(
                 end = end + [None] * num_missing
                 strides = strides + [1] * num_missing
             else:
-                begin = begin[:ellipsis_index] + [None] * (num_missing + 1) + \
-                    begin[ellipsis_index + 1:]
-                end = end[:ellipsis_index] + [None] * (num_missing + 1) + \
-                    end[ellipsis_index + 1:]
-                strides = strides[:ellipsis_index] + [1] * (num_missing + 1) + \
-                    strides[ellipsis_index + 1:]
+                begin = (
+                    begin[:ellipsis_index]
+                    + [None] * (num_missing + 1)
+                    + begin[ellipsis_index + 1 :]
+                )
+                end = (
+                    end[:ellipsis_index]
+                    + [None] * (num_missing + 1)
+                    + end[ellipsis_index + 1 :]
+                )
+                strides = (
+                    strides[:ellipsis_index]
+                    + [1] * (num_missing + 1)
+                    + strides[ellipsis_index + 1 :]
+                )
     full_slice = ()
     for i, _ in enumerate(begin):
         if new_axis_mask[i]:
@@ -345,8 +367,11 @@ def strided_slice(
     if all(i is None for i in full_slice):
         full_slice += (...,)
     ret = input_[full_slice]
-    shrink_indices = [i for i, v in enumerate(shrink_axis_mask)
-                      if v and i < len(ret.shape) and ret.shape[i] == 1]
+    shrink_indices = [
+        i
+        for i, v in enumerate(shrink_axis_mask)
+        if v and i < len(ret.shape) and ret.shape[i] == 1
+    ]
     ret = ivy.squeeze(ret, axis=shrink_indices)
     return ret
 
@@ -374,7 +399,7 @@ def tile(input, multiples, name=None):
 
 @to_ivy_arrays_and_back
 def one_hot(
-    indices: ivy.array,
+    indices: ivy.Array,
     depth: int,
     on_value=None,
     off_value=None,
@@ -387,7 +412,7 @@ def one_hot(
 
 
 @to_ivy_arrays_and_back
-def where(condition: ivy.array, x=None, y=None, name=None):
+def where(condition: ivy.Array, x=None, y=None, name=None):
     if x is None and y is None:
         return ivy.argwhere(condition)
     else:
@@ -416,7 +441,7 @@ def repeat(
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @to_ivy_arrays_and_back
-def unstack(value: ivy.array, axis=0, num=None, name=None):
+def unstack(value: ivy.Array, axis=0, num=None, name=None):
     return ivy.unstack(value, axis=axis)
 
 
