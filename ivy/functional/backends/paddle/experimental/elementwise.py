@@ -127,10 +127,7 @@ def copysign(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint8",
-                                 "int8",
-                                 "int16",
-                                 "float16")}}, backend_version
+    {"2.4.2 and below": {"cpu": ("uint8", "int8", "int16", "float16")}}, backend_version
 )
 def nansum(
     x: paddle.Tensor,
