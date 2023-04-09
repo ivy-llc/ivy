@@ -455,3 +455,9 @@ def norm(tensor, ord="euclidean", axis=None, keepdims=None, name=None):
     return tf_frontend.linalg.norm(
         tensor, ord=ord, axis=axis, keepdims=keepdims, name=name
     )
+
+
+norm.supported_dtypes = (
+    "float32",
+    "float64",
+)
