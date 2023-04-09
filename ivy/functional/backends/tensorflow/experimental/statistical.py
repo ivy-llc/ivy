@@ -4,11 +4,12 @@ import tensorflow_probability as tfp
 from tensorflow.python.ops.numpy_ops import np_math_ops
 
 from ivy import with_supported_dtypes
+from .. import backend_version
 
 
 @with_supported_dtypes(
-    {"1.11.0 and below": ("bfloat16", "float16", "float32", "float64")},
-    "tensorflow"
+    {"2.9.1 and below": ("float",)},
+    backend_version,
 )
 def median(
     input: Union[tf.Tensor, tf.Variable],
