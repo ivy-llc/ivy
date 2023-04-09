@@ -64,6 +64,7 @@ class _ArrayWithSet(abc.ABC):
                 element will be implementation-dependent (e.g., an
                 implementation could choose to return ``-0`` if ``-0`` occurs
                 before ``+0``).
+
         Parameters
         ----------
         x : ivy.Array or ivy.NativeArray
@@ -72,6 +73,7 @@ class _ArrayWithSet(abc.ABC):
         out : ivy.Array, optional
             Optional output array, for writing the result to. It must have a
             shape that the inputs broadcast to.
+
         Returns
         -------
         ivy.Array
@@ -80,10 +82,12 @@ class _ArrayWithSet(abc.ABC):
             .. note::
                 The order of unique elements is not specified and may vary
                 between implementations.
+
         Raises
         ------
         TypeError
             If `x` is not an instance of `ivy.Array` or `ivy.NativeArray`.
+
         Examples
         --------
         >>> import ivy

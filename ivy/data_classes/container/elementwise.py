@@ -6395,6 +6395,7 @@ class _ContainerWithElementwise(ContainerBase):
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
+        decimals: int = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -6410,6 +6411,8 @@ class _ContainerWithElementwise(ContainerBase):
         ----------
         x
             input container. Should have a numeric data type.
+        decimals
+            number of decimal places to round to. Default is ``0``.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -6447,6 +6450,7 @@ class _ContainerWithElementwise(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(
             "round",
             x,
+            decimals=decimals,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -6457,6 +6461,7 @@ class _ContainerWithElementwise(ContainerBase):
     def round(
         self: ivy.Container,
         *,
+        decimals: int = 0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -6472,6 +6477,8 @@ class _ContainerWithElementwise(ContainerBase):
         ----------
         self
             input container. Should have a numeric data type.
+        decimals
+            number of decimal places to round to. Default is ``0``.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -6508,6 +6515,7 @@ class _ContainerWithElementwise(ContainerBase):
         """
         return self._static_round(
             self,
+            decimals=decimals,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

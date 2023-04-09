@@ -4,7 +4,6 @@ from typing import Optional, Union
 import paddle
 import paddle.nn.functional as F
 import ivy
-from ivy.utils.exceptions import IvyNotImplementedException
 
 # local
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
@@ -126,4 +125,3 @@ def selu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
             )
             return ret
     return F.selu(x.cast("float32")).cast(x.dtype)
-
