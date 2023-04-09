@@ -6,7 +6,7 @@ from ivy.functional.frontends.jax.func_wrapper import (
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 from ivy.functional.frontends.numpy.manipulation_routines import trim_zeros
-
+from math import factorial
 
 @to_ivy_arrays_and_back
 def absolute(x):
@@ -554,6 +554,22 @@ def polyadd(a1, a2):
     a1 = ivy.pad(a1, (d - a1.size, 0), mode='constant')
     a2 = ivy.pad(a2, (d - a2.size, 0), mode='constant')
     return a1 + a2
+
+
+@to_ivy_arrays_and_back
+def polyder(p, m=1):
+    p = ivy.atleast_1d(p)
+    n = p.size
+    if n == 1:
+        return ivy.array(0, dtype=p.dtype)
+    if m < 0:
+        raise ValueError("Order of derivative must be positive.")
+    if m == 0:
+        return p
+    if m >= n:
+        return ivy.array(0, dtype=p.dtype)
+    result = ivy.array([ivy.array(factorial(n - 1 - k) // factorial(n - 1 - k - m), dtype=p.dtype) * p[k] for k in range(n - m)])
+    return result.astype(p.dtype)
 
 
 @to_ivy_arrays_and_back
