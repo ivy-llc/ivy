@@ -579,7 +579,6 @@ def polyder(p, m=1):
     return result
 
 
-
 @to_ivy_arrays_and_back
 def polysub(a1, a2):
     n = max(a1.size, a2.size) - 1
