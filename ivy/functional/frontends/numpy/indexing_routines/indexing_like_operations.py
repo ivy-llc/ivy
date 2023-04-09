@@ -2,6 +2,7 @@ import ivy
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     outputs_to_numpy_arrays,
+    inputs_to_ivy_arrays,
 )
 
 
@@ -41,7 +42,7 @@ def indices(dimensions, dtype=int, sparse=False):
     else:
         res = ivy.empty((N,) + dimensions, dtype=dtype)
     for i, dim in enumerate(dimensions):
-        idx = ivy.arange(dim, dtype=dtype).reshape(shape[:i] + (dim,) + shape[i + 1 :])
+        idx = ivy.arange(dim, dtype=dtype).reshape(shape[:i] + (dim,) + shape[i + 1:])
         if sparse:
             res = res + (idx,)
         else:
@@ -80,3 +81,8 @@ def fill_diagonal(a, val, wrap=False):
     a = ivy.reshape(a, a.size)
     a[:end:step] = val
     a = ivy.reshape(a, shape)
+
+
+@inputs_to_ivy_arrays
+def put_along_axis(arr, indices, values, axis):
+    ivy.put_along_axis(arr, indices, values, axis)
