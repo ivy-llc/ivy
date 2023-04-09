@@ -45,3 +45,9 @@ def _get_seed(key):
 def beta(key, a, b, shape=None, dtype=None):
     seed = _get_seed(key)
     return ivy.beta(a, b, shape=shape, dtype=dtype, seed=seed)
+
+
+def dirichlet(key, alpha, shape=None, dtype="float32"):
+    seed = _get_seed(key)
+    alpha = ivy.array(alpha, dtype=dtype)
+    return ivy.dirichlet(alpha, size=shape, dtype=dtype, seed=seed)
