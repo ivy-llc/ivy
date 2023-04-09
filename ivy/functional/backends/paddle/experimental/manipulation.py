@@ -218,11 +218,11 @@ def dstack(
 
 
 def atleast_2d(*arys: paddle.Tensor) -> List[paddle.Tensor]:
-    res=[]
+    res = []
     for ary in arys:
-        if len(ary.shape)==0:
+        if len(ary.shape) == 0:
             res.append(paddle.to_tensor([[ary]]))
-        elif len(ary.shape)==1:
+        elif len(ary.shape) == 1:
             res.append(paddle.unsqueeze(ary, axis=0))
         else:
             res.append(ary)
