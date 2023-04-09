@@ -8,10 +8,12 @@ import math
 # local
 import ivy
 from ivy.func_wrapper import handle_mixed_function
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.random import RNG
 from ivy.functional.ivy.layers import _handle_padding
 from ivy.functional.ivy.experimental.layers import _padding_ceil_mode, _get_size
+from . import backend_version
 
 
 def _from_int_to_tuple(arg, dim):
@@ -362,6 +364,7 @@ def dct(
     return dct_out
 
 
+@with_unsupported_dtypes({"0.3.14 and below":("bool")}, backend_version)
 def fft(
     x: JaxArray,
     dim: int,
