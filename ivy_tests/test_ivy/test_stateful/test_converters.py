@@ -46,6 +46,7 @@ except ImportError:
     flax = SimpleNamespace()
     flax.linen = SimpleNamespace()
     flax.linen.Module = SimpleNamespace
+    flax.linen.Dense = SimpleNamespace
     flax.core = SimpleNamespace()
     flax.core.freeze = SimpleNamespace
     flax.core.unfreeze = SimpleNamespace
