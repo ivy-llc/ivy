@@ -233,6 +233,7 @@ def _ifft_norm(
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
 
 
+@with_unsupported_dtypes({"2.9.1 and below":("bool",)}, backend_version) 
 def fft(
     x: Union[tf.Tensor, tf.Variable],
     dim: int,
