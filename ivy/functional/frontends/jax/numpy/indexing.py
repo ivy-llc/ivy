@@ -51,3 +51,13 @@ def tril_indices_from(arr, k=0):
 def unravel_index(indices, shape):
     ret = [x.astype("int64") for x in ivy.unravel_index(indices, shape)]
     return tuple(ret)
+
+
+@to_ivy_arrays_and_back
+def apply_along_axis(func1d, axis, arr, *args, **kwargs):
+    out = ivy.array(arr)
+    Ni, Nk = arr.shape[:axis], arr.shape[axis + 1:]
+    for ii in ivy.ndindex(Ni):
+        for kk in ivy.ndindex(Nk):
+            out[ii + out[...,] + kk] = func1d(arr[ii + out[:, ] + kk])
+    return out
