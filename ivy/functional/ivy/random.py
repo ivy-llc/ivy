@@ -83,9 +83,9 @@ def _check_shapes_broadcastable(out, inp):
 # ------#
 
 
-@handle_array_function
 @infer_device
 @infer_dtype
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -197,9 +197,9 @@ def random_uniform(
     )
 
 
-@handle_array_function
 @infer_device
 @infer_dtype
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -308,8 +308,8 @@ def random_normal(
     )
 
 
-@handle_array_function
 @infer_device
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -417,8 +417,8 @@ def multinomial(
     )
 
 
-@handle_array_function
 @infer_device
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable

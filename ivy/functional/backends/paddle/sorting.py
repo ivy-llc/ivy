@@ -5,9 +5,6 @@ from typing import Optional
 # local
 import ivy
 
-from . import backend_version
-from ivy.utils.exceptions import IvyNotImplementedException
-
 
 def argsort(
     x: paddle.Tensor,
@@ -32,7 +29,6 @@ def sort(
     stable: bool = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-
     is_bool = ivy.as_native_dtype(x.dtype) == paddle.bool
     if is_bool:
         x = x.cast("int32")
@@ -55,7 +51,6 @@ def searchsorted(
     ret_dtype=paddle.int64,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-
     right = True if side == "right" else False
     assert ivy.is_int_dtype(ret_dtype), ValueError(
         "only Integer data types are supported for ret_dtype."

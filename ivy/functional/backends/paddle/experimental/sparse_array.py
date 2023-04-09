@@ -1,5 +1,3 @@
-import ivy
-import paddle
 from ivy.utils.exceptions import IvyNotImplementedException
 
 
@@ -19,7 +17,6 @@ def native_sparse_array(
     dense_shape=None,
     format="coo",
 ):
-
     raise IvyNotImplementedException()
 
 

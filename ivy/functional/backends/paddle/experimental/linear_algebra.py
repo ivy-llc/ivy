@@ -1,15 +1,11 @@
 # global
-import math
-
 import paddle
-from ivy.utils.exceptions import IvyNotImplementedException
 from typing import Optional, Tuple
 
-import ivy
-
-from .. import backend_version
-
+# local
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from .. import backend_version
 
 
 def diagflat(
@@ -42,6 +38,9 @@ def diagflat(
         )(diag)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("int8", "int16")}}, backend_version
+)
 def kron(
     a: paddle.Tensor,
     b: paddle.Tensor,

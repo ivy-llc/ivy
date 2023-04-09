@@ -51,6 +51,7 @@ __all__ = [
     if not (
         name.startswith("_")
         or name == "ivy"
+        or (callable(thing) and "ivy" not in thing.__module__)
         or (isinstance(thing, types.ModuleType) and "ivy" not in thing.__name__)
     )
 ]
