@@ -928,7 +928,7 @@ def _get_solve_matrices(draw):
     # for which `np.linalg.cond` is large.
     input_dtype_strategy = st.shared(
         st.sampled_from(draw(helpers.get_dtypes("float"))).filter(
-            lambda x: "float16" not in x
+            lambda x: "float16" not in x    
         ),
         key="shared_dtype",
     )
@@ -1207,4 +1207,42 @@ def test_torch_multi_dot(
         fn_tree=fn_tree,
         test_values=True,
         tensors=x,
+    )
+
+@handle_frontend_test(
+    fn_tree="torch.linalg.solve_triangular",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+        min_value=-1e04,
+        max_value=1e04
+    ),
+    upper=st.booleans(),
+    left=st.booleans(),
+    unitriangular=st.booleans()
+)
+def test_torch_solve_triangular(
+        *,
+        dtype_and_x,
+        upper,
+        left,
+        unitriangular,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
+):
+    x_dtypes, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=x_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        A=x[0],
+        B=x[1],
+        upper=upper,
+        left=left,
+        unitriangular=unitriangular
     )

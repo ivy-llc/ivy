@@ -242,3 +242,33 @@ def vander(x, N=None):
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
 def multi_dot(tensors, *, out=None):
     return ivy.multi_dot(tensors, out=out)
+
+@to_ivy_arrays_and_back
+def solve_triangular(A, B, *, upper, left=True, unitriangular=False, out=None):
+    # Determine the shape of the input tensors
+    n, m = B.shape
+
+    # If `out` is not provided, create a new tensor for the solution
+    if out is None:
+        out = ivy.empty((n, m), dtype=B.dtype, device=B.device)
+
+    # If `unitriangular` is True, set the diagonal of `A` to 1
+    if unitriangular:
+        A = ivy.clone(A)
+        A.view(n, -1)[:, ::n + 1] = 1
+
+    # Solve the system of linear equations using `torch.solve`
+    if upper:
+        if left:
+            out, _ = ivy.solve(B, ivy.transpose(A, 0, 1))
+        else:
+            out, _ = ivy.solve(ivy.transpose(B, 0, 1), A)
+        out = ivy.transpose(out, 0, 1)
+    else:
+        if left:
+            out, _ = ivy.solve(B, A)
+        else:
+            out, _ = ivy.solve(ivy.transpose(B, 0, 1), ivy.transpose(A, 0, 1))
+            out = ivy.transpose(out, 0, 1)
+
+    return out
