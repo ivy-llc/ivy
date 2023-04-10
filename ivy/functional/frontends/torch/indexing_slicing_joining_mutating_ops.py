@@ -280,3 +280,45 @@ def where(condition, input=None, other=None):
 @to_ivy_arrays_and_back
 def conj(input):
     return ivy.conj(input)
+
+
+@to_ivy_arrays_and_back
+def index_add(input, dim, index, source, *, alpha=1, out=None):
+    # Potential Bug:
+    #   There is an issue with the torch backend (not caused by ivy)
+    #   where half precision (float16) values get ignored in summation:
+    #
+    #   >>> a = torch.tensor(-14., dtype=torch.float16)
+    #   >>> b = torch.tensor(1.014, dtype=torch.float16)
+    #   >>> a+b
+    #   tensor(-12.9844, dtype=torch.float16)
+    #   >>> a = torch.tensor(-24., dtype=torch.float16)
+    #   >>> a+b
+    #   tensor(-22.9844, dtype=torch.float16)
+    #   >>> a = torch.tensor(-34., dtype=torch.float16)
+    #   >>> a+b
+    #   tensor(-33., dtype=torch.float16)
+    #   >>>
+    input = ivy.swapaxes(input, dim, 0)
+    source = ivy.swapaxes(source, dim, 0)
+    _to_adds = []
+    index = sorted(zip(ivy.to_list(index), range(len(index))), key=(lambda x: x[0]))
+    while index:
+        _curr_idx = index[0][0]
+        while len(_to_adds) < _curr_idx:
+            _to_adds.append(ivy.zeros_like(source[0]))
+        _to_add_cum = ivy.get_item(source, index[0][1])
+        while (1 < len(index)) and (index[0][0] == index[1][0]):
+            _to_add_cum = ivy.add(_to_add_cum, ivy.get_item(source, index.pop(1)[1]))
+        index.pop(0)
+        _to_adds.append(_to_add_cum)
+    while len(_to_adds) < input.shape[0]:
+        _to_adds.append(ivy.zeros_like(source[0]))
+    _to_adds = ivy.stack(_to_adds)
+    if len(input.shape) < 2:
+        # Added this line due to the paddle backend treating scalars as 1-d arrays
+        _to_adds = ivy.flatten(_to_adds)
+
+    ret = ivy.add(input, _to_adds, alpha=alpha)
+    ret = ivy.swapaxes(ret, 0, dim, out=out)
+    return ret
