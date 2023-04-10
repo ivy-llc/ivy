@@ -97,7 +97,10 @@ def corrcoef(
 
     return torch.corrcoef(xarr)
 
-
+@with_unsupported_dtypes(
+    {"1.11.0 and below": ("bfloat16", "bfloat32", "float16", "float32", "float64")}, \
+    backend_version
+    )
 def nanmedian(
     input: torch.Tensor,
     /,
@@ -107,7 +110,10 @@ def nanmedian(
     overwrite_input: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.nanmedian(input,  dim=axis, keepdim=keepdims, out=out)
+    if axis is None:
+        return torch.nanmedian(input, keepdim=keepdims, out=out)
+    else:
+        return torch.nanmedian(input, dim=axis, keepdim=keepdims, out=out).values
 
 
 nanmedian.support_native_out = True
