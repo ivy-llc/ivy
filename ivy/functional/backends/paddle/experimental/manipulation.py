@@ -231,6 +231,7 @@ def take_along_axis(
     axis: int,
     /,
     *,
+    mode: str = "fill",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()
@@ -244,15 +245,26 @@ def hsplit(
     raise IvyNotImplementedException()
 
 
-def broadcast_shapes(shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
-    if len(shapes[0]) == 0 and len(shapes[1]) == 0:
+def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
+    def _broadcast_shape(s1, s2):
+        len_1 = len(s1)
+        len_2 = len(s2)
+        if len_1 == 0:
+            return () if len_2 == 0 else s2
+        elif len_1 != 0 and len_2 == 0:
+            return s1
+        else:
+            return paddle.broadcast_shape(s1, s2)
+
+    if len(shapes) == 0:
+        raise ValueError("shapes=[] must be non-empty")
+    elif len(shapes) == 1:
         return shapes[0]
-    elif len(shapes[0]) == 0 and not len(shapes[1]) == 0:
-        return shapes[1]
-    elif not len(shapes[0]) == 0 and len(shapes[1]) == 0:
-        return shapes[0]
-    else:
-        return paddle.broadcast_shape(*shapes)
+    result = _broadcast_shape(shapes[0], shapes[1])
+    for i in range(2, len(shapes)):
+        result = _broadcast_shape(result, shapes[i])
+
+    return result
 
 
 @with_unsupported_device_and_dtypes(

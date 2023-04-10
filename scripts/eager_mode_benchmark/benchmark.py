@@ -113,7 +113,7 @@ def eager_benchmark(
     functional_api
         Should only be set to ``True`` if the obj being passed is a part of ivy's
         functional API. (Default value = ``False``).
-    num_experimenta
+    num_experiments
         Option to run benchmarking multiple times to account for subtle variations.
         (Default value = 1).
     label
@@ -135,9 +135,6 @@ def eager_benchmark(
         The path to the csv file to write to. By default results are written to
         reports.csv in the folder from where the script it run
         (Default value = ``None``).
-
-    Returns
-    -------
 
     Examples
     --------

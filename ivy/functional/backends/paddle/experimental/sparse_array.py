@@ -1,5 +1,3 @@
-import ivy
-import paddle
 from ivy.utils.exceptions import IvyNotImplementedException
 
 
