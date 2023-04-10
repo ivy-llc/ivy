@@ -551,16 +551,16 @@ def poly(seq_of_zeros):
 @to_ivy_arrays_and_back
 def polyadd(a1, a2):
     d = max(a1.size, a2.size)
-    a1 = ivy.pad(a1, (d - a1.size, 0), mode='constant')
-    a2 = ivy.pad(a2, (d - a2.size, 0), mode='constant')
+    a1 = ivy.pad(a1, (d - a1.size, 0), mode="constant")
+    a2 = ivy.pad(a2, (d - a2.size, 0), mode="constant")
     return a1 + a2
 
 
 @to_ivy_arrays_and_back
 def polysub(a1, a2):
     n = max(a1.size, a2.size) - 1
-    a1 = ivy.pad(a1, (0, n - a1.size + 1), mode='constant')
-    a2 = ivy.pad(a2, (0, n - a2.size + 1), mode='constant')
+    a1 = ivy.pad(a1, (0, n - a1.size + 1), mode="constant")
+    a2 = ivy.pad(a2, (0, n - a2.size + 1), mode="constant")
     return a1 - a2
 
 
@@ -568,9 +568,9 @@ def polysub(a1, a2):
 def polymul(a1, a2, *, trim_leading_zeros=False):
     a1, a2 = ivy.atleast_1d(a1), ivy.atleast_1d(a2)
     if trim_leading_zeros and (len(a1) > 1 or len(a1) > 1):
-        a1, a2 = trim_zeros(a1, trim='f'), trim_zeros(a2, trim='f')
+        a1, a2 = trim_zeros(a1, trim="f"), trim_zeros(a2, trim="f")
     if len(a1) == 0:
-        a1 = ivy.array([0], dtype=a1.dtype)
+        a1 = ivy.asarray([0], dtype=a1.dtype)
     if len(a2) == 0:
-        a2 = ivy.array([0], dtype=a2.dtype)
-    return convolve(a1, a2, mode='full')
+        a2 = ivy.asarray([0], dtype=a2.dtype)
+    return convolve(a1, a2, mode="full")
