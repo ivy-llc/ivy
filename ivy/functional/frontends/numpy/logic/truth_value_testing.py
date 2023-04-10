@@ -81,5 +81,15 @@ def iscomplexobj(x):
 
 
 @to_ivy_arrays_and_back
-def iscomplex(x):
-    return ivy.bitwise_invert(ivy.isreal(x))
+def iscomplex(arrays: ivy.np.ndarray):
+    """
+    Returns a bool array, where True if input element is complex.
+    The input having a non-zero imaginary part, is considered as complex.
+    """
+    result = []
+    for ele in arrays:
+        if ivy.isreal(ele):
+            result.append(False)
+        else:
+            result.append(True)
+    return result
