@@ -178,7 +178,7 @@ class ModuleConverters:
             def _forward(self, *a, **kw):
                 a, kw = ivy.args_to_native(*a, **kw)
                 params_hk = _dict_to_hk_flat_map(self.v.cont_to_dict())
-                ret = self._native_module.apply(params_hk, None, *a, **kw)
+                ret = self._native_module.apply(params_hk, 0, *a, **kw)
                 if isinstance(ret, tuple):
                     return ivy.args_to_native(*ret)
                 return ivy.to_native(ret)

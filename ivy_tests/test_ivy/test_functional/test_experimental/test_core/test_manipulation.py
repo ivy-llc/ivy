@@ -674,6 +674,7 @@ def test_vsplit(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
+        on_device=on_device,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,

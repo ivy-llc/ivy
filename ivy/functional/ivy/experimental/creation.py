@@ -114,6 +114,7 @@ def triu_indices(
     return current_backend().triu_indices(n_rows, n_cols, k, device=device)
 
 
+@infer_dtype
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -199,6 +200,7 @@ def hann_window(
     )
 
 
+@infer_dtype
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -246,6 +248,7 @@ def kaiser_window(
     )
 
 
+@infer_dtype
 @outputs_to_ivy_arrays
 @handle_out_argument
 @handle_nestable
@@ -311,6 +314,7 @@ def kaiser_bessel_derived_window(
     return ivy.array(dn_low + dn_mid, dtype=dtype, out=out)
 
 
+@infer_dtype
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -574,4 +578,66 @@ def eye_like(
         dtype=dtype,
         device=device,
         out=out,
+    )
+
+
+@outputs_to_ivy_arrays
+@handle_nestable
+def frombuffer(
+    buffer: bytes,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = float,
+    count: Optional[int] = -1,
+    offset: Optional[int] = 0,
+) -> ivy.Array:
+    """
+    Interpret a buffer as a 1-dimensional array.
+
+    .. note::
+        Note that either of the following must be true:
+        1. count is a positive non-zero number, and the total number of bytes
+        in the buffer is equal or greater than offset plus count times the size
+        (in bytes) of dtype.
+        2. count is negative, and the length (number of bytes) of the buffer
+        subtracted by the offset is a multiple of the size (in bytes) of dtype.
+
+    Parameters
+    ----------
+    buffer
+        An object that exposes the buffer interface.
+    dtype
+        Data-type of the returned array; default: float.
+    count
+        Number of items to read. -1 means all data in the buffer.
+    offset
+        Start reading the buffer from this offset (in bytes); default: 0.
+
+    Returns
+    -------
+    out
+        1-dimensional array.
+
+    Examples
+    --------
+    With :class:`bytes` inputs:
+
+    >>> x = b'\x00\x00\x00\x00\x00\x00\xf0?\x00\x00\x00\x00\x00\x00\x00@'
+    >>> y = ivy.frombuffer(x)
+    >>> print(y)
+    (ivy.array([1., 2.]))
+
+    >>> x = b'\x01\x02\x03\x04'
+    >>> y = ivy.frombuffer(x, dtype='int8', count=-2, offset=1)
+    >>> print(y)
+    (ivy.array([2, 3, 4]))
+
+    >>> x = b'\x00<\x00@\x00B\x00D\x00E'
+    >>> y = ivy.frombuffer(x, dtype='float16', count=4, offset=2)
+    >>> print(y)
+    (ivy.array([2., 3., 4., 5.]))
+    """
+    return current_backend().frombuffer(
+        buffer,
+        dtype=dtype,
+        count=count,
+        offset=offset,
     )
