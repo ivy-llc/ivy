@@ -135,7 +135,7 @@ def frombuffer(
     if offset > 0:
         offset = int(offset / dtype.size)
     if count > -1:
-        ret = ret[offset:offset + count]
+        ret = ret[offset : offset + count]
     else:
         ret = ret[offset:]
 

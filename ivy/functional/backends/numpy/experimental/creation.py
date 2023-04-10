@@ -33,7 +33,7 @@ def vorbis_window(
     result = []
     for i in range(1, window_length * 2)[0::2]:
         temp = np.sin(ivy.pi / 2 * (np.sin(ivy.pi * i / (window_length * 2)) ** 2))
-        result.append(round(temp,8))
+        result.append(round(temp, 8))
     return np.array(result, dtype=dtype)
 
 
@@ -88,10 +88,10 @@ kaiser_window.support_native_out = False
 
 
 def frombuffer(
-        buffer: bytes,
-        dtype: Optional[np.dtype] = float,
-        count: Optional[int] = -1,
-        offset: Optional[int] = 0,
+    buffer: bytes,
+    dtype: Optional[np.dtype] = float,
+    count: Optional[int] = -1,
+    offset: Optional[int] = 0,
 ) -> np.ndarray:
     if isinstance(dtype, list):
         dtype = np.dtype(dtype[0])

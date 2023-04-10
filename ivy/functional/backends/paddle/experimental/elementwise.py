@@ -121,8 +121,7 @@ def copysign(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     with ivy.ArrayMode(False):
-        x2 = ivy.where(ivy.equal(x2, paddle.to_tensor(0)),
-                       ivy.divide(1, x2), x2)
+        x2 = ivy.where(ivy.equal(x2, paddle.to_tensor(0)), ivy.divide(1, x2), x2)
         signs = ivy.sign(x2)
         return ivy.multiply(ivy.abs(x1), signs)
 

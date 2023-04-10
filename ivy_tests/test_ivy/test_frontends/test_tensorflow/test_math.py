@@ -2051,5 +2051,8 @@ def test_tensorflow_cosh(
         on_device=on_device,
         x=x[0],
     )
+<<<<<<< HEAD
 =======
 >>>>>>> e714477e9b (lintfixbot: Auto-commit fixed lint errors in codebase)
+=======
+>>>>>>> e86c65cce8 (lintfixbot: Auto-commit fixed lint errors in codebase)
