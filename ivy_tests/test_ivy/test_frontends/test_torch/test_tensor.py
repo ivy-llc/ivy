@@ -289,6 +289,7 @@ def test_torch_instance_add(
         on_device=on_device,
     )
 
+
 # sub
 @handle_frontend_method(
     class_tree=CLASS_TREE,
