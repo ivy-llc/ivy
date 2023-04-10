@@ -1,7 +1,7 @@
 Building Blocks
 ===============
 
-.. _`out argument`: https://lets-unify.ai/ivy/deep_dive/inplace_updates.html#out-argument
+.. _`out argument`: https://lets-unify.ai/docs/ivy/deep_dive/inplace_updates.html#out-argument
  
 Here we explain the components of Ivy which are fundamental to its usage either as a code converter or as a fully-fledged framework-agnostic ML framework.
 These are the 4 parts labelled as (a) in the image below:
@@ -104,7 +104,7 @@ Instead, we allow these backends to be bound to the single shared namespace ivy.
 The backend can then be changed by calling :code:`ivy.set_backend(‘torch’)` for example.
 
 :mod:`ivy.functional.ivy` is the submodule where all the doc strings and argument typing reside for the functional Ivy API.
-For example, The function :func:`prod`  is shown below:
+For example, the function :func:`prod`  is shown below:
 
 .. code-block:: python
 

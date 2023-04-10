@@ -4,11 +4,14 @@ from typing import Optional
 
 # local
 import ivy
-
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
 from . import backend_version
-from ivy.utils.exceptions import IvyNotImplementedException
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "complex64", "complex128")}},
+    backend_version,
+)
 def argsort(
     x: paddle.Tensor,
     /,
@@ -18,11 +21,21 @@ def argsort(
     stable: bool = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if ivy.as_native_dtype(x.dtype) == paddle.bool:
-        x = x.cast("int32")
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+        paddle.bool,
+    ]:
+        x = x.cast("float32")
     return paddle.argsort(x, axis=axis, descending=descending)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "complex64", "complex128")}},
+    backend_version,
+)
 def sort(
     x: paddle.Tensor,
     /,
@@ -32,18 +45,23 @@ def sort(
     stable: bool = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    is_bool = ivy.as_native_dtype(x.dtype) == paddle.bool
-    if is_bool:
-        x = x.cast("int32")
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+        paddle.bool,
+    ]:
+        return paddle.sort(x.cast("float32"), axis=axis, descending=descending).cast(
+            x.dtype
+        )
+    return paddle.sort(x, axis=axis, descending=descending)
 
-    ret = paddle.sort(x, axis=axis, descending=descending)
 
-    if is_bool:
-        ret = ret.cast("bool")
-
-    return ret
-
-
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "complex64", "complex128")}},
+    backend_version,
+)
 def searchsorted(
     x: paddle.Tensor,
     v: paddle.Tensor,
@@ -54,6 +72,24 @@ def searchsorted(
     ret_dtype=paddle.int64,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+        paddle.bool,
+    ]:
+        x = x.cast("float32")
+
+    if v.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+        paddle.bool,
+    ]:
+        v = v.cast("float32")
+
     right = True if side == "right" else False
     assert ivy.is_int_dtype(ret_dtype), ValueError(
         "only Integer data types are supported for ret_dtype."
