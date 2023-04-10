@@ -461,3 +461,8 @@ norm.supported_dtypes = (
     "float32",
     "float64",
 )
+
+
+@to_ivy_arrays_and_back
+def diag(v, k=0):
+    return ivy.diag(v, k=k)

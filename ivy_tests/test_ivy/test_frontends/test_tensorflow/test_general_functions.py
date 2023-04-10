@@ -9,7 +9,10 @@ from ivy_tests.test_ivy.test_frontends.test_numpy.test_creation_routines.test_fr
     _input_fill_and_dtype,
 )
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _matrix_rank_helper
+from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
+    _matrix_rank_helper,
+    _diag_helper,
+)
 from tensorflow import errors as tf_errors
 
 
@@ -1788,4 +1791,28 @@ def test_tensorflow_norm(
         ord=ord,
         axis=axis,
         keepdims=keepdims,
+    )
+
+
+# diag
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.diag",
+    dtype_and_x_k=_diag_helper(),
+)
+def test_tensorflow_diag(
+    dtype_and_x_k,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x, k = dtype_and_x_k
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        v=x[0],
+        k=k,
     )
