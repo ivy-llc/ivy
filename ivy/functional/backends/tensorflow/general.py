@@ -20,12 +20,13 @@ from . import backend_version
 _round = round
 
 
-def _parse_index(indices, ndims):
+def _parse_index(indices, shape):
     ind = list()
     for so in indices:
         pre = list()
         for s in so:
             if s == -1:
+                pre.append(shape[len(pre) :][0] - 1)
                 break
             pre.append(s.numpy())
         post = list()
@@ -36,7 +37,10 @@ def _parse_index(indices, ndims):
         ind.append(
             tuple(
                 pre
-                + [slice(None, None, None) for _ in range(ndims - len(pre) - len(post))]
+                + [
+                    slice(None, None, None)
+                    for _ in range(len(shape) - len(pre) - len(post))
+                ]
                 + list(reversed(post))
             )
         )
@@ -383,7 +387,11 @@ def scatter_nd(
                     *[
                         tf.range(s)
                         if idx == slice(None, None, None)
-                        else tf.range(idx.start, idx.stop)
+                        else tf.range(
+                            ivy.default(idx.start, 0),
+                            ivy.default(idx.stop, shape[0]),
+                            ivy.default(idx.step, 1),
+                        )
                         if isinstance(idx, slice) and (idx != slice(None, None, None))
                         else tf.constant([idx % s])
                         for s, idx in zip(shape, indices)
@@ -410,7 +418,11 @@ def scatter_nd(
                         *[
                             tf.range(s)
                             if idx == slice(None, None, None)
-                            else tf.range(idx.start, idx.stop)
+                            else tf.range(
+                                ivy.default(idx.start, 0),
+                                ivy.default(idx.stop, shape[0]),
+                                ivy.default(idx.step, 1),
+                            )
                             if isinstance(idx, slice)
                             and (idx != slice(None, None, None))
                             else tf.constant([idx % s])
@@ -426,7 +438,13 @@ def scatter_nd(
                 [
                     tf.reshape(value, (-1,))
                     for value in tf.meshgrid(
-                        *[tf.range(indices.start, indices.stop)],
+                        *[
+                            tf.range(
+                                ivy.default(indices.start, 0),
+                                ivy.default(indices.stop, shape[0]),
+                                ivy.default(indices.step, 1),
+                            )
+                        ],
                         indexing="ij",
                     )
                 ],
@@ -439,7 +457,7 @@ def scatter_nd(
             indices = tf.expand_dims(indices, 0)
         if tf.reduce_any(indices < 0):
             shape = list(shape) if ivy.exists(shape) else list(out.shape)
-            indices = _parse_index(indices, len(shape))
+            indices = _parse_index(indices, shape)
             indices = [
                 tf.stack(
                     [
@@ -448,7 +466,11 @@ def scatter_nd(
                             *[
                                 tf.range(s)
                                 if idx == slice(None, None, None)
-                                else tf.range(idx.start, idx.stop)
+                                else tf.range(
+                                    ivy.default(idx.start, 0),
+                                    ivy.ivy.default(idx.stop, shape[0]),
+                                    ivy.default(idx.step, 1),
+                                )
                                 if isinstance(idx, slice)
                                 and idx != slice(None, None, None)
                                 else tf.constant([idx % s])
