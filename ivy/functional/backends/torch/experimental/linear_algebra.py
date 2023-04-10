@@ -186,19 +186,16 @@ def solve_triangular(
     b: torch.Tensor,
     /,
     *,
-    upper: bool = False,
-    left: bool = False,
+    lower: bool = False,
+    transpose: bool = False,
     unit_diagonal: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.linalg.solve_triangular(
-        a,
-        b,
-        upper=upper,
-        left=left,
-        unitriangular=unit_diagonal,
-        out=out,
-    )
+    upper = not lower
+    if transpose == True:
+        a = torch.transpose(a, 0, 1)
+        b = torch.transpose(b, 0, 1)
+    return torch.linalg.solve_triangular(a, b, upper=upper, unitriangular=unit_diagonal, out=out)
 
 
 solve_triangular.support_native_out = False
