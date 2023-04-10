@@ -1,6 +1,7 @@
 # global
 from hypothesis import strategies as st, assume
 import numpy as np
+import jax
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -338,4 +339,35 @@ def test_jax_numpy_unravel_index(
         on_device=on_device,
         indices=x[0],
         shape=shape,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.mask_indices",
+    n=helpers.ints(min_value=3, max_value=10),
+    mask_func=st.just(jax.numpy.triu),
+    k=helpers.ints(min_value=-5, max_value=5),
+    input_dtype=helpers.get_dtypes("valid", full=False),
+    test_with_out=st.just(False),
+    number_positional_args=st.just(2),
+)
+def test_jax_numpy_mask_indices(
+    n,
+    mask_func,
+    k,
+    input_dtype,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        n=n,
+        mask_func=mask_func,
+        k=k,
     )
