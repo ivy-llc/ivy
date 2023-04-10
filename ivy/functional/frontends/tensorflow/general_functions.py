@@ -448,3 +448,16 @@ def unstack(value: ivy.Array, axis=0, num=None, name=None):
 @to_ivy_arrays_and_back
 def reverse(tensor, axis, name=None):
     return ivy.flip(tensor, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def norm(tensor, ord="euclidean", axis=None, keepdims=None, name=None):
+    return tf_frontend.linalg.norm(
+        tensor, ord=ord, axis=axis, keepdims=keepdims, name=name
+    )
+
+
+norm.supported_dtypes = (
+    "float32",
+    "float64",
+)

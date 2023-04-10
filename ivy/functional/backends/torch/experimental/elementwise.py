@@ -8,7 +8,7 @@ import torch
 import ivy
 from ivy import promote_types_of_inputs
 from ivy.functional.backends.torch.elementwise import _cast_for_unary_op
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from .. import backend_version
 
 
@@ -411,6 +411,10 @@ def gradient(
     return grad
 
 
+@with_supported_dtypes(
+    {"2.0.0 and below": ("float16", "float32", "float64")},
+    backend_version,
+)
 def xlogy(
     x: torch.tensor, y: torch.tensor, /, *, out: Optional[torch.tensor] = None
 ) -> torch.tensor:
@@ -423,7 +427,7 @@ def real(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
 
 
 def conj(
-    x: Union[torch.Tensor],
+    x: torch.Tensor,
     /,
     *,
     out: Optional[torch.Tensor] = None,
