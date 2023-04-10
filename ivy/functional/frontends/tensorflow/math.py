@@ -548,6 +548,24 @@ def softmax(logits, axis=-1):
     return ivy.softmax(logits, axis=axis)
 
 
+@with_supported_dtypes(
+    {
+        "2.12.0 and below": (
+            "bfloat16",
+            "half",
+            "float32",
+            "float64",
+            "complex64",
+            "complex128",
+        ),
+    },
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def xlogy(x, y, name=None):
+    return ivy.xlogy(x, y)
+    
+   
 @to_ivy_arrays_and_back
 def cosh(x, name=None):
     return ivy.cosh(x)
