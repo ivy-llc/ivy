@@ -4,7 +4,6 @@ from typing import Optional, Union
 import paddle
 import paddle.nn.functional as F
 import ivy
-from ivy.utils.exceptions import IvyNotImplementedException
 
 # local
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
@@ -39,6 +38,7 @@ def thresholded_relu(
     if x.dtype in [paddle.float32, paddle.float64]:
         return F.thresholded_relu(x, threshold=threshold)
     with ivy.ArrayMode(False):
+        x, threshold = ivy.promote_types_of_inputs(x, threshold)
         return ivy.where(ivy.greater_equal(x, threshold), x, 0)
 
 
@@ -125,9 +125,3 @@ def selu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
             )
             return ret
     return F.selu(x.cast("float32")).cast(x.dtype)
-
-
-def relu6(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    x, x_dtype = _dtype_helper(x)
-
-    return F.relu6(x).cast(x_dtype)

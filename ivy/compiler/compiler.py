@@ -1,5 +1,5 @@
 from typing import Callable, Optional, List, Union, Iterable, Tuple
-from .compiler import transpile as _transpile, compile as _compile, unify as _unify
+from ._compiler import transpile as _transpile, compile as _compile, unify as _unify
 
 
 # TODO: create meaningful types for Graph and LazyGraph,
@@ -29,7 +29,9 @@ def compile(
     args: Optional[Tuple] = None,
     kwargs: Optional[dict] = None,
 ) -> Union[Graph, LazyGraph]:
-    """Takes `fn` and compiles it into a more efficient composition of backend operations.
+    """Takes `fn` and compiles it into a more efficient composition of
+    backend operations.
+
     Parameters
     ----------
     objs
@@ -56,9 +58,11 @@ def compile(
         positional arguments for `obj`
     kwargs
         keyword arguments for `obj`
+
     Returns
     -------
     the compiled `Graph` object.
+
     Examples
     --------
     >>> import ivy, time
@@ -87,21 +91,21 @@ def compile(
     0.0001785755157470703
     """
     return _compile(
-        objs,
-        stateful,
-        arg_stateful_idxs,
-        kwarg_stateful_idxs,
-        to,
-        include_generators,
-        array_caching,
-        with_numpy,
-        return_backend_compiled_fn,
-        static_argnums,
-        static_argnames,
+        *objs,
+        stateful=stateful,
+        arg_stateful_idxs=arg_stateful_idxs,
+        kwarg_stateful_idxs=kwarg_stateful_idxs,
+        to=to,
+        include_generators=include_generators,
+        array_caching=array_caching,
+        with_numpy=with_numpy,
+        return_backend_compiled_fn=return_backend_compiled_fn,
+        static_argnums=static_argnums,
+        static_argnames=static_argnames,
         # dynamic: bool = False, # for torch.jit.script compilation
-        graph_caching,
-        args,
-        kwargs,
+        graph_caching=graph_caching,
+        args=args,
+        kwargs=kwargs,
     )
 
 
@@ -119,6 +123,7 @@ def transpile(
     """Transpiles Callable objects passed as arguments.
     If args and kwargs are specified, transpilation is performed eagerly,
     otherwise, transpilation will happen lazily.
+
     Parameters
     ----------
     objs
@@ -135,20 +140,21 @@ def transpile(
         If specified, arguments that will be used to transpile eagerly.
     kwargs
         If specified, keyword arguments that will be used to transpile eagerly.
+
     Returns
     -------
     Either a transpiled Graph or a non-initialized LazyGraph.
     """
     return _transpile(
-        objs,
-        source,
-        to,
-        debug_mode,
-        with_numpy,
-        args,
-        kwargs,
-        params_v,
-        v,
+        *objs,
+        source=source,
+        to=to,
+        debug_mode=debug_mode,
+        with_numpy=with_numpy,
+        args=args,
+        kwargs=kwargs,
+        params_v=params_v,
+        v=v,
     )
 
 
@@ -163,10 +169,10 @@ def unify(
 ) -> Callable:
 
     return _unify(
-        objs,
-        source,
-        args,
-        kwargs,
-        with_numpy,
-        transpile_kwargs,
+        *objs,
+        source=source,
+        args=args,
+        kwargs=kwargs,
+        with_numpy=with_numpy,
+        **transpile_kwargs,
     )

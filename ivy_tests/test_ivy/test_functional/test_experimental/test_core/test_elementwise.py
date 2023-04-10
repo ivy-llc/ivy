@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import strategies as st, assume
+from hypothesis import strategies as st
 
 # local
 import ivy
@@ -971,9 +971,8 @@ def test_gradient(
 @handle_test(
     fn_tree="functional.ivy.experimental.xlogy",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=["float16", "float32", "float64"],
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         num_arrays=2,
-        shared_dtype=False,
         min_value=-10,
         max_value=10,
         min_num_dims=1,

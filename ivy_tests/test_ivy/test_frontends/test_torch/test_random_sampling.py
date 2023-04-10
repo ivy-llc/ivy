@@ -165,6 +165,44 @@ def test_torch_rand(*, dtype, size, frontend, fn_tree, test_flags):
 
 
 @handle_frontend_test(
+    fn_tree="torch.rand_like",
+    dtype=helpers.get_dtypes("float", full=False),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=10,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+)
+def test_torch_rand_like(dtype_and_x, dtype, *, frontend, fn_tree, test_flags):
+    input_dtype, input = dtype_and_x
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            frontend=frontend,
+            test_values=False,
+            fn_tree=fn_tree,
+            test_flags=test_flags,
+            input=input[0],
+            dtype=dtype[0],
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    for (u, v) in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
+
+
+@handle_frontend_test(
     fn_tree="torch.randn",
     dtype=helpers.get_dtypes("float", full=False),
     size=helpers.get_shape(

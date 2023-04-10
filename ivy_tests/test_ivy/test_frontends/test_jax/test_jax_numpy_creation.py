@@ -638,17 +638,17 @@ def test_jax_numpy_logspace(
         shared_dtype=True,
     ),
     sparse=st.booleans(),
-    indexing=st.sampled_from(['xy', 'ij']),
+    indexing=st.sampled_from(["xy", "ij"]),
     test_with_out=st.just(False),
 )
 def test_jax_numpy_meshgrid(
-        dtype_and_arrays,
-        sparse,
-        indexing,
-        test_flags,
-        frontend,
-        fn_tree,
-        on_device,
+    dtype_and_arrays,
+    sparse,
+    indexing,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     dtype, arrays = dtype_and_arrays
     kw = {}
@@ -754,4 +754,36 @@ def test_jax_numpy_single(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.geomspace",
+    dtype_start_stop=_get_dtype_and_range(),
+    num=helpers.ints(min_value=5, max_value=50),
+    endpoint=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_geomspace(
+    dtype_start_stop,
+    num,
+    endpoint,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, start, stop = dtype_start_stop
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-1,
+        start=start,
+        stop=stop,
+        num=num,
+        endpoint=endpoint,
+        dtype=input_dtypes[0],
     )
