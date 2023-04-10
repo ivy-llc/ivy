@@ -77,6 +77,27 @@ def rand(
 
 
 @to_ivy_arrays_and_back
+def rand_like(
+    input,
+    *,
+    dtype=None,
+    layout=None,
+    device=None,
+    requires_grad=False,
+    memory_format=False
+):
+    shape = input.shape
+    if not dtype:
+        dtype = input.dtype
+
+    return ivy.random_uniform(
+        shape=shape,
+        dtype=dtype,
+        device=device,
+    )
+
+
+@to_ivy_arrays_and_back
 def randn(
     size,
     *,
