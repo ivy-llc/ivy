@@ -502,6 +502,7 @@ def is_nan(x, name=None):
     },
     "tensorflow",
 )
+@to_ivy_arrays_and_back
 def is_finite(x, name=None):
     return ivy.isfinite(x)
 
