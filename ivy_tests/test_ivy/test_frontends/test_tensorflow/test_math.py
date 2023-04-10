@@ -2026,7 +2026,7 @@ def test_tensorflow_softmax(
 
 
 # xlogy
-@handle_frontend_test(
+@handle_frontend_test( 
     fn_tree="tensorflow.math.xlogy",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float_and_complex"),
