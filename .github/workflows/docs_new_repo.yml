@@ -32,6 +32,9 @@ jobs:
       - name: Get Version
         run: |
           echo "version_folder=${{ github.ref_name }}/models" >> $GITHUB_ENV
+      
+      - name: Test echo env
+        run: |
           echo "${{ env.version_folder }}"
       
       - name: Deploy for Multi-Version
