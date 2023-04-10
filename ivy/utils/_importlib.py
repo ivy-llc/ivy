@@ -31,7 +31,7 @@ def _get_modules(absolute_name: str) -> Set[str]:
         A set of modules and sub-packages found
     """
     if not absolute_name.startswith("ivy."):
-        raise RuntimeError("Module name must be specified using full namespace.")
+        raise ValueError("Module name must be specified using full namespace.")
 
     name_to_path = absolute_name.replace(".", os.path.sep)
     module_path = os.path.join(ivy_path_abs, name_to_path)
