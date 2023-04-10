@@ -33,10 +33,6 @@ jobs:
         run: |
           echo "version_folder=${{ github.ref_name }}/models" >> $GITHUB_ENV
       
-      - name: Test echo env
-        run: |
-          echo "${{ env.version_folder }}"
-      
       - name: Deploy for Multi-Version
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
         uses: JamesIves/github-pages-deploy-action@v4.4.1
