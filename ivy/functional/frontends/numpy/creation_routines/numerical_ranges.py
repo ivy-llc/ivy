@@ -1,5 +1,4 @@
 # global
-
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import (
     outputs_to_numpy_arrays,
@@ -51,7 +50,7 @@ def geomspace(start, stop, num=50, endpoint=True, dtype=None, axis=0):
     x = ivy.linspace(0, cr * (num - 1 if endpoint else num), num, endpoint=endpoint, axis=axis)
     x = ivy.exp(x)
     x = start * x
-    x[0] = (start*cr)/cr
+    x[0] = start*cr
     if endpoint:
         x[-1] = stop
     return x.asarray(dtype=dtype)
