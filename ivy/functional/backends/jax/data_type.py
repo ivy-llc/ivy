@@ -200,7 +200,7 @@ def as_ivy_dtype(
 
 
 def as_native_dtype(
-    dtype_in: Union[jnp.dtype, str, bool, int, float, np.dtype], /
+    dtype_in: Union[jnp.dtype, str, bool, int, float, np.dtype],
 ) -> jnp.dtype:
     if dtype_in is int:
         return ivy.default_int_dtype(as_native=True)

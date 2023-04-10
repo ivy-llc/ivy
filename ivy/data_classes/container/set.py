@@ -338,7 +338,8 @@ class _ContainerWithSet(ContainerBase):
         TypeError
             If the input container is not an instance of ivy.Container.
         ValueError
-            If the key_chains parameter is not None, and it is not a list or a dictionary.
+            If the key_chains parameter is not None, and it is not a
+            list or a dictionary.
 
         Example
         -------

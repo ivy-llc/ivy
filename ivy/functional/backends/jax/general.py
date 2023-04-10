@@ -21,8 +21,10 @@ from haiku._src.data_structures import FlatMapping
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax.device import _to_device, _to_array
 from ivy.functional.backends.jax import JaxArray, NativeArray
+from . import backend_version
 
 
 def container_types():
@@ -425,3 +427,15 @@ def vmap(
     return ivy.inputs_to_native_arrays(
         jax.vmap(func, in_axes=in_axes, out_axes=out_axes)
     )
+
+
+@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
+def isin(
+    elements: JaxArray,
+    test_elements: JaxArray,
+    /,
+    *,
+    assume_unique: bool = False,
+    invert: bool = False,
+) -> JaxArray:
+    return jnp.isin(elements, test_elements, assume_unique=assume_unique, invert=invert)

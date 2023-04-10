@@ -847,3 +847,31 @@ def test_jax_numpy_corrcoef(
         y=x[1],
         rowvar=rowvar,
     )
+
+
+# ptp
+@handle_frontend_test(
+    fn_tree="jax.numpy.ptp",
+    dtype_and_x_axis_dtype=_get_castable_dtypes_values(allow_nan=False),
+    keep_dims=st.booleans(),
+)
+def test_jax_numpy_ptp(
+    dtype_and_x_axis_dtype,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    keep_dims,
+):
+    input_dtypes, x, axis, dtype = dtype_and_x_axis_dtype
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        axis=axis,
+        out=None,
+        keepdims=keep_dims,
+    )
