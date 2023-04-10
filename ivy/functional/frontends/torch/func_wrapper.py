@@ -40,8 +40,8 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
         updated arguments.
         """
         # Remove out argument if present in kwargs
-        if "out" in kwargs and not isinstance(
-            kwargs["out"], (torch_frontend.Tensor, type(None))
+        if "out" in kwargs and not ivy.nested_any(
+            kwargs["out"], lambda x: isinstance(x, (torch_frontend.Tensor, type(None)))
         ):
             raise ivy.utils.exceptions.IvyException(
                 "Out argument must be an ivy.frontends.torch.Tensor object"
