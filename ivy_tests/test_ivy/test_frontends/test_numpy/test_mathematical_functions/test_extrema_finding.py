@@ -349,7 +349,7 @@ def test_numpy_fmax(
 # fmin
 @handle_frontend_test(
     fn_tree="numpy.fmin",
-   dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[
             lambda: helpers.dtype_and_values(
                 available_dtypes=helpers.get_dtypes("numeric"),
