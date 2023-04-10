@@ -1750,3 +1750,42 @@ def test_tensorflow_reverse(
         tensor=x[0],
         axis=axis[0],
     )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.norm",
+    aliases=["tensorflow.norm"],
+    dtype_values_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=3,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=4,
+        min_axis=-3,
+        max_axis=2,
+    ),
+    ord=st.sampled_from([1, 2, np.inf]),
+    keepdims=st.booleans(),
+)
+def test_tensorflow_norm(
+    *,
+    dtype_values_axis,
+    ord,
+    keepdims,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, axis = dtype_values_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensor=x[0],
+        ord=ord,
+        axis=axis,
+        keepdims=keepdims,
+    )

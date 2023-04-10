@@ -7,7 +7,6 @@ import math
 # local
 import ivy
 from . import backend_version
-from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
 
 
@@ -122,7 +121,12 @@ def equal(
 ) -> paddle.Tensor:
     with ivy.ArrayMode(False):
         diff = ivy.subtract(x1, x2)
-        return ivy.logical_and(ivy.less_equal(diff, 0), ivy.greater_equal(diff, 0))
+        ret = ivy.logical_and(ivy.less_equal(diff, 0), ivy.greater_equal(diff, 0))
+
+    # ret result is sufficient for all cases except where the value is +/-INF of NaN
+    return ivy.to_native(
+        ivy.where(ivy.isnan(diff), ~ivy.logical_or(ivy.isnan(x1), ivy.isnan(x2)), ret)
+    )
 
 
 @with_unsupported_device_and_dtypes(
@@ -195,7 +199,7 @@ def floor(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
         paddle.bool,
     ]:
         if paddle.is_complex(x):
-            return paddle.floor(x.real()) + paddle.ceil(x.imag()) * 1j
+            return paddle.floor(x.real()) + paddle.floor(x.imag()) * 1j
         return paddle.floor(x.cast("float32")).cast(x.dtype)
     return paddle.floor(x)
 
@@ -345,7 +349,22 @@ def log1p(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
     return paddle.log1p(x)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def isnan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.complex64,
+        paddle.complex128,
+        paddle.bool,
+    ]:
+        if paddle.is_complex(x):
+            with ivy.ArrayMode(False):
+                return ivy.logical_or(paddle.isnan(x.real()), paddle.isnan(x.imag()))
+        return paddle.isnan(x.cast("float32"))
     return paddle.isnan(x)
 
 
@@ -408,9 +427,18 @@ def cos(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
     return paddle.cos(x)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def logical_not(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
+    if x.dtype in [paddle.uint8, paddle.float16, paddle.complex64, paddle.complex128]:
+        if paddle.is_complex(x):
+            return paddle.logical_and(
+                paddle.logical_not(x.real()), paddle.logical_not(x.imag())
+            )
+        return paddle.logical_not(x.cast("float32"))
     return paddle.logical_not(x)
 
 
@@ -498,24 +526,54 @@ def acos(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     return paddle.acos(x)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def logical_xor(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    if ret_dtype in [paddle.uint8, paddle.float16, paddle.complex64, paddle.complex128]:
+        if paddle.is_complex(x1):
+            return paddle.logical_xor(
+                paddle.logical_xor(x1.real(), x2.real()),
+                paddle.logical_xor(x1.imag(), x2.imag()),
+            )
+        return paddle.logical_xor(x1.cast("float32"), x2.cast("float32"))
     return paddle.logical_xor(x1, x2)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def logical_and(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    if ret_dtype in [paddle.uint8, paddle.float16, paddle.complex64, paddle.complex128]:
+        if paddle.is_complex(x1):
+            return paddle.logical_and(
+                paddle.logical_and(x1.real(), x2.real()),
+                paddle.logical_and(x1.imag(), x2.imag()),
+            )
+        return paddle.logical_and(x1.cast("float32"), x2.cast("float32"))
     return paddle.logical_and(x1, x2)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def logical_or(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
-    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    if ret_dtype in [paddle.uint8, paddle.float16, paddle.complex64, paddle.complex128]:
+        if paddle.is_complex(x1):
+            return paddle.logical_or(
+                paddle.logical_or(x1.real(), x2.real()),
+                paddle.logical_or(x1.imag(), x2.imag()),
+            )
+        return paddle.logical_or(x1.cast("float32"), x2.cast("float32"))
     return paddle.logical_or(x1, x2)
 
 
@@ -611,11 +669,7 @@ def tanh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
 
 
 @with_unsupported_device_and_dtypes(
-    {
-        "2.4.2 and below": {
-            "cpu": ("uint16", "bfloat16", "float16", "complex64", "complex128")
-        }
-    },
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}},
     backend_version,
 )
 def floor_divide(
@@ -626,7 +680,8 @@ def floor_divide(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
-    return paddle.floor(ivy.to_native(divide(x1, x2))).cast(ret_dtype)
+    with ivy.ArrayMode(False):
+        return floor(divide(x1, x2)).cast(ret_dtype)
 
 
 def bitwise_or(
@@ -906,10 +961,11 @@ def remainder(
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     if not modulus:
-        res = divide(x1, x2)
-        res_floored = ivy.where(res >= 0, floor(res), ceil(res))
-        diff = subtract(res, res_floored).astype(res.dtype)
-        return round(multiply(diff, x2)).cast(x1.dtype)
+        with ivy.ArrayMode(False):
+            res = divide(x1, x2)
+            res_floored = ivy.where(greater_equal(res, 0), floor(res), ceil(res))
+            diff = subtract(res, res_floored).astype(res.dtype)
+            return round(multiply(diff, x2)).cast(x1.dtype)
 
     if x1.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
         x1, x2 = x1.cast("float32"), x2.cast("float32")
@@ -1104,4 +1160,8 @@ def fmod(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    with ivy.ArrayMode(False):
+        res = ivy.floor_divide(ivy.abs(x1), ivy.abs(x2))
+        res = ivy.multiply(res, ivy.abs(x2))
+        return ivy.multiply(ivy.abs(ivy.subtract(ivy.abs(x1), res)), ivy.sign(x1))
