@@ -61,9 +61,14 @@ class DeviceArray:
             keepdims=keepdims,
         )
 
-    def max(self, *, axis=None, out=None, keepdims=False, where=None):
+    def max(self, *, axis=None, out=None, keepdims=False, initial=None, where=None):
         return jax_frontend.numpy.max(
-            self._ivy_array, axis=axis, out=out, keepdims=keepdims, where=where
+            self._ivy_array,
+            axis=axis,
+            out=out,
+            keepdims=keepdims,
+            initial=initial,
+            where=where,
         )
 
     def __add__(self, other):
