@@ -1,0 +1,22 @@
+Metadata-Version: 2.1
+Name: nvidia-ml-py
+Version: 11.495.46
+Summary: Python Bindings for the NVIDIA Management Library
+Home-page: http://www.nvidia.com/
+Author: NVIDIA Corporation
+Author-email: nvml-bindings@nvidia.com
+License: BSD
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: System Administrators
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: System :: Hardware
+Classifier: Topic :: System :: Systems Administration
+
+UNKNOWN
+

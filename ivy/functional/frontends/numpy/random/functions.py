@@ -95,3 +95,20 @@ def standard_normal(size=None):
 @from_zero_dim_arrays_to_scalar
 def standard_gamma(alpha):
     return ivy.gamma(alpha, beta=1.0, dtype="float64")
+
+#binomial
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def binomial(n,p,size):
+    assert not ivy.exists(size) or (len(size) > 0 and len(size) < 3)
+    batch_size = 1
+    if ivy.exists(size):
+        if len(size) == 2:
+            batch_size = size[0]
+            num_samples = size[1]
+        else:
+            num_samples = size[0]
+    else:
+        num_samples = len(p)
+    return ivy.binomial(n, num_samples, batch_size=batch_size, probs=p)

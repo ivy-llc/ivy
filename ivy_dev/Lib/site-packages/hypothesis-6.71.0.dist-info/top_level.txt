@@ -1,0 +1,3 @@
+_hypothesis_ftz_detector
+_hypothesis_pytestplugin
+hypothesis
