@@ -557,6 +557,10 @@ def polyadd(a1, a2):
     return a1 + a2
 
 
+@with_unsupported_dtypes(
+    {"0.3.14 and below": ("float16",)},
+    "jax",
+)
 @to_ivy_arrays_and_back
 def polyder(p, m=1):
     p = ivy.atleast_1d(p)
