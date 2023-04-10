@@ -589,27 +589,50 @@ def test_cond(
     )
 
 
+@st.composite
+def _generate_solve_triangular_dtype_and_arrays(draw):
+    input_dtype = [draw(st.sampled_from(draw(helpers.get_dtypes("numeric"))))]
+    matrices_dims = draw(
+        st.lists(st.integers(min_value=2, max_value=10), min_size=2, max_size=2)
+    )
+    shape_1 = (matrices_dims[0], matrices_dims[0])
+    shape_2 = (matrices_dims[0], matrices_dims[1])
+
+    matrix_1 = draw(
+        helpers.dtype_and_values(
+            shape=shape_1,
+            dtype=input_dtype,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+    matrix_2 = draw(
+        helpers.dtype_and_values(
+            shape=shape_2,
+            dtype=input_dtype,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+
+    lower = draw(st.booleans())
+    transpose = draw(st.booleans())
+    unit_diagonal = draw(st.booleans())
+
+    return input_dtype, [matrix_1[1][0], matrix_2[1][0], lower, transpose, unit_diagonal]
+
 @handle_test(
     fn_tree="functional.ivy.experimental.solve_triangular",
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=2,
-        max_num_dims=2,
-        min_dim_size=2,
-        max_dim_size=10,
-        num_arrays=2,
-        allow_nan=False,
-        shared_dtype=True,
-    ),
+    dtype_x=_generate_solve_triangular_dtype_and_arrays(),
+    test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
 def test_solve_triangular(
-    *,
     dtype_x,
     test_flags,
     backend_fw,
-    fn_name,
     on_device,
+    fn_name,
     ground_truth_backend,
 ):
     dtype, x = dtype_x
@@ -617,9 +640,13 @@ def test_solve_triangular(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        on_device=on_device,
         fw=backend_fw,
+        on_device=on_device,
         fn_name=fn_name,
-        a=x[0],
+        x=x[0],
         b=x[1],
+        lower=x[2],
+        transpose=x[3],
+        unit_diagonal=x[4],
     )
+    
