@@ -8,6 +8,58 @@ from ivy.utils.backend import ast_helpers
 import_cache = {}
 path_hooks = []
 
+ivy_path_abs = Path(sys.modules["ivy"].__file__).parents[1]
+MODULES_TO_SKIP = ["ivy.data_classes", "ivy.compiler"]
+MODULES_TO_EXCLUDE = []
+
+
+def _get_modules(absolute_name):
+    if not absolute_name.startswith("ivy."):
+        raise RuntimeError("Module name must be specified using full namespace.")
+
+    name_to_path = absolute_name.replace(".", os.path.sep)
+    module_path = os.path.join(ivy_path_abs, name_to_path)
+
+    modules = set()
+    modules.add(absolute_name)
+
+    for root, dirs, files in os.walk(module_path):
+        if root.endswith("__"):
+            continue
+        common = os.path.commonpath([root, module_path])
+        full_name = absolute_name + root[len(common) :].replace(os.path.sep, ".")
+        for mod_name in files:
+            if mod_name.startswith("__") or not mod_name.endswith(".py"):
+                continue
+            modules.add(f"{full_name}.{mod_name[:-3]}")
+        for dir_name in dirs:
+            if dir_name.startswith("__"):
+                continue
+            modules.add(f"{full_name}.{dir_name}")
+
+    return modules
+
+
+def _get_all_modules_to_skip(modules):
+    all_modules = set()
+    for module in modules:
+        all_modules.update(_get_modules(module))
+
+    for module_to_exclude in MODULES_TO_EXCLUDE:
+        nested_modules_to_exclude = _get_modules(module_to_exclude)
+        try:
+            for mod_to_skip in nested_modules_to_exclude:
+                all_modules.remove(mod_to_skip)
+        except KeyError as e:
+            raise KeyError(
+                f"Module {module_to_exclude} is not in the list of modules to skip."
+            ) from e
+
+    return all_modules
+
+
+_all_modules_to_skip = _get_all_modules_to_skip(MODULES_TO_SKIP)
+
 
 class LocalIvyImporter:
     def __init__(self):
@@ -78,54 +130,6 @@ def _absolute_import(name: str, asname=None, mod_globals=None):
     mod_globals[true_name] = module
 
 
-def _get_all_modules(absolute_name: str):
-    ivy_path = sys.modules["ivy"].__file__
-    name_to_path = os.path.join(ivy_path, absolute_name.replace(".", os.path.sep))
-    for root, dirs, files in os.walk(module_path):
-        if root.endswith("__"):
-            continue
-        common = os.path.commonpath([root, module_path])
-        package_full = root[len(common) :].replace(os.path.sep, ".")
-        print(absolute_name + package_full)
-        for name in files:
-            if name.startswith("__") or not name.endswith(".py"):
-                continue
-            print(f"{absolute_name+package_full}.{name[:-3]}")
-        for name in dirs:
-            if name.startswith("__"):
-                continue
-            # print(name)
-
-
-modules_to_skip = ["ivy.data_classes", "ivy.compiler"]
-
-modules_to_exclude = ["ivy.data_classes.array.conversion"]
-
-_full_modules_to_skip = _get_modules(modules_to_skip[0])
-ivy_path_abs = Path(sys.modules["ivy"].__file__).parents[1]
-_modules_to_skip = []
-
-
-def _get_modules(absolute_name):
-    name_to_path = absolute_name.replace(".", os.path.sep)
-    module_path = os.path.join(ivy_path_abs, name_to_path)
-    print(module_path)
-    for root, dirs, files in os.walk(module_path):
-        if root.endswith("__"):
-            continue
-        common = os.path.commonpath([root, module_path])
-        package_full = root[len(common) :].replace(os.path.sep, ".")
-        print(absolute_name + package_full)
-        for name in files:
-            if name.startswith("__") or not name.endswith(".py"):
-                continue
-            print(f"{absolute_name+package_full}.{name[:-3]}")
-        for name in dirs:
-            if name.startswith("__"):
-                continue
-            # print(name)
-
-
 def _import_module(name, package=None):
     global import_cache
     absolute_name = resolve_name(name, package)
@@ -139,8 +143,8 @@ def _import_module(name, package=None):
         parent_name, _, child_name = absolute_name.rpartition(".")
         parent_module = _import_module(parent_name)
         path = parent_module.__spec__.submodule_search_locations
-    for _module in modules_to_skip:
-        if absolute_name.startswith(_module):
+    for module_to_skip in MODULES_TO_SKIP:
+        if absolute_name.startswith(module_to_skip):
             print("Skipping", absolute_name)
             if path is not None:
                 # Set reference to self in parent, if exist
