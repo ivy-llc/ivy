@@ -528,6 +528,12 @@ def floormod(x, y, name=None):
 
 
 @to_ivy_arrays_and_back
+def less_equal(x, y, name="LessEqual"):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.less_equal(x, y)
+
+
+@to_ivy_arrays_and_back
 def greater(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return ivy.greater(x, y)
