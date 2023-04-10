@@ -440,6 +440,74 @@ def avg_pool3d(
     )
 
 
+
+@integer_arrays_to_float
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def inverse_mdct(
+    x: Union[ivy.Array, ivy.NativeArray],
+    n_fft: int,
+    hop_length: int,
+    /,
+    *,
+    window_fn: Optional[str] = 'hann',
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    The inverse modified discrete cosine transform (MDCT) is applied to the input data.
+
+
+    Parameters
+    ----------
+    x : array-like
+        Input data to apply inverse MDCT. The last dimension must be (n_fft // 2) + 1.
+    n_fft : int
+        FFT window size. A forward MDCT of size n_fft created the input data.
+    hop_length : int
+        The number of audio samples between adjacent STFT columns.
+    window_fn: str, optional
+        Type of window function to apply for the MDCT. It can be one of: 'hann', 'hamming', 'blackman', 'bartlett'.
+        Defaults to 'hann'.
+    out: array-like, optional
+        Optional output array for storing the result. It must have the same shape as `x`.
+
+
+    Returns
+    -------
+    array-like
+        The input data after applying the inverse MDCT.
+
+
+    Notes
+    -----
+    The input data is expected to be `(batch_size, n_frames, n_fft // 2 + 1)`.
+    If a `window_fn` is specified, it must have length `n_fft.`
+
+
+    Examples
+    --------
+    >>> import ivy
+    >>> x = ivy.array([[[-0.01763909, -0.03360755, -0.03512189,  0.00266203,  0.02107489],
+    ...                 [-0.01438263, -0.02477338, -0.03216124, -0.01837318,  0.00584044]],
+    ...                [[-0.02367807, -0.03809618, -0.02188151,  0.03212372,  0.03221738],
+    ...                 [-0.03420116, -0.02953087,  0.00154766,  0.02240921,  0.01594363]]])
+    >>> y = inverse_mdct(x, n_fft=10, hop_length=5)
+    >>> ivy.to_numpy(y)
+    array([[[ 0.005,  0.02 ,  0.03 ,  0.02 , -0.005],
+            [ 0.02 ,  0.03 ,  0.025,  0.   , -0.02 ]],
+           [[-0.01 , -0.005,  0.02 ,  0.03 ,  0.02 ],
+            [-0.005,  0.02 ,  0.03 ,  0.025,  0.   ]]])
+    """
+    backend = ivy.current_backend(x)
+    if window_fn is not None:
+        window = backend.get_window(n_fft, window_fn)
+        x *= window
+    x = backend.inverse_stft(x, n_fft, hop_length, out=out)
+    return x
+
+
 @integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
