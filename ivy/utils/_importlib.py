@@ -10,11 +10,15 @@ import_cache = {}
 path_hooks = []
 
 ivy_path_abs = Path(sys.modules["ivy"].__file__).parents[1]
-MODULES_TO_SKIP = ["ivy.data_classes", "ivy.compiler"]
+
+# Note that any modules listed as 'to skip' should not depend on the Ivy backend state.
+# If they do, the behavior of ivy.with_backend is undefined and may not function as
+# Expected.
+MODULES_TO_SKIP = ["ivy.compiler"]
 MODULES_TO_EXCLUDE = []
 
 
-def _get_modules(absolute_name: str) -> Set(str):
+def _get_modules(absolute_name: str) -> Set[str]:
     """Get all Ivy modules and sub-packages in a module
 
     Parameters
@@ -52,7 +56,7 @@ def _get_modules(absolute_name: str) -> Set(str):
     return modules
 
 
-def _get_all_modules_to_skip(modules: List[str], exclude: List[str]) -> Set(str):
+def _get_all_modules_to_skip(modules: List[str], exclude: List[str]) -> Set[str]:
     """Get all modules to skip during the compilation process for ivy.with_backend.
     The excluded modules, will not be skipped.
 
@@ -84,7 +88,7 @@ def _get_all_modules_to_skip(modules: List[str], exclude: List[str]) -> Set(str)
     return all_modules
 
 
-_all_modules_to_skip = _get_all_modules_to_skip(MODULES_TO_SKIP)
+_all_modules_to_skip = _get_all_modules_to_skip(MODULES_TO_SKIP, MODULES_TO_EXCLUDE)
 
 
 class LocalIvyImporter:
@@ -169,13 +173,15 @@ def _import_module(name, package=None):
         parent_name, _, child_name = absolute_name.rpartition(".")
         parent_module = _import_module(parent_name)
         path = parent_module.__spec__.submodule_search_locations
-    for module_to_skip in MODULES_TO_SKIP:
-        if absolute_name.startswith(module_to_skip):
-            print("Skipping", absolute_name)
+
+    # Return the one from global Ivy if the module is marked to skip
+    for module_to_skip in _all_modules_to_skip:
+        if absolute_name == module_to_skip:
             if path is not None:
                 # Set reference to self in parent, if exist
                 setattr(parent_module, child_name, sys.modules[absolute_name])
             return sys.modules[absolute_name]
+
     for finder in path_hooks:
         spec = finder.find_spec(absolute_name, path)
         if spec is not None:
