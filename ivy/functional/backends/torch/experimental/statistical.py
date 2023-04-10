@@ -23,19 +23,19 @@ from . import backend_version
     backend_version,
 )
 def histogram(
-    a: torch.tensor,
+    a: torch.Tensor,
     /,
     *,
-    bins: Optional[Union[int, torch.tensor, str]] = None,
+    bins: Optional[Union[int, torch.Tensor, str]] = None,
     axis: Optional[torch.Tensor] = None,
     extend_lower_interval: Optional[bool] = False,
     extend_upper_interval: Optional[bool] = False,
     dtype: Optional[torch.dtype] = None,
     range: Optional[Tuple[float]] = None,
-    weights: Optional[torch.tensor] = None,
+    weights: Optional[torch.Tensor] = None,
     density: Optional[bool] = False,
-    out: Optional[torch.tensor] = None,
-) -> Tuple[torch.tensor]:
+    out: Optional[torch.Tensor] = None,
+) -> Tuple[torch.Tensor]:
     min_a = torch.min(a)
     max_a = torch.max(a)
     if isinstance(bins, torch.Tensor) and range:
