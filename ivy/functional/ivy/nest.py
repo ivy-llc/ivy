@@ -1154,9 +1154,9 @@ def nested_map(
             for k, v in x.items()
         }
         if shallow:
-            x.update(**ret)
+            x.update(ret)
             return x
-        return class_instance(**ret)
+        return class_instance(ret)
     return fn(x)
 
 

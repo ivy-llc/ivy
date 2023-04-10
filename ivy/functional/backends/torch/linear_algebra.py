@@ -174,9 +174,9 @@ def matmul(
     if out in (x1, x2):
         out = None
     if transpose_a:
-        x1 = torch.t(x1)
+        x1 = torch.swapaxes(x1, -1, -2)
     if transpose_b:
-        x2 = torch.t(x2)
+        x2 = torch.swapaxes(x2, -1, -2)
     if adjoint_a:
         x1 = torch.adjoint(x1)
     if adjoint_b:
