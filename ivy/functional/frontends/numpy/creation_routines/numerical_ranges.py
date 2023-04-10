@@ -50,7 +50,7 @@ def geomspace(start, stop, num=50, endpoint=True, dtype=None, axis=0):
     x = ivy.linspace(0, cr * (num - 1 if endpoint else num), num, endpoint=endpoint, axis=axis)
     x = ivy.exp(x)
     x = start * x
-    x[0] = start*cr
+    x[0] = start
     if endpoint:
         x[-1] = stop
     return x.asarray(dtype=dtype)
