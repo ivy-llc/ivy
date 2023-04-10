@@ -1,5 +1,6 @@
 import os
 import sys
+from typing import List, Set
 from pathlib import Path
 from importlib.util import resolve_name, module_from_spec
 from ivy.utils.backend import ast_helpers
@@ -13,7 +14,18 @@ MODULES_TO_SKIP = ["ivy.data_classes", "ivy.compiler"]
 MODULES_TO_EXCLUDE = []
 
 
-def _get_modules(absolute_name):
+def _get_modules(absolute_name: str) -> Set(str):
+    """Get all Ivy modules and sub-packages in a module
+
+    Parameters
+    ----------
+    absolute_name
+        Full absolute name of the module
+
+    Returns
+    -------
+        A set of modules and sub-packages found
+    """
     if not absolute_name.startswith("ivy."):
         raise RuntimeError("Module name must be specified using full namespace.")
 
@@ -40,12 +52,26 @@ def _get_modules(absolute_name):
     return modules
 
 
-def _get_all_modules_to_skip(modules):
+def _get_all_modules_to_skip(modules: List[str], exclude: List[str]) -> Set(str):
+    """Get all modules to skip during the compilation process for ivy.with_backend.
+    The excluded modules, will not be skipped.
+
+    Parameters
+    ----------
+    modules
+        List of modules to skip
+    exclude
+        List of modules to exclude
+
+    Returns
+    -------
+        Set of modules to skip
+    """
     all_modules = set()
     for module in modules:
         all_modules.update(_get_modules(module))
 
-    for module_to_exclude in MODULES_TO_EXCLUDE:
+    for module_to_exclude in exclude:
         nested_modules_to_exclude = _get_modules(module_to_exclude)
         try:
             for mod_to_skip in nested_modules_to_exclude:
