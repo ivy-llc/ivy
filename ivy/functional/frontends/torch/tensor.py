@@ -80,6 +80,10 @@ class Tensor:
     def add(self, other, *, alpha=1):
         return torch_frontend.add(self._ivy_array, other, alpha=alpha)
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
+    def sub(self, other, *, alpha=1):
+        return torch_frontend.sub(self._ivy_array, other, alpha=alpha)
+
     def chunk(self, chunks, dim=0):
         return torch_frontend.chunk(self._ivy_array, chunks, dim=dim)
 
@@ -287,6 +291,9 @@ class Tensor:
     def logical_and(self, other):
         return torch_frontend.logical_and(self._ivy_array, other)
 
+    def logical_or(self, other):
+        return torch_frontend.logical_or(self._ivy_array, other)
+
     def bitwise_not(self, *, out=None):
         return torch_frontend.bitwise_not(self._ivy_array)
 
@@ -311,6 +318,9 @@ class Tensor:
         return torch_frontend.ones(
             size, dtype=dtype, device=device, requires_grad=requires_grad
         )
+
+    def floor(self, *, out=None):
+        return torch_frontend.floor(self._ivy_array)
 
     def new_zeros(self, size, *, dtype=None, device=None, requires_grad=False):
         return torch_frontend.zeros(
@@ -603,6 +613,10 @@ class Tensor:
 
     def mean(self, dim=None, keepdim=False):
         return torch_frontend.mean(self._ivy_array, dim=dim, keepdim=keepdim)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def median(self, dim=None, keepdim=False):
+        return torch_frontend.median(self._ivy_array, dim=dim, keepdim=keepdim)
 
     def transpose(self, dim0, dim1):
         return torch_frontend.transpose(self._ivy_array, dim0=dim0, dim1=dim1)

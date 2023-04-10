@@ -239,6 +239,7 @@ def avg_pool1d(
     /,
     *,
     data_format: str = "NWC",
+    count_include_pad: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 1-D avg pool given 3-D input x.
@@ -257,6 +258,8 @@ def avg_pool1d(
         indicating the per-dimension paddings.
     data_format
         NWC" or "NCW". Defaults to "NWC".
+    count_include_pad
+        Whether to include padding in the averaging calculation.
     out
         optional output array, for writing the result to.
 
@@ -286,7 +289,13 @@ def avg_pool1d(
            [[14., 15., 16., 17.]]])
     """
     return ivy.current_backend(x).avg_pool1d(
-        x, kernel, strides, padding, data_format=data_format, out=out
+        x,
+        kernel,
+        strides,
+        padding,
+        data_format=data_format,
+        count_include_pad=count_include_pad,
+        out=out,
     )
 
 
