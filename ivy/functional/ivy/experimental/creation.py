@@ -210,7 +210,7 @@ def kaiser_window(
     periodic: bool = True,
     beta: float = 12.0,
     *,
-    dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes the Kaiser window with window length window_length and shape beta
