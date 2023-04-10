@@ -326,7 +326,7 @@ def hamming_window(
     periodic: bool = True,
     alpha: float = 0.54,
     beta: float = 0.46,
-    dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes the Hamming window with window length window_length
@@ -585,7 +585,7 @@ def eye_like(
 @handle_nestable
 def frombuffer(
     buffer: bytes,
-    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = float,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     count: Optional[int] = -1,
     offset: Optional[int] = 0,
 ) -> ivy.Array:
