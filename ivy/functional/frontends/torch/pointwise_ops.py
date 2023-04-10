@@ -492,3 +492,12 @@ def fmod(x1, x2, out=None):
 @to_ivy_arrays_and_back
 def imag(input):
     return ivy.imag(input)
+
+
+@to_ivy_arrays_and_back
+def sgn(input, *, out=None):
+    if ivy.is_complex_dtype(input.dtype):
+        input_abs = ivy.abs(input, out=out)
+        return ivy.where(input_abs == 0, 0, ivy.divide(input, input_abs, out=out), out=out)
+    else:
+        return ivy.sign(input, out=out)
