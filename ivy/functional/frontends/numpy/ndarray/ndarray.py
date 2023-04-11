@@ -292,7 +292,14 @@ class ndarray:
         return np_frontend.tobytes(self.data, order=order)
 
     def tolist(
-            self, *, axis=None, dtype=None, out=None, keepdims=False, initial=None, where=True
+            self,
+            *,
+            axis=None,
+            dtype=None,
+            out=None,
+            keepdims=False,
+            initial=None,
+            where=True,
     ) -> list:
         return np_frontend.tolist(
             self._ivy_array,
