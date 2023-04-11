@@ -69,7 +69,6 @@ def avg_pool2d(
     /,
     *,
     data_format: str = "NHWC",
-    count_include_pad: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()

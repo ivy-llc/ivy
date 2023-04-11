@@ -10,7 +10,6 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     handle_array_function,
-    inputs_to_ivy_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -23,7 +22,7 @@ def _check_valid_dimension_size(std):
 
 
 @handle_array_function
-@inputs_to_ivy_arrays
+@to_native_arrays_and_back
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
@@ -137,6 +136,15 @@ def eigh_tridiagonal(
         b: ivy.array([-0.82842, 2., 4.82842])
     }
     """
+    if ivy.current_backend(alpha).backend == "tensorflow":
+        return ivy.current_backend(alpha).eigh_tridiagonal(
+            alpha,
+            beta,
+            eigvals_only=eigvals_only,
+            select=select,
+            select_range=select_range,
+            tol=tol,
+        )
     x = ivy.diag(alpha)
     y = ivy.diag(beta, k=1)
     z = ivy.diag(beta, k=-1)

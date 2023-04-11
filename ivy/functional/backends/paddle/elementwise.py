@@ -772,9 +772,7 @@ def pow(
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
-def round(
-    x: paddle.Tensor, /, *, decimals: int = 0, out: Optional[paddle.Tensor] = None
-) -> paddle.Tensor:
+def round(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     def _np_round(x):
         # this is a logic to mimic np.round behaviour
         # which rounds odd numbers up and even numbers down at limits like 0.5
@@ -786,12 +784,7 @@ def round(
             x,
             x - eps,
         )
-        ret_dtype = x.dtype
-        factor = paddle.pow(paddle.to_tensor(10), paddle.to_tensor(decimals)).astype(
-            ret_dtype
-        )
-        factor_denom = ivy.where(ivy.isinf(x), 1.0, factor)
-        return paddle.round(x * factor) / ivy.to_native(factor_denom)
+        return paddle.round(ivy.to_native(x))
 
     x, _ = ivy.promote_types_of_inputs(x, x)
     if x.dtype not in [paddle.float32, paddle.float64]:

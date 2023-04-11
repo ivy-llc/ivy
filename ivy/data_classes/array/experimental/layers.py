@@ -282,7 +282,6 @@ class _ArrayWithLayersExperimental(abc.ABC):
         /,
         *,
         data_format: str = "NHWC",
-        count_include_pad: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -303,8 +302,6 @@ class _ArrayWithLayersExperimental(abc.ABC):
             the per-dimension paddings.
         data_format
             "NHWC" or "NCHW". Defaults to "NHWC".
-        count_include_pad
-            Whether to include padding in the averaging calculation.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -338,7 +335,6 @@ class _ArrayWithLayersExperimental(abc.ABC):
             strides,
             padding,
             data_format=data_format,
-            count_include_pad=count_include_pad,
             out=out,
         )
 

@@ -20,13 +20,12 @@ from . import backend_version
 _round = round
 
 
-def _parse_index(indices, shape):
+def _parse_index(indices, ndims):
     ind = list()
     for so in indices:
         pre = list()
         for s in so:
             if s == -1:
-                pre.append(shape[len(pre) :][0] - 1)
                 break
             pre.append(s.numpy())
         post = list()
@@ -37,10 +36,7 @@ def _parse_index(indices, shape):
         ind.append(
             tuple(
                 pre
-                + [
-                    slice(None, None, None)
-                    for _ in range(len(shape) - len(pre) - len(post))
-                ]
+                + [slice(None, None, None) for _ in range(ndims - len(pre) - len(post))]
                 + list(reversed(post))
             )
         )
@@ -457,7 +453,7 @@ def scatter_nd(
             indices = tf.expand_dims(indices, 0)
         if tf.reduce_any(indices < 0):
             shape = list(shape) if ivy.exists(shape) else list(out.shape)
-            indices = _parse_index(indices, shape)
+            indices = _parse_index(indices, len(shape))
             indices = [
                 tf.stack(
                     [
@@ -694,7 +690,3 @@ def isin(
         tf.equal(tf.expand_dims(elements, -1), test_elements), axis=-1
     )
     return tf.reshape(output, input_shape) ^ invert
-
-
-def itemsize(x: Union[tf.Tensor, tf.Variable]) -> int:
-    return x.dtype.as_numpy_dtype().itemsize

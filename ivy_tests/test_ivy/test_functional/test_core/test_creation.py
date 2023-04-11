@@ -253,7 +253,6 @@ def test_asarray(
 # TODO: Fix container and instance methods
 @handle_test(
     fn_tree="functional.ivy.empty",
-    size=helpers.ints(min_value=1, max_value=3),
     shape=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,
@@ -268,7 +267,6 @@ def test_asarray(
 )
 def test_empty(
     *,
-    size,
     shape,
     dtype,
     test_flags,
@@ -277,20 +275,12 @@ def test_empty(
     on_device,
     ground_truth_backend,
 ):
-    dims = {}
-    size = (size,)
-    if shape is None:
-        i = 0
-        for x_ in size:
-            dims[f"x{i}"] = x_
-            i += 1
     ret = helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
-        **dims,
         shape=shape,
         dtype=dtype[0],
         device=on_device,
@@ -580,21 +570,19 @@ def test_meshgrid(
 @handle_test(
     fn_tree="functional.ivy.ones",
     shape=helpers.get_shape(
-        allow_none=True,
+        allow_none=False,
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=5,
     ),
     dtype=helpers.get_dtypes("numeric", full=False),
-    size=helpers.ints(min_value=1, max_value=3),
     container_flags=st.just([False]),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
 def test_ones(
     *,
-    size,
     shape,
     dtype,
     test_flags,
@@ -603,21 +591,12 @@ def test_ones(
     on_device,
     ground_truth_backend,
 ):
-    dims = {}
-    size = (size,)
-    if shape is None:
-        i = 0
-        for x_ in size:
-            dims[f"x{i}"] = x_
-            i += 1
-    test_flags.num_positional_args = len(size)
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
-        **dims,
         shape=shape,
         dtype=dtype[0],
         device=on_device,
@@ -750,14 +729,12 @@ def test_triu(
         max_dim_size=5,
     ),
     dtype=helpers.get_dtypes("numeric", full=False),
-    size=helpers.ints(min_value=1, max_value=3),
     container_flags=st.just([False]),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
 def test_zeros(
     *,
-    size,
     shape,
     dtype,
     test_flags,
@@ -766,20 +743,12 @@ def test_zeros(
     on_device,
     ground_truth_backend,
 ):
-    dims = {}
-    size = (size,)
-    if shape is None:
-        i = 0
-        for x_ in size:
-            dims[f"x{i}"] = x_
-            i += 1
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
-        **dims,
         shape=shape,
         dtype=dtype[0],
         device=on_device,

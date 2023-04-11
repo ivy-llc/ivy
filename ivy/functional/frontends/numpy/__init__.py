@@ -558,7 +558,6 @@ from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functio
     _rad2deg,
     _sin,
     _tan,
-    _degrees,
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.handling_complex_numbers import (
@@ -623,7 +622,6 @@ from ivy.functional.frontends.numpy.mathematical_functions.extrema_finding impor
     _maximum,
     _minimum,
     _fmax,
-    _fmin,
 )
 
 _frontend_array = array
@@ -660,7 +658,6 @@ deg2rad = ufunc("_deg2rad")
 rad2deg = ufunc("_rad2deg")
 sin = ufunc("_sin")
 tan = ufunc("_tan")
-degrees = ufunc("_degrees")
 arccosh = ufunc("_arccosh")
 arcsinh = ufunc("_arcsinh")
 arctanh = ufunc("_arctanh")
@@ -698,7 +695,6 @@ minimum = ufunc("_minimum")
 real = ufunc("_real")
 divmod = ufunc("_divmod")
 fmax = ufunc("_fmax")
-fmin = ufunc("_fmin")
 ldexp = ufunc("_ldexp")
 floor = ufunc("_floor")
 frexp = ufunc("_frexp")

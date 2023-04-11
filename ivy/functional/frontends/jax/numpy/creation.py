@@ -182,17 +182,3 @@ def linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis
 @to_ivy_arrays_and_back
 def single(x):
     return ivy.astype(x, ivy.float32)
-
-
-@to_ivy_arrays_and_back
-def geomspace(start, stop, num=50, endpoint=True, dtype=None, axis=0):
-    cr = ivy.log(stop / start) / (num - 1 if endpoint else num)
-    x = ivy.linspace(
-        0, cr * (num - 1 if endpoint else num), num, endpoint=endpoint, axis=axis
-    )
-    x = ivy.exp(x)
-    x = start * x
-    x[0] = (start * cr) / cr
-    if endpoint:
-        x[-1] = stop
-    return x.asarray(dtype=dtype)

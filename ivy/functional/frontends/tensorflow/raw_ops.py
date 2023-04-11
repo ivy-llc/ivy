@@ -133,9 +133,6 @@ def Concat(*, concat_dim, values, name="Concat"):
 Cos = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.cos))
 
 
-Cosh = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.cosh))
-
-
 @to_ivy_arrays_and_back
 def Cross(*, a, b, name="Cross"):
     a, b = check_tensorflow_casting(a, b)
@@ -575,7 +572,12 @@ def Xlog1py(*, x, y, name="Xlog1py"):
     return ivy.multiply(x, ivy.log1p(y))
 
 
-Xlogy = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.xlogy))
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.10.0 and below": ("bfloat16")}, "tensorflow")
+def Xlogy(*, x, y, name="Xlogy"):
+    if (x == 0).all():
+        return 0.0
+    return ivy.multiply(x, ivy.log(y))
 
 
 @to_ivy_arrays_and_back

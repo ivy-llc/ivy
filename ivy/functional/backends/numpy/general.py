@@ -465,7 +465,3 @@ def isin(
 
 
 isin.support_native_out = True
-
-
-def itemsize(x: np.ndarray) -> int:
-    return x.itemsize

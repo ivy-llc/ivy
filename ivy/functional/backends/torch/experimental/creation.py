@@ -135,10 +135,10 @@ def tril_indices(
 
 
 def frombuffer(
-    buffer: bytes,
-    dtype: Optional[torch.dtype] = float,
-    count: Optional[int] = -1,
-    offset: Optional[int] = 0,
+        buffer: bytes,
+        dtype: Optional[torch.dtype] = float,
+        count: Optional[int] = -1,
+        offset: Optional[int] = 0,
 ) -> torch.Tensor:
     buffer_copy = copy.deepcopy(buffer)
     dtype = ivy.as_native_dtype(dtype)

@@ -2337,5 +2337,5 @@ def test_torch_logit(
         on_device=on_device,
         input=input[0],
         eps=eps,
-        out=None,
+        out=None
     )
