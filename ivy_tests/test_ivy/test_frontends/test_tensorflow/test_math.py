@@ -2101,7 +2101,3 @@ def test_tensorflow_cosh(
     on_device=on_device,
     x=x[0],
  )
-
->>>>>>> 086eae0da6 (added xlogy to tensorflow frontend(#13842))
-=======
->>>>>>> 8099818067 (made xlogy tests comprehensive (#13934))
