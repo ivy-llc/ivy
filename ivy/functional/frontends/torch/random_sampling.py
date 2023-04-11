@@ -57,6 +57,28 @@ def poisson(input, generator=None):
 
 
 @to_ivy_arrays_and_back
+def randint(
+    low,
+    high,
+    size,
+    *,
+    generator=None,
+    out=None,
+    dtype=None,
+    layout=None,
+    device=None,
+    requires_grad=False
+):
+    return ivy.randint(
+        low=low,
+        high=high,
+        shape=size,
+        device=device,
+        dtype=dtype,
+    )
+
+
+@to_ivy_arrays_and_back
 def rand(
     size,
     *,
