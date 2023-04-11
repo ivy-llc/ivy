@@ -18,15 +18,17 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     handle_view,
+    inputs_to_ivy_arrays,
 )
 from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
 
 
+@inputs_to_ivy_arrays
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
 def flatten(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -163,11 +165,11 @@ def flatten(
 flatten.mixed_function = True
 
 
-@handle_view
 @to_native_arrays_and_back
 @handle_out_argument
-@handle_nestable
+@handle_view
 @handle_array_like_without_promotion
+@handle_nestable
 def moveaxis(
     a: Union[ivy.Array, ivy.NativeArray],
     source: Union[int, Sequence[int]],
@@ -207,6 +209,7 @@ def moveaxis(
     return ivy.current_backend().moveaxis(a, source, destination, out=out)
 
 
+@inputs_to_ivy_arrays
 @handle_exceptions
 def ndenumerate(
     input: Iterable,
@@ -291,8 +294,8 @@ def ndindex(
 
 @to_native_arrays_and_back
 @handle_out_argument
-@handle_nestable
 @handle_array_like_without_promotion
+@handle_nestable
 def heaviside(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -334,11 +337,11 @@ def heaviside(
     return ivy.current_backend().heaviside(x1, x2, out=out)
 
 
-@handle_view
 @to_native_arrays_and_back
 @handle_out_argument
-@handle_nestable
+@handle_view
 @handle_array_like_without_promotion
+@handle_nestable
 def flipud(
     m: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -455,12 +458,12 @@ def hstack(
     return ivy.current_backend().hstack(arrays, out=out)
 
 
-@handle_view
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_view
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
 def rot90(
     m: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -537,9 +540,9 @@ def rot90(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
 def top_k(
     x: Union[ivy.Array, ivy.NativeArray],
     k: int,
@@ -611,11 +614,11 @@ def top_k(
     return current_backend(x).top_k(x, k, axis=axis, largest=largest, out=out)
 
 
-@handle_view
 @to_native_arrays_and_back
 @handle_out_argument
-@handle_nestable
+@handle_view
 @handle_array_like_without_promotion
+@handle_nestable
 def fliplr(
     m: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -652,8 +655,8 @@ def fliplr(
 
 @to_native_arrays_and_back
 @handle_out_argument
-@handle_nestable
 @handle_array_like_without_promotion
+@handle_nestable
 def i0(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -752,13 +755,13 @@ def _get_stats(padded, axis, width_pair, length_pair, stat_func):
     left_slice = _slice_at_axis(slice(left_index, left_index + left_length), axis)
     left_chunk = ivy.array(padded[left_slice])
     left_stat = stat_func(left_chunk, axis=axis, keepdims=True)
-    left_stat = ivy.round(left_stat) if 'int' in left_chunk.dtype else left_stat
+    left_stat = ivy.round(left_stat) if "int" in left_chunk.dtype else left_stat
     if left_length == right_length == max_length:
         return left_stat, left_stat
     right_slice = _slice_at_axis(slice(right_index - right_length, right_index), axis)
     right_chunk = ivy.array(padded[right_slice])
     right_stat = stat_func(right_chunk, axis=axis, keepdims=True)
-    right_stat = ivy.round(right_stat) if 'int' in right_chunk.dtype else right_stat
+    right_stat = ivy.round(right_stat) if "int" in right_chunk.dtype else right_stat
     return left_stat, right_stat
 
 
@@ -942,11 +945,11 @@ def _check_arguments(
     )
 
 
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
 def pad(
     input: Union[ivy.Array, ivy.NativeArray],
     pad_width: Union[Iterable[Tuple[int]], int],
@@ -1190,11 +1193,11 @@ def pad(
     return padded
 
 
-@handle_view
 @to_native_arrays_and_back
 @handle_out_argument
-@handle_nestable
+@handle_view
 @handle_array_like_without_promotion
+@handle_nestable
 def vsplit(
     ary: Union[ivy.Array, ivy.NativeArray],
     indices_or_sections: Union[int, Tuple[int, ...]],
@@ -1231,10 +1234,10 @@ def vsplit(
     return ivy.current_backend(ary).vsplit(ary, indices_or_sections)
 
 
-@handle_view
 @to_native_arrays_and_back
-@handle_nestable
+@handle_view
 @handle_array_like_without_promotion
+@handle_nestable
 def dsplit(
     ary: Union[ivy.Array, ivy.NativeArray],
     indices_or_sections: Union[int, Tuple[int, ...]],
@@ -1275,11 +1278,11 @@ def dsplit(
     return ivy.current_backend(ary).dsplit(ary, indices_or_sections)
 
 
-@handle_view
 @to_native_arrays_and_back
 @handle_out_argument
-@handle_nestable
+@handle_view
 @handle_array_like_without_promotion
+@handle_nestable
 def atleast_1d(
     *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
 ) -> List[ivy.Array]:
@@ -1351,11 +1354,11 @@ def dstack(
     return ivy.current_backend().dstack(arrays)
 
 
-@handle_view
 @to_native_arrays_and_back
 @handle_out_argument
-@handle_nestable
+@handle_view
 @handle_array_like_without_promotion
+@handle_nestable
 def atleast_2d(
     *arys: Union[ivy.Array, ivy.NativeArray],
 ) -> List[ivy.Array]:
@@ -1390,9 +1393,9 @@ def atleast_2d(
     return ivy.current_backend().atleast_2d(*arys)
 
 
-@handle_view
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_view
 @handle_nestable
 def atleast_3d(
     *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
@@ -1439,9 +1442,9 @@ def atleast_3d(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
 def take_along_axis(
     arr: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -1486,10 +1489,10 @@ def take_along_axis(
     )
 
 
-@handle_view
 @to_native_arrays_and_back
-@handle_nestable
+@handle_view
 @handle_array_like_without_promotion
+@handle_nestable
 def hsplit(
     ary: Union[ivy.Array, ivy.NativeArray],
     indices_or_sections: Union[int, Tuple[int, ...]],
@@ -1559,13 +1562,12 @@ def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     return ivy.current_backend().broadcast_shapes(*shapes)
 
 
-@handle_view
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_view
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_out_argument
-@handle_array_like_without_promotion
 def expand(
     x: Union[ivy.Array, ivy.NativeArray],
     shape: Union[ivy.Shape, ivy.NativeShape],

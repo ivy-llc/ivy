@@ -34,6 +34,7 @@ def test_constant(
     ground_truth_backend,
     init_flags,
     method_flags,
+    on_device,
 ):
     ret_ivy, ret_gt = helpers.test_method(
         ground_truth_backend=ground_truth_backend,
@@ -51,6 +52,7 @@ def test_constant(
         init_with_v=init_with_v,
         method_with_v=method_with_v,
         test_values=False,
+        on_device=on_device,
     )
 
     assert ret_ivy.shape == ret_gt.shape
@@ -81,6 +83,7 @@ def test_zeros(
     ground_truth_backend,
     init_flags,
     method_flags,
+    on_device,
 ):
     ret_ivy, ret_gt = helpers.test_method(
         ground_truth_backend=ground_truth_backend,
@@ -98,6 +101,7 @@ def test_zeros(
         init_with_v=init_with_v,
         method_with_v=method_with_v,
         test_values=False,
+        on_device=on_device,
     )
 
     assert ret_ivy.shape == ret_gt.shape
@@ -128,6 +132,7 @@ def test_ones(
     ground_truth_backend,
     init_flags,
     method_flags,
+    on_device,
 ):
     ret_ivy, ret_gt = helpers.test_method(
         ground_truth_backend=ground_truth_backend,
@@ -145,6 +150,7 @@ def test_ones(
         init_with_v=init_with_v,
         method_with_v=method_with_v,
         test_values=False,
+        on_device=on_device,
     )
 
     assert ret_ivy.shape == ret_gt.shape
@@ -187,6 +193,7 @@ def test_uniform(
     ground_truth_backend,
     init_flags,
     method_flags,
+    on_device,
 ):
     ret_ivy, ret_gt = helpers.test_method(
         ground_truth_backend=ground_truth_backend,
@@ -211,6 +218,7 @@ def test_uniform(
         init_with_v=init_with_v,
         method_with_v=method_with_v,
         test_values=False,
+        on_device=on_device,
     )
     if fan_mode == "fan_in":
         fan = fan_in
@@ -254,6 +262,7 @@ def test_glorot_uniform(
     ground_truth_backend,
     init_flags,
     method_flags,
+    on_device,
 ):
     ret_ivy, ret_gt = helpers.test_method(
         ground_truth_backend=ground_truth_backend,
@@ -273,6 +282,7 @@ def test_glorot_uniform(
         init_with_v=init_with_v,
         method_with_v=method_with_v,
         test_values=False,
+        on_device=on_device,
     )
 
     bound = (6 / (fan_in + fan_out)) ** 0.5
@@ -310,6 +320,7 @@ def test_first_layer_siren(
     ground_truth_backend,
     init_flags,
     method_flags,
+    on_device,
 ):
     ret_ivy, ret_gt = helpers.test_method(
         ground_truth_backend=ground_truth_backend,
@@ -328,6 +339,7 @@ def test_first_layer_siren(
         init_with_v=init_with_v,
         method_with_v=method_with_v,
         test_values=False,
+        on_device=on_device,
     )
 
     bound = fan_in
@@ -363,6 +375,7 @@ def test_siren(
     ground_truth_backend,
     init_flags,
     method_flags,
+    on_device,
 ):
     ret_ivy, ret_gt = helpers.test_method(
         ground_truth_backend=ground_truth_backend,
@@ -381,6 +394,7 @@ def test_siren(
         init_with_v=init_with_v,
         method_with_v=method_with_v,
         test_values=False,
+        on_device=on_device,
     )
 
     bound = ((6 / fan_in) ** 0.5) / w0
@@ -433,6 +447,7 @@ def test_kaiming_normal(
     ground_truth_backend,
     init_flags,
     method_flags,
+    on_device,
 ):
     ret_ivy, ret_gt = helpers.test_method(
         ground_truth_backend=ground_truth_backend,
@@ -457,6 +472,7 @@ def test_kaiming_normal(
         init_with_v=init_with_v,
         method_with_v=method_with_v,
         test_values=False,
+        on_device=on_device,
     )
     assert ret_ivy.shape == ret_gt.shape
     assert ret_ivy.dtype == ret_gt.dtype

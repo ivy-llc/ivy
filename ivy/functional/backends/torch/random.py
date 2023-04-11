@@ -34,7 +34,9 @@ def random_uniform(
         torch.manual_seed(seed)
     if torch.is_tensor(shape):
         shape = shape.tolist()
-    return torch.rand(shape, device=device, dtype=dtype) * rand_range + low
+    return (
+        torch.rand(shape, device=device, dtype=torch.float) * rand_range + low
+    ).type(dtype)
 
 
 def random_normal(
@@ -126,6 +128,8 @@ def shuffle(
     seed: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if len(x.shape) == 0:
+        return x
     batch_size = x.shape[0]
     if seed:
         torch.manual_seed(seed)

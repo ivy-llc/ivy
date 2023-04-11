@@ -8,6 +8,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     integer_arrays_to_float,
     handle_array_like_without_promotion,
+    inputs_to_ivy_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -15,9 +16,9 @@ from ivy.utils.exceptions import handle_exceptions
 @integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
 def sinc(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -130,47 +131,6 @@ def lcm(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def fmod(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
-    """Computes the element-wise remainder of divisions of two arrays.
-
-    Parameters
-    ----------
-    x1
-        First input array.
-    x2
-        Second input array
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        Array with element-wise remainder of divisions.
-
-    Examples
-    --------
-    >>> x1 = ivy.array([2, 3, 4])
-    >>> x2 = ivy.array([1, 5, 2])
-    >>> ivy.fmod(x1, x2)
-    ivy.array([ 0,  3,  0])
-
-    >>> x1 = ivy.array([ivy.nan, 0, ivy.nan])
-    >>> x2 = ivy.array([0, ivy.nan, ivy.nan])
-    >>> ivy.fmod(x1, x2)
-    ivy.array([ nan,  nan,  nan])
-    """
-    return ivy.current_backend().fmod(x1, x2, out=out)
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 def fmax(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -256,8 +216,8 @@ def fmin(
 
 @to_native_arrays_and_back
 @handle_out_argument
-@handle_nestable
 @handle_array_like_without_promotion
+@handle_nestable
 def trapz(
     y: ivy.Array,
     /,
@@ -357,8 +317,8 @@ def float_power(
 
 @to_native_arrays_and_back
 @handle_out_argument
-@handle_nestable
 @handle_array_like_without_promotion
+@handle_nestable
 def exp2(
     x: Union[ivy.Array, float, list, tuple],
     /,
@@ -436,9 +396,9 @@ def copysign(
 
 
 @to_native_arrays_and_back
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
 def count_nonzero(
     a: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -492,9 +452,9 @@ def count_nonzero(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
 def nansum(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -587,9 +547,9 @@ def gcd(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
 def isclose(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
@@ -651,8 +611,8 @@ def isclose(
 
 @to_native_arrays_and_back
 @handle_out_argument
-@handle_nestable
 @handle_array_like_without_promotion
+@handle_nestable
 def angle(
     z: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -696,8 +656,8 @@ def angle(
 
 @to_native_arrays_and_back
 @handle_out_argument
-@handle_nestable
 @handle_array_like_without_promotion
+@handle_nestable
 def imag(
     val: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -732,8 +692,8 @@ def imag(
 
 @to_native_arrays_and_back
 @handle_out_argument
-@handle_nestable
 @handle_array_like_without_promotion
+@handle_nestable
 def nan_to_num(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -827,8 +787,8 @@ def logaddexp2(
 
 @to_native_arrays_and_back
 @handle_out_argument
-@handle_nestable
 @handle_array_like_without_promotion
+@handle_nestable
 def signbit(
     x: Union[ivy.Array, ivy.NativeArray, float, int, list, tuple],
     /,
@@ -896,8 +856,8 @@ def hypot(
 
 @to_native_arrays_and_back
 @handle_out_argument
-@handle_nestable
 @handle_array_like_without_promotion
+@handle_nestable
 def diff(
     x: Union[ivy.Array, ivy.NativeArray, list, tuple],
     /,
@@ -947,10 +907,10 @@ def diff(
     )
 
 
-@handle_nestable
 @to_native_arrays_and_back
-@handle_exceptions
 @handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
 def allclose(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
@@ -1022,8 +982,8 @@ def allclose(
 
 @to_native_arrays_and_back
 @handle_out_argument
-@handle_nestable
 @handle_array_like_without_promotion
+@handle_nestable
 def fix(
     x: Union[ivy.Array, ivy.NativeArray, float, int, list, tuple],
     /,
@@ -1057,9 +1017,9 @@ def fix(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
 def nextafter(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1097,9 +1057,9 @@ def nextafter(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
 def zeta(
     x: Union[ivy.Array, ivy.NativeArray],
     q: Union[ivy.Array, ivy.NativeArray],
@@ -1138,9 +1098,9 @@ def zeta(
 
 
 @to_native_arrays_and_back
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
 def gradient(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1261,9 +1221,9 @@ def xlogy(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
 def real(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1324,11 +1284,11 @@ def real(
     return ivy.current_backend(x).real(x, out=out)
 
 
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
 def binarizer(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1358,15 +1318,19 @@ def binarizer(
         Binarized output data
     """
     xc = ivy.copy_array(x, out=out)
-    bin = ivy.where(xc > threshold, 1, 0)
-    return bin
+    if ivy.is_bool_dtype(xc) and ivy.current_backend_str() == "torch":
+        xc = ivy.astype(xc, ivy.default_float_dtype())
+    if ivy.is_complex_dtype(xc):
+        xc = ivy.abs(xc)
+    ret = ivy.where(xc > threshold, 1, 0)
+    return ret
 
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
 def conj(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1420,9 +1384,9 @@ def conj(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
 def ldexp(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1460,9 +1424,121 @@ def ldexp(
 
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+def lerp(
+    input: Union[ivy.Array, ivy.NativeArray],
+    end: Union[ivy.Array, ivy.NativeArray],
+    weight: Union[ivy.Array, ivy.NativeArray, float],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Returns a linear interpolation of two arrays start (given by input) and end
+    based on a scalar or array weight.
+        input + weight * (end - input),  element-wise.
+
+    Parameters
+    ----------
+    input
+        array of starting points
+    end
+        array of ending points
+    weight
+        the weight for the interpolation formula. Scalar or Array.
+    out
+        optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
+    Returns
+    -------
+    ret
+        The result of  input + ((end - input) * weight)
+    Examples
+    --------
+    With :class:`ivy.Array` inputs:
+    >>> input = ivy.array([1, 2, 3])
+    >>> end = ivy.array([10, 10, 10])
+    >>> weight = 0.5
+    >>> ivy.lerp(input, end, weight)
+    ivy.array([5.5, 6. , 6.5])
+    >>> input = ivy.array([1.1, 1.2, 1.3])
+    >>> end = ivy.array([20])
+    >>> weight = ivy.array([0.4, 0.5, 0.6])
+    >>> y = ivy.zeros(3)
+    >>> ivy.lerp(input, end, weight, out=y)
+    ivy.array([ 8.65999985, 10.59999943, 12.52000141])
+    >>> input = ivy.array([[4, 5, 6],[4.1, 4.2, 4.3]])
+    >>> end = ivy.array([10])
+    >>> weight = ivy.array([0.5])
+    >>> ivy.lerp(input, end, weight, out=input)
+    ivy.array([[7.        , 7.5       , 8.        ],
+    ...       [7.05000019, 7.0999999 , 7.1500001 ]])
+    With :class:`ivy.Container` input:
+    >>> input = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> end = ivy.array([10.])
+    >>> weight = 1.1
+    >>> y = input.lerp(end, weight)
+    >>> print(y)
+    {
+        a: ivy.array([11., 10.90000057, 10.80000019]),
+        b: ivy.array([10.70000076, 10.60000038, 10.5])
+    }
+    >>> input = ivy.Container(a=ivy.array([10.1, 11.1]), b=ivy.array([10, 11]))
+    >>> end = ivy.Container(a=ivy.array([5]), b=ivy.array([0]))
+    >>> weight = ivy.Container(a=0.5)
+    >>> y = input.lerp(end, weight)
+    >>> print(y)
+    {
+        a: ivy.array([7.55000019, 8.05000019]),
+        b: {
+            a: ivy.array([5., 5.5])
+        }
+    }
+    """
+    input_end_allowed_types = [
+        "int8",
+        "int16",
+        "int32",
+        "int64",
+        "float16",
+        "bfloat16",
+        "float32",
+        "float64",
+        "complex",
+    ]
+    weight_allowed_types = ["float16", "bfloat16", "float32", "float64"]
+
+    if not ivy.is_array(input):
+        input = ivy.array([input])
+    if not ivy.is_array(end):
+        end = ivy.array([end])
+    if (
+        ivy.dtype(input) not in input_end_allowed_types
+        or ivy.dtype(end) not in input_end_allowed_types
+    ):
+        input = ivy.astype(input, "float64")
+        end = ivy.astype(end, "float64")
+
+    if ivy.is_array(weight):
+        if ivy.dtype(weight) not in weight_allowed_types:
+            weight = ivy.astype(weight, "float64")
+    else:
+        if not isinstance(weight, float):
+            weight = ivy.astype(ivy.array([weight]), "float64")
+
+    return ivy.add(input, ivy.multiply(weight, ivy.subtract(end, input)), out=out)
+
+
+lerp.mixed_function = True
+
+
+@to_native_arrays_and_back
+@handle_out_argument
 @handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
 def frexp(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

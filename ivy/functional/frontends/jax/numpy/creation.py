@@ -135,7 +135,15 @@ def full(shape, fill_value, dtype=None):
 
 @handle_jax_dtype
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16", )}, 'jax')
+@with_unsupported_dtypes(
+    {
+        "0.3.14 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "jax",
+)
 def logspace(start, stop, num=50, endpoint=True, base=10.0, dtype=None, axis=0):
     if not endpoint:
         interval = (stop - start) / num
@@ -143,9 +151,24 @@ def logspace(start, stop, num=50, endpoint=True, base=10.0, dtype=None, axis=0):
     return ivy.logspace(start, stop, num, base=base, axis=axis, dtype=dtype)
 
 
+@to_ivy_arrays_and_back
+def meshgrid(*x, copy=True, sparse=False, indexing="xy"):
+    # TODO: handle 'copy' argument when ivy.meshgrid supports it
+    ivy_meshgrid = ivy.meshgrid(*x, sparse=sparse, indexing=indexing)
+    return ivy_meshgrid
+
+
 @handle_jax_dtype
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16", )}, 'jax')
+@with_unsupported_dtypes(
+    {
+        "0.3.14 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "jax",
+)
 def linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis=0):
     ret = ivy.linspace(start, stop, num, axis=axis, endpoint=endpoint, dtype=dtype)
     if retstep:
@@ -164,3 +187,16 @@ def single(x):
 @to_ivy_arrays_and_back
 def from_dlpack(x):
     return ivy.from_dlpack(x)
+  
+  
+def geomspace(start, stop, num=50, endpoint=True, dtype=None, axis=0):
+    cr = ivy.log(stop / start) / (num - 1 if endpoint else num)
+    x = ivy.linspace(
+        0, cr * (num - 1 if endpoint else num), num, endpoint=endpoint, axis=axis
+    )
+    x = ivy.exp(x)
+    x = start * x
+    x[0] = (start * cr) / cr
+    if endpoint:
+        x[-1] = stop
+    return x.asarray(dtype=dtype)
