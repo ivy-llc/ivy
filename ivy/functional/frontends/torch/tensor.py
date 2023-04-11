@@ -736,6 +736,13 @@ class Tensor:
         self._ivy_array = self.masked_fill(mask, value).ivy_array
         return self
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+    def index_add_(self, dim, index, source, *, alpha=1):
+        self._ivy_array = torch_frontend.index_add(
+            self._ivy_array, dim, index, source, alpha=alpha
+        ).ivy_array
+        return self
+
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def acosh_(self):
         self._ivy_array = self.acosh().ivy_array

@@ -12,7 +12,7 @@ class LayerNorm(Module):
         normalized_shape,
         /,
         *,
-        epsilon: float = ivy._MIN_BASE,
+        eps: float = 1e-05,
         elementwise_affine: bool = True,
         new_std: float = 1.0,
         device=None,
@@ -41,7 +41,7 @@ class LayerNorm(Module):
             constructed internally by default.
         """
         self._normalized_idxs = [-(i + 1) for i in range(len(normalized_shape))]
-        self._epsilon = epsilon
+        self._epsilon = eps
         self._elementwise_affine = elementwise_affine
         self._new_std = new_std
         self._weight_shape = normalized_shape
@@ -80,8 +80,8 @@ class LayerNorm(Module):
         return ivy.layer_norm(
             inputs,
             self._normalized_idxs,
-            epsilon=self._epsilon,
+            eps=self._epsilon,
             scale=self.v.weight if self._elementwise_affine else None,
-            b=self.v.bias if self._elementwise_affine else None,
+            offset=self.v.bias if self._elementwise_affine else None,
             new_std=self._new_std,
         )

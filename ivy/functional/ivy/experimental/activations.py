@@ -233,60 +233,6 @@ def relu6(
     return current_backend(x).relu6(x, out=out)
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
-@handle_exceptions
-def batch_norm(
-    x: Union[ivy.NativeArray, ivy.Array],
-    mean: Union[ivy.NativeArray, ivy.Array],
-    variance: Union[ivy.NativeArray, ivy.Array],
-    /,
-    *,
-    offset: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
-    scale: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
-    training: bool = False,
-    eps: float = 1e-5,
-) -> ivy.Array:
-    """
-    Applies batch normalization to the input array.
-
-    Parameters
-    ----------
-    x
-        Input array of shape (N,C,S), where N is the batch dimension, C is the feature
-        dimension and S corresponds to the following spatial dimensions.
-    mean
-        A mean array for the input's normalization.
-    variance
-        A variance array for the input's normalization.
-    offset
-        An offset array. If present, will be added to the normalized input.
-    scale
-        A scale array. If present, the scale is applied to the normalized input.
-    training
-        If true, calculate and use the mean and variance of `x`. Otherwise, use the
-        provided `mean` and `variance`.
-    eps
-        A small float number to avoid dividing by 0.
-
-    Returns
-    -------
-    ret
-         Array containing the normalized, scaled, offset values.
-    """
-    return current_backend(x).batch_norm(
-        x,
-        mean,
-        variance,
-        scale=scale,
-        offset=offset,
-        training=training,
-        eps=eps,
-    )
-
-
 @handle_out_argument
 @handle_nestable
 @to_native_arrays_and_back
