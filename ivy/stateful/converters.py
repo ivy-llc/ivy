@@ -173,7 +173,10 @@ class ModuleConverters:
                 self._hk_params = ivy.Container(params_dict, dynamic_backend=False)
                 param_iterator = self._hk_params.cont_to_iterator()
                 _, param0 = next(param_iterator)
-                self._dev = ivy.as_ivy_dev(param0.device())
+                if hasattr(param0, "device"):
+                    self._dev = ivy.as_ivy_dev(param0.device())
+                else:
+                    self._dev = ivy.as_ivy_dev("cpu")
 
             def _forward(self, *a, **kw):
                 a, kw = ivy.args_to_native(*a, **kw)
