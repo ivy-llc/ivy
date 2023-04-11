@@ -45,6 +45,7 @@ def triu_indices_from(arr, k=0):
     return ivy.triu_indices(arr.shape[-2], arr.shape[-1], k)
 
 
+@to_ivy_arrays_and_back
 def tril_indices_from(arr, k=0):
     return ivy.tril_indices(arr.shape[-2], arr.shape[-1], k)
 
