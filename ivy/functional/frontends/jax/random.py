@@ -45,3 +45,11 @@ def _get_seed(key):
 def beta(key, a, b, shape=None, dtype=None):
     seed = _get_seed(key)
     return ivy.beta(a, b, shape=shape, dtype=dtype, seed=seed)
+
+
+# Rademacher distribution, 1 or -1 with equal probability.
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+def rademacher(key, shape=(), dtype=None):
+    seed = _get_seed(key)
+    return ivy.astype(ivy.randint(0, 2, shape=shape, seed=seed) * 2 - 1, dtype)
