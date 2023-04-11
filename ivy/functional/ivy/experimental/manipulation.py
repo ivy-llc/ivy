@@ -1609,16 +1609,16 @@ def as_strided(
     /,
 ) -> ivy.Array:
     """
-    Create a copy of the input array with the desired strides inserted between elements.
+    Create a copy of the input array with the given shape and strides.
 
     Parameters
     ----------
     x
         Input Array.
     shape
-        The shape of the output array.
+        The shape of the new array.
     strides
-        The strides you want to insert.
+        The strides of the new array (specified in bytes).
 
     Returns
     -------
