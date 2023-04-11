@@ -141,10 +141,12 @@ def test_jax_devicearray_argmax(
         force_int_axis=True,
     ),
     keepdims=st.booleans(),
+    initial=st.booleans(),
 )
 def test_jax_devicearray_max(
     dtype_x_axis,
     keepdims,
+    initial,
     frontend_method_data,
     init_flags,
     method_flags,
@@ -161,6 +163,7 @@ def test_jax_devicearray_max(
         method_all_as_kwargs_np={
             "axis": axis,
             "keepdims": keepdims,
+            "initial": initial,
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
