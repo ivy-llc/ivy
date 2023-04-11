@@ -2198,6 +2198,7 @@ def test_isin(
         available_dtypes=helpers.get_dtypes("valid")
     ),
     ground_truth_backend="numpy",
+    test_instance_method=st.just(False),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
