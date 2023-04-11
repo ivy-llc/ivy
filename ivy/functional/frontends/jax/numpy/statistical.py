@@ -140,7 +140,16 @@ amin = min
 
 
 @to_ivy_arrays_and_back
-def max(a, axis=None, out=None, keepdims=False, where=None):
+def max(a, axis=None, out=None, keepdims=False, initial=None, where=None):
+    if initial:
+        if axis is None:
+            a = ivy.reshape(a, (1, -1))
+            axis = 0
+        s = list(ivy.shape(a))
+        s[axis] = 1
+        header = ivy.full(s, initial)
+        a = ivy.concat([a, header], axis=axis)
+
     ret = ivy.max(a, axis=axis, out=out, keepdims=keepdims)
     if ivy.is_array(where):
         where = ivy.array(where, dtype=ivy.bool)
