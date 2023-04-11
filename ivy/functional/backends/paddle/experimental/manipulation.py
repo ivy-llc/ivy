@@ -249,7 +249,7 @@ def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     def _broadcast_shape(s1, s2):
         len_1 = len(s1)
         len_2 = len(s2)
-        if len_1 == 0 and len_2 == 0:
+        if len_1 == 0:
             return () if len_2 == 0 else s2
         elif len_1 != 0 and len_2 == 0:
             return s1
@@ -258,11 +258,11 @@ def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
 
     if len(shapes) == 0:
         raise ValueError("shapes=[] must be non-empty")
-    elif len(shapes[0]) == 1:
+    elif len(shapes) == 1:
         return shapes[0]
     result = _broadcast_shape(shapes[0], shapes[1])
     for i in range(2, len(shapes)):
-        result = _broadcast_shape(result[0], shapes[i])
+        result = _broadcast_shape(result, shapes[i])
 
     return result
 
