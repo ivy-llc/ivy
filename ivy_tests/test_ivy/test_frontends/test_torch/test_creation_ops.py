@@ -99,6 +99,7 @@ def test_torch_ones_like(
 # ones
 @handle_frontend_test(
     fn_tree="torch.ones",
+    size=helpers.ints(min_value=1, max_value=3),
     shape=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,
@@ -111,18 +112,27 @@ def test_torch_ones_like(
 def test_torch_ones(
     *,
     shape,
+    size,
     dtype,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
+    dims = {}
+    size = (size,)
+    if shape is None:
+        i = 0
+        for x_ in size:
+            dims[f"x{i}"] = x_
+            i += 1
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        **dims,
         size=shape,
         dtype=dtype[0],
         device=on_device,
@@ -132,6 +142,7 @@ def test_torch_ones(
 # zeros
 @handle_frontend_test(
     fn_tree="torch.zeros",
+    size=helpers.ints(min_value=1, max_value=3),
     shape=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,
@@ -143,6 +154,7 @@ def test_torch_ones(
 )
 def test_torch_zeros(
     *,
+    size,
     shape,
     dtype,
     on_device,
@@ -150,11 +162,19 @@ def test_torch_zeros(
     frontend,
     test_flags,
 ):
+    dims = {}
+    size = (size,)
+    if shape is None:
+        i = 0
+        for x_ in size:
+            dims[f"x{i}"] = x_
+            i += 1
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
+        **dims,
         size=shape,
         dtype=dtype[0],
         device=on_device,
@@ -192,6 +212,7 @@ def test_torch_zeros_like(
 # empty
 @handle_frontend_test(
     fn_tree="torch.empty",
+    size=helpers.ints(min_value=1, max_value=3),
     shape=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,
@@ -203,6 +224,7 @@ def test_torch_zeros_like(
 )
 def test_torch_empty(
     *,
+    size,
     shape,
     dtype,
     on_device,
@@ -210,12 +232,20 @@ def test_torch_empty(
     frontend,
     test_flags,
 ):
+    dims = {}
+    size = (size,)
+    if shape is None:
+        i = 0
+        for x_ in size:
+            dims[f"x{i}"] = x_
+            i += 1
     helpers.test_frontend_function(
         input_dtypes=[],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        **dims,
         size=shape,
         dtype=dtype[0],
         test_values=False,
