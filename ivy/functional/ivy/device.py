@@ -35,6 +35,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
     handle_array_like_without_promotion,
+    inputs_to_ivy_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -684,6 +685,7 @@ def tpu_is_available() -> bool:
 # Default Device #
 
 # noinspection PyShadowingNames
+@inputs_to_ivy_arrays
 @handle_exceptions
 def default_device(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,

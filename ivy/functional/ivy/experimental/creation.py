@@ -15,6 +15,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     infer_dtype,
     handle_array_like_without_promotion,
+    inputs_to_ivy_arrays,
 )
 
 
@@ -210,7 +211,7 @@ def kaiser_window(
     periodic: bool = True,
     beta: float = 12.0,
     *,
-    dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes the Kaiser window with window length window_length and shape beta
@@ -249,7 +250,7 @@ def kaiser_window(
 
 
 @infer_dtype
-@outputs_to_ivy_arrays
+@inputs_to_ivy_arrays
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -315,7 +316,7 @@ def kaiser_bessel_derived_window(
 
 
 @infer_dtype
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -326,7 +327,7 @@ def hamming_window(
     periodic: bool = True,
     alpha: float = 0.54,
     beta: float = 0.46,
-    dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes the Hamming window with window length window_length
@@ -484,7 +485,7 @@ def tril_indices(
 
 @infer_device
 @infer_dtype
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
@@ -585,7 +586,7 @@ def eye_like(
 @handle_nestable
 def frombuffer(
     buffer: bytes,
-    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = float,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     count: Optional[int] = -1,
     offset: Optional[int] = 0,
 ) -> ivy.Array:
