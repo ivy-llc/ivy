@@ -3796,7 +3796,7 @@ def isin(
 def itemsize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-) -> ivy.Array:
+) -> int:
     """Returns the size of the input array's elements.
 
     Parameters
