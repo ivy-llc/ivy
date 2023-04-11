@@ -205,6 +205,10 @@ class Tensor:
         cast_tensor.ivy_array = ivy.astype(self._ivy_array, ivy.float32)
         return cast_tensor
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
+    def subtract(self, other, *, alpha=1):
+        return torch_frontend.subtract(self._ivy_array, other, alpha=alpha)
+
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def asinh(self):
         return torch_frontend.asinh(self._ivy_array)
