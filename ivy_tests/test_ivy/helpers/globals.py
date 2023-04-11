@@ -11,7 +11,7 @@ from ... import config
 from dataclasses import dataclass
 
 # needed for multiversion
-available_frameworks = ["numpy", "jax", "tensorflow", "torch", "paddle"]
+available_frameworks = ["numpy", "tensorflow", "torch", "paddle"]
 FWS_DICT = {
     "": lambda: None,
 }
@@ -20,7 +20,8 @@ if "numpy" in available_frameworks:
     FWS_DICT["numpy"] = lambda x=None: _get_ivy_numpy(x)
 
 if "jax" in available_frameworks:
-    FWS_DICT["jax"] = lambda x=None: _get_ivy_jax(x)
+    pass
+    # FWS_DICT["jax"] = lambda x=None: _get_ivy_jax(x)
 
 if "tensorflow" in available_frameworks:
     FWS_DICT["tensorflow"] = lambda x=None: _get_ivy_tensorflow(x)

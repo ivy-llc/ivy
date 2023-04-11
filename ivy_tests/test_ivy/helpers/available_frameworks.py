@@ -2,13 +2,13 @@
 
 
 def available_frameworks():
-    available_frameworks_lis = ["numpy", "jax", "tensorflow", "torch", "paddle"]
-    try:
-        import jax
-
-        assert jax, "jax is imported to see if the user has it installed"
-    except ImportError:
-        available_frameworks_lis.remove("jax")
+    available_frameworks_lis = ["numpy", "tensorflow", "torch", "paddle"]
+    # try:
+    #     import jax
+    #
+    #     assert jax, "jax is imported to see if the user has it installed"
+    # except ImportError:
+    #     available_frameworks_lis.remove("jax")
 
     try:
         import tensorflow as tf

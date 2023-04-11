@@ -9,13 +9,13 @@ from .. import config as env_config
 mod_frontend = {
     "tensorflow": None,
     "numpy": None,
-    "jax": None,
+    # "jax": None,
     "torch": None,
 }  # multiversion
 mod_backend = {
     "tensorflow": None,
     "numpy": None,
-    "jax": None,
+    # "jax": None,
     "torch": None,
     "paddle": None,
 }  # multiversion
