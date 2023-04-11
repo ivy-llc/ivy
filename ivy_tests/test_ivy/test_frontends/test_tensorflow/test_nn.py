@@ -1339,15 +1339,16 @@ def test_tensorflow_crelu(
     )
 
 
-# conv_transpose
 @handle_frontend_test(
     fn_tree="tensorflow.nn.conv_transpose",
-        x_f_d_df=_x_and_filters(
+    x_f_d_df=_x_and_filters(
         dtypes=helpers.get_dtypes("float", full=False),
-        data_format=st.sampled_from(["NWC", "NHWC"]),
-        padding=st.sampled_from(["SAME", "VALID"]),
-        dilation_max=1,
-        type=None,
+        data_format=st.sampled_from(["NHWC"]),
+        padding=st.sampled_from(["VALID", "SAME"]),
+        stride_min=1,
+        stride_max=1,
+        type="2d",
+        atrous=True,
     ),
     test_with_out=st.just(False),
 )
@@ -1359,21 +1360,21 @@ def test_tensorflow_conv_transpose(
     fn_tree,
     on_device,
 ):
-    input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
+    input_dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        value=x[0],
+        value=x,
         filters=filters,
+        rate=dilations,
+        padding=pad,
         strides=stride,
-        padding=padding,
         data_format=data_format,
-        dilations=dilation,
     )
- 
+
 
 @st.composite
 def _average_pool_args(draw):

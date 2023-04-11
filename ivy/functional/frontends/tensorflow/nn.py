@@ -506,9 +506,9 @@ def crelu(features, axis=-1, name=None):
 def conv_transpose(
     value,
     filters,
-    output_shape,
     strides,
     padding,
+    dims,
     data_format="NWC",
     name=None,
 ):
@@ -517,7 +517,8 @@ def conv_transpose(
         filters,
         strides,
         padding,
-        output_shape=output_shape,
+        output_shape=None,
+        dims=dims,
         data_format=data_format,
     )
 
