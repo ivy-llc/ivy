@@ -6,22 +6,25 @@ from numbers import Number
 from typing import Union, Tuple, Iterable
 from .dtypes import DType
 
+
+# Constructing dtypes are required as ivy.<dtype>
+# will change dynamically on the backend and may not be available
 tensorflow_enum_to_type = {
-    1: ivy.float32,
-    2: ivy.float64,
-    3: ivy.int32,
-    4: ivy.uint8,
-    5: ivy.int16,
-    6: ivy.int8,
-    8: ivy.complex64,
-    9: ivy.int64,
-    10: ivy.bool,
-    14: ivy.bfloat16,
-    17: ivy.uint16,
-    18: ivy.complex128,
-    19: ivy.float16,
-    22: ivy.uint32,
-    23: ivy.uint64,
+    1: ivy.FloatDtype("float32"),
+    2: ivy.FloatDtype("float64"),
+    3: ivy.IntDtype("int32"),
+    4: ivy.UintDtype("uint8"),
+    5: ivy.IntDtype("int16"),
+    6: ivy.IntDtype("int8"),
+    8: ivy.ComplexDtype("complex64"),
+    9: ivy.IntDtype("int64"),
+    10: ivy.Dtype("bool"),
+    14: ivy.FloatDtype("bfloat16"),
+    17: ivy.UintDtype("uint16"),
+    18: ivy.ComplexDtype("complex128"),
+    19: ivy.FloatDtype("float16"),
+    22: ivy.UintDtype("uint32"),
+    23: ivy.UintDtype("uint64"),
 }
 
 tensorflow_type_to_enum = {v: k for k, v in tensorflow_enum_to_type.items()}

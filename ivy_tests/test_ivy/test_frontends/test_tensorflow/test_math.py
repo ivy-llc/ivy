@@ -385,6 +385,36 @@ def test_tensorflow_logical_and(
     )
 
 
+# logical_or
+@handle_frontend_test(
+    fn_tree="tensorflow.math.logical_or",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("bool"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_logical_or(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
+
+
 # log_sigmoid
 @handle_frontend_test(
     fn_tree="tensorflow.math.log_sigmoid",
@@ -1967,17 +1997,85 @@ def test_tensorflow_sinh(
     )
 
 
+
 # greater_equal
 @handle_frontend_test(
     fn_tree="tensorflow.math.greater_equal",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
+
+# softmax
+@handle_frontend_test(
+    fn_tree="tensorflow.math.softmax",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_softmax(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        logits=x[0],
+    )
+
+
+# xlogy
+@handle_frontend_test(
+    fn_tree="tensorflow.math.xlogy",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+
         num_arrays=2,
         shared_dtype=True,
     ),
     test_with_out=st.just(False),
 )
+
 def test_tensorflow_greater_equal(
+
+def test_tensorflow_xlogy(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=xs[0],
+        y=xs[1],
+    )
+
+
+# cosh
+@handle_frontend_test(
+    fn_tree="tensorflow.math.cosh",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_cosh(
+
     *,
     dtype_and_x,
     frontend,
@@ -1993,5 +2091,8 @@ def test_tensorflow_greater_equal(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+
         y=x[1],
+
+
     )

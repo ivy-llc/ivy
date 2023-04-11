@@ -1539,10 +1539,12 @@ def test_remainder(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
+    decimals=st.integers(min_value=0, max_value=5),
 )
 def test_round(
     *,
     dtype_and_x,
+    decimals,
     test_flags,
     backend_fw,
     fn_name,
@@ -1558,6 +1560,7 @@ def test_round(
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
+        decimals=decimals,
     )
 
 

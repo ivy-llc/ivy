@@ -142,12 +142,16 @@ def asarray(
 
 
 def empty(
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    *,
+    *size: Union[int, Sequence[int]],
+    shape: Optional[ivy.NativeShape] = None,
     dtype: tf.DType,
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if size and shape:
+        raise TypeError("empty() got multiple values for argument 'shape'")
+    if shape is None:
+        shape = size[0] if isinstance(size[0], (tuple, list)) else size
     with tf.device(device):
         return tf.experimental.numpy.empty(shape, dtype)
 
@@ -222,6 +226,8 @@ def from_dlpack(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if isinstance(x, tf.Variable):
+        x = x.read_value()
     dlcapsule = tf.experimental.dlpack.to_dlpack(x)
     return tf.experimental.dlpack.from_dlpack(dlcapsule)
 
@@ -315,12 +321,16 @@ def meshgrid(
 
 
 def ones(
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    *,
+    *size: Union[int, Sequence[int]],
+    shape: Optional[ivy.NativeShape] = None,
     dtype: tf.DType,
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if size and shape:
+        raise TypeError("ones() got multiple values for argument 'shape'")
+    if shape is None:
+        shape = size[0] if isinstance(size[0], (tuple, list)) else size
     with tf.device(device):
         return tf.ones(shape, dtype)
 
@@ -359,12 +369,16 @@ def triu(
 
 
 def zeros(
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    *,
+    *size: Union[int, Sequence[int]],
+    shape: Optional[ivy.NativeShape] = None,
     dtype: tf.DType,
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if size and shape:
+        raise TypeError("zeros() got multiple values for argument 'shape'")
+    if shape is None:
+        shape = size[0] if isinstance(size[0], (tuple, list)) else size
     with tf.device(device):
         return tf.zeros(shape, dtype)
 
