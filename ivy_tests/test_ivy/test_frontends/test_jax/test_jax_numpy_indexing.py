@@ -371,3 +371,49 @@ def test_jax_numpy_mask_indices(
         mask_func=mask_func,
         k=k,
     )
+
+
+@st.composite
+def _get_dtype_square_x(draw):
+    # dtype = draw(helpers.get_dtypes("numeric", full=True)),
+    dtype = draw(helpers.get_dtypes("float", full=True))
+    dtype = [draw(st.sampled_from(tuple(set(dtype))))]
+    n = (draw(helpers.ints(min_value=2, max_value=3)),)
+    x = (helpers.array_values(dtype=dtype[0], shape=(n, n), min_value=0, max_value=10),)
+    return dtype, x
+
+
+@st.composite
+def _get_dtype_and_square_matrix(draw):
+    dim_size = draw(helpers.ints(min_value=2, max_value=5))
+    dtype = draw(helpers.get_dtypes("valid"))
+    dtype = [draw(st.sampled_from(tuple(set(dtype))))]
+    x = draw(
+        helpers.array_values(
+            dtype=dtype[0], shape=(dim_size, dim_size), min_value=0, max_value=10
+        )
+    )
+    return dtype, x
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.diag_indices_from",
+    dtype_x=_get_dtype_and_square_matrix(),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_diag_indices_from(
+    dtype_x,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        arr=x,
+    )

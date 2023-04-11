@@ -72,3 +72,14 @@ def mask_indices(*args, **kwargs):
         return indices[:, 0], indices[:, 1]
     except AttributeError as e:
         print(f"Attribute error: {e}")
+
+
+@to_ivy_arrays_and_back
+def diag_indices_from(arr):
+    print(arr)
+    n = arr.shape[0]
+    ndim = ivy.get_num_dims(arr)
+    if not all(arr.shape[i] == n for i in range(ndim)):
+        raise ValueError("All dimensions of input must be of equal length")
+    idx = ivy.arange(n, dtype=int)
+    return (idx,) * ndim
