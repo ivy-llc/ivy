@@ -294,6 +294,9 @@ class ndarray:
     def tobytes(self, order="C") -> bytes:
         return np_frontend.tobytes(self.data, order=order)
 
+    def tostring(self, order="C") -> bytes:
+        return np_frontend.tobytes(self.data, order=order)
+
     def prod(
         self,
         *,
