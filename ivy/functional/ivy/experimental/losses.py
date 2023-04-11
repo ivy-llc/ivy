@@ -1,8 +1,11 @@
 # local
 import ivy
 from typing import Optional, Union
-from ivy.func_wrapper import handle_nestable, handle_array_like_without_promotion, \
-    inputs_to_ivy_arrays
+from ivy.func_wrapper import (
+    handle_nestable,
+    handle_array_like_without_promotion,
+    inputs_to_ivy_arrays,
+)
 from ivy.utils.exceptions import handle_exceptions
 from ivy.functional.ivy.losses import _reduce_loss
 
