@@ -435,33 +435,32 @@ def set_backend(backend: str, dynamic: bool = False):
         )
 
     # update the global dict with the new backend
-    ivy.locks["backend_setter"].acquire()
-    global ivy_original_dict
-    if not backend_stack:
-        ivy_original_dict = ivy.__dict__.copy()
+    with ivy.locks["backend_setter"]:
+        global ivy_original_dict
+        if not backend_stack:
+            ivy_original_dict = ivy.__dict__.copy()
 
-    _clear_current_sub_backends()
-    if isinstance(backend, str):
-        temp_stack = list()
-        while backend_stack:
-            temp_stack.append(previous_backend())
-        backend = importlib.import_module(_backend_dict[backend])
-        for fw in reversed(temp_stack):
-            backend_stack.append(fw)
-    if backend.current_backend_str() == "numpy":
-        ivy.set_default_device("cpu")
-    elif backend.current_backend_str() == "jax":
-        ivy.set_global_attr("RNG", ivy.functional.backends.jax.random.RNG)
-    backend_stack.append(backend)
-    set_backend_to_specific_version(backend)
-    _set_backend_as_ivy(ivy_original_dict, ivy, backend)
+        _clear_current_sub_backends()
+        if isinstance(backend, str):
+            temp_stack = list()
+            while backend_stack:
+                temp_stack.append(previous_backend())
+            backend = importlib.import_module(_backend_dict[backend])
+            for fw in reversed(temp_stack):
+                backend_stack.append(fw)
+        if backend.current_backend_str() == "numpy":
+            ivy.set_default_device("cpu")
+        elif backend.current_backend_str() == "jax":
+            ivy.set_global_attr("RNG", ivy.functional.backends.jax.random.RNG)
+        backend_stack.append(backend)
+        set_backend_to_specific_version(backend)
+        _set_backend_as_ivy(ivy_original_dict, ivy, backend)
 
-    if dynamic:
-        convert_from_numpy_to_target_backend(variable_ids, numpy_objs, devices)
+        if dynamic:
+            convert_from_numpy_to_target_backend(variable_ids, numpy_objs, devices)
 
-    if verbosity.level > 0:
-        verbosity.cprint("backend stack: {}".format(backend_stack))
-    ivy.locks["backend_setter"].release()
+        if verbosity.level > 0:
+            verbosity.cprint("backend stack: {}".format(backend_stack))
 
 
 def set_numpy_backend():
