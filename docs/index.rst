@@ -1,27 +1,27 @@
 .. include:: ../README.rst
 
 .. toctree::
-    :hidden:
-    :maxdepth: -1
-    :caption: Overview
+  :hidden:
+  :maxdepth: -1
+  :caption: Overview
 
-    overview/background.rst
-    overview/design.rst
-    overview/related_work.rst
-    overview/extensions.rst
-    overview/contributing.rst
-    overview/deep_dive.rst
-    overview/faq.rst
-    overview/glossary.rst
+  overview/background.rst
+  overview/design.rst
+  overview/related_work.rst
+  overview/extensions.rst
+  overview/contributing.rst
+  overview/deep_dive.rst
+  overview/faq.rst
+  overview/glossary.rst
 
 
 .. toctree::
-    :hidden:
-    :maxdepth: -1
-    :caption: Compiling and Transpiling
+  :hidden:
+  :maxdepth: -1
+  :caption: Compiling and Transpiling
 
-    compiler/compiler.rst
-    compiler/transpiler.rst
+  compiler/compiler.rst
+  compiler/transpiler.rst
 
 
 .. autosummary::
@@ -32,17 +32,19 @@
 
   ivy.functional.ivy
 
+
 .. autosummary::
   :toctree: docs/data_classes
-  :template: top_data_module.rst
+  :template: top_data_toc.rst
   :recursive:
   :hide-table:
 
-  ivy.data_classes.array
-  ivy.data_classes.container
+  ivy.data_classes
+
+
 .. autosummary::
-  :toctree: docs/utilities
-  :template: top_level_toc_recursive.rst
+  :toctree: docs
+  :template: top_ivy_toc.rst
   :recursive:
 
   ivy.stateful
