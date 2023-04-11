@@ -23,12 +23,12 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     test_with_out=st.just(False),
 )
 def test_jax_numpy_absolute(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -52,12 +52,12 @@ def test_jax_numpy_absolute(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_add(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -89,13 +89,13 @@ def test_jax_numpy_add(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_angle(
-        *,
-        dtype_and_x,
-        deg,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    deg,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, z = dtype_and_x
     helpers.test_frontend_function(
@@ -132,14 +132,14 @@ def _get_dtype_input_and_vector(draw):
     ),
 )
 def test_jax_numpy_diff(
-        *,
-        dtype_and_x,
-        test_flags,
-        on_device,
-        fn_tree,
-        frontend,
-        n,
-        axis,
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+    n,
+    axis,
 ):
     input_dtype, x = dtype_and_x
     if axis > (x[0].ndim - 1):
@@ -174,14 +174,14 @@ def test_jax_numpy_diff(
     ),
 )
 def test_jax_numpy_ediff1d(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
-        to_end,
-        to_begin,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    to_end,
+    to_begin,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -202,12 +202,12 @@ def test_jax_numpy_ediff1d(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
 def test_jax_numpy_arctan(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -229,12 +229,12 @@ def test_jax_numpy_arctan(
     ),
 )
 def test_jax_numpy_arctan2(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -263,13 +263,13 @@ def test_jax_numpy_arctan2(
     mode=st.sampled_from(["valid", "same", "full"]),
 )
 def test_jax_numpy_convolve(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
-        mode,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    mode,
 ):
     input_dtype, x = dtype_and_x
     assume("float16" not in input_dtype)
@@ -293,12 +293,12 @@ def test_jax_numpy_convolve(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
 def test_jax_numpy_cos(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -318,12 +318,12 @@ def test_jax_numpy_cos(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_cosh(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -343,12 +343,12 @@ def test_jax_numpy_cosh(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_tanh(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -358,35 +358,6 @@ def test_jax_numpy_tanh(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
-    )
-
-
-# sign
-@handle_frontend_test(
-    fn_tree="jax.numpy.sign",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), min_num_dims=1
-    ),
-    test_with_out=st.just(False),
-)
-def test_jax_numpy_sign(
-        *,
-        dtype_and_x,
-        test_flags,
-        on_device,
-        fn_tree,
-        frontend,
-
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        frontend=frontend,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        a=x[0],
-
     )
 
 
@@ -401,12 +372,12 @@ def test_jax_numpy_sign(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_sinh(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -425,12 +396,12 @@ def test_jax_numpy_sinh(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_sin(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -450,12 +421,12 @@ def test_jax_numpy_sin(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_floor(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -477,10 +448,10 @@ def test_jax_numpy_floor(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_tensordot(
-        dtype_values_and_axes,
-        frontend,
-        test_flags,
-        fn_tree,
+    dtype_values_and_axes,
+    frontend,
+    test_flags,
+    fn_tree,
 ):
     dtype, a, b, axes = dtype_values_and_axes
     helpers.test_frontend_function(
@@ -509,11 +480,11 @@ def test_jax_numpy_tensordot(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_divide(
-        *,
-        dtype_values,
-        frontend,
-        test_flags,
-        fn_tree,
+    *,
+    dtype_values,
+    frontend,
+    test_flags,
+    fn_tree,
 ):
     input_dtype, x = dtype_values
     assume(not np.any(np.isclose(x[1], 0)))
@@ -534,11 +505,11 @@ def test_jax_numpy_divide(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_exp(
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -587,12 +558,12 @@ def _get_dtype_input_and_vectors(draw):
     test_with_out=st.just(False),
 )
 def test_jax_numpy_dot(
-        *,
-        dtype_x_y,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_x_y,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x, y = dtype_x_y
     helpers.test_frontend_function(
@@ -619,12 +590,12 @@ def test_jax_numpy_dot(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_mod(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x[1], 0)) and "bfloat16" not in input_dtype)
@@ -653,12 +624,12 @@ def test_jax_numpy_mod(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_divmod(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x[1], 0)) and "bfloat16" not in input_dtype)
@@ -681,12 +652,12 @@ def test_jax_numpy_divmod(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_tan(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -706,12 +677,12 @@ def test_jax_numpy_tan(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_arccos(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -731,12 +702,12 @@ def test_jax_numpy_arccos(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_arccosh(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -759,11 +730,11 @@ def test_jax_numpy_arccosh(
     ),
 )
 def test_jax_numpy_arcsin(
-        dtype_and_x,
-        frontend,
-        test_flags,
-        fn_tree,
-        on_device,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
 
@@ -789,11 +760,11 @@ def test_jax_numpy_arcsin(
     ),
 )
 def test_jax_numpy_log1p(
-        dtype_and_x,
-        frontend,
-        test_flags,
-        fn_tree,
-        on_device,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
 
@@ -818,12 +789,12 @@ def test_jax_numpy_log1p(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_arcsinh(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -846,12 +817,12 @@ def test_jax_numpy_arcsinh(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_power(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -872,12 +843,12 @@ def test_jax_numpy_power(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_trunc(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -897,12 +868,12 @@ def test_jax_numpy_trunc(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_ceil(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -931,12 +902,12 @@ def test_jax_numpy_ceil(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_float_power(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -959,12 +930,12 @@ def test_jax_numpy_float_power(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_deg2rad(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -986,12 +957,12 @@ def test_jax_numpy_deg2rad(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_radians(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1019,12 +990,12 @@ def test_jax_numpy_radians(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_exp2(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1048,12 +1019,12 @@ def test_jax_numpy_exp2(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_expm1(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1082,12 +1053,12 @@ def test_jax_numpy_expm1(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_gcd(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1116,12 +1087,12 @@ def test_jax_numpy_gcd(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_i0(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1148,12 +1119,12 @@ def test_jax_numpy_i0(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_kron(
-        *,
-        dtype_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_function(
@@ -1182,12 +1153,12 @@ def test_jax_numpy_kron(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_lcm(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     value_test = True
@@ -1225,12 +1196,12 @@ def test_jax_numpy_lcm(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_logaddexp2(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1266,14 +1237,14 @@ def _get_safe_casting_dtype(draw, *, dtypes):
 
 @st.composite
 def dtypes_values_casting_dtype(
-        draw,
-        *,
-        arr_func,
-        get_dtypes_kind="valid",
-        get_dtypes_index=0,
-        get_dtypes_none=True,
-        get_dtypes_key=None,
-        special=False,
+    draw,
+    *,
+    arr_func,
+    get_dtypes_kind="valid",
+    get_dtypes_index=0,
+    get_dtypes_none=True,
+    get_dtypes_key=None,
+    special=False,
 ):
     dtypes, values = [], []
     casting = draw(st.sampled_from(["no", "equiv", "safe", "same_kind", "unsafe"]))
@@ -1313,11 +1284,11 @@ def dtypes_values_casting_dtype(
     ),
 )
 def test_jax_numpy_matmul(
-        dtypes_values_casting,
-        frontend,
-        test_flags,
-        fn_tree,
-        on_device,
+    dtypes_values_casting,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     dtypes, x, casting, dtype = dtypes_values_casting
     helpers.test_frontend_function(
@@ -1378,12 +1349,12 @@ def _either_x_dx(draw):
     test_with_out=st.just(False),
 )
 def test_jax_numpy_trapz(
-        *,
-        dtype_x_axis_rand_either,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_x_axis_rand_either,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     dtype_values_axis, rand, either_x_dx = dtype_x_axis_rand_either
     input_dtype, y, axis = dtype_values_axis
@@ -1416,12 +1387,12 @@ def test_jax_numpy_trapz(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_sqrt(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1441,12 +1412,12 @@ def test_jax_numpy_sqrt(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_square(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1469,10 +1440,10 @@ def test_jax_numpy_square(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_arctanh(
-        dtype_and_x,
-        frontend,
-        test_flags,
-        fn_tree,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1494,10 +1465,10 @@ def test_jax_numpy_arctanh(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_multiply(
-        dtype_and_x,
-        frontend,
-        test_flags,
-        fn_tree,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1523,12 +1494,12 @@ def test_jax_numpy_multiply(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_log10(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1558,12 +1529,12 @@ def test_jax_numpy_log10(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_logaddexp(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1588,12 +1559,12 @@ def test_jax_numpy_logaddexp(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_degrees(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1615,11 +1586,11 @@ def test_jax_numpy_degrees(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_negative(
-        dtype_and_x,
-        frontend,
-        test_flags,
-        fn_tree,
-        on_device,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1641,11 +1612,11 @@ def test_jax_numpy_negative(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_positive(
-        dtype_and_x,
-        frontend,
-        test_flags,
-        fn_tree,
-        on_device,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1667,11 +1638,11 @@ def test_jax_numpy_positive(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_rad2deg(
-        dtype_and_x,
-        frontend,
-        test_flags,
-        fn_tree,
-        on_device,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1696,12 +1667,12 @@ def test_jax_numpy_rad2deg(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_fmax(
-        *,
-        dtype_and_inputs,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_inputs,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
@@ -1726,12 +1697,12 @@ def test_jax_numpy_fmax(
     ),
 )
 def test_jax_numpy_fmin(
-        *,
-        dtype_and_inputs,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_inputs,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
@@ -1753,12 +1724,12 @@ def test_jax_numpy_fmin(
     ),
 )
 def test_jax_numpy_fabs(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1782,12 +1753,12 @@ def test_jax_numpy_fabs(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_fmod(
-        *,
-        dtype_and_inputs,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_inputs,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_inputs
     assume(not np.any(np.isclose(x[1], 0)))
@@ -1812,10 +1783,10 @@ def test_jax_numpy_fmod(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_maximum(
-        dtype_and_x,
-        frontend,
-        test_flags,
-        fn_tree,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1838,10 +1809,10 @@ def test_jax_numpy_maximum(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_minimum(
-        dtype_and_x,
-        frontend,
-        test_flags,
-        fn_tree,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1870,12 +1841,12 @@ def test_jax_numpy_minimum(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_heaviside(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1902,12 +1873,12 @@ def test_jax_numpy_heaviside(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_log(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1939,12 +1910,12 @@ def test_jax_numpy_log(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_copysign(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1970,12 +1941,12 @@ def test_jax_numpy_copysign(
     ),
 )
 def test_jax_numpy_sinc(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -2007,12 +1978,12 @@ def test_jax_numpy_sinc(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_nextafter(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -2039,12 +2010,12 @@ def test_jax_numpy_nextafter(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_remainder(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
 
@@ -2082,15 +2053,15 @@ def test_jax_numpy_remainder(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_trace(
-        *,
-        dtype_and_x,
-        offset,
-        axis1,
-        axis2,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    offset,
+    axis1,
+    axis2,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -2117,12 +2088,12 @@ def test_jax_numpy_trace(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_log2(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x[0], 0)))
@@ -2147,12 +2118,12 @@ def test_jax_numpy_log2(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_vdot(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -2176,12 +2147,12 @@ def test_jax_numpy_vdot(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_cbrt(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -2215,16 +2186,16 @@ def test_jax_numpy_cbrt(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_nan_to_num(
-        *,
-        dtype_and_x,
-        copy,
-        nan,
-        posinf,
-        neginf,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    copy,
+    nan,
+    posinf,
+    neginf,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -2253,12 +2224,12 @@ def test_jax_numpy_nan_to_num(
     ),
 )
 def test_jax_numpy_fix(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -2286,12 +2257,12 @@ def test_jax_numpy_fix(
     ),
 )
 def test_jax_numpy_hypot(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -2321,12 +2292,12 @@ def test_jax_numpy_hypot(
     ),
 )
 def test_jax_numpy_floor_divide(
-        *,
-        dtype_values,
-        frontend,
-        fn_tree,
-        on_device,
-        test_flags,
+    *,
+    dtype_values,
+    frontend,
+    fn_tree,
+    on_device,
+    test_flags,
 ):
     input_dtype, x = dtype_values
     # Making sure division by zero doesn't occur
@@ -2353,12 +2324,12 @@ def test_jax_numpy_floor_divide(
     ),
 )
 def test_jax_numpy_real(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -2384,12 +2355,12 @@ def test_jax_numpy_real(
     ),
 )
 def test_jax_numpy_inner(
-        *,
-        dtype_and_x,
-        test_flags,
-        on_device,
-        fn_tree,
-        frontend,
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtypes, xs = dtype_and_x
     helpers.test_frontend_function(
@@ -2417,12 +2388,12 @@ def test_jax_numpy_inner(
     ),
 )
 def test_jax_numpy_outer(
-        *,
-        dtype_and_x,
-        test_flags,
-        on_device,
-        fn_tree,
-        frontend,
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtypes, xs = dtype_and_x
     helpers.test_frontend_function(
@@ -2448,12 +2419,12 @@ def test_jax_numpy_outer(
     ),
 )
 def test_jax_numpy_reciprocal(
-        *,
-        dtype_and_x,
-        test_flags,
-        on_device,
-        fn_tree,
-        frontend,
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -2474,12 +2445,12 @@ def test_jax_numpy_reciprocal(
     ),
 )
 def test_jax_numpy_conj(
-        *,
-        dtype_and_x,
-        test_flags,
-        on_device,
-        fn_tree,
-        frontend,
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -2503,12 +2474,12 @@ def test_jax_numpy_conj(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_subtract(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -2530,12 +2501,12 @@ def test_jax_numpy_subtract(
     ),
 )
 def test_jax_numpy_around(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -2558,12 +2529,12 @@ def test_jax_numpy_around(
     ),
 )
 def test_jax_numpy_frexp(
-        *,
-        dtype_and_x,
-        test_flags,
-        on_device,
-        fn_tree,
-        frontend,
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(

@@ -125,11 +125,6 @@ def divmod(x1, x2, /):
     return tuple([ivy.floor_divide(x1, x2), ivy.remainder(x1, x2)])
 
 
-# sign
-def sign(x, /):
-    return ivy.sign(x, out=None)
-
-
 @to_ivy_arrays_and_back
 def sinh(x):
     return ivy.sinh(x)
@@ -286,24 +281,24 @@ def degrees(x):
 
 @to_ivy_arrays_and_back
 def negative(
-        x,
-        /,
+    x,
+    /,
 ):
     return ivy.negative(x)
 
 
 @to_ivy_arrays_and_back
 def positive(
-        x,
-        /,
+    x,
+    /,
 ):
     return ivy.positive(x)
 
 
 @to_ivy_arrays_and_back
 def rad2deg(
-        x,
-        /,
+    x,
+    /,
 ):
     return ivy.rad2deg(x)
 
@@ -330,15 +325,15 @@ true_divide = divide
 
 @to_ivy_arrays_and_back
 def exp(
-        x,
-        /,
+    x,
+    /,
 ):
     return ivy.exp(x)
 
 
 def expm1(
-        x,
-        /,
+    x,
+    /,
 ):
     return ivy.expm1(x)
 
@@ -422,8 +417,8 @@ def sinc(x):
 @with_unsupported_dtypes(
     {
         "0.3.14 and below": (
-                "bfloat16",
-                "float16",
+            "bfloat16",
+            "float16",
         )
     },
     "jax",
