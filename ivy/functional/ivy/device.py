@@ -685,7 +685,6 @@ def tpu_is_available() -> bool:
 # Default Device #
 
 # noinspection PyShadowingNames
-@inputs_to_ivy_arrays
 @handle_exceptions
 def default_device(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
