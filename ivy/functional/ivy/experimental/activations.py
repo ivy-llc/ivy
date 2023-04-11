@@ -11,6 +11,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_array_like_without_promotion,
     handle_out_argument,
+    inputs_to_ivy_arrays,
 )
 
 
@@ -61,7 +62,7 @@ def logit(
     return current_backend(x).logit(x, eps=eps, out=out)
 
 
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
