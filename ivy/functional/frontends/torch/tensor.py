@@ -80,11 +80,15 @@ class Tensor:
     def add(self, other, *, alpha=1):
         return torch_frontend.add(self._ivy_array, other, alpha=alpha)
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
+    def sub(self, other, *, alpha=1):
+        return torch_frontend.sub(self._ivy_array, other, alpha=alpha)
+
     def chunk(self, chunks, dim=0):
         return torch_frontend.chunk(self._ivy_array, chunks, dim=dim)
 
-    def any(self, dim=None, keepdim=False, *, out=None):
-        return torch_frontend.any(self._ivy_array, dim=dim, keepdim=keepdim, out=out)
+    def any(self, dim=None, keepdim=False):
+        return torch_frontend.any(self._ivy_array, dim=dim, keepdim=keepdim)
 
     def all(self, dim=None, keepdim=False):
         return torch_frontend.all(self._ivy_array, dim=dim, keepdim=keepdim)
@@ -290,21 +294,21 @@ class Tensor:
     def logical_or(self, other):
         return torch_frontend.logical_or(self._ivy_array, other)
 
-    def bitwise_not(self, *, out=None):
+    def bitwise_not(self):
         return torch_frontend.bitwise_not(self._ivy_array)
 
     def bitwise_and(self, other):
         return torch_frontend.bitwise_and(self._ivy_array, other)
 
-    def bitwise_or(self, other, *, out=None):
+    def bitwise_or(self, other):
         return torch_frontend.bitwise_or(self._ivy_array, other)
 
-    def bitwise_left_shift(self, other, *, out=None):
+    def bitwise_left_shift(self, other):
         return torch_frontend.bitwise_left_shift(self._ivy_array, other)
 
     @with_supported_dtypes({"1.11.0 and below": ("integer",)}, "torch")
-    def bitwise_or_(self, other, *, out=None):
-        self._ivy_array = self.bitwise_or(other, out=out).ivy_array
+    def bitwise_or_(self, other):
+        self._ivy_array = self.bitwise_or(other).ivy_array
         return self
 
     def contiguous(self, memory_format=None):
@@ -314,6 +318,9 @@ class Tensor:
         return torch_frontend.ones(
             size, dtype=dtype, device=device, requires_grad=requires_grad
         )
+
+    def floor(self, *, out=None):
+        return torch_frontend.floor(self._ivy_array)
 
     def new_zeros(self, size, *, dtype=None, device=None, requires_grad=False):
         return torch_frontend.zeros(
@@ -607,6 +614,10 @@ class Tensor:
     def mean(self, dim=None, keepdim=False):
         return torch_frontend.mean(self._ivy_array, dim=dim, keepdim=keepdim)
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def median(self, dim=None, keepdim=False):
+        return torch_frontend.median(self._ivy_array, dim=dim, keepdim=keepdim)
+
     def transpose(self, dim0, dim1):
         return torch_frontend.transpose(self._ivy_array, dim0=dim0, dim1=dim1)
 
@@ -684,14 +695,14 @@ class Tensor:
         return torch_frontend.index_select(self._ivy_array, dim, index)
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
-    def clamp(self, min=None, max=None, *, out=None):
+    def clamp(self, min=None, max=None):
         if min is not None and max is not None and ivy.all(min > max):
             return torch_frontend.tensor(ivy.array(self._ivy_array).full_like(max))
-        return torch_frontend.clamp(self._ivy_array, min=min, max=max, out=out)
+        return torch_frontend.clamp(self._ivy_array, min=min, max=max)
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
-    def clamp_(self, min=None, max=None, *, out=None):
-        self._ivy_array = self.clamp(min=min, max=max, out=out).ivy_array
+    def clamp_(self, min=None, max=None):
+        self._ivy_array = self.clamp(min=min, max=max).ivy_array
         return self
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
@@ -723,6 +734,13 @@ class Tensor:
 
     def masked_fill_(self, mask, value):
         self._ivy_array = self.masked_fill(mask, value).ivy_array
+        return self
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+    def index_add_(self, dim, index, source, *, alpha=1):
+        self._ivy_array = torch_frontend.index_add(
+            self._ivy_array, dim, index, source, alpha=alpha
+        ).ivy_array
         return self
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
@@ -772,8 +790,8 @@ class Tensor:
         self._ivy_array = self.atan2(other).ivy_array
         return self
 
-    def fmin(self, other, out=None):
-        return torch_frontend.fmin(self._ivy_array, other, out=out)
+    def fmin(self, other):
+        return torch_frontend.fmin(self._ivy_array, other)
 
     # Special Methods #
     # -------------------#
@@ -894,7 +912,7 @@ class Tensor:
     absolute, absolute_ = abs, abs_
     ndimension = dim
 
-    def bitwise_xor(self, other, *, out=None):
+    def bitwise_xor(self, other):
         return torch_frontend.bitwise_xor(self._ivy_array, other)
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
@@ -902,8 +920,8 @@ class Tensor:
         return torch_frontend.cumprod(self._ivy_array, dim, dtype=dtype)
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
-    def exp(self, *, out=None):
+    def exp(self):
         return torch_frontend.exp(self._ivy_array)
 
-    def mul(self, other, *, out=None):
+    def mul(self, other):
         return torch_frontend.mul(self._ivy_array, other)
