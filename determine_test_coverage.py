@@ -63,15 +63,20 @@ if __name__ == "__main__":
     end = num_tests if run_iter == N - 1 else (run_iter + 1) * tests_per_run
     for test_backend in tqdm(test_names[start:end]):
         test_name, backend = test_backend.split(",")
+        print("Test:", test_backend)
         command = (
-            f'docker run -v "$(pwd)":/ivy unifyai/ivy:latest /bin/bash -c "coverage run --source=ivy,'  # noqa
+            f'docker run -v "$(pwd)":/ivy unifyai/ivy:latest timeout 30m /bin/bash -c "coverage run --source=ivy,'  # noqa
             f"ivy_tests -m pytest {test_name} --backend {backend} --disable-warnings > coverage_output;coverage "  # noqa
             f'annotate > coverage_output" '
         )
+        print("Running OS Command")
         os.system(command)
+        print("Going through Directories:")
         for directory in directories:
+            print("On Directory:", directory)
             for file_name in os.listdir(directory):
                 if file_name.endswith("cover"):
+                    print("On File:", file_name)
                     file_name = directory + "/" + file_name
                     if file_name not in tests:
                         tests[file_name] = []
@@ -86,6 +91,7 @@ if __name__ == "__main__":
                                     tests["tests_mapping"][test_backend]
                                 )
                             i += 1
+        print("Done with Directories, Cleaning Files")
         os.system("find . -name \\*cover -type f -delete")
 
 

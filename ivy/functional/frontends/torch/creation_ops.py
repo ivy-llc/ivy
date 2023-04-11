@@ -205,6 +205,11 @@ def eye(
 
 
 @to_ivy_arrays_and_back
+def from_dlpack(ext_tensor):
+    return ivy.from_dlpack(ext_tensor)
+
+
+@to_ivy_arrays_and_back
 def empty_like(
     input,
     *,
@@ -272,3 +277,14 @@ def tensor(
     pin_memory=False,
 ):
     return ivy.array(data, dtype=dtype, device=device)
+
+
+@to_ivy_arrays_and_back
+def asarray(
+    obj,
+    *,
+    dtype=None,
+    device=None,
+    copy=None,
+):
+    return ivy.asarray(obj, copy=copy, dtype=dtype, device=device)

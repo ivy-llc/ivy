@@ -7,3 +7,5 @@ from . import nn
 from . import numpy
 from . import random
 from . import _src
+
+_frontend_array = numpy.array

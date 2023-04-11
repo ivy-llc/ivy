@@ -12,9 +12,9 @@ import inspect
 
 # for wrapping (sequence matters)
 FN_DECORATORS = [
-    "handle_array_function",
     "infer_device",
     "infer_dtype",
+    "handle_array_function",
     "integer_arrays_to_float",
     "outputs_to_ivy_arrays",
     "outputs_to_native_arrays",
@@ -23,11 +23,11 @@ FN_DECORATORS = [
     "handle_out_argument",
     "handle_view_indexing",
     "handle_view",
+    "handle_array_like_without_promotion",
     "handle_nestable",
     "handle_exceptions",
     "with_unsupported_dtypes",
     "handle_nans",
-    "handle_array_like_without_promotion",
     "handle_mixed_function",
 ]
 
@@ -638,8 +638,8 @@ def handle_nestable(fn: Callable) -> Callable:
         # if any of the arguments or keyword arguments passed to the function contains
         # a container, get the container's version of the function and call it using
         # the passed arguments.
-        if hasattr(ivy.Container, "static_" + fn_name):
-            cont_fn = getattr(ivy.Container, "static_" + fn_name)
+        if hasattr(ivy.Container, "_static_" + fn_name):
+            cont_fn = getattr(ivy.Container, "_static_" + fn_name)
         else:
             cont_fn = lambda *args, **kwargs: ivy.Container.cont_multi_map_in_function(
                 fn, *args, **kwargs
@@ -1004,7 +1004,7 @@ class with_unsupported_dtypes(contextlib.ContextDecorator):
             )(func)
 
     def __enter__(self):
-        self.globals = globals_getter_func().copy()  # global snapshot baby
+        self.globals = globals_getter_func().copy()  # global snapshot
 
     def __exit__(self, *exec):
         new_globals = set(globals_getter_func().keys())
@@ -1040,7 +1040,7 @@ class with_supported_dtypes(contextlib.ContextDecorator):
             )(func)
 
     def __enter__(self):
-        self.globals = globals_getter_func().copy()  # global snapshot baby
+        self.globals = globals_getter_func().copy()  # global snapshot
 
     def __exit__(self, *exec):
         new_globals = set(globals_getter_func().keys())
@@ -1076,7 +1076,7 @@ class with_unsupported_devices(contextlib.ContextDecorator):
             )(func)
 
     def __enter__(self):
-        self.globals = globals_getter_func().copy()  # global snapshot baby
+        self.globals = globals_getter_func().copy()  # global snapshot
 
     def __exit__(self, *exec):
         new_globals = set(globals_getter_func().keys())
@@ -1112,7 +1112,7 @@ class with_supported_devices(contextlib.ContextDecorator):
             )(func)
 
     def __enter__(self):
-        self.globals = globals_getter_func().copy()  # global snapshot baby
+        self.globals = globals_getter_func().copy()  # global snapshot
 
     def __exit__(self, *exec):
         new_globals = set(globals_getter_func().keys())
@@ -1173,7 +1173,7 @@ class with_unsupported_device_and_dtypes(contextlib.ContextDecorator):
 
     def __enter__(self):
 
-        self.globals = globals_getter_func().copy()  # global snapshot baby
+        self.globals = globals_getter_func().copy()  # global snapshot
 
     def __exit__(self, *exec):
         new_globals = set(globals_getter_func().keys())
@@ -1233,7 +1233,7 @@ class with_supported_device_and_dtypes(contextlib.ContextDecorator):
             )(func)
 
     def __enter__(self):
-        self.globals = globals_getter_func().copy()  # global snapshot baby
+        self.globals = globals_getter_func().copy()  # global snapshot
 
     def __exit__(self, *exec):
         new_globals = set(globals_getter_func().keys())
@@ -1261,7 +1261,7 @@ class override(contextlib.ContextDecorator):
             return func
 
     def __enter__(self):
-        self.globals = globals_getter_func().copy()  # global snapshot baby
+        self.globals = globals_getter_func().copy()  # global snapshot
 
     def __exit__(self, *exec):
         new_globals = set(globals().keys())

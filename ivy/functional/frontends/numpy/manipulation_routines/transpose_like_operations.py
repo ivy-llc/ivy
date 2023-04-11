@@ -4,7 +4,7 @@ from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
 
 
 @to_ivy_arrays_and_back
-def transpose(array, /,  *, axes=None):
+def transpose(array, /, *, axes=None):
     if not axes:
         axes = list(range(len(array.shape)))[::-1]
     if type(axes) is int:

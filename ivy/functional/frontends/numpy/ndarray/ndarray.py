@@ -33,6 +33,9 @@ class ndarray:
             "ivy.array", "ivy.frontends.numpy.ndarray"
         )
 
+    def __str__(self):
+        return str(self._ivy_array)
+
     # Properties #
     # ---------- #
 
@@ -262,10 +265,10 @@ class ndarray:
             return np_frontend.ravel(self._ivy_array, order="F")
         else:
             return np_frontend.ravel(self._ivy_array, order="C")
-    
+
     def fill(self, num):
         return np_frontend.fill(self._ivy_array, num)
-    
+
     def repeat(self, repeats, axis=None):
         return np_frontend.repeat(self._ivy_array, repeats, axis=axis)
 
@@ -290,6 +293,26 @@ class ndarray:
 
     def tobytes(self, order="C") -> bytes:
         return np_frontend.tobytes(self.data, order=order)
+
+    def prod(
+        self,
+        *,
+        axis=None,
+        dtype=None,
+        out=None,
+        keepdims=False,
+        initial=None,
+        where=True,
+    ):
+        return np_frontend.prod(
+            self._ivy_array,
+            axis=axis,
+            dtype=dtype,
+            keepdims=keepdims,
+            initial=initial,
+            where=where,
+            out=out,
+        )
 
     def view(self):
         return np_frontend.reshape(self._ivy_array, tuple(self.shape))
@@ -445,6 +468,6 @@ class ndarray:
                 else ivy.to_list(value)
             )
         self._ivy_array[key] = value
-    
+
     def __mod__(self, value, /):
         return np_frontend.mod(self._ivy_array, value, out=self)
