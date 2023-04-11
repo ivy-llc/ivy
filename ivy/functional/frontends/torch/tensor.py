@@ -291,6 +291,9 @@ class Tensor:
     def logical_and(self, other):
         return torch_frontend.logical_and(self._ivy_array, other)
 
+    def logical_not(self, *, out=None):
+        return torch_frontend.logical_not(self._ivy_array, out=out)
+
     def logical_or(self, other):
         return torch_frontend.logical_or(self._ivy_array, other)
 
