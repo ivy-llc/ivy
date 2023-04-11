@@ -99,15 +99,15 @@ def mean(
             ret = paddle.mean(x.real(), axis=axis, keepdim=keepdims) + 1j * paddle.mean(
                 x.imag(), axis=axis, keepdim=keepdims
             )
-            if x.ndim == 1 and not keepdims:
+            if ret.ndim == 1 and not keepdims and axis is None:
                 ret = ret.squeeze()
             return ret
         ret = paddle.mean(x.cast("float32"), axis=axis, keepdim=keepdims)
-        if x.ndim == 1 and not keepdims:
+        if ret.ndim == 1 and not keepdims and axis is None:
             ret = ret.squeeze()
         return ret.astype(x.dtype)
     ret = paddle.mean(x, axis=axis, keepdim=keepdims)
-    if x.ndim == 1 and not keepdims:
+    if ret.ndim == 1 and not keepdims and axis is None:
         ret = ret.squeeze()
     return ret
 

@@ -502,6 +502,7 @@ def is_nan(x, name=None):
     },
     "tensorflow",
 )
+@to_ivy_arrays_and_back
 def is_finite(x, name=None):
     return ivy.isfinite(x)
 
@@ -545,3 +546,13 @@ def sinh(x, name=None):
 @to_ivy_arrays_and_back
 def softmax(logits, axis=-1):
     return ivy.softmax(logits, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def xlogy(x, y, name=None):
+    return ivy.xlogy(x, y)
+
+
+@to_ivy_arrays_and_back
+def cosh(x, name=None):
+    return ivy.cosh(x)
