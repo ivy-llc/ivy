@@ -556,3 +556,21 @@ def xlogy(x, y, name=None):
 @to_ivy_arrays_and_back
 def cosh(x, name=None):
     return ivy.cosh(x)
+
+
+@with_supported_dtypes(
+    {
+        "2.9.0 and below": (
+            "bfloat16",
+            "float16",
+            "float32",
+            "float64",
+            "complex64",
+            "complex128",
+        )
+    },
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def sin(x, name=None):
+    return ivy.sin(x)
