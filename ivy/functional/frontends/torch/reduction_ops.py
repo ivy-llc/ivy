@@ -234,7 +234,7 @@ def logsumexp(input, dim, keepdim=False, *, out=None):
 
 @to_ivy_arrays_and_back
 def mode(input, dim=-1, keepdim=False, *, out=None):
-    sorted_data = sorted(input.items(), key=lambda x: x[1], reverse=True)
+    sorted_data = sorted(input.item(), key=lambda x: x[1], reverse=True)
     max_freq = sorted_data[0][1]
     modes = [sorted_data[0][0]]
     for item in sorted_data[1:]:
