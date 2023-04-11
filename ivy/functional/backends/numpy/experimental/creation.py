@@ -31,7 +31,7 @@ def vorbis_window(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     result = []
-    for i in range(1, window_length * 2)[0::2]:
+    for i in range(1, window_length * 2, 2):
         temp = np.sin(ivy.pi / 2 * (np.sin(ivy.pi * i / (window_length * 2)) ** 2))
         result.append(round(temp, 8))
     return np.array(result, dtype=dtype)

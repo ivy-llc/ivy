@@ -316,12 +316,13 @@ def avg_pool2d(
     /,
     *,
     data_format: str = "NHWC",
+    count_include_pad: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if isinstance(strides, int):
-        strides = [strides] * 2
-    elif len(strides) == 1:
-        strides = [strides[0]] * 2
+    if isinstance(kernel, int):
+        kernel = [kernel] * 2
+    elif len(kernel) == 1:
+        kernel = [kernel[0]] * 2
 
     if isinstance(strides, int):
         strides = [strides] * 2
@@ -342,7 +343,7 @@ def avg_pool2d(
             (pad_w // 2, pad_w - pad_w // 2),
             (0, 0),
         ],
-        "edge",
+        constant_values=0.0,
     )
 
     x_shape = x.shape
@@ -364,6 +365,34 @@ def avg_pool2d(
 
     # B x OH x OW x O
     res = np.mean(sub_matrices, axis=(3, 4))
+    if not count_include_pad and (pad_w or pad_h):
+        padded = [pad_h, pad_w]
+        num_padded_values = [
+            ivy.map(
+                _get_num_padded_values,
+                constant={
+                    "p": padded[i],
+                    "n": x.shape[i + 1] - padded[i],
+                    "k": kernel[i],
+                    "s": strides[i],
+                },
+                unique={
+                    "i": np.arange(res.shape[i + 1]),
+                },
+            )
+            for i in range(2)
+        ]
+        num_padded_values1 = np.array(num_padded_values[0], dtype=res.dtype)[:, None]
+        num_padded_values2 = np.array(num_padded_values[1], dtype=res.dtype)[None, :]
+        num_padded_values = (
+            num_padded_values1 * kernel[1]
+            + num_padded_values2 * kernel[0]
+            - num_padded_values1 * num_padded_values2
+        )
+        res = (kernel[0] * kernel[1] * res) / (
+            kernel[0] * kernel[1] - num_padded_values[:, :, None]
+        )
+
     if data_format == "NCHW":
         return np.transpose(res, (0, 3, 1, 2))
     return res
