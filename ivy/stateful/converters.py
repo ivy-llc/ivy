@@ -212,7 +212,7 @@ class ModuleConverters:
             devices=devices,
             **i_kwargs,
         )
-    
+
     @staticmethod
     def from_flax_module(
         native_module,
@@ -317,7 +317,7 @@ class ModuleConverters:
         i_args = ivy.default(instance_args, [])
         i_kwargs = ivy.default(instance_kwargs, {})
         i_args, i_kwargs = ivy.args_to_native(*i_args, **i_kwargs)
-        
+
         if isinstance(rng_seed, int):
             rng_seed = jax.random.PRNGKey(rng_seed)
 

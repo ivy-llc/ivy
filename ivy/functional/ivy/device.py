@@ -34,7 +34,8 @@ from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
-    handle_array_like_without_promotion, inputs_to_ivy_arrays,
+    handle_array_like_without_promotion,
+    inputs_to_ivy_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
 
