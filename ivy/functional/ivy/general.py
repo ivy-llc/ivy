@@ -3813,10 +3813,10 @@ def itemsize(
     --------
     >>> x = ivy.array([1,2,3], dtype=ivy.float64)
     >>> ivy.itemsize(x)
-    ivy.array(8)
+    8
 
     >>> x = ivy.array([1,2,3], dtype=ivy.complex128)
     >>> ivy.itemsize(x)
-    ivy.array(16)
+    16
     """
     return ivy.current_backend().itemsize(x)
