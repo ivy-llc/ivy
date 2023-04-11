@@ -1598,7 +1598,7 @@ def expand(
     return ivy.current_backend(x).expand(x, shape, out=out)
 
 
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
@@ -1626,11 +1626,10 @@ def as_strided(
         Output Array
     """
     size = math.prod(shape)
-    x = ivy.to_numpy(x)
-    itemsize = x.dtype.itemsize
+    itemsize = x.itemsize
     buffer_size = size * itemsize
 
-    src = memoryview(x).cast("b")
+    src = memoryview(ivy.to_numpy(x)).cast("b")
     buffer = bytearray(buffer_size)
     dst = memoryview(buffer).cast("b")
 
