@@ -23,8 +23,6 @@ from ivy.func_wrapper import (
 )
 from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
-# ToDo: remove this when ivy.frombuffer gets added
-import numpy as np
 
 
 @inputs_to_ivy_arrays
@@ -1628,7 +1626,6 @@ def as_strided(
         Output Array
     """
     size = math.prod(shape)
-    x = ivy.to_numpy(x)
     itemsize = x.dtype.itemsize
     buffer_size = size * itemsize
 
@@ -1646,5 +1643,4 @@ def as_strided(
         dst_offset = i * itemsize
         dst[dst_offset:dst_offset+itemsize] = src[src_offset:src_offset+itemsize]
 
-    # ToDo: need ivy.frombuffer
-    return ivy.to_ivy(np.frombuffer(buffer, dtype=x.dtype, count=size).reshape(shape))
+    return ivy.frombuffer(buffer, dtype=x.dtype, count=size).reshape(shape)
