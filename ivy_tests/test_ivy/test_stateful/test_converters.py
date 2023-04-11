@@ -279,6 +279,7 @@ def test_from_jax_module(bs_ic_oc, from_class_and_args, module_type):
         )
     else:
         if module_type == "haiku":
+
             def forward_fn(*a, **kw):
                 model = native_module_class(input_channels, output_channels)
                 return model(ivy.to_native(x))
@@ -293,7 +294,9 @@ def test_from_jax_module(bs_ic_oc, from_class_and_args, module_type):
         if module_type == "haiku":
             fw_kwargs["params_hk"] = native_module.init(0, x)
         else:
-            fw_kwargs["params_fx"] = native_module.init(jax.random.PRNGKey(0), ivy.to_native(x))
+            fw_kwargs["params_fx"] = native_module.init(
+                jax.random.PRNGKey(0), ivy.to_native(x)
+            )
         ivy_module = module_converter(native_module, **fw_kwargs)
 
     def loss_fn(v_=None):
