@@ -801,30 +801,31 @@ def test_torch_logsumexp(
     
 @handle_frontend_test(
     fn_tree="torch.mode",
-    dtype_and_x=statistical_dtype_values(
-        function="mode",
-        min_value=-1e04,
-        max_value=1e04,
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=-1,
+        valid_axis=True,
+        force_int_axis=True,
     ),
-    keepdims=st.booleans(),
+    keepdim=st.booleans(),
 )
 def test_torch_mode(
     *,
-    dtype_and_x,
-    keepdims,
+    dtype_input_axis,
+    keepdim,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
-    input_dtype, x, axis = dtype_and_x
+    input_dtype, input, dim = dtype_input_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x[0],
-        dim=axis,
-        keepdim=keepdims,
+        input=input[0],
+        dim=dim,
+        keepdim=keepdim,
     )
