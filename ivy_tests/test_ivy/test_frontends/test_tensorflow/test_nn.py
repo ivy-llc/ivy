@@ -1,5 +1,4 @@
 # global
-import ivy
 from hypothesis import strategies as st
 
 # local
@@ -755,45 +754,87 @@ def test_tensorflow_separable_conv2d(
     )
 
 
-# TODO: test with other dtypes
+@st.composite
+def _batch_normalization_helper(draw):
+    shape1, shape2, shape3, shape4 = draw(helpers.mutually_broadcastable_shapes(4))
+    shape = helpers.broadcast_shapes(shape1, shape2, shape3, shape4)
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            large_abs_safety_factor=24,
+            small_abs_safety_factor=24,
+            safety_factor_scale="log",
+            shape=shape,
+            max_value=999,
+            min_value=-1001,
+        )
+    )
+
+    _, mean = draw(
+        helpers.dtype_and_values(
+            dtype=x_dtype,
+            shape=shape1,
+            min_value=-1001,
+            max_value=999,
+        )
+    )
+    _, variance = draw(
+        helpers.dtype_and_values(
+            dtype=x_dtype,
+            shape=shape2,
+            min_value=0,
+            max_value=999,
+        )
+    )
+    _, offset = draw(
+        helpers.dtype_and_values(
+            dtype=x_dtype,
+            shape=shape3,
+            min_value=-1001,
+            max_value=999,
+        )
+    )
+    _, scale = draw(
+        helpers.dtype_and_values(
+            dtype=x_dtype,
+            shape=shape4,
+            min_value=-1001,
+            max_value=999,
+        )
+    )
+
+    return x_dtype, x[0], mean[0], variance[0], offset[0], scale[0]
+
+
 @handle_frontend_test(
     fn_tree="tensorflow.nn.batch_normalization",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
-        shape=(3, 5),
-    ),
-    mean=helpers.array_values(dtype=ivy.float16, shape=(3, 5), min_value=0),
-    variance=helpers.array_values(dtype=ivy.float16, shape=(3, 5), min_value=0),
-    offset=helpers.array_values(dtype=ivy.float16, shape=(3, 5)),
-    scale=helpers.array_values(dtype=ivy.float16, shape=(3, 5)),
-    test_with_out=st.just(False),
+    data=_batch_normalization_helper(),
+    eps=helpers.floats(min_value=1e-5, max_value=0.1),
 )
 def test_tensorflow_batch_normalization(
     *,
-    dtype_and_x,
-    mean,
-    variance,
-    offset,
-    scale,
+    data,
+    eps,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    input_dtype, x = dtype_and_x
+    x_dtype, x, mean, variance, offset, scale = data
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=x_dtype,
         frontend=frontend,
         test_flags=test_flags,
+        rtol=1e-2,
+        atol=1e-2,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0],
-        mean=mean[0],
-        variance=variance[0],
-        offset=offset[0],
-        scale=scale[0],
-        variance_epsilon=1e-7,
+        x=x,
+        mean=mean,
+        variance=variance,
+        offset=offset,
+        scale=scale,
+        variance_epsilon=eps,
     )
 
 
