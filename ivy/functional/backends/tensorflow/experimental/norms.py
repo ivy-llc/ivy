@@ -1,5 +1,5 @@
 import tensorflow as tf
-from typing import Union, Optional
+from typing import Union, Optional, Tuple
 
 
 def l2_normalize(
@@ -15,61 +15,89 @@ def l2_normalize(
     return tf.math.divide(x, denorm)
 
 
-def instance_norm(
+def batch_norm(
     x: Union[tf.Tensor, tf.Variable],
+    mean: Union[tf.Tensor, tf.Variable],
+    variance: Union[tf.Tensor, tf.Variable],
     /,
     *,
     scale: Optional[Union[tf.Tensor, tf.Variable]] = None,
-    bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
-    eps: float = 1e-05,
-    momentum: float = 0.1,
-    data_format: str = "NCHW",
-    running_mean: Optional[Union[tf.Tensor, tf.Variable]] = None,
-    running_stddev: Optional[Union[tf.Tensor, tf.Variable]] = None,
-    affine: bool = True,
-    track_running_stats: bool = False,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    if scale is not None:
-        scale = tf.reshape(scale, shape=(1, 1, 1, -1))
-    if bias is not None:
-        bias = tf.reshape(bias, shape=(1, 1, 1, -1))
-    if running_mean is not None:
-        running_mean = tf.reshape(running_mean, shape=(1, 1, 1, -1))
-    if running_stddev is not None:
-        running_stddev = tf.reshape(running_stddev, shape=(1, 1, 1, -1))
-    if data_format == "NCHW":
-        x = tf.transpose(x, (0, 2, 3, 1))
-    elif data_format != "NHWC":
-        raise NotImplementedError
+    offset: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    training: bool = False,
+    eps: float = 1e-5,
+    momentum: float = 1e-1,
+    out: Optional[tf.Tensor] = None,
+) -> Tuple[
+    Union[tf.Tensor, tf.Variable],
+    Union[tf.Tensor, tf.Variable],
+    Union[tf.Tensor, tf.Variable],
+]:
+    ndims = len(x.shape)
+    runningmean = mean
+    runningvariance = variance
+    if training:
+        n = (
+            tf.size(x)
+            if ndims == 1
+            else tf.cast(tf.divide(tf.size(x), tf.shape(x)[-1]), x.dtype)
+        )
+        n = tf.cast(n, x.dtype)
+        dims = (0, *range(1, ndims - 1))
+        mean = tf.math.reduce_mean(x, axis=dims)
+        variance = tf.math.reduce_variance(x, axis=dims)
+        runningmean = (1 - momentum) * runningmean + momentum * mean
+        runningvariance = (1 - momentum) * runningvariance + momentum * variance * n / (
+            n - 1
+        )
+    xnormalized = tf.nn.batch_normalization(x, mean, variance, offset, scale, eps)
+    return xnormalized, runningmean, runningvariance
 
-    mean, var = tf.nn.moments(x, axes=[0, 1, 2], keepdims=True)
-    if scale is None:
-        scale = tf.ones_like(var)
-    if bias is None:
-        bias = tf.zeros_like(mean)
 
-    if affine:
-        normalized = tf.nn.batch_normalization(x, mean, var, bias, scale, eps)
-    else:
-        scale_ = tf.ones_like(var)
-        bias_ = tf.zeros_like(mean)
-        normalized = tf.nn.batch_normalization(x, mean, var, bias_, scale_, eps)
-    if track_running_stats:
-        if running_mean is None:
-            running_mean = tf.zeros_like(mean)
-        if running_stddev is None:
-            running_stddev = tf.ones_like(var)
-        running_mean = momentum * running_mean + (1 - momentum) * mean
-        running_stddev = momentum * running_stddev + (1 - momentum) * tf.sqrt(var)
-        if data_format == "NCHW":
-            normalized = tf.transpose(normalized, (0, 3, 1, 2))
-            running_mean = tf.transpose(running_mean, (0, 3, 1, 2))
-            running_stddev = tf.transpose(running_stddev, (0, 3, 1, 2))
-        return normalized, running_mean, running_stddev
-    if data_format == "NCHW":
-        normalized = tf.transpose(normalized, (0, 3, 1, 2))
-    return normalized
+def instance_norm(
+    x: Union[tf.Tensor, tf.Variable],
+    mean: Union[tf.Tensor, tf.Variable],
+    variance: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    scale: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    offset: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    training: bool = False,
+    eps: float = 1e-5,
+    momentum: float = 1e-1,
+    out: Optional[tf.Tensor] = None,
+) -> Tuple[
+    Union[tf.Tensor, tf.Variable],
+    Union[tf.Tensor, tf.Variable],
+    Union[tf.Tensor, tf.Variable],
+]:
+    # Instance Norm with (N,H,W,C) is the same as BatchNorm with (1, H, W, N*C)
+    xdims = len(x.shape)
+    N = x.shape[0]
+    C = x.shape[-1]
+    S = x.shape[1:-1]
+    x = tf.transpose(x, perm=(*range(1, xdims - 1), 0, xdims - 1))
+    x = tf.reshape(x, (1, *S, N * C))
+    mean = tf.tile(mean, [N])
+    variance = tf.tile(variance, [N])
+    scale = tf.tile(scale, [N])
+    offset = tf.tile(offset, [N])
+    xnormalized, runningmean, runningvariance = batch_norm(
+        x,
+        mean,
+        variance,
+        scale=scale,
+        offset=offset,
+        training=training,
+        eps=eps,
+        momentum=momentum,
+        out=out,
+    )
+    xnormalized = tf.reshape(xnormalized, (*S, N, C))
+    return (
+        tf.transpose(xnormalized, perm=(xdims - 2, *range(0, xdims - 2), xdims - 1)),
+        tf.reduce_mean(tf.reshape(runningmean, (N, C)), axis=0),
+        tf.reduce_mean(tf.reshape(runningvariance, (N, C)), axis=0),
+    )
 
 
 def lp_normalize(

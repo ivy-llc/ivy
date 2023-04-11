@@ -1252,9 +1252,11 @@ def _arrays_dim_idx_n_dtypes(draw):
     )
 
     xs = list()
+    available_input_types = draw(helpers.get_dtypes("numeric"))
+    available_input_types.remove("float16")  # half summation unstable in backends
     input_dtypes = draw(
         helpers.array_dtypes(
-            available_dtypes=helpers.get_dtypes("numeric"),
+            available_dtypes=available_input_types,
             num_arrays=num_arrays,
             shared_dtype=True,
         )
@@ -1267,8 +1269,6 @@ def _arrays_dim_idx_n_dtypes(draw):
                 large_abs_safety_factor=2.5,
                 small_abs_safety_factor=2.5,
                 safety_factor_scale="log",
-                min_value=-20,
-                max_value=20,
             )
         )
         xs.append(x)

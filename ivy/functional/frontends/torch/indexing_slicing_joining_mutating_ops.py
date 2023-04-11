@@ -284,8 +284,9 @@ def conj(input):
 
 @to_ivy_arrays_and_back
 def index_add(input, dim, index, source, *, alpha=1, out=None):
-    # ToDo: There is an issue with the torch backend (not caused by ivy)
-    #       where half precision (float16) values get ignored in summation:
+    # Potential Bug:
+    #   There is an issue with the torch backend (not caused by ivy)
+    #   where half precision (float16) values get ignored in summation:
     #
     #   >>> a = torch.tensor(-14., dtype=torch.float16)
     #   >>> b = torch.tensor(1.014, dtype=torch.float16)

@@ -30,7 +30,7 @@ characteristics:
 1. It should have a ``requirements.txt``, or alternatively a ``requirements`` folder,
    which includes a ``requirements.txt`` and an optional ``optional.txt`` file.
 
-2. It can have an optional ``optional.txt`` file, if not the script the script will
+2. It can have an optional ``optional.txt`` file, if not the script will
    simply ignore it.
 
 3. It should have a ``docs`` folder, which contains an ``index.rst`` file. This file
@@ -68,7 +68,7 @@ The Docker image
 
 The Docker image `unifyai/doc-builder <https://hub.docker.com/r/unifyai/doc-builder>`_
 works as a wrapper around the ``make_docs_without_docker.sh`` script. It runs the script
- on the ``/project`` directory, located in the container `as shown here <https://github.com/unifyai/doc-builder/blob/master/Dockerfile#L20>`_:
+on the ``/project`` directory, located in the container `as shown here <https://github.com/unifyai/doc-builder/blob/master/Dockerfile#L20>`_:
 
 .. code-block:: bash
 
@@ -197,7 +197,7 @@ before building the docs.
 Custom Extensions
 -----------------
 
-As of writing this documentation, Ivy's doc-builder is using 3 custom extensions:
+As of writing this documentation, Ivy's doc-builder is using 4 custom extensions:
 
 1. ``custom_autosummary``
 2. ``custom_builder``

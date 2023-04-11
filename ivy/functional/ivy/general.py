@@ -611,7 +611,7 @@ def array_equal(
 
 
 @handle_array_function
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
 def all_equal(
@@ -904,7 +904,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray], /) -> List:
 
 
 @handle_array_function
-@outputs_to_ivy_arrays
+@inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
 def clip_vector_norm(
@@ -993,6 +993,7 @@ def clip_vector_norm(
     return ret
 
 
+@inputs_to_ivy_arrays
 @handle_array_function
 @handle_nestable
 @handle_exceptions
@@ -1075,7 +1076,7 @@ def clip_matrix_norm(
 
 
 @handle_array_function
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
@@ -1237,7 +1238,7 @@ def value_is_nan(
     x_scalar = ivy.to_scalar(x) if ivy.is_array(x) else x
     if not x_scalar == x:
         return True
-    if include_infs and x_scalar == INF or x_scalar == -INF:
+    if include_infs and (x_scalar == INF or x_scalar == -INF):
         return True
     return False
 
@@ -1761,7 +1762,7 @@ def current_backend_str() -> Union[str, None]:
 
 
 @handle_array_function
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
@@ -1886,7 +1887,7 @@ def einops_rearrange(
 
 
 @handle_array_function
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
@@ -1960,7 +1961,7 @@ einops_reduce.unsupported_dtypes = {"torch": ("float16",)}
 
 
 @handle_array_function
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
@@ -2499,7 +2500,7 @@ def inplace_variables_supported() -> bool:
 
 
 @handle_array_function
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
 def supports_inplace_updates(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
@@ -3738,3 +3739,52 @@ def vmap(
     """
     # TODO: optimize in the numpy and tensorflow backends and extend functionality
     return current_backend().vmap(func, in_axes, out_axes)
+
+
+@to_native_arrays_and_back
+@handle_nestable
+@handle_exceptions
+def isin(
+    elements: Union[ivy.Array, ivy.NativeArray],
+    test_elements: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    assume_unique: bool = False,
+    invert: bool = False,
+) -> ivy.Array:
+    """Tests if each element of elements is in test_elements.
+
+    Parameters
+    ----------
+    elements
+        input array
+    test_elements
+        values against which to test for each input element
+    assume_unique
+        If True, assumes both elements and test_elements contain unique elements,
+        which can speed up the calculation. Default value is False.
+    invert
+        If True, inverts the boolean return array, resulting in True values for
+        elements not in test_elements. Default value is False.
+
+    Returns
+    -------
+    ret
+        output a boolean array of the same shape as elements that is True for elements
+        in test_elements and False otherwise.
+
+    Examples
+    --------
+    >>> x = ivy.array([[10, 7, 4], [3, 2, 1]])
+    >>> y = ivy.array([1, 2, 3])
+    >>> ivy.isin(x, y)
+    ivy.array([[False, False, False], [ True,  True,  True]])
+
+    >>> x = ivy.array([3, 2, 1, 0])
+    >>> y = ivy.array([1, 2, 3])
+    >>> ivy.isin(x, y, invert=True)
+    ivy.array([False, False, False,  True])
+    """
+    return ivy.current_backend().isin(
+        elements, test_elements, assume_unique=assume_unique, invert=invert
+    )

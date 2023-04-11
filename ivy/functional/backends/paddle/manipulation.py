@@ -8,12 +8,9 @@ import paddle
 
 # local
 import ivy
-
-# from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
 
 # noinspection PyProtectedMember
-# from ivy.functional.ivy.manipulation import _calculate_out_shape
 from . import backend_version
 
 
@@ -216,9 +213,8 @@ def stack(
     axis: int = 0,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    # The input list is converted to a tensor to promote the
-    # dtypes of the elements to the same dtype.
-    # This is necessary because the stack function does not support mixed dtypes.
+    # The input list converted to a tensor to ensure matching dtype of elements.
+    # Because stack function does not support mixed dtypes.
     dtype_list = set(map(lambda x: x.dtype, arrays))
     if len(dtype_list) == 1:
         dtype = dtype_list.pop()
