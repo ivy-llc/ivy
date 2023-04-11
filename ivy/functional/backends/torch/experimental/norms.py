@@ -1,7 +1,7 @@
 import torch
-from typing import Optional
+from typing import Optional, Tuple
 
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, handle_mixed_function
 from .. import backend_version
 
 
@@ -20,65 +20,97 @@ def l2_normalize(
 l2_normalize.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
-def instance_norm(
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, backend_version)
+@handle_mixed_function(
+    lambda x, mean, variance, scale, offset, **kwargs: (
+        x.ndim > 1
+        and mean.ndim == 1
+        and variance.ndim == 1
+        and (scale is None or scale.ndim == 1)
+        and (offset is None or offset.ndim == 1)
+    )
+)
+def batch_norm(
     x: torch.Tensor,
+    mean: torch.Tensor,
+    variance: torch.Tensor,
     /,
     *,
     scale: Optional[torch.Tensor] = None,
-    bias: Optional[torch.Tensor] = None,
-    eps: float = 1e-05,
-    momentum: float = 0.1,
-    data_format: str = "NCHW",
-    running_mean: Optional[torch.Tensor] = None,
-    running_stddev: Optional[torch.Tensor] = None,
-    affine: bool = True,
-    track_running_stats: bool = False,
+    offset: Optional[torch.Tensor] = None,
+    training: bool = False,
+    eps: float = 1e-5,
+    momentum: float = 1e-1,
     out: Optional[torch.Tensor] = None,
-):
-    if scale is not None:
-        scale = torch.reshape(scale, shape=(1, -1, 1, 1))
-    if bias is not None:
-        bias = torch.reshape(bias, shape=(1, -1, 1, 1))
-    if running_mean is not None:
-        running_mean = torch.reshape(running_mean, shape=(1, -1, 1, 1))
-    if running_stddev is not None:
-        running_stddev = torch.reshape(running_stddev, shape=(1, -1, 1, 1))
-    if data_format == "NHWC":
-        x = torch.permute(x, (0, 3, 1, 2))
-    elif data_format != "NCHW":
-        raise NotImplementedError
-    mean = torch.mean(x, dim=(0, 2, 3), keepdim=True)
-    var = torch.var(x, dim=(0, 2, 3), keepdim=True, unbiased=False)
-    normalized = (x - mean) / torch.sqrt(var + eps)
-    if scale is None:
-        scale = torch.ones_like(var)
-    if bias is None:
-        bias = torch.zeros_like(mean)
-    if affine:
-        if scale is None:
-            scale = torch.ones_like(var)
-        if bias is None:
-            bias = torch.zeros_like(mean)
-        normalized = scale * normalized + bias
-    if track_running_stats:
-        if running_mean is None:
-            running_mean = torch.ones_like(mean)
-        if running_stddev is None:
-            running_stddev = torch.ones_like(var)
-        running_mean = momentum * running_mean + (1 - momentum) * mean
-        running_stddev = momentum * running_stddev + (1 - momentum) * torch.sqrt(var)
-        if data_format == "NHWC":
-            normalized = torch.permute(normalized, (0, 2, 3, 1))
-            running_mean = torch.permute(running_mean, (0, 2, 3, 1))
-            running_stddev = torch.permute(running_stddev, (0, 2, 3, 1))
-        return normalized, running_mean, running_stddev
-    if data_format == "NHWC":
-        normalized = torch.permute(normalized, (0, 2, 3, 1))
-    return normalized
+) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    # reshape to N,C,H,W
+    xdims = x.ndim
+    x = torch.permute(x, dims=(0, xdims - 1, *range(1, xdims - 1)))
+    mean.requires_grad = False
+    variance.requires_grad = False
+    scale.requires_grad = False
+    offset.requires_grad = False
+    runningmean = mean.clone()
+    runningvariance = variance.clone()
+    xnormalized = torch.nn.functional.batch_norm(
+        x,
+        runningmean,
+        runningvariance,
+        weight=scale,
+        bias=offset,
+        training=training,
+        eps=eps,
+        momentum=momentum,
+    )
+    xnormalized = torch.permute(xnormalized, dims=(0, *range(2, xdims), 1))
+    return xnormalized, runningmean, runningvariance
 
 
-instance_norm.support_native_out = False
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
+@handle_mixed_function(
+    lambda x, mean, variance, scale, offset, **kwargs: (
+        x.ndim > 1
+        and mean.ndim == 1
+        and variance.ndim == 1
+        and (scale is None or scale.ndim == 1)
+        and (offset is None or offset.ndim == 1)
+    )
+)
+def instance_norm(
+    x: torch.Tensor,
+    mean: torch.Tensor,
+    variance: torch.Tensor,
+    /,
+    *,
+    scale: Optional[torch.Tensor] = None,
+    offset: Optional[torch.Tensor] = None,
+    training: bool = False,
+    eps: float = 0e-5,
+    momentum: float = 1e-1,
+    out: Optional[torch.Tensor] = None,
+) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    mean.requires_grad = False
+    variance.requires_grad = False
+    scale.requires_grad = False
+    offset.requires_grad = False
+    runningmean = mean.clone()
+    runningvariance = variance.clone()
+    # reshape  from  N, *S, C to N, C, *S
+    xdims = x.ndim
+    x = torch.permute(x, dims=(0, xdims - 1, *range(1, xdims - 1)))
+
+    xnormalized = torch.nn.functional.instance_norm(
+        x,
+        runningmean,
+        runningvariance,
+        weight=scale,
+        bias=offset,
+        use_input_stats=training,
+        eps=eps,
+        momentum=momentum,
+    )
+    xnormalized = torch.permute(xnormalized, dims=(0, *range(2, xdims), 1))
+    return xnormalized, runningmean, runningvariance
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)

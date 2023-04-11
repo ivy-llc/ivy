@@ -370,3 +370,7 @@ def isin(
         ivy.equal(ivy.expand_dims(elements, axis=-1), test_elements), axis=-1
     )
     return ivy.reshape(output, input_shape) ^ invert
+
+
+def itemsize(x: paddle.Tensor) -> int:
+    return x.dtype.itemsize()

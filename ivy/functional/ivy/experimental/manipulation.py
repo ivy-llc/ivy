@@ -18,11 +18,13 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     handle_view,
+    inputs_to_ivy_arrays,
 )
 from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
 
 
+@inputs_to_ivy_arrays
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
@@ -207,6 +209,7 @@ def moveaxis(
     return ivy.current_backend().moveaxis(a, source, destination, out=out)
 
 
+@inputs_to_ivy_arrays
 @handle_exceptions
 def ndenumerate(
     input: Iterable,
@@ -942,7 +945,7 @@ def _check_arguments(
     )
 
 
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
