@@ -46,6 +46,21 @@ class DeviceArray:
     # Instance Methods #
     # ---------------- #
 
+    def argmax(
+        self,
+        /,
+        *,
+        axis=None,
+        out=None,
+        keepdims=False,
+    ):
+        return jax_frontend.numpy.argmax(
+            self._ivy_array,
+            axis=axis,
+            out=out,
+            keepdims=keepdims,
+        )
+
     def __add__(self, other):
         return jax_frontend.numpy.add(self, other)
 

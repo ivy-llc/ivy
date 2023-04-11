@@ -11,7 +11,6 @@ from typing import (
     Callable,
     Protocol,
     TypeVar,
-    Iterable,
 )
 import numpy as np
 
@@ -164,8 +163,8 @@ class NestedSequence(Protocol[_T_co]):
 # -------------------#
 
 
-@handle_array_function
 @infer_device
+@handle_array_function
 @outputs_to_ivy_arrays
 @handle_out_argument
 @handle_array_like_without_promotion
@@ -355,9 +354,9 @@ def asarray(
     )
 
 
-@handle_array_function
 @infer_device
 @infer_dtype
+@handle_array_function
 @outputs_to_ivy_arrays
 @handle_out_argument
 @handle_array_like_without_promotion
@@ -415,9 +414,9 @@ def zeros(
     return current_backend().zeros(shape, dtype=dtype, device=device, out=out)
 
 
-@handle_array_function
 @infer_device
 @infer_dtype
+@handle_array_function
 @outputs_to_ivy_arrays
 @handle_out_argument
 @handle_array_like_without_promotion
@@ -499,9 +498,9 @@ def ones(
     return current_backend().ones(shape, dtype=dtype, device=device, out=out)
 
 
-@handle_array_function
 @infer_device
 @infer_dtype
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
@@ -604,9 +603,9 @@ def full_like(
     )
 
 
-@handle_array_function
 @infer_device
 @infer_dtype
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
@@ -721,9 +720,9 @@ def ones_like(
     return current_backend(x).ones_like(x, dtype=dtype, device=device, out=out)
 
 
-@handle_array_function
 @infer_device
 @infer_dtype
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
@@ -934,9 +933,9 @@ def triu(
     return current_backend(x).triu(x, k=k, out=out)
 
 
-@handle_array_function
 @infer_device
 @infer_dtype
+@handle_array_function
 @outputs_to_ivy_arrays
 @handle_out_argument
 @handle_array_like_without_promotion
@@ -982,9 +981,9 @@ def empty(
     return current_backend().empty(shape, dtype=dtype, device=device, out=out)
 
 
-@handle_array_function
 @infer_device
 @infer_dtype
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
@@ -1032,9 +1031,9 @@ def empty_like(
     return current_backend(x).empty_like(x, dtype=dtype, device=device, out=out)
 
 
-@handle_array_function
 @infer_device
 @infer_dtype
+@handle_array_function
 @outputs_to_ivy_arrays
 @handle_out_argument
 @handle_array_like_without_promotion
@@ -1178,9 +1177,9 @@ def eye(
     )
 
 
-@handle_array_function
 @infer_device
 @infer_dtype
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
@@ -1400,8 +1399,8 @@ def meshgrid(
     return current_backend().meshgrid(*arrays, sparse=sparse, indexing=indexing)
 
 
-@handle_array_function
 @infer_device
+@handle_array_function
 @outputs_to_ivy_arrays
 @handle_out_argument
 @handle_array_like_without_promotion
@@ -1692,7 +1691,7 @@ def native_array(
         A native array interpretation of x.
 
     Examples
-    -------
+    --------
     With :class:`List[Number]` input:
 
     >>> x = [1, 2, 3]
@@ -1719,8 +1718,8 @@ def native_array(
     return ivy.to_native(ivy.asarray(x, dtype=dtype, device=device))
 
 
-@handle_array_function
 @infer_device
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion
@@ -1831,9 +1830,9 @@ def one_hot(
     )
 
 
-@handle_array_function
 @infer_device
 @infer_dtype
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion

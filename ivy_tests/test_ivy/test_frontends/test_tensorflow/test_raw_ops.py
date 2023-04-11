@@ -312,6 +312,41 @@ def test_tensorflow_Cos(  # NOQA
     )
 
 
+# Cross
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Cross",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=3,
+        max_dim_size=3,
+        safety_factor_scale="log",
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Cross(  # NOQA
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=xs[0],
+        b=xs[1],
+    )
+
+
 # Rsqrt
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Rsqrt",
@@ -347,7 +382,7 @@ def test_tensorflow_Rsqrt(
     ),
     test_with_out=st.just(False),
 )
-def test_tensorflow_Cosh(  # NOQA
+def test_tensorflow_Cosh(
     *,
     dtype_and_x,
     frontend,
@@ -987,6 +1022,34 @@ def test_tensorflow_Tanh(  # NOQA
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+    )
+
+
+# TanhGrad
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.TanhGrad",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"), num_arrays=2, shared_dtype=True
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_TanhGrad(  # NOQA
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        y=xs[0],
+        dy=xs[1],
     )
 
 
@@ -2874,13 +2937,13 @@ def test_tensorflow_Xlog1py(  # NOQA
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Xlogy",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=["float16", "float32", "float64"],
         num_arrays=2,
         shared_dtype=True,
     ),
     test_with_out=st.just(False),
 )
-def test_tensorflow_Xlogy(  # NOQA
+def test_tensorflow_Xlogy(
     *,
     dtype_and_x,
     frontend,
@@ -3487,9 +3550,9 @@ def test_tensorflow_BandedTriangularSolve(
     test_flags,
     fn_tree,
     on_device,
-    matrix, 
-    rhs, 
-    lower, 
+    matrix,
+    rhs,
+    lower,
     adjoint,
 ):
     input_dtype, x = dtype_and_x
@@ -3499,11 +3562,11 @@ def test_tensorflow_BandedTriangularSolve(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        matrix=x[0], 
-        rhs=x[1], 
-        lower=lower, 
+        matrix=x[0],
+        rhs=x[1],
+        lower=lower,
         adjoint=adjoint,
-    )    
+    )
 
 
 # BatchMatMul
@@ -3520,7 +3583,7 @@ def test_tensorflow_BatchMatMul(
     test_flags,
     fn_tree,
     on_device,
-    adj_x, 
+    adj_x,
     adj_y,
 ):
     input_dtype, x = dtype_and_x
@@ -3532,9 +3595,9 @@ def test_tensorflow_BatchMatMul(
         on_device=on_device,
         x=x[0],
         y=x[1],
-        adj_x=adj_x, 
+        adj_x=adj_x,
         adj_y=adj_y,
-    )  
+    )
 
 
 # BatchMatMulV2
@@ -3551,7 +3614,7 @@ def test_tensorflow_BatchMatMulV2(
     test_flags,
     fn_tree,
     on_device,
-    adj_x, 
+    adj_x,
     adj_y,
 ):
     input_dtype, x = dtype_and_x
@@ -3563,9 +3626,9 @@ def test_tensorflow_BatchMatMulV2(
         on_device=on_device,
         x=x[0],
         y=x[1],
-        adj_x=adj_x, 
+        adj_x=adj_x,
         adj_y=adj_y,
-    )  
+    )
 
 
 # BatchMatMulV3
@@ -3583,7 +3646,7 @@ def test_tensorflow_BatchMatMulV3(
     fn_tree,
     on_device,
     Tout,
-    adj_x, 
+    adj_x,
     adj_y,
 ):
     input_dtype, x = dtype_and_x
@@ -3596,6 +3659,94 @@ def test_tensorflow_BatchMatMulV3(
         x=x[0],
         y=x[1],
         Tout=Tout,
-        adj_x=adj_x, 
+        adj_x=adj_x,
         adj_y=adj_y,
-    )    
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Size",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), max_num_dims=4
+    ),
+    output_dtype=st.sampled_from(["int32", "int64"]),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Size(  # NOQA
+    *, dtype_and_x, frontend, test_flags, fn_tree, on_device, output_dtype
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        out_type=output_dtype,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Prod",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        valid_axis=True,
+        force_int_axis=True,
+        min_num_dims=1,
+        min_value=-5,
+        max_value=5,
+    ),
+    keep_dims=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Prod(  # NOQA
+    *,
+    dtype_x_axis,
+    keep_dims,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        axis=axis,
+        keep_dims=keep_dims,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.LeakyRelu",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+    ),
+    test_with_out=st.just(False),
+    alpha=helpers.floats(min_value=0, max_value=1),
+)
+def test_tensorflow_LeakyReLU(
+    *,
+    dtype_and_x,
+    alpha,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    return helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        features=x[0],
+        alpha=alpha,
+    )
