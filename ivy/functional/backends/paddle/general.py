@@ -291,6 +291,7 @@ def multiprocessing(context=None):
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
+
 def scatter_flat(
     indices: paddle.Tensor,
     updates: paddle.Tensor,
@@ -299,9 +300,31 @@ def scatter_flat(
     size: Optional[int] = None,
     reduction: str = "sum",
     out: Optional[paddle.Tensor] = None,
-):
-    raise IvyNotImplementedException()
+) -> paddle.Tensor:
+    # Infer the output size from the indices tensor
+    if size is None:
+        size = int(indices.max().numpy()) + 1
 
+    # Create the output tensor if it is not provided
+    if out is None:
+        out = paddle.zeros((size,) + updates.shape[1:], dtype=updates.dtype)
+
+    # Perform the scatter operation
+    if reduction == "sum":
+        paddle.scatter_add(out, indices, updates)
+    elif reduction == "mean":
+        counts = paddle.zeros((size,), dtype=updates.dtype)
+        paddle.scatter_add(counts, indices, paddle.ones_like(indices))
+        paddle.scatter_add(out, indices, updates)
+        paddle.divide(out, counts.reshape((-1,) + (1,) * (updates.ndim - 1)), out=out)
+    elif reduction == "min":
+        paddle.scatter_min(out, indices, updates)
+    elif reduction == "max":
+        paddle.scatter_max(out, indices, updates)
+    else:
+        raise ValueError(f"Invalid reduction type: {reduction}")
+
+    return out
 
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
