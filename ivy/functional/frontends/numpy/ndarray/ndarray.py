@@ -291,7 +291,7 @@ class ndarray:
     def tobytes(self, order="C") -> bytes:
         return np_frontend.tobytes(self.data, order=order)
 
-    def tolist(self):
+    def tolist(self) -> list:
         return np_frontend.tolist(self._ivy_array)
 
     def view(self):
