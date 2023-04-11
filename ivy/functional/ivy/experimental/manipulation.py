@@ -1629,24 +1629,16 @@ def as_strided(
     itemsize = x.dtype.itemsize
     buffer_size = size * itemsize
 
-    offsets = []
-    for i, (dim, stride) in enumerate(zip(shape, strides)):
-        if stride < 0:
-            offsets += [stride * (dim - 1)]
-        else:
-            offsets += [0]
-
-    buffer = bytearray(buffer_size)
+    offsets = [stride * (dim - 1) if stride < 0 else 0
+               for dim, stride in zip(shape, strides)]
 
     src = memoryview(x).cast("b")
+    buffer = bytearray(buffer_size)
     dst = memoryview(buffer).cast("b")
-    strides_inv = list(strides[::-1])
-    cumprod = 1
-    for i, dim in enumerate(shape[::-1][:-1]):
-        cumprod *= dim
-        strides_inv[i + 1] = -cumprod * strides_inv[i]
+
     for i in range(size):
-        src_index = sum((i // cumprod % sh) * st for sh, st in zip(shape, strides))
+        src_index = sum((i // math.prod(shape[j+1:]) % shape[j]) * strides[j]
+                        for j in range(len(shape)))
         src_offset = src_index + offsets[i % len(offsets)]
         dst_offset = i * itemsize
         dst[dst_offset:dst_offset+itemsize] = src[src_offset:src_offset+itemsize]
