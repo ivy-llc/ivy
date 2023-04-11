@@ -7,7 +7,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
     integer_arrays_to_float,
-    handle_array_like_without_promotion,
+    handle_array_like_without_promotion, inputs_to_ivy_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -1283,7 +1283,7 @@ def real(
     return ivy.current_backend(x).real(x, out=out)
 
 
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
