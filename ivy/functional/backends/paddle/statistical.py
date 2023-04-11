@@ -310,7 +310,8 @@ def einsum(
                     operand = paddle.cast(operand, paddle.float32)
                 else:
                     raise ValueError(
-                        f"Unsupported dtype {operand_dtype} and no fallback dtype specified"
+                        f"Unsupported dtype {operand_dtype} "
+                        "and no fallback dtype specified"
                     )
             except Exception as e:
                 print(f"Failed to cast operand {i} to a supported dtype: {e}")
@@ -326,5 +327,3 @@ def einsum(
         print(f"Failed to evaluate einsum expression: {e}")
         # fallback to a ivy implementation here
         return ivy.einsum(equation, *operands)
-
-
