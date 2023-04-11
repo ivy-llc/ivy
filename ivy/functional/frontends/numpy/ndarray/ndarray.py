@@ -300,7 +300,7 @@ class ndarray:
             keepdims=False,
             initial=None,
             where=True,
-    ) -> list:
+    ):
         return np_frontend.tolist(
             self._ivy_array,
             axis=axis,
