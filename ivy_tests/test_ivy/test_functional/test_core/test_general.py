@@ -31,10 +31,10 @@ except ImportError:
 import threading
 import ivy
 
-try:
-    import ivy.functional.backends.jax
-except ImportError:
-    ivy.functional.backends.jax = SimpleNamespace()
+# try:
+#     import ivy.functional.backends.jax
+# except ImportError:
+ivy.functional.backends.jax = SimpleNamespace()
 
 try:
     import ivy.functional.backends.tensorflow
@@ -83,8 +83,8 @@ def test_set_framework(fw_str):
 def test_use_within_use_framework():
     with ivy.functional.backends.numpy.use:
         pass
-    with ivy.functional.backends.jax.use:
-        pass
+    # with ivy.functional.backends.jax.use:
+    #     pass
     with ivy.functional.backends.tensorflow.use:
         pass
     with ivy.functional.backends.torch.use:

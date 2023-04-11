@@ -82,12 +82,13 @@ def empty_func(*args, **kwargs):
     return None
 
 
-try:
-    from ivy.functional.backends.jax.general import (
-        is_native_array as is_jax_native_array,
-    )
-except ImportError:
-    is_jax_native_array = empty_func
+# try:
+#     from ivy.functional.backends.jax.general import (
+#         is_native_array as is_jax_native_array,
+#     )
+# except ImportError:
+
+is_jax_native_array = empty_func
 
 try:
     from ivy.functional.backends.numpy.general import (

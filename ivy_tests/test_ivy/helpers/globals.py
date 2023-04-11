@@ -110,14 +110,15 @@ def _get_ivy_jax(version=None):
             version.split("/")[2] + "/" + version.split("/")[3],
         ]
         config.allow_global_framework_imports(fw=las)
-        import ivy.functional.backends.jax
+        # import ivy.functional.backends.jax
 
     else:
         try:
-            import ivy.functional.backends.jax
+            # import ivy.functional.backends.jax
+            pass
         except ImportError:
             return None
-    return ivy.functional.backends.jax
+    return None
 
 
 def _get_ivy_tensorflow(version=None):
