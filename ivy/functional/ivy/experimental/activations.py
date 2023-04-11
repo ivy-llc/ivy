@@ -10,7 +10,8 @@ from ivy.func_wrapper import (
     handle_nestable,
     to_native_arrays_and_back,
     handle_array_like_without_promotion,
-    handle_out_argument, inputs_to_ivy_arrays,
+    handle_out_argument,
+    inputs_to_ivy_arrays,
 )
 
 

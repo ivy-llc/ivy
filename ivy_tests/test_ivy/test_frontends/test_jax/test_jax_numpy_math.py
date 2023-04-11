@@ -2655,13 +2655,13 @@ def test_jax_numpy_polyadd(
     m=st.integers(min_value=0, max_value=10),
 )
 def test_jax_numpy_polyder(
-        *,
-        dtype_and_x,
-        m,
-        test_flags,
-        on_device,
-        fn_tree,
-        frontend,
+    *,
+    dtype_and_x,
+    m,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
