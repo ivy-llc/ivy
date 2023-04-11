@@ -4158,7 +4158,7 @@ class _ContainerWithGeneral(ContainerBase):
         Parameters
         ----------
         self
-           The input array.
+           The input container.
 
         Returns
         -------
