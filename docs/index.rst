@@ -42,7 +42,7 @@
   ivy.data_classes.container
 .. autosummary::
   :toctree: docs/utilities
-  :template: top_level_toc.rst
+  :template: top_level_toc_recursive.rst
   :recursive:
 
   ivy.stateful
