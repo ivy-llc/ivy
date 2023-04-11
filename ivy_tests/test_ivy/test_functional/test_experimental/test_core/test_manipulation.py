@@ -1067,8 +1067,6 @@ def _as_strided_helper(draw):
     # all_args=st.just([
     #     [ivy.bool], [ivy.array([[False, False], [False, True]])], (4,), [1]]),
     all_args=_as_strided_helper(),
-    container_flags=st.just([False]),      # for now
-    test_instance_method=st.just(False),   # for now
     test_with_out=st.just(False),
     test_gradients=st.just(False),
     ground_truth_backend="numpy",
