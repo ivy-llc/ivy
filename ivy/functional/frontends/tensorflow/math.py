@@ -44,11 +44,6 @@ def argmax(input, axis, output_type=None, name=None):
         return ivy.astype(ivy.argmax(input, axis=axis), "int64")
 
 
-@to_ivy_arrays_and_back
-def asinh(x, name="asinh"):
-    return ivy.asinh(x)
-
-
 @handle_tf_dtype
 @to_ivy_arrays_and_back
 def confusion_matrix(
@@ -474,6 +469,11 @@ def log_softmax(logits, axis=None):
 @to_ivy_arrays_and_back
 def asin(x, name=None):
     return ivy.asin(x)
+
+
+@to_ivy_arrays_and_back
+def asinh(x, name="asinh"):
+    return ivy.asinh(x)
 
 
 @to_ivy_arrays_and_back
