@@ -1626,21 +1626,20 @@ def as_strided(
         Output Array
     """
     size = math.prod(shape)
+    x = ivy.to_numpy(x)
     itemsize = x.dtype.itemsize
     buffer_size = size * itemsize
-
-    offsets = [stride * (dim - 1) if stride < 0 else 0
-               for dim, stride in zip(shape, strides)]
 
     src = memoryview(x).cast("b")
     buffer = bytearray(buffer_size)
     dst = memoryview(buffer).cast("b")
 
-    for i in range(size):
-        src_index = sum((i // math.prod(shape[j+1:]) % shape[j]) * strides[j]
-                        for j in range(len(shape)))
-        src_offset = src_index + offsets[i % len(offsets)]
-        dst_offset = i * itemsize
-        dst[dst_offset:dst_offset+itemsize] = src[src_offset:src_offset+itemsize]
+    for index in ivy.ndindex(shape):
+        src_index = sum(index[i] * strides[i] // 8 for i in range(len(shape)))
+        src_offset = strides[-1] // 8 * (index[-1] % 8)
+        dst_index = sum(index[i] * math.prod(shape[i + 1:]) * itemsize
+                        for i in range(len(shape)))
+        dst[dst_index:dst_index + itemsize] = \
+            src[src_index + src_offset:src_index + src_offset + itemsize]
 
     return ivy.frombuffer(buffer, dtype=x.dtype, count=size).reshape(shape)
