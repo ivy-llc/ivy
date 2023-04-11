@@ -49,7 +49,7 @@ class _ArrayWithNorms(abc.ABC):
         ret
             The layer after applying layer normalization.
 
-         Examples
+        Examples
         --------
         >>> x = ivy.array([[0.0976, -0.3452,  1.2740],
         ...                   [0.1047,  0.5886,  1.2732],
