@@ -7,7 +7,7 @@ import math
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, handle_mixed_function
 from . import backend_version
-from ivy.functional.ivy.layers import _handle_padding
+from ivy.functional.ivy.layers import _handle_padding, _get_num_padded_values
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, backend_version)
@@ -184,6 +184,7 @@ def avg_pool1d(
     /,
     *,
     data_format: str = "NWC",
+    count_include_pad: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(strides, int):
@@ -200,9 +201,24 @@ def avg_pool1d(
         x = x.permute(0, 2, 1)
     x_shape = x.shape[2]
     pad_w = _handle_padding(x_shape, strides[0], kernel[0], padding)
-    x = torch.nn.functional.pad(x, [pad_w // 2, pad_w - pad_w // 2], mode="replicate")
+    x = torch.nn.functional.pad(x, [pad_w // 2, pad_w - pad_w // 2], value=0.0)
 
     res = torch.nn.functional.avg_pool1d(x, kernel, strides, 0)
+
+    if not count_include_pad:
+        num_padded_values = ivy.map(
+            _get_num_padded_values,
+            constant={
+                "p": pad_w,
+                "n": x_shape,
+                "k": kernel[0],
+                "s": strides[0],
+            },
+            unique={
+                "i": torch.arange(res.shape[2]),
+            },
+        )
+        res = (kernel[0] * res) / (kernel[0] - torch.tensor(num_padded_values))
 
     if data_format == "NWC":
         res = res.permute(0, 2, 1)
@@ -226,6 +242,7 @@ def avg_pool2d(
     /,
     *,
     data_format: str = "NHWC",
+    count_include_pad: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(strides, int):
@@ -246,7 +263,7 @@ def avg_pool2d(
     x = torch.nn.functional.pad(
         x,
         [pad_w // 2, pad_w - pad_w // 2, pad_h // 2, pad_h - pad_h // 2],
-        mode="replicate",
+        value=0.0,
     )
     if padding != "VALID" and padding != "SAME":
         raise ivy.utils.exceptions.IvyException(
@@ -254,6 +271,38 @@ def avg_pool2d(
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
     res = torch.nn.functional.avg_pool2d(x, kernel, strides, 0)
+
+    if not count_include_pad and (pad_w or pad_h):
+        padded = [pad_h, pad_w]
+        num_padded_values = [
+            ivy.map(
+                _get_num_padded_values,
+                constant={
+                    "p": padded[i],
+                    "n": x_shape[i],
+                    "k": kernel[i],
+                    "s": strides[i],
+                },
+                unique={
+                    "i": torch.arange(res.shape[i + 2]),
+                },
+            )
+            for i in range(2)
+        ]
+        num_padded_values1 = torch.tensor(num_padded_values[0], dtype=res.dtype)[
+            :, None
+        ]
+        num_padded_values2 = torch.tensor(num_padded_values[1], dtype=res.dtype)[
+            None, :
+        ]
+        num_padded_values = (
+            num_padded_values1 * kernel[1]
+            + num_padded_values2 * kernel[0]
+            - num_padded_values1 * num_padded_values2
+        )
+        res = (kernel[0] * kernel[1] * res) / (
+            kernel[0] * kernel[1] - num_padded_values
+        )
     if data_format == "NHWC":
         return res.permute(0, 2, 3, 1)
     return res

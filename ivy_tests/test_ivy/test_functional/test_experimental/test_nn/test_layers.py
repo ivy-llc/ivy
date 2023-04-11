@@ -91,13 +91,16 @@ def test_max_pool1d(
 @handle_test(
     fn_tree="functional.ivy.experimental.avg_pool1d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
+    count_include_pad=st.booleans(),
     test_gradients=st.just(False),
 )
 def test_avg_pool1d(
     *,
     x_k_s_p,
+    count_include_pad,
     test_flags,
     backend_fw,
+    on_device,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
@@ -108,10 +111,12 @@ def test_avg_pool1d(
         fn_name="avg_pool1d",
         rtol_=1e-2,
         atol_=1e-2,
+        on_device=on_device,
         x=x[0],
         kernel=kernel,
         strides=stride,
         padding=pad,
+        count_include_pad=count_include_pad,
     )
 
 
@@ -174,13 +179,16 @@ def test_avg_pool3d(
 @handle_test(
     fn_tree="functional.ivy.experimental.avg_pool2d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=4, max_dims=4, min_side=1, max_side=4),
+    count_include_pad=st.booleans(),
     test_gradients=st.just(False),
 )
 def test_avg_pool2d(
     *,
     x_k_s_p,
+    count_include_pad,
     test_flags,
     backend_fw,
+    on_device,
     fn_name,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
@@ -189,6 +197,7 @@ def test_avg_pool2d(
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
+        on_device=on_device,
         fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
@@ -196,6 +205,7 @@ def test_avg_pool2d(
         kernel=kernel,
         strides=stride,
         padding=pad,
+        count_include_pad=count_include_pad,
     )
 
 

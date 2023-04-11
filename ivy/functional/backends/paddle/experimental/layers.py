@@ -2,13 +2,8 @@
 from typing import Optional, Union, Tuple, Literal, Sequence
 import paddle
 from ivy.utils.exceptions import IvyNotImplementedException
-import math
 
 # local
-import ivy
-
-from . import backend_version
-from ivy.functional.ivy.layers import _handle_padding
 
 
 def max_pool1d(
@@ -60,6 +55,7 @@ def avg_pool1d(
     /,
     *,
     data_format: str = "NWC",
+    count_include_pad: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()
@@ -73,6 +69,7 @@ def avg_pool2d(
     /,
     *,
     data_format: str = "NHWC",
+    count_include_pad: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()
