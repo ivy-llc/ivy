@@ -347,7 +347,7 @@ def test_jax_numpy_unravel_index(
     n=helpers.ints(min_value=3, max_value=10),
     mask_func=st.just(jax.numpy.triu),
     k=helpers.ints(min_value=-5, max_value=5),
-    input_dtype=helpers.get_dtypes("valid", full=False),
+    input_dtype=helpers.get_dtypes("valid"),
     test_with_out=st.just(False),
     number_positional_args=st.just(2),
 )

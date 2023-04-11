@@ -1,3 +1,6 @@
+# global
+import inspect
+
 # local
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import (
@@ -57,8 +60,14 @@ def unravel_index(indices, shape):
 def mask_indices(*args, **kwargs):
     n = args[0]
     mask_func = args[1]
-    k = kwargs.get("k", 0)
-    a = ivy.ones((n, n))
-    mask = mask_func(a, k=k)
-    indices = ivy.argwhere(mask.ivy_array)
-    return indices[:, 0], indices[:, 1]
+    mask_func_obj = inspect.unwrap(mask_func)
+    mask_func_name = mask_func_obj.__name__
+    try:
+        ivy_mask_func_obj = getattr(ivy.functional.frontends.jax.numpy, mask_func_name)
+        k = kwargs.get("k", 0)
+        a = ivy.ones((n, n))
+        mask = ivy_mask_func_obj(a, k=k)
+        indices = ivy.argwhere(mask.ivy_array)
+        return indices[:, 0], indices[:, 1]
+    except AttributeError as e:
+        print(f"Attribute error: {e}")
