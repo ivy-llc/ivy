@@ -1624,6 +1624,15 @@ def as_strided(
     -------
     ret
         Output Array
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, 3, 4, 5, 6])
+    >>> ivy.as_strided(x, (4, 3), (8, 8))
+    ivy.array([[1, 2, 3],
+       [2, 3, 4],
+       [3, 4, 5],
+       [4, 5, 6]])
     """
     size = math.prod(shape)
     itemsize = x.itemsize
@@ -1640,4 +1649,7 @@ def as_strided(
         dst[dst_index:dst_index + itemsize] = \
             src[src_index:src_index + itemsize]
 
-    return ivy.frombuffer(buffer, dtype=x.dtype, count=size).reshape(shape)
+    return ivy.reshape(
+        ivy.frombuffer(buffer, dtype=x.dtype, count=size),
+        shape,
+    )
