@@ -178,7 +178,7 @@ class ModuleConverters:
             def _forward(self, *a, **kw):
                 a, kw = ivy.args_to_native(*a, **kw)
                 params_hk = _dict_to_hk_flat_map(self.v.cont_to_dict())
-                ret = self._native_module.apply(params_hk, None, *a, **kw)
+                ret = self._native_module.apply(params_hk, 0, *a, **kw)
                 if isinstance(ret, tuple):
                     return ivy.args_to_native(*ret)
                 return ivy.to_native(ret)
@@ -208,6 +208,133 @@ class ModuleConverters:
             *i_args,
             params_hk=params_hk,
             native_module=transformed_module,
+            device=device,
+            devices=devices,
+            **i_kwargs,
+        )
+
+    @staticmethod
+    def from_flax_module(
+        native_module,
+        params_fx=None,
+        rng_seed=0,
+        constructor_args: Optional[List] = None,
+        constructor_kwargs: Optional[Dict] = None,
+        instance_args: Optional[List] = None,
+        instance_kwargs: Optional[Dict] = None,
+        device=None,
+        devices=None,
+    ):
+        """
+        Converts a Flax module instance to an Ivy module instance.
+
+        Parameters
+        ----------
+        native_module
+            The module in the native framework to convert(class or instance).
+        params_fx
+            Flax parameters to pass to the constructor of the native module.
+            Default is ``None``.
+        rng_seed
+            Seed used to initialize flax parameters is initializing from a class.
+            Default is ``0``.
+        constructor_args
+            Positional arguments to pass to the constructor of the native module.
+            Default is ``None``.
+        constructor_kwargs
+            Key-word arguments to pass to the constructor of the native module.
+             Default is ``None``.
+        instance_args
+            Positional arguments to pass to the forward pass of the native module.
+            Default is ``None``.
+        instance_kwargs
+            Key-word arguments to pass to the forward pass of the native module.
+             Default is ``None``.
+        device
+            The device on which to create module variables. Default is ``None``.
+        devices
+            The devices on which to create module variables. Default is ``None``.
+
+        Returns
+        -------
+        ret
+            The new trainable ivy.Module instance.
+
+        """
+        flax_spec = importlib.util.find_spec("flax")
+        if not flax_spec:
+            import flax
+        else:
+            flax = importlib.util.module_from_spec(flax_spec)
+            flax_spec.loader.exec_module(flax)
+
+        jax_spec = importlib.util.find_spec("jax")
+        if not jax_spec:
+            import jax
+        else:
+            jax = importlib.util.module_from_spec(jax_spec)
+            jax_spec.loader.exec_module(jax)
+
+        class FlaxIvyModule(ivy.Module):
+            def __init__(
+                self, *args, params_fx, native_module, device, devices, **kwargs
+            ):
+                self._native_module = native_module
+                self._args = args
+                self._kwargs = kwargs
+                ivy.Module.__init__(
+                    self,
+                    params_fx,
+                    *args,
+                    build_mode="on_init",
+                    device=device,
+                    devices=devices,
+                    **kwargs,
+                )
+
+            def _create_variables(self, device, dtype):
+                return self._fx_params
+
+            def _build(self, params_fx, *args, **kwargs):
+                args, kwargs = ivy.args_to_native(*args, **kwargs)
+                # noinspection PyUnresolvedReferences
+                params_dict = flax.core.unfreeze(params_fx)
+                self._fx_params = ivy.Container(params_dict, dynamic_backend=False)
+                param_iterator = self._fx_params.cont_to_iterator()
+                _, param0 = next(param_iterator)
+                self._dev = ivy.as_ivy_dev(ivy.dev(param0))
+
+            def _forward(self, *a, **kw):
+                a, kw = ivy.args_to_native(*a, **kw)
+                params_fx = flax.core.freeze(self.v.cont_to_dict())
+                ret = self._native_module.apply(params_fx, *a, **kw)
+                if isinstance(ret, tuple):
+                    return ivy.args_to_native(*ret)
+                return ivy.to_native(ret)
+
+        c_args = ivy.default(constructor_args, [])
+        c_kwargs = ivy.default(constructor_kwargs, {})
+        i_args = ivy.default(instance_args, [])
+        i_kwargs = ivy.default(instance_kwargs, {})
+        i_args, i_kwargs = ivy.args_to_native(*i_args, **i_kwargs)
+
+        if isinstance(rng_seed, int):
+            rng_seed = jax.random.PRNGKey(rng_seed)
+
+        if inspect.isclass(native_module):
+            if len(i_args) == 0 and len(i_kwargs) == 0:
+                raise ivy.utils.exceptions.IvyException(
+                    "both instance_args and instance_kwargs cannot be none"
+                    " when passing a native class"
+                )
+
+            native_module = native_module(*c_args, **c_kwargs)
+            params_fx = native_module.init(rng_seed, *i_args, **i_kwargs)
+
+        return FlaxIvyModule(
+            *i_args,
+            params_fx=params_fx,
+            native_module=native_module,
             device=device,
             devices=devices,
             **i_kwargs,

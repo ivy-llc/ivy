@@ -9,7 +9,6 @@ import importlib
 
 # local
 import ivy
-from ivy.utils.backend import current_backend
 from ivy.func_wrapper import (
     handle_array_function,
     handle_out_argument,
@@ -997,7 +996,7 @@ def closest_valid_dtype(type: Union[ivy.Dtype, str, None], /) -> Union[ivy.Dtype
     return current_backend(type).closest_valid_dtype(type)
 
 
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
 def default_float_dtype(
@@ -1139,7 +1138,7 @@ def infer_default_dtype(
     return default_dtype
 
 
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_exceptions
 def default_dtype(
     *,
@@ -1199,7 +1198,7 @@ def default_dtype(
     return ivy.as_ivy_dtype(ret)
 
 
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_exceptions
 def default_int_dtype(
     *,
@@ -1308,7 +1307,7 @@ def default_int_dtype(
     return ivy.IntDtype(ivy.as_ivy_dtype(ret))
 
 
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_exceptions
 def default_uint_dtype(
     *,
@@ -1404,7 +1403,7 @@ def default_uint_dtype(
     return ivy.UintDtype(ivy.as_ivy_dtype(ret))
 
 
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
 def default_complex_dtype(
@@ -1907,7 +1906,7 @@ def is_uint_dtype(
     return "uint" in as_ivy_dtype(dtype_in)
 
 
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
 def is_complex_dtype(
@@ -1952,6 +1951,7 @@ def is_complex_dtype(
     return "complex" in as_ivy_dtype(dtype_in)
 
 
+@inputs_to_ivy_arrays
 @handle_exceptions
 def promote_types(
     type1: Union[ivy.Dtype, ivy.NativeDtype],
@@ -2136,6 +2136,7 @@ def set_default_complex_dtype(complex_dtype: Union[ivy.Dtype, str], /):
     default_complex_dtype_stack.append(complex_dtype)
 
 
+@inputs_to_ivy_arrays
 @handle_exceptions
 def type_promote_arrays(
     x1: Union[ivy.Array, ivy.NativeArray],
@@ -2303,6 +2304,7 @@ def valid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None], /) -> bo
     return ivy.as_ivy_dtype(dtype_in) in ivy.valid_dtypes
 
 
+@inputs_to_ivy_arrays
 @handle_exceptions
 def promote_types_of_inputs(
     x1: Union[ivy.NativeArray, Number, Iterable[Number]],
@@ -2365,15 +2367,6 @@ def promote_types_of_inputs(
 
     ivy.utils.assertions._check_jax_x64_flag(x1.dtype)
     return ivy.to_native(x1), ivy.to_native(x2)
-
-
-# global
-from typing import Union
-
-# local
-import ivy
-from ivy.utils.backend import current_backend
-from ivy.utils.exceptions import handle_exceptions
 
 
 @handle_exceptions

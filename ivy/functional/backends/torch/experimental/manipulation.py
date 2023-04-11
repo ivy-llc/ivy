@@ -271,3 +271,7 @@ def expand(
 
 
 expand.support_native_out = False
+
+
+def as_strided(x: torch.Tensor, strides: Sequence[int]):
+    return torch.as_strided(x, size=something, stride=strides)

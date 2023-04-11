@@ -1829,7 +1829,7 @@ def x_and_filters(draw, dim=2, transpose=False, general=False):
             if dim == 2
             else ("NCDHW", "OIDHW", "NCDHW")
         )
-    dim_nums = _dimension_numbers(dimension_numbers, dim + 2, as_jax=True)
+    dim_nums = _dimension_numbers(dimension_numbers, dim + 2, transp=transpose)
     if not transpose:
         output_channels = output_channels * fc
         channel_shape = (output_channels, input_channels // fc)
@@ -2215,6 +2215,65 @@ def test_jax_lax_slice(
         start_indices=start_indices,
         limit_indices=limit_indices,
         strides=strides,
+    )
+
+
+@st.composite
+def _slice_in_dim_helper(draw):
+    dtype, x, axis = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=1,
+            force_int_axis=True,
+            valid_axis=True,
+        ),
+    )
+    operand = x[0]
+    start_index = draw(
+        st.integers(min_value=-abs(operand.shape[axis]), max_value=operand.shape[axis])
+    )
+    if start_index < 0:
+        limit_index = draw(
+            st.integers(
+                min_value=start_index + operand.shape[axis],
+                max_value=operand.shape[axis],
+            )
+        )
+    else:
+        limit_index = draw(
+            st.integers(
+                min_value=-abs(operand.shape[axis]), max_value=operand.shape[axis]
+            ).filter(lambda _x: _x >= start_index)
+        )
+    stride = draw(st.integers(min_value=1, max_value=abs(limit_index + 1)))
+    return dtype, x, start_index, limit_index, stride, axis
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.slice_in_dim",
+    dtype_x_params=_slice_in_dim_helper(),
+    test_with_out=st.just(False),
+)
+def test_jax_lax_slice_in_dim(
+    *,
+    dtype_x_params,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x, start_index, limit_index, stride, axis = dtype_x_params
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        operand=x[0],
+        start_index=start_index,
+        limit_index=limit_index,
+        stride=stride,
+        axis=axis,
     )
 
 

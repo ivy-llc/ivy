@@ -420,3 +420,10 @@ def std(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=Non
 @to_ivy_arrays_and_back
 def corrcoef(x, y=None, rowvar=True):
     return ivy.corrcoef(x, y=y, rowvar=rowvar)
+
+
+@to_ivy_arrays_and_back
+def ptp(a, axis=None, out=None, keepdims=False):
+    x = ivy.max(a, axis=axis, keepdims=keepdims)
+    y = ivy.min(a, axis=axis, keepdims=keepdims)
+    return ivy.subtract(x, y)
