@@ -1635,11 +1635,10 @@ def as_strided(
     dst = memoryview(buffer).cast("b")
 
     for index in ivy.ndindex(shape):
-        src_index = sum(index[i] * strides[i] // 8 for i in range(len(shape)))
-        src_offset = strides[-1] // 8 * (index[-1] % 8)
+        src_index = sum(index[i] * strides[i] for i in range(len(shape)))
         dst_index = sum(index[i] * math.prod(shape[i + 1:]) * itemsize
                         for i in range(len(shape)))
         dst[dst_index:dst_index + itemsize] = \
-            src[src_index + src_offset:src_index + src_offset + itemsize]
+            src[src_index:src_index + itemsize]
 
     return ivy.frombuffer(buffer, dtype=x.dtype, count=size).reshape(shape)
