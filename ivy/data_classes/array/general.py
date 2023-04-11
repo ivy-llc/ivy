@@ -1380,29 +1380,3 @@ class _ArrayWithGeneral(abc.ABC):
         return ivy.isin(
             self._data, test_elements, assume_unique=assume_unique, invert=invert
         )
-
-    def itemsize(
-        self: ivy.Array,
-        /,
-    ) -> int:
-        """ivy.Array instance method variant of ivy.itemsize. This method simply
-        wraps the function, and so the docstring for ivy.isin also applies to
-        this method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            The input array.
-
-        Returns
-        -------
-        ret
-            An integer specifying the element size in bytes.
-
-        Examples
-        --------
-        >>> x = ivy.array([1,2,3], dtype=ivy.float64)
-        >>> x.itemsize()
-        ivy.array(8)
-        """
-        return ivy.itemsize(self._data)

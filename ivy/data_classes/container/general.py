@@ -4163,6 +4163,6 @@ class _ContainerWithGeneral(ContainerBase):
         Returns
         -------
         ret
-            An integer specifying the element size in bytes.
+            Integers specifying the element size in bytes.
         """
         return self.static_itemsize(self)
