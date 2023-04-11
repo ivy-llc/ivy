@@ -5507,6 +5507,49 @@ def test_torch_instance_index_add_(
     )
 
 
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="index_add",
+    xs_dtypes_dim_idx=_arrays_dim_idx_n_dtypes(),
+    alpha=st.integers(min_value=1, max_value=2),
+)
+def test_torch_instance_index_add(
+    *,
+    xs_dtypes_dim_idx,
+    alpha,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    frontend,
+):
+    xs, input_dtypes, axis, indices = xs_dtypes_dim_idx
+    if xs[0].shape[axis] < xs[1].shape[axis]:
+        source, input = xs
+    else:
+        input, source = xs
+    helpers.test_frontend_method(
+        init_input_dtypes=[input_dtypes[0]],
+        init_all_as_kwargs_np={
+            "data": input,
+        },
+        method_input_dtypes=["int64", input_dtypes[1]],
+        method_all_as_kwargs_np={
+            "dim": axis,
+            "index": indices,
+            "source": source,
+            "alpha": alpha,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+        rtol_=1e-03,
+    )
+
+
 @st.composite
 def _get_clamp_inputs(draw):
     shape = draw(
