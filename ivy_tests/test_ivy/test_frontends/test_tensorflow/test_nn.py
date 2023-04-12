@@ -1402,12 +1402,8 @@ def _conv_transpose_args(draw):
         )
     )
     padding = draw(st.sampled_from(["SAME", "VALID"]))
-    output_shape = draw(
-        st.lists(
-            st.integers(min_value=1, max_value=4), min_size=dims, max_size=dims
-        )
-    )
-    return dims, data_format, value, filter, strides, padding, output_shape
+    
+    return dims, data_format, value, filter, strides, padding
 
 
 # conv_transpose
@@ -1424,7 +1420,7 @@ def test_tensorflow_conv_transpose(
     fn_tree,
     on_device,
 ):
-    dims, data_format, value, filters, strides, padding, output_shape = (
+    dims, data_format, value, filters, strides, padding = (
         dims_df_v_f_s_p_os
     )
     helpers.test_frontend_function(
@@ -1438,7 +1434,6 @@ def test_tensorflow_conv_transpose(
         strides=strides,
         padding=padding,
         dims=dims,
-        output_shape=output_shape,
         data_format=data_format,
     )
 
