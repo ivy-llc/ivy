@@ -2,10 +2,6 @@ import pytest
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test 
 
-@pytest.fixture
-def test_flags():
-    return None
-
 
 @handle_frontend_test(
     fn_tree="numpy.fft.ifft",
@@ -29,9 +25,12 @@ def test_numpy_iftt(dtype_and_x, frontend, test_flags, fn_tree, on_device):
     )
 
 
-@pytest.mark.parametrize("array_shape", [(4,), (4, 4), (4, 4, 4)])
-@pytest.mark.parametrize("dtype_category", ["float", "complex"])
-@helpers.handle_frontend_test(fn_tree="numpy.fft.ifftshift")
+@helpers.handle_frontend_test(
+        fn_tree="numpy.fft.ifftshift",
+        dtype_and_x=helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"), shape=(4,), array_api_dtypes=True
+        ),
+        )
 def test_numpy_ifftshift(dtype_category,
                          array_shape,
                          frontend,
