@@ -5,6 +5,11 @@ from ivy.functional.frontends.torch import promote_types_of_torch_inputs
 
 
 @to_ivy_arrays_and_back
+def atleast_1d(*tensors):
+    return ivy.atleast_1d(*tensors)
+
+
+@to_ivy_arrays_and_back
 def flip(input, dims):
     return ivy.flip(input, axis=dims)
 
@@ -361,3 +366,13 @@ def searchsorted(
     if out_int32:
         ret = ivy.astype(ret, "int32")
     return ret
+
+
+@to_ivy_arrays_and_back
+def atleast_3d(*tensors):
+    return ivy.atleast_3d(*tensors)
+
+
+@to_ivy_arrays_and_back
+def diag(input, diagonal=0, *, out=None):
+    return ivy.diag(input, k=diagonal)

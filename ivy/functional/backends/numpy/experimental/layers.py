@@ -6,7 +6,7 @@ from typing import Optional, Union, Tuple, Literal
 
 # local
 import ivy
-from ivy.functional.ivy.layers import _handle_padding
+from ivy.functional.ivy.layers import _handle_padding, _get_num_padded_values
 from ivy.functional.backends.numpy.layers import _add_dilations
 from ivy.functional.ivy.experimental.layers import _padding_ceil_mode
 
@@ -242,6 +242,7 @@ def avg_pool1d(
     /,
     *,
     data_format: str = "NWC",
+    count_include_pad: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
 
@@ -266,7 +267,7 @@ def avg_pool1d(
             (pad_w // 2, pad_w - pad_w // 2),
             (0, 0),
         ],
-        "edge",
+        constant_values=0.0,
     )
 
     x_shape = x.shape
@@ -285,6 +286,23 @@ def avg_pool1d(
 
     res = np.mean(sub_matrices, axis=2)
 
+    if not count_include_pad:
+        num_padded_values = ivy.map(
+            _get_num_padded_values,
+            constant={
+                "p": pad_w,
+                "n": x.shape[1] - pad_w,
+                "k": kernel[0],
+                "s": strides[0],
+            },
+            unique={
+                "i": np.arange(res.shape[1]),
+            },
+        )
+        res = (kernel[0] * res) / (
+            kernel[0] - np.array(num_padded_values, dtype=res.dtype)
+        )[:, None]
+
     if data_format == "NCW":
         return res.swapaxes(1, 2)
     return res
@@ -298,12 +316,13 @@ def avg_pool2d(
     /,
     *,
     data_format: str = "NHWC",
+    count_include_pad: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if isinstance(strides, int):
-        strides = [strides] * 2
-    elif len(strides) == 1:
-        strides = [strides[0]] * 2
+    if isinstance(kernel, int):
+        kernel = [kernel] * 2
+    elif len(kernel) == 1:
+        kernel = [kernel[0]] * 2
 
     if isinstance(strides, int):
         strides = [strides] * 2
@@ -324,7 +343,7 @@ def avg_pool2d(
             (pad_w // 2, pad_w - pad_w // 2),
             (0, 0),
         ],
-        "edge",
+        constant_values=0.0,
     )
 
     x_shape = x.shape
@@ -346,6 +365,36 @@ def avg_pool2d(
 
     # B x OH x OW x O
     res = np.mean(sub_matrices, axis=(3, 4))
+    if not count_include_pad and (pad_w or pad_h):
+        padded = [pad_h, pad_w]
+        num_padded_values = [
+            np.array(
+                ivy.map(
+                    _get_num_padded_values,
+                    constant={
+                        "p": padded[i],
+                        "n": x.shape[i + 1] - padded[i],
+                        "k": kernel[i],
+                        "s": strides[i],
+                    },
+                    unique={
+                        "i": np.arange(res.shape[i + 1]),
+                    },
+                ),
+                dtype=res.dtype,
+            )
+            for i in range(2)
+        ]
+        num_padded_values1 = num_padded_values[0][:, None]
+        num_padded_values2 = num_padded_values[1][None, :]
+        num_padded_values = (
+            num_padded_values1 * kernel[1]
+            + num_padded_values2 * kernel[0]
+            - num_padded_values1 * num_padded_values2
+        )
+        kernel_mul = np.prod(kernel)
+        res = (kernel_mul * res) / (kernel_mul - np.expand_dims(num_padded_values, -1))
+
     if data_format == "NCHW":
         return np.transpose(res, (0, 3, 1, 2))
     return res
@@ -359,6 +408,7 @@ def avg_pool3d(
     /,
     *,
     data_format: str = "NDHWC",
+    count_include_pad: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
 
@@ -389,7 +439,7 @@ def avg_pool3d(
             (pad_w // 2, pad_w - pad_w // 2),
             (0, 0),
         ],
-        "edge",
+        constant_values=0.0,
     )
 
     x_shape = x.shape
@@ -414,6 +464,40 @@ def avg_pool3d(
 
     # B x OH x OW x O
     res = np.mean(sub_matrices, axis=(4, 5, 6))
+    if not count_include_pad and (pad_w or pad_h or pad_d):
+        padded = [pad_d, pad_h, pad_w]
+        num_padded_values = [
+            np.array(
+                ivy.map(
+                    _get_num_padded_values,
+                    constant={
+                        "p": padded[i],
+                        "n": x.shape[i + 1] - padded[i],
+                        "k": kernel[i],
+                        "s": strides[i],
+                    },
+                    unique={
+                        "i": np.arange(res.shape[i + 1]),
+                    },
+                ),
+                dtype=res.dtype,
+            )
+            for i in range(3)
+        ]
+        num_padded_values1 = num_padded_values[0].reshape((-1, 1, 1))
+        num_padded_values2 = num_padded_values[1].reshape((1, -1, 1))
+        num_padded_values3 = num_padded_values[2].reshape((1, 1, -1))
+        num_padded_values = (
+            num_padded_values1 * kernel[1] * kernel[2]
+            + num_padded_values2 * kernel[0] * kernel[2]
+            + num_padded_values3 * kernel[0] * kernel[1]
+            + num_padded_values1 * num_padded_values2 * num_padded_values3
+            - num_padded_values1 * num_padded_values2 * kernel[2]
+            - num_padded_values1 * num_padded_values3 * kernel[1]
+            - num_padded_values2 * num_padded_values3 * kernel[0]
+        )
+        kernel_mul = np.prod(kernel)
+        res = (kernel_mul * res) / (kernel_mul - np.expand_dims(num_padded_values, -1))
     if data_format == "NCDHW":
         return np.transpose(res, (0, 4, 1, 2, 3))
     return res

@@ -455,6 +455,7 @@ def test_tensorflow_tensordot(
 # norm
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.norm",
+    aliases=["tensorflow.norm"],
     dtype_values_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=3,
@@ -808,4 +809,29 @@ def test_tensorflow_linalg_einsum(
         on_device=on_device,
         equation=eq,
         **kw,
+    )
+
+
+# adjoint
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.adjoint",
+    dtype_and_x=_get_dtype_and_matrix(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_adjoint(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        matrix=x[0],
     )

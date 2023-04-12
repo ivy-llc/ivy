@@ -26,6 +26,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         destination: Union[int, Sequence[int]],
         /,
         *,
+        copy: Optional[bool] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.moveaxis. This method simply
@@ -57,7 +58,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         >>> x.moveaxis(-1, 0).shape
         (5, 3, 4)
         """
-        return ivy.moveaxis(self._data, source, destination, out=out)
+        return ivy.moveaxis(self._data, source, destination, copy=copy, out=out)
 
     def heaviside(
         self: ivy.Array,
@@ -104,6 +105,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         self: ivy.Array,
         /,
         *,
+        copy: Optional[bool] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.flipud. This method simply
@@ -131,7 +133,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             [ 0.,  2.,  0.],
             [ 1.,  0.,  0.]])
         """
-        return ivy.flipud(self._data, out=out)
+        return ivy.flipud(self._data, copy=copy, out=out)
 
     def vstack(
         self: ivy.Array,
@@ -201,6 +203,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         self: ivy.Array,
         /,
         *,
+        copy: bool = None,
         k: int = 1,
         axes: Tuple[int, int] = (0, 1),
         out: Optional[ivy.Array] = None,
@@ -250,7 +253,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
                 [5, 4]]])
 
         """
-        return ivy.rot90(self._data, k=k, axes=axes, out=out)
+        return ivy.rot90(self._data, copy=copy, k=k, axes=axes, out=out)
 
     def top_k(
         self: ivy.Array,
@@ -300,6 +303,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         self: ivy.Array,
         /,
         *,
+        copy: Optional[bool] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.fliplr. This method simply
@@ -327,7 +331,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
                [0, 2, 0],
                [3, 0, 0]])
         """
-        return ivy.fliplr(self._data, out=out)
+        return ivy.fliplr(self._data, copy=copy, out=out)
 
     def i0(
         self: ivy.Array,
@@ -364,6 +368,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
     def flatten(
         self: ivy.Array,
         *,
+        copy: Optional[bool] = None,
         start_dim: int = 0,
         end_dim: int = -1,
         order: str = "C",
@@ -460,7 +465,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             [ 4, 19, 16, 17],
             [ 2, 12,  8, 14]]]))
         """
-        return ivy.flatten(self._data, start_dim=start_dim, end_dim=end_dim, out=out)
+        return ivy.flatten(
+            self._data, copy=copy, start_dim=start_dim, end_dim=end_dim, out=out
+        )
 
     def pad(
         self: ivy.Array,
@@ -512,6 +519,8 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         self: ivy.Array,
         indices_or_sections: Union[int, Tuple[int, ...]],
         /,
+        *,
+        copy: Optional[bool] = None,
     ) -> List[ivy.Array]:
         """
         ivy.Array instance method variant of ivy.vsplit. This method simply
@@ -544,13 +553,15 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         >>> ary.vsplit(2)
         [ivy.array([[[0., 1.], [2., 3.]]]), ivy.array([[[4., 5.], [6., 7.]]])])
         """
-        return ivy.vsplit(self._data, indices_or_sections)
+        return ivy.vsplit(self._data, indices_or_sections, copy=copy)
 
     @handle_view
     def dsplit(
         self: ivy.Array,
         indices_or_sections: Union[int, Tuple[int, ...]],
         /,
+        *,
+        copy: Optional[bool] = None,
     ) -> List[ivy.Array]:
         """
         ivy.Array instance method variant of ivy.dsplit. This method simply
@@ -584,11 +595,13 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         [ivy.array([[[ 0.,  1.], [ 4.,  5.]], [[ 8.,  9.], [12., 13.]]]),
         ivy.array([[[ 2.,  3.], [ 6.,  7.]], [[10., 11.], [14., 15.]]])]
         """
-        return ivy.dsplit(self._data, indices_or_sections)
+        return ivy.dsplit(self._data, indices_or_sections, copy=copy)
 
     @handle_view
     def atleast_1d(
-        self: ivy.Array, *arys: Union[ivy.Array, bool, Number]
+        self: ivy.Array,
+        *arys: Union[ivy.Array, bool, Number],
+        copy: Optional[bool] = None,
     ) -> List[ivy.Array]:
         """
         ivy.Array instance method variant of ivy.atleast_1d. This method simply
@@ -615,9 +628,8 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         >>> a1.atleast_1d(a2,5,6)
         [ivy.array([[1, 2, 3]]), ivy.array([4]), ivy.array([5]), ivy.array([6])]
         """
-        return ivy.atleast_1d(self._data, *arys)
+        return ivy.atleast_1d(self._data, *arys, copy=copy)
 
-    @handle_view
     def dstack(
         self: ivy.Array,
         arrays: Union[
@@ -651,7 +663,11 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         return ivy.dstack(x, out=out)
 
     @handle_view
-    def atleast_2d(self: ivy.Array, *arys: ivy.Array) -> List[ivy.Array]:
+    def atleast_2d(
+        self: ivy.Array,
+        *arys: ivy.Array,
+        copy: Optional[bool] = None,
+    ) -> List[ivy.Array]:
         """
         ivy.Array instance method variant of ivy.atleast_2d. This method simply
         wraps the function, and so the docstring for ivy.atleast_2d also applies
@@ -677,11 +693,13 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         >>> a1.atleast_2d(a2,5,6)
         [ivy.array([[1, 2, 3]]), ivy.array([[4]]), ivy.array([[5]]), ivy.array([[6]])]
         """
-        return ivy.atleast_2d(self._data, *arys)
+        return ivy.atleast_2d(self._data, *arys, copy=copy)
 
     @handle_view
     def atleast_3d(
-        self: ivy.Array, *arys: Union[ivy.Array, bool, Number]
+        self: ivy.Array,
+        *arys: Union[ivy.Array, bool, Number],
+        copy: Optional[bool] = None,
     ) -> List[ivy.Array]:
         """
         ivy.Array instance method variant of ivy.atleast_3d. This method simply
@@ -713,7 +731,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
                 [3]]]), ivy.array([[[4],
                 [8]]]), ivy.array([[[5]]]), ivy.array([[[6]]])]
         """
-        return ivy.atleast_3d(self._data, *arys)
+        return ivy.atleast_3d(self._data, *arys, copy=copy)
 
     def take_along_axis(
         self: ivy.Array,
@@ -763,6 +781,8 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         self: ivy.Array,
         indices_or_sections: Union[int, Tuple[int, ...]],
         /,
+        *,
+        copy: Optional[bool] = None,
     ) -> List[ivy.Array]:
         """
         ivy.Array instance method variant of ivy.hsplit. This method simply
@@ -802,7 +822,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
                     [10., 11.],
                     [14., 15.]]))
         """
-        return ivy.hsplit(self._data, indices_or_sections)
+        return ivy.hsplit(self._data, indices_or_sections, copy=copy)
 
     @handle_view
     def expand(
@@ -810,6 +830,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         shape: Union[ivy.Shape, ivy.NativeShape],
         /,
         *,
+        copy: Optional[bool] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -831,4 +852,4 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         ret
             Output Array
         """
-        return ivy.expand(self._data, shape, out=out)
+        return ivy.expand(self._data, shape, copy=copy, out=out)

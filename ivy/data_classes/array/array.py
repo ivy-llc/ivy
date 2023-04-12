@@ -152,6 +152,7 @@ class Array(
         self._size = (
             functools.reduce(mul, self._data.shape) if len(self._data.shape) > 0 else 0
         )
+        self._itemsize = ivy.itemsize(self._data)
         self._dtype = ivy.dtype(self._data)
         self._device = ivy.dev(self._data)
         self._dev_str = ivy.as_ivy_dev(self._device)
@@ -258,6 +259,11 @@ class Array(
         return self._size
 
     @property
+    def itemsize(self) -> Optional[int]:
+        """Size of array elements in bytes."""
+        return self._itemsize
+
+    @property
     def T(self) -> ivy.Array:
         """
         Transpose of the array.
@@ -312,7 +318,7 @@ class Array(
 
     def __array__(self, *args, **kwargs):
         args, kwargs = args_to_native(*args, **kwargs)
-        return self._data.__array__(*args, **kwargs)
+        return self._data.__array__(*args, dtype=self.dtype, **kwargs)
 
     def __array_prepare__(self, *args, **kwargs):
         args, kwargs = args_to_native(*args, **kwargs)
@@ -332,9 +338,13 @@ class Array(
     def __repr__(self):
         sig_fig = ivy.array_significant_figures()
         dec_vals = ivy.array_decimal_values()
-        backend = (
-            ivy.get_backend(self.backend) if self.backend else ivy.current_backend()
-        )
+        if self.backend == "":
+            # If the array was constructed using implicit backend
+            backend = ivy.current_backend()
+        else:
+            # Requirerd in the case that backend is different
+            # from the currently set backend
+            backend = ivy.with_backend(self.backend, cached=True)
         arr_np = backend.to_numpy(self._data)
         rep = ivy.vec_sig_fig(arr_np, sig_fig) if self._size > 0 else np.array(arr_np)
         with np.printoptions(precision=dec_vals):
@@ -347,6 +357,9 @@ class Array(
 
     def __dir__(self):
         return self._data.__dir__()
+
+    def __getattribute__(self, item):
+        return super().__getattribute__(item)
 
     def __getattr__(self, item):
         try:
@@ -1106,4 +1119,11 @@ class Array(
     def __iter__(self):
         if self.ndim == 0:
             raise TypeError("iteration over a 0-d ivy.Array not supported")
+        if ivy.current_backend_str() == "paddle" and self.dtype in [
+            "int8",
+            "int16",
+            "uint8",
+            "float16",
+        ]:
+            return iter([to_ivy(i) for i in ivy.unstack(self._data)])
         return iter([to_ivy(i) for i in self._data])

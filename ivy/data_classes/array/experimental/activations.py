@@ -162,56 +162,6 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         """
         return ivy.relu6(self._data, out=out)
 
-    def batch_norm(
-        self,
-        mean: Union[ivy.NativeArray, ivy.Array],
-        variance: Union[ivy.NativeArray, ivy.Array],
-        /,
-        *,
-        offset: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
-        scale: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
-        training: bool = False,
-        eps: float = 1e-5,
-    ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.batch_norm. This method
-        simply wraps the function, and so the docstring for ivy.batch_norm
-        also applies to this method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            Input array of shape (N,C,S), where N is the batch dimension, C is the
-            feature dimension and S corresponds to the following spatial dimensions.
-        mean
-            A mean array for the input's normalization.
-        variance
-            A variance array for the input's normalization.
-        offset
-            An offset array. If present, will be added to the normalized input.
-        scale
-            A scale array. If present, the scale is applied to the normalized input.
-        training
-            If true, calculate and use the mean and variance of `x`. Otherwise, use the
-            provided `mean` and `variance`.
-        eps
-            A small float number to avoid dividing by 0.
-
-        Returns
-        -------
-        ret
-             Array containing the normalized, scaled, offset values.
-        """
-        return ivy.batch_norm(
-            self._data,
-            mean,
-            variance,
-            scale=scale,
-            offset=offset,
-            training=training,
-            eps=eps,
-        )
-
     def logsigmoid(
         self: ivy.Array,
     ) -> ivy.Array:
@@ -243,3 +193,40 @@ class _ArrayWithActivationsExperimental(abc.ABC):
 
         """
         return ivy.logsigmoid(self._data)
+
+    def selu(self, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """Applies the scaled exponential linear unit function element-wise.
+
+        Parameters
+        ----------
+        self
+            input array
+        out
+            optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the scaled exponential linear unit activation
+            of each element in input.
+
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+
+        >>> x = ivy.array([-1.,  0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.])
+        >>> y = x.selu()
+        >>> print(y)
+        ivy.array([-1.11133075,  0.,  1.05070102,  2.10140204,  3.15210295,
+                    4.20280409,  5.25350523,  6.30420589,  7.35490704])
+
+        >>> x = ivy.array([-1.,  0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.])
+        >>> y = ivy.zeros(9)
+        >>> x.selu(out = y)
+        >>> print(y)
+        ivy.array([-1.11133075,  0.,  1.05070102,  2.10140204,  3.15210295,
+                    4.20280409,  5.25350523,  6.30420589,  7.35490704])
+
+        """
+        return ivy.selu(self._data, out=out)

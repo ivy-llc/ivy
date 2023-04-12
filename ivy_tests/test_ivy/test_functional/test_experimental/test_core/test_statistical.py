@@ -139,55 +139,6 @@ def test_nanmean(
     )
 
 
-# unravel_index
-@st.composite
-def max_value_as_shape_prod(draw):
-    shape = draw(
-        helpers.get_shape(
-            min_num_dims=1,
-            max_num_dims=5,
-            min_dim_size=1,
-            max_dim_size=5,
-        )
-    )
-    dtype_and_x = draw(
-        helpers.dtype_values_axis(
-            available_dtypes=["int32", "int64"],
-            min_value=0,
-            max_value=np.prod(shape) - 1,
-        )
-    )
-    return dtype_and_x, shape
-
-
-@handle_test(
-    fn_tree="functional.ivy.experimental.unravel_index",
-    dtype_x_shape=max_value_as_shape_prod(),
-    test_gradients=st.just(False),
-)
-def test_unravel_index(
-    *,
-    dtype_x_shape,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
-    dtype_and_x, shape = dtype_x_shape
-    input_dtype, x = dtype_and_x[0], dtype_and_x[1]
-    helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        indices=np.asarray(x[0], dtype=input_dtype[0]),
-        shape=shape,
-    )
-
-
 # quantile
 @handle_test(
     fn_tree="functional.ivy.experimental.quantile",

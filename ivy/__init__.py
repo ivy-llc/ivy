@@ -709,7 +709,6 @@ from ivy.utils.backend import (
     current_backend,
     compiled_backends,
     with_backend,
-    get_backend,
     set_backend,
     set_numpy_backend,
     set_jax_backend,
@@ -1188,3 +1187,16 @@ for backend_framework in _not_imported_backends:
             f"{backend_framework} module has been imported while ivy doesn't "
             "import it without setting a backend, ignore if that's intended"
         )
+
+
+# sub_backends
+from ivy.utils.backend.sub_backend_handler import (
+    set_sub_backend,
+    unset_sub_backend,
+    clear_sub_backends,
+    available_sub_backends,
+)
+
+
+def current_sub_backends():
+    return []
