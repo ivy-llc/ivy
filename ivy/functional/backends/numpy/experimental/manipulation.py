@@ -302,7 +302,7 @@ def hsplit(
 take_along_axis.support_native_out = False
 
 
-def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> List[int]:
+def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     return np.broadcast_shapes(*shapes)
 
 

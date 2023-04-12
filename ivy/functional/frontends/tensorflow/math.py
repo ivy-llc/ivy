@@ -190,6 +190,11 @@ def logical_xor(x, y, name="LogicalXor"):
 
 
 @to_ivy_arrays_and_back
+def logical_or(x, y, name="logical_or"):
+    return ivy.logical_or(x, y)
+
+
+@to_ivy_arrays_and_back
 def multiply(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return ivy.multiply(x, y)
@@ -497,6 +502,7 @@ def is_nan(x, name=None):
     },
     "tensorflow",
 )
+@to_ivy_arrays_and_back
 def is_finite(x, name=None):
     return ivy.isfinite(x)
 
@@ -535,3 +541,18 @@ def cos(x, name=None):
 @to_ivy_arrays_and_back
 def sinh(x, name=None):
     return ivy.sinh(x)
+
+
+@to_ivy_arrays_and_back
+def softmax(logits, axis=-1):
+    return ivy.softmax(logits, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def xlogy(x, y, name=None):
+    return ivy.xlogy(x, y)
+
+
+@to_ivy_arrays_and_back
+def cosh(x, name=None):
+    return ivy.cosh(x)
