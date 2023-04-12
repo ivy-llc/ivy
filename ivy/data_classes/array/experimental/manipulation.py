@@ -854,7 +854,6 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         """
         return ivy.expand(self._data, shape, copy=copy, out=out)
 
-    @handle_view
     def as_strided(
         self: ivy.Array,
         shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
