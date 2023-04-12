@@ -153,6 +153,8 @@ def as_ivy_dtype(
         return ivy.Dtype("bool")
     if isinstance(dtype_in, np.dtype):
         dtype_in = dtype_in.name
+    if isinstance(dtype_in, ivy.functional.frontends.tensorflow.Tensor):
+        dtype_str = ivy_dtype_dict[dtype_in.dtype]
     if isinstance(dtype_in, str):
         if dtype_in in native_dtype_dict:
             dtype_str = dtype_in
