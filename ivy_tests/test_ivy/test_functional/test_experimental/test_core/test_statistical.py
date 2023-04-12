@@ -174,6 +174,21 @@ def test_quantile(
 
 
 @st.composite
+def _x_without_unique_value(draw, dim):
+    x = []
+    for i in range(dim):
+        xi = draw(st.one_of(st.floats(allow_nan=False, allow_infinity=False)))
+        if len(x) > 0 and xi == x[-1]:
+            xi = draw(st.one_of(
+                st.floats(max_value=-2, allow_infinity=False, allow_nan=False),
+                st.floats(min_value=2, allow_infinity=False, allow_nan=False)
+            ))
+        x.append(xi)
+
+    return x
+
+
+@st.composite
 def _dtype_and_value_without_row_all_same_value(draw):
     dtype_and_x = draw(
         helpers.dtype_and_values(
@@ -190,7 +205,6 @@ def _dtype_and_value_without_row_all_same_value(draw):
             allow_nan=False,
         ),
     )
-
     dtype, value = dtype_and_x
     x = value[0]
     y = value[1]
@@ -198,14 +212,14 @@ def _dtype_and_value_without_row_all_same_value(draw):
     dim_2 = x.shape[1]
     for i in range(dim_1):
         if len(np.unique(x[i, :])) == 1:
-            x[i] = np.random.uniform(-100, 100, dim_2)
+            x[i] = draw(_x_without_unique_value(dim_2))
         if len(np.unique(y[i, :])) == 1:
-            y[i] = np.random.uniform(-100, 100, dim_2)
+            y[i] = draw(_x_without_unique_value(dim_2))
     for i in range(dim_1):
         if len(np.unique(x[:, i])) == 1:
-            x[:, i] = np.random.uniform(-100, 100, dim_2)
+            x[:, i] = draw(_x_without_unique_value(dim_2))
         if len(np.unique(y[:, i])) == 1:
-            y[:, i] = np.random.uniform(-100, 100, dim_2)
+            y[:, i] = draw(_x_without_unique_value(dim_2))
 
     return dtype, [x, y]
 
