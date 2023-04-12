@@ -533,6 +533,12 @@ def floormod(x, y, name=None):
 
 
 @to_ivy_arrays_and_back
+def less_equal(x, y, name="LessEqual"):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.less_equal(x, y)
+
+
+@to_ivy_arrays_and_back
 def greater(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return ivy.greater(x, y)
@@ -551,6 +557,11 @@ def sinh(x, name=None):
 @to_ivy_arrays_and_back
 def softmax(logits, axis=-1):
     return ivy.softmax(logits, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def xlogy(x, y, name=None):
+    return ivy.xlogy(x, y)
 
 
 @to_ivy_arrays_and_back
