@@ -58,7 +58,7 @@ Many people seem to miss this option, so we thought we would add an explicit rem
 For questions, please reach out on `discord`_ in the `pycharm channel`_!
 
 Virtual environments - No Docker
--------------------------------
+--------------------------------
 
 Due to the rapid pace of updates in Ivy, it is strongly suggested for developers to use the latest ivy package from GitHub source, as explained below.
 This is to ensure the contributors' code and examples are as aligned and in accordance with the latest as possible.
@@ -261,7 +261,7 @@ When setting up on an M1 Mac, you would have to update the Dockerfile to install
 
 
 Ubuntu
-****
+******
 
 
 #. Install Docker by running the commands below one by one in the Linux terminal.
@@ -460,7 +460,7 @@ Windows
    e. You'll be inside the container now, where you can locally run the tests that you've modified by running the command, "pytest test_file_path::test_fn_name". Opening the container may take a long time, as the Docker image is very large (5+ GB).
 
 Ubuntu
-*******
+******
 
 #. Install `Docker Engine <https://docs.docker.com/engine/install/ubuntu/>`_
 #. Install `Visual Studio Code <https://code.visualstudio.com/>`_
@@ -480,7 +480,7 @@ Ubuntu
 For windows users, the file path should be entered with "/" (forward-slashes), for other OS it would be the regular "\\" (back-slashes).
 
 GitHub Codespaces
-*******
+*****************
 
 It can be headache to install Docker and setup the PyCharm development environment, especially on recent ARM architectures like the new M1 Macs.
 Instead, we could make use of the GitHub Codespaces feature provided; this feature creates a VM (Virtual Machine) on the Azure cloud (means no local computation) with same configuration as defined by :code:`ivy/Dockerfile`.
