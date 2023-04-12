@@ -684,7 +684,7 @@ def _get_dtype_value1_value2_cov(
 
 # cov
 @handle_test(
-    fn_tree="functional.ivy.cov",
+    fn_tree="functional.ivy.experimental.cov",
     dtype_x1_x2_cov=_get_dtype_value1_value2_cov(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
