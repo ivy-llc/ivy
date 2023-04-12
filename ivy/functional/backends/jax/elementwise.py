@@ -392,6 +392,7 @@ def round(
         factor_denom = jnp.where(jnp.isinf(factor), 1.0, factor)
         return jnp.round(x * factor) / factor_denom
 
+
 @with_unsupported_dtypes({"1.1.9 and below": ("complex",)}, backend_version)
 def sign(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.where(x == -0.0, 0.0, jnp.sign(x)).astype(x.dtype)
