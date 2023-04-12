@@ -35,9 +35,19 @@
 	// Uncomment to connect as a non-root user if you've added one. See https://aka.ms/vscode-remote/containers/non-root.
 	"remoteUser": "vscode",
     "features": {
-        "ghcr.io/devcontainers/features/common-utils:2": {
-			"upgradePackages": false
+		"ghcr.io/devcontainers/features/common-utils:2": {
+			"installzsh": true,
+			"configurezshasdefaultshell": true,
+			"installohmyzsh": true,
+			"username": "vscode",
+			"useruid": "1000",
+			"usergid": "1000"
 		},
-        "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
+        "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+			"moby": true,
+			"installdockerbuildx": true,
+			"version": "20.10",
+			"dockerdashcomposeversion": "v2"
+		}
     }
 }

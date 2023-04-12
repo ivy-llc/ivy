@@ -67,6 +67,14 @@ def histogram(
     return ret
 
 
+from ivy import with_supported_dtypes
+from .. import backend_version
+
+
+@with_supported_dtypes(
+    {"2.9.1 and below": ("float",)},
+    backend_version,
+)
 def median(
     input: Union[tf.Tensor, tf.Variable],
     /,

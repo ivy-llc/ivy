@@ -70,12 +70,16 @@ def asarray(
 
 
 def empty(
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    *,
+    *size: Union[int, Sequence[int]],
+    shape: Optional[ivy.NativeShape] = None,
     dtype: np.dtype,
     device: str,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if size and shape:
+        raise TypeError("empty() got multiple values for argument 'shape'")
+    if shape is None:
+        shape = size[0] if isinstance(size[0], (tuple, list)) else size
     return _to_device(np.empty(shape, dtype), device=device)
 
 
@@ -175,12 +179,16 @@ def meshgrid(
 
 
 def ones(
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    *,
+    *size: Union[int, Sequence[int]],
+    shape: Optional[ivy.NativeShape] = None,
     dtype: np.dtype,
     device: str,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if size and shape:
+        raise TypeError("ones() got multiple values for argument 'shape'")
+    if shape is None:
+        shape = size[0] if isinstance(size[0], (tuple, list)) else size
     return _to_device(np.ones(shape, dtype), device=device)
 
 
@@ -203,16 +211,17 @@ def triu(
 
 
 def zeros(
-    shape: Union[ivy.NativeShape, Sequence[int]],
-    *,
+    *size: Union[int, Sequence[int]],
+    shape: Optional[ivy.NativeShape] = None,
     dtype: np.dtype,
     device: str,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if size and shape:
+        raise TypeError("zeros() got multiple values for argument 'shape'")
+    if shape is None:
+        shape = size[0] if isinstance(size[0], (tuple, list)) else size
     return _to_device(np.zeros(shape, dtype), device=device)
-
-
-zeros.support_native_out = True
 
 
 def zeros_like(

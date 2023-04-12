@@ -1180,6 +1180,46 @@ def test_ldexp(
     )
 
 
+# lerp
+@handle_test(
+    fn_tree="functional.ivy.experimental.lerp",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=3,
+        shared_dtype=True,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+        allow_nan=False,
+        allow_inf=False,
+    ),
+    test_gradients=st.just(False),
+)
+def test_lerp(
+    *,
+    dtype_and_input,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, inputs = dtype_and_input
+    start, end, weight = inputs
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        atol_=1e-01,
+        ground_truth_backend=ground_truth_backend,
+        on_device=on_device,
+        input=start,
+        end=end,
+        weight=weight,
+    )
+
+
 # frexp
 @handle_test(
     fn_tree="functional.ivy.experimental.frexp",

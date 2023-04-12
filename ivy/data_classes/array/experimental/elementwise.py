@@ -1190,6 +1190,48 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         """
         return ivy.conj(self._data, out=out)
 
+    def lerp(
+        self: ivy.Array,
+        end: ivy.Array,
+        weight: Union[ivy.Array, float],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.lerp. This method simply wraps
+        the function, and so the docstring for ivy.lerp also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Array of starting points
+        end
+            Array of ending points
+        weight
+            Weight for the interpolation formula  , array or scalar.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            The linear interpolation between array self and array end based on
+            scalar or array weight
+            self + ((end - self) * weight)
+
+        Examples
+        --------
+        >>> x = ivy.array([1.0, 2.0, 3.0, 4.0])
+        >>> end = ivy.array([10.0, 10.0, 10.0, 10.0])
+        >>> weight = 0.5
+        >>> x.lerp(end, weight)
+        ivy.array([5.5, 6. , 6.5, 7. ])
+        """
+        return ivy.lerp(self, end, weight, out=out)
+
     def ldexp(
         self: ivy.Array,
         x2: ivy.Array,
