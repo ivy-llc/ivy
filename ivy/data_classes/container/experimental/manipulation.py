@@ -2392,6 +2392,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         strides: Sequence[int],
         /,
         *,
+        copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2432,6 +2433,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             x,
             shape,
             strides,
+            copy=copy,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -2443,6 +2445,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
         strides: Sequence[int],
         /,
+        *,
+        copy: Optional[bool] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.as_strided.
          This method simply wraps the function, and so the docstring for
@@ -2463,4 +2467,4 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ret
             Output container.
         """
-        return self.static_as_strided(self, shape, strides)
+        return self.static_as_strided(self, shape, strides, copy=copy)
