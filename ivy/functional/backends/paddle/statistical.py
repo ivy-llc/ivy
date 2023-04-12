@@ -289,7 +289,6 @@ def cumsum(
 def einsum(
     equation: str,
     *operands: paddle.Tensor,
-    dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     # Check if any operand has an unsupported data type, 
@@ -301,29 +300,21 @@ def einsum(
         paddle.complex128
     ]
     for i, operand in enumerate(operands):
-        operand_dtype = ivy.as_native_dtype(operand.dtype)
+        operand_dtype = operand.dtype
         if operand_dtype not in supported_dtypes:
-            try:
-                if dtype is not None:
-                    operand = paddle.cast(operand, dtype)
-                elif paddle.is_tensor(operand):
-                    operand = paddle.cast(operand, paddle.float32)
-                else:
-                    raise ValueError(
-                        f"Unsupported dtype {operand_dtype} "
-                        "and no fallback dtype specified"
-                    )
-            except Exception as e:
-                print(f"Failed to cast operand {i} to a supported dtype: {e}")
-                # fallback to a ivy implementation here
-                return ivy.einsum(equation, *operands)
+
+            if dtype is not None:
+                operand = paddle.cast(operand, dtype)
+            elif paddle.is_tensor(operand):
+                operand = paddle.cast(operand, paddle.float32)
+            else:
+                raise ValueError(
+                    f"Unsupported dtype {operand_dtype} "
+                    "and no fallback dtype specified"
+                )
                 
             operands = operands[:i] + (operand,) + operands[i + 1 :]
     
-    try:
+ 
         # Evaluate the einsum expression with the updated operands
-        return paddle.einsum(equation, *operands)
-    except Exception as e:
-        print(f"Failed to evaluate einsum expression: {e}")
-        # fallback to a ivy implementation here
-        return ivy.einsum(equation, *operands)
+    return paddle.einsum(equation, *operands)
