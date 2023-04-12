@@ -232,5 +232,5 @@ class EagerTensor:
 
 
 # Dummy Tensor class to help with compilation, don't add methods here
-class Tensor(EagerTensor):
-    pass
+# class Tensor(EagerTensor):
+#     pass
