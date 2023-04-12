@@ -28,22 +28,6 @@ def ifftshift(x, axes=None):
     y : ndarray
         The shifted array.
 
-    See Also
-    --------
-    fftshift : Shift zero-frequency component to the center of the spectrum.
-
-    Examples
-    --------
-    >>> freqs = ivy.functional.frontends.numpy.fft.fftfreq(9, d=1./9).reshape(3, 3)
-    >>> freqs
-    array([[ 0.,  1.,  2.],
-           [ 3.,  4., -4.],
-           [-3., -2., -1.]])
-    >>> ivy.functional.frontends.numpy.fft.ifftshift(np.fft.fftshift(freqs))
-    array([[ 0.,  1.,  2.],
-           [ 3.,  4., -4.],
-           [-3., -2., -1.]])
-
     """
     x = ivy.asarray(x)
     if axes is None:
