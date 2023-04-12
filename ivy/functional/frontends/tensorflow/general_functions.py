@@ -173,8 +173,8 @@ def shape_n(input, out_type=ivy.int32, name=None):
     else:
         return [ivy.array(ivy.shape(i), dtype="int64") for i in input]
 
+
 @to_ivy_arrays_and_back
-# Duplicate function found in raw_ops.py
 def size(input, out_type=ivy.int32, name=None):
     out_type = to_ivy_dtype(out_type)
     shape = ivy.shape(input, as_array=True)
