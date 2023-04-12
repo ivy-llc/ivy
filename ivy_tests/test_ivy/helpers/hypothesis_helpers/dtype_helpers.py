@@ -100,9 +100,12 @@ def get_dtypes(
     none
         allow none in the list of valid types
     key
-        TODO: add description
+        if provided, a shared value will be drawn from the strategy and passed to the
+        function as the keyword argument with the given name.
     prune_function
-        TODO: add description
+        if True, the function will prune the data types to only include the ones that
+        are supported by the current backend. If False, the function will return all
+        the data types supported by the current backend.
 
     Returns
     -------
@@ -127,25 +130,38 @@ def get_dtypes(
         'int64',
         'uint64']
 
-    >>> get_dtypes(
-    ...     kind='numeric',
-    ...     full=False,
-    ... )
+    >>> get_dtypes(kind='valid', full=False)
     ['int16']
 
-    >>> get_dtypes(
-    ...     kind='numeric',
-    ...     full=False,
-    ... )
+    >>> get_dtypes(kind='valid', full=False)
     ['uint16']
 
-    >>> get_dtypes(
-    ...     kind='numeric',
-    ...     full=False,
-    ... )
+    >>> get_dtypes(kind='numeric', full=False)
     ['complex64']
 
-    # TODO: Needs an example that utilizes key and prune_function
+    >>> get_dtypes(kind='float', full=False, key="leaky_relu")
+    ['float16']
+
+    >>> get_dtypes(kind='float', full=False, key="searchsorted")
+    ['bfloat16']
+
+    >>> get_dtypes(kind='float', full=False, key="dtype")
+    ['float32']
+
+    >>> get_dtypes("numeric", prune_function=False)
+    ['int16']
+
+    >>> get_dtypes("valid", prune_function=False)
+    ['uint32']
+
+    >>> get_dtypes("valid", prune_function=False)
+    ['complex128']
+
+    >>> get_dtypes("valid", prune_function=False)
+    ['bool']
+
+    >>> get_dtypes("valid", prune_function=False)
+    ['float16']
     """
     if prune_function:
         retrieval_fn = _get_fn_dtypes

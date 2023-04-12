@@ -235,7 +235,6 @@ def get_mean_std(draw, *, dtype):
     -------
         A strategy that can be used in the @given hypothesis decorator.
     """
-    # TODO: Does this actually work?
     none_or_float = number_helpers.floats(dtype=dtype) | st.none()
     values = draw(array_helpers.list_of_size(x=none_or_float, size=2))
     values[1] = abs(values[1]) if values[1] else None
@@ -283,7 +282,7 @@ def get_axis(
     shape,
     allow_neg=True,
     allow_none=False,
-    sorted=True,  # TODO: should be renamed to sort_values
+    sort_values=True,
     unique=True,
     min_size=1,
     max_size=None,
@@ -304,7 +303,7 @@ def get_axis(
         boolean; if True, allow negative axes to be drawn
     allow_none
         boolean; if True, allow None to be drawn
-    sorted
+    sort_values
         boolean; if True, and a tuple of axes is drawn, tuple is sorted in increasing
         fashion
     unique
@@ -382,8 +381,7 @@ def get_axis(
     )
 
     if type(axis) == list:
-        if sorted:
-
+        if sort_values:
             def sort_key(ele, max_len):
                 if ele < 0:
                     return ele + max_len
