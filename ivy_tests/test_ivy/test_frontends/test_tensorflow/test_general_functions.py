@@ -8,6 +8,7 @@ from ivy.functional.frontends.tensorflow.general_functions import _num_to_bit_li
 from ivy_tests.test_ivy.test_frontends.test_numpy.test_creation_routines.test_from_shape_or_value import (  # noqa : E501
     _input_fill_and_dtype,
 )
+from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_tensor import _array_and_shape # noqa : E501
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _matrix_rank_helper
 from tensorflow import errors as tf_errors
@@ -778,20 +779,14 @@ def test_tensorflow_shape_n(
 
 @handle_frontend_test(
     fn_tree="tensorflow.ensure_shape",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
-    shape=helpers.get_shape(
-        allow_none=True,
+    dtype_and_x=_array_and_shape(
         min_num_dims=0,
-        max_num_dims=10,
-        min_dim_size=0,
-        max_dim_size=10,
-    ),
-    output_dtype=st.sampled_from(["int32", "int64"]),
+        max_num_dims=5
+    )
 )
 def test_tensorflow_ensure_shape(
     *,
     dtype_and_x,
-    shape,
     fn_tree,
     frontend,
     test_flags,
@@ -803,7 +798,7 @@ def test_tensorflow_ensure_shape(
         test_flags=test_flags,
         fn_tree=fn_tree,
         x=x[0],
-        shape=shape
+        shape=x[1]
     )
 
 
