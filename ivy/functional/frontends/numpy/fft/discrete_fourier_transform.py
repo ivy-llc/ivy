@@ -2,7 +2,6 @@ import ivy
 from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
 
 
-
 @to_ivy_arrays_and_back
 def ifft(a, n=None, axis=-1, norm=None):
     a = ivy.array(a, dtype=ivy.complex128)
@@ -13,21 +12,23 @@ def ifft(a, n=None, axis=-1, norm=None):
 
 @to_ivy_arrays_and_back
 def ifftshift(x, axes=None):
-    # The inverse of `fftshift`. Although identical for even-length `x`, the
-    # functions differ by one sample for odd-length `x`.
+    """
+    The inverse of `fftshift`. Although identical for even-length `x`, the
+    functions differ by one sample for odd-length `x`.
 
-    # Parameters
-    # ----------
-    # x : array_like
-    #     Input array.
-    # axes : int or shape tuple, optional
-    #     Axes over which to calculate.  Defaults to None, which shifts all axes.
+    Parameters
+    ----------
+    x : array_like
+        Input array.
+    axes : int or shape tuple, optional
+        Axes over which to calculate.  Defaults to None, which shifts all axes.
 
-    # Returns
-    # -------
-    # y : ndarray
-    #     The shifted array.
+    Returns
+    -------
+    y : ndarray
+        The shifted array.
 
+    """
     x = ivy.asarray(x)
     if axes is None:
         axes = tuple(range(x.ndim))
