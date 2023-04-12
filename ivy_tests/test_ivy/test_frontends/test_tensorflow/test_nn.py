@@ -1424,7 +1424,7 @@ def test_tensorflow_conv_transpose(
     fn_tree,
     on_device,
 ):
-    dims, data_format, value, filter, strides, padding, output_shape = (
+    dims, data_format, value, filters, strides, padding, output_shape = (
         dims_df_v_f_s_p_os
     )
     helpers.test_frontend_function(
@@ -1434,9 +1434,10 @@ def test_tensorflow_conv_transpose(
         fn_tree=fn_tree,
         on_device=on_device,
         value=value,
-        filter=filter,
+        filter=filters,
         strides=strides,
         padding=padding,
+        dims=dims,
         output_shape=output_shape,
         data_format=data_format,
     )
