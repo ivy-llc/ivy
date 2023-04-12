@@ -35,12 +35,12 @@ def ifftshift(x, axes=None):
 
     Examples
     --------
-    >>> freqs = np.fft.fftfreq(9, d=1./9).reshape(3, 3)
+    >>> freqs = ivy.functional.frontends.numpy.fft.fftfreq(9, d=1./9).reshape(3, 3)
     >>> freqs
     array([[ 0.,  1.,  2.],
            [ 3.,  4., -4.],
            [-3., -2., -1.]])
-    >>> np.fft.ifftshift(np.fft.fftshift(freqs))
+    >>> ivy.functional.frontends.numpy.fft.ifftshift(np.fft.fftshift(freqs))
     array([[ 0.,  1.,  2.],
            [ 3.,  4., -4.],
            [-3., -2., -1.]])
