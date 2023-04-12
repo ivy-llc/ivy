@@ -779,9 +779,9 @@ def test_tensorflow_shape_n(
 # size
 @handle_frontend_test(
     fn_tree="tensorflow.size",
-    #aliases=["tensorflow.size"],
+    aliases=["tensorflow.raw_ops.Size"],
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"), max_num_dims=3
+        available_dtypes=helpers.get_dtypes("valid"), max_num_dims=4
     ),
     output_dtype=st.sampled_from(["int32", "int64"]),
     test_with_out=st.just(False),
