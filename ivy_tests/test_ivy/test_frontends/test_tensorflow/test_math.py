@@ -75,6 +75,7 @@ def test_tensorflow_add(
     fn_tree="tensorflow.math.sin",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
+
 )
 def test_tensorflow_sin(
     *,
