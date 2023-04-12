@@ -201,10 +201,6 @@ def solve_triangular(
     unit_diagonal: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.linalg.triangular_solve(
-        a,
-        b,
-        lower=lower,
-        adjoint=transpose,
-        unit_diagonal=unit_diagonal,
-    )
+    if unit_diagonal:
+        a = tf.linalg.set_diag(a, tf.ones_like(tf.linalg.diag_part(a)))
+    return tf.linalg.triangular_solve(a, b, lower=lower, adjoint=transpose)
