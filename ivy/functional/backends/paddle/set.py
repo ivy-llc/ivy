@@ -15,6 +15,8 @@ from . import backend_version
 def unique_all(
     x: paddle.Tensor,
     /,
+    *,
+    axis: Optional[int] = None,
 ) -> Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor, paddle.Tensor]:
     Results = namedtuple(
         "Results",
@@ -27,7 +29,7 @@ def unique_all(
         x_dtype = x.dtype
 
     values, indices, inverse_indices, counts = paddle.unique(
-        x, return_index=True, return_counts=True, return_inverse=True
+        x, return_index=True, return_counts=True, return_inverse=True, axis=axis,
     )
     nan_count = paddle.sum(paddle.isnan(x))
 

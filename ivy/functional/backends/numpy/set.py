@@ -8,6 +8,8 @@ from packaging import version
 def unique_all(
     x: np.ndarray,
     /,
+    *,
+    axis: Optional[int] = None,
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     Results = namedtuple(
         "Results",
@@ -15,7 +17,7 @@ def unique_all(
     )
 
     values, indices, inverse_indices, counts = np.unique(
-        x, return_index=True, return_counts=True, return_inverse=True
+        x, return_index=True, return_counts=True, return_inverse=True, axis=axis,
     )
     nan_count = np.sum(np.isnan(x)).item()
 

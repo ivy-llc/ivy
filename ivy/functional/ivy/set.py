@@ -25,6 +25,8 @@ from ivy.utils.exceptions import handle_exceptions
 def unique_all(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
+    *,
+    axis: Optional[int] = None,
 ) -> Tuple[
     Union[ivy.Array, ivy.NativeArray],
     Union[ivy.Array, ivy.NativeArray],
@@ -66,8 +68,11 @@ def unique_all(
     Parameters
     ----------
     x
-        input array. If ``x`` has more than one dimension, the function must flatten
-        ``x`` and return the unique elements of the flattened array.
+        input array.
+
+    axis
+        the axis to apply unique on. If None, the unique elements of the flattened ``x``
+        are returned.
 
     Returns
     -------
@@ -134,7 +139,7 @@ def unique_all(
        counts=ivy.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]))
 
     """
-    return ivy.current_backend(x).unique_all(x)
+    return ivy.current_backend(x).unique_all(x, axis=axis)
 
 
 @handle_array_function

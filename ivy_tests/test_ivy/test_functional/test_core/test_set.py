@@ -46,26 +46,29 @@ def test_unique_values(
 # unique_all
 @handle_test(
     fn_tree="functional.ivy.unique_all",
-    dtype_and_x=helpers.dtype_and_values(
+    dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=5,
+        force_int_axis=True,
+        valid_axis=True,
     ),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
+    ground_truth_backend="numpy",
 )
 def test_unique_all(
     *,
-    dtype_and_x,
+    dtype_x_axis,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
-    dtype, x = dtype_and_x
+    dtype, x, axis = dtype_x_axis
     assume(not np.any(np.isclose(x, 0.0)))
 
     helpers.test_function(
@@ -76,6 +79,7 @@ def test_unique_all(
         fw=backend_fw,
         fn_name=fn_name,
         x=x[0],
+        axis=axis,
     )
 
 

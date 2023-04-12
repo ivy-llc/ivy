@@ -10,6 +10,8 @@ from . import backend_version
 def unique_all(
     x: Union[tf.Tensor, tf.Variable],
     /,
+    *,
+    axis: Optional[int] = None,
 ) -> Tuple[
     Union[tf.Tensor, tf.Variable],
     Union[tf.Tensor, tf.Variable],
@@ -20,6 +22,8 @@ def unique_all(
         "Results",
         ["values", "indices", "inverse_indices", "counts"],
     )
+    if axis is not None:
+        x = tf.math.reduce_sum(x, axis=axis)
     flat_tensor = tf.reshape(x, [-1])
     values, inverse_indices, counts = tf.unique_with_counts(tf.sort(flat_tensor))
     tensor_list = flat_tensor.numpy().tolist()

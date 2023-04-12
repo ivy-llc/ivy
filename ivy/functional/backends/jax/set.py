@@ -10,6 +10,8 @@ from ivy.functional.backends.jax import JaxArray
 def unique_all(
     x: JaxArray,
     /,
+    *,
+    axis: Optional[int] = None,
 ) -> Tuple[JaxArray, JaxArray, JaxArray, JaxArray]:
     Results = namedtuple(
         "Results",
@@ -17,7 +19,7 @@ def unique_all(
     )
 
     values, indices, inverse_indices, counts = jnp.unique(
-        x, return_index=True, return_counts=True, return_inverse=True
+        x, return_index=True, return_counts=True, return_inverse=True, axis=axis,
     )
     nan_count = jnp.sum(jnp.isnan(x)).item()
 

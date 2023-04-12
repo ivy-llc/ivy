@@ -17,6 +17,8 @@ from . import backend_version
 def unique_all(
     x: torch.Tensor,
     /,
+    *,
+    axis: Optional[int] = None,
 ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
     Results = namedtuple(
         "Results",
@@ -24,7 +26,7 @@ def unique_all(
     )
 
     outputs, inverse_indices, counts = torch.unique(
-        x, sorted=True, return_inverse=True, return_counts=True, dim=None
+        x, sorted=True, return_inverse=True, return_counts=True, dim=axis,
     )
 
     flat_tensor = x.flatten()

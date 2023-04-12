@@ -102,6 +102,9 @@ class _ArrayWithSet(abc.ABC):
 
     def unique_all(
         self: ivy.Array,
+        /,
+        *,
+        axis: Optional[int] = None,
     ) -> Tuple[ivy.Array, ivy.Array, ivy.Array, ivy.Array]:
         """
         ivy.Array instance method variant of ivy.unique_all. This method simply
@@ -111,9 +114,11 @@ class _ArrayWithSet(abc.ABC):
         Parameters
         ----------
         self
-            input array. If ``self`` has more than one dimension, the function
-            must flatten ``self`` and return the unique elements of the
-            flattened array.
+            input array.
+
+        axis
+            the axis to apply unique on. If None, the unique elements of the flattened
+            ``x`` are returned.
 
         Returns
         -------
@@ -136,7 +141,7 @@ class _ArrayWithSet(abc.ABC):
                counts=ivy.array([1, 1, 1, 1]))
 
         """
-        return ivy.unique_all(self._data)
+        return ivy.unique_all(self._data, axis=axis)
 
     def unique_inverse(self: ivy.Array) -> Tuple[ivy.Array, ivy.Array]:
         """
