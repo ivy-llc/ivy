@@ -325,6 +325,7 @@ def avg_pool3d(
     /,
     *,
     data_format: str = "NDHWC",
+    count_include_pad: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(strides, int):
@@ -351,7 +352,7 @@ def avg_pool3d(
             pad_d // 2,
             pad_d - pad_d // 2,
         ],
-        mode="replicate",
+        value=0.0,
     )
     if padding != "VALID" and padding != "SAME":
         raise ivy.utils.exceptions.IvyException(
@@ -359,6 +360,42 @@ def avg_pool3d(
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
     res = torch.nn.functional.avg_pool3d(x, kernel, strides, 0)
+
+    if not count_include_pad and (pad_w or pad_h or pad_d):
+        padded = [pad_d, pad_h, pad_w]
+        num_padded_values = [
+            torch.tensor(
+                ivy.map(
+                    _get_num_padded_values,
+                    constant={
+                        "p": padded[i],
+                        "n": x_shape[i],
+                        "k": kernel[i],
+                        "s": strides[i],
+                    },
+                    unique={
+                        "i": torch.arange(res.shape[i + 2]),
+                    },
+                ),
+                dtype=res.dtype,
+            )
+            for i in range(3)
+        ]
+        num_padded_values1 = num_padded_values[0].reshape((-1, 1, 1))
+        num_padded_values2 = num_padded_values[1].reshape((1, -1, 1))
+        num_padded_values3 = num_padded_values[2].reshape((1, 1, -1))
+        num_padded_values = (
+            num_padded_values1 * kernel[1] * kernel[2]
+            + num_padded_values2 * kernel[0] * kernel[2]
+            + num_padded_values3 * kernel[0] * kernel[1]
+            + num_padded_values1 * num_padded_values2 * num_padded_values3
+            - num_padded_values1 * num_padded_values2 * kernel[2]
+            - num_padded_values1 * num_padded_values3 * kernel[1]
+            - num_padded_values2 * num_padded_values3 * kernel[0]
+        )
+        kernel_mul = kernel[0] * kernel[1] * kernel[2]
+        res = (kernel_mul * res) / (kernel_mul - num_padded_values)
+
     if data_format == "NDHWC":
         res = res.permute(0, 2, 3, 4, 1)
     return res

@@ -2384,3 +2384,83 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
         """
         return self.static_expand(self, shape, copy=copy, out=out)
+
+    @staticmethod
+    def static_as_strided(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
+        strides: Sequence[int],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.as_strided.
+         This method simply wraps the function, and so the docstring for
+         ivy.as_strided also applies to this method with minimal
+         changes.
+
+        Parameters
+        ----------
+        x
+            Input container.
+        shape
+            The shape of the new arrays.
+        strides
+            The strides of the new arrays (specified in bytes).
+        key_chains
+            The keychains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        Returns
+        -------
+        ret
+            Output container.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "as_strided",
+            x,
+            shape,
+            strides,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def as_strided(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
+        strides: Sequence[int],
+        /,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.as_strided.
+         This method simply wraps the function, and so the docstring for
+         ivy.as_strided also applies to this method with minimal
+         changes.
+
+        Parameters
+        ----------
+        self
+            Input container.
+        shape
+            The shape of the new arrays.
+        strides
+            The strides of the new arrays (specified in bytes).
+
+        Returns
+        -------
+        ret
+            Output container.
+        """
+        return self.static_as_strided(self, shape, strides)

@@ -853,3 +853,28 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             Output Array
         """
         return ivy.expand(self._data, shape, copy=copy, out=out)
+
+    def as_strided(
+        self: ivy.Array,
+        shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
+        strides: Sequence[int],
+        /,
+    ) -> ivy.Array:
+        """
+        Create a copy of the input array with the given shape and strides.
+
+        Parameters
+        ----------
+        self
+            Input Array.
+        shape
+            The shape of the new array.
+        strides
+            The strides of the new array (specified in bytes).
+
+        Returns
+        -------
+        ret
+            Output Array
+        """
+        return ivy.as_strided(self._data, shape, strides)
