@@ -15,6 +15,36 @@ from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
 )
 
 
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.leaky_relu",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+    ),
+    test_with_out=st.just(False),
+    alpha=helpers.floats(min_value=0, max_value=1),
+)
+def test_tensorflow_leaky_relu(
+    *,
+    dtype_and_x,
+    alpha,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    return helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        features=x[0],
+        alpha=alpha,
+    )
+
+
 @st.composite
 def _x_and_filters(
     draw,
@@ -1274,4 +1304,81 @@ def test_tensorflow_embedding_lookup(
         ids=indices,
         max_norm=max_norm,
         atol=1e-4,
+    )
+
+
+# crelu
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.crelu",
+    dtype_x_and_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=4,
+        max_axes_size=3,
+        force_int_axis=True,
+        valid_axis=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_crelu(
+    *,
+    dtype_x_and_axis,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, axis = dtype_x_and_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        features=x[0],
+        axis=axis,
+    )
+
+
+@st.composite
+def _average_pool_args(draw):
+    dims = draw(st.integers(min_value=1, max_value=3))
+    data_formats = ["NWC", "NHWC", "NDHWC"]
+    data_format = data_formats[dims - 1]
+    return (
+        draw(
+            helpers.arrays_for_pooling(
+                min_dims=dims + 2, max_dims=dims + 2, min_side=1, max_side=4
+            )
+        ),
+        data_format,
+    )
+
+
+# average_pool
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.avg_pool",
+    x_k_s_p_df=_average_pool_args(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_avg_pool(
+    *,
+    x_k_s_p_df,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    (input_dtype, x, ksize, strides, padding), data_format = x_k_s_p_df
+    data_format = data_format
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        ksize=ksize,
+        strides=strides,
+        padding=padding,
+        data_format=data_format,
     )

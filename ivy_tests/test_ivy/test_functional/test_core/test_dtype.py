@@ -1152,3 +1152,18 @@ def test_valid_dtype(
         assert res is False, (
             f"fDtype = {dtype_in!r} is a valid dtype for {fw}, but" f"result = {res}"
         )
+
+
+# is_native_dtype
+@handle_test(
+    fn_tree="functional.ivy.is_native_dtype",
+    input_dtype=helpers.get_dtypes("valid", full=False),
+)
+def test_is_native_dtype(
+    input_dtype,
+):
+    input_dtype = input_dtype[0]
+    if isinstance(input_dtype, str):
+        assert ivy.is_native_dtype(input_dtype) is False
+
+    assert ivy.is_native_dtype(ivy.as_native_dtype(input_dtype)) is True

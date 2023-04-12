@@ -69,8 +69,10 @@ def hann_window(
     dtype: Optional[np.dtype] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    size = size + 1 if periodic is True else size
-    return np.array(np.hanning(size), dtype=dtype)
+    if periodic is False:
+        return np.array(np.hanning(size), dtype=dtype)
+    else:
+        return np.array(np.hanning(size + 1)[:-1], dtype=dtype)
 
 
 hann_window.support_native_out = False
