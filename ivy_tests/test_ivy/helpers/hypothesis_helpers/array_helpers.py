@@ -1021,7 +1021,7 @@ def array_indices_axis(
 def arrays_and_axes(
     draw,
     available_dtypes=get_dtypes("float"),
-    allow_none=False,  # TODO: Should this exist? - 1
+    allow_none=False,
     min_num_dims=1,
     max_num_dims=5,
     min_dim_size=1,
@@ -1130,7 +1130,7 @@ def arrays_and_axes(
     for _ in range(num):
         shape = draw(
             gh.get_shape(
-                allow_none=False,  # TODO: Should this exist? - 1
+                allow_none=False,
                 min_num_dims=min_num_dims,
                 max_num_dims=max_num_dims,
                 min_dim_size=min_dim_size,
@@ -1150,8 +1150,11 @@ def arrays_and_axes(
             draw(array_values(dtype=dtype[0], shape=shape, min_value=-20, max_value=20))
         )
     if force_int_axis:
-        if len(shape) <= 2:  # TODO: What is "shape"? It doesn't seem to be defined previously - 2
-            axes = draw(st.one_of(st.integers(0, len(shape) - 1), st.none()))  # TODO: st.none() might overlap with allow_none? - 1
+        # ToDo: the following code references shape as the last element in shapes
+        # while this is not the intended behavior of the code. This is a bug
+        # that should be fixed in the future.
+        if len(shape) <= 2:
+            axes = draw(st.one_of(st.integers(0, len(shape) - 1), st.none()))
         else:
             axes = draw(st.integers(0, len(shape) - 1))
     else:
@@ -1571,7 +1574,7 @@ def arrays_for_pooling(
         padding = draw(st.sampled_from(["VALID", "SAME"]))
 
     strides = draw(st.tuples(st.integers(1, min(kernel))))
-    ret = {dtype, x, kernel, strides, padding}
+    ret = [dtype, x, kernel, strides, padding]
     if return_dilation:
         return *ret, dilations
     return ret
