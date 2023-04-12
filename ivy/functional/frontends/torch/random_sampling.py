@@ -70,11 +70,12 @@ def randint(
     requires_grad=False
 ):
     return ivy.randint(
-        low=low,
-        high=high,
+        low,
+        high,
         shape=size,
-        device=device,
+        out=out,
         dtype=dtype,
+        device=device,
     )
 
 

@@ -130,42 +130,36 @@ def test_torch_poisson(
         assert u.shape == v.shape
 
 
+# randint
+
+
 @handle_frontend_test(
     fn_tree="torch.randint",
-    dtype=helpers.get_dtypes("int", full=False),
-    low=0,
-    high=10,
-    size=helpers.get_shape(
-        min_num_dims=0,
-        max_num_dims=5,
-        min_dim_size=0,
-        max_dim_size=10,
-    ),
+    low=helpers.ints(min_value=0, max_value=10),
+    high=helpers.ints(min_value=11, max_value=20),
+    size=helpers.get_shape(),
+    dtype=helpers.get_dtypes("integer"),
 )
-def test_torch_randint(*, dtype, low, high, size, frontend, fn_tree, test_flags):
-    def call():
-        return helpers.test_frontend_function(
-            input_dtypes=dtype,
-            frontend=frontend,
-            test_values=False,
-            fn_tree=fn_tree,
-            test_flags=test_flags,
-            low=low,
-            high=high,
-            size=size,
-        )
-
-    ret = call()
-
-    if not ivy.exists(ret):
-        return
-
-    ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
-    for (u, v) in zip(ret_np, ret_from_np):
-        assert u.dtype == v.dtype
-        assert u.shape == v.shape
+def test_torch_randint(
+    *,
+    low,
+    high,
+    size,
+    dtype,
+    frontend,
+    test_flags,
+    fn_tree,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_values=False,
+        fn_tree=fn_tree,
+        test_flags=test_flags,
+        low=low,
+        high=high,
+        size=size,
+    )
 
 
 @handle_frontend_test(
