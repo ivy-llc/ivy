@@ -590,6 +590,18 @@ def add_n(inputs, name=None):
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {
+        "2.9.0 and below": ("float32", "float64", "complex64", "complex128"),
+    },
+    "tensorflow",
+)
+def mod(x, y, name=None):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.floormod(x, y)
+
+
+@to_ivy_arrays_and_back
 def floormod(x, y, name=None):
     return ivy.remainder(x, y)
 
