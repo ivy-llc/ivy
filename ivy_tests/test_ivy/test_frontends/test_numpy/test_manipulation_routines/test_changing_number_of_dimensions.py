@@ -191,6 +191,7 @@ def broadcastable_arrays(draw, dtypes):
         arrays.append(x)
     return arrays
 
+
 @handle_frontend_test(
     fn_tree="numpy.broadcast_arrays",
     arrays=broadcastable_arrays(dtypes_shared("num_arrays")),
