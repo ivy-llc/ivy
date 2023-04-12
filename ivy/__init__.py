@@ -4,6 +4,7 @@ import warnings
 import builtins
 import numpy as np
 import sys
+from warnings import UserWarning
 
 
 import ivy.utils.backend.handler
@@ -21,6 +22,7 @@ for backend_framework in _not_imported_backends.copy():
         _not_imported_backends.remove(backend_framework)
 
 warnings.filterwarnings("ignore", module="^(?!.*ivy).*$")
+warnings.filterwarnings("ignore", category=UserWarning)
 
 
 # Local Ivy
@@ -1081,6 +1083,7 @@ def unset_warning_level():
 def warn(warning_message, stacklevel=0):
     warn_level = warning_level()
     warnings.filterwarnings("ignore", module=warn_to_regex[warn_level])
+    warnings.filterwarnings("ignore", category=UserWarning)
     warnings.warn(warning_message, stacklevel=stacklevel)
 
 
