@@ -260,10 +260,7 @@ def Less(*, x, y, name="Less"):
     return ivy.less(x, y)
 
 
-@to_ivy_arrays_and_back
-def LessEqual(*, x, y, name="LessEqual"):
-    x, y = check_tensorflow_casting(x, y)
-    return ivy.less_equal(x, y)
+LessEqual = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.less_equal))
 
 
 @to_ivy_arrays_and_back

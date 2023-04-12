@@ -17,6 +17,7 @@ def moveaxis(
     destination: Union[int, Sequence[int]],
     /,
     *,
+    copy: Optional[bool] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.moveaxis(a, source, destination)
@@ -52,6 +53,7 @@ def flipud(
     m: paddle.Tensor,
     /,
     *,
+    copy: Optional[bool] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()
@@ -118,6 +120,7 @@ def rot90(
     m: paddle.Tensor,
     /,
     *,
+    copy: Optional[bool] = None,
     k: Optional[int] = 1,
     axes: Optional[Tuple[int, int]] = (0, 1),
     out: Optional[paddle.Tensor] = None,
@@ -157,6 +160,7 @@ def fliplr(
     m: paddle.Tensor,
     /,
     *,
+    copy: Optional[bool] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.flip(m, axis=1)
@@ -175,6 +179,7 @@ def flatten(
     x: paddle.Tensor,
     /,
     *,
+    copy: Optional[bool] = None,
     start_dim: Optional[int] = 0,
     end_dim: Optional[int] = -1,
     order: Optional[str] = "C",
@@ -200,11 +205,15 @@ def dsplit(
     ary: paddle.Tensor,
     indices_or_sections: Union[int, Tuple[int, ...]],
     /,
+    *,
+    copy: Optional[bool] = None,
 ) -> List[paddle.Tensor]:
     raise IvyNotImplementedException()
 
 
-def atleast_1d(*arys: paddle.Tensor) -> List[paddle.Tensor]:
+def atleast_1d(
+    *arys: paddle.Tensor, copy: Optional[bool] = None
+) -> List[paddle.Tensor]:
     raise IvyNotImplementedException()
 
 
@@ -217,11 +226,15 @@ def dstack(
     raise IvyNotImplementedException()
 
 
-def atleast_2d(*arys: paddle.Tensor) -> List[paddle.Tensor]:
+def atleast_2d(
+    *arys: paddle.Tensor, copy: Optional[bool] = None
+) -> List[paddle.Tensor]:
     raise IvyNotImplementedException()
 
 
-def atleast_3d(*arys: Union[paddle.Tensor, bool, Number]) -> List[paddle.Tensor]:
+def atleast_3d(
+    *arys: Union[paddle.Tensor, bool, Number], copy: Optional[bool] = None
+) -> List[paddle.Tensor]:
     raise IvyNotImplementedException()
 
 
@@ -241,6 +254,8 @@ def hsplit(
     ary: paddle.Tensor,
     indices_or_sections: Union[int, Tuple[int, ...]],
     /,
+    *,
+    copy: Optional[bool] = None,
 ) -> List[paddle.Tensor]:
     raise IvyNotImplementedException()
 
@@ -275,6 +290,7 @@ def expand(
     shape: Union[List[int], List[Tuple]],
     /,
     *,
+    copy: Optional[bool] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     shape = list(shape)

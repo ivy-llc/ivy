@@ -24,8 +24,11 @@ def moveaxis(
     destination: Union[int, Sequence[int]],
     /,
     *,
+    copy: Optional[bool] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if copy:
+        a = a.copy()
     return np.moveaxis(a, source, destination)
 
 
@@ -53,8 +56,11 @@ def flipud(
     m: np.ndarray,
     /,
     *,
+    copy: Optional[bool] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if copy:
+        m = m.copy()
     return np.flipud(m)
 
 
@@ -83,10 +89,13 @@ def rot90(
     m: np.ndarray,
     /,
     *,
+    copy: Optional[bool] = None,
     k: int = 1,
     axes: Tuple[int, int] = (0, 1),
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if copy:
+        m = m.copy()
     return np.rot90(m, k, axes)
 
 
@@ -116,8 +125,11 @@ def fliplr(
     m: np.ndarray,
     /,
     *,
+    copy: Optional[bool] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if copy:
+        m = m.copy()
     return np.fliplr(m)
 
 
@@ -214,7 +226,11 @@ def vsplit(
     ary: np.ndarray,
     indices_or_sections: Union[int, Tuple[int, ...]],
     /,
+    *,
+    copy: Optional[bool] = None,
 ) -> List[np.ndarray]:
+    if copy:
+        ary = ary.copy()
     return np.vsplit(ary, indices_or_sections)
 
 
@@ -222,15 +238,23 @@ def dsplit(
     ary: np.ndarray,
     indices_or_sections: Union[int, Tuple[int, ...]],
     /,
+    *,
+    copy: Optional[bool] = None,
 ) -> List[np.ndarray]:
     if ary.ndim < 3:
         raise ivy.utils.exceptions.IvyError(
             "dsplit only works on arrays of 3 or more dimensions"
         )
+    if copy:
+        ary = ary.copy()
     return np.dsplit(ary, indices_or_sections)
 
 
-def atleast_1d(*arys: Union[np.ndarray, bool, Number]) -> List[np.ndarray]:
+def atleast_1d(
+    *arys: Union[np.ndarray, bool, Number], copy: Optional[bool] = None
+) -> List[np.ndarray]:
+    if copy:
+        arys = ivy.nested_map(arys, np.copy)
     return np.atleast_1d(*arys)
 
 
@@ -243,11 +267,17 @@ def dstack(
     return np.dstack(arrays)
 
 
-def atleast_2d(*arys: np.ndarray) -> List[np.ndarray]:
+def atleast_2d(*arys: np.ndarray, copy: Optional[bool] = None) -> List[np.ndarray]:
+    if copy:
+        arys = ivy.nested_map(arys, np.copy)
     return np.atleast_2d(*arys)
 
 
-def atleast_3d(*arys: Union[np.ndarray, bool, Number]) -> List[np.ndarray]:
+def atleast_3d(
+    *arys: Union[np.ndarray, bool, Number], copy: Optional[bool] = None
+) -> List[np.ndarray]:
+    if copy:
+        arys = ivy.nested_map(arys, np.copy)
     return np.atleast_3d(*arys)
 
 
@@ -295,7 +325,11 @@ def hsplit(
     ary: np.ndarray,
     indices_or_sections: Union[int, Tuple[int, ...]],
     /,
+    *,
+    copy: Optional[bool] = None,
 ) -> List[np.ndarray]:
+    if copy:
+        ary = ary.copy()
     return np.hsplit(ary, indices_or_sections)
 
 
@@ -314,8 +348,11 @@ def expand(
     shape: Union[List[int], List[Tuple]],
     /,
     *,
+    copy: Optional[bool] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if copy:
+        x = x.copy()
     shape = list(shape)
     for i, dim in enumerate(shape):
         if dim < 0:

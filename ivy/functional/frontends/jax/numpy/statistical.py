@@ -423,6 +423,11 @@ def corrcoef(x, y=None, rowvar=True):
 
 
 @to_ivy_arrays_and_back
+def median(a, axis=None, out=None, overwrite_input=False, keepdims=False):
+    return ivy.median(a, axis=axis, out=out, keepdims=keepdims)
+
+
+@to_ivy_arrays_and_back
 def ptp(a, axis=None, out=None, keepdims=False):
     x = ivy.max(a, axis=axis, keepdims=keepdims)
     y = ivy.min(a, axis=axis, keepdims=keepdims)

@@ -30,7 +30,6 @@ from ivy.func_wrapper import (
     handle_array_function,
     inputs_to_ivy_arrays,
     inputs_to_native_arrays,
-    outputs_to_ivy_arrays,
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
@@ -3788,3 +3787,35 @@ def isin(
     return ivy.current_backend().isin(
         elements, test_elements, assume_unique=assume_unique, invert=invert
     )
+
+
+@to_native_arrays_and_back
+@handle_nestable
+@handle_exceptions
+def itemsize(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+) -> int:
+    """Returns the size of the input array's elements.
+
+    Parameters
+    ----------
+    x
+       The input array.
+
+    Returns
+    -------
+    ret
+        An integer specifying the element size in bytes.
+
+    Examples
+    --------
+    >>> x = ivy.array([1,2,3], dtype=ivy.float64)
+    >>> ivy.itemsize(x)
+    8
+
+    >>> x = ivy.array([1,2,3], dtype=ivy.complex128)
+    >>> ivy.itemsize(x)
+    16
+    """
+    return ivy.current_backend().itemsize(x)

@@ -439,3 +439,7 @@ def isin(
     invert: bool = False,
 ) -> JaxArray:
     return jnp.isin(elements, test_elements, assume_unique=assume_unique, invert=invert)
+
+
+def itemsize(x: JaxArray) -> int:
+    return x.itemsize

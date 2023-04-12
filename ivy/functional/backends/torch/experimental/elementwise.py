@@ -8,7 +8,11 @@ import torch
 import ivy
 from ivy import promote_types_of_inputs
 from ivy.functional.backends.torch.elementwise import _cast_for_unary_op
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes, handle_mixed_function
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    with_supported_dtypes,
+    handle_mixed_function,
+)
 from .. import backend_version
 
 

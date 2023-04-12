@@ -3474,6 +3474,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         ivy.Container static method variant of ivy.lerp. This method simply
         wraps the function, and so the docstring for ivy.lerp also applies to this
         method with minimal changes.
+
         Parameters
         ----------
         input
@@ -3495,10 +3496,12 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
             Default is ``False``.
         out
             optional output container, for writing the result to.
+
         Returns
         -------
         ret
             container including  input + ((end - input) * weight)
+
         Examples
         --------
         With one :class:`ivy.Container` input:
@@ -3546,6 +3549,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         """ivy.Container instance method variant of ivy.lerp. This method simply
         wraps the function, and so the docstring for ivy.lerp also applies to this
         method with minimal changes.
+
         Parameters
         ----------
         self
@@ -3556,10 +3560,12 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
             The container whose arrays or scalar should be used as parameter: weight
         out
             optional output container, for writing the result to.
+
         Returns
         -------
         ret
             container including  input + ((end - input) * weight)
+
         Examples
         --------
         With one :class:`ivy.Container` input:
