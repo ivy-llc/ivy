@@ -245,9 +245,7 @@ def number(
     return draw(
         ints(
             **common_kwargs
-        )
-        |
-        floats(
+        ) | floats(
             **common_kwargs,
             small_abs_safety_factor=small_abs_safety_factor
         )
