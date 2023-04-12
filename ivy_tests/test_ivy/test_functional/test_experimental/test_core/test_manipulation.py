@@ -1054,8 +1054,10 @@ def _as_strided_helper(draw):
     ))
     shape = draw(_get_reshape(x_shape))
     new_ndim = len(shape)
+    itemsize = x[0].itemsize
+    # the ground truth numpy results for strides greater than itemsize are inconsistent
     strides = draw(st.lists(
-        st.integers(min_value=1, max_value=5),
+        st.integers(min_value=1, max_value=itemsize),
         min_size=new_ndim,
         max_size=new_ndim,
     ))
