@@ -54,7 +54,7 @@ from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
 from ivy.functional.frontends.torch.tensor import Tensor as torch_tensor
 from ivy.functional.frontends.tensorflow.tensor import EagerTensor as tf_tensor
 from ivy.functional.frontends.jax.devicearray import DeviceArray
-from ivy.functional.frontends.numpy.ndarray.ndarray import ndarray
+from ivy.functional.frontends.numpy import ndarray
 from .assertions import (
     value_test,
     check_unsupported_dtype,

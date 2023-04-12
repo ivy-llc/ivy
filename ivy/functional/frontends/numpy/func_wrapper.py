@@ -6,7 +6,7 @@ import platform
 
 # local
 import ivy
-from ivy.functional.frontends.numpy.ndarray.ndarray import ndarray
+from ivy.functional.frontends.numpy import ndarray
 import ivy.functional.frontends.numpy as np_frontend
 
 

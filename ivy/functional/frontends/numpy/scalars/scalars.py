@@ -3,7 +3,7 @@
 # local
 import ivy
 from ivy.functional.frontends.numpy.creation_routines.from_existing_data import array
-from ivy.functional.frontends.numpy.ndarray.ndarray import ndarray
+from ivy.functional.frontends.numpy import ndarray
 
 
 class generic(ndarray):
