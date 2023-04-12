@@ -7,7 +7,9 @@
    :hide-table:
    :recursive:
 {% for function in functions %}
+   {% if not function.startswith('_') %}
    {{ fullname }}.{{ function }}
+   {% endif %}
 {%- endfor %}
 
 {% endblock %}
