@@ -575,10 +575,10 @@ def polyder(p, m=1):
     if n == 1 or m >= n:
         return ivy.array(0, dtype=p.dtype)
 
-    result = ivy.array([
-        factorial(n - 1 - k) // factorial(n - 1 - k - m) * p[k]
-        for k in range(n - m)
-    ], dtype=p.dtype)
+    result = ivy.array(
+        [factorial(n - 1 - k) // factorial(n - 1 - k - m) * p[k] for k in range(n - m)],
+        dtype=p.dtype,
+    )
 
     return result
 

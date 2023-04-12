@@ -26,6 +26,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         destination: Union[int, Sequence[int]],
         /,
         *,
+        copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -69,6 +70,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             a,
             source,
             destination,
+            copy=copy,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -82,6 +84,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         destination: Union[int, Sequence[int]],
         /,
         *,
+        copy: Optional[bool] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.moveaxis. This method simply
@@ -115,7 +118,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             b: (7, 6, 2)
         }
         """
-        return self.static_moveaxis(self, source, destination, out=out)
+        return self.static_moveaxis(self, source, destination, copy=copy, out=out)
 
     @staticmethod
     def static_heaviside(
@@ -213,6 +216,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         m: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
+        copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -255,6 +259,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(
             "flipud",
             m,
+            copy=copy,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -266,6 +271,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
+        copy: Optional[bool] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.flipud. This method simply
@@ -300,7 +306,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             b: ivy.array([3, 2, 1, 0])
         }
         """
-        return self.static_flipud(self, out=out)
+        return self.static_flipud(self, copy=copy, out=out)
 
     def vstack(
         self: ivy.Container,
@@ -476,6 +482,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         m: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
+        copy: bool = None,
         k: int = 1,
         axes: Tuple[int, int] = (0, 1),
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -536,6 +543,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(
             "rot90",
             m,
+            copy=copy,
             k=k,
             axes=axes,
             key_chains=key_chains,
@@ -549,6 +557,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
+        copy: bool = None,
         k: int = 1,
         axes: Tuple[int, int] = (0, 1),
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -607,6 +616,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         """
         return self.static_rot90(
             self,
+            copy=copy,
             k=k,
             axes=axes,
             key_chains=key_chains,
@@ -777,6 +787,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         m: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
+        copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -829,6 +840,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(
             "fliplr",
             m,
+            copy=copy,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -840,6 +852,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
+        copy: Optional[bool] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.fliplr. This method simply
@@ -874,7 +887,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
                           [6, 5, 4]])
         }
         """
-        return self.static_fliplr(self, out=out)
+        return self.static_fliplr(self, copy=copy, out=out)
 
     @staticmethod
     def static_i0(
@@ -971,6 +984,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        copy: Optional[bool] = None,
         start_dim: int = 0,
         end_dim: int = -1,
         order: str = "C",
@@ -1029,6 +1043,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(
             "flatten",
             x,
+            copy=copy,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1042,6 +1057,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     def flatten(
         self: ivy.Container,
         *,
+        copy: Optional[bool] = None,
         start_dim: int = 0,
         end_dim: int = -1,
         order: str = "C",
@@ -1097,7 +1113,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         }]
         """
         return self.static_flatten(
-            self, start_dim=start_dim, end_dim=end_dim, out=out, order=order
+            self, copy=copy, start_dim=start_dim, end_dim=end_dim, out=out, order=order
         )
 
     @staticmethod
@@ -1214,6 +1230,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         indices_or_sections: Union[int, Tuple[int, ...]],
         /,
         *,
+        copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1282,6 +1299,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             "vsplit",
             ary,
             indices_or_sections,
+            copy=copy,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1292,6 +1310,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         self: ivy.Container,
         indices_or_sections: Union[int, Tuple[int, ...]],
         /,
+        *,
+        copy: Optional[bool] = None,
     ) -> List[ivy.Container]:
         """ivy.Container instance method variant of ivy.vsplit. This method simply
         wraps the function, and so the docstring for ivy.vsplit also applies to this
@@ -1340,7 +1360,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
                           [12., 13., 14., 15.]])
         }]
         """
-        return self.static_vsplit(self, indices_or_sections)
+        return self.static_vsplit(self, indices_or_sections, copy=copy)
 
     @staticmethod
     def static_dsplit(
@@ -1348,6 +1368,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         indices_or_sections: Union[int, Tuple[int, ...]],
         /,
         *,
+        copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1414,6 +1435,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             "dsplit",
             ary,
             indices_or_sections,
+            copy=copy,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1424,6 +1446,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         self: ivy.Container,
         indices_or_sections: Union[int, Tuple[int, ...]],
         /,
+        *,
+        copy: Optional[bool] = None,
     ) -> List[ivy.Container]:
         """ivy.Container instance method variant of ivy.dsplit. This method simply
         wraps the function, and so the docstring for ivy.dsplit also applies to this
@@ -1471,11 +1495,12 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             b: ivy.array([[[2., 3.], [6., 7.], [10., 11.], [14., 15.]]])
         }]
         """
-        return self.static_dsplit(self, indices_or_sections)
+        return self.static_dsplit(self, indices_or_sections, copy=copy)
 
     @staticmethod
     def static_atleast_1d(
         *arys: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1522,6 +1547,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(
             "atleast_1d",
             *arys,
+            copy=copy,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1531,6 +1557,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     def atleast_1d(
         self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         *arys: Union[ivy.Container, ivy.Array, ivy.NativeArray, bool, Number],
+        copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1585,6 +1612,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         return self.static_atleast_1d(
             self,
             *arys,
+            copy=copy,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1680,6 +1708,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     @staticmethod
     def static_atleast_2d(
         *arys: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1726,6 +1755,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(
             "atleast_2d",
             *arys,
+            copy=copy,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1735,6 +1765,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     def atleast_2d(
         self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         *arys: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1788,6 +1819,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         return self.static_atleast_2d(
             self,
             *arys,
+            copy=copy,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1797,6 +1829,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     @staticmethod
     def static_atleast_3d(
         *arys: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1847,6 +1880,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(
             "atleast_3d",
             *arys,
+            copy=copy,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1855,6 +1889,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
     def atleast_3d(
         self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        copy: Optional[bool] = None,
         *arys: Union[ivy.Container, ivy.Array, ivy.NativeArray, bool, Number],
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1912,6 +1947,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         return self.static_atleast_3d(
             self,
             *arys,
+            copy=copy,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -2071,6 +2107,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         indices_or_sections: Union[int, Tuple[int, ...]],
         /,
         *,
+        copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2138,6 +2175,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             "hsplit",
             ary,
             indices_or_sections,
+            copy=copy,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -2147,6 +2185,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     def hsplit(
         self: ivy.Container,
         indices_or_sections: Union[int, Tuple[int, ...]],
+        copy: Optional[bool] = None,
         /,
     ) -> List[ivy.Container]:
         """ivy.Container instance method variant of ivy.hsplit. This method simply
@@ -2195,7 +2234,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             b: ivy.array([8., 9., 10., 11., 12., 13., 14., 15.])
         }]
         """
-        return self.static_hsplit(self, indices_or_sections)
+        return self.static_hsplit(self, indices_or_sections, copy=copy)
 
     @staticmethod
     def static_broadcast_shapes(
@@ -2294,6 +2333,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         shape: Union[ivy.Shape, ivy.NativeShape],
         /,
         *,
+        copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2318,6 +2358,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             "expand",
             x,
             shape,
+            copy=copy,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -2330,6 +2371,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         shape: Union[ivy.Shape, ivy.NativeShape],
         /,
         *,
+        copy: Optional[bool] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2341,4 +2383,4 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         out
 
         """
-        return self.static_expand(self, shape, out=out)
+        return self.static_expand(self, shape, copy=copy, out=out)

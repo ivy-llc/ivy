@@ -9,6 +9,7 @@ import importlib
 
 # local
 import ivy
+from ivy.utils.backend import current_backend
 from ivy.func_wrapper import (
     handle_array_function,
     handle_out_argument,

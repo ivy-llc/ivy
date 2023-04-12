@@ -11,7 +11,8 @@ from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
-    integer_arrays_to_float, inputs_to_ivy_arrays,
+    integer_arrays_to_float,
+    inputs_to_ivy_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -310,6 +311,7 @@ def avg_pool2d(
     /,
     *,
     data_format: str = "NHWC",
+    count_include_pad: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 2-D average pool given 4-D input x.
@@ -328,6 +330,8 @@ def avg_pool2d(
         indicating the per-dimensio paddings.
     data_format
         NHWC" or "NCHW". Defaults to "NHWC".
+    count_include_pad
+        Whether to include padding in the averaging calculation.
     out
         optional output array, for writing the result to.
 
@@ -366,7 +370,13 @@ def avg_pool2d(
 
     """
     return ivy.current_backend(x).avg_pool2d(
-        x, kernel, strides, padding, data_format=data_format, out=out
+        x,
+        kernel,
+        strides,
+        padding,
+        data_format=data_format,
+        count_include_pad=count_include_pad,
+        out=out,
     )
 
 
@@ -381,6 +391,7 @@ def avg_pool3d(
     /,
     *,
     data_format: str = "NDHWC",
+    count_include_pad: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 3-D avg pool given 5-D input x.
@@ -398,6 +409,8 @@ def avg_pool3d(
         paddings.
     data_format
         NDHWC" or "NCDHW". Defaults to "NDHWC".
+    count_include_pad
+        Whether to include padding in the averaging calculation.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -436,7 +449,13 @@ def avg_pool3d(
 
     """
     return ivy.current_backend(x).avg_pool3d(
-        x, kernel, strides, padding, data_format=data_format, out=out
+        x,
+        kernel,
+        strides,
+        padding,
+        data_format=data_format,
+        count_include_pad=count_include_pad,
+        out=out,
     )
 
 

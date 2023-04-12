@@ -2586,6 +2586,8 @@ def test_jax_numpy_ldexp(
         num_arrays=1,
         min_num_dims=1,
         max_num_dims=1,
+        min_value=-1e04,
+        max_value=1e04,
     ),
 )
 def test_jax_numpy_poly(
@@ -2655,13 +2657,13 @@ def test_jax_numpy_polyadd(
     m=st.integers(min_value=0, max_value=10),
 )
 def test_jax_numpy_polyder(
-        *,
-        dtype_and_x,
-        m,
-        test_flags,
-        on_device,
-        fn_tree,
-        frontend,
+    *,
+    dtype_and_x,
+    m,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(

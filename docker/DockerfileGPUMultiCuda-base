@@ -1,3 +1,4 @@
+# is used to create a base image where we then manually install cuda and cudnn
 FROM ubuntu:20.04
 WORKDIR /ivy
 ARG cuda=["11.2"]
