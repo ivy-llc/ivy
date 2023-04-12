@@ -173,12 +173,14 @@ def shape_n(input, out_type=ivy.int32, name=None):
     else:
         return [ivy.array(ivy.shape(i), dtype="int64") for i in input]
 
+
 @to_ivy_arrays_and_back
 def ensure_shape(x, shape, name=None):
     x = EagerTensor(x)
     x.set_shape(shape)
 
     return x
+
 
 @with_unsupported_dtypes({"2.10.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @handle_tf_dtype

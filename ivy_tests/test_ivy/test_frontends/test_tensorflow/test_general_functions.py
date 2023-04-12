@@ -775,6 +775,7 @@ def test_tensorflow_shape_n(
         out_type=output_dtype,
     )
 
+
 @handle_frontend_test(
     fn_tree="tensorflow.ensure_shape",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
@@ -804,6 +805,7 @@ def test_tensorflow_ensure_shape(
         x=x[0],
         shape=shape
     )
+
 
 # range
 @handle_frontend_test(
