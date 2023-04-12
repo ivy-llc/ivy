@@ -1,5 +1,6 @@
 # global
 from builtins import slice as py_slice
+import sys
 
 # local
 import ivy
@@ -354,6 +355,59 @@ def where(condition: ivy.array, x=None, y=None, name=None):
 
 def roll(input, shift, axis, name=None):
     return ivy.roll(input, shift, axis=axis)
+
+@to_ivy_arrays_and_back
+def unique_with_counts(x, return_counts=False, axis=None):
+    """
+    Return unique values and their counts from an array.
+    
+    Args:
+        x: input array.
+        return_counts (bool, optional): if True, also return the number of times each unique value appears. Default is False.
+        axis (int, optional): the axis along which to operate. If None, the entire array is used. Default is None.
+    
+    Returns:
+        unique_vals: unique values of the array.
+        counts (optional): the number of times each unique value appears in the array (if return_counts=True).
+    """
+    x = ivy.array(x)
+    unique_vals, inverse_indices, counts = ivy.unique(x, return_inverse=True, return_counts=True, axis=axis)
+    if return_counts:
+        return unique_vals, counts
+    else:
+        return unique_vals
+    
+
+@to_ivy_arrays_and_back
+def print(*args, **kwargs):
+    """
+    Print function that can be used with Ivy arrays.
+
+    Args:
+        *args: the objects to print.
+        **kwargs: optional keyword arguments:
+            file: a file-like object (stream); defaults to the current sys.stdout.
+            flush: whether to forcibly flush the stream.
+
+    Returns:
+        None
+    """
+    if 'file' in kwargs:
+        file = kwargs.pop('file')
+        print(*args, **kwargs, file=file)
+        return
+    if 'flush' in kwargs:
+        flush = kwargs.pop('flush')
+    else:
+        flush = False
+    sep = kwargs.pop('sep', ' ')
+    end = kwargs.pop('end', '\n')
+    output = sep.join(str(arg) for arg in args) + end
+    sys.stdout.write(output)
+    if flush:
+        sys.stdout.flush()
+
+
 
 
 @to_ivy_arrays_and_back
