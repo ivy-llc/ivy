@@ -1796,7 +1796,7 @@ def test_tensorflow_norm(
 
 # diag
 @handle_frontend_test(
-    fn_tree="tensorflow.linalg.diag",
+    fn_tree="tensorflow.linalg.diag_part",
     dtype_and_x_k=_diag_helper(),
 )
 def test_tensorflow_diag(
