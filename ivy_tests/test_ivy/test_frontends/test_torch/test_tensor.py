@@ -304,7 +304,7 @@ def test_torch_instance_add(
     ),
     alpha=st.floats(min_value=-1e04, max_value=1e04, allow_infinity=False),
 )
-def test_torch_instance_sub(
+def test_torch_instance_add(
     dtype_and_x,
     alpha,
     frontend,
@@ -6348,6 +6348,7 @@ def test_torch_instance_fmin(
     )
 
 
+
 # count_nonzero
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -6385,7 +6386,7 @@ def test_torch_instance_count_nonzero(
         method_flags=method_flags,
         frontend=frontend,
         on_device=on_device,
-    )
+    )    
 
 
 # exp
