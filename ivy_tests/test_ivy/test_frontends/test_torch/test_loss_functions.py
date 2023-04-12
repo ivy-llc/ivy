@@ -1029,3 +1029,50 @@ def test_torch_triplet_margin_with_distance_loss(
         swap=swap,
         reduction=reduction,
     )
+
+
+# multi margin loss
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.multi_margin_loss",
+    dtype_and_inputs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        allow_inf=False,
+        shared_dtype=True,
+        min_value=0.0,
+        max_value=1.0,
+        min_num_dims=1,
+        max_num_dims=2,
+        min_dim_size=1,
+    ),
+    margin=st.floats(),
+    size_average=st.booleans(),
+    reduction=st.sampled_from(["mean"]),
+    test_with_out=st.just(False),
+)
+def test_torch_multi_margin_loss(
+    *,
+    dtype_and_inputs,
+    margin, 
+    size_average,
+    reduction,
+    test_flags,
+    fn_tree,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_inputs
+    input_dtype, input = input_dtype[0], x[0]
+    target_dtype, target = input_dtype[1], x[1]
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype, target_dtype],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input,
+        target=target,
+        margin=margin,
+        size_average=size_average,
+        reduction=reduction,
+    )
