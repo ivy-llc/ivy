@@ -41,7 +41,8 @@ def test_jax_numpy_sign(
         on_device=on_device,
         a=x[0],
     )
-    
+
+
 # absolute
 @handle_frontend_test(
     fn_tree="jax.numpy.absolute",
