@@ -917,7 +917,10 @@ class Tensor:
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def cumprod(self, dim, dtype):
-        return torch_frontend.cumprod(self._ivy_array, dim, dtype=dtype)
+        return torch_frontend.cumprod(self._ivy_array, dim, dtype=dtype) 
+    
+    def count_nonzero(self, dim):
+        return torch_frontend.count_nonzero(self._ivy_array, dim=dim)
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def exp(self):
