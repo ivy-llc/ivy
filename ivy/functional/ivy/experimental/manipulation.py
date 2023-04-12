@@ -1625,8 +1625,6 @@ def as_strided(
     shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
     strides: Sequence[int],
     /,
-    *,
-    copy: Optional[bool] = None,
 ) -> ivy.Array:
     """
     Create a copy of the input array with the given shape and strides.
@@ -1654,9 +1652,6 @@ def as_strided(
        [3, 4, 5],
        [4, 5, 6]])
     """
-    if copy:
-        x = x.copy()
-
     size = math.prod(shape)
     itemsize = x.itemsize
     buffer_size = size * itemsize
