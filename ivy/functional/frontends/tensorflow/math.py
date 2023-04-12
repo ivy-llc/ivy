@@ -577,6 +577,15 @@ def greater(x, y, name=None):
     return ivy.greater(x, y)
 
 
+@with_supported_dtypes(
+    {"2.9.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def imag(x, name=None):
+    return ivy.imag(x)
+
+
 @to_ivy_arrays_and_back
 def less(x, y, name="None"):
     x, y = check_tensorflow_casting(x, y)

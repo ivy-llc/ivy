@@ -2297,3 +2297,41 @@ def test_tensorflow_less(
         x=x[0],
         y=x[1],
     )
+
+
+# imag
+@handle_frontend_test(
+    fn_tree="tensorflow.math.imag",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        num_arrays=1,
+        min_value=-20,
+        max_value=20,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_imag(
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    if "complex" in input_dtype:
+        # for complex input, create a complex input array
+        # with negative and positive values
+        x = x.astype(np.complex128)
+        x.real = np.random.uniform(-20, 20, size=x.shape)
+        x.imag = np.random.uniform(-20, 20, size=x.shape)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-6,
+        atol=1e-6,
+        input=x[0],
+    )
