@@ -104,7 +104,7 @@ Again, this does not happen with native Python Dicts.
     }
 
 Recursive Methods
-----------------
+-----------------
 
 All methods in Ivy’s functional API are implemented as recursive methods on the :class:`ivy.Container`.
 This means you can easily map a single method to all arrays in the container with a single line.
@@ -358,7 +358,7 @@ The :meth:`ivy.Container.cont_diff` method will also detect differences in the h
 The :meth:`ivy.Container.cont_diff` method can be applied to arbitrarily many containers at once in a single call, not just two as in the examples above.
 
 Customized Representations
--------------------------
+--------------------------
 
 Not only does :class:`ivy.Container` print to the terminal in a very intuitive manner, but there are also helper functions to fully control this representation.
 This is very helpful when debugging networks with huge numbers of parameters with a deep hierarchical structure for example.
@@ -546,7 +546,7 @@ As briefly alluded to when explaining the :meth:`ivy.Container.cont_diff` method
 Configurations can either first be stored to disk as a JSON file and then loaded into the :class:`ivy.Container` for recursive comparisons to see differences between experiments, or the config can be specified in the code and then saved to disk as a JSON to keep a permanent log afterwards.
 
 Data loading
------------
+------------
 
 The container can also be used for data loading.
 Our example uses single threaded loading, but incorporating multiprocessing with Queues is also pretty straightforward.
@@ -605,7 +605,7 @@ This is useful if we need to recursively unroll the entire batch in the time dim
             assert batch_slice.imgs.rear.shape == (32, 32, 3)
 
 Network weights
---------------
+---------------
 
 Finally, the Ivy Containers can also be used for storing network weights.
 In fact, as is discussed in the documentation for the Ivy stateful API, this is how the :class:`ivy.Module` class stores all trainable variables in the model.
