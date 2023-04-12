@@ -175,7 +175,7 @@ def shape_n(input, out_type=ivy.int32, name=None):
 
 
 @to_ivy_arrays_and_back
-def size(input, out_type=ivy.int32, name="Size"):
+def size(input, out_type=ivy.int32, name=None):
     out_type = to_ivy_dtype(out_type)
     shape = ivy.shape(input)
     return ivy.astype(ivy.prod(shape), out_type)
