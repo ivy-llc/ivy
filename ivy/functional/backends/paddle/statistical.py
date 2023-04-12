@@ -303,9 +303,7 @@ def einsum(
         operand_dtype = operand.dtype
         if operand_dtype not in supported_dtypes:
 
-            if dtype is not None:
-                operand = paddle.cast(operand, dtype)
-            elif paddle.is_tensor(operand):
+            if paddle.is_tensor(operand):
                 operand = paddle.cast(operand, paddle.float32)
             else:
                 raise ValueError(
@@ -314,7 +312,5 @@ def einsum(
                 )
                 
             operands = operands[:i] + (operand,) + operands[i + 1 :]
-    
- 
-        # Evaluate the einsum expression with the updated operands
+    # Evaluate the einsum expression with the updated operands
     return paddle.einsum(equation, *operands)
