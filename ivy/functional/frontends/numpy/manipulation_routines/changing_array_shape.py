@@ -12,12 +12,7 @@ def reshape(x, /, newshape, order="C"):
 
 
 @to_ivy_arrays_and_back
-def resize(x, /, newshape, refcheck=True):
-    if refcheck:
-        if sys.getrefcount(x) > 2:
-            raise ValueError('cannot resize an array that has been referenced by another array this way.\
-                             Put refcheck to be False ')
-
+def resize(x, /, newshape):
     x_new = ravel(x)
 
     total_size = 1
@@ -35,8 +30,7 @@ def resize(x, /, newshape, refcheck=True):
     # or
     # x = ivy.concat((x,) * repetition)[:total_size]
     y = ivy.reshape(x_new,newshape=newshape,order="C")
-    ivy.inplace_update(x,y)
-
+    return y
 
 
 @to_ivy_arrays_and_back
