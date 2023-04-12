@@ -1380,38 +1380,64 @@ def test_tensorflow_crelu(
     )
 
 
+@st.composite
+def _conv_transpose_args(draw):
+
+    dims = draw(st.integers(min_value=1, max_value=3))
+    data_formats = ["NWC", "NHWC", "NDHWC"]
+    data_format = data_formats[dims - 1]
+    value = draw(
+        helpers.arrays_for_pooling(
+            min_dims=dims + 2, max_dims=dims + 2, min_side=1, max_side=4
+        )
+    )
+    filter = draw(
+        helpers.arrays_for_pooling(
+            min_dims=dims + 2, max_dims=dims + 2, min_side=1, max_side=4
+        )
+    )
+    strides = draw(
+        st.lists(
+            st.integers(min_value=1, max_value=4), min_size=dims, max_size=dims
+        )
+    )
+    padding = draw(st.sampled_from(["SAME", "VALID"]))
+    output_shape = draw(
+        st.lists(
+            st.integers(min_value=1, max_value=4), min_size=dims, max_size=dims
+        )
+    )
+    return dims, data_format, value, filter, strides, padding, output_shape
+
+
+# conv_transpose
 @handle_frontend_test(
     fn_tree="tensorflow.nn.conv_transpose",
-    x_f_d_df=_x_and_filters(
-        dtypes=helpers.get_dtypes("float", full=False),
-        data_format=st.sampled_from(["NHWC"]),
-        padding=st.sampled_from(["VALID", "SAME"]),
-        stride_min=1,
-        stride_max=1,
-        type="2d",
-        atrous=True,
-    ),
+    dims_df_v_f_s_p_os=_conv_transpose_args(),
     test_with_out=st.just(False),
 )
 def test_tensorflow_conv_transpose(
     *,
-    x_f_d_df,
-    frontend,
+    dims_df_v_f_s_p_os,
     test_flags,
+    frontend,
     fn_tree,
     on_device,
 ):
-    input_dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
+    dims, data_format, value, filter, strides, padding, output_shape = (
+        dims_df_v_f_s_p_os
+    )
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
+        input_dtypes=["float32", "float32"],
         test_flags=test_flags,
+        frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        value=x,
-        filters=filters,
-        padding=pad,
-        strides=stride,
+        value=value,
+        filter=filter,
+        strides=strides,
+        padding=padding,
+        output_shape=output_shape,
         data_format=data_format,
     )
 
