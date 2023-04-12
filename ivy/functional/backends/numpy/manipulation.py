@@ -300,11 +300,7 @@ def as_strided(
     shape: Union[ivy.NativeShape, Sequence[int]],
     strides: Sequence[int],
     /,
-    *,
-    copy: Optional[bool] = None,
 ) -> np.ndarray:
-    if copy:
-        x = x.copy()
     return np.lib.stride_tricks.as_strided(
         x,
         shape=shape,
