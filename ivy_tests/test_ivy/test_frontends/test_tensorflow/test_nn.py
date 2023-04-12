@@ -1410,7 +1410,6 @@ def test_tensorflow_conv_transpose(
         on_device=on_device,
         value=x,
         filters=filters,
-        rate=dilations,
         padding=pad,
         strides=stride,
         data_format=data_format,
