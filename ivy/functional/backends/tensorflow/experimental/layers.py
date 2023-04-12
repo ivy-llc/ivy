@@ -207,8 +207,35 @@ def avg_pool3d(
     /,
     *,
     data_format: str = "NDHWC",
+    count_include_pad: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if isinstance(kernel, int):
+        kernel = [kernel] * 3
+    elif len(kernel) == 1:
+        kernel = [kernel[0]] * 3
+
+    if isinstance(strides, int):
+        strides = [strides] * 3
+    elif len(strides) == 1:
+        strides = [strides[0]] * 3
+
+    if count_include_pad:
+        pad_d = _handle_padding(x.shape[1], strides[0], kernel[0], padding)
+        pad_h = _handle_padding(x.shape[2], strides[1], kernel[1], padding)
+        pad_w = _handle_padding(x.shape[3], strides[2], kernel[2], padding)
+        x = tf.pad(
+            x,
+            [
+                (0, 0),
+                (pad_d // 2, pad_d - pad_d // 2),
+                (pad_h // 2, pad_h - pad_h // 2),
+                (pad_w // 2, pad_w - pad_w // 2),
+                (0, 0),
+            ],
+            constant_values=0,
+        )
+        padding = "VALID"
     if data_format == "NCDHW":
         x = tf.transpose(x, (0, 2, 3, 4, 1))
     res = tf.nn.avg_pool3d(x, kernel, strides, padding)

@@ -1451,10 +1451,12 @@ def lerp(
     out
         optional output array, for writing the result to.
         It must have a shape that the inputs broadcast to.
+
     Returns
     -------
     ret
         The result of  input + ((end - input) * weight)
+
     Examples
     --------
     With :class:`ivy.Array` inputs:
