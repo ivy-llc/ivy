@@ -29,6 +29,7 @@
   :template: top_functional_toc.rst
   :caption: API Reference
   :recursive:
+  :hide-table:
 
   ivy.functional.ivy
 
@@ -46,6 +47,7 @@
   :toctree: docs
   :template: top_ivy_toc.rst
   :recursive:
+  :hide-table:
 
   ivy.stateful
   ivy.nested_array
