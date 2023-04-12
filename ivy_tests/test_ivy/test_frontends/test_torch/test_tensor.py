@@ -304,7 +304,7 @@ def test_torch_instance_add(
     ),
     alpha=st.floats(min_value=-1e04, max_value=1e04, allow_infinity=False),
 )
-def test_torch_instance_add(
+def test_torch_instance_add_(
     dtype_and_x,
     alpha,
     frontend,
@@ -3400,7 +3400,7 @@ def test_torch_instance_bitwise_left_shift(
         num_arrays=2,
     ),
 )
-def test_torch_instance_add_(
+def test_torch_instance_add__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -6346,7 +6346,6 @@ def test_torch_instance_fmin(
         frontend=frontend,
         on_device=on_device,
     )
-
 
 
 # count_nonzero
