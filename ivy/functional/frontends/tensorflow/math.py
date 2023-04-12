@@ -545,6 +545,12 @@ def greater(x, y, name=None):
 
 
 @to_ivy_arrays_and_back
+def less(x, y, name="None"):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.less(x, y)
+
+
+@to_ivy_arrays_and_back
 def cos(x, name=None):
     return ivy.cos(x)
 
