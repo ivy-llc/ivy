@@ -121,7 +121,7 @@ def _test_frontend_function_ignoring_unitialized(*args, **kwargs):
     ivy.previous_backend()
 
     # get flattened arrays from returned value
-    ret_np_flat = helpers.flatten_fw_and_to_np(ret=ret, fw=kwargs["frontend"])
+    ret_np_flat = _flatten_frontend_return(ret=ret)
 
     # handling where size
     where = np.asarray(where)
@@ -158,6 +158,26 @@ def _test_frontend_function_ignoring_unitialized(*args, **kwargs):
         rtol=rtol,
         atol=atol,
     )
+
+
+def _flatten_frontend_return(*, ret):
+    """
+    Flattening the returned frontend value to a list of numpy arrays.
+    """
+    current_backend = ivy.current_backend_str()
+    if not isinstance(ret, tuple):
+        if not ivy.is_ivy_array(ret):
+            ret_np_flat = helpers.flatten_frontend_to_np(ret=ret)
+        else:
+            ret_np_flat = helpers.flatten_fw_and_to_np(ret=ret, fw=current_backend)
+    else:
+        ret_np_flat = []
+        for x in ret:
+            if not ivy.is_ivy_array(x):
+                ret_np_flat += helpers.flatten_frontend_to_np(ret=x)
+            else:
+                ret_np_flat += helpers.flatten_fw_and_to_np(ret=x, fw=current_backend)
+    return ret_np_flat
 
 
 # noinspection PyShadowingNames
