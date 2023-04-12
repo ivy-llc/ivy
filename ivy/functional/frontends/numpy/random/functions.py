@@ -93,5 +93,5 @@ def standard_normal(size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
-def standard_gamma(alpha):
-    return ivy.gamma(alpha, beta=1.0, dtype="float64")
+def standard_gamma(shape, size=None):
+    return ivy.gamma(shape, 1.0, shape=size, dtype="float64")

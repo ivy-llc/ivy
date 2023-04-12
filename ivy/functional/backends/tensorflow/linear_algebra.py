@@ -218,9 +218,9 @@ def matmul(
     dtype_from = tf.as_dtype(x1.dtype)
 
     if transpose_a:
-        x1 = tf.transpose(x1)
+        x1 = tf.linalg.matrix_transpose(x1)
     if transpose_b:
-        x2 = tf.transpose(x2)
+        x2 = tf.linalg.matrix_transpose(x2)
 
     if adjoint_a:
         x1 = tf.linalg.adjoint(x1)
