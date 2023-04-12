@@ -9,14 +9,14 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 @handle_numpy_dtype
 @outputs_to_numpy_arrays
 def empty(shape, dtype="float64", order="C", *, like=None):
-    return ivy.empty(shape, dtype=dtype)
+    return ivy.empty(shape=shape, dtype=dtype)
 
 
 @handle_numpy_dtype
 @outputs_to_numpy_arrays
 def empty_like(prototype, dtype=None, order="K", subok=True, shape=None):
     if shape:
-        return ivy.empty(shape, dtype=dtype)
+        return ivy.empty(shape=shape, dtype=dtype)
     return ivy.empty_like(prototype, dtype=dtype)
 
 
