@@ -12,10 +12,10 @@ def difference(a, b, aminusb=True, validate_indices=True):
 @to_ivy_arrays_and_back
 def intersection(a, b, validate_indices=True):
     a, b = check_tensorflow_casting(a, b)
-    return ivy.difference(a, b, validate_indices=True)
+    return ivy.intersection(a, b, validate_indices=True)
 
 
 @to_ivy_arrays_and_back
 def union(a, b, validate_indices=True):
     a, b = check_tensorflow_casting(a, b)
-    return ivy.difference(a, b, validate_indices=True)
+    return ivy.union(a, b, validate_indices=True)
