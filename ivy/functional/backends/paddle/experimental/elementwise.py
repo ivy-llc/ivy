@@ -121,7 +121,7 @@ def copysign(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     with ivy.ArrayMode(False):
-        x2 = ivy.where(ivy.equal(x2, 0), ivy.divide(1, x2), x2)
+        x2 = ivy.where(ivy.equal(x2, paddle.to_tensor(0)), ivy.divide(1, x2), x2)
         signs = ivy.sign(x2)
         return ivy.multiply(ivy.abs(x1), signs)
 
@@ -155,6 +155,9 @@ def gcd(
     return paddle.gcd(x1, x2)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("float16",)}}, backend_version
+)
 def isclose(
     a: paddle.Tensor,
     b: paddle.Tensor,

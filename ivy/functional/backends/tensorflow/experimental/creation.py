@@ -130,12 +130,14 @@ def frombuffer(
     count: Optional[int] = -1,
     offset: Optional[int] = 0,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if isinstance(buffer, bytearray):
+        buffer = bytes(buffer)
     ret = tf.io.decode_raw(buffer, dtype)
     dtype = tf.dtypes.as_dtype(dtype)
     if offset > 0:
         offset = int(offset / dtype.size)
     if count > -1:
-        ret = ret[offset:offset + count]
+        ret = ret[offset : offset + count]
     else:
         ret = ret[offset:]
 
