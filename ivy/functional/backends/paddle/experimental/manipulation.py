@@ -222,9 +222,9 @@ def atleast_2d(*arys: paddle.Tensor) -> List[paddle.Tensor]:
         res = []
         for ary in arys:
             if len(ary.shape) == 0:
-                res.append(ary.reshape([1, 1]))
+                res.append(ary.reshape((1, 1)))
             elif len(ary.shape) == 1:
-                res.append(ary.reshape([1, -1]))
+                res.append(ary.reshape((1, -1)))
             else:
                 res.append(ary)
         return res
