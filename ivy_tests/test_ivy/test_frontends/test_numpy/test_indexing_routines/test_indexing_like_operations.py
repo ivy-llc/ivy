@@ -2,12 +2,14 @@
 # global
 import numpy as np
 from hypothesis import strategies as st
+import warnings
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
+warnings.filterwarnings("ignore", category=UserWarning, module="ivy.func_wrapper")
 
 @handle_frontend_test(
     fn_tree="numpy.diagonal",
