@@ -697,4 +697,4 @@ def isin(
 
 
 def itemsize(x: Union[tf.Tensor, tf.Variable]) -> int:
-    return x.numpy().dtype.itemsize
+    return x.dtype.size
