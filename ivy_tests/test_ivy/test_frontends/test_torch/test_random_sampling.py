@@ -249,7 +249,7 @@ def test_torch_rand_like(dtype_and_x, dtype, *, frontend, fn_tree, test_flags):
 
     if not ivy.exists(ret):
         return
-      
+
     ret_np, ret_from_np = ret
     ret_np = helpers.flatten_and_to_np(ret=ret_np)
     ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
