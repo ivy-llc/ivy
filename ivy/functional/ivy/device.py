@@ -6,8 +6,9 @@ import gc
 import abc
 import math
 import psutil
-import warnings
+#import warnings
 import types
+import subprocess
 from typing import Type, Optional, Tuple
 
 # noinspection PyUnresolvedReferences
@@ -19,11 +20,14 @@ try:
     except pynvml.NVMLError:
         pass
 except ImportError:
-    warnings.warn(
-        "pynvml installation was not found in the environment,\
-         functionalities of the Ivy's device module will be limited.\
-         Please install pynvml if you wish to use GPUs with Ivy."
-    )
+    print("Installing pynvml...")
+    subprocess.check_call(["pip", "install", "pynvml"])
+    import pynvml
+    # warnings.warn(
+    #     "pynvml installation was not found in the environment,\
+    #      functionalities of the Ivy's device module will be limited.\
+    #      Please install pynvml if you wish to use GPUs with Ivy."
+    # )
     # nvidia-ml-py (pynvml) is not installed in CPU Dockerfile.
 
 from typing import Union, Callable, Iterable, Any

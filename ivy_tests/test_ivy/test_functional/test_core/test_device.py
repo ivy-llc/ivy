@@ -7,7 +7,8 @@ import os
 import re
 import shutil
 import sys
-import warnings
+# import warnings
+import subprocess
 
 import numpy as np
 import psutil
@@ -16,11 +17,14 @@ from hypothesis import strategies as st, assume
 try:
     import pynvml
 except ImportError:
-    warnings.warn(
-        "pynvml installation was not found in the environment,\
-         functionalities of the Ivy's device module will be limited.\
-         Please install pynvml if you wish to use GPUs with Ivy."
-    )
+    print("Installing pynvml...")
+    subprocess.check_call(["pip", "install", "pynvml"])
+    import pynvml
+    # warnings.warn(
+    #     "pynvml installation was not found in the environment,\
+    #      functionalities of the Ivy's device module will be limited.\
+    #      Please install pynvml if you wish to use GPUs with Ivy."
+    # )
     # nvidia-ml-py (pynvml) is not installed in CPU Dockerfile.
 
 # local
