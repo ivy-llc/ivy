@@ -448,8 +448,6 @@ Size = to_ivy_arrays_and_back(
     map_raw_ops_alias(tf_frontend.general_functions.size)
 )
 
-
-
 Split = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.split))
 
 
