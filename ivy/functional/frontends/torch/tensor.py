@@ -98,6 +98,11 @@ class Tensor:
         self._ivy_array = self.add(other, alpha=alpha).ivy_array
         return self
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
+    def subtract_(self, other, *, alpha=1):
+        self._ivy_array = self.subtract(other, alpha=alpha).ivy_array
+        return self
+
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def asin(self):
         return torch_frontend.asin(self._ivy_array)
