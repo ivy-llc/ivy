@@ -298,11 +298,11 @@ def matrix_transpose(
     backend_version,
 )
 def outer(
-        x1: JaxArray,
-        x2: JaxArray,
-        /,
-        *,
-        out: Optional[JaxArray] = None,
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return jnp.outer(x1, x2)

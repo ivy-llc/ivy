@@ -510,7 +510,7 @@ class ModuleHelpers(abc.ABC):
             else:
                 max_key = key + "_0"
                 sco[max_key] = ivy.Container(
-                    alphabetical_keys=False, ivyh=ivy.get_backend(backend="numpy")
+                    alphabetical_keys=False, ivyh=ivy.with_backend("numpy", cached=True)
                 )
             sco = sco[max_key]
         final_key = key_chain[-1]
@@ -539,7 +539,7 @@ class ModuleHelpers(abc.ABC):
             ).to_numpy()
         else:
             sco[new_key] = ivy.Container(
-                alphabetical_keys=False, ivyh=ivy.get_backend(backend="numpy")
+                alphabetical_keys=False, ivyh=ivy.with_backend("numpy", cached=True)
             )
 
     def show_structure(self):

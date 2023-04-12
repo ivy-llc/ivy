@@ -121,11 +121,27 @@ def avg_pool1d(
     /,
     *,
     data_format: str = "NWC",
+    count_include_pad: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if isinstance(kernel, int):
+        kernel = [kernel]
+    elif len(kernel) == 1:
+        kernel = [kernel[0]]
+
+    if isinstance(strides, int):
+        strides = [strides]
+    elif len(strides) == 1:
+        strides = [strides[0]]
 
     if data_format == "NCW":
         x = tf.transpose(x, (0, 2, 1))
+    if count_include_pad:
+        pad_w = _handle_padding(x.shape[1], strides[0], kernel[0], padding)
+        x = tf.pad(
+            x, [(0, 0), (pad_w // 2, pad_w - pad_w // 2), (0, 0)], constant_values=0
+        )
+        padding = "VALID"
     res = tf.nn.avg_pool1d(x, kernel, strides, padding)
 
     if data_format == "NCW":
@@ -405,16 +421,10 @@ def embedding(
 
 
 @handle_mixed_function(
-    lambda x,
-    *args,
-    mode="linear",
-    scale_factor=None,
-    recompute_scale_factor=None,
-    align_corners=None,
-    **kwargs: (
+    lambda x, *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # NOQA
         not align_corners and (len(x.shape) - 2) < 2
     )
-    and mode not in ["nearest", "area"]
+    and mode not in ["nearest", "area", "bicubic"]
     and recompute_scale_factor
 )
 def interpolate(
@@ -431,6 +441,7 @@ def interpolate(
             "area",
             "nearest-exact",
             "tf_area",
+            "bicubic",
             "bicubic_tensorflow",
             "mitchellcubic",
             "lanczos3",

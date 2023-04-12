@@ -188,12 +188,14 @@ def test_sparse_coo(
     ground_truth_backend,
     init_flags,
     method_flags,
+    on_device,
 ):
     coo_ind, val_dtype, val, shp = sparse_data
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
         init_input_dtypes=["int64", val_dtype],
         init_all_as_kwargs_np={
             "coo_indices": coo_ind,

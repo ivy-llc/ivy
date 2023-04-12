@@ -8,6 +8,9 @@ import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
+from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import (
+    _repeat_helper,
+)
 from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa
     _get_dtype_values_k_axes_for_rot90,
     _get_split_locations,
@@ -142,6 +145,59 @@ def test_jax_numpy_concat(
     )
 
 
+# repeat
+@handle_frontend_test(
+    fn_tree="jax.numpy.repeat",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+    ),
+    axis=st.shared(
+        st.one_of(
+            st.none(),
+            helpers.get_axis(
+                shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+                max_size=1,
+            ),
+        ),
+        key="axis",
+    ),
+    repeat=st.one_of(st.integers(1, 10), _repeat_helper()),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_repeat(
+    *,
+    dtype_value,
+    axis,
+    repeat,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+
+    value_dtype, value = dtype_value
+
+    if not isinstance(repeat, int):
+        repeat_dtype, repeat_list = repeat
+        repeat = repeat_list[0]
+        value_dtype += repeat_dtype
+
+    if not isinstance(axis, int) and axis is not None:
+        axis = axis[0]
+
+    helpers.test_frontend_function(
+        input_dtypes=value_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=value[0],
+        repeats=repeat,
+        axis=axis,
+    )
+
+
 # reshape
 @st.composite
 def _get_input_and_reshape(draw):
@@ -188,6 +244,43 @@ def test_jax_numpy_reshape(
         on_device=on_device,
         a=x[0],
         newshape=shape,
+        order=order,
+    )
+
+
+# ravel
+@handle_frontend_test(
+    fn_tree="jax.numpy.ravel",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=10,
+        shape=helpers.get_shape(
+            min_num_dims=2, max_num_dims=5, min_dim_size=2, max_dim_size=10
+        ),
+    ),
+    order=st.sampled_from(["C", "F"]),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_ravel(
+    *,
+    dtype_and_values,
+    order,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtypes, x = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
         order=order,
     )
 
@@ -451,24 +544,25 @@ def test_jax_numpy_fliplr(
 # expand_dims
 @handle_frontend_test(
     fn_tree="jax.numpy.expand_dims",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        shape=st.shared(helpers.get_shape(), key="expand_dims_axis"),
-    ),
-    axis=helpers.get_axis(
-        shape=st.shared(helpers.get_shape(), key="expand_dims_axis"),
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=10,
+        force_int_axis=True,
+        valid_axis=True,
     ),
 )
-def test_jax_expand_dims(
+def test_jax_numpy_expand_dims(
     *,
-    dtype_and_x,
-    axis,
+    dtype_x_axis,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -1356,4 +1450,105 @@ def test_jax_numpy_row_stack(
         fn_tree=fn_tree,
         on_device=on_device,
         tup=xs,
+    )
+
+
+# hamming
+@handle_frontend_test(
+    fn_tree="jax.numpy.hamming",
+    m=helpers.ints(min_value=0, max_value=20),
+)
+def test_jax_numpy_hamming(
+    m,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=["int64"],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        M=m,
+    )
+
+
+# hanning
+@handle_frontend_test(
+    fn_tree="jax.numpy.hanning",
+    m=helpers.ints(min_value=0, max_value=20),
+)
+def test_jax_numpy_hanning(
+    m,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=["int64"],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        M=m,
+    )
+
+
+# kaiser
+@handle_frontend_test(
+    fn_tree="jax.numpy.kaiser",
+    m=helpers.ints(min_value=0, max_value=100),
+    beta=helpers.floats(min_value=-10, max_value=10),
+)
+def test_jax_numpy_kaiser(
+    m,
+    beta,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=["int64", "float64"],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        M=m,
+        beta=beta,
+    )
+
+
+# tri
+@handle_frontend_test(
+    fn_tree="jax.numpy.tri",
+    rows=helpers.ints(min_value=3, max_value=10),
+    cols=helpers.ints(min_value=3, max_value=10),
+    k=helpers.ints(min_value=-10, max_value=10),
+    dtype=helpers.get_dtypes("valid", full=False),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_tri(
+    rows,
+    cols,
+    k,
+    dtype,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        N=rows,
+        M=cols,
+        k=k,
+        dtype=dtype[0],
     )
