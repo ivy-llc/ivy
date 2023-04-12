@@ -1,6 +1,10 @@
 import pytest
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.helpers import handle_frontend_test 
+
+@pytest.fixture
+def test_flags():
+    return None
 
 
 @handle_frontend_test(
