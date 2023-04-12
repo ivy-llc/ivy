@@ -860,6 +860,8 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
         strides: Sequence[int],
         /,
+        *,
+        copy: Optional[bool] = None,
     ) -> ivy.Array:
         """
         Create a copy of the input array with the given shape and strides.
@@ -878,4 +880,4 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         ret
             Output Array
         """
-        return ivy.as_strided(self._data, shape, strides)
+        return ivy.as_strided(self._data, shape, strides, copy=copy)
