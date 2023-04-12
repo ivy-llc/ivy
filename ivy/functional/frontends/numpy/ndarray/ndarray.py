@@ -16,7 +16,7 @@ class ndarray:
                 ivy.array(shape) if not isinstance(shape, ivy.Array) else shape
             )
         else:
-            self._ivy_array = ivy.empty(shape, dtype=dtype)
+            self._ivy_array = ivy.empty(shape=shape, dtype=dtype)
 
         ivy.utils.assertions.check_elem_in_list(
             order,
