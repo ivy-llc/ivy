@@ -231,7 +231,7 @@ def atleast_2d(*arys: paddle.Tensor) -> List[paddle.Tensor]:
     
     
 def atleast_3d(
-        *arys: Union[paddle.Tensor, bool, Number]
+    *arys: Union[paddle.Tensor, bool, Number], copy: Optional[bool] = None
 ) -> List[paddle.Tensor]:
     raise IvyNotImplementedException()
 
