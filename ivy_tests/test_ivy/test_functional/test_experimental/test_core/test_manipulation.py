@@ -1067,7 +1067,6 @@ def _as_strided_helper(draw):
 @handle_test(
     fn_tree="as_strided",
     all_args=_as_strided_helper(),
-    container_flags=st.just([False]),  # ToDo: fix container methods
     test_with_out=st.just(False),
     test_gradients=st.just(False),
     ground_truth_backend="numpy",
