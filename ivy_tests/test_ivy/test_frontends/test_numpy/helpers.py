@@ -171,12 +171,10 @@ def _flatten_frontend_return(*, ret):
         else:
             ret_np_flat = helpers.flatten_fw_and_to_np(ret=ret, fw=current_backend)
     else:
-        ret_np_flat = []
-        for x in ret:
-            if not ivy.is_ivy_array(x):
-                ret_np_flat += helpers.flatten_frontend_to_np(ret=x)
-            else:
-                ret_np_flat += helpers.flatten_fw_and_to_np(ret=x, fw=current_backend)
+        if any([not ivy.is_ivy_array(x) for x in ret]):
+            ret_np_flat = helpers.flatten_frontend_to_np(ret=ret)
+        else:
+            ret_np_flat = helpers.flatten_fw_and_to_np(ret=ret, fw=current_backend)
     return ret_np_flat
 
 
