@@ -82,7 +82,7 @@ Instead, a compositional approach is preferred, where each function in Python ge
 This helps to keep things more clean and clear at the Python level, without sacrificing efficiency at the lower level.
 
 Balancing Generalization with Efficiency
----------------------------------------
+----------------------------------------
 
 Sometimes, the simplest way to implement superset behaviour comes at the direct expense of runtime efficiency.
 We explore this through the examples of :func:`softplus`.
