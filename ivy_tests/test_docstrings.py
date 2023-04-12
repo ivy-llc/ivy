@@ -3,7 +3,6 @@ import warnings
 import re
 from contextlib import redirect_stdout
 from io import StringIO
-from warnings import UserWarning
 import numpy as np
 import sys
 

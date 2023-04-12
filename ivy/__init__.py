@@ -4,7 +4,6 @@ import warnings
 import builtins
 import numpy as np
 import sys
-from warnings import UserWarning
 
 
 import ivy.utils.backend.handler
