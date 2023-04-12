@@ -461,9 +461,10 @@ class _ContainerWithNormsExperimental(ContainerBase):
         ivy.Container instance method variant of ivy.instance_norm.
         This method simply wraps the function, and so the docstring
         for ivy.instance_norm also applies to this method with minimal changes.
+
         Parameters
         ----------
-        x
+        self
             Input array of shape (N, *S, C), where N is the batch dimension,
             *S corresponds to any number of spatial dimensions and
              C corresponds to the channel dimension.

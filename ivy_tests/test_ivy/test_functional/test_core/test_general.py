@@ -2194,9 +2194,7 @@ def test_isin(
 
 @handle_test(
     fn_tree="functional.ivy.itemsize",
-    x_and_dtype=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid")
-    ),
+    x_and_dtype=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
     ground_truth_backend="numpy",
     test_instance_method=st.just(False),
     test_with_out=st.just(False),
