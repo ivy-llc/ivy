@@ -694,3 +694,7 @@ def isin(
         tf.equal(tf.expand_dims(elements, -1), test_elements), axis=-1
     )
     return tf.reshape(output, input_shape) ^ invert
+
+
+def itemsize(x: Union[tf.Tensor, tf.Variable]) -> int:
+    return x.dtype.as_numpy_dtype().itemsize

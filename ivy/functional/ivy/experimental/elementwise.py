@@ -1427,6 +1427,120 @@ def ldexp(
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+def lerp(
+    input: Union[ivy.Array, ivy.NativeArray],
+    end: Union[ivy.Array, ivy.NativeArray],
+    weight: Union[ivy.Array, ivy.NativeArray, float],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Returns a linear interpolation of two arrays start (given by input) and end
+    based on a scalar or array weight.
+        input + weight * (end - input),  element-wise.
+
+    Parameters
+    ----------
+    input
+        array of starting points
+    end
+        array of ending points
+    weight
+        the weight for the interpolation formula. Scalar or Array.
+    out
+        optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The result of  input + ((end - input) * weight)
+
+    Examples
+    --------
+    With :class:`ivy.Array` inputs:
+    >>> input = ivy.array([1, 2, 3])
+    >>> end = ivy.array([10, 10, 10])
+    >>> weight = 0.5
+    >>> ivy.lerp(input, end, weight)
+    ivy.array([5.5, 6. , 6.5])
+    >>> input = ivy.array([1.1, 1.2, 1.3])
+    >>> end = ivy.array([20])
+    >>> weight = ivy.array([0.4, 0.5, 0.6])
+    >>> y = ivy.zeros(3)
+    >>> ivy.lerp(input, end, weight, out=y)
+    ivy.array([ 8.65999985, 10.59999943, 12.52000141])
+    >>> input = ivy.array([[4, 5, 6],[4.1, 4.2, 4.3]])
+    >>> end = ivy.array([10])
+    >>> weight = ivy.array([0.5])
+    >>> ivy.lerp(input, end, weight, out=input)
+    ivy.array([[7.        , 7.5       , 8.        ],
+    ...       [7.05000019, 7.0999999 , 7.1500001 ]])
+    With :class:`ivy.Container` input:
+    >>> input = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+    >>> end = ivy.array([10.])
+    >>> weight = 1.1
+    >>> y = input.lerp(end, weight)
+    >>> print(y)
+    {
+        a: ivy.array([11., 10.90000057, 10.80000019]),
+        b: ivy.array([10.70000076, 10.60000038, 10.5])
+    }
+    >>> input = ivy.Container(a=ivy.array([10.1, 11.1]), b=ivy.array([10, 11]))
+    >>> end = ivy.Container(a=ivy.array([5]), b=ivy.array([0]))
+    >>> weight = ivy.Container(a=0.5)
+    >>> y = input.lerp(end, weight)
+    >>> print(y)
+    {
+        a: ivy.array([7.55000019, 8.05000019]),
+        b: {
+            a: ivy.array([5., 5.5])
+        }
+    }
+    """
+    input_end_allowed_types = [
+        "int8",
+        "int16",
+        "int32",
+        "int64",
+        "float16",
+        "bfloat16",
+        "float32",
+        "float64",
+        "complex",
+    ]
+    weight_allowed_types = ["float16", "bfloat16", "float32", "float64"]
+
+    if not ivy.is_array(input):
+        input = ivy.array([input])
+    if not ivy.is_array(end):
+        end = ivy.array([end])
+    if (
+        ivy.dtype(input) not in input_end_allowed_types
+        or ivy.dtype(end) not in input_end_allowed_types
+    ):
+        input = ivy.astype(input, "float64")
+        end = ivy.astype(end, "float64")
+
+    if ivy.is_array(weight):
+        if ivy.dtype(weight) not in weight_allowed_types:
+            weight = ivy.astype(weight, "float64")
+    else:
+        if not isinstance(weight, float):
+            weight = ivy.astype(ivy.array([weight]), "float64")
+
+    return ivy.add(input, ivy.multiply(weight, ivy.subtract(end, input)), out=out)
+
+
+lerp.mixed_function = True
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
 def frexp(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
