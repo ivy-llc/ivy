@@ -108,7 +108,6 @@ def main():
                             i += 1
         print("Done with Directories, Cleaning Files")
         os.system("find . -name \\*cover -type f -delete")
-        break
 
     commit_hash = ""
     for commit in Repository(".", order="reverse").traverse_commits():
