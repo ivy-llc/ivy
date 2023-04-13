@@ -73,7 +73,7 @@ def gamma(
     _setRNG(RNG_)
     if seed is not None:
         jax.random.PRNGKey(seed)
-    return to_device(jax.random.gamma(rng_input, alpha, beta, shape, dtype), device)
+    return to_device(jax.random.gamma(rng_input, alpha, shape, dtype) / beta, device)
 
 
 @with_unsupported_dtypes({"0.3.14 and below": ("bfloat16",)}, backend_version)

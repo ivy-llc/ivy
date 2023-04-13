@@ -506,3 +506,8 @@ def avg_pool(input, ksize, strides, padding, data_format="NWC", name=None):
     elif len(ivy.shape(input)) == 4:
         return ivy.avg_pool2d(input, ksize, strides, padding, data_format=data_format)
     return ivy.avg_pool3d(input, ksize, strides, padding, data_format=data_format)
+
+
+@to_ivy_arrays_and_back
+def avg_pool3d(input, ksize, strides, padding, data_format="NDHWC", name=None):
+    return ivy.avg_pool3d(input, ksize, strides, padding, data_format=data_format)
