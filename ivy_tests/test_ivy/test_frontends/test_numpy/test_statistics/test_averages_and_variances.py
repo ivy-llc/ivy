@@ -395,7 +395,7 @@ def test_numpy_nanmedian(
     overwrite_input=st.booleans(),
     dtype_x_axis=statistical_dtype_values(function="nanquantile"),
 )
-def test_numpy_nanmedian(
+def test_numpy_nanquantile(
     dtype_x_axis,
     frontend,
     test_flags,
