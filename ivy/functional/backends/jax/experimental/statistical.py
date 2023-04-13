@@ -1,8 +1,14 @@
 from typing import Optional, Union, Tuple, Sequence
+
+from ivy import with_unsupported_dtypes
+from . import backend_version
 from ivy.functional.backends.jax import JaxArray
 import jax.numpy as jnp
 
 
+@with_unsupported_dtypes(
+    {"1.11.0 and below": ("complex64", "complex128")}, backend_version
+)
 def median(
     input: JaxArray,
     /,
@@ -13,12 +19,18 @@ def median(
 ) -> JaxArray:
     if isinstance(axis, list):
         axis = tuple(axis)
-    return jnp.median(
+    ret = jnp.median(
         input,
         axis=axis,
         keepdims=keepdims,
         out=out,
     )
+    if input.dtype in [jnp.uint64, jnp.int64, jnp.float64]:
+        return ret.astype(jnp.float64)
+    elif input.dtype in [jnp.float16, jnp.bfloat16]:
+        return ret.astype(input.dtype)
+    else:
+        return ret.astype(jnp.float32)
 
 
 def nanmean(

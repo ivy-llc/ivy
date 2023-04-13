@@ -152,6 +152,7 @@ class Array(
         self._size = (
             functools.reduce(mul, self._data.shape) if len(self._data.shape) > 0 else 0
         )
+        self._itemsize = ivy.itemsize(self._data)
         self._dtype = ivy.dtype(self._data)
         self._device = ivy.dev(self._data)
         self._dev_str = ivy.as_ivy_dev(self._device)
@@ -258,6 +259,11 @@ class Array(
         return self._size
 
     @property
+    def itemsize(self) -> Optional[int]:
+        """Size of array elements in bytes."""
+        return self._itemsize
+
+    @property
     def T(self) -> ivy.Array:
         """
         Transpose of the array.
@@ -351,6 +357,9 @@ class Array(
 
     def __dir__(self):
         return self._data.__dir__()
+
+    def __getattribute__(self, item):
+        return super().__getattribute__(item)
 
     def __getattr__(self, item):
         try:

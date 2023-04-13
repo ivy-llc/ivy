@@ -5,6 +5,8 @@ from ivy.functional.frontends.jax.func_wrapper import (
 )
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
+from ivy.functional.frontends.numpy.manipulation_routines import trim_zeros
+from math import factorial
 
 
 @to_ivy_arrays_and_back
@@ -515,9 +517,7 @@ def around(a, decimals=0, out=None):
     if ivy.shape(a) == ():
         a = ivy.expand_dims(a, axis=0)
     ret_dtype = a.dtype
-    factor = ivy.pow(10, decimals)
-    a = ivy.multiply(a, factor)
-    return ivy.divide(ivy.round(a), factor).astype(ret_dtype)
+    return ivy.round(a, decimals=decimals, out=out).astype(ret_dtype, copy=False)
 
 
 @to_ivy_arrays_and_back
@@ -528,3 +528,76 @@ def frexp(x, /):
 @to_ivy_arrays_and_back
 def ldexp(x1, x2, /):
     return ivy.ldexp(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def poly(seq_of_zeros):
+    seq_of_zeros = ivy.atleast_1d(seq_of_zeros)
+    sh = seq_of_zeros.shape
+    if len(sh) == 2 and sh[0] == sh[1] and sh[0] != 0:
+        seq_of_zeros = ivy.eigvals(seq_of_zeros)
+    if seq_of_zeros.ndim != 1:
+        raise ValueError("input must be 1d or non-empty square 2d array.")
+    dt = seq_of_zeros.dtype
+    if len(seq_of_zeros) == 0:
+        return ivy.ones((), dtype=dt)
+    a = ivy.ones((1,), dtype=dt)
+    for k in range(len(seq_of_zeros)):
+        a = convolve(
+            a, ivy.asarray([ivy.array(1), -seq_of_zeros[k]], dtype=dt), mode="full"
+        )
+    return a
+
+
+@to_ivy_arrays_and_back
+def polyadd(a1, a2):
+    d = max(a1.size, a2.size)
+    a1 = ivy.pad(a1, (d - a1.size, 0), mode="constant")
+    a2 = ivy.pad(a2, (d - a2.size, 0), mode="constant")
+    return a1 + a2
+
+
+@with_unsupported_dtypes(
+    {"0.3.14 and below": ("float16",)},
+    "jax",
+)
+@to_ivy_arrays_and_back
+def polyder(p, m=1):
+    p = ivy.atleast_1d(p)
+    n = p.size
+
+    if m < 0:
+        raise ValueError("Order of derivative must be positive.")
+
+    if m == 0:
+        return p
+
+    if n == 1 or m >= n:
+        return ivy.array(0, dtype=p.dtype)
+
+    result = ivy.array(
+        [factorial(n - 1 - k) // factorial(n - 1 - k - m) * p[k] for k in range(n - m)],
+        dtype=p.dtype,
+    )
+
+    return result
+
+
+@to_ivy_arrays_and_back
+def polysub(a1, a2):
+    n = max(a1.size, a2.size) - 1
+    a1 = ivy.pad(a1, (0, n - a1.size + 1), mode="constant")
+    a2 = ivy.pad(a2, (0, n - a2.size + 1), mode="constant")
+    return a1 - a2
+
+
+@to_ivy_arrays_and_back
+def polymul(a1, a2, *, trim_leading_zeros=False):
+    a1, a2 = ivy.atleast_1d(a1), ivy.atleast_1d(a2)
+    if trim_leading_zeros and (len(a1) > 1 or len(a1) > 1):
+        a1, a2 = trim_zeros(a1, trim="f"), trim_zeros(a2, trim="f")
+    if len(a1) == 0:
+        a1 = ivy.asarray([0], dtype=a1.dtype)
+    if len(a2) == 0:
+        a2 = ivy.asarray([0], dtype=a2.dtype)
+    return convolve(a1, a2, mode="full")

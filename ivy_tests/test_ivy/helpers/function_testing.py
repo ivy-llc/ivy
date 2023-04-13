@@ -51,10 +51,6 @@ from ivy.functional.ivy.gradients import _variable
 from ivy.functional.ivy.data_type import _get_function_list, _get_functions_from_string
 from ivy_tests.test_ivy.test_frontends import NativeClass
 from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
-from ivy.functional.frontends.torch.tensor import Tensor as torch_tensor
-from ivy.functional.frontends.tensorflow.tensor import EagerTensor as tf_tensor
-from ivy.functional.frontends.jax.devicearray import DeviceArray
-from ivy.functional.frontends.numpy.ndarray.ndarray import ndarray
 from .assertions import (
     value_test,
     check_unsupported_dtype,
@@ -905,7 +901,10 @@ def test_frontend_function(
 
     # assuming value test will be handled manually in the test function
     if not test_values:
-        return ret, frontend_ret
+        return (
+            ivy.nested_map(ret, _frontend_array_to_ivy, include_derived={tuple: True}),
+            frontend_ret,
+        )
 
     if isinstance(rtol, dict):
         rtol = _get_framework_rtol(rtol, ivy.backend)
@@ -2051,12 +2050,7 @@ def gradient_unsupported_dtypes(*, fn):
 
 
 def _is_frontend_array(x):
-    return (
-        isinstance(x, ndarray)
-        or isinstance(x, torch_tensor)
-        or isinstance(x, tf_tensor)
-        or isinstance(x, DeviceArray)
-    )
+    return hasattr(x, "ivy_array")
 
 
 def _frontend_array_to_ivy(x):

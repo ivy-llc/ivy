@@ -14,12 +14,18 @@ def median(
 ) -> np.ndarray:
     if out is not None:
         out = np.reshape(out, input.shape)
-    return np.median(
+    ret = np.median(
         input,
         axis=axis,
         keepdims=keepdims,
         out=out,
     )
+    if input.dtype in [np.uint64, np.int64, np.float64]:
+        return ret.astype(np.float64)
+    elif input.dtype in [np.float16]:
+        return ret.astype(input.dtype)
+    else:
+        return ret.astype(np.float32)
 
 
 median.support_native_out = True

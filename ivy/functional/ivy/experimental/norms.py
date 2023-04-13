@@ -7,6 +7,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
+    handle_array_like_without_promotion,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -49,97 +50,211 @@ def l2_normalize(
     return current_backend(x).l2_normalize(x, axis=axis, out=out)
 
 
-@to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 @handle_exceptions
-def instance_norm(
-    x: Union[ivy.Array, ivy.NativeArray],
+@handle_array_like_without_promotion
+def batch_norm(
+    x: Union[ivy.NativeArray, ivy.Array],
+    mean: Union[ivy.NativeArray, ivy.Array],
+    variance: Union[ivy.NativeArray, ivy.Array],
     /,
     *,
-    scale: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    eps: float = 1e-05,
-    momentum: float = 0.1,
-    data_format: str = "NCHW",
-    running_mean: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    running_stddev: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    affine: bool = True,
-    track_running_stats: bool = False,
+    offset: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
+    scale: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
+    training: bool = False,
+    eps: float = 1e-5,
+    momentum: float = 1e-1,
     out: Optional[ivy.Array] = None,
-):
-    """Applies Instance Normalization over a 4D input along C dimension.
+) -> ivy.Array:
+    """
+    Applies batch normalization to the input array and returns the normalized input,
+    running mean and running variance arrays as output. If ``training == False``,
+    the mean and variance arrays passed as input are used for normalization
+    and the same arrays are returned as running mean and running variance
+    respectively. However, when ``training ==True``, this function computes the
+    batch mean and batch variance which is then used for normalization.In this case,
+    the function returns the running mean and running variance calculated
+    using the following formula:
+
+    running_mean = (1 - momentum) * running_mean + momentum * batch_mean
+    running_var = (1 - momentum) * running_var + momentum * frac{n}{n-1} * batch_var
 
     Parameters
     ----------
     x
-        Input array.
+        Input array of shape (N, *S, C), where N is the batch dimension,
+        *S corresponds to any number of spatial dimensions and
+         C corresponds to the channel dimension.
+    mean
+        Mean array used for input's normalization. If ``training=True``
+        then it must be one dimensional with size equal to the size of
+        channel dimension C. If ``training=False`` then it can be of any
+        shape broadcastble to the input shape.
+    variance
+        Variance array for the input's normalization. If ``training=True``
+        then it must be one dimensional with size equal to the size of
+        channel dimension C. If ``training=False`` then it can be of any shape
+        broadcastble to the input shape.
+    offset
+        An offset array. If present, will be added to the normalized input.
+        If ``training=True`` then it must be one dimensional with size equal
+        to the size of channel dimension C. If ``training=False`` then it can
+        be of any shape broadcastble to the input shape.
     scale
-        Scale parameter for the normalization.
-    bias
-        Bias parameter for the normalization.
+        A scale array. If present, the scale is applied to the normalized input.
+        If ``training=True`` then it must be one dimensional with size equal to
+        the size of channel dimension C. If ``training=False`` then it can be of
+        any shape broadcastble to the input shape.
+    training
+        If true, calculate and use the mean and variance of `x`. Otherwise, use the
+        provided `mean` and `variance`.
     eps
-        Small constant to avoid division by zero.
+        A small float number to avoid dividing by 0.
     momentum
-        Momentum parameter for running statistics
-    data_format
-        Format of the input data, either 'NCHW' or 'NHWC'.
-    running_mean
-        The running mean of the input array.
-    running_stddev
-        The running standard deviation of the input array.
-    affine
-        Whether to use affine transformation for the output.
-    track_running_stats
-        Whether to track the running statistics of the input array.
+         the value used for the running_mean and running_var computation.
+          Default value is 0.1.
     out
-        Optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
+        optional output array, for writing the result to.
 
     Returns
     -------
     ret
-        The normalized array.
-        OR
-        The normalized array, Running mean, Running stddev
-
-    Examples
-    --------
-    With :class:`track_running_stats=False`:
-    ret : The normalized array.
-
-    >>> x = ivy.eye(3, 3).reshape((1, 3, 3, 1))
-    >>> ivy.instance_norm(x, scale=[2., 1, 0.5], bias=[2., 1, 0.5], data_format='NCHW',
-    ...                   affine=True, track_running_stats=False)
-    ivy.array([[[[4.82836342],[0.58581817],[0.58581817]],
-            [[0.29290909],[2.41418171],[0.29290909]],
-            [[0.14645454],[0.14645454],[1.20709085]]]])
-
-    With :class:`track_running_stats=True`:
-    ret : The normalized array, Running mean, Running stddev.
-
-    >>> x = ivy.eye(3, 3).reshape((1, 3, 3, 1))
-    >>> ivy.instance_norm(x, scale=[2., 1, 0.5], bias=[2., 1, 0.5], data_format='NCHW',
-    ...                   affine=True, track_running_stats=False)
-    (ivy.array([[[[4.82836342],[0.58581817],[0.58581817]],
-            [[0.29290909],[2.41418171],[0.29290909]],
-            [[0.14645454],[0.14645454],[1.20709085]]]]),
-         ivy.array([[[[0.30000001]],[[0.30000001]],[[0.30000001]]]]),
-         ivy.array([[[[0.52426404]],[[0.52426404]],[[0.52426404]]]]))
+         Tuple of arrays containing
+          the normalized input, running_mean, and running_variance.
     """
-    return current_backend(x).instance_norm(
+    runningmean = mean
+    runningvariance = variance
+    if training:
+        ndims = len(x.shape)
+        numel = x.size if ivy.current_backend_str() != "torch" else x.numel()
+        n = numel if ndims == 1 else numel / x.shape[-1]
+        dims = (0, *range(1, ndims - 1))
+        mean = ivy.mean(x, axis=dims)
+        variance = ivy.var(x, axis=dims)
+        runningmean = (1 - momentum) * runningmean + momentum * mean
+        runningvariance = (1 - momentum) * runningvariance + momentum * variance * n / (
+            n - 1
+        )
+    inv = 1.0 / ivy.sqrt(variance + eps)
+    if scale is not None:
+        inv = inv * scale
+    xnormalized = x * inv.astype(x.dtype, copy=False) + ivy.astype(
+        offset - mean * inv if offset is not None else -mean * inv, x.dtype
+    )
+    return xnormalized, runningmean, runningvariance
+
+
+batch_norm.mixed_function = True
+
+
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_exceptions
+@handle_array_like_without_promotion
+def instance_norm(
+    x: Union[ivy.NativeArray, ivy.Array],
+    mean: Union[ivy.NativeArray, ivy.Array],
+    variance: Union[ivy.NativeArray, ivy.Array],
+    /,
+    *,
+    offset: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
+    scale: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
+    training: bool = False,
+    eps: float = 0e-5,
+    momentum: float = 1e-1,
+    out: Optional[ivy.Array] = None,
+):
+    """
+    Applies instance normalization to the input array and returns the normalized input,
+    running mean and running variance arrays as output. If ``training == False``,
+    the mean and variance arrays passed as input are used for normalization
+    and the same arrays are returned as running mean and running variance
+    respectively. However, when ``training ==True``, this function computes the
+    mean and variance across the spatial dimensions which is then used for
+    normalization.In this case, the function returns the running mean and
+    running variance calculated using the following formula:
+
+    running_mean = (1 - momentum) * running_mean + momentum * batch_mean
+    running_var = (1 - momentum) * running_var + momentum * frac{n}{n-1} * batch_var
+
+    Parameters
+    ----------
+    x
+        Input array of shape (N, *S, C), where N is the batch dimension,
+        *S corresponds to any number of spatial dimensions and
+         C corresponds to the channel dimension.
+    mean
+        Mean array used for input's normalization. If ``training=True``
+        then it must be one dimensional with size equal to the size of
+        channel dimension C. If ``training=False`` then it can be of any
+        shape broadcastble to the input shape.
+    variance
+        Variance array for the input's normalization. If ``training=True``
+        then it must be one dimensional with size equal to the size of
+        channel dimension C. If ``training=False`` then it can be of any shape
+        broadcastble to the input shape.
+    offset
+        An offset array. If present, will be added to the normalized input.
+        If ``training=True`` then it must be one dimensional with size equal
+        to the size of channel dimension C. If ``training=False`` then it can
+        be of any shape broadcastble to the input shape.
+    scale
+        A scale array. If present, the scale is applied to the normalized input.
+        If ``training=True`` then it must be one dimensional with size equal to
+        the size of channel dimension C. If ``training=False`` then it can be of
+        any shape broadcastble to the input shape.
+    training
+        If true, calculate and use the mean and variance of `x`. Otherwise, use the
+        provided `mean` and `variance`.
+    eps
+        A small float number to avoid dividing by 0.
+    momentum
+         the value used for the running_mean and running_var computation.
+          Default value is 0.1.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+         Tuple of arrays containing
+          the normalized input, running_mean, and running_variance.
+    """
+    N = x.shape[0]
+    C = x.shape[-1]
+    S = x.shape[1:-1]
+    xdims = len(x.shape)
+    x = ivy.permute_dims(x, axes=(*range(1, xdims - 1), 0, xdims - 1))
+    x = x.reshape((1, *S, N * C))
+    mean = ivy.tile(mean, N)
+    variance = ivy.tile(variance, N)
+    scale = ivy.tile(scale, N)
+    offset = ivy.tile(offset, N)
+    xnormalized, runningmean, runningvariance = batch_norm(
         x,
+        mean,
+        variance,
         scale=scale,
-        bias=bias,
+        offset=offset,
+        training=training,
         eps=eps,
         momentum=momentum,
-        data_format=data_format,
-        running_mean=running_mean,
-        running_stddev=running_stddev,
-        affine=affine,
-        track_running_stats=track_running_stats,
         out=out,
     )
+    xnormalized = xnormalized.reshape((*S, N, C))
+    return (
+        ivy.permute_dims(
+            xnormalized, axes=(xdims - 2, *range(0, xdims - 2), xdims - 1)
+        ),
+        runningmean.reshape((N, C)).mean(axis=0),
+        runningvariance.reshape((N, C)).mean(axis=0),
+    )
+
+
+instance_norm.mixed_function = True
 
 
 @to_native_arrays_and_back

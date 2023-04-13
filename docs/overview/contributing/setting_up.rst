@@ -58,7 +58,7 @@ Many people seem to miss this option, so we thought we would add an explicit rem
 For questions, please reach out on `discord`_ in the `pycharm channel`_!
 
 Virtual environments - No Docker
--------------------------------
+--------------------------------
 
 Due to the rapid pace of updates in Ivy, it is strongly suggested for developers to use the latest ivy package from GitHub source, as explained below.
 This is to ensure the contributors' code and examples are as aligned and in accordance with the latest as possible.
@@ -96,7 +96,7 @@ Using miniconda
 
         pip install git+https://github.com/unifyai/ivy.git
 
-#. Setup the interpreter from you environment in Pycharm by:
+#. Setup the interpreter from your environment in Pycharm by:
 
    a. Going to settings -> project -> Python Interpreter
 
@@ -156,7 +156,7 @@ The path to python can be found by :code:`where python` on Windows and :code:`wh
 
 Note: You may tick "Make available to all projects" so you will be able to find the interpreter from the conda/venv environment in any future projects.
 
-To make sure you have all the packages for running tests available change the directory to :code:`ivy/ivy_tests/test_array_api` in your cloned fork using the :code:`cd` command and run the command below (while your :code:`ivy_dev` environment is active):
+To make sure you have all the packages for running tests available change the directory to :code:`ivy/ivy_tests/array_api_testing/test_array_api` in your cloned fork using the :code:`cd` command and run the command below (while your :code:`ivy_dev` environment is active):
 
     .. code-block:: none
 
@@ -192,7 +192,7 @@ Windows
    a. Going to the settings -> Build, Execution, Deployment -> Docker
       Click the "+" on top left and it should add a docker connection.
    b. Going to settings -> project -> Python Interpreter
-   c. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new small drop down menu. Select "On Docker...".A         window will open which will have three steps.
+   c. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new small drop down menu. Select "On Docker...". A         window will open which will have three steps.
 #. It will ask to create a new Docker target, at this step you have to select the following:
 
    a. Docker image -> Docker
@@ -261,7 +261,7 @@ When setting up on an M1 Mac, you would have to update the Dockerfile to install
 
 
 Ubuntu
-****
+******
 
 
 #. Install Docker by running the commands below one by one in the Linux terminal.
@@ -460,7 +460,7 @@ Windows
    e. You'll be inside the container now, where you can locally run the tests that you've modified by running the command, "pytest test_file_path::test_fn_name". Opening the container may take a long time, as the Docker image is very large (5+ GB).
 
 Ubuntu
-*******
+******
 
 #. Install `Docker Engine <https://docs.docker.com/engine/install/ubuntu/>`_
 #. Install `Visual Studio Code <https://code.visualstudio.com/>`_
@@ -480,7 +480,7 @@ Ubuntu
 For windows users, the file path should be entered with "/" (forward-slashes), for other OS it would be the regular "\\" (back-slashes).
 
 GitHub Codespaces
-*******
+*****************
 
 It can be headache to install Docker and setup the PyCharm development environment, especially on recent ARM architectures like the new M1 Macs.
 Instead, we could make use of the GitHub Codespaces feature provided; this feature creates a VM (Virtual Machine) on the Azure cloud (means no local computation) with same configuration as defined by :code:`ivy/Dockerfile`.
@@ -539,7 +539,7 @@ Log of container being built would look like below:
    :width: 420
 
 5. That's it, you have just setup GitHub codespaces and can start developing Ivy.
-The configuration files installs all the required packages, extensions for you to get started quickly.
+The configuration files install all the required packages, extensions for you to get started quickly.
 
 **Opening an existing Codespace**
 

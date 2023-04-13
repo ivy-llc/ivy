@@ -490,11 +490,11 @@ def handle_numpy_out(fn: Callable) -> Callable:
             out = args[out_pos]
             args = args[:-1]
         if ivy.exists(out):
-            if not isinstance(out, ndarray):
+            if not ivy.nested_any(out, lambda x: isinstance(x, ndarray)):
                 raise ivy.utils.exceptions.IvyException(
                     "Out argument must be an ivy.frontends.numpy.ndarray object"
                 )
-            return fn(*args, out=out.ivy_array, **kwargs)
+            return fn(*args, out=out, **kwargs)
         return fn(*args, **kwargs)
 
     out_pos = list(inspect.signature(fn).parameters).index("out")
