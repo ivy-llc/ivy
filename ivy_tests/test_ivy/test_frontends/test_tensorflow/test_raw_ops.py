@@ -631,14 +631,13 @@ def test_tensorflow_AvgPool(  # NOQA
     on_device,
 ):
     input_dtype, x, kernel, strides, pad = x_k_s_p
-    data_format = data_format
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        value=x,
+        value=x[0],
         ksize=kernel,
         strides=strides,
         padding=pad,

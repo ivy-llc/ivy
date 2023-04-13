@@ -8,7 +8,10 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
     to_ivy_dtype,
 )
 
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    with_supported_dtypes,
+)
 
 
 AddN = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add_n))
@@ -92,6 +95,17 @@ def Atanh(*, x, name="Atanh"):
     return ivy.atanh(x)
 
 
+@with_supported_dtypes(
+    {
+        "2.10.0 and below": (
+            "half",
+            "bfloat16",
+            "float32",
+            "float64",
+        )
+    },
+    "tensorflow",
+)
 @to_ivy_arrays_and_back
 def AvgPool(
     *,
