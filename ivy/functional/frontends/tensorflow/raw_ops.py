@@ -8,7 +8,10 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
     to_ivy_dtype,
 )
 
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    with_supported_dtypes,
+)
 
 
 AddN = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add_n))
@@ -85,6 +88,28 @@ def Asin(*, x, name="asin"):
 @to_ivy_arrays_and_back
 def Atan(*, x, name="atan"):
     return ivy.atan(x)
+
+
+@with_supported_dtypes(
+    {
+        "2.10.0 and below": (
+            "bfloat16",
+            "half",
+            "float32",
+            "float64",
+        )
+    },
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def Atan2(
+    *,
+    y,
+    x,
+    name="Atan2",
+):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.atan2(y, x)
 
 
 @to_ivy_arrays_and_back
@@ -444,9 +469,7 @@ def Sign(*, x, name="Sign"):
     return ivy.sign(x)
 
 
-Size = to_ivy_arrays_and_back(
-    map_raw_ops_alias(tf_frontend.general_functions.size)
-)
+Size = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.general_functions.size))
 
 
 Split = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.split))
