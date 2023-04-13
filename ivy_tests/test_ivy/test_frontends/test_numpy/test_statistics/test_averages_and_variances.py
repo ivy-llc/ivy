@@ -387,6 +387,8 @@ def test_numpy_nanmedian(
 
 
 
+
+
 @handle_frontend_test(
     fn_tree="numpy.nanquantile",
     keep_dims=st.booleans(),
