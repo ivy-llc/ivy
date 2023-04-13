@@ -77,6 +77,7 @@ def test_numpy_inner(
         b=xs[1],
     )
 
+
 # cross
 @handle_frontend_test(
     fn_tree="numpy.cross",
