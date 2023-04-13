@@ -32,6 +32,7 @@ jobs:
           source ./ivy/clone_mapping.sh master
           pip install pydriller pymongo 
           cp Mapping/tests.pbz2 ivy/
+          cd ivy
           python run_tests_CLI/array_api_determine_tests.py
           cd ..
           cp ivy/tests.pbz2 Mapping/
