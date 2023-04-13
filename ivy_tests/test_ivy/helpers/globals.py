@@ -5,7 +5,7 @@ Should not be used inside any of the test functions.
 """
 import importlib
 import sys
-from ... import config
+from typing import List
 
 
 from dataclasses import dataclass
@@ -20,6 +20,7 @@ CURRENT_RUNNING_TEST = _Notsetval
 CURRENT_DEVICE = _Notsetval
 CURRENT_DEVICE_STRIPPED = _Notsetval
 CURRENT_FRONTEND_STR = None
+_backends_to_test = _Notsetval
 
 
 @dataclass(frozen=True)  # ToDo use kw_only=True when version is updated
@@ -189,3 +190,14 @@ def _unset_device():
     global CURRENT_DEVICE, CURRENT_DEVICE_STRIPPED
     CURRENT_DEVICE = _Notsetval
     CURRENT_DEVICE_STRIPPED = _Notsetval
+
+
+def update_backends_to_test(backends: List[str]):
+    global _backends_to_test
+    if _backends_to_test is not _Notsetval:
+        raise RuntimeError("Modifying backends is not allowed after initliazation")
+    _backends_to_test = backends
+
+
+def get_backends_to_test() -> List[str]:
+    return _backends_to_test

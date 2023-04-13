@@ -68,6 +68,7 @@ def pytest_configure(config):
         backend_strs = available_frameworks
     else:
         backend_strs = raw_value.split(",")
+    test_globals.update_backends_to_test(backend_strs)
 
     # env specification for multiversion backend
     env_val = config.getoption("--env")
@@ -161,6 +162,7 @@ def pytest_configure(config):
                         TEST_PARAMS_CONFIG.append(
                             (
                                 device,
+                                # TODO use _import_backend function
                                 importlib.import_module(
                                     f"ivy.functional.backends.{backend_str}"
                                 ),

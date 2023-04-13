@@ -11,7 +11,7 @@ from hypothesis import given, strategies as st
 import ivy
 import ivy.functional.frontends.numpy as np_frontend
 from .hypothesis_helpers import number_helpers as nh
-from .globals import TestData
+from .globals import TestData, get_backends_to_test
 from . import test_parameter_flags as pf
 from ivy_tests.test_ivy.helpers.test_parameter_flags import (
     BuiltInstanceStrategy,
@@ -25,10 +25,7 @@ from ivy_tests.test_ivy.helpers.test_parameter_flags import (
     BuiltFrontendArrayStrategy,
 )
 from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
-from ivy_tests.test_ivy.helpers.available_frameworks import (
-    get_available_frameworks,
-    ground_truth,
-)
+from ivy_tests.test_ivy.helpers.available_frameworks import ground_truth
 from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import (
     _dtype_kind_keys,
     _get_type_dict,
@@ -160,7 +157,10 @@ def _import_fn(fn_tree: str):
 
 
 def _get_method_supported_devices_dtypes(
-    method_name: str, class_module: str, class_name: str
+    method_name: str,
+    class_module: str,
+    class_name: str,
+    ground_truth_backend: str = None,
 ):
     """
     Get supported devices and data types for a method in Ivy API
@@ -181,7 +181,10 @@ def _get_method_supported_devices_dtypes(
     for the method
     """
     supported_device_dtypes = {}
-    backends = get_available_frameworks()
+    backends = set(get_backends_to_test())
+    # In case the ground truth backend is not one of backends that is being tested
+    if ground_truth_backend is not None:
+        backends.add(ground_truth_backend)
     for b in backends:  # ToDo can optimize this ?
         ivy.set_backend(b)
         _fn = getattr(class_module.__dict__[class_name], method_name)
@@ -196,7 +199,9 @@ def _get_method_supported_devices_dtypes(
     return supported_device_dtypes
 
 
-def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
+def _get_supported_devices_dtypes(
+    fn_name: str, fn_module: str, ground_truth_backend: str = None
+):
     """
     Get supported devices and data types for a function in Ivy API
     Parameters
@@ -221,7 +226,10 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
         if isinstance(getattr(fn_module_, fn_name), fn_module_.ufunc):
             fn_name = "_" + fn_name
 
-    backends = get_available_frameworks()
+    backends = set(get_backends_to_test())
+    # In case the ground truth backend is not one of backends that is being tested
+    if ground_truth_backend is not None:
+        backends.add(ground_truth_backend)
     for b in backends:  # ToDo can optimize this ?
         ivy.set_backend(b)
         _tmp_mod = importlib.import_module(fn_module)
@@ -339,7 +347,9 @@ def handle_test(
     def test_wrapper(test_fn):
         if is_fn_tree_provided:
             callable_fn, fn_name, fn_mod = _import_fn(fn_tree)
-            supported_device_dtypes = _get_supported_devices_dtypes(fn_name, fn_mod)
+            supported_device_dtypes = _get_supported_devices_dtypes(
+                fn_name, fn_mod, ground_truth_backend
+            )
             possible_arguments["fn_name"] = st.just(fn_name)
 
         # If a test is not a Hypothesis test, we only set the test global data
@@ -566,7 +576,7 @@ def handle_method(
     def test_wrapper(test_fn):
         if is_method_tree_provided:
             supported_device_dtypes = _get_method_supported_devices_dtypes(
-                method_name, method_mod, class_name
+                method_name, method_mod, class_name, ground_truth_backend
             )
             possible_arguments["class_name"] = st.just(class_name)
             possible_arguments["method_name"] = st.just(method_name)
