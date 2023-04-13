@@ -49,6 +49,11 @@ def asinh(x, name="asinh"):
     return ivy.asinh(x)
 
 
+@to_ivy_arrays_and_back
+def real(input, name=None):
+    return ivy.real(input)
+    
+
 @handle_tf_dtype
 @to_ivy_arrays_and_back
 def confusion_matrix(
