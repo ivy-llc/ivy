@@ -18,63 +18,32 @@ from . import backend_version
 # -------------------#
 
 
-# @with_unsupported_device_and_dtypes(
-#     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-# )
-# def concat(
-#     xs: Union[Tuple[paddle.Tensor, ...], List[paddle.Tensor]],
-#     /,
-#     *,
-#     axis: Optional[int] = 0,
-#     out: Optional[paddle.Tensor] = None,
-# ) -> paddle.Tensor:
-#     dtypes_list = list(set(map(lambda x: x.dtype, xs)))
-#     num_dtypes = len(dtypes_list)
-#     if num_dtypes == 1:
-#         dtype = dtypes_list[0]
-#     elif num_dtypes == 2:
-#         dtype = ivy.promote_types(*dtypes_list)
-#     else:
-#         raise ivy.utils.exceptions.IvyException(
-#             "Tensor list contains more than two dtypes"
-#         )
-#     if dtype == "int16":
-#         xs = [array.cast("int32") for array in xs]
-#         return paddle.concat(xs, axis).cast("int16")
-#     else:
-#         xs = [array.cast(dtype) for array in xs]
-#         return paddle.concat(xs, axis)
-
-
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, "backend_version"
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def concat(
-        xs: Union[Tuple[paddle.Tensor, ...], List[paddle.Tensor]],
-        /,
-        *,
-        axis: Optional[int] = 0,
-        out: Optional[paddle.Tensor] = None,
+    xs: Union[Tuple[paddle.Tensor, ...], List[paddle.Tensor]],
+    /,
+    *,
+    axis: Optional[int] = 0,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    # Check if all tensors are of the same data type
-    dtypes = set(x.dtype for x in xs)
-    if len(dtypes) != 1:
-        # Promote types if possible
-        try:
-            dtype = ivy.promote_types(*dtypes)
-        except ValueError as e:
-            raise ValueError(f"All input tensors must be of the same data type: {e}")
-        xs = [x.astype(dtype) for x in xs]
+    dtypes_list = list(set(map(lambda x: x.dtype, xs)))
+    num_dtypes = len(dtypes_list)
+    if num_dtypes == 1:
+        dtype = dtypes_list[0]
+    elif num_dtypes == 2:
+        dtype = ivy.promote_types(*dtypes_list)
     else:
-        dtype = next(iter(dtypes))
-
-    # Check for unsupported data types
-    if dtype in ("uint16", "bfloat16"):
-        raise ValueError(f"Unsupported data type: {dtype}")
-
-    # Call the PaddlePaddle `concat` function
-    return paddle.concat(xs, axis, out)
-
+        raise ivy.utils.exceptions.IvyException(
+            "Tensor list contains more than two dtypes"
+        )
+    if dtype == "int16":
+        xs = [array.cast("int32") for array in xs]
+        return paddle.concat(xs, axis).cast("int16")
+    else:
+        xs = [array.cast(dtype) for array in xs]
+        return paddle.concat(xs, axis)
 
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
