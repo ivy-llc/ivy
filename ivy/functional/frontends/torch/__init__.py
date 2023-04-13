@@ -240,26 +240,16 @@ def promote_types_of_torch_inputs(
     otherwise it might give unexpected results.
     """
     # Ignore type of 0-dim arrays to mimic torch
-    if (
-        hasattr(x1, "shape")
-        and x1.shape == ()
-        and not (hasattr(x2, "shape") and x2.shape == ())
-    ):
-        x1 = ivy.to_scalar(x1[()])
-    if (
-        hasattr(x2, "shape")
-        and x2.shape == ()
-        and not (hasattr(x1, "shape") and x1.shape == ())
-    ):
-        x2 = ivy.to_scalar(x2[()])
+    x1 = ivy.asarray(x1)
+    x2 = ivy.asarray(x2)
     type1 = ivy.default_dtype(item=x1).strip("u123456789")
     type2 = ivy.default_dtype(item=x2).strip("u123456789")
-    if hasattr(x1, "dtype") and not hasattr(x2, "dtype") and type1 == type2:
+    if not x1.shape == () and x2.shape == () and type1 == type2:
         x1 = ivy.asarray(x1)
         x2 = ivy.asarray(
             x2, dtype=x1.dtype, device=ivy.default_device(item=x1, as_native=False)
         )
-    elif not hasattr(x1, "dtype") and hasattr(x2, "dtype") and type1 == type2:
+    elif x1.shape == () and not x2.shape == () and type1 == type2:
         x1 = ivy.asarray(
             x1, dtype=x2.dtype, device=ivy.default_device(item=x2, as_native=False)
         )
