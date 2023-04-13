@@ -471,6 +471,48 @@ def test_torch_cumprod(
     )
 
 
+# cummax
+@handle_frontend_test(
+    fn_tree="torch.cummax",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=2,
+        min_value=-100,
+        max_value=100,
+        valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
+    ),
+    dtype=helpers.get_dtypes("numeric", none=True, full=False),
+
+)
+def test_torch_cummax(
+    *,
+    dtype_x_axis,
+    dtype,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x, axis = dtype_x_axis
+    if ivy.current_backend_str() == "torch":
+        test_flags.as_variable = [False]
+    test_flags.generate_frontend_arrays=True
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        dim=axis,
+
+    )
+
+
 # trace
 @handle_frontend_test(
     fn_tree="torch.trace",

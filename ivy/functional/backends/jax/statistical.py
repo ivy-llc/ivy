@@ -1,11 +1,14 @@
 # global
 import jax.numpy as jnp
-from typing import Union, Optional, Sequence
+import jax.lax as jlax
+from typing import Union, Optional, Sequence,Tuple
 
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
+from ivy.functional.backends.jax import general
+
 from . import backend_version
 
 
@@ -209,6 +212,33 @@ def cumsum(
             res = jnp.flip(x, axis=axis)
         return res
     return jnp.cumsum(x, axis, dtype=dtype)
+
+
+def cummax(
+        x: JaxArray,
+        axis: int = 0,
+        exclusive: bool = False,
+        reverse: bool = False,
+        *,
+        out: Optional[JaxArray] = None,
+) -> Tuple[JaxArray, JaxArray]:
+    if exclusive or reverse:
+        if exclusive and reverse:
+            x = jlax.cummax(x, axis=axis, reverse=reverse)
+            x = jnp.swapaxes(x, axis, -1)
+            x = jnp.concatenate((jnp.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+            x = jnp.swapaxes(x, axis, -1)
+            res = jnp.flip(x, axis=axis)
+        elif exclusive:
+            x = jnp.swapaxes(x, axis, -1)
+            x = jnp.concatenate((jnp.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+            x = jlax.cummax(x, -1)
+            res = jnp.swapaxes(x, axis, -1)
+        indices = general.find_cummax_indices(res, axis=axis)
+        return res, indices
+    indices = general.find_cummax_indices(x, axis=axis)
+
+    return jlax.cummax(x, axis, reverse=reverse), indices
 
 
 def einsum(
