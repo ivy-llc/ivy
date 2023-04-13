@@ -180,6 +180,11 @@ def log_sigmoid(x, name=None):
 
 
 @to_ivy_arrays_and_back
+def logical_not(x, name="logical_not"):
+    return ivy.logical_not(x)
+
+
+@to_ivy_arrays_and_back
 def logical_and(x, y, name="LogicalAnd"):
     return ivy.logical_and(x, y)
 
