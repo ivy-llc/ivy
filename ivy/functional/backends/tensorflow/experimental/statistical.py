@@ -138,10 +138,7 @@ def nanquantile(
     axis = tuple(axis) if isinstance(axis, list) else axis
     return tfp.stats.percentile(
         a,
-        tf.math.multiply(
-            tf.convert_to_tensor(q, dtype=a.dtype),
-            tf.convert_to_tensor(100, dtype=a.dtype),
-        ),
+        tf.math.multiply(q, 100),
         axis=axis,
         interpolation=interpolation,
         keepdims=keepdims,

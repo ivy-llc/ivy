@@ -158,6 +158,9 @@ def bincount(
 bincount.support_native_out = False
 
 
+@with_unsupported_dtypes(
+    {"1.11.0 and below": ("bfloat16", "bfloat32", "float16")}, backend_version
+)
 def nanquantile(
     a: torch.Tensor,
     q: Union[torch.Tensor, float],
@@ -168,25 +171,38 @@ def nanquantile(
     interpolation: str = "linear",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    temp = a
+    temp = a.to(torch.float64)
+    num_dim = len(temp.size())
+    keepdim_shape = list(temp.size())
+    if isinstance(axis, int):
+        axis = [axis]
+    if isinstance(axis, tuple):
+        axis = list(axis)
     if isinstance(q, torch.Tensor):
-        qt = q.to(a.dtype)
+        qt = q.to(torch.float64)
     else:
         qt = q
-    if isinstance(axis, list) or isinstance(axis, tuple):
-        dimension = len(a.size())
-        for x in axis:
-            axis1 = x
-            for axis2 in range(x + 1, dimension):
-                temp = torch.transpose(temp, axis1, axis2)
-                axis1 = axis2
-        temp = torch.flatten(temp, start_dim=dimension - len(axis))
-        return torch.nanquantile(
-            temp, qt, dim=-1, keepdim=keepdims, interpolation=interpolation, out=out
-        )
-    return torch.nanquantile(
-        a, qt, dim=axis, keepdim=keepdims, interpolation=interpolation, out=out
+    for i in axis:
+        keepdim_shape[i] = 1
+    axis = [num_dim + x if x < 0 else x for x in axis]
+    axis.sort()
+    dimension = len(a.size())
+    while len(axis) > 0:
+        axis1 = axis[0]
+        for axis2 in range(axis1 + 1, dimension):
+            temp = torch.transpose(temp, axis1, axis2)
+            axis1 = axis2
+        axis = [x - 1 for x in axis]
+        axis.pop(0)
+        dimension = dimension - 1
+    temp = torch.flatten(temp, start_dim=dimension - len(axis))
+    ret = torch.nanquantile(
+        temp, qt, dim=-1, keepdim=keepdims, interpolation=interpolation, out=out
     )
+    if keepdims:
+        keepdim_shape = tuple(keepdim_shape)
+        ret = ret.reshape(keepdim_shape)
+    return ret
 
 
 nanquantile.support_native_out = True
