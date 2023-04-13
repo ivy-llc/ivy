@@ -81,22 +81,23 @@ Using miniconda
 #. Create the environment by running the command (:code:`ivy_dev` is the name of the environment)
 
     .. code-block:: none
-
-        conda create --name ivy_dev python=3.8.10
+      
+       conda create --name ivy_dev python=3.8.10
 
 #. Activate the environment by:
 
     .. code-block:: none
 
-        conda activate ivy_dev
+       conda activate ivy_dev
 
 #.  Now install ivy package from GitHub by running:
 
     .. code-block:: none
 
-        pip install git+https://github.com/unifyai/ivy.git
+       pip install git+https://github.com/unifyai/ivy.git
 
 #. Setup the interpreter by:
+
    #. Pycharm
 
       a. Going to settings -> project -> Python Interpreter
@@ -138,15 +139,15 @@ This is a builtin package and doesn't require explicit installation.
 
     .. code-block:: none
 
-        python -m venv ivy_dev
+       python -m venv ivy_dev
 
-    Try :code:`python3` if :code:`python` doesn't work.
+       Try :code:`python3` if :code:`python` doesn't work.
 
 #. Activate the created environment by running (in the same working directory as the environment folder):
 
     .. code-block:: none
 
-        ivy_dev\Scripts\activate.bat
+       ivy_dev\Scripts\activate.bat
 
     (on Windows)
 
@@ -154,7 +155,7 @@ This is a builtin package and doesn't require explicit installation.
 
     .. code-block:: none
 
-        source ivy_dev/bin/activate
+       source ivy_dev/bin/activate
 
     (on Mac/Linux)
 
@@ -162,7 +163,7 @@ This is a builtin package and doesn't require explicit installation.
 
     .. code-block:: none
 
-        pip install git+https://github.com/unifyai/ivy.git
+       pip install git+https://github.com/unifyai/ivy.git
 
 #. Setup the interpreter by:
 
@@ -173,7 +174,8 @@ This is a builtin package and doesn't require explicit installation.
       b. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
 
       c. Choosing "virtualenv environment" from the left panel. Choose existing environment and add the path to python.
-      The path to python can be found by :code:`where python` on Windows and :code:`which python` in Linux/Mac OS.
+       The path to python can be found by :code:`where python` on Windows and :code:`which python` in Linux/Mac OS.
+
    Note: You may tick "Make available to all projects" so you will be able to find the interpreter from the conda/venv environment in any future projects.
 
    #. VSCode
@@ -186,14 +188,14 @@ This is a builtin package and doesn't require explicit installation.
       
          .. code-block:: none
       
-            pip install -r requirements/requirements.txt
+             pip install -r requirements/requirements.txt
       
       b. On M1 Mac, you will need to use the optional_m1_1 and optional_m1_2 requirements files. To install dependencies.
       
          .. code-block:: none
       
-            pip install -r requirements/optional_m1_1.txt
-            pip install -r requirements/optional_m1_2.txt
+             pip install -r requirements/optional_m1_1.txt
+             pip install -r requirements/optional_m1_2.txt
 
 #. Installing array API testing dependencies.
 
@@ -201,7 +203,7 @@ This is a builtin package and doesn't require explicit installation.
 
       .. code-block:: none
 
-         pip install -r requirements.txt
+          pip install -r requirements.txt
 
    This will install packages required for running the tests in Array API suite.
 
