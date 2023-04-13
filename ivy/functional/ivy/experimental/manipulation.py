@@ -168,6 +168,7 @@ def flatten(
 
 
 flatten.mixed_function = True
+flatten.support_native_out = True
 
 
 @to_native_arrays_and_back
@@ -1662,10 +1663,10 @@ def as_strided(
 
     for index in ivy.ndindex(shape):
         src_index = sum(index[i] * min(strides[i], itemsize) for i in range(len(shape)))
-        dst_index = sum(index[i] * math.prod(shape[i + 1:]) * itemsize
-                        for i in range(len(shape)))
-        dst[dst_index:dst_index + itemsize] = \
-            src[src_index:src_index + itemsize]
+        dst_index = sum(
+            index[i] * math.prod(shape[i + 1 :]) * itemsize for i in range(len(shape))
+        )
+        dst[dst_index : dst_index + itemsize] = src[src_index : src_index + itemsize]
 
     return ivy.reshape(
         ivy.frombuffer(buffer, dtype=x.dtype, count=size),

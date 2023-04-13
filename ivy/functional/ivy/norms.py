@@ -140,3 +140,4 @@ def layer_norm(
 
 
 layer_norm.mixed_function = True
+layer_norm.support_native_out = True

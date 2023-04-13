@@ -1534,6 +1534,7 @@ def lerp(
 
 
 lerp.mixed_function = True
+lerp.support_native_out = True
 
 
 @to_native_arrays_and_back

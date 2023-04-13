@@ -147,6 +147,7 @@ def batch_norm(
 
 
 batch_norm.mixed_function = True
+batch_norm.support_native_out = True
 
 
 @handle_nestable
@@ -255,6 +256,7 @@ def instance_norm(
 
 
 instance_norm.mixed_function = True
+instance_norm.support_native_out = True
 
 
 @to_native_arrays_and_back
