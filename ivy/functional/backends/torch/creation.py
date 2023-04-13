@@ -2,6 +2,7 @@
 
 from numbers import Number
 from typing import Union, List, Optional, Sequence
+import math
 
 import numpy as np
 import torch
@@ -623,3 +624,55 @@ def one_hot(
         res = torch.moveaxis(res, -1, axis)
 
     return res.to(device, dtype)
+
+
+@with_unsupported_device_and_dtypes(
+    {"1.11.0 and below": {"cpu": ("float16",)}}, backend_version
+)
+def bucketize(
+    input: Union[torch.Tensor, float],
+    boundaries: Union[torch.Tensor, float],
+    /,
+    *,
+    out_int32: bool = False,
+    right: bool = False,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if boundaries.dim() == 1:
+        raise TypeError(f"boundaries tensor must be 1 dimension but got dim({boundaries.dim()})")
+        
+    out_dtype = torch.int32 if out_int32 else torch.int64
+    n_boundaries = boundaries.shape[-1]
+    if n_boundaries == 0:
+        return torch.zeros_like(input)
+
+    start = torch.zeros(input.shape, device=input.device, dtype=torch.int64)
+    end = start + n_boundaries
+    mid = start + (end - start) // 2
+    mid_val = boundaries[mid]
+    
+    if right:
+        cond_mid = mid_val > input
+    else:
+        cond_mid = mid_val >= input
+    start = torch.where(cond_mid, start, mid + 1)
+
+    if n_boundaries > 1:
+        cond_update = torch.ones_like(input, dtype=torch.bool)
+        niters = int(math.log2(n_boundaries))
+        for _ in range(niters):
+            end = torch.where(cond_mid & cond_update, mid, end)
+            cond_update = start < end
+            mid = torch.where(cond_update, start + (end - start) // 2, 0)
+            mid_val = boundaries[mid]
+            
+            if right:
+                cond_mid = mid_val > input
+            else:
+                cond_mid = mid_val >= input
+            start = torch.where((~cond_mid) & cond_update, mid + 1, start)
+
+    return start.to(dtype=out_dtype)
+
+
+bucketize.support_native_out = True
