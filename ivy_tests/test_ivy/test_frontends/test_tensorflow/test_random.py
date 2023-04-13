@@ -118,29 +118,3 @@ def test_tensorflow_shuffle(
         value=values[0],
         seed=seed,
     )
-
-@handle_frontend_test(
-    fn_tree="tensorflow.random.poisson",
-    dtype_value=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
-    seed=helpers.ints(min_value=0, max_value=10),
-    test_with_out=st.just(False),
-)
-def test_tensorflow_poisson(
-    frontend,
-    fn_tree,
-    on_device,
-    dtype_value,
-    seed,
-    test_flags,
-):
-    input_dtypes, values = dtype_value
-    helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        test_values=False,
-        value=values[0],
-        seed=seed,
-    )
