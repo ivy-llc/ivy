@@ -617,7 +617,7 @@ def test_tensorflow_Atan(  # NOQA
 # AvgPool3D
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.AvgPool3D",
-    data_format=st.sampled_from(["NDHWC", "NDCHW"]),
+    data_format=st.sampled_from(["NWC", "NHWC", "NDCHW"]),
     x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=4),
     test_with_out=st.just(False),
 )
