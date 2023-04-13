@@ -168,4 +168,5 @@ def outputs_to_native_arrays(fn: Callable):
         if isinstance(ret, jax_frontend.DeviceArray):
             ret = ret.ivy_array.data
         return ret
+
     return new_fn
