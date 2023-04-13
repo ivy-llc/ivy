@@ -78,100 +78,38 @@ def test_numpy_inner(
     )
 
 # cross
-@st.composite
-def _get_dtype_value1_value2_axis_for_cross(
-    draw,
-    available_dtypes,
-    min_value=None,
-    max_value=None,
-    allow_inf=False,
-    exclude_min=False,
-    exclude_max=False,
-    min_num_dims=1,
-    max_num_dims=10,
-    min_dim_size=1,
-    max_dim_size=3,
-):
-    shape = draw(
-        helpers.get_shape(
-            allow_none=False,
-            min_num_dims=min_num_dims,
-            max_num_dims=max_num_dims,
-            min_dim_size=min_dim_size,
-            max_dim_size=max_dim_size,
-        )
-    )
-    axisa = draw(helpers.ints(min_value=1, max_value=len(shape)))
-    axisb = draw(helpers.ints(min_value=1, max_value=len(shape)))
-    axisc = draw(helpers.ints(min_value=1, max_value=len(shape)))
-    axis = draw(helpers.ints(min_value=1, max_value=len(shape)))
-    dtype = draw(st.sampled_from(draw(available_dtypes)))
-
-    values = []
-    for i in range(2):
-        values.append(
-            draw(
-                helpers.array_values(
-                    dtype=dtype,
-                    shape=shape,
-                    min_value=min_value,
-                    max_value=max_value,
-                    allow_inf=allow_inf,
-                    exclude_min=exclude_min,
-                    exclude_max=exclude_max,
-                    large_abs_safety_factor=72,
-                    small_abs_safety_factor=72,
-                    safety_factor_scale="log",
-                )
-            )
-        )
-
-    value1, value2 = values[0], values[1]
-    if not isinstance(axis, list):
-        value2 = value2.transpose(
-            [k for k in range(len(shape) - axis, len(shape))]
-            + [k for k in range(0, len(shape) - axis)]
-        )
-    return [dtype], value1, value2, axisa, axisb, axisc, axis
-
-
 @handle_frontend_test(
     fn_tree="numpy.cross",
-    dtype_x1_x2_axis=_get_dtype_value1_value2_axis_for_cross(
+    dtype_x1_x2=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        max_num_dims=5,
+        min_value=-10,
+        max_value=10,
         min_dim_size=3,
         max_dim_size=3,
-        min_value=-1e5,
-        max_value=1e5,
+        min_num_dims=1,
+        num_arrays=2,
+        shared_dtype=True,
     ),
+    test_with_out=st.just(True),
 )
 def test_numpy_cross(
     *,
-    dtype_x1_x2_axis,
+    dtype_x1_x2,
+    frontend,
     test_flags,
-    backend_fw,
-    fn_name,
+    fn_tree,
     on_device,
-    ground_truth_backend,
 ):
-    dtype, x1, x2, axisa, axisb, axisc, axis = dtype_x1_x2_axis
-    helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
-        input_dtypes=dtype,
+    dtypes, xs = dtype_x1_x2
+    print(f"{xs[0]}\n-\n{xs[1]}")
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        frontend=frontend,
         test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
+        fn_tree=fn_tree,
         on_device=on_device,
-        rtol_=1e-1,
-        atol_=1e-1,
-        x1=x1,
-        x2=x2,
-        axisa=axisa,
-        axisb=axisb,
-        axisc=axisc,
-        axis=axis,
+        a=xs[0],
+        b=xs[1],
     )
 
 
