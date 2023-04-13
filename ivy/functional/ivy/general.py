@@ -30,7 +30,6 @@ from ivy.func_wrapper import (
     handle_array_function,
     inputs_to_ivy_arrays,
     inputs_to_native_arrays,
-    outputs_to_ivy_arrays,
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,

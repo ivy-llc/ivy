@@ -26,15 +26,13 @@
 	// "mounts": [ "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind" ],
 	
 	// Uncomment to connect as a non-root user if you've added one. See https://aka.ms/vscode-remote/containers/non-root.
-	"remoteUser": "vscode",
+	// "remoteUser": "vscode",
     "features": {
 		"ghcr.io/devcontainers/features/common-utils:2": {
 			"installZsh": true,
 			"configureZshAsDefaultShell": true,
 			"installOhMyZsh": true,
-			"username": "vscode",
-			"userUid": "1000",
-			"userGid": "1000"
+			"upgradePackages": false
 		},
         "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
 			"moby": true,
