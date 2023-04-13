@@ -243,6 +243,7 @@ def avg_pool2d(
     /,
     *,
     data_format: str = "NHWC",
+    count_include_pad: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
 
@@ -264,7 +265,14 @@ def avg_pool2d(
     if len(div_shape) - 2 == len(kernel):
         div_shape = (1,) + div_shape[1:]
     res = res / general_pool(
-        jnp.ones(div_shape, dtype=res.dtype), 0.0, jlax.add, kernel, strides, padding, 2
+        jnp.ones(div_shape, dtype=res.dtype),
+        0.0,
+        jlax.add,
+        kernel,
+        strides,
+        padding,
+        2,
+        count_include_pad=count_include_pad,
     )
     if data_format == "NCHW":
         return jnp.transpose(res, (0, 3, 1, 2))
@@ -279,6 +287,7 @@ def avg_pool3d(
     /,
     *,
     data_format: str = "NDHWC",
+    count_include_pad: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
 
@@ -298,7 +307,14 @@ def avg_pool3d(
     res = general_pool(x, 0.0, jlax.add, kernel, strides, padding, 3)
 
     res = res / general_pool(
-        jnp.ones_like(x, dtype=res.dtype), 0.0, jlax.add, kernel, strides, padding, 3
+        jnp.ones_like(x, dtype=res.dtype),
+        0.0,
+        jlax.add,
+        kernel,
+        strides,
+        padding,
+        3,
+        count_include_pad=count_include_pad,
     )
 
     if data_format == "NCDHW":

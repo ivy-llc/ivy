@@ -513,6 +513,11 @@ def atan(x, name=None):
 
 
 @to_ivy_arrays_and_back
+def atan2(y, x, name=None):
+    return ivy.atan2(y, x)
+
+
+@to_ivy_arrays_and_back
 def log(x, name=None):
     return ivy.log(x)
 
@@ -528,9 +533,21 @@ def floormod(x, y, name=None):
 
 
 @to_ivy_arrays_and_back
+def less_equal(x, y, name="LessEqual"):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.less_equal(x, y)
+
+
+@to_ivy_arrays_and_back
 def greater(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return ivy.greater(x, y)
+
+
+@to_ivy_arrays_and_back
+def less(x, y, name="None"):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.less(x, y)
 
 
 @to_ivy_arrays_and_back

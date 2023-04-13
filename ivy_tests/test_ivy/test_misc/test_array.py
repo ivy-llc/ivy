@@ -70,7 +70,9 @@ def test_array_function():
     assert all(y1 == ivy.array([1, 1]))
 
 
-# TODO do not use dummy fn_tree
+# TODO: avoid using dummy fn_tree in property tests
+
+
 @handle_test(
     fn_tree="functional.ivy.native_array",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
@@ -91,7 +93,6 @@ def test_array_property_data(
     )
 
 
-# TODO do not use dummy fn_tree
 @handle_test(
     fn_tree="functional.ivy.native_array",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
@@ -105,7 +106,6 @@ def test_array_property_dtype(
     ivy.utils.assertions.check_equal(x.dtype, ivy.dtype(data))
 
 
-# TODO do not use dummy fn_tree
 @handle_test(
     fn_tree="functional.ivy.native_array",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
@@ -119,7 +119,6 @@ def test_array_property_device(
     ivy.utils.assertions.check_equal(x.device, ivy.dev(data))
 
 
-# TODO do not use dummy fn_tree
 @handle_test(
     fn_tree="functional.ivy.native_array",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
@@ -136,7 +135,6 @@ def test_array_property_ndim(
     ivy.utils.assertions.check_equal(x.ndim, len(input_shape))
 
 
-# TODO do not use dummy fn_tree
 @handle_test(
     fn_tree="functional.ivy.native_array",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
@@ -153,7 +151,6 @@ def test_array_property_shape(
     ivy.utils.assertions.check_equal(x.shape, ivy.Shape(input_shape))
 
 
-# TODO do not use dummy fn_tree
 @handle_test(
     fn_tree="functional.ivy.native_array",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
@@ -174,7 +171,20 @@ def test_array_property_size(
     ivy.utils.assertions.check_equal(x.size, size_gt)
 
 
-# TODO do not use dummy fn_tree
+@handle_test(
+    fn_tree="functional.ivy.native_array",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_array_property_itemsize(
+    dtype_x,
+):
+    dtype, data = dtype_x
+    x = data[0]
+    ivy.utils.assertions.check_equal(x.itemsize, ivy.to_numpy(x).itemsize)
+
+
 @handle_test(
     fn_tree="functional.ivy.native_array",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
@@ -198,7 +208,6 @@ def test_array_property_mT(
     )
 
 
-# TODO do not use dummy fn_tree
 @handle_test(
     fn_tree="functional.ivy.native_array",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(

@@ -4118,3 +4118,51 @@ class _ContainerWithGeneral(ContainerBase):
         return self.static_isin(
             self, test_elements, assume_unique=assume_unique, invert=invert
         )
+
+    @staticmethod
+    def static_itemsize(
+        x: ivy.Container,
+        /,
+    ) -> ivy.Container:
+        """Container instance method variant of ivy.itemsize. This method simply
+        wraps the function, and so the docstring for ivy.isin also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+           The input container.
+
+        Returns
+        -------
+        ret
+            Integers specifying the element size in bytes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1,2,3], dtype=ivy.float64),\
+                                b=ivy.array([1,2,3], dtype=ivy.complex128))
+        >>> ivy.itemsize(x)
+        ivy.Container(a=8, b=16)
+        """
+        return ContainerBase.cont_multi_map_in_function("itemsize", x)
+
+    def itemsize(
+        self: ivy.Container,
+        /,
+    ) -> ivy.Container:
+        """Container instance method variant of ivy.itemsize. This method simply
+        wraps the function, and so the docstring for ivy.isin also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+           The input container.
+
+        Returns
+        -------
+        ret
+            Integers specifying the element size in bytes.
+        """
+        return self.static_itemsize(self)

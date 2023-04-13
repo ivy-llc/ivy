@@ -12,6 +12,7 @@ def moveaxis(
     destination: Union[int, Sequence[int]],
     /,
     *,
+    copy: Optional[bool] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.moveaxis(a, source, destination)
@@ -32,6 +33,7 @@ def flipud(
     m: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    copy: Optional[bool] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.flipud(m)
@@ -59,6 +61,7 @@ def rot90(
     m: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    copy: Optional[bool] = None,
     k: int = 1,
     axes: Tuple[int, int] = (0, 1),
     out: Union[tf.Tensor, tf.Variable] = None,
@@ -99,6 +102,7 @@ def fliplr(
     m: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    copy: Optional[bool] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.fliplr(m)
@@ -118,6 +122,8 @@ def vsplit(
     ary: Union[tf.Tensor, tf.Variable],
     indices_or_sections: Union[int, Tuple[int, ...]],
     /,
+    *,
+    copy: Optional[bool] = None,
 ) -> List[Union[tf.Tensor, tf.Variable]]:
     return tf.experimental.numpy.vsplit(ary, indices_or_sections)
 
@@ -126,6 +132,8 @@ def dsplit(
     ary: Union[tf.Tensor, tf.Variable],
     indices_or_sections: Union[int, Tuple[int, ...]],
     /,
+    *,
+    copy: Optional[bool] = None,
 ) -> List[Union[tf.Tensor, tf.Variable]]:
     if len(ary.shape) < 3:
         raise ivy.utils.exceptions.IvyError(
@@ -136,6 +144,7 @@ def dsplit(
 
 def atleast_1d(
     *arys: Union[tf.Tensor, tf.Variable, bool, Number],
+    copy: Optional[bool] = None,
 ) -> List[Union[tf.Tensor, tf.Variable]]:
     return tf.experimental.numpy.atleast_1d(*arys)
 
@@ -151,12 +160,14 @@ def dstack(
 
 def atleast_2d(
     *arys: Union[tf.Tensor, tf.Variable],
+    copy: Optional[bool] = None,
 ) -> List[Union[tf.Tensor, tf.Variable]]:
     return tf.experimental.numpy.atleast_2d(*arys)
 
 
 def atleast_3d(
     *arys: Union[tf.Tensor, tf.Variable, bool, Number],
+    copy: Optional[bool] = None,
 ) -> List[Union[tf.Tensor, tf.Variable]]:
     return tf.experimental.numpy.atleast_3d(*arys)
 
@@ -205,6 +216,8 @@ def hsplit(
     ary: Union[tf.Tensor, tf.Variable],
     indices_or_sections: Union[int, Tuple[int, ...]],
     /,
+    *,
+    copy: Optional[bool] = None,
 ) -> List[Union[tf.Tensor, tf.Variable]]:
     return tf.experimental.numpy.hsplit(ary, indices_or_sections)
 
@@ -227,6 +240,7 @@ def expand(
     shape: Union[List[int], List[Tuple]],
     /,
     *,
+    copy: Optional[bool] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     shape = list(shape)

@@ -112,3 +112,5 @@ def binomial(n,p,size):
     else:
         num_samples = len(p)
     return ivy.multinomial(n, num_samples, batch_size=batch_size, probs=p)
+def standard_gamma(shape, size=None):
+    return ivy.gamma(shape, 1.0, shape=size, dtype="float64")

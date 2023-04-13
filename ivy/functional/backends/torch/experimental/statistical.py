@@ -7,7 +7,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bool")}, backend_version)
 def median(
     input: torch.Tensor,
     /,
@@ -16,13 +16,23 @@ def median(
     keepdims: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return quantile(
+    if isinstance(axis, tuple):
+        if len(axis) == 1:
+            axis = axis[0]
+    ret = quantile(
         input,
         0.5,
         axis=axis,
         keepdims=keepdims,
         interpolation="midpoint",
-    ).type_as(input)
+    )
+    if input.dtype in [torch.int64, torch.float64]:
+        ret = torch.asarray(ret, dtype=torch.float64)
+    elif input.dtype in [torch.float16, torch.bfloat16]:
+        ret = torch.asarray(ret, dtype=input.dtype)
+    else:
+        ret = torch.asarray(ret, dtype=torch.float32)
+    return ret
 
 
 median.support_native_out = False
@@ -57,24 +67,37 @@ def quantile(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     temp = a.to(torch.float64)
+    num_dim = len(temp.size())
+    keepdim_shape = list(temp.size())
+    if isinstance(axis, int):
+        axis = [axis]
+    if isinstance(axis, tuple):
+        axis = list(axis)
     if isinstance(q, torch.Tensor):
         qt = q.to(torch.float64)
     else:
         qt = q
-    if isinstance(axis, list) or isinstance(axis, tuple):
-        dimension = len(a.size())
-        for x in axis:
-            axis1 = x
-            for axis2 in range(x + 1, dimension):
-                temp = torch.transpose(temp, axis1, axis2)
-                axis1 = axis2
-        temp = torch.flatten(temp, start_dim=dimension - len(axis))
-        return torch.quantile(
-            temp, qt, dim=-1, keepdim=keepdims, interpolation=interpolation, out=out
-        )
-    return torch.quantile(
-        temp, qt, dim=axis, keepdim=keepdims, interpolation=interpolation, out=out
+    for i in axis:
+        keepdim_shape[i] = 1
+    axis = [num_dim + x if x < 0 else x for x in axis]
+    axis.sort()
+    dimension = len(a.size())
+    while len(axis) > 0:
+        axis1 = axis[0]
+        for axis2 in range(axis1 + 1, dimension):
+            temp = torch.transpose(temp, axis1, axis2)
+            axis1 = axis2
+        axis = [x - 1 for x in axis]
+        axis.pop(0)
+        dimension = dimension - 1
+    temp = torch.flatten(temp, start_dim=dimension - len(axis))
+    ret = torch.quantile(
+        temp, qt, dim=-1, keepdim=keepdims, interpolation=interpolation, out=out
     )
+    if keepdims:
+        keepdim_shape = tuple(keepdim_shape)
+        ret = ret.reshape(keepdim_shape)
+    return ret
 
 
 quantile.support_native_out = True
