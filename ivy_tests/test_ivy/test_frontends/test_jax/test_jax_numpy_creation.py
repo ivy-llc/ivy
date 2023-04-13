@@ -787,3 +787,38 @@ def test_geomspace(
         endpoint=endpoint,
         dtype=input_dtypes[0],
     )
+
+
+# gather
+@handle_frontend_test(
+    fn_tree="jax.gather",
+    params_indices_axis_batch_dims=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("valid"),
+        indices_dtypes=["int64"],
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+        indices_same_dims=True,
+    ),
+)
+def test_jax_compress(
+    *,
+    params_indices_axis_batch_dims,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtypes, params, indices, axis, batch_dims = params_indices_axis_batch_dims
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        params=params,
+        indices=indices,
+        axis=axis,
+        batch_dims=batch_dims,
+    )

@@ -196,3 +196,8 @@ def geomspace(start, stop, num=50, endpoint=True, dtype=None, axis=0):
     if endpoint:
         x[-1] = stop
     return x.asarray(dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def compress(params, indices, axis=None, batch_dims=0):
+    return ivy.gather(params, indices, axis=axis, batch_dims=batch_dims)
