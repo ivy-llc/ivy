@@ -510,3 +510,9 @@ def logit(input, eps=None, *, out=None):
     input = ivy.clip(input, lo, hi, out=out)
 
     return ivy.log(ivy.divide(input, ivy.subtract(1, input), out=out), out=out)
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, "torch")
+@to_ivy_arrays_and_back
+def erf(input, *, out=None):
+    return ivy.erf(input, out=out)
