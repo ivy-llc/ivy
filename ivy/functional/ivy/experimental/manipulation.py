@@ -1671,3 +1671,38 @@ def as_strided(
         ivy.frombuffer(buffer, dtype=x.dtype, count=size),
         shape,
     )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def dynamic_quantize_linear(
+    x: Sequence[ivy.Array],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Scales and converts from float32 to int8. Saturates to [0, 255] if the input
+    is uint8, or [-127, 127] if it is int8. Currently, only uint8 is supported.
+
+    Parameters
+    ----------
+    self
+        Input Array of float32
+    out
+        Optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Output Array
+    """
+    x_min = ivy.minimum(0.0, ivy.min(x))
+    x_max = ivy.maximum(0.0, ivy.max(x))
+    y_scale = (x_max - x_min) / (255.0 - 0.0)
+    y_zero_point = ivy.astype(ivy.clip((0 - x_min) / y_scale, 0.0, 255.0), ivy.uint8)
+    y = ivy.astype(
+        ivy.clip(ivy.round(x / y_scale) + y_zero_point, 0.0, 255.0), ivy.uint8
+    )
+    return y, y_scale, y_zero_point

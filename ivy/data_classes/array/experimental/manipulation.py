@@ -878,3 +878,27 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             Output Array
         """
         return ivy.as_strided(self._data, shape, strides)
+
+    def dynamic_quantize_linear(
+        self: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        Scales and converts from float32 to int8. Saturates to [0, 255] if the input
+        is uint8, or [-127, 127] if it is int8. Currently, only uint8 is supported.
+
+        Parameters
+        ----------
+        self
+            Input Array of float32
+        out
+            Optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Output Array
+        """
+        return ivy.dynamic_quantize_linear(self._data, out=out)
