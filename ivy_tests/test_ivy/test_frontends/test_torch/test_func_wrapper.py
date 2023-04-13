@@ -14,9 +14,11 @@ import ivy.functional.frontends.torch as torch_frontend
 
 
 def _fn(x, dtype=None, check_default=False):
-    if check_default and \
-            not (ivy.is_array(x) or hasattr(x, "ivy_array")) and \
-            not ivy.exists(dtype):
+    if (
+        check_default
+        and not (ivy.is_array(x) or hasattr(x, "ivy_array"))
+        and not ivy.exists(dtype)
+    ):
         ivy.utils.assertions.check_equal(
             ivy.default_float_dtype(), torch_frontend.get_default_dtype()
         )
@@ -122,7 +124,9 @@ def test_to_ivy_arrays_and_back(dtype_and_x, dtype):
     if not len(input_frontend.shape):
         scalar_input_frontend = inputs_to_ivy_arrays(ivy.to_scalar)(input_frontend)
         to_ivy_arrays_and_back(_fn)(scalar_input_frontend, dtype=dtype)
-    output = to_ivy_arrays_and_back(_fn)(input_frontend, check_default=True, dtype=dtype)
+    output = to_ivy_arrays_and_back(_fn)(
+        input_frontend, check_default=True, dtype=dtype
+    )
     assert isinstance(output, Tensor)
     assert input_frontend.dtype == output.dtype
     assert ivy.all(input_frontend.ivy_array == output.ivy_array)
