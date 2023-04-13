@@ -954,7 +954,7 @@ def handle_mixed_function(condition) -> Callable:
 
             return compos(*args, **kwargs)
 
-        new_fn.handle_mixed_functions = True
+        new_fn.handle_mixed_function = True
         return new_fn
 
     return inner_function
