@@ -65,15 +65,21 @@ def nanmean(input, dim=None, keepdim=False, *, dtype=None, out=None):
 @to_ivy_arrays_and_back
 def median(input, dim=None, keepdim=False, *, out=None):
     if dim is None:
+        if ivy.any(input.isnan()):
+            return ivy.nan
         input = ivy.reshape(input, (-1,))
         sorted_input = ivy.sort(input)
-        return sorted_input[(sorted_input.shape[0] - 1) // 2]
+        result = sorted_input[(sorted_input.shape[0] - 1) // 2]
+        return result
 
     median_tuple = namedtuple("median", ["values", "indices"])
 
     if input.ndim == 0:
         result = median_tuple(input, ivy.array(0))
     else:
+        nan_mask = ivy.isnan(input)
+        input[nan_mask] = 0
+
         sorted_indices = ivy.argsort(input, axis=dim)
         median_indices = ivy.gather(
             sorted_indices, (sorted_indices.shape[dim] - 1) // 2, axis=dim
@@ -81,6 +87,8 @@ def median(input, dim=None, keepdim=False, *, out=None):
         median_values = ivy.take_along_axis(
             input, ivy.expand_dims(median_indices, axis=dim), dim
         ).squeeze(dim)
+
+        median_values[nan_mask.sum(axis=dim) > 0] = ivy.nan
 
         if keepdim:
             median_values = ivy.expand_dims(median_values, axis=dim)
