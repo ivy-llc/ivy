@@ -31,7 +31,7 @@
           <DockerVolumeBindingImpl>
             <option name="containerPath" value="/ivy" />
             <option name="editable" value="true" />
-            <option name="hostPath" value="$PROJECT_DIR$" />
+            <option name="hostPath" value="$PROJECT_DIR$/../../../SHARK/Desktop/ivy" />
             <option name="readOnly" value="false" />
           </DockerVolumeBindingImpl>
         </list>
