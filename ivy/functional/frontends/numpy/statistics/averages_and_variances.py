@@ -408,3 +408,33 @@ def nanmedian(
         a, axis=axis, keepdims=keepdims, out=out, overwrite_input=overwrite_input
     )
     return ret
+
+@handle_numpy_out
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+def nanquantile(arr,
+    q ,
+    axis=None,
+    out=None,
+    overwrite_input=False,
+    method='linear',
+    interpolation= None,
+    keepdims=False,
+    ):
+    if interpolation is not None:
+        if method != "linear":
+            raise ValueError(
+                "Cannot specify both method and interpolation parameters"
+            )
+    else:
+        interpolation = method
+    arr=ivy.array(arr)
+    arrofarrwithoutnan=[]
+    for i in arr:
+        arrwithoutnan = []
+        for j in i:
+            if not ivy.isnan(j):
+                arrwithoutnan.append(j)
+        arrofarrwithoutnan.append(arrwithoutnan)
+    arrofarrwithoutnan=ivy.array(arrofarrwithoutnan)
+    return ivy.quantile(arrofarrwithoutnan,q,axis,keepdims,interpolation,out)
