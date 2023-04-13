@@ -196,7 +196,19 @@ def solve_triangular(
         a = np.tril(a)
     else:
         a = np.triu(a)
-    return (np.linalg.solve(a, b)).T
+
+    # Add a small value to the diagonal elements of a to ensure non-singularity
+    eps = np.finfo(a.dtype).eps
+    a = np.where(a != 0, a, eps)
+
+    # Solve the linear system
+    x = np.linalg.solve(a, b)
+
+    # Set the solution to zero for rows of a where all elements are zero
+    mask = np.any(a != 0, axis=1)
+    x[~mask] = 0
+
+    return x
 
 
 solve_triangular.support_native_out = False
