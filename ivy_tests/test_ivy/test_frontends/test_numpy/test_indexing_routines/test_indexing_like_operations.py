@@ -272,3 +272,36 @@ def test_numpy_fill_diagonal(
         val=val,
         wrap=wrap,
     )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.choose",
+    dtype_x_indices_axis=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("numeric"),
+        indices_dtypes=["int32", "int64"],
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+        indices_same_dims=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_numpy_choose(
+    *,
+    dtype_x_indices_axis,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtypes, choices, indices, _ = dtype_x_indices_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        choices=choices,
+        indices=indices,
+    )

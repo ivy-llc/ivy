@@ -80,3 +80,27 @@ def fill_diagonal(a, val, wrap=False):
     a = ivy.reshape(a, a.size)
     a[:end:step] = val
     a = ivy.reshape(a, shape)
+
+
+@to_ivy_arrays_and_back
+def choose(indexes, choices, mode='raise'):
+
+    indexes = ivy.asarray(indexes)
+    choices = [ivy.asarray(choice) for choice in choices]
+    if not choices:
+        raise ValueError("choices must not be empty")
+    if not ivy.all(ivy.array([c.shape for c in choices]) == choices[0].shape):
+        raise ValueError("All arrays in choices must have the same shape")
+    if not (indexes >= 0).all() and mode == 'raise':
+        raise ValueError("indexes must be non-negative when mode is 'raise'")
+    if mode not in ('raise', 'wrap', 'clip'):
+        raise ValueError("Invalid mode '%s'" % mode)
+    if mode == 'raise' and (indexes >= len(choices)).any():
+        raise ValueError("indexes out of bounds")
+
+    # Choose elements
+    if mode == 'wrap':
+        indexes = ivy.mod(indexes, len(choices))
+    elif mode == 'clip':
+        indexes = ivy.clip(indexes, 0, len(choices) - 1)
+    return ivy.choose(indexes, choices)
