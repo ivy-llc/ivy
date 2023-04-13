@@ -46,6 +46,8 @@ def _pad_before_conv(x, filters, strides, padding, dims, dilations):
         pad_list[::2] = pad_list_top
         pad_list[1::2] = pad_list_bot
     else:
+        if isinstance(padding, int):
+            padding = [(padding, padding)] * dims
         pad_list = [item for sublist in padding for item in sublist[::-1]][::-1]
     return torch.nn.functional.pad(x, pad_list)
 
@@ -100,7 +102,7 @@ def conv1d(
     x: torch.Tensor,
     filters: torch.Tensor,
     strides: Union[int, Tuple[int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NWC",
@@ -173,7 +175,7 @@ def conv2d(
     x: torch.Tensor,
     filters: torch.Tensor,
     strides: Union[int, Tuple[int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NHWC",
@@ -254,7 +256,7 @@ def depthwise_conv2d(
     x: torch.Tensor,
     filters: torch.Tensor,
     strides: Union[int, Tuple[int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NHWC",
@@ -287,7 +289,7 @@ def conv3d(
     x: torch.Tensor,
     filters: torch.Tensor,
     strides: Union[int, Tuple[int, int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NDHWC",
@@ -357,7 +359,7 @@ def conv_general_dilated(
     x: torch.Tensor,
     filters: torch.Tensor,
     strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     dims: int = 2,

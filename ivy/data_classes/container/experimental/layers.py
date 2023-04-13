@@ -426,6 +426,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         /,
         *,
         data_format: str = "NWC",
+        count_include_pad: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -450,6 +451,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
             indicating the per-dimension paddings.
         data_format
             NWC" or "NCW". Defaults to "NWC".
+        count_include_pad
+            Whether to include padding in the averaging calculation.
         out
             optional output array, for writing the result to.
 
@@ -478,6 +481,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
             strides,
             padding,
             data_format=data_format,
+            count_include_pad=count_include_pad,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -493,6 +497,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         /,
         *,
         data_format: str = "NWC",
+        count_include_pad: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -517,6 +522,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
             indicating the per-dimension paddings.
         data_format
             NWC" or "NCW". Defaults to "NWC".
+        count_include_pad
+            Whether to include padding in the averaging calculation.
         out
             optional output array, for writing the result to.
 
@@ -544,6 +551,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
             strides,
             padding,
             data_format=data_format,
+            count_include_pad=count_include_pad,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -560,6 +568,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         /,
         *,
         data_format: str = "NHWC",
+        count_include_pad: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -583,6 +592,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
             the per-dimension paddings.
         data_format
             "NHWC" or "NCHW". Defaults to "NHWC".
+        count_include_pad
+            Whether to include padding in the averaging calculation.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -610,6 +621,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
             strides,
             padding,
             data_format=data_format,
+            count_include_pad=count_include_pad,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -625,6 +637,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         /,
         *,
         data_format: str = "NHWC",
+        count_include_pad: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -648,6 +661,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
             the per-dimension paddings.
         data_format
             "NHWC" or "NCHW". Defaults to "NHWC".
+        count_include_pad
+            Whether to include padding in the averaging calculation.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -674,6 +689,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
             strides,
             padding,
             data_format=data_format,
+            count_include_pad=count_include_pad,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -690,6 +706,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         /,
         *,
         data_format: str = "NDHWC",
+        count_include_pad: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -713,6 +730,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
             the per-dimension paddings.
         data_format
             NDHWC" or "NCDHW". Defaults to "NDHWC".
+        count_include_pad
+            Whether to include padding in the averaging calculation.
         out
             optional output array, for writing the result to. It must
             have a shape that the inputs broadcast to.
@@ -743,6 +762,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
             strides,
             padding,
             data_format=data_format,
+            count_include_pad=count_include_pad,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -758,6 +778,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         /,
         *,
         data_format: str = "NDHWC",
+        count_include_pad: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -781,6 +802,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
             the per-dimension paddings.
         data_format
             NDHWC" or "NCDHW". Defaults to "NDHWC".
+        count_include_pad
+            Whether to include padding in the averaging calculation.
         out
             optional output array, for writing the result to. It must
             have a shape that the inputs broadcast to.
@@ -810,6 +833,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
             strides,
             padding,
             data_format=data_format,
+            count_include_pad=count_include_pad,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

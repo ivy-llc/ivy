@@ -389,7 +389,7 @@ def handle_view(fn: Callable) -> Callable:
 
     @functools.wraps(fn)
     def new_fn(*args, copy=None, **kwargs):
-        ret = fn(*args, **kwargs)
+        ret = fn(*args, copy=copy, **kwargs)
         if copy or ivy.backend in ("numpy", "torch") or not ivy.is_ivy_array(args[0]):
             return ret
         original = args[0]
@@ -1004,7 +1004,7 @@ class with_unsupported_dtypes(contextlib.ContextDecorator):
             )(func)
 
     def __enter__(self):
-        self.globals = globals_getter_func().copy()  # global snapshot baby
+        self.globals = globals_getter_func().copy()  # global snapshot
 
     def __exit__(self, *exec):
         new_globals = set(globals_getter_func().keys())
@@ -1040,7 +1040,7 @@ class with_supported_dtypes(contextlib.ContextDecorator):
             )(func)
 
     def __enter__(self):
-        self.globals = globals_getter_func().copy()  # global snapshot baby
+        self.globals = globals_getter_func().copy()  # global snapshot
 
     def __exit__(self, *exec):
         new_globals = set(globals_getter_func().keys())
@@ -1076,7 +1076,7 @@ class with_unsupported_devices(contextlib.ContextDecorator):
             )(func)
 
     def __enter__(self):
-        self.globals = globals_getter_func().copy()  # global snapshot baby
+        self.globals = globals_getter_func().copy()  # global snapshot
 
     def __exit__(self, *exec):
         new_globals = set(globals_getter_func().keys())
@@ -1112,7 +1112,7 @@ class with_supported_devices(contextlib.ContextDecorator):
             )(func)
 
     def __enter__(self):
-        self.globals = globals_getter_func().copy()  # global snapshot baby
+        self.globals = globals_getter_func().copy()  # global snapshot
 
     def __exit__(self, *exec):
         new_globals = set(globals_getter_func().keys())
@@ -1173,7 +1173,7 @@ class with_unsupported_device_and_dtypes(contextlib.ContextDecorator):
 
     def __enter__(self):
 
-        self.globals = globals_getter_func().copy()  # global snapshot baby
+        self.globals = globals_getter_func().copy()  # global snapshot
 
     def __exit__(self, *exec):
         new_globals = set(globals_getter_func().keys())
@@ -1233,7 +1233,7 @@ class with_supported_device_and_dtypes(contextlib.ContextDecorator):
             )(func)
 
     def __enter__(self):
-        self.globals = globals_getter_func().copy()  # global snapshot baby
+        self.globals = globals_getter_func().copy()  # global snapshot
 
     def __exit__(self, *exec):
         new_globals = set(globals_getter_func().keys())
@@ -1261,7 +1261,7 @@ class override(contextlib.ContextDecorator):
             return func
 
     def __enter__(self):
-        self.globals = globals_getter_func().copy()  # global snapshot baby
+        self.globals = globals_getter_func().copy()  # global snapshot
 
     def __exit__(self, *exec):
         new_globals = set(globals().keys())

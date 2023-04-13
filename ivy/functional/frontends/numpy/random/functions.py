@@ -93,5 +93,11 @@ def standard_normal(size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
+def standard_gamma(shape, size=None):
+    return ivy.gamma(shape, 1.0, shape=size, dtype="float64")
+    
+  
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def standard_exponential(beta):
     return ivy.gamma(1.0, beta, dtype="float64")
