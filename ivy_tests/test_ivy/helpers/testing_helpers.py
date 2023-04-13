@@ -11,7 +11,7 @@ from hypothesis import given, strategies as st
 import ivy
 import ivy.functional.frontends.numpy as np_frontend
 from .hypothesis_helpers import number_helpers as nh
-from .globals import TestData
+from .globals import TestData, FrontendTestData
 from . import test_parameter_flags as pf
 from ivy_tests.test_ivy.helpers.test_parameter_flags import (
     BuiltInstanceStrategy,
@@ -245,6 +245,50 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
     return supported_device_dtypes
 
 
+def _get_frontend_supported_devices_dtypes(frontend: str, fn_name: str, fn_module: str):
+    """
+    Get supported devices and data types for a function in Ivy Frontends API
+    Parameters
+    ----------
+    frontend
+        Name of the frontend framework
+
+    fn_name
+        Name of the function
+
+    fn_module
+        Full import path of the function module
+
+    Returns
+    -------
+    Returns a dictonary containing supported device types and its supported data types
+    for the function
+    """
+    # TODO this function currently doesn't return "Specific" function dtypes, but
+    # instead returns a dictionary this matches the backend device_and_dtypes structure
+    supported_device_dtypes = {}
+
+    frontend = importlib.import_module(
+        f"ivy_tests.test_ivy.test_frontends.config.{frontend}"
+    )
+    devices_and_dtypes = {}
+    for device in frontend.valid_devices:
+        devices_and_dtypes[device] = frontend.valid_dtypes
+    try:
+        # Issue with bfloat16 and tensorflow
+        if "bfloat16" in devices_and_dtypes["gpu"]:
+            tmp = list(devices_and_dtypes["gpu"])
+            tmp.remove("bfloat16")
+            devices_and_dtypes["gpu"] = tuple(tmp)
+    except KeyError:
+        pass
+    for device in devices_and_dtypes.keys():
+        supported_device_dtypes[device] = _partition_dtypes_into_kinds(
+            frontend, devices_and_dtypes[device]
+        )
+    return supported_device_dtypes
+
+
 def _partition_dtypes_into_kinds(framework, dtypes):
     partitioned_dtypes = {}
     for kind in _dtype_kind_keys:
@@ -424,6 +468,7 @@ def handle_frontend_test(
         A search strategy that generates a list of boolean flags for array inputs to
         be frontend array
     """
+    frontend = fn_tree.partition(".")[0]
     fn_tree = "ivy.functional.frontends." + fn_tree
     if aliases is not None:
         for i in range(len(aliases)):
@@ -447,6 +492,9 @@ def handle_frontend_test(
     def test_wrapper(test_fn):
         callable_fn, fn_name, fn_mod = _import_fn(fn_tree)
         supported_device_dtypes = _get_supported_devices_dtypes(fn_name, fn_mod)
+        frontend_supported_device_dtypes = _get_frontend_supported_devices_dtypes(
+            frontend, fn_name, fn_mod
+        )
 
         # If a test is not a Hypothesis test, we only set the test global data
         if is_hypothesis_test:
@@ -475,11 +523,12 @@ def handle_frontend_test(
         else:
             wrapped_test = test_fn
 
-        wrapped_test.test_data = TestData(
+        wrapped_test.test_data = FrontendTestData(
             test_fn=wrapped_test,
             fn_tree=fn_tree,
             fn_name=fn_name,
             supported_device_dtypes=supported_device_dtypes,
+            frontend_supported_device_dtypes=frontend_supported_device_dtypes,
         )
 
         return wrapped_test
@@ -635,6 +684,7 @@ def handle_frontend_method(
     method_name
         Name of the method
     """
+    frontend = init_tree.partition(".")[0]
     split_index = init_tree.rfind(".")
     framework_init_module = init_tree[:split_index]
     ivy_init_module = f"ivy.functional.frontends.{init_tree[:split_index]}"
@@ -663,6 +713,10 @@ def handle_frontend_method(
     def test_wrapper(test_fn):
         supported_device_dtypes = _get_method_supported_devices_dtypes(
             method_name, class_module, class_name
+        )
+
+        frontend_supported_device_dtypes = _get_frontend_supported_devices_dtypes(
+            frontend, "", ""
         )
 
         if is_hypothesis_test:
@@ -716,11 +770,12 @@ def handle_frontend_method(
         else:
             wrapped_test = test_fn
 
-        wrapped_test.test_data = TestData(
+        wrapped_test.test_data = FrontendTestData(
             test_fn=wrapped_test,
             fn_tree=f"{init_tree}.{method_name}",
             fn_name=method_name,
             supported_device_dtypes=supported_device_dtypes,
+            frontend_supported_device_dtypes=frontend_supported_device_dtypes,
             is_method=[method_name, class_tree, split_index],
         )
 

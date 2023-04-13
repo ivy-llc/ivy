@@ -38,6 +38,7 @@ _Notsetval = object()
 CURRENT_GROUND_TRUTH_BACKEND: callable = _Notsetval
 CURRENT_BACKEND: callable = _Notsetval
 CURRENT_FRONTEND: callable = _Notsetval
+CURRENT_FRONTEND_CONFIG = _Notsetval
 CURRENT_RUNNING_TEST = _Notsetval
 CURRENT_DEVICE = _Notsetval
 CURRENT_DEVICE_STRIPPED = _Notsetval
@@ -50,6 +51,16 @@ class TestData:
     fn_tree: str
     fn_name: str
     supported_device_dtypes: dict = None
+    is_method: bool = False
+
+
+@dataclass(frozen=True)  # ToDo use kw_only=True when version is updated
+class FrontendTestData:
+    test_fn: callable
+    fn_tree: str
+    fn_name: str
+    supported_device_dtypes: dict = None
+    frontend_supported_device_dtypes: dict = None
     is_method: bool = False
 
 
@@ -176,7 +187,9 @@ def teardown_api_test():
     _unset_ground_truth_backend()
 
 
-def setup_frontend_test(test_data: TestData, frontend: str, backend: str, device: str):
+def setup_frontend_test(
+    test_data: FrontendTestData, frontend: str, backend: str, device: str
+):
     _set_test_data(test_data)
     _set_frontend(frontend)
     _set_backend(backend)
@@ -200,8 +213,12 @@ def _set_test_data(test_data: TestData):
 def _set_frontend(framework: str):
     global CURRENT_FRONTEND
     global CURRENT_FRONTEND_STR
-    if CURRENT_FRONTEND is not _Notsetval:
+    global CURRENT_FRONTEND_CONFIG
+    if CURRENT_FRONTEND is not _Notsetval or CURRENT_FRONTEND_CONFIG is not _Notsetval:
         raise InterruptedTest(CURRENT_RUNNING_TEST)
+    CURRENT_FRONTEND_CONFIG = importlib.import_module(
+        f"ivy_tests.test_ivy.test_frontends.config.{framework}"
+    )
     if isinstance(framework, list):
         CURRENT_FRONTEND = FWS_DICT[framework[0].split("/")[0]]
         CURRENT_FRONTEND_STR = framework
@@ -246,6 +263,8 @@ def _unset_test_data():
 
 def _unset_frontend():
     global CURRENT_FRONTEND
+    global CURRENT_FRONTEND_CONFIG
+    CURRENT_FRONTEND_CONFIG = _Notsetval
     CURRENT_FRONTEND = _Notsetval
 
 

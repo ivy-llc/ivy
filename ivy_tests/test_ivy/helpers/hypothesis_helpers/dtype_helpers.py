@@ -30,8 +30,14 @@ _dtype_kind_keys = {
 }
 
 
-def _get_fn_dtypes(framework, kind="valid"):
-    return test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[framework.backend][
+def _get_backend_fn_dtypes(backend, kind="valid"):
+    return test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[backend.backend][
+        test_globals.CURRENT_DEVICE_STRIPPED
+    ][kind]
+
+
+def _get_frontend_dtypes(kind="valid"):
+    return test_globals.CURRENT_RUNNING_TEST.frontend_supported_device_dtypes[
         test_globals.CURRENT_DEVICE_STRIPPED
     ][kind]
 
@@ -106,7 +112,7 @@ def get_dtypes(
         dtype string
     """
     if prune_function:
-        retrieval_fn = _get_fn_dtypes
+        retrieval_fn = _get_backend_fn_dtypes
         if test_globals.CURRENT_RUNNING_TEST is not test_globals._Notsetval:
             valid_dtypes = set(retrieval_fn(test_globals.CURRENT_BACKEND(), kind))
         else:
@@ -179,7 +185,12 @@ def get_dtypes(
             valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
 
         else:
-            frontend_dtypes = retrieval_fn(test_globals.CURRENT_FRONTEND(), kind)
+            if prune_function:
+                frontend_dtypes = _get_frontend_dtypes(kind)
+            else:
+                frontend_dtypes = _get_type_dict(
+                    test_globals.CURRENT_FRONTEND_CONFIG, kind
+                )
             valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
 
     # Make sure we return dtypes that are compatiable with ground truth backend
