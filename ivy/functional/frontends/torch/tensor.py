@@ -280,6 +280,10 @@ class Tensor:
         self._ivy_array = self.abs().ivy_array
         return self
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def arccosh(self):
+        return torch_frontend.arccosh(self._ivy_array)
+
     def bitwise_not(self, *, out=None):
         return torch_frontend.bitwise_not(self._ivy_array)
 
