@@ -584,6 +584,11 @@ def softmax(logits, axis=-1):
 
 
 @to_ivy_arrays_and_back
+def softplus(features, name=None):
+    return ivy.softplus(features)
+
+
+@to_ivy_arrays_and_back
 def xlogy(x, y, name=None):
     return ivy.xlogy(x, y)
 
