@@ -699,7 +699,7 @@ def test_tensorflow_Atanh(  # NOQA
 # AvgPool3d
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.AvgPool3D",
-    dtype_and_x=(ivy.Array, ivy.random_normal((1, 4, 4, 4, 3))),
+    dtype_and_x=(ivy.Array, ivy.random_normal(shape=(1, 4, 4, 4, 3))),
 )
 def test_tensorflow_avg_pool_3d(
     *,
