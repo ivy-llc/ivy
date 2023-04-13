@@ -1,11 +1,12 @@
 # global
 import numpy as np
-from typing import Union, Optional, Sequence
+from typing import Union, Optional, Sequence,Tuple
 
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
+from ivy.functional.backends.numpy import general
 from . import backend_version
 
 
@@ -243,6 +244,44 @@ def cumsum(
 
 
 cumsum.support_native_out = True
+
+
+def cummax(
+        x: np.ndarray,
+        axis: int = 0,
+        exclusive: bool = False,
+        reverse: bool = False,
+        *,
+        input_dtypes: Optional[np.dtype] = None,
+        out: Optional[np.ndarray] = None,
+) -> Tuple[np.ndarray, np.ndarray]:
+    if exclusive or reverse:
+        if exclusive and reverse:
+            x = np.cummax(np.flip(x, axis=axis), axis=axis)
+            x = np.swapaxes(x, axis, -1)
+            x = np.concatenate((np.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+            x = np.swapaxes(x, axis, -1)
+            res = np.flip(x, axis=axis)
+        elif exclusive:
+            x = np.swapaxes(x, axis, -1)
+            x = np.concatenate((np.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+            x = np.cummax(x, -1)
+            res = np.swapaxes(x, axis, -1)
+        elif reverse:
+            x = np.cummax(np.flip(x, axis=axis), axis=axis)
+            res = np.flip(x, axis=axis)
+        indices = general.find_cummax_indices(res, axis=axis)
+        return res,indices
+
+    # X=x.tolist()
+    # ret=pd.DataFrame(X).cummax() if axis==0 and len(x.shape)==1 else pd.DataFrame(X).T.cummax()
+
+    indices = general.find_cummax_indices(x, axis=axis)
+
+    return np.maximum.accumulate(x, axis=axis, dtype=x.dtype), indices
+
+
+cummax.support_native_out = True
 
 
 @_scalar_output_to_0d_array

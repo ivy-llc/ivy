@@ -9,6 +9,7 @@ from operator import mul
 from functools import reduce
 from typing import Iterable, Optional, Union, Sequence, Callable
 import multiprocessing as _multiprocessing
+from jaxlib.xla_extension import ArrayImpl
 
 
 # necessary import, because stateful imports jax as soon as you import ivy, however,
@@ -166,6 +167,36 @@ def gather_nd(
         result = jnp.array(result)
         result = result.reshape([*params.shape[0:batch_dims], *result.shape[1:]])
     return _to_device(result)
+
+
+def find_cummax_indices(
+        x: JaxArray,
+        axis: int = 0,
+) -> JaxArray:
+    indice, indices = [], []
+
+    if type(x[0]) == ArrayImpl and len(x[0].shape)>=1:
+        if axis == 1:
+            for ret1 in x:
+                indices.append(
+                    [n := idx if idx == 0 else n if ret1[n] > y else (n := idx) for idx, y in enumerate(ret1)])
+        else:
+            n1 = {}
+            for index, ret1 in enumerate(x):
+                indice = []
+                if type(ret1) == ArrayImpl and len(x[0].shape)>=1:
+                    for idx1, x1 in enumerate(ret1):
+                        if index == 0 or x[index][idx1] >= x[n1[idx1]][idx1]:
+                            n1[idx1] = index
+                            indice.append(index)
+                        else:
+                            indice.append(n1[idx1])
+                else:
+                    indice.append(index)
+                indices.append(indice)
+    else:
+        indices = [n := idx if idx == 0 else n if x[n] > y else (n := idx) for idx, y in enumerate(x)]
+    return jnp.asarray(indices)
 
 
 def get_num_dims(x: JaxArray, /, *, as_array: bool = False) -> Union[JaxArray, int]:

@@ -282,6 +282,20 @@ def cumsum(
             return ivy.flip(x, axis=axis).cast(dtype)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
+def cummax(
+    x: paddle.Tensor,
+    axis: int = 0,
+    exclusive: bool = False,
+    reverse: bool = False,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    raise IvyNotImplementedException()
+
+
 def einsum(
     equation: str,
     *operands: paddle.Tensor,

@@ -8,6 +8,7 @@ import ivy
 from ivy.functional.ivy.statistical import _get_promoted_type_of_operands
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
+from ivy.utils.exceptions import IvyNotImplementedException
 
 
 # Array API Standard #
@@ -198,6 +199,17 @@ def cumsum(
         dtype = ivy.as_native_dtype(dtype)
     x = tf.cast(x, dtype)
     return tf.math.cumsum(x, axis, exclusive, reverse)
+
+
+def cummax(
+    x: Union[tf.Tensor, tf.Variable],
+    axis: int = 0,
+    exclusive: bool = False,
+    reverse: bool = False,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    raise IvyNotImplementedException()
 
 
 def einsum(

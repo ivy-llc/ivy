@@ -1,8 +1,8 @@
 # global
+from torch import Tensor
 
 torch_scatter = None
-from typing import Union, Optional, Sequence
-
+from typing import Union, Optional, Sequence,Tuple
 
 import torch
 
@@ -310,6 +310,46 @@ def cumsum(
 
 
 cumsum.support_native_out = True
+
+
+# Function does support uint8, but allowing support for unsigned will cause
+# the function to break the upcasting rule defined in the Array API Standard
+@with_unsupported_dtypes(
+    {"1.11.0 and below": ("uint8", "bfloat16", "float16")},
+    backend_version,
+)
+def cummax(
+    x: torch.Tensor,
+    axis: int = 0,
+    exclusive: bool = False,
+    reverse: bool = False,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> Tuple[torch.Tensor, torch.Tensor]:
+
+    if exclusive or reverse:
+        if exclusive and reverse:
+            x1,x2 = torch.cummax(torch.flip(x, dims=(axis,)), axis)
+            x1,x2 = torch.transpose(x1, axis, -1),torch.transpose(x2, axis, -1)
+            x1,x2 = torch.concat((torch.zeros_like(x1[..., -1:]), x1[..., :-1]), -1),torch.concat((torch.zeros_like(x2[..., -1:]), x2[..., :-1]), -1)
+            x1,x2 = torch.transpose(x1, axis, -1),torch.transpose(x2, axis, -1)
+            res1,res2 = torch.flip(x1, dims=(axis,)),torch.flip(x2, dims=(axis,))
+        elif exclusive:
+            x = torch.transpose(x, axis, -1)
+            x = torch.cat((torch.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+            x1,x2 = torch.cummax(x, -1)
+            res1,res2 = torch.transpose(x1, axis, -1),torch.transpose(x2, axis, -1)
+        else:
+            x1,x2 = torch.cummax(torch.flip(x, dims=(axis,)), axis)
+            res1,res2 = torch.flip(x1, dims=(axis,)),torch.flip(x2, dims=(axis,))
+        if ivy.exists(out):
+            return ivy.inplace_update(out, res1),ivy.inplace_update(out, res2)
+        return res1,res2
+    ret=torch.cummax(x, axis, out=out)
+    return ret
+
+
+cummax.support_native_out = True
 
 
 def einsum(

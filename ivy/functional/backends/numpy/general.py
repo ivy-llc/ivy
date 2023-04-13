@@ -163,6 +163,34 @@ def inplace_decrement(
     return x
 
 
+def find_cummax_indices(
+        x: np.ndarray,
+        axis: int = 0,
+) -> np.ndarray:
+    indice, indices = [], []
+
+    if type(x[0]) == np.ndarray:
+        if axis == 1:
+            for ret1 in x:
+                indices.append(
+                    [n := idx if idx == 0 else n if ret1[n] > y else (n := idx) for idx, y in enumerate(ret1)])
+        else:
+            n1 = {}
+            for index, ret1 in enumerate(x):
+                indice = []
+                for idx1, x1 in enumerate(ret1):
+                    if index == 0 or x[index][idx1] >= x[n1[idx1]][idx1]:
+                        n1[idx1] = index
+                        indice.append(index)
+                    else:
+                        indice.append(n1[idx1])
+                indices.append(indice)
+    else:
+        indices = [n := idx if idx == 0 else n if x[n] > y else (n := idx) for idx, y in enumerate(x)]
+
+    return np.array(indices)
+
+
 def inplace_increment(
     x: Union[ivy.Array, np.ndarray], val: Union[ivy.Array, np.ndarray]
 ) -> ivy.Array:
