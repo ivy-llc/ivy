@@ -30,6 +30,14 @@ def shuffle(value, seed=None, name=None):
     return ivy.shuffle(value, seed=seed)
 
 
+@with_unsupported_dtypes(
+    {"2.9.0 and below": ("int8", "int16", "int32", "int64", "unsigned")}, "tensorflow"
+)
+@to_ivy_arrays_and_back
+def poisson(shape, lam, dtype=ivy.float32, seed=None, name=None):
+    return ivy.poisson(lam, shape=shape, dtype=dtype, seed=seed)
+
+
 @to_ivy_arrays_and_back
 def stateless_uniform(
     shape, seed, minval=0, maxval=None, dtype=ivy.float32, name=None, alg="auto_select"
