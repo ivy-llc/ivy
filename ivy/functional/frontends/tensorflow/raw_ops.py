@@ -268,9 +268,7 @@ def Log(*, x, name="Log"):
     return ivy.log(x)
 
 
-@to_ivy_arrays_and_back
-def Log1p(*, x, name="Log1p"):
-    return ivy.log1p(x)
+Log1p = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.log1p))
 
 
 LogicalOr = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.logical_or))
