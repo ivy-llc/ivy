@@ -127,10 +127,5 @@ def randn(
     "torch",
 )
 @to_ivy_arrays_and_back
-def bernoulli(
-    input, 
-    *,
-    generator=None,
-    out=None
-):
+def bernoulli(input, *, generator=None, out=None):
     return ivy.bernoulli(input, out=out)

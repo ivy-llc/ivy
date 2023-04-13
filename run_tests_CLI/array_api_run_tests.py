@@ -25,14 +25,14 @@ def get_submodule(test_path):
 
 
 def update_individual_test_results(
-        collection,
-        id,
-        submod,
-        backend,
-        test,
-        result,
-        backend_version=None,
-        frontend_version=None,
+    collection,
+    id,
+    submod,
+    backend,
+    test,
+    result,
+    backend_version=None,
+    frontend_version=None,
 ):
     key = submod + "." + backend
     if backend_version is not None:
@@ -43,7 +43,9 @@ def update_individual_test_results(
         key += "." + frontend_version
     key += "." + test
     collection.update_one(
-        {"_id": id}, {"$set": {key: result}}, upsert=True,
+        {"_id": id},
+        {"$set": {key: result}},
+        upsert=True,
     )
 
 
@@ -91,7 +93,13 @@ def main():
             else:
                 res = make_clickable(run_id, result_config["success"])
             update_individual_test_results(
-                db[coll[0]], coll[1], submod, backend, test_fn, res, "latest-stable",
+                db[coll[0]],
+                coll[1],
+                submod,
+                backend,
+                test_fn,
+                res,
+                "latest-stable",
             )
     if failed:
         exit(1)
