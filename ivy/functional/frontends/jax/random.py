@@ -60,5 +60,5 @@ def beta(key, a, b, shape=None, dtype=None):
 )
 def dirichlet(key, alpha, shape=None, dtype="float32"):
     seed = _get_seed(key)
-    alpha = ivy.array(alpha, dtype=dtype)
+    alpha = ivy.astype(alpha, dtype)
     return ivy.dirichlet(alpha, size=shape, dtype=dtype, seed=seed)
