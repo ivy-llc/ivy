@@ -405,6 +405,7 @@ There are a number of such shell scripts in `ivy/run_tests_CLI`_:
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/setting_up_testing/pycharm_run_array_api_tests.png?raw=true
   :width: 420
 
+
 **For Windows users:**
 
 For Windows users, you may need to specify that the shell scripts should be run by sh, which comes with Git. In the Terminal, prepend sh to the script commands like so:
