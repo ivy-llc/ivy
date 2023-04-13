@@ -515,6 +515,7 @@ def atan(x, name=None):
 def log(x, name=None):
     return ivy.log(x)
 
+
 @to_ivy_arrays_and_back
 def add_n(inputs, name=None):
     return ivy.sum(inputs, dtype=inputs.dtype, axis=0)
@@ -538,8 +539,4 @@ def cos(x, name=None):
 
 @to_ivy_arrays_and_back
 def sinh(x, name=None):
-<<<<<<< HEAD
     return ivy.sinh(x)
-=======
-    return ivy.sinh(x)
->>>>>>> parent of 3866c0d4f (implemented math mod function for tensorflow frontend)
