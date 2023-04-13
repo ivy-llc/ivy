@@ -92,16 +92,7 @@ def Atanh(*, x, name="Atanh"):
     return ivy.atanh(x)
 
 
-@to_ivy_arrays_and_back
-def AvgPool3D(
-    input,
-    ksize,
-    strides,
-    padding,
-    data_format="NDHWC",
-    name="AvgPool3D",
-):
-    return ivy.avg_pool3d(input, ksize, strides, padding, data_format=data_format)
+AvgPool3D = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.nn.avg_pool3d))
 
 
 @to_ivy_arrays_and_back
