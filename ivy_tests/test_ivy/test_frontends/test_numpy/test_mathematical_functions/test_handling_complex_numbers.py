@@ -89,7 +89,6 @@ def test_numpy_real(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float_and_complex"),
     ),
-    test_with_out=st.just(False),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
         fn_name="conj"
     ),
@@ -111,4 +110,3 @@ def test_numpy_conj(
         on_device=on_device,
         x=x[0],
     )
-    
