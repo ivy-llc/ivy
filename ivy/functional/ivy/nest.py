@@ -1231,14 +1231,14 @@ def nested_any(
                 return True
         if check_nests and fn(nest):
             return True
-    elif fn(nest):
-        return True
     elif check_attributes and hasattr(nest, "__dict__"):
         for k, v in nest.__dict__.items():
             if nested_any(
                 v, fn, check_nests, check_attributes, False, extra_nest_types
             ):
                 return True
+    elif fn(nest):
+        return True
     return False
 
 
