@@ -327,7 +327,7 @@ def _get_dtype_buffer_count_offset(draw):
     value = value.tobytes()
 
     offset = draw(helpers.ints(min_value=0, max_value=length - 1))
-    count = draw(helpers.ints(min_value=-2 ** 30, max_value=length - offset))
+    count = draw(helpers.ints(min_value=-(2**30), max_value=length - offset))
     if count == 0:
         count = -1
     offset = offset * np.dtype(dtype[0]).itemsize
@@ -363,4 +363,3 @@ def test_frombuffer(
         offset=offset,
         ground_truth_backend=ground_truth_backend,
     )
-    

@@ -76,6 +76,41 @@ def rand(
     )
 
 
+@with_supported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float32",
+            "float64",
+        )
+    },
+    "torch",
+)
+@to_ivy_arrays_and_back
+def normal(mean, std, *, generator=None, out=None):
+    return ivy.random_normal(mean=mean, std=std, out=out)
+    
+
+@to_ivy_arrays_and_back
+def rand_like(
+    input,
+    *,
+    dtype=None,
+    layout=None,
+    device=None,
+    requires_grad=False,
+    memory_format=False
+):
+    shape = input.shape
+    if not dtype:
+        dtype = input.dtype
+
+    return ivy.random_uniform(
+        shape=shape,
+        dtype=dtype,
+        device=device,
+    )
+
+
 @to_ivy_arrays_and_back
 def randn(
     size,
@@ -94,3 +129,17 @@ def randn(
         dtype=dtype,
         device=device,
     )
+
+
+@with_supported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float32",
+            "float64",
+        )
+    },
+    "torch",
+)
+@to_ivy_arrays_and_back
+def bernoulli(input, *, generator=None, out=None):
+    return ivy.bernoulli(input, out=out)

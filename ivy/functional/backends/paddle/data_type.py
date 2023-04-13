@@ -133,9 +133,7 @@ def broadcast_arrays(*arrays: paddle.Tensor) -> List[paddle.Tensor]:
         if len(arrays) > 2:
             with ivy.ArrayMode(False):
                 for i in range(2, len(arrays)):
-                    desired_shape = ivy.broadcast_shapes(
-                        [desired_shape, arrays[i].shape]
-                    )
+                    desired_shape = ivy.broadcast_shapes(desired_shape, arrays[i].shape)
     else:
         return [arrays[0]]
     result = []

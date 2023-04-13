@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union
+from typing import Optional, Union, Tuple
 
 # local
 import ivy
@@ -39,93 +39,151 @@ class _ArrayWithNormsExperimental(abc.ABC):
         """
         return ivy.l2_normalize(self, axis=axis, out=out)
 
-    def instance_norm(
-        self: ivy.Array,
+    def batch_norm(
+        self: Union[ivy.NativeArray, ivy.Array],
+        mean: Union[ivy.NativeArray, ivy.Array],
+        variance: Union[ivy.NativeArray, ivy.Array],
         /,
         *,
-        scale: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-        bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-        eps: float = 1e-05,
-        momentum: float = 0.1,
-        data_format: str = "NCHW",
-        running_mean: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-        running_stddev: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-        affine: bool = True,
-        track_running_stats: bool = False,
-        out: Optional[ivy.Array] = None,
-    ):
-        """Applies Instance Normalization over a 4D input along C dimension.
+        offset: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
+        scale: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
+        training: bool = False,
+        eps: float = 1e-5,
+        momentum: float = 1e-1,
+        out: Optional[Tuple[ivy.Array, ivy.Array, ivy.Array]] = None,
+    ) -> Tuple[ivy.Array, ivy.Array, ivy.Array]:
+        """
+        ivy.Array instance method variant of ivy.batch_norm. This method
+        simply wraps the function, and so the docstring for ivy.batch_norm
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
         self
-            Input array.
+            Input array of shape (N, *S, C), where N is the batch dimension,
+            *S corresponds to any number of spatial dimensions and
+             C corresponds to the channel dimension.
+        mean
+            Array used for input's normalization. If ``training=True``
+            then it must be one dimensional with size equal to the size of
+            channel dimension C. If ``training=False`` then it can be of any
+            shape broadcastble to the input shape.
+        variance
+            Array for the input's normalization. If ``training=True``
+            then it must be one dimensional with size equal to the size of
+            channel dimension C. If ``training=False`` then it can be of any shape
+            broadcastble to the input shape.
+        offset
+            An offset array. If present, will be added to the normalized input.
+            If ``training=True`` then it must be one dimensional with size equal
+            to the size of channel dimension C. If ``training=False`` then it can
+            be of any shape broadcastble to the input shape.
         scale
-            Scale parameter for the normalization.
-        bias
-            Bias parameter for the normalization.
+            A scale array. If present, the scale is applied to the normalized input.
+            If ``training=True`` then it must be one dimensional with size equal to
+            the size of channel dimension C. If ``training=False`` then it can be of
+            any shape broadcastble to the input shape.
+        training
+            If true, calculate and use the mean and variance of `x`. Otherwise, use the
+            provided `mean` and `variance`.
         eps
-            Small constant to avoid division by zero.
+            A small float number to avoid dividing by 0.
         momentum
-            Momentum parameter for running statistics
-        data_format
-            Format of the input data, either 'NCHW' or 'NHWC'.
-        running_mean
-            The running mean of the input array.
-        running_stddev
-            The running standard deviation of the input array.
-        affine
-            Whether to use affine transformation for the output.
-        track_running_stats
-            Whether to track the running statistics of the input array.
+             the value used for the running_mean and running_var computation.
+              Default value is 0.1.
         out
-            Optional output array, for writing the result to. It must
-            have a shape that the inputs broadcast to.
+            optional output array, for writing the result to.
+            Parameters
 
         Returns
         -------
         ret
-            The normalized array.
-            OR
-            The normalized array, Running mean, Running stddev
-
-        Examples
-        --------
-        With :class:`track_running_stats=False`:
-        ret : The normalized array.
-
-        >>> x = ivy.eye(3, 3).reshape((1, 3, 3, 1))
-        >>> ivy.instance_norm(x, scale=[2., 1, 0.5], bias=[2., 1, 0.5],
-        ...                   data_format='NCHW', affine=True,
-        ...                   track_running_stats=False)
-        ivy.array([[[[4.82836342],[0.58581817],[0.58581817]],
-                [[0.29290909],[2.41418171],[0.29290909]],
-                [[0.14645454],[0.14645454],[1.20709085]]]])
-
-        With :class:`track_running_stats=True`:
-        ret : The normalized array, Running mean, Running stddev.
-
-        >>> x = ivy.eye(3, 3).reshape((1, 3, 3, 1))
-        >>> ivy.instance_norm(x, scale=[2., 1, 0.5], bias=[2., 1, 0.5],
-        ...                   data_format='NCHW',affine=True,
-        ...                   track_running_stats=False)
-        (ivy.array([[[[4.82836342],[0.58581817],[0.58581817]],
-                [[0.29290909],[2.41418171],[0.29290909]],
-                [[0.14645454],[0.14645454],[1.20709085]]]]),
-         ivy.array([[[[0.30000001]],[[0.30000001]],[[0.30000001]]]]),
-         ivy.array([[[[0.52426404]],[[0.52426404]],[[0.52426404]]]]))
+             Tuple of arrays containing the
+             normalized input, running mean, and running variance.
         """
-        return ivy.instance_norm(
-            self,
+        return ivy.batch_norm(
+            self._data,
+            mean,
+            variance,
             scale=scale,
-            bias=bias,
+            offset=offset,
+            training=training,
             eps=eps,
             momentum=momentum,
-            data_format=data_format,
-            running_mean=running_mean,
-            running_stddev=running_stddev,
-            affine=affine,
-            track_running_stats=track_running_stats,
+            out=out,
+        )
+
+    def instance_norm(
+        self: Union[ivy.NativeArray, ivy.Array],
+        mean: Union[ivy.NativeArray, ivy.Array],
+        variance: Union[ivy.NativeArray, ivy.Array],
+        /,
+        *,
+        offset: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
+        scale: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
+        training: bool = False,
+        eps: float = 1e-5,
+        momentum: float = 1e-1,
+        out: Optional[Tuple[ivy.Array, ivy.Array, ivy.Array]] = None,
+    ) -> Tuple[ivy.Array, ivy.Array, ivy.Array]:
+        """
+        ivy.Array instance method variant of ivy.instance_norm. This method
+        simply wraps the function, and so the docstring for ivy.instance_norm
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array of shape (N, *S, C), where N is the batch dimension,
+            *S corresponds to any number of spatial dimensions and
+             C corresponds to the channel dimension.
+        mean
+            Mean array used for input's normalization. If ``training=True``
+            then it must be one dimensional with size equal to the size of
+            channel dimension C. If ``training=False`` then it can be of any
+            shape broadcastble to the input shape.
+        variance
+            Variance array for the input's normalization. If ``training=True``
+            then it must be one dimensional with size equal to the size of
+            channel dimension C. If ``training=False`` then it can be of any shape
+            broadcastble to the input shape.
+        offset
+            An offset array. If present, will be added to the normalized input.
+            If ``training=True`` then it must be one dimensional with size equal
+            to the size of channel dimension C. If ``training=False`` then it can
+            be of any shape broadcastble to the input shape.
+        scale
+            A scale array. If present, the scale is applied to the normalized input.
+            If ``training=True`` then it must be one dimensional with size equal to
+            the size of channel dimension C. If ``training=False`` then it can be of
+            any shape broadcastble to the input shape.
+        training
+            If true, calculate and use the mean and variance of `x`. Otherwise, use the
+            provided `mean` and `variance`.
+        eps
+            A small float number to avoid dividing by 0.
+        momentum
+             the value used for the running_mean and running_var computation.
+              Default value is 0.1.
+        out
+            optional output array, for writing the result to.
+            Parameters
+
+        Returns
+        -------
+        ret
+             Tuple of array containing
+              the normalized input, running mean, and running variance.
+        """
+        return ivy.instance_norm(
+            self._data,
+            mean,
+            variance,
+            scale=scale,
+            offset=offset,
+            training=training,
+            eps=eps,
+            momentum=momentum,
             out=out,
         )
 

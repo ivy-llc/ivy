@@ -16,7 +16,7 @@ class ndarray:
                 ivy.array(shape) if not isinstance(shape, ivy.Array) else shape
             )
         else:
-            self._ivy_array = ivy.empty(shape, dtype=dtype)
+            self._ivy_array = ivy.empty(shape=shape, dtype=dtype)
 
         ivy.utils.assertions.check_elem_in_list(
             order,
@@ -317,9 +317,6 @@ class ndarray:
     def view(self):
         return np_frontend.reshape(self._ivy_array, tuple(self.shape))
 
-    def choose(self, choices, /, *, out=None, mode="raise"):
-        return np_frontend.choose(self._ivy_array, choices, out=out, mode=mode)
-        
     def __add__(self, value, /):
         return np_frontend.add(self._ivy_array, value)
 
