@@ -35,7 +35,6 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
     handle_array_like_without_promotion,
-    inputs_to_ivy_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -1159,12 +1158,30 @@ def function_supported_devices(fn: Callable, recurse: bool = True) -> Tuple:
         "supported_devices and unsupported_devices attributes cannot both \
         exist in a particular backend",
     )
-    supported_devices = set(_get_devices(fn, complement=False))
-
-    if recurse:
-        supported_devices = ivy.functional.data_type._nested_get(
-            fn, supported_devices, set.intersection, function_supported_devices
-        )
+    if hasattr(fn, "mixed_function") and (
+        ivy.__dict__[fn.__name__] != fn or "backend" in fn.__module__
+    ):
+        primary_fn = fn if "backend" in fn.__module__ else ivy.__dict__[fn.__name__]
+        supported_devices = set(_get_devices(primary_fn, complement=False))
+        if hasattr(primary_fn, "handle_mixed_function"):
+            compos_fn = primary_fn.compos
+            supported_devices_compos = set(_get_devices(compos_fn, complement=False))
+            if recurse:
+                supported_devices_compos = ivy.functional.data_type._nested_get(
+                    compos_fn,
+                    supported_devices_compos,
+                    set.intersection,
+                    function_supported_devices,
+                )
+            supported_devices = set.intersection(
+                supported_devices, supported_devices_compos
+            )
+    else:
+        supported_devices = set(_get_devices(fn, complement=False))
+        if recurse:
+            supported_devices = ivy.functional.data_type._nested_get(
+                fn, supported_devices, set.intersection, function_supported_devices
+            )
 
     return tuple(supported_devices)
 
@@ -1197,12 +1214,30 @@ def function_unsupported_devices(fn: Callable, recurse: bool = True) -> Tuple:
         "supported_devices and unsupported_devices attributes cannot both \
         exist in a particular backend",
     )
-    unsupported_devices = set(_get_devices(fn, complement=True))
-
-    if recurse:
-        unsupported_devices = ivy.functional.data_type._nested_get(
-            fn, unsupported_devices, set.union, function_unsupported_devices
-        )
+    if hasattr(fn, "mixed_function") and (
+        ivy.__dict__[fn.__name__] != fn or "backend" in fn.__module__
+    ):
+        primary_fn = fn if "backend" in fn.__module__ else ivy.__dict__[fn.__name__]
+        unsupported_devices = set(_get_devices(primary_fn, complement=True))
+        if hasattr(primary_fn, "handle_mixed_function"):
+            compos_fn = primary_fn.compos
+            unsupported_devices_compos = set(_get_devices(compos_fn, complement=True))
+            if recurse:
+                unsupported_devices_compos = ivy.functional.data_type._nested_get(
+                    compos_fn,
+                    unsupported_devices_compos,
+                    set.union,
+                    function_unsupported_devices,
+                )
+            unsupported_devices = set.intersection(
+                unsupported_devices, unsupported_devices_compos
+            )
+    else:
+        unsupported_devices = set(_get_devices(fn, complement=True))
+        if recurse:
+            unsupported_devices = ivy.functional.data_type._nested_get(
+                fn, unsupported_devices, set.union, function_unsupported_devices
+            )
 
     return tuple(unsupported_devices)
 
