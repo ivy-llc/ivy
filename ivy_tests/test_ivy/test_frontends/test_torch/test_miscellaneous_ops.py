@@ -1292,3 +1292,40 @@ def test_torch_diag(
         input=values[0],
         diagonal=diagonal,
     )
+    
+ 
+@handle_frontend_test(
+    fn_tree="torch.bucketize",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shared_dtype=True,
+        min_num_dims=1,
+        max_num_dims=1,
+    ),
+    boundaries=st.lists(st.integers(1, 10), min_size=1, max_size=10)),
+    out_int32=st.booleans(),
+    right=st.booleans(),
+)
+def test_torch_bucketize(
+    dtype_and_x,
+    boundaries,
+    out_int32,
+    right,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes + ["int64"],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        boundaries=boundaries,
+        out_int32=out_int32,
+        right=right,
+        out=out,
+    )
