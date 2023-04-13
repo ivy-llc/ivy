@@ -91,7 +91,7 @@ def triu(m, k=0):
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def empty(shape, dtype=None):
-    return DeviceArray(ivy.empty(shape, dtype=dtype))
+    return DeviceArray(ivy.empty(shape=shape, dtype=dtype))
 
 
 @to_ivy_arrays_and_back

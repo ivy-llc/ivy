@@ -11,6 +11,7 @@ from typing import (
     List,
 )
 from numbers import Number
+import math
 import ivy
 from ivy.func_wrapper import (
     handle_out_argument,
@@ -1613,3 +1614,60 @@ def expand(
         Output Array
     """
     return ivy.current_backend(x).expand(x, shape, out=out, copy=copy)
+
+
+@inputs_to_ivy_arrays
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
+def as_strided(
+    x: Union[ivy.Array, ivy.NativeArray],
+    shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
+    strides: Sequence[int],
+    /,
+) -> ivy.Array:
+    """
+    Create a copy of the input array with the given shape and strides.
+
+    Parameters
+    ----------
+    x
+        Input Array.
+    shape
+        The shape of the new array.
+    strides
+        The strides of the new array (specified in bytes).
+
+    Returns
+    -------
+    ret
+        Output Array
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, 3, 4, 5, 6])
+    >>> ivy.as_strided(x, (4, 3), (8, 8))
+    ivy.array([[1, 2, 3],
+       [2, 3, 4],
+       [3, 4, 5],
+       [4, 5, 6]])
+    """
+    size = math.prod(shape)
+    itemsize = x.itemsize
+    buffer_size = size * itemsize
+
+    src = memoryview(ivy.to_numpy(x)).cast("b")
+    buffer = bytearray(buffer_size)
+    dst = memoryview(buffer).cast("b")
+
+    for index in ivy.ndindex(shape):
+        src_index = sum(index[i] * min(strides[i], itemsize) for i in range(len(shape)))
+        dst_index = sum(
+            index[i] * math.prod(shape[i + 1 :]) * itemsize for i in range(len(shape))
+        )
+        dst[dst_index : dst_index + itemsize] = src[src_index : src_index + itemsize]
+
+    return ivy.reshape(
+        ivy.frombuffer(buffer, dtype=x.dtype, count=size),
+        shape,
+    )

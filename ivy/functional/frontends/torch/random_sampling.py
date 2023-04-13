@@ -115,3 +115,17 @@ def randn(
         dtype=dtype,
         device=device,
     )
+
+
+@with_supported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float32",
+            "float64",
+        )
+    },
+    "torch",
+)
+@to_ivy_arrays_and_back
+def bernoulli(input, *, generator=None, out=None):
+    return ivy.bernoulli(input, out=out)
