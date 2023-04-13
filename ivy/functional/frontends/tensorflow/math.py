@@ -49,6 +49,19 @@ def asinh(x, name="asinh"):
     return ivy.asinh(x)
 
 
+@with_supported_dtypes(
+    {
+        "2.9.0 and below": (
+            "bfloat16",
+            "half",
+            "float",
+            "double",
+            "complex64",
+            "complex128",
+        )
+    },
+    "tensorflow",
+)
 @to_ivy_arrays_and_back
 def real(input, name=None):
     return ivy.real(input)
