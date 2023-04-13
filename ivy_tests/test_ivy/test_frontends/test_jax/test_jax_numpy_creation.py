@@ -802,7 +802,7 @@ def test_geomspace(
         indices_same_dims=True,
     ),
 )
-def test_jax_compress(
+def test_jax_numpy_compress(
     *,
     params_indices_axis_batch_dims,
     on_device,
