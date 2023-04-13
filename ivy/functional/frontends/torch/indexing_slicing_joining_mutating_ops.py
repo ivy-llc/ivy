@@ -1,5 +1,6 @@
 # local
 import ivy
+from ivy.functional.frontends import torch
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
@@ -14,7 +15,7 @@ def cat(tensors, dim=0, *, out=None):
 
 
 @to_ivy_arrays_and_back
-def Chunk(input, chunks, dim=0):
+def chunk(input, chunks, dim=0):
     if ivy.shape(input) == ():
         return [input]
     else:
@@ -174,6 +175,11 @@ def hstack(tensors, *, out=None):
 @to_ivy_arrays_and_back
 def index_select(input, dim, index, *, out=None):
     return ivy.gather(input, index, axis=dim, out=out)
+
+
+@to_ivy_arrays_and_back
+def index_reduce(dim, index, source, reduce, *, include_self=True):
+    return torch.index_reduce(dim, index, source, reduce, include_self=include_self)
 
 
 @to_ivy_arrays_and_back

@@ -859,6 +859,40 @@ def test_torch_index_select(
     )
 
 
+# index_reduce
+@handle_frontend_test(
+    fn_tree="torch.index_reduce",
+    params_indices_others=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("valid"),
+        indices_dtypes=["int64"],
+        max_num_dims=1,
+        indices_same_dims=True,
+    ),
+)
+def test_torch_index_reduce(
+    *,
+    params_indices_others,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtypes, input, indices, source, reduce, axis, batch_dims = params_indices_others
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input,
+        dim=axis,
+        index=indices,
+        source = source,
+        reduce = reduce,
+        include_self=True,
+    )
+
+
 # take_along_dim
 @handle_frontend_test(
     fn_tree="torch.take_along_dim",
