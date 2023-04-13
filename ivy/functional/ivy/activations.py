@@ -558,7 +558,7 @@ def softplus(
 def mish(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Applies the rectified linear unit function element-wise.
+    """Applies the mish activation function element-wise.
 
     Parameters
     ----------
@@ -571,7 +571,7 @@ def mish(
     Returns
     -------
     ret
-        an array containing the rectified linear unit activation of each element in
+        an array containing the mish activation of each element in
         ``x``.
 
     Examples
