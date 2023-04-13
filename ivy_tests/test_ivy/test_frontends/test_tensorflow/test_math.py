@@ -123,14 +123,14 @@ def test_tensorflow_tan(
 
 # real
 @handle_frontend_test(
-    fn_tree="tensorflow.math.imag",
+    fn_tree="tensorflow.math.real",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float_and_complex"),
         num_arrays=1,
     ),
     test_with_out=st.just(False),
 )
-def test_tensorflow_imag(
+def test_tensorflow_real(
     *,
     dtype_and_x,
     frontend,
