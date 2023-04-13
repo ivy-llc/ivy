@@ -482,7 +482,6 @@ Tan = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.tan))
 Tanh = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.tanh))
 
 
-
 @to_ivy_arrays_and_back
 def Transpose(*, x, perm, name="Transpose"):
     ret = ivy.permute_dims(x, axes=perm)

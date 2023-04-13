@@ -538,4 +538,8 @@ def cos(x, name=None):
 
 @to_ivy_arrays_and_back
 def sinh(x, name=None):
+<<<<<<< HEAD
     return ivy.sinh(x)
+=======
+    return ivy.sinh(x)
+>>>>>>> parent of 3866c0d4f (implemented math mod function for tensorflow frontend)
