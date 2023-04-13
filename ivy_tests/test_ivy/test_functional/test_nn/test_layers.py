@@ -392,6 +392,7 @@ def x_and_filters(
                     max_size=dim,
                 ),
                 st.sampled_from(["SAME", "VALID"]),
+                st.integers(min_value=0, max_value=3),
             )
         )
         x_dim = []

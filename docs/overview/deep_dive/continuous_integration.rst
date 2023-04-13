@@ -301,7 +301,7 @@ You can also run the Manual Tests Workflow on a Fork Repository (while reviewing
 This might take some time to run as the Fork may have limited runners.
 
 CI Pipeline ➡️
--------------
+---------------
 The below subsections provide the roadmap for running workflows and interpreting results in case a push or a pull request is made to the repository.
 
 Push

@@ -113,7 +113,7 @@ For example, a sequence of comments like this :code:`- [ ] #Issue_number` will r
 For questions, please reach out on `discord`_ in the `todo list issues channel`_!
 
 Ivy Experimental API
-----------
+--------------------
 
 We primarily invite contributors to contribute to the tasks listed as :ref:`Open Tasks` as they are on our roadmap currently.
 As a result of this we mainly recommend contributions which fall under the :ref:`Open Tasks`.
@@ -172,7 +172,7 @@ Armed with this information, you can then for example directly tag (using @) the
 Here we describe a workflow to help navigate this question of "who to ask".
 
 With Command Line:
-****
+******************
 
 **git blame** - Show what revision and author last modified each line of a file
 
@@ -186,7 +186,7 @@ With Command Line:
     git log <commit_id> -p
 
 With Browser:
-****
+*************
 
 **Git Blame View** is a handy tool to view the line-by-line revision history for an entire file, or view the revision history of a single line within a file.
 
@@ -342,7 +342,7 @@ Running Tests Locally
 ---------------------
 
 With Docker
-****
+***********
 
 #. With PyCharm (With or without docker):
     #. PyCharm enables users to run pytest using the green button present near every function declaration inside the :code:`ivy_tests` folder.
@@ -502,7 +502,7 @@ With Docker
 Getting the most out of IDE
 ---------------------------
 with PyCharm
-****
+************
 #. Find a text:
         #. :code:`Ctrl+F` will prompt you to type in the text to be found, if not already selected, and then find all the instances of text within current file.
 

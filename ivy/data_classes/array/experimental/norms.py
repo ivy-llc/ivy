@@ -53,22 +53,23 @@ class _ArrayWithNormsExperimental(abc.ABC):
         out: Optional[Tuple[ivy.Array, ivy.Array, ivy.Array]] = None,
     ) -> Tuple[ivy.Array, ivy.Array, ivy.Array]:
         """
-            ivy.Array instance method variant of ivy.batch_norm. This method
-            simply wraps the function, and so the docstring for ivy.batch_norm
-            also applies to this method with minimal changes.
+        ivy.Array instance method variant of ivy.batch_norm. This method
+        simply wraps the function, and so the docstring for ivy.batch_norm
+        also applies to this method with minimal changes.
+
         Parameters
         ----------
-        x
+        self
             Input array of shape (N, *S, C), where N is the batch dimension,
             *S corresponds to any number of spatial dimensions and
              C corresponds to the channel dimension.
         mean
-            Mean array used for input's normalization. If ``training=True``
+            Array used for input's normalization. If ``training=True``
             then it must be one dimensional with size equal to the size of
             channel dimension C. If ``training=False`` then it can be of any
             shape broadcastble to the input shape.
         variance
-            Variance array for the input's normalization. If ``training=True``
+            Array for the input's normalization. If ``training=True``
             then it must be one dimensional with size equal to the size of
             channel dimension C. If ``training=False`` then it can be of any shape
             broadcastble to the input shape.
@@ -94,11 +95,11 @@ class _ArrayWithNormsExperimental(abc.ABC):
             optional output array, for writing the result to.
             Parameters
 
-            Returns
-            -------
-            ret
-                 Tuple of arrays containing the
-                 normalized input, running mean, and running variance.
+        Returns
+        -------
+        ret
+             Tuple of arrays containing the
+             normalized input, running mean, and running variance.
         """
         return ivy.batch_norm(
             self._data,
@@ -132,7 +133,7 @@ class _ArrayWithNormsExperimental(abc.ABC):
 
         Parameters
         ----------
-        x
+        self
             Input array of shape (N, *S, C), where N is the batch dimension,
             *S corresponds to any number of spatial dimensions and
              C corresponds to the channel dimension.
@@ -168,6 +169,7 @@ class _ArrayWithNormsExperimental(abc.ABC):
             optional output array, for writing the result to.
             Parameters
 
+        Returns
         -------
         ret
              Tuple of array containing

@@ -855,20 +855,20 @@ def test_jax_numpy_corrcoef(
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
-        min_value=-2 ** 10,
-        max_value=2 ** 10,
+        min_value=-(2**10),
+        max_value=2**10,
         valid_axis=True,
     ),
     keepdims=st.booleans(),
 )
 def test_jax_numpy_median(
-        *,
-        dtype_x_axis,
-        keepdims,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_x_axis,
+    keepdims,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
@@ -885,8 +885,8 @@ def test_jax_numpy_median(
         atol=1e-3,
         rtol=1e-3,
     )
-    
-    
+
+
 # ptp
 @handle_frontend_test(
     fn_tree="jax.numpy.ptp",
@@ -913,4 +913,3 @@ def test_jax_numpy_ptp(
         out=None,
         keepdims=keep_dims,
     )
-    
