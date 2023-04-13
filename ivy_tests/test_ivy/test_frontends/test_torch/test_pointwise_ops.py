@@ -1675,6 +1675,35 @@ def test_torch_pow(
     )
 
 
+@handle_frontend_test(
+    fn_tree="torch.float_power",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_value=-10,
+        max_value=10,
+    ),
+)
+def test_torch_float_power(
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-03,
+        input=x[0],
+        exponent=x[1],
+    )
+
+
 # logaddexp
 @handle_frontend_test(
     fn_tree="torch.logaddexp",
