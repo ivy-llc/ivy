@@ -624,3 +624,7 @@ def isin(
 
 
 isin.support_native_out = True
+
+
+def itemsize(x: torch.tensor) -> int:
+    return x.element_size()
