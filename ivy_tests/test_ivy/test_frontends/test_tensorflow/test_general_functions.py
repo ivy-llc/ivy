@@ -33,6 +33,7 @@ def _get_clip_inputs(draw):
     max = draw(
         helpers.array_values(dtype=x_dtype[0], shape=shape, min_value=6, max_value=50)
     )
+    
     return x_dtype, x, min, max
 
 
@@ -415,6 +416,31 @@ def _x_cast_dtype_shape(draw):
     #     .filter(lambda t: ivy.can_cast(x_dtype[0], t))
     # )
     return x_dtype, x, cast_dtype, to_shape
+
+
+# size
+# output_dtype not generated as tf only accepts tf dtypes
+@handle_frontend_test(
+    fn_tree="tensorflow.size",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), max_num_dims=4
+    ),
+    #output_dtype=st.sampled_from(["int32", "int64"]),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_size(
+    *, dtype_and_x, frontend, test_flags, fn_tree, on_device, #output_dtype
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        #out_type=output_dtype,
+    )
 
 
 # constant

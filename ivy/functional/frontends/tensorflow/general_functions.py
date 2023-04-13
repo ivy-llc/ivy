@@ -175,6 +175,13 @@ def shape_n(input, out_type=ivy.int32, name=None):
 
 
 @to_ivy_arrays_and_back
+def size(input, out_type=ivy.int32, name=None):
+    out_type = to_ivy_dtype(out_type)
+    shape = ivy.shape(input, as_array=True)
+    return ivy.astype(ivy.prod(shape), out_type, copy=False)
+
+
+@to_ivy_arrays_and_back
 def ensure_shape(x, shape, name=None):
     x = EagerTensor(x)
     x.set_shape(shape)
