@@ -1,7 +1,7 @@
 Building Blocks
 ===============
 
-.. _`out argument`: https://lets-unify.ai/ivy/deep_dive/inplace_updates.html#out-argument
+.. _`out argument`: https://lets-unify.ai/docs/ivy/deep_dive/inplace_updates.html#out-argument
  
 Here we explain the components of Ivy which are fundamental to its usage either as a code converter or as a fully-fledged framework-agnostic ML framework.
 These are the 4 parts labelled as (a) in the image below:
@@ -11,7 +11,7 @@ These are the 4 parts labelled as (a) in the image below:
    :width: 100%
 
 Backend Functional APIs ✅
------------------------
+--------------------------
 
 The first important point to make is that, Ivy does not implement it’s own C++ or CUDA backend.
 Instead, Ivy **wraps** the functional APIs of existing frameworks, bringing them into syntactic and semantic alignment.
@@ -97,14 +97,14 @@ Therefore, we need to construct it using a composition of existing TensorFlow op
         return base**power_seq
 
 Ivy Functional API ✅
-------------------
+---------------------
 
 Calling the different backend files explicitly would work okay, but it would mean we need to :code:`import ivy.functional.backends.torch as ivy` to use a PyTorch backend or :code:`import ivy.functional.backends.tensorflow as ivy` to use a TensorFlow backend.
 Instead, we allow these backends to be bound to the single shared namespace ivy.
 The backend can then be changed by calling :code:`ivy.set_backend(‘torch’)` for example.
 
 :mod:`ivy.functional.ivy` is the submodule where all the doc strings and argument typing reside for the functional Ivy API.
-For example, The function :func:`prod`  is shown below:
+For example, the function :func:`prod`  is shown below:
 
 .. code-block:: python
 
@@ -198,7 +198,7 @@ The examples can be seen below:
 This implicit backend selection, and the use of a shared global ivy namespace for all backends, are both made possible via the backend handler.
 
 Backend Handler ✅
------------------
+------------------
 
 All code for setting and unsetting backend resides in the submodule at :mod:`ivy/backend_handler.py`, and the front facing function is :func:`ivy.current_backend`.
 The contents of this function are as follows:
@@ -357,7 +357,7 @@ We *could* find and wrap the functional LSTM update methods for each backend fra
 Generally, we have made decisions so that Ivy is as stable and scalable as possible, minimizing dependencies to backend framework code where possible with minimal sacrifices in performance.
 
 Graph Compiler 🚧
---------------
+-----------------
 
 “What about performance?” I hear you ask.
 This is a great point to raise!

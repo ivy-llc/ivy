@@ -1154,9 +1154,9 @@ def test_svd(
     fn_tree="functional.ivy.matrix_norm",
     dtype_value_shape=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        shape=st.shared(helpers.get_shape(min_num_dims=2, max_num_dims=2), key="shape"),
+        shape=st.shared(helpers.get_shape(min_num_dims=2, max_num_dims=5), key="shape"),
         min_num_dims=2,
-        max_num_dims=2,
+        max_num_dims=5,
         min_dim_size=1,
         max_dim_size=10,
         min_value=-1e20,
@@ -1167,7 +1167,7 @@ def test_svd(
     ),
     kd=st.booleans(),
     axis=st.just((-2, -1)),
-    ord=helpers.ints(min_value=1, max_value=2) | st.sampled_from(("fro", "nuc")),
+    ord=st.sampled_from((-2, -1, 1, 2, -float("inf"), -float("inf"), "fro", "nuc")),
 )
 def test_matrix_norm(
     *,
@@ -1182,7 +1182,7 @@ def test_matrix_norm(
     ground_truth_backend,
 ):
     dtype, x = dtype_value_shape
-    assume(matrix_is_stable(x[0], cond_limit=10))
+    assume(np.all(matrix_is_stable(np.array(x), cond_limit=10)).item())
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
