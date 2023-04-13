@@ -9,7 +9,6 @@ import _pickle as cPickle
 
 
 def main():
-    tests = {}
     BACKENDS = ["numpy", "jax", "tensorflow", "torch"]
 
     test_names = []
@@ -35,20 +34,19 @@ def main():
                     if s == "":
                         continue
                     if ("#" not in s) or (
-                            "#" in s
-                            and not (framework in s.lower())
-                            and any(f in s.lower() for f in framework_tests_to_run)
+                        "#" in s
+                        and not (framework in s.lower())
+                        and any(f in s.lower() for f in framework_tests_to_run)
                     ):
                         submod = f"ivy_tests/array_api_testing/test_array_api/array_api_tests/test_{fname.replace('.txt', '.py')}"
 
-                        test_name = submod + "::test_" + (
-                            s if ("#" not in s)
-                            else s.split("#")[1].split(" ")[0]
+                        test_name = (
+                            submod
+                            + "::test_"
+                            + (s if ("#" not in s) else s.split("#")[1].split(" ")[0])
                         )
                         tests_to_run += [test_name]
                 framework_tests_to_run[framework] += tests_to_run
-
-    print(framework_tests_to_run)
 
     for backend, tests in framework_tests_to_run.items():
         test_names += [test + "," + backend for test in set(tests)]
@@ -57,14 +55,16 @@ def main():
     #     print(test_name)
 
     # Create a Dictionary of Test Names to Index
-    tests["index_mapping"] = test_names
-    tests["tests_mapping"] = {}
+    tests = {"index_mapping": test_names, "tests_mapping": {}}
     for i in range(len(test_names)):
         tests["tests_mapping"][test_names[i]] = i
 
     # Create k flag files for each backend:
     k_flag = {}
-    subprocess.run(["python3", "ivy_tests/array_api_testing/write_array_api_tests_k_flag.py"], check=True)
+    subprocess.run(
+        ["python3", "ivy_tests/array_api_testing/write_array_api_tests_k_flag.py"],
+        check=True,
+    )
     for backend in BACKENDS:
         k_flag_file = f"ivy_tests/array_api_testing/.array_api_tests_k_flag_{backend}"
         with open(k_flag_file, "r") as f:
@@ -73,7 +73,6 @@ def main():
         if backend == "torch":
             array_api_tests_k_flag += " and not (uint16 or uint32 or uint64)"
         k_flag[backend] = array_api_tests_k_flag
-
     directories = (
         [x[0] for x in os.walk("ivy")]
         + [x[0] for x in os.walk("ivy_tests/array_api_testing")]
@@ -86,20 +85,13 @@ def main():
     for test_backend in tqdm(test_names):
         test_name, backend = test_backend.split(",")
         print("Test:", test_backend)
-
-        command = (
-            f'docker run --rm - -env IVY_BACKEND = {backend} --env ARRAY_API_TESTS_MODULE="ivy" -v "$(pwd)":/ivy unifyai/ivy:latest timeout 30m /bin/bash -c "coverage run --source=ivy,'  
-            f"ivy_tests -m pytest {test_name} -k {k_flag[backend]} --disable-warnings --tb=short -vv > coverage_output;coverage "  
-            f'annotate > coverage_output" '
-        )
+        command = f'docker run --rm --env IVY_BACKEND={backend} --env ARRAY_API_TESTS_MODULE="ivy" -v "$(pwd)":/ivy unifyai/ivy:latest timeout 30m /bin/bash -c "coverage run --source=ivy,ivy_tests -m pytest {test_name} -k \\"{k_flag[backend]}\\" --disable-warnings --tb=short -vv > coverage_output;coverage annotate > coverage_output" '
         print("Running OS Command")
         os.system(command)
         print("Going through Directories:")
         for directory in directories:
-            print("On Directory:", directory)
             for file_name in os.listdir(directory):
                 if file_name.endswith("cover"):
-                    print("On File:", file_name)
                     file_name = directory + "/" + file_name
                     if file_name not in tests:
                         tests[file_name] = []
@@ -116,6 +108,7 @@ def main():
                             i += 1
         print("Done with Directories, Cleaning Files")
         os.system("find . -name \\*cover -type f -delete")
+        break
 
     commit_hash = ""
     for commit in Repository(".", order="reverse").traverse_commits():
