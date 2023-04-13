@@ -7,8 +7,8 @@ import jax.numpy as jnp
 # local
 import ivy
 from ivy import promote_types_of_inputs
-from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
+from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
@@ -379,13 +379,21 @@ def remainder(
     return jnp.remainder(x1, x2)
 
 
-def round(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def round(
+    x: JaxArray, /, *, decimals: int = 0, out: Optional[JaxArray] = None
+) -> JaxArray:
     if "int" in str(x.dtype):
         return x
     else:
-        return jnp.round(x)
+        if decimals == 0:
+            return jnp.round(x)
+        ret_dtype = x.dtype
+        factor = jnp.power(10, decimals).astype(ret_dtype)
+        factor_denom = jnp.where(jnp.isinf(factor), 1.0, factor)
+        return jnp.round(x * factor) / factor_denom
 
 
+@with_unsupported_dtypes({"1.1.9 and below": ("complex",)}, backend_version)
 def sign(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.where(x == -0.0, 0.0, jnp.sign(x)).astype(x.dtype)
 
@@ -503,15 +511,3 @@ def fmod(
 ) -> JaxArray:
     x1, x2 = promote_types_of_inputs(x1, x2)
     return jnp.fmod(x1, x2)
-
-
-@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
-def isin(
-    elements: JaxArray,
-    test_elements: JaxArray,
-    /,
-    *,
-    assume_unique: bool = False,
-    invert: bool = False,
-) -> JaxArray:
-    return jnp.isin(elements, test_elements, assume_unique=assume_unique, invert=invert)

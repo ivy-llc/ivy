@@ -104,7 +104,7 @@ Again, this does not happen with native Python Dicts.
     }
 
 Recursive Methods
-----------------
+-----------------
 
 All methods in Ivyâ€™s functional API are implemented as recursive methods on the :class:`ivy.Container`.
 This means you can easily map a single method to all arrays in the container with a single line.
@@ -145,7 +145,7 @@ Or we can flip each sub-array:
         }
     }
 
-There are about 200 such functions for the :class:`ivy.Container` class in total, check out the `code <https://github.com/unifyai/ivy/tree/master/ivy/container>`_ or `docs <https://lets-unify.ai/ivy/core/container.html>`_ to see what they are!
+There are about 200 such functions for the :class:`ivy.Container` class in total, check out the `code <https://github.com/unifyai/ivy/tree/master/ivy/container>`_ or `docs <https://lets-unify.ai/docs/ivy/core/container.html>`_ to see what they are!
 
 Built-ins
 ----------
@@ -358,7 +358,7 @@ The :meth:`ivy.Container.cont_diff` method will also detect differences in the h
 The :meth:`ivy.Container.cont_diff` method can be applied to arbitrarily many containers at once in a single call, not just two as in the examples above.
 
 Customized Representations
--------------------------
+--------------------------
 
 Not only does :class:`ivy.Container` print to the terminal in a very intuitive manner, but there are also helper functions to fully control this representation.
 This is very helpful when debugging networks with huge numbers of parameters with a deep hierarchical structure for example.
@@ -458,7 +458,7 @@ All nested structures above this height are truncated into single keys with a â€
 These are very useful methods when stepping through code and debugging complex nested structures such as the weights of a network.
 
 There are also methods: :code:`cont_with_print_limit` for controlling the printable size of arrays before the shape is instead displayed, :code:`cont_with_key_length_limit` for setting the maximum key length before string clipping, :code:`cont_with_print_indent` for controlling the nested indent, and many more.
-Check out the `docs <https://lets-unify.ai/ivy/core/container.html>`_ for more details!
+Check out the `docs <https://lets-unify.ai/docs/ivy/core/container.html>`_ for more details!
 
 Use Cases
 ---------
@@ -546,7 +546,7 @@ As briefly alluded to when explaining the :meth:`ivy.Container.cont_diff` method
 Configurations can either first be stored to disk as a JSON file and then loaded into the :class:`ivy.Container` for recursive comparisons to see differences between experiments, or the config can be specified in the code and then saved to disk as a JSON to keep a permanent log afterwards.
 
 Data loading
------------
+------------
 
 The container can also be used for data loading.
 Our example uses single threaded loading, but incorporating multiprocessing with Queues is also pretty straightforward.
@@ -605,7 +605,7 @@ This is useful if we need to recursively unroll the entire batch in the time dim
             assert batch_slice.imgs.rear.shape == (32, 32, 3)
 
 Network weights
---------------
+---------------
 
 Finally, the Ivy Containers can also be used for storing network weights.
 In fact, as is discussed in the documentation for the Ivy stateful API, this is how the :class:`ivy.Module` class stores all trainable variables in the model.

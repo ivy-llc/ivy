@@ -312,6 +312,41 @@ def test_tensorflow_Cos(  # NOQA
     )
 
 
+# Cross
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Cross",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=3,
+        max_dim_size=3,
+        safety_factor_scale="log",
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Cross(  # NOQA
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=xs[0],
+        b=xs[1],
+    )
+
+
 # Rsqrt
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Rsqrt",
@@ -347,7 +382,7 @@ def test_tensorflow_Rsqrt(
     ),
     test_with_out=st.just(False),
 )
-def test_tensorflow_Cosh(  # NOQA
+def test_tensorflow_Cosh(
     *,
     dtype_and_x,
     frontend,
@@ -987,6 +1022,34 @@ def test_tensorflow_Tanh(  # NOQA
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+    )
+
+
+# TanhGrad
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.TanhGrad",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"), num_arrays=2, shared_dtype=True
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_TanhGrad(  # NOQA
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        y=xs[0],
+        dy=xs[1],
     )
 
 
@@ -2874,13 +2937,13 @@ def test_tensorflow_Xlog1py(  # NOQA
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Xlogy",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=["float16", "float32", "float64"],
         num_arrays=2,
         shared_dtype=True,
     ),
     test_with_out=st.just(False),
 )
-def test_tensorflow_Xlogy(  # NOQA
+def test_tensorflow_Xlogy(
     *,
     dtype_and_x,
     frontend,
@@ -3621,4 +3684,69 @@ def test_tensorflow_Size(  # NOQA
         on_device=on_device,
         input=x[0],
         out_type=output_dtype,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Prod",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        valid_axis=True,
+        force_int_axis=True,
+        min_num_dims=1,
+        min_value=-5,
+        max_value=5,
+    ),
+    keep_dims=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Prod(  # NOQA
+    *,
+    dtype_x_axis,
+    keep_dims,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        axis=axis,
+        keep_dims=keep_dims,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.LeakyRelu",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+    ),
+    test_with_out=st.just(False),
+    alpha=helpers.floats(min_value=0, max_value=1),
+)
+def test_tensorflow_LeakyReLU(
+    *,
+    dtype_and_x,
+    alpha,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    return helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        features=x[0],
+        alpha=alpha,
     )
