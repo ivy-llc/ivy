@@ -5450,9 +5450,9 @@ def rad2deg(
     return ivy.current_backend(x).rad2deg(x, out=out)
 
 
-@inputs_to_ivy_arrays
 @handle_array_function
 @handle_out_argument
+@inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
 def trunc_divide(
@@ -5496,6 +5496,7 @@ def trunc_divide(
 
 
 trunc_divide.mixed_function = True
+trunc_divide.support_native_out = True
 
 
 @handle_array_function
