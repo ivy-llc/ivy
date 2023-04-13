@@ -93,6 +93,25 @@ def Atanh(*, x, name="Atanh"):
 
 
 @to_ivy_arrays_and_back
+def AvgPool(
+    *,
+    value,
+    ksize,
+    strides,
+    padding,
+    data_format="NHWC",
+    name="AvgPool",
+):
+    return ivy.avg_pool2d(
+        value,
+        ksize,
+        strides,
+        padding,
+        data_format=data_format,
+    )
+
+
+@to_ivy_arrays_and_back
 def BitwiseAnd(*, x, y, name="BitwiseAnd"):
     x, y = check_tensorflow_casting(x, y)
     return ivy.bitwise_and(x, y)
@@ -444,9 +463,7 @@ def Sign(*, x, name="Sign"):
     return ivy.sign(x)
 
 
-Size = to_ivy_arrays_and_back(
-    map_raw_ops_alias(tf_frontend.general_functions.size)
-)
+Size = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.general_functions.size))
 
 
 Split = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.split))
