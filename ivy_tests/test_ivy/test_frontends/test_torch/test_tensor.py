@@ -3175,7 +3175,6 @@ def test_torch_instance_add_(
     )
 
 
-
 # subtract_
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -3187,12 +3186,12 @@ def test_torch_instance_add_(
     ),
 )
 def test_torch_instance_subtract_(
-        dtype_and_x,
-        frontend_method_data,
-        init_flags,
-        method_flags,
-        frontend,
-        on_device,
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -3210,6 +3209,7 @@ def test_torch_instance_subtract_(
         frontend=frontend,
         on_device=on_device,
     )
+
 
 # arccos_
 @handle_frontend_method(
@@ -3243,6 +3243,8 @@ def test_torch_instance_arccos_(
         method_flags=method_flags,
         frontend=frontend,
         on_device=on_device,
+    )
+
 
 # arccos
 @handle_frontend_method(
