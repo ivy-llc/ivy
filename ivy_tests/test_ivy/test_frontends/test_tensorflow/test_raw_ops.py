@@ -614,6 +614,38 @@ def test_tensorflow_Atan(  # NOQA
     )
 
 
+# AvgPool3D
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.AvgPool3D",
+    data_format=st.sampled_from(["NDHWC", "NDCHW"]),
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=4, max_dims=4, min_side=1, max_side=4),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_AvgPool3D(  # NOQA
+    *,
+    x_k_s_p,
+    data_format,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, kernel, strides, pad = x_k_s_p
+    data_format = data_format
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+        ksize=kernel,
+        strides=strides,
+        padding=pad,
+        data_format=data_format,
+    )
+
+
 # BitwiseAnd
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.BitwiseAnd",
