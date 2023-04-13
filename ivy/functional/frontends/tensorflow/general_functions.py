@@ -461,3 +461,20 @@ norm.supported_dtypes = (
     "float32",
     "float64",
 )
+
+
+@to_ivy_arrays_and_back
+def approx_top_k(input, k=1, name=None):
+    input = ivy.array(input)
+    batch_size = input.shape[0]
+    num_classes = input.shape[1]
+
+    # Approximate the top k values
+    flattened_values = ivy.reshape(input, [batch_size * num_classes])
+    _, indices = ivy.top_k(flattened_values, k=k)
+    indices = ivy.reshape(indices, [batch_size, k])
+
+    # Gather the top k indices and values
+    gathered_indices = tf_frontend.gather(input, indices, axis=1)
+    gathered_values, _ = ivy.max(gathered_indices, axis=2)
+    return gathered_values, indices
