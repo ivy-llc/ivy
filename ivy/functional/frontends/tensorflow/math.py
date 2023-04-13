@@ -50,16 +50,7 @@ def asinh(x, name="asinh"):
 
 
 @with_supported_dtypes(
-    {
-        "2.9.0 and below": (
-            "bfloat16",
-            "half",
-            "float",
-            "double",
-            "complex64",
-            "complex128",
-        )
-    },
+    {"2.9.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
     "tensorflow",
 )
 @to_ivy_arrays_and_back
