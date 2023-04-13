@@ -386,7 +386,7 @@ def test_numpy_standard_gamma(
     )
     
  
- @handle_frontend_test(
+@handle_frontend_test(
     fn_tree="numpy.random.standard_exponential",
     input_dtypes=helpers.get_dtypes("integer", full=False),
     beta=st.floats(
