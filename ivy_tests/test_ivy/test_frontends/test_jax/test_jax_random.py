@@ -3,8 +3,10 @@ from hypothesis import strategies as st, given
 import jax
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.frontends.jax as jax_frontend
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 """
 Tests for jax.random cannot be made normally since a `uint32` PRNG key must
@@ -93,3 +95,70 @@ def test_jax_beta(key, alpha, beta, shape, dtype):
 
     assert frontend_ret.ivy_array.dtype == framework_ret.dtype.name
     assert framework_ret.shape == framework_ret.shape
+
+
+@handle_frontend_test(
+    fn_tree="jax.random.dirichlet",
+    dtype_key=helpers.dtype_and_values(
+        available_dtypes=["uint32"],
+        min_value=0,
+        max_value=2000,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
+    ),
+    dtype_alpha=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", full=False),
+        shape=st.tuples(
+            st.integers(min_value=2, max_value=5),
+        ),
+        min_value=1.1,
+        max_value=100.0,
+        exclude_min=True,
+    ),
+    shape=helpers.get_shape(
+        min_num_dims=2, max_num_dims=2, min_dim_size=2, max_dim_size=5
+    ),
+    dtype=helpers.get_dtypes("float", full=False),
+    test_with_out=st.just(False),
+)
+def test_jax_dirichlet(
+    *,
+    dtype_key,
+    dtype_alpha,
+    shape,
+    dtype,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, key = dtype_key
+    _, alpha = dtype_alpha
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            key=key[0],
+            alpha=alpha[0],
+            shape=shape,
+            dtype=dtype[0],
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    for (u, v) in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape

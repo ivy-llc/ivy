@@ -332,6 +332,24 @@ def squared_difference(x, y, name=None):
     return ivy.square(ivy.subtract(x, y))
 
 
+@with_supported_dtypes(
+    {
+        "2.9.0 and below": (
+            "bfloat16",
+            "float16",
+            "float32",
+            "float64",
+            "complex64",
+            "complex128",
+        )
+    },
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def sin(x, name=None):
+    return ivy.sin(x)
+
+
 @to_ivy_arrays_and_back
 def tan(x, name=None):
     return ivy.tan(x)
@@ -423,6 +441,11 @@ def floor(x, name=None):
 @to_ivy_arrays_and_back
 def ceil(x, name=None):
     return ivy.ceil(x)
+
+
+@to_ivy_arrays_and_back
+def round(x, name=None):
+    return ivy.round(x)
 
 
 @to_ivy_arrays_and_back
@@ -563,6 +586,11 @@ def sinh(x, name=None):
 @to_ivy_arrays_and_back
 def softmax(logits, axis=-1):
     return ivy.softmax(logits, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def softplus(features, name=None):
+    return ivy.softplus(features)
 
 
 @to_ivy_arrays_and_back

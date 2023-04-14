@@ -1046,21 +1046,25 @@ def _get_reshape(draw, shape):
 
 @st.composite
 def _as_strided_helper(draw):
-    dtype, x, x_shape = draw(helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=2,
-        min_dim_size=2,
-        ret_shape=True,
-    ))
+    dtype, x, x_shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=2,
+            min_dim_size=2,
+            ret_shape=True,
+        )
+    )
     shape = draw(_get_reshape(x_shape))
     new_ndim = len(shape)
     itemsize = x[0].itemsize
     # the ground truth numpy results for strides greater than itemsize are inconsistent
-    strides = draw(st.lists(
-        st.integers(min_value=1, max_value=itemsize),
-        min_size=new_ndim,
-        max_size=new_ndim,
-    ))
+    strides = draw(
+        st.lists(
+            st.integers(min_value=1, max_value=itemsize),
+            min_size=new_ndim,
+            max_size=new_ndim,
+        )
+    )
     return dtype, x, shape, strides
 
 
