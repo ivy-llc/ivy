@@ -1511,7 +1511,6 @@ def _pad_helper(draw):
 def test_jax_numpy_pad(
     *,
     dtype_and_input_and_other,
-    reflect_type,
     frontend,
     test_flags,
     fn_tree,
