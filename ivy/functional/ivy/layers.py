@@ -170,7 +170,7 @@ def linear(
 
 
 linear.mixed_function = True
-linear.support_native_out = True
+linear.handle_out_in_ivy = True
 
 
 # Dropout #

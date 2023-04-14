@@ -169,7 +169,7 @@ def flatten(
 
 
 flatten.mixed_function = True
-flatten.support_native_out = True
+flatten.handle_out_in_ivy = True
 
 
 @to_native_arrays_and_back
