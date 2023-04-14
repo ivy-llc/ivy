@@ -18,6 +18,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     return_inverse=st.booleans(),
     return_counts=st.booleans(),
     none_axis=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_numpy_unique(
     *,
