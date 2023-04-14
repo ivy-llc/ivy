@@ -32,7 +32,7 @@ _dtype_kind_keys = {
 
 def _get_fn_dtypes(framework, kind="valid"):
     """
-    Return a list of supported data types for a specified framework and kind of data type.
+    Return a list of supported data types for a specified framework and also for the current function that is being tested.
 
     Parameters
     ----------
@@ -41,11 +41,11 @@ def _get_fn_dtypes(framework, kind="valid"):
 
     kind
         the kind of data type being queried. The default value is 'valid',
-        which returns al the valid data types for the framework.
+        which returns all the valid data types for the framework and the current functions that is being tested.
 
     Returns
     -------
-        A list of supported data types for the specified framework and kind of data type.
+        A list of supported data types for the specified framework and also for the current function that is being tested.
     """
     return test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[framework.backend][
         test_globals.CURRENT_DEVICE_STRIPPED
