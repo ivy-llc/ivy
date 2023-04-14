@@ -468,8 +468,8 @@ Here's a brief description of the additional attributes added to :class:`ivy.Arr
 #. Manipulation stack (:code:`._manipulation_stack`): store of operations that were done on the original to get to the current shape (manipulation or indexing)
 #. Reference stack :code:`._view_refs`: Weak references to the arrays that reference the original as view, only populated for base arrays.
 #. PyTorch Base (:code:`._torch_base`): Keeps track of functional view (array created from the listed functions above) that made it, otherwise stores original array
-#. PyTorch reference stack:code:`._torch_view_refs`: Functional views referencing this array in :code:`._torch_base`, only populated for original arrays or functional views.
-#. PyTorch manipulation cache:code:`._torch_manipulation`: Tuple storing array or view and function which made the functional view, only populated for functional views
+#. PyTorch reference stack (:code:`._torch_view_refs`): Functional views referencing this array in its PyTorch base, only populated for original arrays or functional views.
+#. PyTorch manipulation cache (:code:`._torch_manipulation`): Tuple storing array or view and function which made the functional view, only populated for functional views
 
 Here's a brief description of how the :code:`@handle_view` wrapper populates these attributes:
 
