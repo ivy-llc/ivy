@@ -172,7 +172,6 @@ def test_jax_beta(
             dtype=dtype[0],
         )
 
-
     ret = call()
 
     if not ivy.exists(ret):
@@ -251,6 +250,7 @@ def test_jax_dirichlet(
     for (u, v) in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
+
 
 
 @handle_frontend_test(

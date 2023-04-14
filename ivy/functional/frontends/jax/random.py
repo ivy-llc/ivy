@@ -30,6 +30,7 @@ def _get_seed(key):
     key1, key2 = int(key[0]), int(key[1])
     return ivy.to_scalar(int("".join(map(str, [key1, key2]))))
 
+
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
@@ -61,3 +62,14 @@ def dirichlet(key, alpha, shape=None, dtype="float32"):
     seed = _get_seed(key)
     alpha = ivy.astype(alpha, dtype)
     return ivy.dirichlet(alpha, size=shape, dtype=dtype, seed=seed)
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {"0.3.14 and below": ("unsigned", "int8", "int16")},
+    "jax",
+)
+def poisson(key, lam, shape=None, dtype=None):
+    seed = _get_seed(key)
+    return ivy.poisson(lam, shape=shape, dtype=dtype, seed=seed)
