@@ -444,6 +444,11 @@ def ceil(x, name=None):
 
 
 @to_ivy_arrays_and_back
+def round(x, name=None):
+    return ivy.round(x)   
+
+
+@to_ivy_arrays_and_back
 def minimum(x, y, name=None):
     return ivy.minimum(x, y)
 
@@ -581,6 +586,11 @@ def sinh(x, name=None):
 @to_ivy_arrays_and_back
 def softmax(logits, axis=-1):
     return ivy.softmax(logits, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def softplus(features, name=None):
+    return ivy.softplus(features)
 
 
 @to_ivy_arrays_and_back
