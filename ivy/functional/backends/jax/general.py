@@ -222,7 +222,7 @@ def inplace_update(
                 for fn, args, kwargs, index in x._manipulation_stack:
                     kwargs["copy"] = True
                     base_idx = ivy.__dict__[fn](base_idx, *args, **kwargs)
-                    base_idx = base[index] if ivy.exists(index) else base_idx
+                    base_idx = base_idx[index] if ivy.exists(index) else base_idx
                 base_flat = base.data.flatten()
                 base_flat = base_flat.at[base_idx.data.flatten()].set(
                     val_native.flatten()

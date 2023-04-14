@@ -224,7 +224,7 @@ def inplace_update(
                 for fn, args, kwargs, index in x._manipulation_stack:
                     kwargs["copy"] = True
                     base_idx = ivy.__dict__[fn](base_idx, *args, **kwargs)
-                    base_idx = base[index] if ivy.exists(index) else base_idx
+                    base_idx = base_idx[index] if ivy.exists(index) else base_idx
                 base_flat = tf.reshape(base.data, -1)
                 base_flat = tf.tensor_scatter_nd_update(
                     base_flat,
