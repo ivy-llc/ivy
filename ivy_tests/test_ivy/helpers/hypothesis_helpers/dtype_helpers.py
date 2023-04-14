@@ -37,7 +37,7 @@ def _get_fn_dtypes(framework, kind="valid"):
     Parameters
     ----------
     framework
-        A machine learning framework object.
+        A framework object.
 
     kind
         the kind of data type being queried. The default value is 'valid',
@@ -55,16 +55,16 @@ def _get_fn_dtypes(framework, kind="valid"):
 def _get_type_dict(framework, kind):
     """
 
-    Returns a dictionary of valid data types for a specified machine learning framework and kind of data type.
+    Returns a dictionary of valid data types for a specified framework and kind of data type.
 
     Parameters
     ----------
     framework
-        A machine learning framework object.
+        A framework object.
     kind
         The kind of data type being queried. Possible values are:
-            -"valid": all valid data types for the framework
-            -numeric, integer, float, unsigned, signed_integer, complex, real_and_complex, float_and_complex, bool: 
+            - "valid": all valid data types for the framework
+            - numeric, integer, float, unsigned, signed_integer, complex, real_and_complex, float_and_complex, bool: 
              for all valid numeric, integer, float, unsigned, signed_integer, complex, real_and_complex, 
              float_and_complex, bool data types for the framework respectively.
    
