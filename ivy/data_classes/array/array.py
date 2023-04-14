@@ -171,6 +171,9 @@ class Array(
         self._base = None
         self._view_refs = []
         self._manipulation_stack = []
+        self._torch_base = None
+        self._torch_view_refs = []
+        self._torch_manipulation = None
 
     # Properties #
     # ---------- #

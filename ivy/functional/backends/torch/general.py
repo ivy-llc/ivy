@@ -14,7 +14,7 @@ import torch
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, _update_torch_views
 from ivy.functional.ivy.general import _parse_ellipsis
 from . import backend_version, is_variable
 
@@ -302,7 +302,7 @@ def inplace_update(
             x_native[()] = val_native
         if ivy.is_ivy_array(x):
             x.data = x_native
-
+            _update_torch_views(x)
         else:
             x = ivy.to_ivy(x_native)
         if ensure_in_backend:
