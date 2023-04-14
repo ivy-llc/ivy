@@ -24,13 +24,7 @@ def unique(
     if return_index:
         values.append(results.indices)
     if return_inverse:
-        # numpy flattens inverse indices like unique values
-        # if axis is none, so we have to do it here for consistency
-        values.append(
-            results.inverse_indices
-            if axis is not None
-            else ivy.flatten(results.inverse_indices)
-        )
+        values.append(results.inverse_indices)
     if return_counts:
         values.append(results.counts)
 
