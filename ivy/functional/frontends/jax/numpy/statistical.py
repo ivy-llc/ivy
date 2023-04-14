@@ -435,5 +435,21 @@ def ptp(a, axis=None, out=None, keepdims=False):
 
 
 @to_ivy_arrays_and_back
-def quantile(a, q, axis=None, out=None, overwrite_input=False, method='linear', keepdims=False, interpolation=None):
-    return ivy.quantile(a, q, axis=axis, keepdims=keepdims, interpolation=method, out=out)
+def quantile(
+    a, 
+    q, 
+    axis=None, 
+    out=None, 
+    overwrite_input=False, 
+    method='linear', 
+    keepdims=False, 
+    interpolation=None
+):
+    return ivy.quantile(
+        a, 
+        q, 
+        axis=axis, 
+        keepdims=keepdims, 
+        interpolation=method, 
+        out=out
+    )
