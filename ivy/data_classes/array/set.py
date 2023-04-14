@@ -127,8 +127,7 @@ class _ArrayWithSet(abc.ABC):
             The details can be found in the docstring for ivy.unique_all.
 
             .. note::
-               The order of unique elements is not specified and may vary between
-               implementations.
+               The returned unique elements are ordered by value.
 
         Examples
         --------
