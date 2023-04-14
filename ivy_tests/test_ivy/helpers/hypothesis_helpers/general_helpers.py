@@ -39,8 +39,8 @@ def matrix_is_stable(x, cond_limit=30):
 
     Returns
     -------
-        A bool, either True or False. Which tells whether the matrix is suitable for
-        further numerical computations or not.
+    ret
+        If True, the matrix is suitable for further numerical computations.
     """
     return np.linalg.cond(x.astype("float64")) <= cond_limit
 
