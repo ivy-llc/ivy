@@ -11,45 +11,33 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 #bincount
 
-
 @handle_frontend_test(
     fn_tree="numpy.bincount",
-    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
-        arr_func=[
-            lambda: helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("float"),
-            )
-        ],
-        get_dtypes_kind="float",
-    ),
-    where=np_frontend_helpers.where(),
-    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
-            fn_name="bincount"
-        ),
-    )
+
+    dtype_x_axis = statistical_dtype_values(function="bincount"),
+    dtype = helpers.get_dtypes("integer", full=False, none=True),
+    where = np_frontend_helpers.where(),
+    keep_dims = st.booleans(),
+)
 def test_numpy_bincount(
-        dtypes_values_casting,
-        where,
-        frontend,
-        test_flags,
-        fn_tree,
-        on_device,
-    ):
-        input_dtypes, x, casting, dtype = dtypes_values_casting
-        where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
-            where=where,
-            input_dtype=input_dtypes,
-            test_flags=test_flags,
-        )
-        np_frontend_helpers.test_frontend_function(
-            input_dtypes=input_dtypes,
-            frontend=frontend,
-            test_flags=test_flags,
-            fn_tree=fn_tree,
-            on_device=on_device,
-            x=x[0],
-            out=None,
-            weights=None,
-            minlength=0,
-            length=None,
-        )
+    *,
+    dtype_and_x,
+    minlength,
+    weights,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        weights=weights,
+        minlength=minlength,
+
+    )

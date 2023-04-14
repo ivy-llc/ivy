@@ -8,7 +8,7 @@ import ivy.functional.frontends.numpy as np_frontend
 @handle_numpy_dtype
 @handle_numpy_casting
 
-def numpy_bincount(x, /, weights=None, minlength=None):
+def bincount(x, /, weights=None, minlength=None):
     x_list = []
     for i in range(x.shape[0]):
         x_list.append(int(x[i]))
