@@ -95,9 +95,12 @@ def quantile(
         temp, qt, dim=-1, keepdim=keepdims, interpolation=interpolation, out=out
     )
     if keepdims:
+        if isinstance(q, torch.Tensor):
+            keepdim_shape = list(q.size()) + keepdim_shape
         keepdim_shape = tuple(keepdim_shape)
         ret = ret.reshape(keepdim_shape)
-    return ret
+
+    return torch.asarray(ret, dtype=a.dtype)
 
 
 quantile.support_native_out = True

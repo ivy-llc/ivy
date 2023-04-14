@@ -913,3 +913,64 @@ def test_jax_numpy_ptp(
         out=None,
         keepdims=keep_dims,
     )
+
+
+@st.composite
+def _x_q_axis_interpolation(draw):
+    dtype, x, axis = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=1,
+            valid_axis=True,
+            allow_neg_axes=False,
+        )
+    )
+    q = draw(
+        helpers.array_values(
+            dtype=helpers.get_dtypes("float"),
+            shape=helpers.get_shape(min_num_dims=1, max_num_dims=1),
+            min_value=0,
+            max_value=1,
+        )
+    )
+    interpolation_names = ["linear", "lower", "higher", "midpoint", "nearest"]
+    interpolation = draw(
+        helpers.list_of_size(
+            x=st.sampled_from(interpolation_names),
+            size=1
+        )
+    )
+    return dtype, x, q, axis, interpolation
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.quantile",
+    dtype_and_x=_x_q_axis_interpolation(),
+    keepdims=st.booleans(),
+)
+def test_jax_numpy_quantile(
+    *,
+    dtype_and_x,
+    keepdims,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x, q, axis, interpolation = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        q=q,
+        axis=axis,
+        out=None,
+        overwrite_input=False,
+        method=interpolation[0],
+        keepdims=keepdims,
+        atol=1e-1,
+        rtol=1e-1,
+    )
