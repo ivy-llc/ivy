@@ -17,6 +17,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     return_index=st.booleans(),
     return_inverse=st.booleans(),
     return_counts=st.booleans(),
+    none_axis=st.booleans(),
 )
 def test_numpy_unique(
     *,
@@ -24,12 +25,15 @@ def test_numpy_unique(
     return_index,
     return_inverse,
     return_counts,
+    none_axis,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
     input_dtypes, xs, axis = dtype_x_axis
+    if none_axis:
+        axis = None
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
