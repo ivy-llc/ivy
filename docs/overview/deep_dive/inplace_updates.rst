@@ -24,6 +24,7 @@ Inplace Updates
 .. _`inplace updates channel`: https://discord.com/channels/799879767196958751/982738152236130335
 .. _`inplace updates forum`: https://discord.com/channels/799879767196958751/1028681672268464199
 .. _`in the decorator`: https://github.com/unifyai/ivy/blob/588618fe04de21f79d68a8f6cbb48ab3402c6905/ivy/func_wrapper.py#L287
+.. _`out argument as a keyword argument`: https://github.com/unifyai/ivy/blob/e4505b6a7ad4922ed423ae09da8c9707c9926161/ivy/func_wrapper.py#L585
 
 Inplace updates enable users to overwrite the contents of existing arrays with new data.
 This enables much more control over the memory-efficiency of the program, preventing old unused arrays from being kept in memory for any longer than is strictly necessary.
@@ -319,9 +320,7 @@ If the backend-specific implementation does not handle the :code:`out` argument 
 
 However, the inclusion of this decorator means that in cases where the *mixed* function is called compositionally (there is no backend implementation), then the :code:`out` argument will also be handled `in the decorator`_, this time because of the lack of the :code:`support_native_out` attribute found on the compositional implementation.
 But this is not ideal.
-All compositional implementations are fully capable of handling the :code:`out` argument explicitly, and so handling it `in the decorator`_ will likely be less efficient, and prevent us from leveraging backend-specific in-place optimizations where they might exist when calling the individual Ivy functions of the compositional implementation.
-
-Therefore, we always add the :code:`support_native_out` attribute to *mixed* functions, to ensure that the :code:`out` argument is always handled directly by the compositional implementation, rather than being handled `in the decorator`_.
+All compositional implementations are fully capable of handling the :code:`out` argument explicitly, and so handling it `in the decorator`_ will likely be less efficient, and prevent us from leveraging backend-specific in-place optimizations where they might exist when calling the individual Ivy functions of the compositional implementation. Therefore, to allow the out argument to be handled in the compositional function itself we should add the :code:`handle_out_in_ivy` attribute to the compositional implementation in which case the :code:`handle_out_argument` will call the function by passing the `out argument as a keyword argument`_.
 
 copy argument
 -------------
