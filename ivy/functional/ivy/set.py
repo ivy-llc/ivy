@@ -87,7 +87,7 @@ def unique_all(
           array index data type.
         - third element must have the field name ``inverse_indices`` and must be an
           array containing the indices of ``values`` that reconstruct ``x``. The array
-          must have the same length as ``x`` across the given axis and must have the
+          must have the same length as the ``axis`` dimension of ``x`` and must have the
           default array index data type.
         - fourth element must have the field name ``counts`` and must be an array
           containing the number of times each unique element occurs in ``x``. The
