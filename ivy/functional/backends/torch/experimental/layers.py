@@ -180,6 +180,26 @@ def _add_ceil_pad_to_pad_list(num_pad, k, c):
     return num_pad + (num_pad - ((k * num_pad) / (k - c)))
 
 
+def _get_specific_pad(x_shape, kernel, strides, padding, dims):
+    if isinstance(padding, str):
+        pad_specific = [
+            _handle_padding(x_shape[i], strides[i], kernel[i], padding)
+            for i in range(dims - 1, -1, -1)
+        ]
+        pad_list_top = [pad_specific[i] // 2 for i in range(dims)]
+        pad_list_bot = [pad_specific[i] - pad_specific[i] // 2 for i in range(dims)]
+        padding = [None] * len(pad_list_top) * dims
+        padding[::2] = pad_list_top
+        padding[1::2] = pad_list_bot
+        pad_specific = pad_specific[::-1]
+    else:
+        if isinstance(padding, int):
+            padding = [(padding, padding)] * dims
+        pad_specific = [sum(padding[i]) for i in range(dims)]
+        padding = [item for sublist in padding for item in sublist[::-1]][::-1]
+    return padding, pad_specific
+
+
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, backend_version)
 def avg_pool1d(
     x: torch.Tensor,
@@ -266,6 +286,7 @@ def avg_pool2d(
     *,
     data_format: str = "NHWC",
     count_include_pad: bool = False,
+    ceil_mode: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(strides, int):
@@ -281,27 +302,20 @@ def avg_pool2d(
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
     x_shape = list(x.shape[2:])
-    pad_h = _handle_padding(x_shape[0], strides[0], kernel[0], padding)
-    pad_w = _handle_padding(x_shape[1], strides[1], kernel[1], padding)
+    padding, pad_specific = _get_specific_pad(x_shape, kernel, strides, padding, 2)
     x = torch.nn.functional.pad(
         x,
-        [pad_w // 2, pad_w - pad_w // 2, pad_h // 2, pad_h - pad_h // 2],
+        padding,
         value=0.0,
     )
-    if padding != "VALID" and padding != "SAME":
-        raise ivy.utils.exceptions.IvyException(
-            "Invalid padding arg {}\n"
-            'Must be one of: "VALID" or "SAME"'.format(padding)
-        )
-    res = torch.nn.functional.avg_pool2d(x, kernel, strides, 0)
+    res = torch.nn.functional.avg_pool2d(x, kernel, strides, 0, ceil_mode)
 
-    if not count_include_pad and (pad_w or pad_h):
-        padded = [pad_h, pad_w]
+    if not count_include_pad and any(pad_specific):
         num_padded_values = [
             ivy.map(
                 _get_num_padded_values,
                 constant={
-                    "p": padded[i],
+                    "p": pad_specific[i],
                     "n": x_shape[i],
                     "k": kernel[i],
                     "s": strides[i],
@@ -312,6 +326,15 @@ def avg_pool2d(
             )
             for i in range(2)
         ]
+
+        if ceil_mode:
+            for i in range(2):
+                pad = (pad_specific[i] // 2, pad_specific[i] - pad_specific[i] // 2)
+                _, c = _padding_ceil_mode(x_shape[i], kernel[i], pad, strides[i], True)
+                num_padded_values[i][-1] = _add_ceil_pad_to_pad_list(
+                    num_padded_values[i][-1], kernel[i], c
+                )
+
         num_padded_values1 = torch.tensor(num_padded_values[0], dtype=res.dtype)[
             :, None
         ]

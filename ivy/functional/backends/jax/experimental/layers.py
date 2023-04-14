@@ -112,7 +112,6 @@ def general_pool(
             ceil = [(0, c[i]) for i in range(len(dims) - 2)]
             for i in range(len(dims) - 2):
                 pad_list[i + 1] = (pad_list[i + 1][0], pad_list[i + 1][1] - ceil[i][1])
-            # pad_list = [pad_list[i + 1][1] - ceil[i][1] for i in range(len(dims) - 2)]
             inputs = jnp.pad(inputs, pad_list, mode="constant", constant_values=1.0)
             inputs = jnp.pad(
                 inputs, [(0, 0)] + ceil + [(0, 0)], mode="constant", constant_values=0.0
@@ -265,6 +264,7 @@ def avg_pool2d(
     *,
     data_format: str = "NHWC",
     count_include_pad: bool = False,
+    ceil_mode: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
 
@@ -281,7 +281,9 @@ def avg_pool2d(
     if data_format == "NCHW":
         x = jnp.transpose(x, (0, 2, 3, 1))
 
-    res = general_pool(x, 0.0, jlax.add, kernel, strides, padding, 2)
+    res = general_pool(
+        x, 0.0, jlax.add, kernel, strides, padding, 2, ceil_mode=ceil_mode
+    )
     div_shape = x.shape[:-1] + (1,)
     if len(div_shape) - 2 == len(kernel):
         div_shape = (1,) + div_shape[1:]
@@ -294,6 +296,7 @@ def avg_pool2d(
         padding,
         2,
         count_include_pad=count_include_pad,
+        ceil_mode=ceil_mode,
     )
     if data_format == "NCHW":
         return jnp.transpose(res, (0, 3, 1, 2))
