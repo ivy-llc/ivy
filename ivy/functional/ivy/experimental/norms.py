@@ -147,7 +147,7 @@ def batch_norm(
 
 
 batch_norm.mixed_function = True
-batch_norm.support_native_out = True
+batch_norm.handle_out_in_ivy = True
 
 
 @handle_nestable
