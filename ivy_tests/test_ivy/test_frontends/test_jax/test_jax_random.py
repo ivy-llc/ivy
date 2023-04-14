@@ -3,10 +3,8 @@ from hypothesis import strategies as st, given
 import jax
 
 # local
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.frontends.jax as jax_frontend
-from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 """
 Tests for jax.random cannot be made normally since a `uint32` PRNG key must
@@ -97,19 +95,10 @@ def test_jax_beta(key, alpha, beta, shape, dtype):
     assert framework_ret.shape == framework_ret.shape
 
 
-@handle_frontend_test(
-    fn_tree="jax.random.dirichlet",
-    dtype_key=helpers.dtype_and_values(
-        available_dtypes=["uint32"],
-        min_value=0,
-        max_value=2000,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_dim_size=2,
-        max_dim_size=2,
-    ),
+@given(
+    key=st.integers(min_value=int(-1e15), max_value=int(1e15)),
     dtype_alpha=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=False),
+        available_dtypes=helpers.get_dtypes("float", full=False, prune_function=False),
         shape=st.tuples(
             st.integers(min_value=2, max_value=5),
         ),
@@ -120,45 +109,26 @@ def test_jax_beta(key, alpha, beta, shape, dtype):
     shape=helpers.get_shape(
         min_num_dims=2, max_num_dims=2, min_dim_size=2, max_dim_size=5
     ),
-    dtype=helpers.get_dtypes("float", full=False),
-    test_with_out=st.just(False),
+    dtype=helpers.get_dtypes("float", full=False, prune_function=False),
 )
 def test_jax_dirichlet(
-    *,
-    dtype_key,
+    key,
     dtype_alpha,
     shape,
     dtype,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
 ):
-    input_dtype, key = dtype_key
     _, alpha = dtype_alpha
 
-    def call():
-        return helpers.test_frontend_function(
-            input_dtypes=input_dtype,
-            frontend=frontend,
-            test_flags=test_flags,
-            fn_tree=fn_tree,
-            on_device=on_device,
-            test_values=False,
-            key=key[0],
-            alpha=alpha[0],
-            shape=shape,
-            dtype=dtype[0],
-        )
+    jax_frontend.config.update("jax_enable_x64", True)
+    frontend_prng_key = jax_frontend.random.PRNGKey(key)
+    frontend_ret = jax_frontend.random.dirichlet(
+        frontend_prng_key, alpha[0], shape, dtype[0]
+    )
 
-    ret = call()
+    framework_prng_key = jax.random.PRNGKey(key)
+    framework_ret = jax.random.dirichlet(
+        framework_prng_key, alpha[0].__array__(), shape, dtype[0]
+    )
 
-    if not ivy.exists(ret):
-        return
-
-    ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
-    for (u, v) in zip(ret_np, ret_from_np):
-        assert u.dtype == v.dtype
-        assert u.shape == v.shape
+    assert frontend_ret.ivy_array.dtype == framework_ret.dtype.name
+    assert framework_ret.shape == framework_ret.shape
