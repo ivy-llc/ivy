@@ -43,4 +43,3 @@ if __name__ == "__main__":
         install_pkg(None, "jax")
         install_pkg(None, "jaxlib")
         install_pkg(None, "numpy")
-

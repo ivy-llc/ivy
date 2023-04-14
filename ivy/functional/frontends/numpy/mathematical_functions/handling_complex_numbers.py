@@ -33,15 +33,15 @@ def _real(val):
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
 def _conj(
-        x,
-        /,
-        out=None,
-        *,
-        where=True,
-        casting="same_kind",
-        order="K",
-        dtype=None,
-        subok=True,
+    x,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="K",
+    dtype=None,
+    subok=True,
 ):
     ret = ivy.conj(x, out=out)
     if ivy.is_array(where):

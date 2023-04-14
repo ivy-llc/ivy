@@ -194,7 +194,7 @@ def test_torch_normal(
 ):
     mean_dtype, mean = dtype_and_mean
     _, std = dtype_and_std
-    
+
     def call():
         return helpers.test_frontend_function(
             input_dtypes=mean_dtype,
@@ -211,7 +211,7 @@ def test_torch_normal(
 
     if not ivy.exists(ret):
         return
-      
+
     ret_np, ret_from_np = ret
     ret_np = helpers.flatten_and_to_np(ret=ret_np)
     ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
@@ -219,7 +219,7 @@ def test_torch_normal(
         assert u.dtype == v.dtype
         assert u.shape == v.shape
 
-             
+
 @handle_frontend_test(
     fn_tree="torch.rand_like",
     dtype=helpers.get_dtypes("float", full=False),
