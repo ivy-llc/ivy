@@ -552,6 +552,11 @@ def Softplus(*, features, name="Softplus"):
 
 
 @to_ivy_arrays_and_back
+def Zeta(*, x, q, name="Zeta"):
+    return ivy.zeta(x, q)
+
+
+@to_ivy_arrays_and_back
 def Xdivy(*, x, y, name="Xdivy"):
     if (x == 0).all():
         return 0.0
