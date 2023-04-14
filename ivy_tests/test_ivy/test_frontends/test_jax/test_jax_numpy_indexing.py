@@ -1,7 +1,8 @@
 # global
 from hypothesis import strategies as st, assume
 import numpy as np
-import jax.numpy as jnp
+from jax.numpy import tril, triu
+
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -345,7 +346,7 @@ def test_jax_numpy_unravel_index(
 @handle_frontend_test(
     fn_tree="jax.numpy.mask_indices",
     n=helpers.ints(min_value=3, max_value=10),
-    mask_func=st.sampled_from([jnp.triu, jnp.tril]),
+    mask_func=st.sampled_from([triu, tril]),
     k=helpers.ints(min_value=-5, max_value=5),
     input_dtype=helpers.get_dtypes("numeric"),
     test_with_out=st.just(False),
