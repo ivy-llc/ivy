@@ -7,7 +7,7 @@ import tensorflow as tf
 from ivy.func_wrapper import with_unsupported_dtypes, handle_mixed_function
 from .. import backend_version
 import ivy
-from ivy.functional.ivy.layers import _handle_padding
+from ivy.functional.ivy.layers import _handle_padding, _get_num_padded_values
 from ivy.functional.ivy.experimental.layers import _padding_ceil_mode, _get_size
 
 
@@ -112,6 +112,29 @@ def max_pool3d(
     return res
 
 
+def _handle_manual_pad_avg_pool(x, kernel, strides, padding, ceil_mode, dims):
+    if isinstance(padding, str):
+        pad_specific = [
+            _handle_padding(x.shape[i + 1], strides[i], kernel[i], padding)
+            for i in range(dims)
+        ]
+        padding = [
+            (pad_specific[i] // 2, pad_specific[i] - pad_specific[i] // 2)
+            for i in range(dims)
+        ]
+    else:
+        pad_specific = [sum(padding[i]) for i in range(dims)]
+    c = []
+    if ceil_mode:
+        for i in range(dims):
+            padding[i], c_i = _padding_ceil_mode(
+                x.shape[i + 1], kernel[i], padding[i], strides[i], True
+            )
+            c.append(c_i)
+            pad_specific[i] = sum(padding[i])
+    return padding, pad_specific, c
+
+
 @with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "float64")}, backend_version)
 def avg_pool1d(
     x: Union[tf.Tensor, tf.Variable],
@@ -122,6 +145,7 @@ def avg_pool1d(
     *,
     data_format: str = "NWC",
     count_include_pad: bool = False,
+    ceil_mode: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(kernel, int):
@@ -136,13 +160,44 @@ def avg_pool1d(
 
     if data_format == "NCW":
         x = tf.transpose(x, (0, 2, 1))
-    if count_include_pad:
-        pad_w = _handle_padding(x.shape[1], strides[0], kernel[0], padding)
-        x = tf.pad(
-            x, [(0, 0), (pad_w // 2, pad_w - pad_w // 2), (0, 0)], constant_values=0
+
+    manual_padding = False
+    # Have to manually pad if explicit padding is provided, or if ceil_mode is True
+    if not isinstance(padding, str) or ceil_mode or count_include_pad:
+        padding, pad_specific, c = _handle_manual_pad_avg_pool(
+            x, kernel, strides, padding, ceil_mode, 1
         )
+        x = tf.pad(x, [(0, 0), *padding, (0, 0)], constant_values=0)
+        manual_padding = True
         padding = "VALID"
+
     res = tf.nn.avg_pool1d(x, kernel, strides, padding)
+
+    # removing any manual padding added because of ceil_mode or count_include_pad
+    if (manual_padding and not count_include_pad) or ceil_mode:
+        if not count_include_pad:
+            num_padded_values = tf.convert_to_tensor(
+                ivy.map(
+                    _get_num_padded_values,
+                    constant={
+                        "p": pad_specific[0],
+                        "n": x.shape[1] - pad_specific[0],
+                        "k": kernel[0],
+                        "s": strides[0],
+                    },
+                    unique={
+                        "i": tf.range(res.shape[1]),
+                    },
+                ),
+                dtype=res.dtype,
+            )
+        else:
+            num_padded_values = tf.scatter_nd(
+                tf.constant([[res.shape[1] - 1]]),
+                tf.constant([c], dtype=res.dtype),
+                tf.constant([res.shape[1]], dtype=tf.int32),
+            )
+        res = (kernel[0] * res) / (kernel[0] - num_padded_values[:, None])
 
     if data_format == "NCW":
         res = tf.transpose(res, (0, 2, 1))
@@ -161,6 +216,7 @@ def avg_pool2d(
     *,
     data_format: str = "NHWC",
     count_include_pad: bool = False,
+    ceil_mode: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(kernel, int):
@@ -173,24 +229,60 @@ def avg_pool2d(
     elif len(strides) == 1:
         strides = [strides[0]] * 2
 
-    if count_include_pad:
-        pad_h = _handle_padding(x.shape[1], strides[0], kernel[0], padding)
-        pad_w = _handle_padding(x.shape[2], strides[1], kernel[1], padding)
-        x = tf.pad(
-            x,
-            [
-                (0, 0),
-                (pad_h // 2, pad_h - pad_h // 2),
-                (pad_w // 2, pad_w - pad_w // 2),
-                (0, 0),
-            ],
-            constant_values=0,
-        )
-        padding = "VALID"
-
     if data_format == "NCHW":
         x = tf.transpose(x, (0, 2, 3, 1))
+    manual_padding = False
+    # Have to manually pad if explicit padding is provided, or if ceil_mode is True
+    if not isinstance(padding, str) or ceil_mode or count_include_pad:
+        padding, pad_specific, c = _handle_manual_pad_avg_pool(
+            x, kernel, strides, padding, ceil_mode, 2
+        )
+        x = tf.pad(x, [(0, 0), *padding, (0, 0)], constant_values=0)
+        manual_padding = True
+        padding = "VALID"
+
     res = tf.nn.avg_pool2d(x, kernel, strides, padding)
+
+    # removing any manual padding added because of ceil_mode or count_include_pad
+    if (manual_padding and not count_include_pad) or ceil_mode:
+        if not count_include_pad:
+            num_padded_values = [
+                tf.convert_to_tensor(
+                    ivy.map(
+                        _get_num_padded_values,
+                        constant={
+                            "p": pad_specific[i],
+                            "n": x.shape[i + 1] - pad_specific[i],
+                            "k": kernel[i],
+                            "s": strides[i],
+                        },
+                        unique={
+                            "i": tf.range(res.shape[i + 1]),
+                        },
+                    ),
+                    dtype=res.dtype,
+                )
+                for i in range(2)
+            ]
+        else:
+            num_padded_values = []
+            for i in range(2):
+                num_pad = tf.scatter_nd(
+                    tf.constant([[res.shape[i + 1] - 1]]),
+                    tf.constant([c[i]], dtype=res.dtype),
+                    tf.constant([res.shape[i + 1]], dtype=tf.int32),
+                )
+                num_padded_values.append(num_pad)
+        num_padded_values1 = num_padded_values[0][:, None]
+        num_padded_values2 = num_padded_values[1][None, :]
+        num_padded_values = (
+            num_padded_values1 * kernel[1]
+            + num_padded_values2 * kernel[0]
+            - num_padded_values1 * num_padded_values2
+        )
+        kernel_mul = tf.cast(tf.math.reduce_prod(kernel), res.dtype)
+        res = (kernel_mul * res) / (kernel_mul - tf.expand_dims(num_padded_values, -1))
+
     if data_format == "NCHW":
         return tf.transpose(res, (0, 3, 1, 2))
     return res

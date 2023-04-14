@@ -234,6 +234,30 @@ def max_pool3d(
     return res
 
 
+def _get_padded_values(x_shape, kernel, strides, padding, ceil_mode, dim):
+    if isinstance(padding, str):
+        pad_specific = [
+            _handle_padding(x_shape[i], strides[i], kernel[i], padding)
+            for i in range(dim)
+        ]
+        padding = [
+            (pad_specific[i] // 2, pad_specific[i] - pad_specific[i] // 2)
+            for i in range(dim)
+        ]
+    else:
+        pad_specific = [sum(padding[i]) for i in range(dim)]
+
+    c = []
+    if ceil_mode:
+        for i in range(dim):
+            padding[i], c_i = _padding_ceil_mode(
+                x_shape[i], kernel[i], padding[i], strides[i], True
+            )
+            c.append(c_i)
+            pad_specific[i] = sum(padding[i])
+    return padding, pad_specific, c
+
+
 def avg_pool1d(
     x: np.ndarray,
     kernel: Union[int, Tuple[int]],
@@ -243,6 +267,7 @@ def avg_pool1d(
     *,
     data_format: str = "NWC",
     count_include_pad: bool = False,
+    ceil_mode: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
 
@@ -258,13 +283,16 @@ def avg_pool1d(
 
     if data_format == "NCW":
         x = np.swapaxes(x, 1, 2)
+    x_shape = x.shape[1:-1]
+    padding, pad_specific, c = _get_padded_values(
+        x_shape, kernel, strides, padding, ceil_mode, 1
+    )
 
-    pad_w = _handle_padding(x.shape[1], strides[0], kernel[0], padding)
     x = np.pad(
         x,
         [
             (0, 0),
-            (pad_w // 2, pad_w - pad_w // 2),
+            *padding,
             (0, 0),
         ],
         constant_values=0.0,
@@ -286,22 +314,27 @@ def avg_pool1d(
 
     res = np.mean(sub_matrices, axis=2)
 
-    if not count_include_pad:
-        num_padded_values = ivy.map(
-            _get_num_padded_values,
-            constant={
-                "p": pad_w,
-                "n": x.shape[1] - pad_w,
-                "k": kernel[0],
-                "s": strides[0],
-            },
-            unique={
-                "i": np.arange(res.shape[1]),
-            },
-        )
-        res = (kernel[0] * res) / (
-            kernel[0] - np.array(num_padded_values, dtype=res.dtype)
-        )[:, None]
+    if (not count_include_pad or ceil_mode) and any(pad_specific):
+        if not count_include_pad:
+            num_padded_values = np.array(
+                ivy.map(
+                    _get_num_padded_values,
+                    constant={
+                        "p": pad_specific[0],
+                        "n": x.shape[1] - pad_specific[0],
+                        "k": kernel[0],
+                        "s": strides[0],
+                    },
+                    unique={
+                        "i": np.arange(res.shape[1]),
+                    },
+                ),
+                dtype=res.dtype,
+            )
+        else:
+            num_padded_values = np.zeros(res.shape[1], dtype=res.dtype)
+            num_padded_values[-1] = c[0]
+        res = (kernel[0] * res) / (kernel[0] - num_padded_values[:, None])
 
     if data_format == "NCW":
         return res.swapaxes(1, 2)
@@ -317,6 +350,7 @@ def avg_pool2d(
     *,
     data_format: str = "NHWC",
     count_include_pad: bool = False,
+    ceil_mode: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if isinstance(kernel, int):
@@ -333,14 +367,14 @@ def avg_pool2d(
         x = np.transpose(x, (0, 2, 3, 1))
 
     x_shape = list(x.shape[1:3])
-    pad_h = _handle_padding(x_shape[0], strides[0], kernel[0], padding)
-    pad_w = _handle_padding(x_shape[1], strides[1], kernel[1], padding)
+    padding, pad_specific, c = _get_padded_values(
+        x_shape, kernel, strides, padding, ceil_mode, 2
+    )
     x = np.pad(
         x,
         [
             (0, 0),
-            (pad_h // 2, pad_h - pad_h // 2),
-            (pad_w // 2, pad_w - pad_w // 2),
+            *padding,
             (0, 0),
         ],
         constant_values=0.0,
@@ -365,26 +399,32 @@ def avg_pool2d(
 
     # B x OH x OW x O
     res = np.mean(sub_matrices, axis=(3, 4))
-    if not count_include_pad and (pad_w or pad_h):
-        padded = [pad_h, pad_w]
-        num_padded_values = [
-            np.array(
-                ivy.map(
-                    _get_num_padded_values,
-                    constant={
-                        "p": padded[i],
-                        "n": x.shape[i + 1] - padded[i],
-                        "k": kernel[i],
-                        "s": strides[i],
-                    },
-                    unique={
-                        "i": np.arange(res.shape[i + 1]),
-                    },
-                ),
-                dtype=res.dtype,
-            )
-            for i in range(2)
-        ]
+    if (not count_include_pad or ceil_mode) and any(pad_specific):
+        if not count_include_pad:
+            num_padded_values = [
+                np.array(
+                    ivy.map(
+                        _get_num_padded_values,
+                        constant={
+                            "p": pad_specific[i],
+                            "n": x.shape[i + 1] - pad_specific[i],
+                            "k": kernel[i],
+                            "s": strides[i],
+                        },
+                        unique={
+                            "i": np.arange(res.shape[i + 1]),
+                        },
+                    ),
+                    dtype=res.dtype,
+                )
+                for i in range(2)
+            ]
+        else:
+            num_padded_values = []
+            for i in range(2):
+                num_pad = np.zeros(res.shape[i + 1], dtype=res.dtype)
+                num_pad[-1] = c[i]
+                num_padded_values.append(num_pad)
         num_padded_values1 = num_padded_values[0][:, None]
         num_padded_values2 = num_padded_values[1][None, :]
         num_padded_values = (

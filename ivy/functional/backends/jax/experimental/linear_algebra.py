@@ -161,3 +161,39 @@ def solve_triangular(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jla.solve_triangular(a, b, trans=transpose, lower=lower, unit_diagonal=unit_diagonal)
+
+
+def cov(
+    x1: JaxArray,
+    x2: JaxArray = None,
+    /,
+    *,
+    rowVar: bool = True,
+    bias: bool = False,
+    ddof: Optional[int] = None,
+    fweights: Optional[JaxArray] = None,
+    aweights: Optional[JaxArray] = None,
+    dtype: Optional[jnp.dtype] = None,
+) -> JaxArray:
+    if not dtype:
+        x1 = jnp.asarray(x1, dtype=jnp.float64)
+
+    if jnp.ndim(x1) > 2:
+        raise ValueError("x1 has more than 2 dimensions")
+
+    if x2 is not None:
+        if jnp.ndim(x2) > 2:
+            raise ValueError("x2 has more than 2 dimensions")
+
+    if fweights is not None:
+        fweights = jnp.asarray(fweights, dtype=jnp.int64)
+
+    return jnp.cov(
+        m=x1,
+        y=x2,
+        rowvar=rowVar,
+        bias=bias,
+        ddof=ddof,
+        fweights=fweights,
+        aweights=aweights,
+    )

@@ -80,10 +80,11 @@ def _get_first_array(*args, **kwargs):
 
 def _build_view(original, view, fn, args, kwargs, index=None):
     if ivy.exists(original._base):
-        warnings.warn(
-            "Creating many views will lead to overhead "
-            "when performing inplace updates with this backend"
-        )
+        if ivy.backend in ("jax", "tensorflow"):
+            warnings.warn(
+                "Creating many views will lead to overhead "
+                "when performing inplace updates with this backend"
+            )
         base = original._base
         view._base = base
         view._manipulation_stack = python_copy.copy(original._manipulation_stack)
@@ -92,7 +93,23 @@ def _build_view(original, view, fn, args, kwargs, index=None):
         view._base = base
     base._view_refs.append(weakref.ref(view))
     view._manipulation_stack.append((fn, args[1:], kwargs, index))
+
+    # Handle attributes for torch functions without native view functionality
+    if ivy.exists(original._torch_base):
+        view._torch_base = (
+            original
+            if ivy.exists(original._torch_manipulation)
+            else original._torch_base
+        )
+    else:
+        view._torch_base = base
+    if fn in _torch_non_native_view_functions:
+        view._torch_manipulation = (original, (fn, args[1:], kwargs))
+        view._torch_base._torch_view_refs.append(weakref.ref(view))
     return view
+
+
+_torch_non_native_view_functions = ("flip", "flipud", "rot90", "fliplr")
 
 
 def _check_in_nested_sequence(sequence, value=None, _type=None):
@@ -388,16 +405,16 @@ def handle_view(fn: Callable) -> Callable:
     """
 
     @functools.wraps(fn)
-    def new_fn(*args, copy=None, **kwargs):
-        ret = fn(*args, copy=copy, **kwargs)
-        if copy or ivy.backend in ("numpy", "torch") or not ivy.is_ivy_array(args[0]):
+    def new_fn(*args, **kwargs):
+        ret = fn(*args, **kwargs)
+        if ("copy" in kwargs and kwargs["copy"]) or not ivy.is_ivy_array(args[0]):
             return ret
         original = args[0]
-        if isinstance(ret, list):
+        if isinstance(ret, (list, tuple)):
             for i, view in enumerate(ret):
-                ret[i] = _build_view(original, view, fn, args, kwargs, i)
+                ret[i] = _build_view(original, view, fn.__name__, args, kwargs, i)
         else:
-            ret = _build_view(original, ret, fn, args, kwargs, None)
+            ret = _build_view(original, ret, fn.__name__, args, kwargs, None)
         return ret
 
     new_fn.handle_view = True
@@ -420,17 +437,16 @@ def handle_view_indexing(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         ret = fn(*args, **kwargs)
-        if ivy.backend in ("numpy", "torch") or not ivy.is_ivy_array(args[0]):
+        if ("copy" in kwargs and kwargs["copy"]) or not ivy.is_ivy_array(args[0]):
             return ret
-        if kwargs:
-            query = kwargs["query"]
-        else:
-            query = args[1]
+        query = kwargs["query"] if "query" in kwargs else args[1]
         query = (query,) if not isinstance(query, tuple) else query
         if [i for i in query if not isinstance(i, (slice, int))]:
             return ret
         original = args[0]
-        ret = _build_view(original, ret, fn, args, kwargs)
+        # ToDo: Remove hard coding of only function with this wrapper
+        #  Need general way to convert special method to function found in ivy.__dict__
+        ret = _build_view(original, ret, "get_item", args, kwargs)
         return ret
 
     new_fn.handle_view_indexing = True
@@ -589,8 +605,12 @@ def handle_out_argument(fn: Callable) -> Callable:
             if isinstance(ret, (tuple, list)):
                 for i in range(len(ret)):
                     out[i].data = ivy.to_native(ret[i])
+                    if ivy.backend == "torch":
+                        _update_torch_views(out[i])
             else:
                 out.data = ivy.to_native(ret)
+                if ivy.backend == "torch":
+                    _update_torch_views(out)
             return out
         # compute return, and then handle the inplace update explicitly
 
@@ -607,6 +627,35 @@ def handle_out_argument(fn: Callable) -> Callable:
 
     new_fn.handle_out_argument = True
     return new_fn
+
+
+def _update_torch_views(x, visited_view=None):
+    if x._torch_view_refs != []:
+        _update_torch_references(x, visited_view)
+    if ivy.exists(x._torch_manipulation):
+        parent_tensor, fn_args_kwargs = x._torch_manipulation
+        fn, args, kwargs = fn_args_kwargs
+        kwargs["copy"] = True
+        if fn == "rot90":
+            kwargs = kwargs.copy()
+            kwargs["k"] = -kwargs["k"]
+            parent_tensor.data[()] = ivy.__dict__[fn](x, *args, **kwargs).data
+        else:
+            parent_tensor.data[()] = ivy.__dict__[fn](x, *args, **kwargs).data
+    if ivy.exists(x._torch_base):
+        _update_torch_views(x._torch_base, visited_view=x)
+
+
+def _update_torch_references(x, visited_view=None):
+    for ref in x._torch_view_refs:
+        view = ref()
+        if ivy.exists(view) and view is not visited_view:
+            parent_tensor, fn_args_kwargs = view._torch_manipulation
+            fn, args, kwargs = fn_args_kwargs
+            kwargs["copy"] = True
+            view.data[()] = ivy.__dict__[fn](parent_tensor, *args, **kwargs).data
+            if view._torch_view_refs != []:
+                _update_torch_references(view)
 
 
 # Nestable Handling #
