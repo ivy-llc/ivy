@@ -1,7 +1,7 @@
 # global
 from hypothesis import strategies as st, assume
 import numpy as np
-import jax
+import jax.numpy as jnp
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -345,9 +345,9 @@ def test_jax_numpy_unravel_index(
 @handle_frontend_test(
     fn_tree="jax.numpy.mask_indices",
     n=helpers.ints(min_value=3, max_value=10),
-    mask_func=st.sampled_from([jax.numpy.triu, jax.numpy.tril]),
+    mask_func=st.sampled_from([jnp.triu, jnp.tril]),
     k=helpers.ints(min_value=-5, max_value=5),
-    input_dtype=helpers.get_dtypes("valid"),
+    input_dtype=helpers.get_dtypes("numeric"),
     test_with_out=st.just(False),
     number_positional_args=st.just(2),
 )
@@ -376,19 +376,17 @@ def test_jax_numpy_mask_indices(
 @st.composite
 def _get_dtype_square_x(draw):
     dim_size = draw(helpers.ints(min_value=2, max_value=5))
-    dtype = draw(helpers.get_dtypes("valid"))
-    dtype = [draw(st.sampled_from(tuple(set(dtype))))]
-    x = draw(
-        helpers.array_values(
-            dtype=dtype[0], shape=(dim_size, dim_size), min_value=0, max_value=10
+    dtype_x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"), shape=(dim_size, dim_size)
         )
     )
-    return dtype, x
+    return dtype_x
 
 
 @handle_frontend_test(
-    fn_tree="jax.numpy.diag_indices_from",
     dtype_x=_get_dtype_square_x(),
+    fn_tree="jax.numpy.diag_indices_from",
     test_with_out=st.just(False),
 )
 def test_jax_numpy_diag_indices_from(
@@ -405,5 +403,5 @@ def test_jax_numpy_diag_indices_from(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        arr=x,
+        arr=x[0],
     )

@@ -58,14 +58,11 @@ def unravel_index(indices, shape):
 
 
 @to_ivy_arrays_and_back
-def mask_indices(*args, **kwargs):
-    n = args[0]
-    mask_func = args[1]
+def mask_indices(n, mask_func, k=0):
     mask_func_obj = inspect.unwrap(mask_func)
     mask_func_name = mask_func_obj.__name__
     try:
         ivy_mask_func_obj = getattr(ivy.functional.frontends.jax.numpy, mask_func_name)
-        k = kwargs.get("k", 0)
         a = ivy.ones((n, n))
         mask = ivy_mask_func_obj(a, k=k)
         indices = ivy.argwhere(mask.ivy_array)
