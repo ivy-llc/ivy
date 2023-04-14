@@ -140,4 +140,4 @@ def layer_norm(
 
 
 layer_norm.mixed_function = True
-layer_norm.support_native_out = True
+layer_norm.handle_out_in_ivy = True
