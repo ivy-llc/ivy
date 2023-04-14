@@ -36,7 +36,7 @@ This is one particular area of the Ivy code where, technically speaking, the fun
 
 While :class:`ivy.Array` instances will always be inplace updated consistently, in some cases it is simply not possible to also inplace update the :class:`ivy.NativeArray` which :class:`ivy.Array` wraps, due to design choices made by each backend.
 
-**NOTE:** Native inplace updates do not modify the dtype of the array being updated, as such the :code:`keep_input_dtype` flag should normally be set to True such that inplace updating behavior is consistent between backends.
+**NOTE:** Native inplace updates do not modify the dtype of the array being updated, as such the :code:`keep_input_dtype` flag should normally be set to :code:`True` such that inplace updating behavior is consistent between backends.
 
 **JAX**:
 
@@ -463,6 +463,7 @@ The functions currently implemented in the Ivy API where PyTorch fails to return
 In the case one of those functions is used with a Pytorch backend, additional logic has been added to make the returns of those functions behave as views of the original that made them.
 
 Here's a brief description of the additional attributes added to :class:`ivy.Array` and their usage:
+
 #. Base (:code:`._base`): the original array being referenced (array all views stem from)
 #. Manipulation stack (:code:`._manipulation_stack`): store of operations that were done on the original to get to the current shape (manipulation or indexing)
 #. Reference stack :code:`._view_refs`: Weak references to the arrays that reference the original as view, only populated for base arrays.
@@ -471,22 +472,25 @@ Here's a brief description of the additional attributes added to :class:`ivy.Arr
 #. PyTorch manipulation cache:code:`._torch_manipulation`: Tuple storing array or view and function which made the functional view, only populated for functional views
 
 Here's a brief description of how the :code:`@handle_view` wrapper populates these attributes:
+
 #. When an array is made using a function decorated by this wrapper its base becomes the array that made it, or if the array that made it is also a view, its base.
 #. The view is then added to the reference stack of the base array (weakly), the operation that created the array is also added to the manipulation stack of the array.
 #. The way the PyTorch specific attributes are updated should be adequately explained above.
 
 Here's a brief description of what happens during an inplace operation with a JAX and TensorFlow backend:
+
 #. If the base is inplace updated, then it goes through all the arrays in the reference stack, and through their manipulation, then inplace updates every array respectively.
 #. If a view gets inplace updated, an index array is created of the shape of the base array, which then is passed through the manipulation stack of the updated array.
 #. The updated array and the index array are then flattened and they then update the original array by performing a scatter update on a flattened version of the original array, which then gets reshaped into the correct shape.
 #. Then the all views stemming from the original are updated as described in the first point.
 
 Here's a brief description of what happens during an inplace operation with a PyTorch backend:
+
 #. The array being updated checks if it has a populated reference stack, if it does it inplace updates each functional view in the stack with the output of the stored function called with the array that made it.
-    It then checks if the functional view has a reference stack and continues recursively until it reaches a point where it exhausts all reference stacks.
+   It then checks if the functional view has a reference stack and continues recursively until it reaches a point where it exhausts all reference stacks.
 #. If the reference stack is empty or exhausted it checks if it has a manipulation stack.
-    If populated it performs the reverse functional operation with itself as the input and inplace updates the view that made it (reverses the operation that made it).
-    If the manipulation stack is empty or already exhausted it goes to the array’s PyTorch base and repeats the recursively until everything is exhausted and the base is None.
+   If populated it performs the reverse functional operation with itself as the input and inplace updates the view that made it (reverses the operation that made it).
+   If the manipulation stack is empty or already exhausted it goes to the array’s PyTorch base and repeats the recursively until everything is exhausted and the base is None.
 #. All other views are expected to be updated automatically through PyTorch's native view handling.
 
 copy argument
