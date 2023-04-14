@@ -25,6 +25,10 @@ def unique_all(
         ["values", "indices", "inverse_indices", "counts"],
     )
 
+    if axis is None:
+        x = torch.flatten(x)
+        axis = 0
+
     values, inverse_indices, counts = torch.unique(
         x, sorted=True, return_inverse=True, return_counts=True, dim=axis,
     )

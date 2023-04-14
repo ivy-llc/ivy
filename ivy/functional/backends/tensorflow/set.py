@@ -23,6 +23,10 @@ def unique_all(
         ["values", "indices", "inverse_indices", "counts"],
     )
 
+    if axis is None:
+        x = tf.reshape(x, shape=(-1,))
+        axis = 0
+
     values, inverse_indices, counts = tf.raw_ops.UniqueWithCountsV2(
         x=x,
         axis=tf.constant([axis], dtype=tf.int32),
