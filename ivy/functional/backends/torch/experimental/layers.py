@@ -8,6 +8,7 @@ import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, handle_mixed_function
 from . import backend_version
 from ivy.functional.ivy.layers import _handle_padding, _get_num_padded_values
+from ivy.functional.ivy.experimental.layers import _padding_ceil_mode
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, backend_version)
@@ -175,6 +176,10 @@ def max_pool3d(
     return res
 
 
+def _add_ceil_pad_to_pad_list(num_pad, k, c):
+    return num_pad + (num_pad - ((k * num_pad) / (k - c)))
+
+
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, backend_version)
 def avg_pool1d(
     x: torch.Tensor,
@@ -185,6 +190,7 @@ def avg_pool1d(
     *,
     data_format: str = "NWC",
     count_include_pad: bool = False,
+    ceil_mode: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(strides, int):
@@ -200,16 +206,25 @@ def avg_pool1d(
     if data_format == "NWC":
         x = x.permute(0, 2, 1)
     x_shape = x.shape[2]
-    pad_w = _handle_padding(x_shape, strides[0], kernel[0], padding)
-    x = torch.nn.functional.pad(x, [pad_w // 2, pad_w - pad_w // 2], value=0.0)
+    if isinstance(padding, str):
+        pad_specific = [
+            _handle_padding(x_shape, strides[i], kernel[i], padding) for i in range(1)
+        ]
+        padding = [
+            (pad_specific[i] // 2, pad_specific[i] - pad_specific[i] // 2)
+            for i in range(1)
+        ]
+    else:
+        pad_specific = [sum(padding[i]) for i in range(1)]
+    x = torch.nn.functional.pad(x, *padding, value=0.0)
 
-    res = torch.nn.functional.avg_pool1d(x, kernel, strides, 0)
+    res = torch.nn.functional.avg_pool1d(x, kernel, strides, 0, ceil_mode)
 
-    if not count_include_pad:
+    if not count_include_pad and any(pad_specific):
         num_padded_values = ivy.map(
             _get_num_padded_values,
             constant={
-                "p": pad_w,
+                "p": pad_specific[0],
                 "n": x_shape,
                 "k": kernel[0],
                 "s": strides[0],
@@ -218,7 +233,15 @@ def avg_pool1d(
                 "i": torch.arange(res.shape[2]),
             },
         )
-        res = (kernel[0] * res) / (kernel[0] - torch.tensor(num_padded_values))
+        num_padded_values = torch.tensor(num_padded_values, dtype=res.dtype)
+
+        if ceil_mode:
+            _, c = _padding_ceil_mode(x_shape, kernel[0], padding[0], strides[0], True)
+            num_padded_values[-1] = _add_ceil_pad_to_pad_list(
+                num_padded_values[-1], kernel[0], c
+            )
+
+        res = (kernel[0] * res) / (kernel[0] - num_padded_values)
 
     if data_format == "NWC":
         res = res.permute(0, 2, 1)

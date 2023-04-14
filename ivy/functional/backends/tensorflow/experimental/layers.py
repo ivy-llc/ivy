@@ -7,7 +7,7 @@ import tensorflow as tf
 from ivy.func_wrapper import with_unsupported_dtypes, handle_mixed_function
 from .. import backend_version
 import ivy
-from ivy.functional.ivy.layers import _handle_padding
+from ivy.functional.ivy.layers import _handle_padding, _get_num_padded_values
 from ivy.functional.ivy.experimental.layers import _padding_ceil_mode, _get_size
 
 
@@ -122,6 +122,7 @@ def avg_pool1d(
     *,
     data_format: str = "NWC",
     count_include_pad: bool = False,
+    ceil_mode: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(kernel, int):
@@ -136,13 +137,57 @@ def avg_pool1d(
 
     if data_format == "NCW":
         x = tf.transpose(x, (0, 2, 1))
-    if count_include_pad:
-        pad_w = _handle_padding(x.shape[1], strides[0], kernel[0], padding)
-        x = tf.pad(
-            x, [(0, 0), (pad_w // 2, pad_w - pad_w // 2), (0, 0)], constant_values=0
-        )
+
+    manual_padding = False
+    # Have to manually pad if explicit padding is provided, or if ceil_mode is True
+    if not isinstance(padding, str) or ceil_mode or count_include_pad:
+        if isinstance(padding, str):
+            pad_specific = [
+                _handle_padding(x.shape[i + 1], strides[i], kernel[i], padding)
+                for i in range(1)
+            ]
+            padding = [
+                (pad_specific[i] // 2, pad_specific[i] - pad_specific[i] // 2)
+                for i in range(1)
+            ]
+        else:
+            pad_specific = [sum(padding[i]) for i in range(1)]
+        if ceil_mode:
+            padding[0], c = _padding_ceil_mode(
+                x.shape[1], kernel[0], padding[0], strides[0], True
+            )
+            pad_specific = [sum(padding[i]) for i in range(1)]
+        x = tf.pad(x, [(0, 0), *padding, (0, 0)], constant_values=0)
+        manual_padding = True
         padding = "VALID"
+
     res = tf.nn.avg_pool1d(x, kernel, strides, padding)
+
+    # removing any manual padding added because of ceil_mode or count_include_pad
+    if (manual_padding and not count_include_pad) or ceil_mode:
+        if not count_include_pad:
+            num_padded_values = tf.convert_to_tensor(
+                ivy.map(
+                    _get_num_padded_values,
+                    constant={
+                        "p": pad_specific[0],
+                        "n": x.shape[1] - pad_specific[0],
+                        "k": kernel[0],
+                        "s": strides[0],
+                    },
+                    unique={
+                        "i": tf.range(res.shape[1]),
+                    },
+                ),
+                dtype=res.dtype,
+            )
+        else:
+            num_padded_values = tf.scatter_nd(
+                tf.constant([[res.shape[1] - 1]]),
+                tf.constant([c], dtype=res.dtype),
+                tf.constant([res.shape[1]], dtype=tf.int32),
+            )
+        res = (kernel[0] * res) / (kernel[0] - num_padded_values[:, None])
 
     if data_format == "NCW":
         res = tf.transpose(res, (0, 2, 1))
