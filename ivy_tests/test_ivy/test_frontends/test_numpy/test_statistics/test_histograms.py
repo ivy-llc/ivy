@@ -49,9 +49,7 @@ def test_numpy_bincount(
             on_device=on_device,
             x=x[0],
             out=None,
-            where=where,
-            casting=casting,
-            order="K",
-            dtype=dtype,
-            subok=True,
+            weights=None,
+            minlength=0,
+            length=None,
         )
