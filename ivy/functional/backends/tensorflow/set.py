@@ -37,8 +37,8 @@ def unique_all(
     sort_idx = tf.argsort(first_elements)
     values = tf.gather(values, sort_idx, axis=axis)
     counts = tf.gather(counts, sort_idx)
-    # counts = tf.convert_to_tensor(counts.numpy()[sort_idx])
-    inverse_indices = tf.map_fn(lambda y: tf.gather(sort_idx, y), inverse_indices)
+    inv_sort_idx = tf.math.invert_permutation(sort_idx)
+    inverse_indices = tf.map_fn(lambda y: tf.gather(inv_sort_idx, y), inverse_indices)
 
     tensor_list = x.numpy().tolist()
     if (
