@@ -243,6 +243,7 @@ def avg_pool1d(
     *,
     data_format: str = "NWC",
     count_include_pad: bool = False,
+    ceil_mode: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
 
@@ -258,13 +259,29 @@ def avg_pool1d(
 
     if data_format == "NCW":
         x = np.swapaxes(x, 1, 2)
+    if isinstance(padding, str):
+        pad_specific = [
+            _handle_padding(x.shape[i + 1], strides[i], kernel[i], padding)
+            for i in range(1)
+        ]
+        padding = [
+            (pad_specific[i] // 2, pad_specific[i] - pad_specific[i] // 2)
+            for i in range(1)
+        ]
+    else:
+        pad_specific = [sum(padding[i]) for i in range(1)]
 
-    pad_w = _handle_padding(x.shape[1], strides[0], kernel[0], padding)
+    if ceil_mode:
+        padding[0], c = _padding_ceil_mode(
+            x.shape[1], kernel[0], padding[0], strides[0], True
+        )
+        pad_specific = [sum(padding[i]) for i in range(1)]
+
     x = np.pad(
         x,
         [
             (0, 0),
-            (pad_w // 2, pad_w - pad_w // 2),
+            *padding,
             (0, 0),
         ],
         constant_values=0.0,
@@ -286,22 +303,27 @@ def avg_pool1d(
 
     res = np.mean(sub_matrices, axis=2)
 
-    if not count_include_pad:
-        num_padded_values = ivy.map(
-            _get_num_padded_values,
-            constant={
-                "p": pad_w,
-                "n": x.shape[1] - pad_w,
-                "k": kernel[0],
-                "s": strides[0],
-            },
-            unique={
-                "i": np.arange(res.shape[1]),
-            },
-        )
-        res = (kernel[0] * res) / (
-            kernel[0] - np.array(num_padded_values, dtype=res.dtype)
-        )[:, None]
+    if (not count_include_pad or ceil_mode) and any(pad_specific):
+        if not count_include_pad:
+            num_padded_values = np.array(
+                ivy.map(
+                    _get_num_padded_values,
+                    constant={
+                        "p": pad_specific[0],
+                        "n": x.shape[1] - pad_specific[0],
+                        "k": kernel[0],
+                        "s": strides[0],
+                    },
+                    unique={
+                        "i": np.arange(res.shape[1]),
+                    },
+                ),
+                dtype=res.dtype,
+            )
+        else:
+            num_padded_values = np.zeros(res.shape[1], dtype=res.dtype)
+            num_padded_values[-1] = c
+        res = (kernel[0] * res) / (kernel[0] - num_padded_values[:, None])
 
     if data_format == "NCW":
         return res.swapaxes(1, 2)
