@@ -559,7 +559,7 @@ This function should be used in places where the result doesn’t depend on the 
 
 **Note** - Under the hood, **array_values** strategy is called if the data type is *integer*, and **none_or_list_of_floats** is called when the data type is *float*.
 
-15. `get_probs`_ -  This is similar to the **get_mean_std** strategy, and is used to generate a tuple containing two values.
+15. `get_probs`_ -  This is used to generate a tuple containing two values.
     The first one being the *unnormalized probabilities* for all elements in a population, the second one being the *population size*.
     For example-:
 

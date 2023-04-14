@@ -220,28 +220,6 @@ def get_shape(
 
 
 @st.composite
-def get_mean_std(draw, *, dtype):
-    """Draws two floats; mean and std, for a given data type such that std > 0.
-
-    Parameters
-    ----------
-    draw
-        special function that draws data randomly (but is reproducible) from a given
-        data-set (ex. list).
-    dtype
-        data type.
-
-    Returns
-    -------
-        A strategy that can be used in the @given hypothesis decorator.
-    """
-    none_or_float = number_helpers.floats(dtype=dtype) | st.none()
-    values = draw(array_helpers.list_of_size(x=none_or_float, size=2))
-    values[1] = abs(values[1]) if values[1] else None
-    return values[0], values[1]
-
-
-@st.composite
 def get_bounds(draw, *, dtype):
     """Draws two numbers; low and high, for a given data type such that low < high.
 
@@ -489,7 +467,8 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
 
 @st.composite
 def embedding_helper(draw):
-    """Helper function for embedding layer tests. # TODO: What does this function do?
+    """Helper function used to obtain weights for embeddings, the corresponding
+    indices, the padding indices.
 
     Parameters
     ----------
@@ -505,13 +484,13 @@ def embedding_helper(draw):
         array_helpers.dtype_and_values(
             available_dtypes=[
                 x
-                for x in draw(dtype_helpers.get_dtypes("numeric"))  # TODO: Shouldn't this be valid?
+                for x in draw(dtype_helpers.get_dtypes("numeric"))
                 if "float" in x or "complex" in x
             ],
             min_num_dims=2,
             max_num_dims=2,
             min_dim_size=1,
-            min_value=-1e04,  # TODO: Why are we hard-coding a number here?
+            min_value=-1e04,
             max_value=1e04,
         )
     )
