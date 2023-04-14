@@ -27,12 +27,7 @@ def _broadcast_pooling_helper(x, pool_dims: str = "2d", name: str = "padding"):
 
 @to_ivy_arrays_and_back
 def avg_pool1d(
-    input,
-    kernel_size,
-    stride=None,
-    padding=0,
-    ceil_mode=False,
-    count_include_pad=True
+    input, kernel_size, stride=None, padding=0, ceil_mode=False, count_include_pad=True
 ):
     kernel_size = _broadcast_pooling_helper(kernel_size, "1d", name="kernel_size")
     stride = _broadcast_pooling_helper(stride, "1d", name="stride")
@@ -53,12 +48,9 @@ def avg_pool1d(
         padding_str = "VALID"
 
     return ivy.avg_pool1d(
-        input,
-        kernel_size,
-        stride,
-        padding_str,
-        data_format=data_format)
-    
+        input, kernel_size, stride, padding_str, data_format=data_format
+    )
+
 
 @to_ivy_arrays_and_back
 def avg_pool2d(
@@ -165,3 +157,63 @@ def adaptive_avg_pool1d(input, output_size):
 @to_ivy_arrays_and_back
 def adaptive_avg_pool2d(input, output_size):
     return ivy.adaptive_avg_pool2d(input, output_size)
+
+
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "torch",
+)
+@to_ivy_arrays_and_back
+def lp_pool1d(input, norm_type, kernel_size, stride=None, ceil_mode=False):
+
+    data_format = "NCW"
+    padding = "VALID"
+    if stride is not None:
+        out = ivy.avg_pool1d(
+            ivy.pow(input, norm_type),
+            kernel_size,
+            stride,
+            padding,
+            data_format=data_format,
+        )
+    else:
+        out = ivy.avg_pool1d(
+            ivy.pow(input, norm_type),
+            kernel_size,
+            kernel_size,
+            padding,
+            data_format=data_format,
+        )
+
+    return ivy.pow(ivy.multiply(out, kernel_size), ivy.divide(1.0, norm_type))
+
+
+@to_ivy_arrays_and_back
+def lp_pool2d(input, norm_type, kernel_size, stride=None, ceil_mode=False):
+
+    data_format = "NCHW"
+    padding = "VALID"
+    if stride is not None:
+        out = ivy.avg_pool2d(
+            ivy.pow(input, norm_type),
+            kernel_size,
+            stride,
+            padding,
+            data_format=data_format,
+        )
+    else:
+        out = ivy.avg_pool2d(
+            ivy.pow(input, norm_type),
+            kernel_size,
+            kernel_size,
+            padding,
+            data_format=data_format,
+        )
+    if not isinstance(kernel_size, int):
+        kernel_size = kernel_size[0] * kernel_size[1]
+    return ivy.pow(ivy.multiply(out, kernel_size), ivy.divide(1.0, norm_type))

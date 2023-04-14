@@ -59,6 +59,42 @@ def _get_repeat_interleaves_args(
     return [values_dtype, repeats_dtype], values, repeats, axis, output_size
 
 
+# atleast_1d
+@handle_frontend_test(
+    fn_tree="torch.atleast_1d",
+    dtype_and_tensors=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=st.integers(min_value=1, max_value=5),
+    ),
+    test_with_out=st.just(False),
+)
+def test_torch_atleast_1d(
+    *,
+    dtype_and_tensors,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtypes, tensors = dtype_and_tensors
+    if isinstance(dtypes, list):  # If more than one value was generated
+        args = {
+            f"x{i}": np.array(tensor, dtype=dtypes[i])
+            for i, tensor in enumerate(tensors)
+        }
+    else:  # If exactly one value was generated
+        args = {"x0": np.array(tensors, dtype=dtypes)}
+    test_flags.num_positional_args = len(tensors)
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        **args,
+    )
+
+
 # flip
 @handle_frontend_test(
     fn_tree="torch.flip",
@@ -1146,4 +1182,113 @@ def test_torch_atleast_2d(
         fn_tree=fn_tree,
         on_device=on_device,
         **arys,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="torch.searchsorted",
+    dtype_x_v=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shared_dtype=True,
+        min_num_dims=1,
+        max_num_dims=1,
+        num_arrays=2,
+    ),
+    side=st.sampled_from(["left", "right"]),
+    out_int32=st.booleans(),
+    right=st.just(False),
+    test_with_out=st.just(False),
+)
+def test_torch_searchsorted(
+    dtype_x_v,
+    side,
+    out_int32,
+    right,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, xs = dtype_x_v
+    use_sorter = st.booleans()
+    if use_sorter:
+        sorter = np.argsort(xs[0])
+        sorter = np.array(sorter, dtype=np.int64)
+    else:
+        xs[0] = np.sort(xs[0])
+        sorter = None
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes + ["int64"],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        sorted_sequence=xs[0],
+        values=xs[1],
+        side=side,
+        out_int32=out_int32,
+        right=right,
+        sorter=sorter,
+    )
+
+
+# atleast_3d
+@handle_frontend_test(
+    fn_tree="torch.atleast_3d",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=helpers.ints(min_value=1, max_value=10),
+    ),
+    test_with_out=st.just(False),
+)
+def test_torch_atleast_3d(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, arrays = dtype_and_x
+    arys = {}
+    for i, array in enumerate(arrays):
+        arys["arrs{}".format(i)] = array
+    test_flags.num_positional_args = len(arys)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        **arys,
+    )
+
+
+# diag
+@handle_frontend_test(
+    fn_tree="torch.diag",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1, max_num_dims=2), key="shape"),
+    ),
+    diagonal=st.integers(min_value=-100, max_value=100),
+)
+def test_torch_diag(
+    *,
+    dtype_and_values,
+    diagonal,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, values = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=values[0],
+        diagonal=diagonal,
     )

@@ -95,9 +95,7 @@ def test_tensorflow_normal(
 # random_shuffle
 @handle_frontend_test(
     fn_tree="tensorflow.random.shuffle",
-    dtype_value=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer")
-    ),
+    dtype_value=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
     seed=helpers.ints(min_value=0, max_value=10),
     test_with_out=st.just(False),
 )
@@ -109,7 +107,7 @@ def test_tensorflow_shuffle(
     seed,
     test_flags,
 ):
-    input_dtypes, value = dtype_value
+    input_dtypes, values = dtype_value
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
@@ -117,6 +115,54 @@ def test_tensorflow_shuffle(
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
-        value=value,
+        value=values[0],
         seed=seed,
+    )
+
+
+# random_stateless_uniform
+@handle_frontend_test(
+    fn_tree="tensorflow.random.stateless_uniform",
+    shape=helpers.dtype_and_values(
+        available_dtypes=("int64", "int32"),
+        min_value=1,
+        max_value=5,
+        min_num_dims=1,
+        max_num_dims=1,
+        max_dim_size=9,
+    ),
+    seed=helpers.dtype_and_values(
+        available_dtypes=("int64", "int32"), min_value=0, max_value=10, shape=[2]
+    ),
+    minmaxval=helpers.get_bounds(dtype="int32"),
+    dtype=helpers.array_dtypes(
+        available_dtypes=("int32", "int64", "float16", "float32", "float64"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_stateless_uniform(
+    shape,
+    seed,
+    minmaxval,
+    dtype,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    shape_input_dtypes, shape = shape
+    seed_input_dtypes, seed = seed
+
+    helpers.test_frontend_function(
+        input_dtypes=shape_input_dtypes + seed_input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        shape=shape[0],
+        seed=seed[0],
+        minval=int(minmaxval[0]),
+        maxval=int(minmaxval[1]),
+        dtype=dtype[0],
     )

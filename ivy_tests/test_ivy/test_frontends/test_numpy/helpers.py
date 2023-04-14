@@ -115,13 +115,13 @@ def _test_frontend_function_ignoring_unitialized(*args, **kwargs):
             frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
             frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
     except Exception as e:
-        ivy.unset_backend()
+        ivy.previous_backend()
         raise e
     # set backend back to original
-    ivy.unset_backend()
+    ivy.previous_backend()
 
     # get flattened arrays from returned value
-    ret_np_flat = helpers.flatten_fw_and_to_np(ret=ret, fw=kwargs["frontend"])
+    ret_np_flat = _flatten_frontend_return(ret=ret)
 
     # handling where size
     where = np.asarray(where)
@@ -158,6 +158,24 @@ def _test_frontend_function_ignoring_unitialized(*args, **kwargs):
         rtol=rtol,
         atol=atol,
     )
+
+
+def _flatten_frontend_return(*, ret):
+    """
+    Flattening the returned frontend value to a list of numpy arrays.
+    """
+    current_backend = ivy.current_backend_str()
+    if not isinstance(ret, tuple):
+        if not ivy.is_ivy_array(ret):
+            ret_np_flat = helpers.flatten_frontend_to_np(ret=ret)
+        else:
+            ret_np_flat = helpers.flatten_fw_and_to_np(ret=ret, fw=current_backend)
+    else:
+        if any([not ivy.is_ivy_array(x) for x in ret]):
+            ret_np_flat = helpers.flatten_frontend_to_np(ret=ret)
+        else:
+            ret_np_flat = helpers.flatten_fw_and_to_np(ret=ret, fw=current_backend)
+    return ret_np_flat
 
 
 # noinspection PyShadowingNames

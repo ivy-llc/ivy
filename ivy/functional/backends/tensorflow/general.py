@@ -20,12 +20,13 @@ from . import backend_version
 _round = round
 
 
-def _parse_index(indices, ndims):
+def _parse_index(indices, shape):
     ind = list()
     for so in indices:
         pre = list()
         for s in so:
             if s == -1:
+                pre.append(shape[len(pre) :][0] - 1)
                 break
             pre.append(s.numpy())
         post = list()
@@ -36,7 +37,10 @@ def _parse_index(indices, ndims):
         ind.append(
             tuple(
                 pre
-                + [slice(None, None, None) for _ in range(ndims - len(pre) - len(post))]
+                + [
+                    slice(None, None, None)
+                    for _ in range(len(shape) - len(pre) - len(post))
+                ]
                 + list(reversed(post))
             )
         )
@@ -44,7 +48,7 @@ def _parse_index(indices, ndims):
 
 
 def is_native_array(x, /, *, exclusive=False):
-    if isinstance(x, tf.Tensor) or isinstance(x, tf.Variable):
+    if isinstance(x, (tf.Tensor, tf.Variable)):
         if exclusive and isinstance(x, tf.Variable):
             return False
         return True
@@ -196,8 +200,11 @@ def inplace_update(
     /,
     *,
     ensure_in_backend: bool = False,
+    keep_input_dtype: bool = False,
 ) -> ivy.Array:
     if ivy.is_array(x) and ivy.is_array(val):
+        if keep_input_dtype:
+            val = ivy.astype(val, x.dtype)
         (x_native, val_native), _ = ivy.args_to_native(x, val)
         if _is_variable(x_native):
             x_native.assign(val_native)
@@ -380,7 +387,11 @@ def scatter_nd(
                     *[
                         tf.range(s)
                         if idx == slice(None, None, None)
-                        else tf.range(idx.start, idx.stop)
+                        else tf.range(
+                            ivy.default(idx.start, 0),
+                            ivy.default(idx.stop, shape[0]),
+                            ivy.default(idx.step, 1),
+                        )
                         if isinstance(idx, slice) and (idx != slice(None, None, None))
                         else tf.constant([idx % s])
                         for s, idx in zip(shape, indices)
@@ -407,7 +418,11 @@ def scatter_nd(
                         *[
                             tf.range(s)
                             if idx == slice(None, None, None)
-                            else tf.range(idx.start, idx.stop)
+                            else tf.range(
+                                ivy.default(idx.start, 0),
+                                ivy.default(idx.stop, shape[0]),
+                                ivy.default(idx.step, 1),
+                            )
                             if isinstance(idx, slice)
                             and (idx != slice(None, None, None))
                             else tf.constant([idx % s])
@@ -423,7 +438,13 @@ def scatter_nd(
                 [
                     tf.reshape(value, (-1,))
                     for value in tf.meshgrid(
-                        *[tf.range(indices.start, indices.stop)],
+                        *[
+                            tf.range(
+                                ivy.default(indices.start, 0),
+                                ivy.default(indices.stop, shape[0]),
+                                ivy.default(indices.step, 1),
+                            )
+                        ],
                         indexing="ij",
                     )
                 ],
@@ -436,7 +457,7 @@ def scatter_nd(
             indices = tf.expand_dims(indices, 0)
         if tf.reduce_any(indices < 0):
             shape = list(shape) if ivy.exists(shape) else list(out.shape)
-            indices = _parse_index(indices, len(shape))
+            indices = _parse_index(indices, shape)
             indices = [
                 tf.stack(
                     [
@@ -445,7 +466,11 @@ def scatter_nd(
                             *[
                                 tf.range(s)
                                 if idx == slice(None, None, None)
-                                else tf.range(idx.start, idx.stop)
+                                else tf.range(
+                                    ivy.default(idx.start, 0),
+                                    ivy.ivy.default(idx.stop, shape[0]),
+                                    ivy.default(idx.step, 1),
+                                )
                                 if isinstance(idx, slice)
                                 and idx != slice(None, None, None)
                                 else tf.constant([idx % s])
@@ -565,9 +590,9 @@ def vmap(
     in_axes: Union[int, Sequence[int], Sequence[None]] = 0,
     out_axes: int = 0,
 ) -> Callable:
-    @ivy.to_native_arrays_and_back
+    @ivy.output_to_native_arrays
+    @ivy.inputs_to_native_arrays
     def _vmap(*args, **kwargs):
-
         # convert args tuple to list to allow mutability using moveaxis ahead.
         args = list(args)
 
@@ -642,3 +667,34 @@ def vmap(
         return res
 
     return _vmap
+
+
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "complex")}, backend_version)
+def isin(
+    elements: tf.Tensor,
+    test_elements: tf.Tensor,
+    /,
+    *,
+    assume_unique: bool = False,
+    invert: bool = False,
+) -> tf.Tensor:
+    input_shape = elements.shape
+
+    if tf.rank(elements) == 0:
+        elements = tf.reshape(elements, [1])
+    if tf.rank(test_elements) == 0:
+        test_elements = tf.reshape(test_elements, [1])
+    if not assume_unique:
+        test_elements = tf.unique(tf.reshape(test_elements, [-1]))[0]
+
+    elements = tf.reshape(elements, [-1])
+    test_elements = tf.reshape(test_elements, [-1])
+
+    output = tf.reduce_any(
+        tf.equal(tf.expand_dims(elements, -1), test_elements), axis=-1
+    )
+    return tf.reshape(output, input_shape) ^ invert
+
+
+def itemsize(x: Union[tf.Tensor, tf.Variable]) -> int:
+    return x.dtype.size
