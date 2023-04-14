@@ -373,4 +373,4 @@ def isin(
 
 
 def itemsize(x: paddle.Tensor) -> int:
-    return x.dtype.itemsize()
+    return x.element_size()

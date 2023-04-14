@@ -54,6 +54,7 @@ def expand_dims(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    copy: Optional[bool] = None,
     axis: Union[int, Sequence[int]] = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -69,6 +70,7 @@ def flip(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    copy: Optional[bool] = None,
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -94,6 +96,7 @@ def permute_dims(
     /,
     axes: Tuple[int, ...],
     *,
+    copy: Optional[bool] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.transpose(x, perm=axes)
@@ -151,6 +154,7 @@ def squeeze(
     /,
     axis: Union[int, Sequence[int]],
     *,
+    copy: Optional[bool] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(axis, int):
@@ -204,6 +208,7 @@ def split(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
+    copy: Optional[bool] = None,
     num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
     axis: int = 0,
     with_remainder: bool = False,
@@ -296,7 +301,13 @@ def zero_pad(x, /, pad_width, *, out: Optional[Union[tf.Tensor, tf.Variable]] = 
 
 
 def swapaxes(
-    x, axis0, axis1, /, *, out: Optional[Union[tf.Tensor, tf.Variable]] = None
+    x,
+    axis0,
+    axis1,
+    /,
+    *,
+    copy: Optional[bool] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
     x_shape = x.shape
     num_dims = len(x_shape)
@@ -338,7 +349,12 @@ def clip(
 
 
 def unstack(
-    x: Union[tf.Tensor, tf.Variable], /, *, axis: int = 0, keepdims: bool = False
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    copy: Optional[bool] = None,
+    axis: int = 0,
+    keepdims: bool = False,
 ) -> List[tf.Tensor]:
     if x.shape == ():
         return [x]

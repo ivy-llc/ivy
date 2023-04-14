@@ -12,8 +12,11 @@ def moveaxis(
     destination: Union[int, Sequence[int]],
     /,
     *,
+    copy: Optional[bool] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if copy:
+        a = torch.clone(a)
     return torch.moveaxis(a, source, destination)
 
 
@@ -41,8 +44,11 @@ def flipud(
     m: torch.Tensor,
     /,
     *,
+    copy: Optional[bool] = None,
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
+    if copy:
+        m = torch.clone(m)
     return torch.flipud(m)
 
 
@@ -75,10 +81,13 @@ def rot90(
     m: torch.Tensor,
     /,
     *,
+    copy: Optional[bool] = None,
     k: int = 1,
     axes: Tuple[int, int] = (0, 1),
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if copy:
+        m = torch.clone(m)
     return torch.rot90(m, k, axes)
 
 
@@ -110,8 +119,11 @@ def fliplr(
     m: torch.Tensor,
     /,
     *,
+    copy: Optional[bool] = None,
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
+    if copy:
+        m = torch.clone(m)
     return torch.fliplr(m)
 
 
@@ -135,12 +147,15 @@ def flatten(
     x: torch.Tensor,
     /,
     *,
+    copy: bool = None,
     start_dim: int = 0,
     end_dim: int = -1,
     order: str = "C",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     ivy.utils.assertions.check_elem_in_list(order, ["C", "F"])
+    if copy:
+        x = torch.clone(x)
     if order == "F":
         return ivy.functional.experimental.flatten(
             x, start_dim=start_dim, end_dim=end_dim, order=order
@@ -152,7 +167,11 @@ def vsplit(
     ary: torch.Tensor,
     indices_or_sections: Union[int, Tuple[int, ...]],
     /,
+    *,
+    copy: Optional[bool] = None,
 ) -> List[torch.Tensor]:
+    if copy:
+        ary = torch.clone(ary)
     return torch.vsplit(ary, indices_or_sections)
 
 
@@ -160,15 +179,21 @@ def dsplit(
     ary: torch.Tensor,
     indices_or_sections: Union[int, Tuple[int, ...]],
     /,
+    *,
+    copy: Optional[bool] = None,
 ) -> List[torch.Tensor]:
     if len(ary.shape) < 3:
         raise ivy.utils.exceptions.IvyError(
             "dsplit only works on arrays of 3 or more dimensions"
         )
+    if copy:
+        ary = torch.clone(ary)
     return list(torch.dsplit(ary, indices_or_sections))
 
 
-def atleast_1d(*arys: torch.Tensor) -> List[torch.Tensor]:
+def atleast_1d(*arys: torch.Tensor, copy: Optional[bool] = None) -> List[torch.Tensor]:
+    if copy:
+        arys = ivy.nested_map(arys, torch.clone)
     transformed = torch.atleast_1d(*arys)
     if isinstance(transformed, tuple):
         return list(transformed)
@@ -186,14 +211,20 @@ def dstack(
     return torch.dstack(arrays, out=out)
 
 
-def atleast_2d(*arys: torch.Tensor) -> List[torch.Tensor]:
+def atleast_2d(*arys: torch.Tensor, copy: Optional[bool] = None) -> List[torch.Tensor]:
+    if copy:
+        arys = ivy.nested_map(arys, torch.clone)
     transformed = torch.atleast_2d(*arys)
     if isinstance(transformed, tuple):
         return list(transformed)
     return transformed
 
 
-def atleast_3d(*arys: Union[torch.Tensor, bool, Number]) -> List[torch.Tensor]:
+def atleast_3d(
+    *arys: Union[torch.Tensor, bool, Number], copy: Optional[bool] = None
+) -> List[torch.Tensor]:
+    if copy:
+        arys = ivy.nested_map(arys, torch.clone)
     transformed = torch.atleast_3d(*arys)
     if isinstance(transformed, tuple):
         return list(transformed)
@@ -246,7 +277,11 @@ def hsplit(
     ary: torch.Tensor,
     indices_or_sections: Union[int, Tuple[int, ...]],
     /,
+    *,
+    copy: Optional[bool] = None,
 ) -> List[torch.Tensor]:
+    if copy:
+        ary = torch.clone(ary)
     return list(torch.hsplit(ary, indices_or_sections))
 
 
@@ -265,8 +300,11 @@ def expand(
     shape: Union[List[int], List[Tuple]],
     /,
     *,
+    copy: Optional[bool] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if copy:
+        x = torch.clone(x)
     return x.expand(shape)
 
 

@@ -1202,6 +1202,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         ivy.Array instance method variant of ivy.lerp. This method simply wraps
         the function, and so the docstring for ivy.lerp also applies to this
         method with minimal changes.
+
         Parameters
         ----------
         self
@@ -1213,12 +1214,14 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         out
             Alternate output array in which to place the result.
             The default is None.
+
         Returns
         -------
         ret
             The linear interpolation between array self and array end based on
             scalar or array weight
             self + ((end - self) * weight)
+
         Examples
         --------
         >>> x = ivy.array([1.0, 2.0, 3.0, 4.0])
