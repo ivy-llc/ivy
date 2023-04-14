@@ -595,8 +595,10 @@ def handle_out_argument(fn: Callable) -> Callable:
             The return of the function, with `out` handled correctly for
             inplace updates.
         """
-        if out is None or handle_out_in_ivy:
+        if out is None:
             return fn(*args, **kwargs)
+        if handle_out_in_ivy:
+            return fn(*args, out=out, **kwargs)
         if handle_out_in_backend:
             # extract underlying native array for out
             native_out = ivy.to_native(out)
