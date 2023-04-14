@@ -443,6 +443,11 @@ def equal(x, y, name=None):
 
 
 @to_ivy_arrays_and_back
+def erfinv(x, name=None):
+    return ivy.erfinv(x)
+
+
+@to_ivy_arrays_and_back
 def not_equal(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return ivy.not_equal(x, y)
