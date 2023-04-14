@@ -789,13 +789,18 @@ def nested_argwhere(
     elif (
         check_attributes
         and hasattr(nest, "__dict__")
-        and not isinstance(nest, (ivy.Array, ivy.NativeArray))
+        and not hasattr(nest, "__array__")
     ):
-        for k, v in nest.__dict__.items():
-            if nested_any(
-                v, fn, check_nests, check_attributes, False, extra_nest_types
-            ):
-                return [_index]
+        if nested_any(
+            list(nest.__dict__.values()),
+            fn,
+            check_nests,
+            check_attributes,
+            False,
+            extra_nest_types,
+        ):
+            return [_index]
+        return False
     else:
         cond_met = fn(nest)
         if cond_met:
@@ -1238,7 +1243,7 @@ def nested_any(
     elif (
         check_attributes
         and hasattr(nest, "__dict__")
-        and not isinstance(nest, (ivy.Array, ivy.NativeArray))
+        and not hasattr(nest, "__array__")
     ):
         for k, v in nest.__dict__.items():
             if nested_any(
