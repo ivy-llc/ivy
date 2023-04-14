@@ -131,8 +131,6 @@ def test_torch_poisson(
 
 
 # randint
-
-
 @handle_frontend_test(
     fn_tree="torch.randint",
     low=helpers.ints(min_value=0, max_value=10),
@@ -150,16 +148,29 @@ def test_torch_randint(
     test_flags,
     fn_tree,
 ):
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        frontend=frontend,
-        test_values=False,
-        fn_tree=fn_tree,
-        test_flags=test_flags,
-        low=low,
-        high=high,
-        size=size,
-    )
+    def call():
+        helpers.test_frontend_function(
+            input_dtypes=dtype,
+            frontend=frontend,
+            test_values=False,
+            fn_tree=fn_tree,
+            test_flags=test_flags,
+            low=low,
+            high=high,
+            size=size,
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    for (u, v) in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
 
 
 @handle_frontend_test(
