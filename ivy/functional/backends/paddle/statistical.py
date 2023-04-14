@@ -299,18 +299,11 @@ def einsum(
         paddle.complex64, 
         paddle.complex128
     ]
-    for i, operand in enumerate(operands):
-        operand_dtype = operand.dtype
-        if operand_dtype not in supported_dtypes:
 
-            if paddle.is_tensor(operand):
-                operand = paddle.cast(operand, paddle.float32)
-            else:
-                raise ValueError(
-                    f"Unsupported dtype {operand_dtype} "
-                    "and no fallback dtype specified"
-                )
-                
-            operands = operands[:i] + (operand,) + operands[i + 1 :]
+    casted_operands = [
+        paddle.cast(operand, paddle.float32) 
+        if operand.dtype not in supported_dtypes and paddle.is_tensor(operand) 
+        else operand for operand in operands
+    ]
     # Evaluate the einsum expression with the updated operands
-    return paddle.einsum(equation, *operands)
+    return paddle.einsum(equation, *casted_operands).cast(paddle.Tensor)
