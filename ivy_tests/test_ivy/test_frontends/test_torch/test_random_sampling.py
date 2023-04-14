@@ -305,6 +305,7 @@ def test_torch_randn(*, dtype, size, frontend, fn_tree, test_flags):
 )
 def test_torch_randn_like(dtype_and_x, dtype, *, frontend, fn_tree, test_flags):
     input_dtype, input = dtype_and_x
+
     def call():
         return helpers.test_frontend_function(
             input_dtypes=input_dtype,
