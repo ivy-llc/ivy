@@ -135,6 +135,35 @@ def num_positional_args(draw, *, fn_name: str = None):
     )
 
 
+@st.composite
+def sample_out_dtypes(draw, _fn):
+    current_backend = ivy.current_backend_str()
+    # we could try to sample from _get_supported_dtypes as well
+    devices_and_dtypes = ivy.function_supported_devices_and_dtypes(_fn)
+    # removing bool elements temporarily
+    for elemen in devices_and_dtypes:
+        new_elemen = list(devices_and_dtypes[elemen])
+        if 'bool' in new_elemen:
+            new_elemen.remove('bool')
+        devices_and_dtypes[elemen] = new_elemen
+    
+    # Issue with bfloat16 and tensorflow
+    try:
+        if "bfloat16" in devices_and_dtypes["gpu"]:
+            tmp = list(devices_and_dtypes["gpu"])
+            tmp.remove("bfloat16")
+            devices_and_dtypes["gpu"] = tuple(tmp)
+    except KeyError:
+        pass
+
+    cpu_dtype = draw(st.sampled_from(devices_and_dtypes['cpu']))
+    if ivy.current_backend_str() == 'numpy':
+        return {'cpu': cpu_dtype, 'current_backend': current_backend}
+
+    gpu_dtype = draw(st.sampled_from(devices_and_dtypes['gpu']))
+    return {'cpu': cpu_dtype, 'gpu': gpu_dtype, 'current_backend': current_backend}
+
+
 # Decorators helpers
 
 
@@ -227,6 +256,9 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
         _tmp_mod = importlib.import_module(fn_module)
         _fn = _tmp_mod.__dict__[fn_name]
         devices_and_dtypes = ivy.function_supported_devices_and_dtypes(_fn)
+        # need current device (we'll get it during testing) and testing backend (we hope function_supported_devices_and_dtypes can handle it)
+        # if testing_backend == b:
+        #     dtypes = devices_and_dtypes
         try:
             # Issue with bfloat16 and tensorflow
             if "bfloat16" in devices_and_dtypes["gpu"]:
@@ -262,6 +294,7 @@ def handle_test(
     fn_tree: str = None,
     ground_truth_backend: str = ground_truth,
     number_positional_args=None,
+    out_dtypes=None,
     test_instance_method=BuiltInstanceStrategy,
     test_with_out=BuiltWithOutStrategy,
     test_gradients=BuiltGradientStrategy,
@@ -324,6 +357,7 @@ def handle_test(
         # Use the default strategy
         if number_positional_args is None:
             number_positional_args = num_positional_args(fn_name=fn_tree)
+        out_dtypes = sample_out_dtypes(_import_fn(fn_tree)[0])
         # Generate the test flags strategy
         possible_arguments["test_flags"] = pf.function_flags(
             num_positional_args=number_positional_args,
@@ -334,6 +368,7 @@ def handle_test(
             as_variable=as_variable_flags,
             native_arrays=native_array_flags,
             container_flags=container_flags,
+            out_dtypes=out_dtypes,
         )
 
     def test_wrapper(test_fn):
