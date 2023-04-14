@@ -1,6 +1,5 @@
 # global
 import copy
-import random
 from typing import Union, List
 import numpy as np
 import types
@@ -247,6 +246,7 @@ def test_function(
     >>> x2 = np.array([-3, 15, 24])
     >>> test_function(input_dtypes, test_flags, fw, fn_name, x1=x1, x2=x2)
     """
+    breakpoint()
     if isinstance(globals.CURRENT_GROUND_TRUTH_BACKEND, list):
         # override the ground truth in favor of multiversion
         ground_truth_backend = globals.CURRENT_GROUND_TRUTH_BACKEND
@@ -357,7 +357,7 @@ def test_function(
             else ret_from_target
         )
         # defining random dtype for out array
-        out_dtype = random.choice([ivy.int32, ivy.float32, ivy.complex64])
+        out_dtype = test_flags.out_dtypes[0][on_device]
         zeros_fn = lambda x: ivy.zeros_like(x, dtype=out_dtype)
         out = ivy.nested_map(
             test_ret, zeros_fn, to_mutable=True, include_derived=True
