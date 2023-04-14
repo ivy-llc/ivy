@@ -174,6 +174,10 @@ def cond(
 cond.support_native_out = False
 
 
+@with_supported_dtypes(
+    {"1.11.0 and below": ("float32", "float64", "complex64", "complex128")},
+    backend_version,
+)
 def solve_triangular(
     a: np.ndarray,
     b: np.ndarray,
