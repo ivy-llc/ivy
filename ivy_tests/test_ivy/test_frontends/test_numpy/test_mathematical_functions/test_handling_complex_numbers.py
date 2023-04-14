@@ -94,12 +94,12 @@ def test_numpy_real(
     ),
 )
 def test_numpy_conj(
-        on_device,
-        frontend,
-        *,
-        dtype_and_x,
-        fn_tree,
-        test_flags,
+    on_device,
+    frontend,
+    *,
+    dtype_and_x,
+    fn_tree,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(

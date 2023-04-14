@@ -13,6 +13,7 @@ from math import factorial
 def sign(x, /):
     return ivy.sign(x, out=None)
 
+
 @to_ivy_arrays_and_back
 def absolute(x):
     return ivy.abs(x)
