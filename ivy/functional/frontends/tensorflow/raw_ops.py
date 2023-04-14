@@ -552,6 +552,11 @@ def Softplus(*, features, name="Softplus"):
 
 
 @to_ivy_arrays_and_back
+def Softsign(*, features, name="Softsign"):
+    return ivy.softsign(features)
+
+
+@to_ivy_arrays_and_back
 def Xdivy(*, x, y, name="Xdivy"):
     if (x == 0).all():
         return 0.0

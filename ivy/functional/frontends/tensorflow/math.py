@@ -594,6 +594,11 @@ def softplus(features, name=None):
 
 
 @to_ivy_arrays_and_back
+def softsign(features, name=None):
+    return ivy.softsign(features)
+
+
+@to_ivy_arrays_and_back
 def xlogy(x, y, name=None):
     return ivy.xlogy(x, y)
 
