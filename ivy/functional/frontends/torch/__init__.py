@@ -303,5 +303,7 @@ from .tensor_functions import *
 from . import utilities
 from .utilities import *
 from . import linalg
+from . import func
+from .func import *
 
 _frontend_array = tensor

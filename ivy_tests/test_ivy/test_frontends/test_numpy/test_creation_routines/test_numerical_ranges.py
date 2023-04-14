@@ -271,13 +271,13 @@ def test_numpy_ogrid(range, class_, method_name):
     test_with_out=st.just(False),
 )
 def test_geomspace(
-        dtype_start_stop,
-        num,
-        endpoint,
-        frontend,
-        test_flags,
-        fn_tree,
-        on_device,
+    dtype_start_stop,
+    num,
+    endpoint,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     input_dtypes, start, stop = dtype_start_stop
     helpers.test_frontend_function(

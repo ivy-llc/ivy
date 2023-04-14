@@ -389,7 +389,7 @@ def handle_view(fn: Callable) -> Callable:
 
     @functools.wraps(fn)
     def new_fn(*args, copy=None, **kwargs):
-        ret = fn(*args, **kwargs)
+        ret = fn(*args, copy=copy, **kwargs)
         if copy or ivy.backend in ("numpy", "torch") or not ivy.is_ivy_array(args[0]):
             return ret
         original = args[0]
