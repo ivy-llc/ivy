@@ -554,6 +554,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functio
 from ivy.functional.frontends.numpy.mathematical_functions.handling_complex_numbers import (
     _imag,
     _real,
+    _conj,
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.hyperbolic_functions import (
@@ -692,3 +693,4 @@ fmin = ufunc("_fmin")
 ldexp = ufunc("_ldexp")
 floor = ufunc("_floor")
 frexp = ufunc("_frexp")
+conj = ufunc("_conj")
