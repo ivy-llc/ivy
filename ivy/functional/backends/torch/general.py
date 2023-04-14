@@ -70,7 +70,11 @@ def get_item(
     x: torch.Tensor,
     /,
     query: torch.Tensor,
+    *,
+    copy: bool = None,
 ) -> torch.Tensor:
+    if copy:
+        x = torch.clone(x)
     if ivy.is_array(query) and ivy.dtype(query, as_native=True) is not torch.bool:
         return x.__getitem__(query.to(torch.int64))
     if isinstance(query, slice) and query.step is not None and query.step < 0:

@@ -168,12 +168,7 @@ class Array(
             self._dynamic_backend = ivy.get_dynamic_backend()
 
     def _view_attributes(self, data):
-        if hasattr(data, "base"):
-            self._base = data.base
-        elif hasattr(data, "_base"):
-            self._base = data._base
-        else:
-            self._base = None
+        self._base = None
         self._view_refs = []
         self._manipulation_stack = []
 
@@ -276,6 +271,11 @@ class Array(
         """
         ivy.utils.assertions.check_equal(len(self._data.shape), 2)
         return ivy.matrix_transpose(self._data)
+
+    @property
+    def base(self) -> ivy.Array:
+        """Original array referenced by view"""
+        return self._base
 
     # Setters #
     # --------#

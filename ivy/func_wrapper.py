@@ -388,16 +388,16 @@ def handle_view(fn: Callable) -> Callable:
     """
 
     @functools.wraps(fn)
-    def new_fn(*args, copy=None, **kwargs):
-        ret = fn(*args, copy=copy, **kwargs)
-        if copy or ivy.backend in ("numpy", "torch") or not ivy.is_ivy_array(args[0]):
+    def new_fn(*args, **kwargs):
+        ret = fn(*args, **kwargs)
+        if ("copy" in kwargs and kwargs["copy"]) or not ivy.is_ivy_array(args[0]):
             return ret
         original = args[0]
-        if isinstance(ret, list):
+        if isinstance(ret, (list, tuple)):
             for i, view in enumerate(ret):
-                ret[i] = _build_view(original, view, fn, args, kwargs, i)
+                ret[i] = _build_view(original, view, fn.__name__, args, kwargs, i)
         else:
-            ret = _build_view(original, ret, fn, args, kwargs, None)
+            ret = _build_view(original, ret, fn.__name__, args, kwargs, None)
         return ret
 
     new_fn.handle_view = True
@@ -420,17 +420,16 @@ def handle_view_indexing(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         ret = fn(*args, **kwargs)
-        if ivy.backend in ("numpy", "torch") or not ivy.is_ivy_array(args[0]):
+        if ("copy" in kwargs and kwargs["copy"]) or not ivy.is_ivy_array(args[0]):
             return ret
-        if kwargs:
-            query = kwargs["query"]
-        else:
-            query = args[1]
+        query = kwargs["query"] if "query" in kwargs else args[1]
         query = (query,) if not isinstance(query, tuple) else query
         if [i for i in query if not isinstance(i, (slice, int))]:
             return ret
         original = args[0]
-        ret = _build_view(original, ret, fn, args, kwargs)
+        # ToDo: Remove hard coding of only function with this wrapper
+        #  Need general way to convert special method to function found in ivy.__dict__
+        ret = _build_view(original, ret, "get_item", args, kwargs)
         return ret
 
     new_fn.handle_view_indexing = True
