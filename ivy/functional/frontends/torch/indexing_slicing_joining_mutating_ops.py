@@ -322,3 +322,26 @@ def index_add(input, dim, index, source, *, alpha=1, out=None):
     ret = ivy.add(input, _to_adds, alpha=alpha)
     ret = ivy.swapaxes(ret, 0, dim, out=out)
     return ret
+
+
+@to_ivy_arrays_and_back
+def index_copy(input, dim, index, source, *, out=None):
+    input = ivy.swapaxes(input, dim, 0)
+    source = ivy.swapaxes(source, dim, 0)
+    index = sorted(zip(ivy.to_list(index), range(len(index))), key=(lambda x: x[0]))
+    res = []
+    while index:
+        _curr_idx = index[0][0]
+        for i in range(len(res), _curr_idx):
+            res.append(ivy.get_item(input, i))
+        while (1 < len(index)) and (index[0][0] == index[1][0]):
+            index.pop(0)
+        res.append(ivy.get_item(source, index[0][1]))
+        index.pop(0)
+    for i in range(len(res), input.shape[0]):
+        res.append(ivy.get_item(input, i))
+    res = ivy.stack(res)
+    if len(input.shape) < 2:
+        res = ivy.flatten(res)
+
+    return ivy.swapaxes(res, 0, dim, out=out)

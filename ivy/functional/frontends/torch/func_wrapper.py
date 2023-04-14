@@ -96,6 +96,7 @@ def to_ivy_arrays_and_back(fn: Callable) -> Callable:
     """
     return outputs_to_frontend_arrays(inputs_to_ivy_arrays(fn))
 
+
 def outputs_to_native_arrays(fn: Callable):
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
@@ -103,5 +104,5 @@ def outputs_to_native_arrays(fn: Callable):
         if isinstance(ret, torch_frontend.Tensor):
             ret = ret.ivy_array.data
         return ret
-    return  new_fn
 
+    return new_fn

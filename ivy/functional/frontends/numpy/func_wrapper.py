@@ -361,7 +361,7 @@ def outputs_to_numpy_arrays(fn: Callable) -> Callable:
         # ToDo: Remove this default dtype setting
         #  once frontend specific backend setting is added
         set_default_dtype = False
-        if not ("dtype" in kwargs and ivy.exists(kwargs["dtype"])) and all(
+        if not ("dtype" in kwargs and ivy.exists(kwargs["dtype"])) and any(
             [not (ivy.is_array(i) or hasattr(i, "ivy_array")) for i in args]
         ):
             ivy.set_default_int_dtype(
