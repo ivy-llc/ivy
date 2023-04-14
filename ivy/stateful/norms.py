@@ -10,9 +10,9 @@ class BatchNorm(Module):
     def __init__(
         self,
         num_features,
-        axis: int = -1,
         /,
         *,
+        axis: int = -1,
         epsilon: float = ivy._MIN_BASE,
         affine: bool = True,
         momentum: float = 0.1,
@@ -85,8 +85,8 @@ class BatchNorm(Module):
         ret
             The outputs following the batch normalization operation.
         """
-        mean = inputs.mean()
-        var = inputs.var()
+        mean = inputs.mean(axis=self._axis, keepdims=True)
+        var = inputs.var(axis=self._axis, keepdims=True)
         return ivy.batch_norm(
             inputs,
             mean,
