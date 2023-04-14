@@ -5451,8 +5451,8 @@ def rad2deg(
 
 
 @handle_array_function
-@handle_out_argument
 @inputs_to_ivy_arrays
+@handle_out_argument
 @handle_nestable
 @handle_exceptions
 def trunc_divide(
