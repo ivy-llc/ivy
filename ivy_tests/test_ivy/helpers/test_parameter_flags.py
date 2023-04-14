@@ -97,6 +97,7 @@ class FunctionTestFlags(TestFlags):
         container,
         test_gradients,
         test_compile,
+        out_dtypes,
     ):
         self.num_positional_args = num_positional_args
         self.with_out = with_out
@@ -106,6 +107,7 @@ class FunctionTestFlags(TestFlags):
         self.as_variable = as_variable
         self.test_gradients = test_gradients
         self.test_compile = test_compile
+        self.out_dtypes=out_dtypes,
 
     def apply_flags(self, args_to_iterate, input_dtypes, on_device, offset):
         ret = []
@@ -129,7 +131,8 @@ class FunctionTestFlags(TestFlags):
             f"container={self.container}. "
             f"as_variable={self.as_variable}. "
             f"test_gradients={self.test_gradients}. "
-            f"test_compile={self.test_compile}. "
+            f"test_compile={self.test_compile}. ",
+            f"out_dtypes={self.out_dtypes}. "
         )
 
     def __repr__(self):
@@ -148,6 +151,7 @@ def function_flags(
     as_variable,
     native_arrays,
     container_flags,
+    out_dtypes,
 ):
     return draw(
         st.builds(
@@ -160,6 +164,7 @@ def function_flags(
             as_variable=as_variable,
             native_arrays=native_arrays,
             container=container_flags,
+            out_dtypes=out_dtypes,
         )
     )
 
