@@ -229,6 +229,12 @@ def polyval(coeffs, x, name=None):
 
 
 @to_ivy_arrays_and_back
+def polygamma(x, y, name=None):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.polygamma(x, y, name=name)
+
+
+@to_ivy_arrays_and_back
 def pow(x, y, name="pow"):
     x, y = check_tensorflow_casting(x, y)
     return ivy.pow(x, y)
