@@ -1017,7 +1017,7 @@ def test_tensorflow_is_inf(
         on_device=on_device,
         x=x[0],
     )
-    
+
 
 # is_non_decreasing
 @handle_frontend_test(

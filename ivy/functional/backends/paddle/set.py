@@ -29,7 +29,11 @@ def unique_all(
         x_dtype = x.dtype
 
     values, indices, inverse_indices, counts = paddle.unique(
-        x, return_index=True, return_counts=True, return_inverse=True, axis=axis,
+        x,
+        return_index=True,
+        return_counts=True,
+        return_inverse=True,
+        axis=axis,
     )
 
     nan_count = paddle.sum(paddle.isnan(x))
@@ -46,7 +50,10 @@ def unique_all(
         )
 
     return Results(
-        values.cast(x_dtype), indices, inverse_indices, counts,
+        values.cast(x_dtype),
+        indices,
+        inverse_indices,
+        counts,
     )
 
 
