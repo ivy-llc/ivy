@@ -168,7 +168,6 @@ def test_numpy_vander(
 @handle_frontend_test(
     fn_tree="numpy.diagflat",
     args_packet=_generate_diag_args(),
-    test_with_out=st.just(False),
 )
 def test_numpy_diagflat(
     *,
