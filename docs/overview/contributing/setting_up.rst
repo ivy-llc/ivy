@@ -18,7 +18,7 @@ This page explains the main steps to get started!
 Forking and cloning the repo
 ----------------------------
 
-#. You first need to fork the Ivy repository from the repository page here `repo`_ by using the fork button on the top right. This creates a copy of Ivy repository in your GitHub account.
+#. You will first need to fork the Ivy repository from the repository page here `repo`_ by using the fork button on the top right. This creates a copy of Ivy repository in your GitHub account.
 #. Clone your forked repo to your local machine.
 
 Depending on your preferred mode of cloning, any of the below should work:
@@ -80,32 +80,52 @@ Using miniconda
 #. Open conda terminal
 #. Create the environment by running the command (:code:`ivy_dev` is the name of the environment)
 
-    .. code-block:: none
-
-        conda create --name ivy_dev python=3.8.10
+   .. code-block:: none
+      
+      conda create --name ivy_dev python=3.8.10
 
 #. Activate the environment by:
 
-    .. code-block:: none
+   .. code-block:: none
 
-        conda activate ivy_dev
+      conda activate ivy_dev
 
-#.  Now install ivy package from GitHub by running:
+#. Now install ivy package from GitHub by running:
 
-    .. code-block:: none
+   .. code-block:: none
 
-        pip install git+https://github.com/unifyai/ivy.git
+      pip install git+https://github.com/unifyai/ivy.git
 
-#. Setup the interpreter from your environment in Pycharm by:
+#. Setup the interpreter by:
 
-   a. Going to settings -> project -> Python Interpreter
+   #. Pycharm
 
-   b. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
+      a. Going to settings -> project -> Python Interpreter
 
-   c. Choosing "conda environment" from the left panel.
-    Choose existing environment and select the drop down and you should find the path python in the environment.
-If you don't find path to you created python environment, you can run :code:`where python` in conda command line while the environment is activate and it should give the path which can be added manually.
+      b. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
+      
+      c. Choosing "conda environment" from the left panel. Choose existing environment and select the drop down and you should find the path python in the environment.
 
+   #. VSCode
+
+      a. Go to the command palette (Ctrl+Shift+P) or (⌘+shift+p) for Mac and type "Python: Select Interpreter" and select the environment you created.
+      
+   If you don't find path to you created python environment, you can run :code:`where python` in conda command line while the environment is activate and it should give the path which can be added manually.
+
+#. Installing the development dependencies.
+
+   a. On Linux Or Windows, you will need to use the optional_ubuntu.txt requirements file. To install dependencies.
+   
+      .. code-block:: none
+   
+         pip install -r requirements/requirements.txt
+   
+   b. On M1 Mac, you will need to use the optional_m1_1 and optional_m1_2 requirements files. To install dependencies.
+   
+      .. code-block:: none
+   
+         pip install -r requirements/optional_m1_1.txt
+         pip install -r requirements/optional_m1_2.txt
 
 Using venv
 **********
@@ -113,58 +133,81 @@ Using venv
 This is a builtin package and doesn't require explicit installation.
 
 #. Open your terminal/cmd in the directory where you would like to have the folder with the environment files.
+
 #. Create the environment by running the command below with a new environment name.
    We named it :code:`ivy_dev` like above.
 
-    .. code-block:: none
+   .. code-block:: none
 
-        python -m venv ivy_dev
+      python -m venv ivy_dev
 
-    Try :code:`python3` if :code:`python` doesn't work.
+   Try :code:`python3` if :code:`python` doesn't work.
 
 #. Activate the created environment by running (in the same working directory as the environment folder):
 
-    .. code-block:: none
+   .. code-block:: none
 
-        ivy_dev\Scripts\activate.bat
+      ivy_dev\Scripts\activate.bat
 
-    (on Windows)
+   (on Windows)
 
-    OR
+   OR
 
-    .. code-block:: none
+   .. code-block:: none
 
-        source ivy_dev/bin/activate
+      source ivy_dev/bin/activate
 
-    (on Mac/Linux)
+   (on Mac/Linux)
 
 #. Now install ivy package from GitHub by running:
 
-    .. code-block:: none
+   .. code-block:: none
 
-        pip install git+https://github.com/unifyai/ivy.git
+      pip install git+https://github.com/unifyai/ivy.git
 
-#. Setup the interpreter from you environment in Pycharm by:
+#. Setup the interpreter by:
 
-   a. Going to settings -> project -> Python Interpreter
+   #. Pycharm
 
-   b. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
+      a. Going to settings -> project -> Python Interpreter
 
-   c. Choosing "virtualenv environment" from the left panel
-    Choose existing environment and add the path to python.
-The path to python can be found by :code:`where python` on Windows and :code:`which python` in Linux/Mac OS.
+      b. Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.
 
-Note: You may tick "Make available to all projects" so you will be able to find the interpreter from the conda/venv environment in any future projects.
+      c. Choosing "virtualenv environment" from the left panel. Choose existing environment and add the path to python. The path to python can be found by :code:`where python` on Windows and :code:`which python` in Linux/Mac OS.
 
-To make sure you have all the packages for running tests available change the directory to :code:`ivy/ivy_tests/array_api_testing/test_array_api` in your cloned fork using the :code:`cd` command and run the command below (while your :code:`ivy_dev` environment is active):
+      Note: You may tick "Make available to all projects" so you will be able to find the interpreter from the conda/venv environment in any future projects.
 
-    .. code-block:: none
+   #. VSCode
 
-        pip install -r requirements.txt
+      a. Go to the command palette (Ctrl+Shift+P) or (⌘+shift+p) for Mac and type `Python: Select Interpreter` and select the environment you created.
 
-This will install packages required for running the tests in Array API suite.
+#. Installing the development dependencies.
+   
+   a. On Linux Or Windows, you will need to use the optional_ubuntu.txt requirements file. To install dependencies.
+   
+      .. code-block:: none
+   
+         pip install -r requirements/requirements.txt
+   
+   b. On M1 Mac, you will need to use the optional_m1_1 and optional_m1_2 requirements files. To install dependencies.
+   
+      .. code-block:: none
+   
+         pip install -r requirements/optional_m1_1.txt
+         pip install -r requirements/optional_m1_2.txt
+
+#. Installing array API testing dependencies.
+
+   To make sure you have all the packages for running tests available change the directory to :code:`ivy/ivy_tests/array_api_testing/test_array_api` in your cloned fork using the :code:`cd` command and run the command below (while your :code:`ivy_dev` environment is active):
+
+   .. code-block:: none
+
+      pip install -r requirements.txt
+
+   This will install packages required for running the tests in Array API suite.
 
 Here are the visual guides for setting up a `virtualenv environment <https://www.jetbrains.com/help/pycharm/creating-virtual-environment.html#0>`_ OR `conda environment <https://www.jetbrains.com/help/pycharm/conda-support-creating-conda-virtual-environment.html>`_ in pycharm from JetBrains.
+For VSCode, you can follow the instructions `virtual environments <https://code.visualstudio.com/docs/python/environments#_creating-environments>`_.
 
 Docker Interpreter with PyCharm
 -------------------------------
