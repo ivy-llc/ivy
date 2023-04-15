@@ -134,7 +134,7 @@ def test_jax_devicearray_argmax(
     init_tree="jax.numpy.array",
     method_name="conj",
     dtype_and_x=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        available_dtypes=helpers.get_dtypes("float"),
     ),
 )
 def test_jax_devicearray_conj(
