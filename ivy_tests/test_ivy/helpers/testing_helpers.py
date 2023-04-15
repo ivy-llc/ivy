@@ -9,7 +9,6 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy
-import ivy.functional.frontends.numpy as np_frontend
 from .hypothesis_helpers import number_helpers as nh
 from .globals import TestData, get_backends_to_test
 from . import test_parameter_flags as pf
@@ -222,6 +221,8 @@ def _get_supported_devices_dtypes(
     # This is for getting a private function from numpy frontend where we have
     # a ufunc object as we can't refer to them as functions
     if fn_module == "ivy.functional.frontends.numpy":
+        import ivy.functional.frontends.numpy as np_frontend
+
         fn_module_ = np_frontend
         if isinstance(getattr(fn_module_, fn_name), fn_module_.ufunc):
             fn_name = "_" + fn_name
