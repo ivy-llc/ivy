@@ -453,6 +453,15 @@ def round(x, name=None):
     return ivy.round(x)
 
 
+@with_supported_dtypes(
+    {"2.9.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def rint(x, name=None):
+    return ivy.round(x)
+
+
 @to_ivy_arrays_and_back
 def minimum(x, y, name=None):
     return ivy.minimum(x, y)
