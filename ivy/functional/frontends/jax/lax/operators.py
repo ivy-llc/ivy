@@ -615,3 +615,9 @@ def squeeze(array, dimensions):
 @to_ivy_arrays_and_back
 def real(x):
     return ivy.real(x)
+
+
+@to_ivy_arrays_and_back
+def erf(x):
+    return ivy.erf(x)
+
