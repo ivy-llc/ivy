@@ -432,3 +432,8 @@ def ptp(a, axis=None, out=None, keepdims=False):
     x = ivy.max(a, axis=axis, keepdims=keepdims)
     y = ivy.min(a, axis=axis, keepdims=keepdims)
     return ivy.subtract(x, y)
+
+
+@to_ivy_arrays_and_back
+def nanmedian(a, axis=None, out=None, overwrite_input=False, keepdims=False):
+    return ivy.nanmedian(a, axis=axis, out=out, keepdims=keepdims)
