@@ -76,6 +76,10 @@ def _import_backend(backend: str):
     if backend in _imported_backends:
         return _imported_backends[backend]
     imported_backend = importlib.import_module(f"ivy.functional.backends.{backend}")
+    if backend == "jax":
+        from jax.config import config
+
+        config.update("jax_enable_x64", True)
     _imported_backends[backend] = imported_backend
     return imported_backend
 

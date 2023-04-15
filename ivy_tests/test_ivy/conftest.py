@@ -162,10 +162,7 @@ def pytest_configure(config):
                         TEST_PARAMS_CONFIG.append(
                             (
                                 device,
-                                # TODO use _import_backend function
-                                importlib.import_module(
-                                    f"ivy.functional.backends.{backend_str}"
-                                ),
+                                test_globals._import_backend(backend_str),
                                 compile_graph,
                                 implicit,
                             )
