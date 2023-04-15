@@ -129,3 +129,21 @@ def randn(
 @to_ivy_arrays_and_back
 def bernoulli(input, *, generator=None, out=None):
     return ivy.bernoulli(input, out=out)
+
+
+@to_ivy_arrays_and_back
+def randperm(
+    n, 
+    *, 
+    generator=None, 
+    out=None, 
+    dtype=ivy.int64, 
+    layout=None, 
+    device=None, 
+    requires_grad=False, 
+    pin_memory=False
+):
+    arr = ivy.arange(n)
+    ret = ivy.shuffle(arr)
+    
+    return ret
