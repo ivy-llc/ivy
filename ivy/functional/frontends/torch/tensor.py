@@ -143,6 +143,10 @@ class Tensor:
         return self
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def arcsinh(self):
+        return torch_frontend.arcsinh(self._ivy_array)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def arcsin(self):
         return torch_frontend.arcsin(self._ivy_array)
 
