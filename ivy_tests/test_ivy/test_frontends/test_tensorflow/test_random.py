@@ -177,9 +177,9 @@ def test_tensorflow_stateless_uniform(
         min_dim_size=1,
         max_dim_size=10,
     ),
-    lam=st.one_of(st.floats(allow_infinity=False, allow_nan=False,width=32),
-                  st.lists(st.floats(allow_nan=False,allow_infinity=False,width=32),min_size=1,max_size=10)),
-    dtype=helpers.get_dtypes("float",full=False),
+    lam=st.one_of(st.floats(allow_infinity=False, allow_nan=False, width=32),
+                  st.lists(st.floats(allow_nan=False, allow_infinity=False, width=32), min_size=1, max_size=10)),
+    dtype=helpers.get_dtypes("float", full=False),
     seed=helpers.ints(min_value=0, max_value=10),
     test_with_out=st.just(False),
 )
@@ -203,5 +203,5 @@ def test_tensorflow_poisson(
         shape=shape,
         dtype=dtype[0],
         seed=seed,
-        test_values= False,
+        test_values=False,
     )
