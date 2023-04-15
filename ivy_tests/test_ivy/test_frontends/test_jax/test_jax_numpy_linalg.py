@@ -12,6 +12,9 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_dtype_and_matrix,
     _matrix_rank_helper,
 )
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_linalg import (
+    _generate_multi_dot_dtype_and_arrays,
+)
 
 
 # svd
@@ -833,4 +836,27 @@ def test_jax_numpy_cond(
         on_device=on_device,
         x=x[0],
         p=p,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.linalg.multi_dot",
+    dtype_and_x=_generate_multi_dot_dtype_and_arrays()
+)
+def test_jax_numpy_multi_dot(
+    on_device,
+    frontend,
+    *,
+    dtype_and_x,
+    test_flags,
+    fn_tree,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        arrays=x,
     )
