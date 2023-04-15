@@ -1297,12 +1297,12 @@ def test_torch_diag(
 @handle_frontend_test(
     fn_tree="torch.bucketize",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         shared_dtype=True,
         min_num_dims=1,
         max_num_dims=1,
     ),
-    boundaries=st.lists(st.integers(1, 10), min_size=1, max_size=10)),
+    boundaries=st.lists(st.integers(1, 10), min_size=1, max_size=10),
     out_int32=st.booleans(),
     right=st.booleans(),
 )
