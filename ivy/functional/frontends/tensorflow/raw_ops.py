@@ -133,6 +133,9 @@ def Concat(*, concat_dim, values, name="Concat"):
 Cos = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.cos))
 
 
+Cosh = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.cosh))
+
+
 @to_ivy_arrays_and_back
 def Cross(*, a, b, name="Cross"):
     a, b = check_tensorflow_casting(a, b)
@@ -257,10 +260,7 @@ def Less(*, x, y, name="Less"):
     return ivy.less(x, y)
 
 
-@to_ivy_arrays_and_back
-def LessEqual(*, x, y, name="LessEqual"):
-    x, y = check_tensorflow_casting(x, y)
-    return ivy.less_equal(x, y)
+LessEqual = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.less_equal))
 
 
 @to_ivy_arrays_and_back
@@ -418,9 +418,7 @@ ShapeN = to_ivy_arrays_and_back(
 )
 
 
-@to_ivy_arrays_and_back
-def Sin(*, x, name="Sin"):
-    return ivy.sin(x)
+Sin = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.sin))
 
 
 @to_ivy_arrays_and_back
@@ -444,11 +442,7 @@ def Sign(*, x, name="Sign"):
     return ivy.sign(x)
 
 
-@to_ivy_arrays_and_back
-def Size(*, input, out_type=tf_frontend.int32, name="Size"):
-    out_type = to_ivy_dtype(out_type)
-    shape = ivy.shape(input, as_array=True)
-    return ivy.astype(ivy.prod(shape), out_type, copy=False)
+Size = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.general_functions.size))
 
 
 Split = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.split))
@@ -572,12 +566,7 @@ def Xlog1py(*, x, y, name="Xlog1py"):
     return ivy.multiply(x, ivy.log1p(y))
 
 
-@to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.10.0 and below": ("bfloat16")}, "tensorflow")
-def Xlogy(*, x, y, name="Xlogy"):
-    if (x == 0).all():
-        return 0.0
-    return ivy.multiply(x, ivy.log(y))
+Xlogy = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.xlogy))
 
 
 @to_ivy_arrays_and_back

@@ -7,7 +7,6 @@ import math
 # local
 import ivy
 from . import backend_version
-from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
 
 
@@ -16,10 +15,6 @@ def _elementwise_helper(x1, x2):
         x1, x2 = ivy.promote_types_of_inputs(x1, x2)
         x1, x2 = ivy.broadcast_arrays(x1, x2)
     return x1, x2, x1.dtype
-
-
-def _complex_modulus(x):
-    return paddle.sqrt(x.real() ** 2 + x.imag() ** 2)
 
 
 @with_unsupported_device_and_dtypes(
@@ -200,7 +195,7 @@ def floor(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
         paddle.bool,
     ]:
         if paddle.is_complex(x):
-            return paddle.floor(x.real()) + paddle.ceil(x.imag()) * 1j
+            return paddle.floor(x.real()) + paddle.floor(x.imag()) * 1j
         return paddle.floor(x.cast("float32")).cast(x.dtype)
     return paddle.floor(x)
 
@@ -284,7 +279,7 @@ def sqrt(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
         if paddle.is_complex(x):
             angle = paddle.angle(x)
             result = (paddle.cos(angle / 2) + 1j * paddle.sin(angle / 2)) * paddle.sqrt(
-                _complex_modulus(x)
+                paddle.abs(x)
             )
             return result
         return paddle.sqrt(x.cast("float32")).cast(x.dtype)
@@ -345,7 +340,7 @@ def log1p(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
         paddle.bool,
     ]:
         if paddle.is_complex(x):
-            return paddle.log1p(_complex_modulus(x)) + 1j * paddle.angle(x + 1)
+            return paddle.log1p(paddle.abs(x)) + 1j * paddle.angle(x + 1)
         return paddle.log1p(x.cast("float32")).cast(x.dtype)
     return paddle.log1p(x)
 
@@ -670,11 +665,7 @@ def tanh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
 
 
 @with_unsupported_device_and_dtypes(
-    {
-        "2.4.2 and below": {
-            "cpu": ("uint16", "bfloat16", "float16", "complex64", "complex128")
-        }
-    },
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}},
     backend_version,
 )
 def floor_divide(
@@ -685,7 +676,8 @@ def floor_divide(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
-    return paddle.floor(ivy.to_native(divide(x1, x2))).cast(ret_dtype)
+    with ivy.ArrayMode(False):
+        return floor(divide(x1, x2)).cast(ret_dtype)
 
 
 def bitwise_or(
@@ -762,7 +754,7 @@ def pow(
     ]:
         if paddle.is_complex(x1):
             # https://math.stackexchange.com/questions/476968/complex-power-of-a-complex-number
-            r = _complex_modulus(x1)
+            r = paddle.abs(x1)
             theta = paddle.angle(x1)
             power = x2 * (paddle.log(r) + 1j * theta)
             result = paddle.exp(power.real()) * (
@@ -776,7 +768,9 @@ def pow(
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
-def round(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+def round(
+    x: paddle.Tensor, /, *, decimals: int = 0, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
     def _np_round(x):
         # this is a logic to mimic np.round behaviour
         # which rounds odd numbers up and even numbers down at limits like 0.5
@@ -788,7 +782,12 @@ def round(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
             x,
             x - eps,
         )
-        return paddle.round(ivy.to_native(x))
+        ret_dtype = x.dtype
+        factor = paddle.pow(paddle.to_tensor(10), paddle.to_tensor(decimals)).astype(
+            ret_dtype
+        )
+        factor_denom = ivy.where(ivy.isinf(x), 1.0, factor)
+        return paddle.round(x * factor) / ivy.to_native(factor_denom)
 
     x, _ = ivy.promote_types_of_inputs(x, x)
     if x.dtype not in [paddle.float32, paddle.float64]:
@@ -918,7 +917,7 @@ def log(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
         paddle.bool,
     ]:
         if paddle.is_complex(x):
-            return paddle.log(_complex_modulus(x)) + 1j * paddle.angle(x)
+            return paddle.log(paddle.abs(x)) + 1j * paddle.angle(x)
         return paddle.log(x.cast("float32")).cast(x.dtype)
     return paddle.log(x)
 
@@ -965,10 +964,11 @@ def remainder(
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     if not modulus:
-        res = divide(x1, x2)
-        res_floored = ivy.where(res >= 0, floor(res), ceil(res))
-        diff = subtract(res, res_floored).astype(res.dtype)
-        return round(multiply(diff, x2)).cast(x1.dtype)
+        with ivy.ArrayMode(False):
+            res = divide(x1, x2)
+            res_floored = ivy.where(greater_equal(res, 0), floor(res), ceil(res))
+            diff = subtract(res, res_floored).astype(res.dtype)
+            return round(multiply(diff, x2)).cast(x1.dtype)
 
     if x1.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
         x1, x2 = x1.cast("float32"), x2.cast("float32")
@@ -1163,4 +1163,8 @@ def fmod(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    x1, x2, ret_dtype = _elementwise_helper(x1, x2)
+    with ivy.ArrayMode(False):
+        res = ivy.floor_divide(ivy.abs(x1), ivy.abs(x2))
+        res = ivy.multiply(res, ivy.abs(x2))
+        return ivy.multiply(ivy.abs(ivy.subtract(ivy.abs(x1), res)), ivy.sign(x1))

@@ -36,6 +36,8 @@ This is one particular area of the Ivy code where, technically speaking, the fun
 
 While :class:`ivy.Array` instances will always be inplace updated consistently, in some cases it is simply not possible to also inplace update the :class:`ivy.NativeArray` which :class:`ivy.Array` wraps, due to design choices made by each backend.
 
+**NOTE:** Native inplace updates do not modify the dtype of the array being updated, as such the :code:`keep_input_dtype` flag should normally be set to :code:`True` such that inplace updating behavior is consistent between backends.
+
 **JAX**:
 
 .. code-block:: python
@@ -43,19 +45,58 @@ While :class:`ivy.Array` instances will always be inplace updated consistently, 
     def inplace_update(
         x: Union[ivy.Array, JaxArray],
         val: Union[ivy.Array, JaxArray],
+        /,
+        *,
         ensure_in_backend: bool = False,
+        keep_input_dtype: bool = False,
     ) -> ivy.Array:
-        if ensure_in_backend:
-            raise Exception("JAX does not natively support inplace updates")
-        (x_native, val_native), _ = ivy.args_to_native(x, val)
-        if ivy.is_ivy_array(x):
-            x.data = val_native
+        if ivy.is_array(x) and ivy.is_array(val):
+            if ensure_in_backend:
+                raise ivy.utils.exceptions.IvyException(
+                    "JAX does not natively support inplace updates"
+                )
+            if keep_input_dtype:
+                val = ivy.astype(val, x.dtype)
+            (x_native, val_native), _ = ivy.args_to_native(x, val)
+            if ivy.is_ivy_array(x):
+                x.data = val_native
+                # Handle view updates
+                if ivy.exists(x._base):
+                    base = x._base
+                    base_idx = ivy.arange(base.size).reshape(base.shape)
+                    for fn, args, kwargs, index in x._manipulation_stack:
+                        kwargs["copy"] = True
+                        base_idx = ivy.__dict__[fn](base_idx, *args, **kwargs)
+                        base_idx = base_idx[index] if ivy.exists(index) else base_idx
+                    base_flat = base.data.flatten()
+                    base_flat = base_flat.at[base_idx.data.flatten()].set(
+                        val_native.flatten()
+                    )
+
+                    base.data = base_flat.reshape(base.shape)
+
+                    for ref in base._view_refs:
+                        view = ref()
+                        if ivy.exists(view) and view is not x:
+                            _update_view(view, base)
+
+                else:
+                    for ref in x._view_refs:
+                        view = ref()
+                        if ivy.exists(view):
+                            _update_view(view, x)
+            else:
+                raise ivy.utils.exceptions.IvyException(
+                    "JAX does not natively support inplace updates"
+                )
+            return x
         else:
-            raise Exception("JAX does not natively support inplace updates")
-        return x
+            return val
 
 JAX **does not** natively support inplace updates, and so there is no way of actually inplace updating the :code:`JaxArray` instance :code:`x_native`.
 Therefore, an inplace update is only performed on :class:`ivy.Array` instances provided in the input.
+
+JAX functions also never returns views so additional logic is added to functionally support multiple variables referencing the same memory (further explained in a later section).
 
 **NumPy**:
 
@@ -64,15 +105,36 @@ Therefore, an inplace update is only performed on :class:`ivy.Array` instances p
     def inplace_update(
         x: Union[ivy.Array, np.ndarray],
         val: Union[ivy.Array, np.ndarray],
+        /,
+        *,
         ensure_in_backend: bool = False,
+        keep_input_dtype: bool = False,
     ) -> ivy.Array:
-        (x_native, val_native), _ = ivy.args_to_native(x, val)
-        x_native.data = val_native
-        if ivy.is_ivy_array(x):
-            x.data = x_native
+        ivy.utils.assertions.check_inplace_sizes_valid(x, val)
+        if ivy.is_array(x) and ivy.is_array(val):
+            if keep_input_dtype:
+                val = ivy.astype(val, x.dtype)
+            (x_native, val_native), _ = ivy.args_to_native(x, val)
+
+            # make both arrays contiguous if not already
+            if not x_native.flags.c_contiguous:
+                x_native = np.ascontiguousarray(x_native)
+            if not val_native.flags.c_contiguous:
+                val_native = np.ascontiguousarray(val_native)
+
+            if val_native.shape == x_native.shape:
+                if x_native.dtype != val_native.dtype:
+                    x_native = x_native.astype(val_native.dtype)
+                np.copyto(x_native, val_native)
+            else:
+                x_native = val_native
+            if ivy.is_ivy_array(x):
+                x.data = x_native
+            else:
+                x = ivy.Array(x_native)
+            return x
         else:
-            x = ivy.Array(x_native)
-        return x
+            return val
 
 NumPy **does** natively support inplace updates, and so :code:`x_native` is updated inplace with :code:`val_native`.
 Following this, an inplace update is then also performed on the :class:`ivy.Array` instance, if provided in the input.
@@ -82,29 +144,66 @@ Following this, an inplace update is then also performed on the :class:`ivy.Arra
 .. code-block:: python
 
     def inplace_update(
-        x: Union[ivy.Array, tf.Tensor, tf.Variable],
-        val: Union[ivy.Array, tf.Tensor, tf.Variable],
+        x: Union[ivy.Array, tf.Tensor],
+        val: Union[ivy.Array, tf.Tensor],
+        /,
+        *,
         ensure_in_backend: bool = False,
+        keep_input_dtype: bool = False,
     ) -> ivy.Array:
-        (x_native, val_native), _ = ivy.args_to_native(x, val)
-        if _is_variable(x_native):
-            x_native.assign(val_native)
-            if ivy.is_ivy_array(x):
-                x.data = x_native
+        if ivy.is_array(x) and ivy.is_array(val):
+            if keep_input_dtype:
+                val = ivy.astype(val, x.dtype)
+            (x_native, val_native), _ = ivy.args_to_native(x, val)
+            if _is_variable(x_native):
+                x_native.assign(val_native)
+                if ivy.is_ivy_array(x):
+                    x.data = x_native
+                else:
+                    x = ivy.Array(x_native)
+            elif ensure_in_backend:
+                raise ivy.utils.exceptions.IvyException(
+                    "TensorFlow does not support inplace updates of the tf.Tensor"
+                )
+            elif ivy.is_ivy_array(x):
+                x.data = val_native
+                # Handle view updates
+                if ivy.exists(x._base):
+                    base = x._base
+                    base_idx = ivy.arange(base.size).reshape(base.shape)
+                    for fn, args, kwargs, index in x._manipulation_stack:
+                        kwargs["copy"] = True
+                        base_idx = ivy.__dict__[fn](base_idx, *args, **kwargs)
+                        base_idx = base_idx[index] if ivy.exists(index) else base_idx
+                    base_flat = tf.reshape(base.data, -1)
+                    base_flat = tf.tensor_scatter_nd_update(
+                        base_flat,
+                        tf.reshape(base_idx.data, (-1, 1)),
+                        tf.reshape(val_native, -1),
+                    )
+
+                    base.data = tf.reshape(base_flat, base.shape)
+                    for ref in base._view_refs:
+                        view = ref()
+                        if ivy.exists(view) and view is not x:
+                            _update_view(view, base)
+                else:
+                    for ref in x._view_refs:
+                        view = ref()
+                        if ivy.exists(view):
+                            _update_view(view, x)
             else:
-                x = ivy.Array(x_native)
-        elif ensure_in_backend:
-            raise Exception("TensorFlow does not support inplace updates of the tf.Tensor")
-        elif ivy.is_ivy_array(x):
-            x.data = val_native
+                x = ivy.to_ivy(x_native)
+            return x
         else:
-            raise Exception("TensorFlow does not support inplace updates of the tf.Tensor")
-        return x
+            return val
 
 TensorFlow **does not** natively support inplace updates for :class:`tf.Tensor` instances, and in such cases so there is no way of actually inplace updating the :class:`tf.Tensor` instance :code:`x_native`.
 However, TensorFlow **does** natively support inplace updates for :class:`tf.Variable` instances.
 Therefore, if :code:`x_native` is a :class:`tf.Variable`, then :code:`x_native` is updated inplace with :code:`val_native`.
 Irrespective of whether the native array is a :class:`tf.Tensor` or a :class:`tf.Variable`, an inplace update is then also performed on the :class:`ivy.Array` instance, if provided in the input.
+
+TensorFlow functions also never returns views so additional logic is added to functionally support multiple variables referencing the same memory (further explained in a later section).
 
 **PyTorch**:
 
@@ -113,18 +212,36 @@ Irrespective of whether the native array is a :class:`tf.Tensor` or a :class:`tf
     def inplace_update(
         x: Union[ivy.Array, torch.Tensor],
         val: Union[ivy.Array, torch.Tensor],
+        /,
+        *,
         ensure_in_backend: bool = False,
+        keep_input_dtype: bool = False,
     ) -> ivy.Array:
-        (x_native, val_native), _ = ivy.args_to_native(x, val)
-        x_native.data = val_native
-        if ivy.is_ivy_array(x):
-            x.data = x_native
+        ivy.utils.assertions.check_inplace_sizes_valid(x, val)
+        if ivy.is_array(x) and ivy.is_array(val):
+            if keep_input_dtype:
+                val = ivy.astype(val, x.dtype)
+            (x_native, val_native), _ = ivy.args_to_native(x, val)
+            if is_variable(x_native):
+                x_native.data = val_native
+            else:
+                x_native[()] = val_native
+            if ivy.is_ivy_array(x):
+                x.data = x_native
+                _update_torch_views(x)
+            else:
+                x = ivy.to_ivy(x_native)
+            if ensure_in_backend:
+                x._data = val_native
+            return x
         else:
-            x = ivy.Array(x_native)
-        return x
+            return val
 
 PyTorch **does** natively support inplace updates, and so :code:`x_native` is updated inplace with :code:`val_native`.
 Following this, an inplace update is then also performed on the :class:`ivy.Array` instance, if provided in the input.
+
+PyTorch also supports views for most manipulation and indexing operation as with NumPy but it lacks that functionality with a few functions such as :func:`flip`.
+Additional logic had to be added to support view functionality for those functions (described in a section below).
 
 The function :func:`ivy.inplace_update` is also *nestable*, meaning it can accept :class:`ivy.Container` instances in the input.
 If an :class:`ivy.Container` instance is provided for the argument :code:`x`, then along with the arrays at all of the leaves, the container :code:`x` is **also** inplace updated, meaning that a new :class:`ivy.Container` instance is not created for the function return.
@@ -323,12 +440,65 @@ All compositional implementations are fully capable of handling the :code:`out` 
 
 Therefore, we always add the :code:`support_native_out` attribute to *mixed* functions, to ensure that the :code:`out` argument is always handled directly by the compositional implementation, rather than being handled `in the decorator`_.
 
+
+Views
+------------
+
+Many functions in NumPy and PyTorch return views instead of copies, these functions are mostly manipulation routines or indexing routines.
+Views are arrays which access the same data buffer as another array but view it with different metadata like :code:`stride`.
+More information about these arrays can be found in `NumPy's documentation <https://numpy.org/doc/stable/user/basics.copies.html>`_.
+This essentially means that any inplace update on the original array or any of its views will cause all the other views to be updated as well since they reference the same memory buffer.
+
+We want to keep supporting NumPy and PyTorch inplace updates whenever we can and superset backend behaviour, however it is not trivial to replicate this in JAX and TensorFlow.
+The main reason is because these frameworks do not natively support inplace updates so even if multiple native arrays are referencing the same memory buffer, you would ever be able to update it once for all of them.
+Therefore views and their updates must be tracked through Ivy and extra logic has been added to update views in the case an inplace update happens to any array which is meant to be referencing the same memory.
+We call views tracked and updated by Ivy functional views as they work with a functional paradigm.
+
+What functions return views is mostly dictated by NumPy since it has the most expansive support for them, any function which returns views in NumPy or PyTorch should be decorated with the :code:`@handle_view` wrapper, except :func:`get_item` which has it's own :code:`@handle_view_indexing` wrapper.
+Every function with this wrapper should also have a :code:`copy` argument such that Ivy maintains a way to prevent views from being created if necessary.
+What that wrapper does is update a few :class:`ivy.Array` attributes which help keep track of views, how they were created, and which arrays should be updated together.
+These attributes are then used in the :func:`ivy.inplace_update` to update all the arrays which are meant to be referencing the same memory, at least to NumPy's standard.
+Of course these are normally only used with a JAX and TensorFlow backend since NumPy and PyTorch natively update their views and Ivy does not need to do any extra handling except for a few functions where PyTorch fails to return views when NumPy does.
+The functions currently implemented in the Ivy API where PyTorch fails to return views at the time of writing are :func:`ivy.flip`, :func:`ivy.rot90`, :func:`ivy.flipud`, :func:`ivy.fliplr`.
+In the case one of those functions is used with a Pytorch backend, additional logic has been added to make the returns of those functions behave as views of the original that made them.
+
+Here's a brief description of the additional attributes added to :class:`ivy.Array` and their usage:
+
+#. Base (:code:`._base`): the original array being referenced (array all views stem from)
+#. Manipulation stack (:code:`._manipulation_stack`): store of operations that were done on the original to get to the current shape (manipulation or indexing)
+#. Reference stack :code:`._view_refs`: Weak references to the arrays that reference the original as view, only populated for base arrays.
+#. PyTorch Base (:code:`._torch_base`): Keeps track of functional view (array created from the listed functions above) that made it, otherwise stores original array
+#. PyTorch reference stack (:code:`._torch_view_refs`): Functional views referencing this array in its PyTorch base, only populated for original arrays or functional views.
+#. PyTorch manipulation cache (:code:`._torch_manipulation`): Tuple storing array or view and function which made the functional view, only populated for functional views
+
+Here's a brief description of how the :code:`@handle_view` wrapper populates these attributes:
+
+#. When an array is made using a function decorated by this wrapper its base becomes the array that made it, or if the array that made it is also a view, its base.
+#. The view is then added to the reference stack of the base array (weakly), the operation that created the array is also added to the manipulation stack of the array.
+#. The way the PyTorch specific attributes are updated should be adequately explained above.
+
+Here's a brief description of what happens during an inplace operation with a JAX and TensorFlow backend:
+
+#. If the base is inplace updated, then it goes through all the arrays in the reference stack, and through their manipulation, then inplace updates every array respectively.
+#. If a view gets inplace updated, an index array is created of the shape of the base array, which then is passed through the manipulation stack of the updated array.
+#. The updated array and the index array are then flattened and they then update the original array by performing a scatter update on a flattened version of the original array, which then gets reshaped into the correct shape.
+#. Then the all views stemming from the original are updated as described in the first point.
+
+Here's a brief description of what happens during an inplace operation with a PyTorch backend:
+
+#. The array being updated checks if it has a populated reference stack, if it does it inplace updates each functional view in the stack with the output of the stored function called with the array that made it.
+   It then checks if the functional view has a reference stack and continues recursively until it reaches a point where it exhausts all reference stacks.
+#. If the reference stack is empty or exhausted it checks if it has a manipulation stack.
+   If populated it performs the reverse functional operation with itself as the input and inplace updates the view that made it (reverses the operation that made it).
+   If the manipulation stack is empty or already exhausted it goes to the array’s PyTorch base and repeats the recursively until everything is exhausted and the base is None.
+#. All other views are expected to be updated automatically through PyTorch's native view handling.
+
 copy argument
 -------------
 
-As well as the :code:`out` argument, a few functions also support the :code:`copy` argument.
-The functions with support for the :code:`copy` argument are all in the `Array API Standard`_, and the standard mandates the inclusion of :code:`copy` in each case.
-These functions are: `ivy.reshape`_ (`in the standard <https://github.com/data-apis/array-api/blob/5ba86db7ff5f9ddd9e956808c3659b1fc7f714cc/spec/API_specification/array_api/manipulation_functions.py#L106>`_), `ivy.astype`_ (`in the standard <https://github.com/data-apis/array-api/blob/5ba86db7ff5f9ddd9e956808c3659b1fc7f714cc/spec/API_specification/array_api/data_type_functions.py#L3>`_) and `ivy.asarray`_ (`in the standard <https://github.com/data-apis/array-api/blob/5ba86db7ff5f9ddd9e956808c3659b1fc7f714cc/spec/API_specification/array_api/creation_functions.py#L31>`_).
+As well as the :code:`out` argument, many also support the :code:`copy` argument.
+The functions with support for the :code:`copy` argument are either in the `Array API Standard`_, and the standard mandates the inclusion of :code:`copy` in each case.
+Or they are expected to return views with specific backends (hence being decorated with the :code:`@handle_view` wrapper) and the :code:`copy` is added to allow a way to prevent views from being created.
 
 The :code:`copy` argument dictates whether a new copy should be created, or whether the input array should be updated inplace.
 When :code:`copy` is not specified explicitly, then an inplace update is performed with the same behaviour as :code:`copy=False`.

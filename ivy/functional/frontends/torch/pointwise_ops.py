@@ -200,10 +200,18 @@ def trunc(input, *, out=None):
     return ivy.trunc(input, out=out)
 
 
+fix = trunc
+
+
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def sqrt(input, *, out=None):
     return ivy.sqrt(input, out=out)
+
+
+@to_ivy_arrays_and_back
+def real(input):
+    return ivy.real(input)
 
 
 @to_ivy_arrays_and_back
@@ -492,3 +500,16 @@ def fmod(x1, x2, out=None):
 @to_ivy_arrays_and_back
 def imag(input):
     return ivy.imag(input)
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@to_ivy_arrays_and_back
+def logit(input, eps=None, *, out=None):
+    if eps is None:
+        eps = -1.0
+    lo = eps
+    hi = 1 - eps
+
+    input = ivy.clip(input, lo, hi, out=out)
+
+    return ivy.log(ivy.divide(input, ivy.subtract(1, input), out=out), out=out)

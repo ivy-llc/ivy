@@ -3458,6 +3458,129 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         return self.static_ldexp(self, x2, out=out)
 
     @staticmethod
+    def static_lerp(
+        input: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        end: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        weight: Union[ivy.Array, ivy.NativeArray, float, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.lerp. This method simply
+        wraps the function, and so the docstring for ivy.lerp also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        input
+            The container whose arrays should be used as parameter: input
+        end
+            The container whose arrays should be used as parameter: end
+        weight
+            The container whose arrays or scalar should be used as parameter: weight
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container including  input + ((end - input) * weight)
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> input = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+        >>> end = ivy.array([10.])
+        >>> weight = 1.1
+        >>> y = ivy.Container.static_lerp(input, end, weight)
+        >>> print(y)
+        {
+            a: ivy.array([11., 10.90000057, 10.80000019]),
+            b: ivy.array([10.70000076, 10.60000038, 10.5])
+        }
+        >>> input = ivy.Container(a=ivy.array([10.1, 11.1]), b=ivy.array([10, 11]))
+        >>> end = ivy.Container(a=ivy.array([5]))
+        >>> weight = ivy.Container(a=0.5)
+        >>> y = ivy.Container.static_lerp(input, end, weight)
+        >>> print(y)
+        {
+            a: ivy.array([7.55000019, 8.05000019]),
+            b: {
+                a: ivy.array([7.5, 8.])
+            }
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "lerp",
+            input,
+            end,
+            weight,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def lerp(
+        self: ivy.Container,
+        end: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        weight: Union[ivy.Array, ivy.NativeArray, float, ivy.Container],
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.lerp. This method simply
+        wraps the function, and so the docstring for ivy.lerp also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The container whose arrays should be used as parameter: input
+        end
+            The container whose arrays should be used as parameter: end
+        weight
+            The container whose arrays or scalar should be used as parameter: weight
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container including  input + ((end - input) * weight)
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> input = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 5, 10]))
+        >>> end = ivy.Container(a=ivy.array([10, 10, 10]), b=ivy.array([20, 20, 20]))
+        >>> weight = ivy.Container(a=ivy.array(0.5), b=ivy.array([0.4, 0.5, 0.6]))
+        >>> input.lerp(end, weight)
+        {
+            a: ivy.array([5.5, 6., 6.5]),
+            b: ivy.array([8.60000038, 12.5, 16.])
+        }
+        """
+        return self.static_lerp(self, end, weight, out=out)
+
+    @staticmethod
     def static_frexp(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,

@@ -890,6 +890,7 @@ def test_torch_log10(
 # trunc
 @handle_frontend_test(
     fn_tree="torch.trunc",
+    aliases=["torch.fix"],
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
@@ -919,6 +920,32 @@ def test_torch_trunc(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
 def test_torch_sqrt(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, input = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input[0],
+    )
+
+
+# real
+@handle_frontend_test(
+    fn_tree="torch.real",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_torch_real(
     *,
     dtype_and_x,
     on_device,
@@ -2303,4 +2330,39 @@ def test_torch_imag(
         fn_tree=fn_tree,
         on_device=on_device,
         input=input[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="torch.logit",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=1,
+        max_dim_size=1,
+        min_value=-10,
+        max_value=10,
+    ),
+    eps=st.sampled_from([1e-05, -1e-05, None]),
+)
+def test_torch_logit(
+    *,
+    dtype_and_input,
+    eps,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, input = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input[0],
+        eps=eps,
+        out=None,
     )

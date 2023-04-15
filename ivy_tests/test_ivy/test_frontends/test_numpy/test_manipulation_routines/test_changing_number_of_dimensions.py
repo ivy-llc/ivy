@@ -4,6 +4,7 @@ import numpy as np
 import ivy_tests.test_ivy.helpers as helpers
 from hypothesis import strategies as st
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_functional.test_core.test_dtype import dtypes_shared
 
 
 # squeeze
@@ -175,4 +176,46 @@ def test_numpy_atleast_1d(
         fn_tree=fn_tree,
         on_device=on_device,
         **arys,
+    )
+
+
+# broadcast_arrays
+@st.composite
+def broadcastable_arrays(draw, dtypes):
+    num_arrays = st.shared(helpers.ints(min_value=2, max_value=5), key="num_arrays")
+    shapes = draw(num_arrays.flatmap(helpers.mutually_broadcastable_shapes))
+    dtypes = draw(dtypes)
+    arrays = []
+    for c, (shape, dtype) in enumerate(zip(shapes, dtypes), 1):
+        x = draw(helpers.array_values(dtype=dtype, shape=shape), label=f"x{c}").tolist()
+        arrays.append(x)
+    return arrays
+
+
+@handle_frontend_test(
+    fn_tree="numpy.broadcast_arrays",
+    arrays=broadcastable_arrays(dtypes_shared("num_arrays")),
+    input_dtypes=dtypes_shared("num_arrays"),
+    test_with_out=st.just(False),
+)
+def test_numpy_broadcast_arrays(
+    *,
+    arrays,
+    input_dtypes,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    args = {}
+    for i, (array, dtype) in enumerate(zip(arrays, input_dtypes)):
+        args["x{}".format(i)] = np.asarray(array, dtype=dtype)
+    test_flags.num_positional_args = len(args)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        **args,
     )

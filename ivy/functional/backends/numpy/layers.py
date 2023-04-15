@@ -36,6 +36,8 @@ def _dilate_pad_conv(x, filters, strides, padding, dims, dilations):
             (pad_specific[i] // 2, pad_specific[i] - pad_specific[i] // 2)
             for i in range(dims)
         ]
+    elif isinstance(padding, int):
+        pad_list = [(padding, padding)] * dims
     else:
         pad_list = padding
     x = np.pad(
@@ -104,7 +106,7 @@ def conv1d(
     x: np.ndarray,
     filters: np.ndarray,
     strides: Union[int, Tuple[int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NWC",
@@ -181,7 +183,7 @@ def conv2d(
     x: np.ndarray,
     filters: np.ndarray,
     strides: Union[int, Tuple[int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NHWC",
@@ -261,7 +263,7 @@ def depthwise_conv2d(
     x: np.ndarray,
     filters: np.ndarray,
     strides: Union[int, Tuple[int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NHWC",
@@ -270,6 +272,8 @@ def depthwise_conv2d(
 ):
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
+    if isinstance(padding, int):
+        padding = [(padding, padding)] * 2
     if data_format == "NHWC":
         x = np.transpose(x, (3, 0, 1, 2))
     else:
@@ -315,7 +319,7 @@ def conv3d(
     x: np.ndarray,
     filters: np.ndarray,
     strides: Union[int, Tuple[int, int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NDHWC",
@@ -398,7 +402,7 @@ def conv_general_dilated(
     x: np.ndarray,
     filters: np.ndarray,
     strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     dims: int = 2,

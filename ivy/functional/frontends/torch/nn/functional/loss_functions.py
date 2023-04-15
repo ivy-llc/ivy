@@ -5,6 +5,33 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_unsupported_dtypes
 
 
+def norm(input, axis):
+    return ivy.sqrt(ivy.sum(ivy.square(input), axis=axis))
+
+
+def pairwise_distance(x1, x2, *, p=2.0, eps=1e-06, keepdim=False):
+    x1, x2 = torch_frontend.promote_types_of_torch_inputs(x1, x2)
+    x1_dim = len(x1.shape)
+    x2_dim = len(x2.shape)
+    if x1_dim > x2_dim:
+        output_dim = x1_dim
+    else:
+        output_dim = x2_dim
+
+    return ivy.vector_norm(x1 - x2 + eps, ord=p, axis=output_dim - 1, keepdims=keepdim)
+
+
+def cosine_similarity(x1, x2):
+    axis = None
+    if len(x1.shape) == len(x2.shape) and len(x2.shape) == 2:
+        axis = 1
+    input1_norm = norm(x1, axis=axis)
+    input2_norm = norm(x2, axis=axis)
+    norm_mm = input1_norm * input2_norm
+    norm_mm, eps = torch_frontend.promote_types_of_torch_inputs(norm_mm, 1e-08)
+    return ivy.sum(x1 * x2, axis=axis) / ivy.maximum(norm_mm, eps)
+
+
 def _get_reduction_func(reduction):
     if reduction == "none":
         ret = lambda x: x
@@ -532,3 +559,44 @@ def multilabel_soft_margin_loss(
     ret = reduction(loss)
 
     return ret
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+def triplet_margin_with_distance_loss(
+    anchor,
+    positive,
+    negative,
+    distance_function=None,
+    margin=1.0,
+    swap=False,
+    reduction="mean",
+):
+
+    reduction = _get_reduction(reduction)
+
+    a_dim = anchor.ndim
+    p_dim = positive.ndim
+    n_dim = negative.ndim
+
+    ivy.assertions.check_true(
+        a_dim == p_dim and p_dim == n_dim,
+        lambda: (
+            f"The anchor, positive, and negative tensors are expected to have "
+            f"the same number of dimensions, but got: anchor {a_dim}D, "
+            f"positive {p_dim}D, and negative {n_dim}D inputs"
+        ),
+    )
+
+    if distance_function is None:
+        distance_function = pairwise_distance
+
+    dist_pos = distance_function(anchor, positive)
+    dist_neg = distance_function(anchor, negative)
+    if swap:
+        dist_swap = distance_function(positive, negative)
+        dist_neg = ivy.minimum(dist_neg, dist_swap)
+
+    loss = ivy.maximum(dist_pos - dist_neg + ivy.array(margin), ivy.array(0.0))
+
+    return reduction(loss).astype(anchor.dtype)
