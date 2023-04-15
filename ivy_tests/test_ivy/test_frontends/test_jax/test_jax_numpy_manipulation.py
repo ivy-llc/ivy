@@ -1552,3 +1552,32 @@ def test_jax_numpy_tri(
         k=k,
         dtype=dtype[0],
     )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.diagflat",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1
+    ),
+    k=helpers.ints(min_value=-10, max_value=10)
+)
+def test_jax_numpy_diagflat(
+    on_device,
+    frontend,
+    *,
+    dtype_and_x,
+    k,
+    test_flags,
+    fn_tree,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        v=x[0],
+        k=k,
+    )

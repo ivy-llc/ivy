@@ -285,3 +285,8 @@ def tri(N, M=None, k=0, dtype="float64"):
         M = N
     ones = ivy.ones((N, M), dtype=dtype)
     return ivy.tril(ones, k=k)
+
+
+@to_ivy_arrays_and_back
+def diagflat(v, k=0):
+    return ivy.diagflat(v, offset=k)
