@@ -34,12 +34,6 @@ def framework_comparator(frontend):
         )
 
 
-try:
-    import tensorflow as tf
-except ImportError:
-    tf = types.SimpleNamespace()
-    tf.TensorShape = None
-
 # local
 import ivy
 from ivy_tests.test_ivy.helpers.test_parameter_flags import FunctionTestFlags
@@ -1719,10 +1713,14 @@ def test_frontend_method(
         frontend_ret = ins_gt.__getattribute__(frontend_method_data.method_name)(
             *args_method_frontend, **kwargs_method_frontend
         )
-        if frontend.split("/")[0] == "tensorflow" and isinstance(
-            frontend_ret, tf.TensorShape
-        ):
-            frontend_ret_np_flat = [np.asarray(frontend_ret, dtype=np.int32)]
+        if frontend.split("/")[0] == "tensorflow":
+            try:
+                import tensorflow as tf
+            except ImportError:
+                tf = types.SimpleNamespace()
+                tf.TensorShape = None
+            if isinstance(frontend_ret, tf.TensorShape):
+                frontend_ret_np_flat = [np.asarray(frontend_ret, dtype=np.int32)]
         elif ivy.isscalar(frontend_ret):
             frontend_ret_np_flat = [np.asarray(frontend_ret)]
         else:
