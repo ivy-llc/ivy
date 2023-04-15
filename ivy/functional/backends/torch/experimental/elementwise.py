@@ -506,4 +506,5 @@ def frexp(
     *,
     out: Optional[Tuple[torch.Tensor, torch.Tensor]] = None,
 ) -> Tuple[torch.Tensor, torch.Tensor]:
-    return torch.frexp(x, out=out)
+    mantissa, exponent = torch.frexp(x, out=out)
+    return mantissa, exponent
