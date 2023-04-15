@@ -1,5 +1,5 @@
 # global
-from hypothesis import strategies as st, reproduce_failure
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
