@@ -551,9 +551,7 @@ def Softplus(*, features, name="Softplus"):
     return ivy.softplus(features)
 
 
-@to_ivy_arrays_and_back
-def Softsign(*, features, name="Softsign"):
-    return ivy.softsign(features)
+Softsign = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.softsign))
 
 
 @to_ivy_arrays_and_back
