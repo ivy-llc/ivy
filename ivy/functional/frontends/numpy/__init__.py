@@ -439,34 +439,24 @@ def promote_types_of_numpy_inputs(
     as inputs only for those functions that expect an array-like or tensor-like objects,
     otherwise it might give unexpected results.
     """
-    # Ignore type of 0-dim arrays to mimic numpy
-    if (
-        hasattr(x1, "shape")
-        and x1.shape == ()
-        and not (hasattr(x2, "shape") and x2.shape == ())
-    ):
-        x1 = ivy.to_scalar(x1)
-    if (
-        hasattr(x2, "shape")
-        and x2.shape == ()
-        and not (hasattr(x1, "shape") and x1.shape == ())
-    ):
-        x2 = ivy.to_scalar(x2)
+    # ToDo: Overflows not working properly for numpy, if a scalar or 0-dim
+    #   is passed with an array, it should go to the next largest dtype that
+    #   can hold the value without overflow. E.g a np.array([5], 'int8') + 300 operation
+    #   results in np.array([305]) with int16 dtype
+    x1 = ivy.asarray(x1)
+    x2 = ivy.asarray(x2)
     type1 = ivy.default_dtype(item=x1).strip("u123456789")
     type2 = ivy.default_dtype(item=x2).strip("u123456789")
-    if hasattr(x1, "dtype") and not hasattr(x2, "dtype") and type1 == type2:
-        x1 = ivy.asarray(x1)
+    # Ignore type of 0-dim arrays or scalars to mimic numpy
+    if not x1.shape == () and x2.shape == () and type1 == type2:
         x2 = ivy.asarray(
             x2, dtype=x1.dtype, device=ivy.default_device(item=x1, as_native=False)
         )
-    elif not hasattr(x1, "dtype") and hasattr(x2, "dtype") and type1 == type2:
+    elif x1.shape == () and not x2.shape == () and type1 == type2:
         x1 = ivy.asarray(
             x1, dtype=x2.dtype, device=ivy.default_device(item=x2, as_native=False)
         )
-        x2 = ivy.asarray(x2)
     else:
-        x1 = ivy.asarray(x1)
-        x2 = ivy.asarray(x2)
         promoted = promote_numpy_dtypes(x1.dtype, x2.dtype)
         x1 = ivy.asarray(x1, dtype=promoted)
         x2 = ivy.asarray(x2, dtype=promoted)
@@ -564,6 +554,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functio
 from ivy.functional.frontends.numpy.mathematical_functions.handling_complex_numbers import (
     _imag,
     _real,
+    _conj,
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.hyperbolic_functions import (
@@ -702,3 +693,4 @@ fmin = ufunc("_fmin")
 ldexp = ufunc("_ldexp")
 floor = ufunc("_floor")
 frexp = ufunc("_frexp")
+conj = ufunc("_conj")
