@@ -144,4 +144,4 @@ def sort_complex(a):
 
 @to_ivy_arrays_and_back
 def count_nonzero(a, axis=None, keepdims=False):
-    return ivy.count_nonzero(a, axis=axis, keepdims=keepdims)
+    return ivy.count_nonzero(a, axis=axis, keepdims=keepdims).astype(ivy.int64)
