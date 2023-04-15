@@ -3844,6 +3844,7 @@ def test_torch_instance_arccosh(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        on_device=on_device,
     )
 
 
