@@ -218,6 +218,7 @@ def inplace_update(
             )
         elif ivy.is_ivy_array(x):
             x.data = val_native
+            # Handle view updates
             if ivy.exists(x._base):
                 base = x._base
                 base_idx = ivy.arange(base.size).reshape(base.shape)

@@ -60,7 +60,8 @@ def unique_all(
         decimal = tf.range(tf.size(inverse_indices)) / tf.size(inverse_indices)
         inv_sorted = tf.argsort(tf.cast(inverse_indices, dtype=decimal.dtype) + decimal)
         tot_counts = tf.concat(
-            [tf.zeros((1,), dtype=counts.dtype), tf.cumsum(counts, axis=0)[:-1]], 0)
+            [tf.zeros((1,), dtype=counts.dtype), tf.cumsum(counts, axis=0)[:-1]], 0
+        )
         indices = inv_sorted.numpy()[tot_counts]
 
     return Results(

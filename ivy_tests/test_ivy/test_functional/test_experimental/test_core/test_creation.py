@@ -11,7 +11,6 @@ import numpy as np
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=3,
-        shape=(1),
         min_value=0,
         max_value=10,
     ),
@@ -200,7 +199,6 @@ def test_kaiser_bessel_derived_window(
     fn_tree="functional.ivy.experimental.hamming_window",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
-        shape=(1),
         min_value=1,
         max_value=10,
     ),
@@ -208,7 +206,6 @@ def test_kaiser_bessel_derived_window(
     dtype_and_f=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
-        shape=(1),
         min_value=0,
         max_value=5,
     ),
@@ -249,7 +246,6 @@ def test_hamming_window(
     dtype_and_n=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=0,
-        shape=(1),
         min_value=0,
         max_value=10,
     ),

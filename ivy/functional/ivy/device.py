@@ -1094,7 +1094,7 @@ def _is_valid_devices_attributes(fn: Callable) -> bool:
     return True
 
 
-def _get_devices(fn, complement=True):
+def _get_devices(fn: Callable, complement: bool = True) -> Tuple:
     valid_devices = ivy.valid_devices
     invalid_devices = ivy.invalid_devices
     all_devices = ivy.all_devices
