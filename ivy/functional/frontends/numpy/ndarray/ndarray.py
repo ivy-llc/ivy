@@ -266,6 +266,9 @@ class ndarray:
         else:
             return np_frontend.ravel(self._ivy_array, order="C")
 
+    def getfield(self, dtype, offset=0):
+        return np_frontend.getfield(self._ivy_array, dtype, offset).astype(dtype)
+
     def fill(self, num):
         return np_frontend.fill(self._ivy_array, num)
 

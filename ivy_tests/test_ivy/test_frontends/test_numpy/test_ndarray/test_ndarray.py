@@ -2758,3 +2758,45 @@ def test_numpy_instance_mod__(
         method_flags=method_flags,
         on_device=on_device,
     )
+
+
+# getfield
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="getfield",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_numpy_instance_getfield(
+    dtype_and_x,
+    dtype,
+    offset,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtypes, x = dtype_and_x
+    ret_dtype = None
+    if frontend == "jax":
+        ret_dtype = helpers.get_native_dtype_str(dtype)
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=[dtype],
+        method_all_as_kwargs_np={
+            "dtype": dtype,
+            "offset": offset,
+        },
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        on_device=on_device,
+        ret_dtype=ret_dtype,
+    )
