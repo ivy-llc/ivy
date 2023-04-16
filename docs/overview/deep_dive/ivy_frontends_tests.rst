@@ -456,7 +456,7 @@ Testing Without Using Tests Values
 
 While even using hypothesis, there are some cases in which we set :code:`test_values=False` for example, we have a
 function add_noise() and we call it on x and we try to assert (we interally use assert np.all_close) that the result
-from torch backend matches tensorflow the test will always fail, because the function add_noise() depends on a random
+from torch backend matches tensorflow and the test will always fail, because the function add_noise() depends on a random
 seed internally that we have no control over, what we change is only how we test for equality, in which in that case
 we can not and we have to reconstruct the output as shown in the example below.
 
