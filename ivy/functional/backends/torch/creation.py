@@ -639,7 +639,9 @@ def bucketize(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if boundaries.dim() == 1:
-        raise TypeError(f"boundaries tensor must be 1 dimension but got dim({boundaries.dim()})")
+        raise TypeError(
+            f"boundaries tensor must be 1 dimension but got dim({boundaries.dim()})"
+        )
         
     out_dtype = torch.int32 if out_int32 else torch.int64
     n_boundaries = boundaries.shape[-1]
