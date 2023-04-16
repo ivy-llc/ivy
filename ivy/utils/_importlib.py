@@ -47,6 +47,7 @@ def _get_modules(absolute_name: str) -> Set[str]:
         for mod_name in files:
             if mod_name.startswith("__") or not mod_name.endswith(".py"):
                 continue
+            # [:-3] to to get the module name without .py
             modules.add(f"{full_name}.{mod_name[:-3]}")
         for dir_name in dirs:
             if dir_name.startswith("__"):
