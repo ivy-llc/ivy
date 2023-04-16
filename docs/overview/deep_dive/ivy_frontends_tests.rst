@@ -398,7 +398,7 @@ This function requires us to create extra functions for generating :code:`shape`
 
 * We use :func:`helpers.get_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically for this function.
 * Tensorflow's version of :func:`full` is named :func:`Fill` therefore we specify the :code:`fn_tree` argument to be :code:`"Fill"`
-* When running the test there where some small discrepancies between the values so we can use :code:`rtol` to specify the relative tolerance. We specify the `out` flag explicitely.
+* When running the test there were some small discrepancies between the values so we can use :code:`rtol` to specify the relative tolerance. We specify the `out` flag explicitely.
 
 
 **PyTorch**
