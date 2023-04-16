@@ -1,5 +1,5 @@
 # global,
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 import numpy as np
 
 # local
@@ -353,28 +353,44 @@ def test_numpy_standard_normal(
 
 @handle_frontend_test(
     fn_tree="numpy.random.standard_gamma",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        shape=st.tuples(st.integers(min_value=1, max_value=2)),
-        min_value=1,
-        max_value=100,
+    shape_dtypes=helpers.get_dtypes("float", full=False),
+    shape=st.floats(
+        allow_nan=False, allow_infinity=False, width=32, min_value=0, exclude_min=True
     ),
+    size=st.tuples(
+        st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)
+    ),
+    size_dtypes=helpers.get_dtypes("integer", full=False),
     test_with_out=st.just(False),
 )
 def test_numpy_standard_gamma(
+<<<<<<< HEAD
     dtype_and_x,
+=======
+    shape,
+    shape_dtypes,
+    size,
+    size_dtypes,
+>>>>>>> 39c9d4d403c42d91724440f44bc40bdf37895fb3
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
+<<<<<<< HEAD
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+=======
+    assume("float16" not in shape_dtypes)
+    helpers.test_frontend_function(
+        input_dtypes=shape_dtypes + size_dtypes,
+>>>>>>> 39c9d4d403c42d91724440f44bc40bdf37895fb3
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
+<<<<<<< HEAD
         alpha=x[0],
         test_values=False,
     )
@@ -384,3 +400,12 @@ def test_numpy_standard_gamma(
 
 =======
 >>>>>>> parent of 261b30e1a (ivy and test_ivy changed)
+=======
+        test_values=False,
+        shape=shape,
+        size=size,
+    )
+
+
+
+>>>>>>> 39c9d4d403c42d91724440f44bc40bdf37895fb3

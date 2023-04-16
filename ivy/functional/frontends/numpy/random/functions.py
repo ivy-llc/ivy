@@ -113,5 +113,10 @@ def binomial(n,p,size):
     else:
         num_samples = len(p)
     return ivy.multinomial(n, num_samples, batch_size=batch_size, probs=p)
+<<<<<<< HEAD
 =======
 >>>>>>> parent of 261b30e1a (ivy and test_ivy changed)
+=======
+def standard_gamma(shape, size=None):
+    return ivy.gamma(shape, 1.0, shape=size, dtype="float64")
+>>>>>>> 39c9d4d403c42d91724440f44bc40bdf37895fb3

@@ -8,7 +8,11 @@ import torch
 import ivy
 from ivy import promote_types_of_inputs
 from ivy.functional.backends.torch.elementwise import _cast_for_unary_op
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    with_supported_dtypes,
+    handle_mixed_function,
+)
 from .. import backend_version
 
 
@@ -444,6 +448,56 @@ def ldexp(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.ldexp(x1, x2, out=out)
+
+
+def _are_suitable_types_for_torch_lerp(input, end, weight):
+    suitable_types = [
+        torch.int8,
+        torch.int16,
+        torch.int32,
+        torch.int64,
+        torch.float16,
+        torch.bfloat16,
+        torch.float32,
+        torch.float64,
+    ]
+
+    if not isinstance(input, torch.Tensor) or not isinstance(end, torch.Tensor):
+        return False
+    else:
+        if input.dtype not in suitable_types or end.dtype not in suitable_types:
+            return False
+
+    if not isinstance(weight, float) and not isinstance(weight, torch.Tensor):
+        return False
+    else:
+        if isinstance(weight, torch.Tensor):
+            if weight.dtype not in [
+                torch.float16,
+                torch.bfloat16,
+                torch.float32,
+                torch.float64,
+            ]:
+                return False
+
+    return True
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
+@handle_mixed_function(
+    lambda input, end, weight, **kwargs: (
+        _are_suitable_types_for_torch_lerp(input, end, weight)
+    )
+)
+def lerp(
+    input: torch.Tensor,
+    end: torch.Tensor,
+    weight: Union[torch.Tensor, float],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.lerp(input, end, weight, out=out)
 
 
 def frexp(
