@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from typing import Union, Optional, Sequence,Tuple
+from typing import Union, Optional, Sequence, Tuple
 
 # local
 import ivy
@@ -257,27 +257,30 @@ def cummax(
 ) -> Tuple[np.ndarray, np.ndarray]:
     if exclusive or reverse:
         if exclusive and reverse:
-            x = np.cummax(np.flip(x, axis=axis), axis=axis)
-            x = np.swapaxes(x, axis, -1)
-            x = np.concatenate((np.zeros_like(x[..., -1:]), x[..., :-1]), -1)
-            x = np.swapaxes(x, axis, -1)
-            res = np.flip(x, axis=axis)
+            indices = general.find_cummax_indices(np.flip(x, axis=axis), axis=axis)
+            x = np.maximum.accumulate(np.flip(x, axis=axis), axis=axis, dtype=x.dtype)
+            x, indices = np.swapaxes(x, axis, -1), np.swapaxes(indices, axis, -1)
+            x, indices = np.concatenate((np.zeros_like(x[..., -1:]), x[..., :-1]), -1), np.concatenate(
+                (np.zeros_like(indices[..., -1:]), indices[..., :-1]), -1)
+            x, indices = np.swapaxes(x, axis, -1), np.swapaxes(indices, axis, -1)
+            res, indices = np.flip(x, axis=axis), np.flip(indices, axis=axis)
+
         elif exclusive:
             x = np.swapaxes(x, axis, -1)
             x = np.concatenate((np.zeros_like(x[..., -1:]), x[..., :-1]), -1)
-            x = np.cummax(x, -1)
-            res = np.swapaxes(x, axis, -1)
+            x = np.swapaxes(x, axis, -1)
+            indices = general.find_cummax_indices(x, axis=axis)
+            res = np.maximum.accumulate(x, axis=axis, dtype=x.dtype)
+            # res,indices = np.swapaxes(y, axis, -1),np.swapaxes(indices, axis, -1)
         elif reverse:
-            x = np.cummax(np.flip(x, axis=axis), axis=axis)
-            res = np.flip(x, axis=axis)
-        indices = general.find_cummax_indices(res, axis=axis)
-        return res,indices
-
+            x = np.flip(x, axis=axis)
+            indices = general.find_cummax_indices(x, axis=axis)
+            x = np.maximum.accumulate(x, axis=axis)
+            res, indices = np.flip(x, axis=axis), np.flip(indices, axis=axis)
+        return res, indices
     # X=x.tolist()
     # ret=pd.DataFrame(X).cummax() if axis==0 and len(x.shape)==1 else pd.DataFrame(X).T.cummax()
-
     indices = general.find_cummax_indices(x, axis=axis)
-
     return np.maximum.accumulate(x, axis=axis, dtype=x.dtype), indices
 
 

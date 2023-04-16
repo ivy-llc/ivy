@@ -1,7 +1,7 @@
 # global
 import jax.numpy as jnp
 import jax.lax as jlax
-from typing import Union, Optional, Sequence,Tuple
+from typing import Union, Optional, Sequence, Tuple
 
 # local
 import ivy
@@ -222,22 +222,29 @@ def cummax(
         *,
         out: Optional[JaxArray] = None,
 ) -> Tuple[JaxArray, JaxArray]:
-    if exclusive or reverse:
+    if exclusive or (reverse and exclusive):
         if exclusive and reverse:
-            x = jlax.cummax(x, axis=axis, reverse=reverse)
-            x = jnp.swapaxes(x, axis, -1)
-            x = jnp.concatenate((jnp.zeros_like(x[..., -1:]), x[..., :-1]), -1)
-            x = jnp.swapaxes(x, axis, -1)
-            res = jnp.flip(x, axis=axis)
+            indices = general.find_cummax_indices(jnp.flip(x, axis=axis), axis=axis)
+            x = jlax.cummax(jnp.flip(x, axis=axis), axis=axis)
+            x, indices = jnp.swapaxes(x, axis, -1), jnp.swapaxes(indices, axis, -1)
+            x, indices = jnp.concatenate((jnp.zeros_like(x[..., -1:]), x[..., :-1]), -1), jnp.concatenate(
+                (jnp.zeros_like(indices[..., -1:]), indices[..., :-1]), -1)
+            x, indices = jnp.swapaxes(x, axis, -1), jnp.swapaxes(indices, axis, -1)
+            res, indices = jnp.flip(x, axis=axis), jnp.flip(indices, axis=axis)
         elif exclusive:
             x = jnp.swapaxes(x, axis, -1)
             x = jnp.concatenate((jnp.zeros_like(x[..., -1:]), x[..., :-1]), -1)
-            x = jlax.cummax(x, -1)
-            res = jnp.swapaxes(x, axis, -1)
-        indices = general.find_cummax_indices(res, axis=axis)
+            x = jnp.swapaxes(x, axis, -1)
+            indices = general.find_cummax_indices(x, axis=axis)
+            res = jlax.cummax(x, axis=axis)
         return res, indices
-    indices = general.find_cummax_indices(x, axis=axis)
 
+    if reverse:
+        y = jnp.flip(x, axis=axis)
+        indices = general.find_cummax_indices(y, axis=axis)
+        indices = jnp.flip(indices, axis=axis)
+    else:
+        indices = general.find_cummax_indices(x, axis=axis)
     return jlax.cummax(x, axis, reverse=reverse), indices
 
 

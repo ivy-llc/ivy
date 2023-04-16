@@ -1147,6 +1147,94 @@ def cumprod(
         x, axis=axis, exclusive=exclusive, reverse=reverse, dtype=dtype, out=out
     )
 
+@handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
+def cummax(
+    x: Union[ivy.Array, ivy.NativeArray],
+    axis: int = 0,
+    exclusive: bool = False,
+    reverse: bool = False,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Returns a namedtuple where values is the cumulative maximum of elements of input in the given axis. And
+    indices is the index location of each maximum value found in the given axis.
+
+    Parameters
+    ----------
+    x
+        Input array.
+    axis
+        Axis along which the cumulative sum is computed. Default is ``0``.
+    exclusive
+        Whether to perform cummax exclusively. Default is ``False``.
+    reverse
+        Whether to perform the cummax from last to first element in the selected
+        axis. Default is ``False`` (from first to last element)
+    out
+        Optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        Array which holds the result of applying cummax at each
+        original array elements along the specified axis.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([-86,-19,41,88,-5,80,32,87,-90,-12])
+    >>> y = ivy.cummax(x, exclusive= False, reverse=False)
+    >>> print(y)
+    [ivy.array([-86,-19,41,88,88,88,88,88,88,88]), ivy.array([0,1,2,3,3,3,3,3,3,3])]
+
+    >>> x = ivy.array([ 14,  15,  49, -24, -39])
+    >>> y = ivy.cummax(x, axis=0, exclusive=False, reverse=False)
+    >>> print(y)
+    [ivy.array([14, 15, 49, 49, 49]),ivy.array([0, 1, 2, 2, 2])]
+
+    >>> x = ivy.array([[ 63,  43, -16,  -4],[ 21,  82,  59,  33]])
+    >>> ivy.cummax(x,axis=0,reverse=False, dtype='int64', out=x)
+    >>> print(x)
+    [ivy.array([[ 63,  43, -16,  -4],[ 63,  82,  59,  33]]),ivy.array([[0, 0, 0, 0],[0, 1, 1, 1]])]
+
+    >>> x = ivy.array([[-36,  83, -81],
+        [ 23,  29,  63],
+        [-83,  85,   2],
+        [ 31,  25, -86],
+        [-10, -52,   0],
+        [ 22,  38,  55],
+        [ 33,  54, -16]])
+    >>> y = ivy.cummax(x, axis= 1,exclusive=True,reverse=False)
+    >>> print(y)
+    [ivy.array([[ 0,  0, 83],
+        [ 0, 23, 29],
+        [ 0,  0, 85],
+        [ 0, 31, 31],
+        [ 0,  0,  0],
+        [ 0, 22, 38],
+        [ 0, 33, 54]]),ivy.array([[0, 0, 2],
+        [0, 1, 2],
+        [0, 0, 2],
+        [0, 1, 1],
+        [0, 0, 0],
+        [0, 1, 2],
+        [0, 1, 2]])]
+
+    >>> x = ivy.array([73, 15, 47])
+    >>> ivy.cummax(x,axis=0,reverse=True,exclusive=True)
+    >>> print(y)
+    [ivy.array([47, 47,  0]),ivy.array([0, 0, 0])]
+
+    """
+    return current_backend(x).cummax(x, reverse=reverse,axis=axis, exclusive=exclusive, out=out)
+
 
 @handle_exceptions
 @handle_nestable
