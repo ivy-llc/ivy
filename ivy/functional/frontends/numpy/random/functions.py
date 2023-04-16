@@ -95,6 +95,7 @@ def standard_normal(size=None):
 @from_zero_dim_arrays_to_scalar
 def standard_gamma(alpha):
     return ivy.gamma(alpha, beta=1.0, dtype="float64")
+<<<<<<< HEAD
 
 #binomial
 
@@ -111,4 +112,6 @@ def binomial(n,p,size):
             num_samples = size[0]
     else:
         num_samples = len(p)
-    return ivy.binomial(n, num_samples, batch_size=batch_size, probs=p)
+    return ivy.multinomial(n, num_samples, batch_size=batch_size, probs=p)
+=======
+>>>>>>> parent of 261b30e1a (ivy and test_ivy changed)
