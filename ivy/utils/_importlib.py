@@ -42,8 +42,7 @@ def _get_modules(absolute_name: str) -> Set[str]:
     for root, dirs, files in os.walk(module_path):
         if root.endswith("__"):
             continue
-        common = os.path.commonpath([root, module_path])
-        full_name = absolute_name + root[len(common) :].replace(os.path.sep, ".")
+        full_name = absolute_name + root[len(module_path) :].replace(os.path.sep, ".")
         for mod_name in files:
             if mod_name.startswith("__") or not mod_name.endswith(".py"):
                 continue
