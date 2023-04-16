@@ -382,7 +382,7 @@ def diag(input, diagonal=0, *, out=None):
     {"1.11.0 and below": ("int8", "float16", "bfloat16", "bool")}, "torch"
 )
 @to_ivy_arrays_and_back
-def bucketize(input, boundaries, *, out_int32=False, right=False, out=None):
+def bucketize(input, boundaries, /, *, out_int32=False, right=False, out=None):
     ret = ivy.bucketize(input, boundaries, right=right, out=out)
     if out_int32:
         ret = ivy.astype(ret, "int32")
