@@ -211,6 +211,7 @@ def test_kaiser_bessel_derived_window(
     ),
     dtype=helpers.get_dtypes("float", full=False),
     test_gradients=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_hamming_window(
     *,
