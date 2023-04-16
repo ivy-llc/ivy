@@ -1327,5 +1327,4 @@ def test_torch_bucketize(
         boundaries=boundaries,
         out_int32=out_int32,
         right=right,
-        out=out,
     )
