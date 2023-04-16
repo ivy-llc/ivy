@@ -386,16 +386,13 @@ def test_numpy_nanmedian(
     )
 
 
-
-
-
 @handle_frontend_test(
     fn_tree="numpy.nanquantile",
     keep_dims=st.booleans(),
     overwrite_input=st.booleans(),
     dtype_x_axis=statistical_dtype_values(function="nanquantile"),
 )
-def test_numpy_nanquantile  (
+def test_numpy_nanquantile(
     dtype_x_axis,
     frontend,
     test_flags,

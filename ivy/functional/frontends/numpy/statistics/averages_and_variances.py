@@ -421,4 +421,7 @@ def nanquantile(
     overwrite_input=False,
     keepdims=False
 ):
-    return np.nanpercentile(a, q*100, axis=axis, out=out, overwrite_input=overwrite_input, keepdims=keepdims) / 100
+    return np.nanpercentile(a, q * 100, axis=axis, out=out, \
+                        overwrite_input=overwrite_input, \
+                        keepdims=keepdims) / 100
+

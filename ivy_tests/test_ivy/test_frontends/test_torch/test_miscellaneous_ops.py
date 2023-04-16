@@ -1300,7 +1300,7 @@ def test_torch_diag(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=0,
         max_num_dims=2,
-        ),
+    ),
     test_with_out=st.just(False),
 )
 def test_torch_corrcoef(
