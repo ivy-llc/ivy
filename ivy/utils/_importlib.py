@@ -175,12 +175,11 @@ def _import_module(name, package=None):
         path = parent_module.__spec__.submodule_search_locations
 
     # Return the one from global Ivy if the module is marked to skip
-    for module_to_skip in _all_modules_to_skip:
-        if absolute_name == module_to_skip:
-            if path is not None:
-                # Set reference to self in parent, if exist
-                setattr(parent_module, child_name, sys.modules[absolute_name])
-            return sys.modules[absolute_name]
+    if absolute_name in _all_modules_to_skip:
+        if path is not None:
+            # Set reference to self in parent, if exist
+            setattr(parent_module, child_name, sys.modules[absolute_name])
+        return sys.modules[absolute_name]
 
     for finder in path_hooks:
         spec = finder.find_spec(absolute_name, path)
