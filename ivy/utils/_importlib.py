@@ -15,7 +15,6 @@ ivy_path_abs = Path(sys.modules["ivy"].__file__).parents[1]
 # If they do, the behavior of ivy.with_backend is undefined and may not function as
 # Expected.
 MODULES_TO_SKIP = ["ivy.compiler"]
-MODULES_TO_EXCLUDE = []
 
 
 def _get_modules(absolute_name: str) -> Set[str]:
@@ -56,39 +55,25 @@ def _get_modules(absolute_name: str) -> Set[str]:
     return modules
 
 
-def _get_all_modules_to_skip(modules: List[str], exclude: List[str]) -> Set[str]:
+def _get_all_modules_to_skip(modules_to_skip: List[str]) -> Set[str]:
     """Get all modules to skip during the compilation process for ivy.with_backend.
-    The excluded modules, will not be skipped.
 
     Parameters
     ----------
     modules
         List of modules to skip
-    exclude
-        List of modules to exclude
 
     Returns
     -------
         Set of modules to skip
     """
     all_modules = set()
-    for module in modules:
+    for module in modules_to_skip:
         all_modules.update(_get_modules(module))
-
-    for module_to_exclude in exclude:
-        nested_modules_to_exclude = _get_modules(module_to_exclude)
-        try:
-            for mod_to_skip in nested_modules_to_exclude:
-                all_modules.remove(mod_to_skip)
-        except KeyError as e:
-            raise KeyError(
-                f"Module {module_to_exclude} is not in the list of modules to skip."
-            ) from e
-
     return all_modules
 
 
-_all_modules_to_skip = _get_all_modules_to_skip(MODULES_TO_SKIP, MODULES_TO_EXCLUDE)
+_all_modules_to_skip = _get_all_modules_to_skip(MODULES_TO_SKIP)
 
 
 class LocalIvyImporter:
