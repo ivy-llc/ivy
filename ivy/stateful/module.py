@@ -125,7 +125,6 @@ class Module(ModuleConverters, ModuleHelpers):
             return
         self.build(*args, dynamic_backend=dynamic_backend, **kwargs)
 
-
     # Private #
     # --------#
 
