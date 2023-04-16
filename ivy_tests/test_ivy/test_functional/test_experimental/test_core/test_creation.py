@@ -79,7 +79,7 @@ def test_vorbis_window(
     fn_tree="functional.ivy.experimental.hann_window",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
-        shape=(1, 1),
+        shape=(1),
         min_value=1,
         max_value=10,
     ),
