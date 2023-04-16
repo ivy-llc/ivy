@@ -200,10 +200,18 @@ def trunc(input, *, out=None):
     return ivy.trunc(input, out=out)
 
 
+fix = trunc
+
+
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def sqrt(input, *, out=None):
     return ivy.sqrt(input, out=out)
+
+
+@to_ivy_arrays_and_back
+def real(input):
+    return ivy.real(input)
 
 
 @to_ivy_arrays_and_back

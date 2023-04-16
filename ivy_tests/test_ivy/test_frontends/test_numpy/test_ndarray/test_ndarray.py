@@ -1362,6 +1362,42 @@ def test_numpy_instance_mul__(
     )
 
 
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__rmul__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+    ),
+)
+def test_numpy_instance_rmul__(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtypes, xs = dtype_and_x
+
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": xs[0],
+        },
+        method_input_dtypes=input_dtypes,
+        method_all_as_kwargs_np={
+            "value": xs[1],
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
 # __floordiv__ test
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -2722,46 +2758,3 @@ def test_numpy_instance_mod__(
         method_flags=method_flags,
         on_device=on_device,
     )
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="numpy.array",
-    method_name="choose",
-    dtype_and_x= helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-    ),
-     choices = helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_size=1,
-        max_size=dtype_and_x.shape[0],
-    ),
-    mode = st.sampled_from(["raise", "wrap", "clip"])
-)
-def test_numpy_ndarray_choose(
-    dtype_and_x,
-    choices,
-    mode,
-    out,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    frontend,
-    on_device,
-):
-    input_dtypes, x = dtype_and_x
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtypes,
-        init_all_as_kwargs_np={
-            "object": x[0],
-        },
-        method_input_dtypes=input_dtypes,
-        method_all_as_kwargs_np={
-            "choices" :choices,
-            "mode":mode,
-            "out":out,
-        },
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        frontend_method_data=frontend_method_data,
-        on_device=on_device,
-        )
