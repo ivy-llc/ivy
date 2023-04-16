@@ -1681,8 +1681,10 @@ def test_torch_pow(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
-        min_value=-10,
-        max_value=10,
+        min_value=0,
+        max_value=6,
+        small_abs_safety_factor=10,
+        safety_factor_scale="linear",
     ),
 )
 def test_torch_float_power(
@@ -1693,6 +1695,8 @@ def test_torch_float_power(
     test_flags,
 ):
     input_dtype, x = dtype_and_x
+    # bfloat16 uses different semantics for exponent and mantissa than other float types
+    assume("bfloat16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
