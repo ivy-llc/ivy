@@ -191,6 +191,19 @@ def cond(
     return k
 
 
+@with_supported_dtypes(
+    {
+        "2.9.1": (
+            "bfloat16",
+            "float16",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+        )
+    },
+    backend_version,
+)
 def solve_triangular(
     a: Union[tf.Tensor, tf.Variable],
     b: Union[tf.Tensor, tf.Variable],
