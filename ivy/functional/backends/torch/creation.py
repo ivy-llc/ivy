@@ -648,7 +648,7 @@ def bucketize(
     if n_boundaries == 0:
         return torch.zeros_like(input)
 
-    start = torch.zeros(input.shape, device=input.device, dtype=torch.int64)
+    start = torch.zeros(input.shape, device=torch.device, dtype=torch.int64)
     end = start + n_boundaries
     mid = start + (end - start) // 2
     mid_val = boundaries[mid]
