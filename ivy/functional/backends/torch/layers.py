@@ -1,6 +1,6 @@
 """Collection of PyTorch network layers, wrapped to fit Ivy syntax and signature."""
 
-from typing import Optional, Tuple, Union, Sequence
+from typing import Optional, Tuple, Union, Sequence, Literal
 
 # global
 import torch

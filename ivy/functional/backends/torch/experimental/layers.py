@@ -624,3 +624,14 @@ def adaptive_avg_pool1d(input, output_size):
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, backend_version)
 def adaptive_avg_pool2d(input, output_size):
     return torch.nn.functional.adaptive_avg_pool2d(input, output_size)
+
+def quantize(
+    input, 
+    /,
+    scale, 
+    zero_point, 
+    dtype
+) -> torch.Tensor:
+    return torch.quantize_per_tensor(input, scale, zero_point, dtype)
+
+

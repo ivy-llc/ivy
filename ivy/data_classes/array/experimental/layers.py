@@ -780,3 +780,44 @@ class _ArrayWithLayersExperimental(abc.ABC):
             self._data,
             output_size,
         )
+
+    def quantize(
+        self: ivy.Array, 
+        input,
+        /,
+        scale, 
+        zero_point, 
+        dtype,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array: 
+        """
+        Converts a float tensor to a quantized tensor
+        
+        Parameters
+        ----------
+        input
+            Float tensor or list of tensors to quantize
+        scale
+            scale to apply in quantization formula
+        zero_point 
+            offset in integer value that maps to float zero
+        dtype 
+            the desired data type of returned tensor.
+            Has to be one of the quantized dtypes: 
+            torch.quint8, torch.qint8, torch.qint32, 
+            tf.qint8, tf.quint8, tf.qint32, tf.qint16, tf.quint16. 
+        min_range 	
+            A Tensor of type float32. The minimum value of the quantization range. 
+            This value may be adjusted by the op depending on other parameters. 
+            The adjusted value is written to output_min. If the axis attribute is specified, 
+            this must be a 1-D tensor whose size matches the axis dimension of the input and output tensors.
+        max_range 	
+            A Tensor of type float32. The maximum value of the quantization range. 
+            This value may be adjusted by the op depending on other parameters. 
+            The adjusted value is written to output_max. If the axis attribute is specified, 
+            this must be a 1-D tensor whose size matches the axis dimension of the input and output tensors.
+        Returns
+        -------
+            A newly quantized tensor or list of quantized tensors.
+        """
+        return ivy.quantize(self._data, input, scale, zero_point, dtype, out=out)

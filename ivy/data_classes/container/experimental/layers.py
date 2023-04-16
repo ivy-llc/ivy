@@ -1684,3 +1684,105 @@ class _ContainerWithLayersExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
+
+    @staticmethod
+    def static_quantize(
+        input: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        scale: Union[ivy.Array, ivy.NativeArray],
+        zero_point: Union[ivy.Array, ivy.NativeArray],
+        min_range,
+        max_range,
+        dtype,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+        Converts a float tensor to a quantized tensor
+
+        Parameters
+        ----------
+        input
+            Float tensor or list of tensors to quantize
+        scale
+            scale to apply in quantization formula
+        zero_point 
+            offset in integer value that maps to float zero
+        dtype 
+            the desired data type of returned tensor.
+            Has to be one of the quantized dtypes: 
+            torch.quint8, torch.qint8, torch.qint32, 
+            tf.qint8, tf.quint8, tf.qint32, tf.qint16, tf.quint16. 
+        min_range 	
+            A Tensor of type float32. The minimum value of the quantization range. 
+            This value may be adjusted by the op depending on other parameters. 
+            The adjusted value is written to output_min. If the axis attribute is specified, 
+            this must be a 1-D tensor whose size matches the axis dimension of the input and output tensors.
+        max_range 	
+            A Tensor of type float32. The maximum value of the quantization range. 
+            This value may be adjusted by the op depending on other parameters. 
+            The adjusted value is written to output_max. If the axis attribute is specified, 
+            this must be a 1-D tensor whose size matches the axis dimension of the input and output tensors.
+        Returns
+        -------
+            A newly quantized tensor or list of quantized tensors.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "quantize",
+            input,
+            scale,
+            zero_point,
+            min_range,
+            max_range,
+            dtype,
+            out=out
+        )
+
+    def quantize(
+        self: ivy.Container,
+        /,
+        scale: Union[ivy.Array, ivy.NativeArray],
+        zero_point: Union[ivy.Array, ivy.NativeArray],
+        min_range,
+        max_range,
+        dtype,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+        Converts a float tensor to a quantized tensor 
+        
+        Parameters
+        ----------
+        input
+            Float tensor or list of tensors to quantize
+        scale
+            scale to apply in quantization formula
+        zero_point 
+            offset in integer value that maps to float zero
+        dtype 
+            the desired data type of returned tensor.
+            Has to be one of the quantized dtypes:
+            torch.quint8, torch.qint8, torch.qint32, 
+            tf.qint8, tf.quint8, tf.qint32, tf.qint16, tf.quint16. 
+        min_range 	
+            A Tensor of type float32. The minimum value of the quantization range. 
+            This value may be adjusted by the op depending on other parameters. 
+            The adjusted value is written to output_min. If the axis attribute is specified, 
+            this must be a 1-D tensor whose size matches the axis dimension of the input and output tensors.
+        max_range 	
+            A Tensor of type float32. The maximum value of the quantization range. 
+            This value may be adjusted by the op depending on other parameters. 
+            The adjusted value is written to output_max. If the axis attribute is specified, 
+            this must be a 1-D tensor whose size matches the axis dimension of the input and output tensors.
+        Returns
+        -------
+            A newly quantized tensor or list of quantized tensors.
+        """
+        return self.static_quantize(
+            self,
+            scale,
+            zero_point,
+            min_range,
+            max_range,
+            dtype,
+            out=out
+        )

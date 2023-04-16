@@ -432,22 +432,20 @@ def interpolate(
     size: Union[Sequence[int], int],
     /,
     *,
-    mode: Union[
-        Literal[
-            "linear",
-            "bilinear",
-            "trilinear",
-            "nearest",
-            "area",
-            "nearest-exact",
-            "tf_area",
-            "bicubic",
-            "bicubic_tensorflow",
-            "mitchellcubic",
-            "lanczos3",
-            "lanczos5",
-            "gaussian",
-        ]
+    mode: Literal[
+        "linear",
+        "bilinear",
+        "trilinear",
+        "nearest",
+        "area",
+        "nearest-exact",
+        "tf_area",
+        "bicubic",
+        "bicubic_tensorflow",
+        "mitchellcubic",
+        "lanczos3",
+        "lanczos5",
+        "gaussian",
     ] = "linear",
     scale_factor: Optional[Union[Sequence[int], int]] = None,
     recompute_scale_factor: Optional[bool] = None,
@@ -485,3 +483,12 @@ def interpolate(
     if remove_dim:
         ret = tf.squeeze(ret, axis=-2)
     return ret
+
+def quantize(
+    input, 
+    /,
+    min_range, 
+    max_range, 
+    dtype,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.quantization.quantize(input, min_range, max_range, dtype,)

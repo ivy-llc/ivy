@@ -3,6 +3,7 @@
 import math
 import numpy as np
 from typing import Optional, Union, Tuple, Literal
+from ivy.utils.exceptions import IvyNotImplementedException
 
 # local
 import ivy
@@ -646,3 +647,11 @@ def ifft(
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return np.asarray(np.fft.ifft(x, n, dim, norm), dtype=x.dtype)
+
+def quantize(
+    x: np.ndarray,
+    scale, 
+    zero_point, 
+    dtype, 
+):
+    raise IvyNotImplementedException()

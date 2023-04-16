@@ -4,6 +4,7 @@ import jax
 import jax.lax as jlax
 import jax.numpy as jnp
 import math
+from ivy.utils.exceptions import IvyNotImplementedException
 
 # local
 import ivy
@@ -555,3 +556,11 @@ def interpolate(
         jax.image.resize(x, shape=size, method=mode, antialias=antialias),
         (0, dims + 1, *range(1, dims + 1)),
     )
+
+def quantize(
+    x: JaxArray,
+    scale, 
+    zero_point, 
+    dtype, 
+):
+    raise IvyNotImplementedException()

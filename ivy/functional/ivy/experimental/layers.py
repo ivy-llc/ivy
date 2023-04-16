@@ -464,7 +464,7 @@ def dct(
     type
         The type of the dct. Must be 1, 2, 3 or 4.
     n
-        The lenght of the transform. If n is less than the input signal lenght,
+        The length of the transform. If n is less than the input signal length,
         then x is truncated, if n is larger then x is zero-padded.
     axis
         The axis to compute the DCT along.
@@ -551,7 +551,7 @@ def fft(
     n: Optional[Union[int, Tuple[int]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    r"""Computes the one dimensional discrete Fourier transform given input at least
+    """Computes the one dimensional discrete Fourier transform given input at least
     1-D input x.
 
     Parameters
@@ -1284,7 +1284,8 @@ def interpolate(
         "area",
         "nearest_exact",
         "tf_area",
-        "bicubic_tensorflow" "bicubic",
+        "bicubic_tensorflow",
+        "bicubic",
         "mitchellcubic",
         "lanczos3",
         "lanczos5",
@@ -1781,3 +1782,56 @@ def adaptive_avg_pool2d(
     if squeeze:
         return ivy.squeeze(pooled_output, axis=0)
     return pooled_output
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def quantize(
+    input: Union[ivy.Array, ivy.NativeArray],
+    scale: Union[ivy.Array, ivy.NativeArray],
+    zero_point: Union[ivy.Array, ivy.NativeArray],
+    min_range,
+    max_range,
+    dtype,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Converts a float tensor to a quantized tensor 
+
+    Parameters
+    ----------
+    input
+        Float tensor or list of tensors to quantize
+    scale
+        scale to apply in quantization formula
+    zero_point 
+        offset in integer value that maps to float zero
+    dtype 
+        the desired data type of returned tensor.
+        Has to be one of the quantized dtypes: 
+        torch.quint8, torch.qint8, torch.qint32, 
+        tf.qint8, tf.quint8, tf.qint32, tf.qint16, tf.quint16. 
+    min_range 	
+        A Tensor of type float32. The minimum value of the quantization range. 
+        This value may be adjusted by the op depending on other parameters. 
+        The adjusted value is written to output_min. If the axis attribute is specified, 
+        this must be a 1-D tensor whose size matches the axis dimension of the input and output tensors.
+    max_range 	
+        A Tensor of type float32. The maximum value of the quantization range. 
+        This value may be adjusted by the op depending on other parameters. 
+        The adjusted value is written to output_max. If the axis attribute is specified, 
+        this must be a 1-D tensor whose size matches the axis dimension of the input and output tensors.
+    Returns
+    -------
+        A newly quantized tensor or list of quantized tensors.
+    """
+    return ivy.current_backend(input).quantize(
+        input, 
+        scale,
+        zero_point, 
+        min_range, 
+        max_range, 
+        dtype, 
+        out=out
+    )

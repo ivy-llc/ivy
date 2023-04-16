@@ -156,3 +156,11 @@ def interpolate(
     antialias: Optional[bool] = False,
 ):
     raise IvyNotImplementedException()
+
+def quantize(
+    x: paddle.Tensor,
+    scale, 
+    zero_point, 
+    dtype, 
+):
+    raise IvyNotImplementedException()

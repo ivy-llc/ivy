@@ -755,3 +755,37 @@ def test_adaptive_avg_pool2d(
         input=x[0],
         output_size=output_size,
     )
+
+@handle_test(
+    fn_tree="quantize",
+    ground_truth_backend="torch",
+)
+def test_quantize(
+    i_s_z_d,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    (
+        input, 
+        scale, 
+        zero_point, 
+        min_range, 
+        max_range, 
+        dtype,
+    ) = i_s_z_d
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        input=input,
+        scale=scale,
+        zero_point=zero_point,
+        min_range=min_range,
+        max_range=max_range,
+        dtype=dtype,
+    )
