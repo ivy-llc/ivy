@@ -78,7 +78,7 @@ class Tensor:
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def add(self, other, *, alpha=1):
-        return torch_frontend.add(self._ivy_array, other, alpha=alpha)
+        return torch_frontend.add(self, other, alpha=alpha)
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def sub(self, other, *, alpha=1):
@@ -826,9 +826,7 @@ class Tensor:
     def __setitem__(self, key, value):
         if hasattr(value, "ivy_array"):
             value = (
-                ivy.to_scalar(value.ivy_array)
-                if value.shape == ()
-                else ivy.to_list(value)
+                ivy.to_scalar(value.ivy_array) if value.shape == () else value.ivy_array
             )
         self._ivy_array[key] = value
 
@@ -838,7 +836,7 @@ class Tensor:
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def __mul__(self, other):
-        return torch_frontend.mul(self._ivy_array, other)
+        return torch_frontend.mul(self, other)
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def __rmul__(self, other):

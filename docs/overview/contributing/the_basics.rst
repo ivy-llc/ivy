@@ -69,13 +69,14 @@ d. Start working on the task, and create a PR as soon as you have a full or part
    :code:`Close #Issue_number`
 
    This is important, so that the merging of your PR will automatically close the associated issue. Make sure this is the 
-   first comment on the PR, otherwise it might not link correctly. If you have a partial solution, the Ivy team can help to guide you        through the process of getting it working 🙂
+   first comment on the PR, otherwise it might not link correctly. If you have a partial solution, the Ivy team can help to guide you through the process of getting it working 🙂
+   Also remember to make the PR name well described and if there are some details that can support your changes add them to the first comment of the PR.
 
 e. Wait for us to review your PR.
    Once we have reviewed your PR we will either merge or request changes.
    Every time you respond to our requested changes you must re-request a review in order for us to re-engage with the PR.
 
-f. Once the PR is in good shape, we will merge into master, and you then become an Ivy contributor!
+f. Once the PR is in good shape, we will merge into master, and then you become an Ivy contributor!
 
 In order to keep our ToDo lists moving quickly, if your PR is not created within 7 days of creating the issue, then a warning message will appear on the issue.
 If another 7 days pass without any changes, the issue will be closed and the task will be made free for others in the community.
@@ -133,6 +134,12 @@ Managing Your Fork
 
 When contributing to Ivy, the first step is create a fork of the repository.
 Then, it's best practice to create a separate branch for each new pull request (PR) you create.
+This can be done using:
+
+.. code-block:: bash
+
+   git checkout -b name_of_your_branch
+
 The master branch then simply has the role of being kept up to date with upstream.
 You *can* create PRs based on the master branch of your fork, but this will make things more complicated if you would then like to create additional PRs in future.
 
