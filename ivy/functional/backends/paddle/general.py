@@ -294,7 +294,6 @@ def multiprocessing(context=None):
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
-
 def scatter_flat(
     indices: paddle.Tensor,
     updates: paddle.Tensor,
@@ -304,29 +303,28 @@ def scatter_flat(
     reduction: str = "sum",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    # Infer the output size from the indices tensor
     if size is None:
-        size = int(indices.max().numpy()) + 1
-
-    # Create the output tensor if it is not provided
+        size = int(indices.max().item() + 1)
     if out is None:
-        out = paddle.zeros((size,) + updates.shape[1:], dtype=updates.dtype)
-
-    # Perform the scatter operation
+        out_shape = (size,) + updates.shape[1:]
+        out = paddle.zeros(out_shape)
+    elif out.shape != (size,) + updates.shape[1:]:
+        raise ValueError("Invalid shape for out tensor.")
+    updates_shape = updates.shape
+    if len(updates_shape) > 1:
+        updates = updates.reshape([-1, *updates_shape[1:]])
+    if len(indices.shape) > 1:
+        indices = indices.reshape([-1, *indices.shape[2:]])
+    for i in range(indices.shape[0]):
+        out[indices[i]] = updates[i]
     if reduction == "sum":
-        paddle.scatter_add(out, indices, updates)
+        out = paddle.sum(out, axis=0)
     elif reduction == "mean":
-        counts = paddle.zeros((size,), dtype=updates.dtype)
-        paddle.scatter_add(counts, indices, paddle.ones_like(indices))
-        paddle.scatter_add(out, indices, updates)
-        paddle.divide(out, counts.reshape((-1,) + (1,) * (updates.ndim - 1)), out=out)
-    elif reduction == "min":
-        paddle.scatter_min(out, indices, updates)
-    elif reduction == "max":
-        paddle.scatter_max(out, indices, updates)
-    else:
-        raise ValueError(f"Invalid reduction type: {reduction}")
-
+        out = paddle.mean(out, axis=0)
+    elif reduction != "none":
+        raise ValueError(f"Invalid reduction option: {reduction}")
+    if len(updates_shape) > 1:
+        out = out.reshape(updates_shape[1:])
     return out
 
 @with_unsupported_device_and_dtypes(
