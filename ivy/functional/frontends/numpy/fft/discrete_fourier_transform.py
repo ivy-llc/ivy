@@ -8,3 +8,10 @@ def ifft(a, n=None, axis=-1, norm=None):
     if norm is None:
         norm = "backward"
     return ivy.ifft(a, axis, norm=norm, n=n)
+
+
+@to_ivy_arrays_and_back
+def hfft(a, n=None, axis=-1, norm=None):
+    if norm is None:
+        norm = "backward"
+    return ivy.irfft(a.conj(), axis, norm=norm, n=n)
