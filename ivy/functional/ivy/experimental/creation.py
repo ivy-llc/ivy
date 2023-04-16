@@ -657,7 +657,12 @@ def bucketize(
     right: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns the indices of the buckets to which each value in the input belongs, where the boundaries of the buckets are set by boundaries. Return a new tensor with the same size as input. If right is False (default), then the left boundary is closed. More formally, the returned index satisfies the following rules:
+    """Returns the indices of the buckets to which each value in the input belongs, 
+    where the boundaries of the buckets are set by boundaries. 
+    Return a new tensor with the same size as input. 
+    If right is False (default), then the left boundary is closed. 
+    More formally, the returned index satisfies the following rules:
+    
     
     right         returned index satisfies
     ----------------------------------------------------------------------  
@@ -668,7 +673,8 @@ def bucketize(
     
     Notes
     -----
-    Primary purpose of this function is to return the indices of the buckets to which each value in the input belongs. See
+    Primary purpose of this function is to return the indices of the 
+    buckets to which each value in the input belongs. See
     https://pytorch.org/docs/stable/generated/torch.bucketize.html
     for examples
 
@@ -677,11 +683,18 @@ def bucketize(
     input
        N-D tensor or a Scalar containing the search value(s)
     boundaries
-       1-D tensor, must contain a strictly increasing sequence, or the return value is undefined.
+       1-D tensor, must contain a strictly increasing sequence, 
+       or the return value is undefined.
     out_int32
-        indicate the output data type. torch.int32 if True, torch.int64 otherwise. Default value is False, i.e. default output data type is torch.int64.
+        indicate the output data type. torch.int32 if True, torch.int64 otherwise. 
+        Default value is False, i.e. default output data type is torch.int64.
     right
-       if False, return the first suitable location that is found. If True, return the last such index. If no suitable index found, return 0 for non-numerical value (eg. nan, inf) or the size of boundaries (one pass the last index). In other words, if False, gets the lower bound index for each value in input from boundaries. If True, gets the upper bound index instead. Default value is False.
+       if False, return the first suitable location that is found. 
+       If True, return the last such index. If no suitable index found, 
+       return 0 for non-numerical value (eg. nan, inf) or the size of boundaries 
+       (one pass the last index). In other words, if False, 
+       gets the lower bound index for each value in input from boundaries. 
+       If True, gets the upper bound index instead. Default value is False.
     out
         the output tensor, must be the same size as input if provided.
         
@@ -689,7 +702,10 @@ def bucketize(
     Returns
     -------
     ret
-        Returns an array of indices of the buckets to which each value in the input belongs, where the boundaries of the buckets are set by boundaries. Return a new tensor with the same size as input. If right is False (default), then the left boundary is closed.
+        Returns an array of indices of the buckets to which each value 
+        in the input belongs, where the boundaries of the buckets are set by boundaries. 
+        Return a new tensor with the same size as input. If right is False (default), 
+        then the left boundary is closed.
 
     Function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
