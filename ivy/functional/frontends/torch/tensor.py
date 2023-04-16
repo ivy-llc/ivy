@@ -704,8 +704,6 @@ class Tensor:
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, "torch")
     def clamp(self, min=None, max=None):
-        if min is not None and max is not None and ivy.all(min > max):
-            return torch_frontend.tensor(ivy.array(self._ivy_array).full_like(max))
         return torch_frontend.clamp(self._ivy_array, min=min, max=max)
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, "torch")

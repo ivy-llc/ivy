@@ -257,7 +257,7 @@ def ceil(input, *, out=None):
     return ivy.ceil(input, out=out)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, "torch")
 @to_ivy_arrays_and_back
 def clamp(input, min=None, max=None, *, out=None):
     ivy.utils.assertions.check_all_or_any_fn(
@@ -268,7 +268,6 @@ def clamp(input, min=None, max=None, *, out=None):
         limit=[1, 2],
         message="at most one of min or max can be None",
     )
-    input = ivy.array(input)
     if min is None:
         return ivy.minimum(input, max, out=out)
     if max is None:
@@ -276,23 +275,7 @@ def clamp(input, min=None, max=None, *, out=None):
     return ivy.clip(input, min, max, out=out)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
-@to_ivy_arrays_and_back
-def clip(input, min=None, max=None, *, out=None):
-    ivy.utils.assertions.check_all_or_any_fn(
-        min,
-        max,
-        fn=ivy.exists,
-        type="any",
-        limit=[1, 2],
-        message="at most one of min or max can be None",
-    )
-    input = ivy.array(input)
-    if min is None:
-        return ivy.minimum(input, max, out=out)
-    if max is None:
-        return ivy.maximum(input, min, out=out)
-    return ivy.clip(input, min, max, out=out)
+clip = clamp
 
 
 @to_ivy_arrays_and_back
