@@ -10,7 +10,7 @@ def difference(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.setddiff1d(
+    return jnp.setdiff1d(
         x1,
         x2,
     )
