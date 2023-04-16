@@ -642,7 +642,7 @@ def test_solve_triangular(
         fw=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
-        x=x[0],
+        a=x[0],
         b=x[1],
         lower=x[2],
         transpose=x[3],
