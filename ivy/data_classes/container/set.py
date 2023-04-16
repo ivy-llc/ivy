@@ -12,6 +12,7 @@ class _ContainerWithSet(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
+        axis: Optional[int] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -25,8 +26,10 @@ class _ContainerWithSet(ContainerBase):
         Parameters
         ----------
         x
-            input container. If ``x`` has more than one dimension, the function must
-            flatten ``x`` and return the unique elements of the flattened array.
+            input container.
+        axis
+            the axis to apply unique on. If None, the unique elements of the flattened
+            ``x`` are returned.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -71,6 +74,7 @@ class _ContainerWithSet(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(
             "unique_all",
             x,
+            axis=axis,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -81,6 +85,7 @@ class _ContainerWithSet(ContainerBase):
         self: ivy.Container,
         /,
         *,
+        axis: Optional[int] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -94,9 +99,10 @@ class _ContainerWithSet(ContainerBase):
         Parameters
         ----------
         self
-            input container. If ``x`` has more than one dimension,
-            the function must flatten ``x`` and return the unique elements of the
-            flattened array.
+            input container.
+        axis
+            the axis to apply unique on. If None, the unique elements of the flattened
+            ``x`` are returned.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -140,6 +146,7 @@ class _ContainerWithSet(ContainerBase):
         """
         return self._static_unique_all(
             self,
+            axis=axis,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

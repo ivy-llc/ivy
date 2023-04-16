@@ -1136,7 +1136,7 @@ class ContainerBase(dict, abc.ABC):
                 )
             elif isinstance(value, h5py.Dataset):
                 container_dict[key] = ivy.default(ivyh, ivy).array(
-                    list(value[slice_obj])
+                    list(value[slice_obj]), dtype=str(value[slice_obj].dtype)
                 )
             else:
                 raise ivy.utils.exceptions.IvyException(
@@ -1444,7 +1444,6 @@ class ContainerBase(dict, abc.ABC):
         )
 
     def _cont_get_shape(self):
-
         if not len(self.keys()):
             if ivy.exists(self._queues):
                 return [self._queue_load_sizes_cum[-1]]
@@ -1475,7 +1474,6 @@ class ContainerBase(dict, abc.ABC):
         ]
 
     def _cont_get_shapes(self):
-
         return self.cont_map(lambda x, kc: x.shape if hasattr(x, "shape") else None)
 
     def _cont_get_dev(self, as_native=False):
@@ -2875,7 +2873,6 @@ class ContainerBase(dict, abc.ABC):
         return ivy.Container({format_fn(k): v for k, v in self.cont_to_iterator()})
 
     def cont_sort_by_key(self):
-
         new_dict = dict()
         for k, v in self.items():
             if isinstance(v, ivy.Container):
@@ -3104,7 +3101,11 @@ class ContainerBase(dict, abc.ABC):
         return: A deep copy of the container
 
         """
-        return self.cont_map(lambda x, kc: ivy.copy_array(x) if ivy.is_array(x) else x)
+        return self.cont_map(
+            lambda x, kc: ivy.copy_array(x)
+            if ivy.is_array(x) and not isinstance(x, str)
+            else x
+        )
 
     def __deepcopy__(self, memo):
         return self.cont_deep_copy()
@@ -3585,7 +3586,6 @@ class ContainerBase(dict, abc.ABC):
             return ivy.Container(self, ivyh=ivy_backend)
 
     def cont_show(self):
-
         print(self)
 
     # noinspection PyUnresolvedReferences
@@ -3671,7 +3671,6 @@ class ContainerBase(dict, abc.ABC):
     # ----------#
 
     def __repr__(self, as_repr=True):
-
         indent_str = " " * self._print_indent
 
         def _align_array(array_str_in):
@@ -4168,7 +4167,6 @@ class ContainerBase(dict, abc.ABC):
 
     @property
     def _cont_ivy(self):
-
         return ivy.default(self._local_ivy, ivy)
 
     @_cont_ivy.setter
@@ -4207,17 +4205,14 @@ class ContainerBase(dict, abc.ABC):
 
     @property
     def cont_ivy(self):
-
         return self._cont_ivy
 
     @property
     def cont_config(self):
-
         return self._config
 
     @property
     def cont_max_depth(self):
-
         kcs = [kc for kc in self.cont_to_iterator_keys(include_empty=True)]
         if not kcs:
             return 0

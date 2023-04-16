@@ -2,8 +2,12 @@
 	"name": "Ivy GPU Development Environment (build)",
 
 	"build": {
-		"dockerfile": "../../docker/DockerfileGPU",
-		"context": "../.."
+		"dockerfile": "../../docker/DockerfileGPUMultiCuda",
+		"context": "../..",
+		"args": {
+            "IMAGE_NAME": "unifyai/multicuda",
+            "IMAGE_TAG": "base_and_requirements"
+        }
 	},
 
 	"runArgs": ["--gpus","all"],
@@ -33,15 +37,13 @@
 	// "mounts": [ "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind" ],
 
 	// Uncomment to connect as a non-root user if you've added one. See https://aka.ms/vscode-remote/containers/non-root.
-	"remoteUser": "vscode",
+	// "remoteUser": "vscode",
     "features": {
 		"ghcr.io/devcontainers/features/common-utils:2": {
 			"installzsh": true,
 			"configurezshasdefaultshell": true,
 			"installohmyzsh": true,
-			"username": "vscode",
-			"useruid": "1000",
-			"usergid": "1000"
+			"upgradePackages": false
 		},
         "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
 			"moby": true,

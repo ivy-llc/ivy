@@ -30,7 +30,6 @@ from ivy.func_wrapper import (
     handle_array_function,
     inputs_to_ivy_arrays,
     inputs_to_native_arrays,
-    outputs_to_ivy_arrays,
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
@@ -2636,6 +2635,8 @@ def get_item(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     query: Union[ivy.Array, ivy.NativeArray, Tuple],
+    *,
+    copy: Optional[bool] = None,
 ) -> ivy.Array:
     """
      Gather slices from x according to query array, identical to x[query].
@@ -2666,7 +2667,7 @@ def get_item(
     ivy.array([  4,  -2, -10])
 
     """
-    return current_backend(x).get_item(x, query)
+    return current_backend(x).get_item(x, query, copy=copy)
 
 
 @handle_array_function
