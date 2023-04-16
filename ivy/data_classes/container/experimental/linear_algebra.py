@@ -887,7 +887,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         )
 
     @staticmethod
-    def solve_triangular(
+    def static_solve_triangular(
         self: ivy.Container,
         /,
         *,

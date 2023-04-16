@@ -596,7 +596,6 @@ def _generate_solve_triangular_dtype_and_arrays(draw):
         st.lists(st.integers(min_value=2, max_value=10), min_size=2, max_size=2)
     )
     shape_1 = (matrices_dims[0], matrices_dims[0])
-    shape_2 = (matrices_dims[0], matrices_dims[1])
 
     matrix_1 = draw(
         helpers.dtype_and_values(
@@ -608,7 +607,7 @@ def _generate_solve_triangular_dtype_and_arrays(draw):
     )
     matrix_2 = draw(
         helpers.dtype_and_values(
-            shape=shape_2,
+            shape=shape_1,
             dtype=input_dtype,
             min_value=-10,
             max_value=10,
