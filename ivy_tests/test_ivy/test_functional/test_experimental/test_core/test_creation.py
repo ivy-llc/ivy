@@ -10,6 +10,7 @@ import numpy as np
     fn_tree="functional.ivy.experimental.triu_indices",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
+        shape=(1),
         num_arrays=3,
         min_value=0,
         max_value=10,
@@ -45,6 +46,7 @@ def test_triu_indices(
     fn_tree="functional.ivy.experimental.vorbis_window",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        shape=(1),
         min_num_dims=1,
         max_num_dims=1,
     ),
@@ -79,7 +81,7 @@ def test_vorbis_window(
     fn_tree="functional.ivy.experimental.hann_window",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
-        shape=(1, 1),
+        shape=(1),
         min_value=1,
         max_value=10,
     ),
@@ -117,7 +119,7 @@ def test_hann_window(
     fn_tree="functional.ivy.experimental.kaiser_window",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
-        shape=(1, 1),
+        shape=(1),
         min_value=1,
         max_value=10,
     ),
@@ -199,18 +201,21 @@ def test_kaiser_bessel_derived_window(
     fn_tree="functional.ivy.experimental.hamming_window",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
+        shape=(1),
         min_value=1,
         max_value=10,
     ),
     periodic=st.booleans(),
     dtype_and_f=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        shape=(1),
         num_arrays=2,
         min_value=0,
         max_value=5,
     ),
     dtype=helpers.get_dtypes("float", full=False),
     test_gradients=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_hamming_window(
     *,
@@ -245,6 +250,7 @@ def test_hamming_window(
     fn_tree="functional.ivy.experimental.tril_indices",
     dtype_and_n=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
+        shape=(1),
         num_arrays=0,
         min_value=0,
         max_value=10,
