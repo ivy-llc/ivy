@@ -2354,7 +2354,7 @@ def test_torch_logit(
         abs_smallest_val=1e-10,
         min_value=-10,
         max_value=10,
-    )
+    ),
 )
 def test_torch_sgn(
     *,
@@ -2372,5 +2372,5 @@ def test_torch_sgn(
         fn_tree=fn_tree,
         on_device=on_device,
         input=input[0],
-        out=None
+        out=None,
     )
