@@ -380,6 +380,7 @@ def pow(input, exponent, *, out=None):
 
 @to_ivy_arrays_and_back
 def float_power(input, exponent, *, out=None):
+    input, exponent = torch_frontend.promote_types_of_torch_inputs(input, exponent)
     return ivy.float_power(input, exponent, out=out)
 
 

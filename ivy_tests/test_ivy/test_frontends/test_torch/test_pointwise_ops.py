@@ -3,6 +3,7 @@ import numpy as np
 from hypothesis import strategies as st, assume
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
@@ -1676,16 +1677,37 @@ def test_torch_pow(
     )
 
 
+# float_power_helper
+@st.composite
+def _float_power_helper(draw, *, available_dtypes=None):
+    if available_dtypes is None:
+        available_dtypes = helpers.get_dtypes("numeric")
+    dtype1, x1 = draw(
+        helpers.dtype_and_values(
+            available_dtypes=available_dtypes,
+            small_abs_safety_factor=16,
+            large_abs_safety_factor=16,
+            safety_factor_scale="log",
+        )
+    )
+    dtype2 = draw(helpers.get_dtypes("numeric"))
+    if ivy.is_int_dtype(dtype2[0]):
+        min_value = 0
+    else:
+        min_value = -10
+    dtype2, x2 = draw(
+        helpers.dtype_and_values(
+            min_value=min_value,
+            max_value=10,
+            dtype=dtype2,
+        )
+    )
+    return (dtype1[0], dtype2[0]), (x1[0], x2[0])
+
+
 @handle_frontend_test(
     fn_tree="torch.float_power",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
-        min_value=0,
-        max_value=6,
-        small_abs_safety_factor=10,
-        safety_factor_scale="linear",
-    ),
+    dtype_and_x=_float_power_helper(),
 )
 def test_torch_float_power(
     dtype_and_x,
@@ -1695,8 +1717,6 @@ def test_torch_float_power(
     test_flags,
 ):
     input_dtype, x = dtype_and_x
-    # bfloat16 uses different semantics for exponent and mantissa than other float types
-    assume("bfloat16" not in input_dtype)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
