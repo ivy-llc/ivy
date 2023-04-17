@@ -153,6 +153,10 @@ class Tensor:
         return self
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def arcsinh(self):
+        return torch_frontend.arcsinh(self._ivy_array)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def arcsin(self):
         return torch_frontend.arcsin(self._ivy_array)
 
@@ -262,6 +266,10 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def log(self):
         return torch_frontend.log(self._ivy_array)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def arccosh(self):
+        return torch_frontend.arccosh(self._ivy_array)
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def log_(self):
@@ -702,13 +710,11 @@ class Tensor:
     def index_select(self, dim, index):
         return torch_frontend.index_select(self._ivy_array, dim, index)
 
-    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, "torch")
     def clamp(self, min=None, max=None):
-        if min is not None and max is not None and ivy.all(min > max):
-            return torch_frontend.tensor(ivy.array(self._ivy_array).full_like(max))
         return torch_frontend.clamp(self._ivy_array, min=min, max=max)
 
-    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, "torch")
     def clamp_(self, min=None, max=None):
         self._ivy_array = self.clamp(min=min, max=max).ivy_array
         return self
@@ -826,9 +832,7 @@ class Tensor:
     def __setitem__(self, key, value):
         if hasattr(value, "ivy_array"):
             value = (
-                ivy.to_scalar(value.ivy_array)
-                if value.shape == ()
-                else ivy.to_list(value)
+                ivy.to_scalar(value.ivy_array) if value.shape == () else value.ivy_array
             )
         self._ivy_array[key] = value
 
@@ -918,6 +922,7 @@ class Tensor:
 
     # Method aliases
     absolute, absolute_ = abs, abs_
+    clip, clip_ = clamp, clamp_
     ndimension = dim
 
     def bitwise_xor(self, other):
