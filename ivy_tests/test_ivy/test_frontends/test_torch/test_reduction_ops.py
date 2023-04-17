@@ -812,7 +812,7 @@ def test_torch_logsumexp(
 def test_torch_mode(
     *,
     dtype_input_axis,
-    keepdims,
+    keepdim,
     on_device,
     fn_tree,
     frontend,
@@ -827,5 +827,5 @@ def test_torch_mode(
         on_device=on_device,
         input=x[0],
         dim=dim,
-        keepdim=keepdims,
+        keepdim=keepdim,
     )
