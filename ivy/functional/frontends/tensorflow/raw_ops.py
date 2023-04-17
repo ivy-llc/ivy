@@ -240,6 +240,15 @@ def Reciprocal(*, x, name=None):
 
 
 @to_ivy_arrays_and_back
+def Reverse(*, tensor, dims, name="Reverse"):
+    ret = tensor
+    for dim in enumerate(dims):
+        if dim[1]:
+            ret = ivy.flip(ret, axis=dim[0])
+    return ret
+
+
+@to_ivy_arrays_and_back
 def Invert(*, x, name="Invert"):
     return ivy.bitwise_invert(x)
 

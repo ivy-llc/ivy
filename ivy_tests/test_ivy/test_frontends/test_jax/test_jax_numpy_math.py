@@ -16,7 +16,7 @@ from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_element
 )
 
 
-#sign
+# sign
 @handle_frontend_test(
     fn_tree="jax.numpy.sign",
     dtype_and_x=helpers.dtype_and_values(
@@ -25,12 +25,12 @@ from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_element
     test_with_out=st.just(False),
 )
 def test_jax_numpy_sign(
-        *,
-        dtype_and_x,
-        test_flags,
-        on_device,
-        fn_tree,
-        frontend,
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(

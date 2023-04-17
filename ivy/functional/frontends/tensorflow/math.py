@@ -157,6 +157,11 @@ def erfcinv(x, name="erfcinv"):
 
 
 @to_ivy_arrays_and_back
+def is_inf(x, name=None):
+    return ivy.isinf(x)
+
+
+@to_ivy_arrays_and_back
 def is_non_decreasing(x, name="is_non_decreasing"):
     if ivy.array(x).size < 2:
         return ivy.array(True)
@@ -227,6 +232,11 @@ def polyval(coeffs, x, name=None):
 def pow(x, y, name="pow"):
     x, y = check_tensorflow_casting(x, y)
     return ivy.pow(x, y)
+
+
+@to_ivy_arrays_and_back
+def reciprocal(x, name="reciprocal"):
+    return ivy.reciprocal(x)
 
 
 @to_ivy_arrays_and_back
@@ -444,6 +454,11 @@ def ceil(x, name=None):
 
 
 @to_ivy_arrays_and_back
+def round(x, name=None):
+    return ivy.round(x)
+
+
+@to_ivy_arrays_and_back
 def minimum(x, y, name=None):
     return ivy.minimum(x, y)
 
@@ -581,6 +596,11 @@ def sinh(x, name=None):
 @to_ivy_arrays_and_back
 def softmax(logits, axis=-1):
     return ivy.softmax(logits, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def softplus(features, name=None):
+    return ivy.softplus(features)
 
 
 @to_ivy_arrays_and_back
