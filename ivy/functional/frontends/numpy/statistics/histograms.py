@@ -2,11 +2,8 @@ import ivy
 from ivy.functional.frontends.numpy import handle_numpy_out, to_ivy_arrays_and_back, from_zero_dim_arrays_to_scalar,handle_numpy_dtype,handle_numpy_casting
 import ivy.functional.frontends.numpy as np_frontend
 
-@handle_numpy_out
+
 @to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
-@handle_numpy_dtype
-@handle_numpy_casting
 
 def bincount(x, /, weights=None, minlength=None):
     x_list = []

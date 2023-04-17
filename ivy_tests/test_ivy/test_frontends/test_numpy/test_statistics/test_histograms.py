@@ -16,8 +16,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
     dtype_x_axis = statistical_dtype_values(function="bincount"),
     dtype = helpers.get_dtypes("integer", full=False, none=True),
-    where = np_frontend_helpers.where(),
-    keep_dims = st.booleans(),
+
 )
 def test_numpy_bincount(
     *,
