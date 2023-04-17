@@ -2094,7 +2094,7 @@ def test_numpy_instance_lt__(
     init_tree="numpy.array",
     method_name="__int__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_dim_size=1,
         max_dim_size=1,
     ),
@@ -2129,7 +2129,7 @@ def test_numpy_instance_int__(
     init_tree="numpy.array",
     method_name="__float__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_dim_size=1,
         max_dim_size=1,
     ),
