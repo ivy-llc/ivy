@@ -91,7 +91,8 @@ def _determine_backend_from_args(args):
     >>> import jax.numpy as jnp
     >>> x = jnp.array([1])
     >>> print(_determine_backend_from_args(x))
-    <module 'ivy.functional.backends.jax' from '/ivy/ivy/functional/backends/jax/__init__.py'>    # noqa
+    <module 'ivy.functional.backends.jax' from '/ivy/ivy/functional/backends/jax\
+    /__init__.py'>
 
     """
     arg_type = type(args)

@@ -65,7 +65,8 @@ def abs(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.abs.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.abs.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -148,7 +149,8 @@ def acos(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.acos.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.acos.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -229,7 +231,8 @@ def acosh(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.acosh.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.acosh.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -343,7 +346,8 @@ def add(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.add.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -430,7 +434,8 @@ def asin(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.asin.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.asin.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -515,7 +520,8 @@ def asinh(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.asinh.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.asinh.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -604,7 +610,8 @@ def atan(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.atan.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.atan.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -732,7 +739,8 @@ def atan2(
     This method conforms to the
     `Array API Standard <https://data-apis.org/array-api/latest/>`_.
     This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.atan2.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.atan2.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -847,7 +855,8 @@ def atanh(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.atanh.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.atanh.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -920,7 +929,8 @@ def bitwise_and(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_and.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.bitwise_and.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1006,7 +1016,8 @@ def bitwise_invert(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_invert.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.bitwise_invert.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1086,7 +1097,8 @@ def bitwise_left_shift(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_left_shift.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.bitwise_left_shift.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1225,7 +1237,8 @@ def bitwise_right_shift(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_right_shift.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.bitwise_right_shift.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1338,7 +1351,8 @@ def bitwise_xor(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_xor.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.bitwise_xor.html>`_
     in the standard.
 
     Both the description and the type hints above assume an array input for simplicity,
@@ -1445,7 +1459,8 @@ def ceil(
     This method conforms to the
     `Array API Standard <https://data-apis.org/array-api/latest/>`_.
     This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.ceil.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.ceil.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1533,7 +1548,8 @@ def cos(
     This method conforms to the
     `Array API Standard <https://data-apis.org/array-api/latest/>`_.
     This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.cos.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.cos.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1614,7 +1630,8 @@ def cosh(
     This method conforms to the
     `Array API Standard <https://data-apis.org/array-api/latest/>`_.
     This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.cosh.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.cosh.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1690,7 +1707,8 @@ def divide(
     This method conforms to the
     `Array API Standard <https://data-apis.org/array-api/latest/>`_.
     This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.divide.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.divide.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1775,7 +1793,8 @@ def equal(
     This method conforms to the
     `Array API Standard <https://data-apis.org/array-api/latest/>`_.
     This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.equal.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.equal.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1930,7 +1949,8 @@ def expm1(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.expm1.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.expm1.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2008,7 +2028,8 @@ def floor(
     This method conforms to the
     `Array API Standard <https://data-apis.org/array-api/latest/>`_.
     This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.floor.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.floor.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2088,7 +2109,8 @@ def floor_divide(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.floor_divide.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.floor_divide.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2173,7 +2195,8 @@ def greater(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.greater.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.greater.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2270,7 +2293,8 @@ def greater_equal(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.greater_equal.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.greater_equal.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2369,7 +2393,8 @@ def less_equal(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.less_equal.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.less_equal.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2446,7 +2471,8 @@ def multiply(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.multiply.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.multiply.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2628,7 +2654,8 @@ def isinf(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.isinf.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.isinf.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2728,7 +2755,8 @@ def isnan(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.isnan.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.isnan.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2993,7 +3021,8 @@ def log10(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.log10.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.log10.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -3082,7 +3111,8 @@ def log1p(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.log1p.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.log1p.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -3169,7 +3199,8 @@ def log2(
     This method conforms to the
     `Array API Standard <https://data-apis.org/array-api/latest/>`_.
     This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.log2.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.log2.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -3226,7 +3257,8 @@ def logaddexp(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.logaddexp.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.logaddexp.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -3318,7 +3350,8 @@ def logical_and(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.logical_and.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.logical_and.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -3428,7 +3461,8 @@ def logical_not(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.logical_not.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.logical_not.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -3517,7 +3551,8 @@ def logical_or(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.logical_or.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.logical_or.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -3593,7 +3628,8 @@ def logical_xor(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.logical_xor.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.logical_xor.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -3689,7 +3725,8 @@ def negative(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.negative.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.negative.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -3768,7 +3805,8 @@ def not_equal(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.not_equal.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.not_equal.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -3920,7 +3958,8 @@ def positive(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.positive.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.positive.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -4056,7 +4095,8 @@ def pow(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.pow.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.pow.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -4187,7 +4227,8 @@ def remainder(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.remainder.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.remainder.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -4278,7 +4319,8 @@ def round(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.round.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.round.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -4363,7 +4405,8 @@ def sign(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.sign.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.sign.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -4446,7 +4489,8 @@ def sin(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.sin.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.sin.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -4533,7 +4577,8 @@ def sinh(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.sinh.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.sinh.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -4612,7 +4657,8 @@ def sqrt(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.sqrt.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.sqrt.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -4681,7 +4727,8 @@ def square(
 
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.square.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.square.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -4758,7 +4805,8 @@ def subtract(
 
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.subtract.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.subtract.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -4827,7 +4875,8 @@ def tan(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.tan.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -4913,7 +4962,8 @@ def tanh(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tanh.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.tanh.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -5000,7 +5050,8 @@ def trunc(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.trunc.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.elementwise_functions.trunc.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,

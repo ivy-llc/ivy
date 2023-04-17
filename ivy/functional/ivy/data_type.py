@@ -503,7 +503,8 @@ def can_cast(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.data_type_functions.can_cast.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.data_type_functions.can_cast.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -591,7 +592,8 @@ def finfo(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.data_type_functions.finfo.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.data_type_functions.finfo.html>`_
     in the standard.
 
     Examples
@@ -666,7 +668,8 @@ def iinfo(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.data_type_functions.iinfo.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.data_type_functions.iinfo.html>`_
     in the standard.
 
     Examples
@@ -733,7 +736,8 @@ def result_type(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.data_type_functions.result_type.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.data_type_functions.result_type.html>`_
     in the standard.
 
     Examples

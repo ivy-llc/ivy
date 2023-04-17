@@ -7,7 +7,9 @@ if __name__ == "__main__":
         for line in f:
             test, backend = line.split(",")
             ret = os.system(
-                f'docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --tb=short {test} --backend {backend}'  # noqa
+                f'docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.\
+                hypothesis unifyai/ivy:latest python3 -m pytest --tb=short {test} \
+                --backend {backend}'
             )
             if ret != 0:
                 failed = True

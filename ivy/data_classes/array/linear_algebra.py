@@ -336,7 +336,8 @@ class _ArrayWithLinearAlgebra(abc.ABC):
 
         This function conforms to the `Array API Standard
         <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-        `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.eigvalsh.html>`_ # noqa
+        `docstring <https://data-apis.org/array-api/latest/extensions/generated\
+        /signatures.linalg.eigvalsh.html>`_
         in the standard.
 
         Both the description and the type hints above assumes an array input for simplicity,

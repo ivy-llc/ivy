@@ -64,7 +64,8 @@ def argsort(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.sorting_functions.argsort.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.sorting_functions.argsort.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -179,7 +180,8 @@ def sort(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.sorting_functions.sort.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.sorting_functions.sort.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,

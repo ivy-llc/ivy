@@ -62,7 +62,8 @@ def cholesky(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.cholesky.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated\
+    /signatures.linalg.cholesky.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -204,7 +205,8 @@ def cross(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.cross.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated\
+    /signatures.linalg.cross.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -282,7 +284,8 @@ def det(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.det.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated\
+    /signatures.linalg.det.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -370,7 +373,8 @@ def diagonal(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.diagonal.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated\
+    /signatures.linalg.diagonal.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -548,7 +552,8 @@ def eig(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.eigh.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated\
+    /signatures.linalg.eigh.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -613,7 +618,8 @@ def eigh(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.eigh.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated\
+    /signatures.linalg.eigh.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -669,7 +675,8 @@ def eigvalsh(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.eigvalsh.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated\
+    /signatures.linalg.eigvalsh.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -801,7 +808,8 @@ def inv(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.inv.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated\
+    /signatures.linalg.inv.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -949,7 +957,8 @@ def matmul(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.linear_algebra_functions.matmul.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.linear_algebra_functions.matmul.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1094,7 +1103,8 @@ def matrix_norm(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.matrix_norm.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated\
+    /signatures.linalg.matrix_norm.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1197,7 +1207,8 @@ def matrix_power(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.matrix_power.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated\
+    /signatures.linalg.matrix_power.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1310,7 +1321,8 @@ def matrix_rank(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.matrix_rank.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated\
+    /signatures.linalg.matrix_rank.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1400,7 +1412,8 @@ def matrix_transpose(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.linear_algebra_functions.matrix_transpose.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.linear_algebra_functions.matrix_transpose.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1488,7 +1501,8 @@ def outer(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.outer.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated\
+    /signatures.linalg.outer.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1585,7 +1599,8 @@ def pinv(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.pinv.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated\
+    /signatures.linalg.pinv.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1662,7 +1677,8 @@ def qr(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.qr.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated\
+    /signatures.linalg.qr.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1706,7 +1722,7 @@ def slogdet(
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/extensions/generated/\
-        signatures.linalg.slogdet.html>`_ # noqa
+    signatures.linalg.slogdet.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1797,7 +1813,8 @@ def solve(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.solve.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated\
+    /signatures.linalg.solve.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1880,7 +1897,8 @@ def svd(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.svd.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated\
+    /signatures.linalg.svd.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1961,7 +1979,8 @@ def svdvals(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.svdvals.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated\
+    /signatures.linalg.svdvals.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2092,7 +2111,8 @@ def tensordot(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.linear_algebra_functions.tensordot.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.linear_algebra_functions.tensordot.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2352,7 +2372,8 @@ def vecdot(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.linear_algebra_functions.vecdot.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.linear_algebra_functions.vecdot.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2445,7 +2466,8 @@ def vector_norm(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.vector_norm.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated\
+    /signatures.linalg.vector_norm.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2549,7 +2571,8 @@ def diag(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.diagonal.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated\
+    /signatures.linalg.diagonal.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,

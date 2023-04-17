@@ -90,7 +90,8 @@ def min(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.min.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.statistical_functions.min.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -193,7 +194,8 @@ def max(
 
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.max.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.statistical_functions.max.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -410,7 +412,8 @@ def prod(
 
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.prod.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.statistical_functions.prod.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -544,7 +547,8 @@ def std(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.std.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.statistical_functions.std.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -680,7 +684,8 @@ def sum(
 
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.sum.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.statistical_functions.sum.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -802,7 +807,8 @@ def var(
 
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.var.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.statistical_functions.var.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,

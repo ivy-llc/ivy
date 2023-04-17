@@ -96,7 +96,8 @@ def unique_all(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.set_functions.unique_all.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.set_functions.unique_all.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -201,7 +202,8 @@ def unique_inverse(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.set_functions.unique_inverse.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.set_functions.unique_inverse.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -300,7 +302,8 @@ def unique_values(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.set_functions.unique_values.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.set_functions.unique_values.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -384,7 +387,8 @@ def unique_counts(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.set_functions.unique_counts.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.set_functions.unique_counts.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,

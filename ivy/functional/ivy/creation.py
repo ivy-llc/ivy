@@ -222,7 +222,8 @@ def arange(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.arange.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.creation_functions.arange.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -342,7 +343,8 @@ def asarray(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.asarray.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.creation_functions.asarray.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -393,7 +395,8 @@ def zeros(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.zeros.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.creation_functions.zeros.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -457,7 +460,8 @@ def ones(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.ones.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.creation_functions.ones.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -548,7 +552,8 @@ def full_like(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.full_like.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification\
+    /generated/signatures.creation_functions.full_like.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -649,7 +654,8 @@ def ones_like(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.ones_like.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.creation_functions.ones_like.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -766,7 +772,8 @@ def zeros_like(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.zeros_like.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated
+    /signatures.creation_functions.zeros_like.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -880,7 +887,8 @@ def tril(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.tril.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated
+    /signatures.creation_functions.tril.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -928,7 +936,8 @@ def triu(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.triu.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.creation_functions.triu.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -978,7 +987,8 @@ def empty(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.empty.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.creation_functions.empty.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1028,7 +1038,8 @@ def empty_like(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.empty_like.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.creation_functions.empty_like.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1089,7 +1100,8 @@ def eye(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.eye.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.creation_functions.eye.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1238,7 +1250,8 @@ def linspace(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.linspace.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.creation_functions.linspace.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1345,7 +1358,8 @@ def meshgrid(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of
-    the `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.meshgrid.html>`_ # noqa
+    the `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.creation_functions.meshgrid.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1450,7 +1464,8 @@ def full(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.full.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.creation_functions.full.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1547,7 +1562,8 @@ def from_dlpack(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.creation_functions.from_dlpack.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/API_specification/generated\
+    /signatures.creation_functions.from_dlpack.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,

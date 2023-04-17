@@ -3724,7 +3724,8 @@ def vmap(
 
 
     This docstring is a summarised version of the `docstring
-    <https://jax.readthedocs.io/en/latest/_autosummary/jax.vmap.html#jax-vmap>`_ for vmap from JAX documentation. # noqa
+    <https://jax.readthedocs.io/en/latest/_autosummary\
+    /jax.vmap.html#jax-vmap>`_ for vmap from JAX documentation.
 
     Examples
     --------
