@@ -78,7 +78,7 @@ class Tensor:
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def add(self, other, *, alpha=1):
-        return torch_frontend.add(self._ivy_array, other, alpha=alpha)
+        return torch_frontend.add(self, other, alpha=alpha)
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def sub(self, other, *, alpha=1):
@@ -96,6 +96,11 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def add_(self, other, *, alpha=1):
         self._ivy_array = self.add(other, alpha=alpha).ivy_array
+        return self
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
+    def subtract_(self, other, *, alpha=1):
+        self._ivy_array = self.subtract(other, alpha=alpha).ivy_array
         return self
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
@@ -290,6 +295,9 @@ class Tensor:
 
     def logical_and(self, other):
         return torch_frontend.logical_and(self._ivy_array, other)
+
+    def logical_not(self, *, out=None):
+        return torch_frontend.logical_not(self._ivy_array, out=out)
 
     def logical_or(self, other):
         return torch_frontend.logical_or(self._ivy_array, other)
@@ -736,6 +744,13 @@ class Tensor:
         self._ivy_array = self.masked_fill(mask, value).ivy_array
         return self
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+    def index_add_(self, dim, index, source, *, alpha=1):
+        self._ivy_array = torch_frontend.index_add(
+            self._ivy_array, dim, index, source, alpha=alpha
+        ).ivy_array
+        return self
+
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def acosh_(self):
         self._ivy_array = self.acosh().ivy_array
@@ -811,9 +826,7 @@ class Tensor:
     def __setitem__(self, key, value):
         if hasattr(value, "ivy_array"):
             value = (
-                ivy.to_scalar(value.ivy_array)
-                if value.shape == ()
-                else ivy.to_list(value)
+                ivy.to_scalar(value.ivy_array) if value.shape == () else value.ivy_array
             )
         self._ivy_array[key] = value
 
@@ -823,7 +836,7 @@ class Tensor:
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def __mul__(self, other):
-        return torch_frontend.mul(self._ivy_array, other)
+        return torch_frontend.mul(self, other)
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def __rmul__(self, other):
@@ -911,6 +924,9 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def cumprod(self, dim, dtype):
         return torch_frontend.cumprod(self._ivy_array, dim, dtype=dtype)
+
+    def count_nonzero(self, dim):
+        return torch_frontend.count_nonzero(self._ivy_array, dim=dim)
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
     def exp(self):
