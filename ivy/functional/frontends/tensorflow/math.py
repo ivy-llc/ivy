@@ -609,5 +609,10 @@ def xlogy(x, y, name=None):
 
 
 @to_ivy_arrays_and_back
+def xlog1py(x, y, name=None):
+    return ivy.xlog1py(x, y)
+
+
+@to_ivy_arrays_and_back
 def cosh(x, name=None):
     return ivy.cosh(x)
