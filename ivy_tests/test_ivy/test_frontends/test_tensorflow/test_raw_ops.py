@@ -1413,6 +1413,7 @@ def test_tensorflow_Log(  # NOQA
     fn_tree="tensorflow.raw_ops.Log1p",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
 )
