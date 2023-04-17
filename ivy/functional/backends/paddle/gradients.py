@@ -8,6 +8,8 @@ from itertools import chain
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from . import backend_version
 from ivy.functional.ivy.gradients import (
     _get_required_float_variables,
     _get_y_and_ret_idxs,
@@ -19,9 +21,6 @@ from ivy.func_wrapper import (
     outputs_to_ivy_arrays,
     inputs_to_native_arrays,
 )
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
-from . import backend_version
-
 
 
 def variable(x, /):
