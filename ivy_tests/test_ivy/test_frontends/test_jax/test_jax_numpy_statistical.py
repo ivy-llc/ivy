@@ -2,7 +2,6 @@
 from hypothesis import strategies as st, assume
 import numpy as np
 
-
 # local
 import ivy
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
@@ -22,12 +21,12 @@ from ivy import inf
     eq_n_op=st.sampled_from(
         [
             (
-                "ii",
-                np.arange(25).reshape(5, 5),
+                    "ii",
+                    np.arange(25).reshape(5, 5),
             ),
             (
-                "ii->i",
-                np.arange(25).reshape(5, 5),
+                    "ii->i",
+                    np.arange(25).reshape(5, 5),
             ),
             ("ij,j", np.arange(25).reshape(5, 5), np.arange(5)),
         ]
@@ -35,13 +34,13 @@ from ivy import inf
     dtype=helpers.get_dtypes("float", full=False),
 )
 def test_jax_numpy_einsum(
-    *,
-    eq_n_op,
-    dtype,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        eq_n_op,
+        dtype,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     kw = {}
     i = 0
@@ -72,15 +71,15 @@ def test_jax_numpy_einsum(
     keepdims=st.booleans(),
 )
 def test_jax_numpy_mean(
-    *,
-    dtype_x_axis,
-    dtype,
-    keepdims,
-    where,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_x_axis,
+        dtype,
+        keepdims,
+        where,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtypes, x, axis = dtype_x_axis
     if isinstance(axis, tuple):
@@ -121,15 +120,15 @@ def test_jax_numpy_mean(
     keepdims=st.booleans(),
 )
 def test_jax_numpy_var(
-    *,
-    dtype_x_axis,
-    dtype,
-    keepdims,
-    where,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_x_axis,
+        dtype,
+        keepdims,
+        where,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtypes, x, axis, ddof = dtype_x_axis
     if isinstance(axis, tuple):
@@ -170,13 +169,13 @@ def test_jax_numpy_var(
     keepdims=st.booleans(),
 )
 def test_jax_numpy_argmin(
-    *,
-    dtype_and_x,
-    keepdims,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_and_x,
+        keepdims,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, x, axis = dtype_and_x
     helpers.test_frontend_function(
@@ -210,12 +209,12 @@ def test_jax_numpy_argmin(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_bincount(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_and_x,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -250,13 +249,13 @@ def test_jax_numpy_bincount(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_cumprod(
-    *,
-    dtype_x_axis,
-    dtype,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_x_axis,
+        dtype,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
@@ -290,13 +289,13 @@ def test_jax_numpy_cumprod(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_cumsum(
-    *,
-    dtype_x_axis,
-    dtype,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_x_axis,
+        dtype,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
@@ -320,15 +319,15 @@ def test_jax_numpy_cumsum(
     keepdims=st.booleans(),
 )
 def test_jax_numpy_sum(
-    *,
-    dtype_x_axis_castable,
-    initial,
-    where,
-    keepdims,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_x_axis_castable,
+        initial,
+        where,
+        keepdims,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtypes, x, axis, castable_dtype = dtype_x_axis_castable
 
@@ -367,14 +366,14 @@ def test_jax_numpy_sum(
     keepdims=st.booleans(),
 )
 def test_jax_numpy_min(
-    *,
-    dtype_x_axis,
-    keepdims,
-    where,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_x_axis,
+        keepdims,
+        where,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtypes, x, axis = dtype_x_axis
     if isinstance(axis, tuple):
@@ -408,14 +407,14 @@ def test_jax_numpy_min(
     keepdims=st.booleans(),
 )
 def test_jax_numpy_max(
-    *,
-    dtype_x_axis,
-    keepdims,
-    where,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_x_axis,
+        keepdims,
+        where,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtypes, x, axis = dtype_x_axis
     if isinstance(axis, tuple):
@@ -459,13 +458,13 @@ def test_jax_numpy_max(
     returned=st.booleans(),
 )
 def test_jax_numpy_average(
-    *,
-    dtype_x_axis,
-    returned,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_x_axis,
+        returned,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     x_dtype, x, axis = dtype_x_axis
 
@@ -506,14 +505,14 @@ def test_jax_numpy_average(
     where=np_helpers.where(),
 )
 def test_numpy_nanmax(
-    dtype_x_axis,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-    where,
-    initial,
-    keepdims,
+        dtype_x_axis,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
+        where,
+        initial,
+        keepdims,
 ):
     if initial is None and np.all(where) is not True:
         assume(initial is -inf)
@@ -557,14 +556,14 @@ def test_numpy_nanmax(
     where=np_helpers.where(),
 )
 def test_numpy_nanmin(
-    dtype_x_axis,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-    where,
-    initial,
-    keepdims,
+        dtype_x_axis,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
+        where,
+        initial,
+        keepdims,
 ):
     if initial is None and np.all(where) is not True:
         assume(initial is inf)
@@ -600,14 +599,14 @@ def test_numpy_nanmin(
     keep_dims=st.booleans(),
 )
 def test_jax_numpy_nanstd(
-    dtype_and_a,
-    dtype,
-    where,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-    keep_dims,
+        dtype_and_a,
+        dtype,
+        where,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
+        keep_dims,
 ):
     input_dtypes, a, axis, correction = dtype_and_a
     if isinstance(axis, tuple):
@@ -649,15 +648,15 @@ def test_jax_numpy_nanstd(
     keepdims=st.booleans(),
 )
 def test_jax_numpy_nanvar(
-    *,
-    dtype_x_axis,
-    dtype,
-    keepdims,
-    where,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_x_axis,
+        dtype,
+        keepdims,
+        where,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtypes, x, axis, ddof = dtype_x_axis
     if isinstance(axis, tuple):
@@ -717,11 +716,11 @@ def _get_castable_dtypes_values(draw, *, allow_nan=False, use_where=False):
     dtype_and_x_axis_dtype=_get_castable_dtypes_values(allow_nan=True),
 )
 def test_jax_numpy_nancumprod(
-    dtype_and_x_axis_dtype,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        dtype_and_x_axis_dtype,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtypes, x, axis, dtype = dtype_and_x_axis_dtype
     if ivy.current_backend_str() == "torch":
@@ -744,11 +743,11 @@ def test_jax_numpy_nancumprod(
     dtype_and_x_axis_dtype=_get_castable_dtypes_values(allow_nan=True),
 )
 def test_jax_numpy_nancumsum(
-    dtype_and_x_axis_dtype,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        dtype_and_x_axis_dtype,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtypes, x, axis, dtype = dtype_and_x_axis_dtype
     if ivy.current_backend_str() == "torch":
@@ -774,15 +773,15 @@ def test_jax_numpy_nancumsum(
     keepdims=st.booleans(),
 )
 def test_jax_numpy_std(
-    *,
-    dtype_x_axis,
-    dtype,
-    keepdims,
-    where,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_x_axis,
+        dtype,
+        keepdims,
+        where,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtypes, x, axis, ddof = dtype_x_axis
     if isinstance(axis, tuple):
@@ -829,12 +828,12 @@ def test_jax_numpy_std(
     rowvar=st.booleans(),
 )
 def test_jax_numpy_corrcoef(
-    dtype_and_x,
-    rowvar,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        dtype_and_x,
+        rowvar,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
     input_dtypes, x = dtype_and_x
     np_helpers.test_frontend_function(
@@ -855,20 +854,20 @@ def test_jax_numpy_corrcoef(
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
-        min_value=-(2**10),
-        max_value=2**10,
+        min_value=-(2 ** 10),
+        max_value=2 ** 10,
         valid_axis=True,
     ),
     keepdims=st.booleans(),
 )
 def test_jax_numpy_median(
-    *,
-    dtype_x_axis,
-    keepdims,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_x_axis,
+        keepdims,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
@@ -894,12 +893,12 @@ def test_jax_numpy_median(
     keep_dims=st.booleans(),
 )
 def test_jax_numpy_ptp(
-    dtype_and_x_axis_dtype,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-    keep_dims,
+        dtype_and_x_axis_dtype,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
+        keep_dims,
 ):
     input_dtypes, x, axis, dtype = dtype_and_x_axis_dtype
     np_frontend_helpers.test_frontend_function(
@@ -913,3 +912,52 @@ def test_jax_numpy_ptp(
         out=None,
         keepdims=keep_dims,
     )
+
+
+# nanmean
+@handle_frontend_test(
+    fn_tree="jax.numpy.nanmean",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
+        large_abs_safety_factor=2,
+        safety_factor_scale="log",
+        allow_nan=True,
+        allow_inf=True,
+    ),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
+    keepdims=st.booleans(),
+    where=np_helpers.where(),
+)
+def test_jax_numpy_nanmean(
+    dtype_x_axis,
+    dtype,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    where,
+    keepdims,
+):
+    input_dtypes, x, axis = dtype_x_axis
+    where, input_dtypes, test_flags = np_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
+        test_flags=test_flags,
+    )
+    np_helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        axis=axis,
+        dtype=dtype[0],
+        out=None,
+        keepdims=keepdims,
+        where=where,
+    )
+

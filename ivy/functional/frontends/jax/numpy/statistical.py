@@ -432,3 +432,19 @@ def ptp(a, axis=None, out=None, keepdims=False):
     x = ivy.max(a, axis=axis, keepdims=keepdims)
     y = ivy.min(a, axis=axis, keepdims=keepdims)
     return ivy.subtract(x, y)
+
+
+def nanmean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    if dtype is None:
+        dtype = "float64" if ivy.is_int_dtype(a) else a.dtype
+    if ivy.is_array(where):
+        where1 = ivy.array(where, dtype=ivy.bool)
+        a = ivy.where(where1, a, ivy.full_like(a, ivy.nan))
+    nan_mask1 = ivy.isnan(a)
+    not_nan_mask1 = ~ivy.isnan(a)
+    b1 = ivy.where(ivy.logical_not(nan_mask1), a, ivy.zeros_like(a))
+    array_sum1 = ivy.sum(b1, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
+    not_nan_mask_count1 = ivy.sum(not_nan_mask1, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
+    ret_nanmean = ivy.divide(array_sum1, not_nan_mask_count1)
+    return ret_nanmean
