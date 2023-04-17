@@ -4,11 +4,14 @@ from typing import Optional, Union
 from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
+    to_native_arrays_and_back,
+    handle_out_argument,
+    handle_array_function,
     inputs_to_ivy_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
 from ivy.functional.ivy.losses import _reduce_loss
-
+from ivy.utils.backend import current_backend
 
 @inputs_to_ivy_arrays
 @handle_array_like_without_promotion
@@ -117,3 +120,63 @@ def binary_cross_entropy_with_logits(
         )
 
     return result
+
+
+@handle_array_function
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+def ctc_loss(
+        log_probs: Union[ivy.Array, ivy.NativeArray],
+        targets: Union[ivy.Array, ivy.NativeArray],
+        input_lengths: Union[ivy.Array, ivy.NativeArray],
+        target_lengths: Union[ivy.Array, ivy.NativeArray],
+        blank: int = 0,
+        zero_infinity: bool = True,
+        reduction: str = "mean",
+        out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Computes the Connectionist Temporal Classification (CTC) loss between the log_probs and the targets
+    Parameters
+    ----------
+    targets : ivy.Array, ivy.NativeArray
+        Tensor of shape [batch_size, seq_len, num_labels] containing the log-probabilities of the predictions.
+    log_probs : ivy.Array, ivy.NativeArray
+        Tensor of shape [batch_size, max_target_len] containing the target labels.Each element must be a value
+        in [0, num_labels-1]. Blank is assumed to be 0.
+    target_lengths: ivy.Array, ivy.NativeArray
+        Tensor of shape [batch_size] containing the lengths of each target sequence.
+    input_lengths: ivy.Array, ivy.NativeArray
+        Tensor of shape [batch_size] containing the lengths of each input sequence.
+    blank : int
+        Integer representing the blank label index. Default is 0.
+    zero_infinity : bool
+        Whether to zero infite losses and the associated gradients. Default is False.
+    reduction : str
+        The method to use to reduce the loss. It can be "mean", "sum", or "none". Default is "mean".
+    out : ivy.Array, Optional
+        Output array to write the result to.
+
+    Returns
+    -------
+    ivy.Array
+        Tensor of shape [batch_size] containing the CTC Loss for each input sequence.
+
+    Raises
+    -------
+    ValueError
+        If the shapes of pred, true, pred_lengths, and true_lengths are not compatible.
+    """
+    ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
+
+    return current_backend(log_probs, targets, input_lengths, target_lengths,blank,zero_infinity,reduction,out).ctc_loss(
+        log_probs,
+        targets,
+        input_lengths,
+        target_lengths,
+        blank=blank,
+        zero_infinity=zero_infinity,
+        reduction=reduction,
+        out=out)
+
