@@ -11,4 +11,4 @@ def difference(
     return np.setdiff1d(x1, x2)
 
 
-difference.support_native_out = True
+difference.support_native_out = False
