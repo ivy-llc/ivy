@@ -229,7 +229,7 @@ def dstack(
 def atleast_2d(
     *arys: paddle.Tensor, copy: Optional[bool] = None
 ) -> List[paddle.Tensor]:
-   raise IvyNotImplementedException() 
+    raise IvyNotImplementedException() 
 
 
 def atleast_3d(
