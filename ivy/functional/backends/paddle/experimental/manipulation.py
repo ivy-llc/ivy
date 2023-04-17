@@ -229,16 +229,7 @@ def dstack(
 def atleast_2d(
     *arys: paddle.Tensor, copy: Optional[bool] = None
 ) -> List[paddle.Tensor]:
-    with paddle.autograd.guard():
-        res = []
-        for ary in arys:
-            if len(ary.shape) == 0:
-                res.append(ary.reshape((1, 1)))
-            elif len(ary.shape) == 1:
-                res.append(ary.reshape((1, -1)))
-            else:
-                res.append(ary)
-        return res
+   raise IvyNotImplementedException() 
 
 
 def atleast_3d(
