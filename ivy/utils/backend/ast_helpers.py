@@ -174,24 +174,42 @@ class ImportTransformer(ast.NodeTransformer):
         else:
             return _parse_relative_fromimport(node)
 
-    def impersonate_import(self, tree: ast.Module):
+    def impersonate_import(self, tree: ast.Module, ivy_id=None):
         if self.include_ivy_import:
-            tree.body.insert(
-                self.insert_index,
-                ast.ImportFrom(
-                    module=importlib_module_path,
-                    names=[ast.alias(name=importlib_from_import_fn, asname=None)],
-                    level=0,
-                ),
-            )
-            tree.body.insert(
-                self.insert_index,
-                ast.ImportFrom(
-                    module=importlib_module_path,
-                    names=[ast.alias(name=importlib_abs_import_fn, asname=None)],
-                    level=0,
-                ),
-            )
+            if ivy_id is not None:
+                ivy_import_node = ast.parse("import ivy").body[0]
+                common_import_path = (
+                    f"ivy.utils.backend.handler."
+                    f"_compiled_backends_ids[{ivy_id}].utils._importlib"
+                )
+                abs_import_node = ast.parse(
+                    f"{importlib_abs_import_fn} "
+                    f"= {common_import_path}.{importlib_abs_import_fn}"
+                ).body[0]
+                from_import_node = ast.parse(
+                    f"{importlib_from_import_fn} "
+                    f"= {common_import_path}.{importlib_from_import_fn}"
+                ).body[0]
+                tree.body.insert(self.insert_index, from_import_node)
+                tree.body.insert(self.insert_index, abs_import_node)
+                tree.body.insert(self.insert_index, ivy_import_node)
+            else:
+                tree.body.insert(
+                    self.insert_index,
+                    ast.ImportFrom(
+                        module=importlib_module_path,
+                        names=[ast.alias(name=importlib_from_import_fn, asname=None)],
+                        level=0,
+                    ),
+                )
+                tree.body.insert(
+                    self.insert_index,
+                    ast.ImportFrom(
+                        module=importlib_module_path,
+                        names=[ast.alias(name=importlib_abs_import_fn, asname=None)],
+                        level=0,
+                    ),
+                )
         return tree
 
 
@@ -229,7 +247,7 @@ class IvyLoader(Loader):
     def __init__(self, filename):
         self.filename = filename
 
-    def exec_module(self, module):
+    def exec_module(self, module, ivy_id=None):
         if self.filename in _compiled_modules_cache:
             compiled_obj = _compiled_modules_cache[self.filename]
         else:
@@ -239,7 +257,7 @@ class IvyLoader(Loader):
             ast_tree = parse(data)
             transformer = ImportTransformer()
             transformer.visit(ast_tree)
-            transformer.impersonate_import(ast_tree)
+            transformer.impersonate_import(ast_tree, ivy_id)
             ast.fix_missing_locations(ast_tree)
             compiled_obj = compile(ast_tree, filename=self.filename, mode="exec")
             _compiled_modules_cache[self.filename] = compiled_obj
