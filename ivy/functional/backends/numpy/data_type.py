@@ -168,7 +168,7 @@ def as_ivy_dtype(
         else:
             raise ivy.utils.exceptions.IvyException(
                 "Cannot convert to ivy dtype."
-                f" {dtype_in} is not supported by PyTorch backend."
+                f" {dtype_in} is not supported by NumPy backend."
             )
     else:
         dtype_str = ivy_dtype_dict[dtype_in]
@@ -226,3 +226,10 @@ def dtype_bits(dtype_in: Union[np.dtype, str], /) -> int:
         .replace("float", "")
         .replace("complex", "")
     )
+
+
+def is_native_dtype(dtype_in: Union[np.dtype, str], /) -> bool:
+    if dtype_in in ivy_dtype_dict:
+        return True
+    else:
+        return False

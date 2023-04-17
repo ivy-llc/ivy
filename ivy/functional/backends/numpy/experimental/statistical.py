@@ -2,8 +2,6 @@ from typing import Optional, Union, Tuple, Sequence
 import numpy as np
 
 import ivy  # noqa
-from ivy.func_wrapper import with_supported_dtypes
-from . import backend_version
 
 
 def median(
@@ -16,12 +14,18 @@ def median(
 ) -> np.ndarray:
     if out is not None:
         out = np.reshape(out, input.shape)
-    return np.median(
+    ret = np.median(
         input,
         axis=axis,
         keepdims=keepdims,
         out=out,
     )
+    if input.dtype in [np.uint64, np.int64, np.float64]:
+        return ret.astype(np.float64)
+    elif input.dtype in [np.float16]:
+        return ret.astype(input.dtype)
+    else:
+        return ret.astype(np.float32)
 
 
 median.support_native_out = True
@@ -42,21 +46,6 @@ def nanmean(
 
 
 nanmean.support_native_out = True
-
-
-@with_supported_dtypes({"1.23.0 and below": ("int32", "int64")}, backend_version)
-def unravel_index(
-    indices: np.ndarray,
-    shape: Tuple[int],
-    /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> Tuple:
-    ret = np.asarray(np.unravel_index(indices, shape), dtype=np.int32)
-    return tuple(ret)
-
-
-unravel_index.support_native_out = False
 
 
 def quantile(

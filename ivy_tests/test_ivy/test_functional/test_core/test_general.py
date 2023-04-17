@@ -77,7 +77,7 @@ def _get_shape_of_list(lst, shape=()):
 @given(fw_str=st.sampled_from(["numpy", "jax", "torch", "tensorflow"]))
 def test_set_framework(fw_str):
     ivy.set_backend(fw_str)
-    ivy.unset_backend()
+    ivy.previous_backend()
 
 
 def test_use_within_use_framework():
@@ -995,7 +995,7 @@ def test_framework_setting_with_threading():
                 ivy.mean(x_)
             except TypeError:
                 return False
-        ivy.unset_backend()
+        ivy.previous_backend()
         return True
 
     # get original framework string and array
@@ -1010,7 +1010,7 @@ def test_framework_setting_with_threading():
     ivy.set_backend(fws)
     for _ in range(2000):
         ivy.mean(x)
-    ivy.unset_backend()
+    ivy.previous_backend()
     assert not thread.join()
 
 
@@ -1028,7 +1028,7 @@ def test_framework_setting_with_multiprocessing():
             except TypeError:
                 out_queue.put(False)
                 return
-        ivy.unset_backend()
+        ivy.previous_backend()
         out_queue.put(True)
 
     # get original framework string and array
@@ -1044,7 +1044,7 @@ def test_framework_setting_with_multiprocessing():
     ivy.set_backend(fws)
     for _ in range(1000):
         ivy.mean(x)
-    ivy.unset_backend()
+    ivy.previous_backend()
 
     worker.join()
     assert output_queue.get_nowait()
@@ -1057,7 +1057,7 @@ def test_explicit_ivy_framework_handles():
 
     # store original framework string and unset
     fw_str = ivy.current_backend_str()
-    ivy.unset_backend()
+    ivy.previous_backend()
 
     # set with explicit handle caught
     ivy_exp = ivy.get_backend(fw_str)
@@ -1079,7 +1079,7 @@ def test_explicit_ivy_framework_handles():
     assert ivy_exp.current_backend_str() == fw_str
 
     # unset global ivy from numpy
-    ivy.unset_backend()
+    ivy.previous_backend()
 
 
 # ToDo: re-add this test once ivy.get_backend is working correctly, with the returned
@@ -1291,7 +1291,7 @@ def test_inplace_arrays_supported():
     cur_fw = ivy.current_backend_str()
     if cur_fw in ["numpy", "torch"]:
         assert ivy.inplace_arrays_supported()
-    elif cur_fw in ["jax", "tensorflow"]:
+    elif cur_fw in ["jax", "tensorflow", "paddle"]:
         assert not ivy.inplace_arrays_supported()
     else:
         raise Exception("Unrecognized framework")
@@ -1301,7 +1301,7 @@ def test_inplace_variables_supported():
     cur_fw = ivy.current_backend_str()
     if cur_fw in ["numpy", "torch", "tensorflow"]:
         assert ivy.inplace_variables_supported()
-    elif cur_fw in ["jax"]:
+    elif cur_fw in ["jax", "paddle"]:
         assert not ivy.inplace_variables_supported()
     else:
         raise Exception("Unrecognized framework")
@@ -1315,8 +1315,9 @@ def test_inplace_variables_supported():
         num_arrays=2,
         shared_dtype=True,
     ),
+    keep_x_dtype=st.booleans(),
 )
-def test_inplace_update(x_val_and_dtypes, test_flags, on_device):
+def test_inplace_update(x_val_and_dtypes, keep_x_dtype, test_flags, on_device):
     dtype = x_val_and_dtypes[0][0]
     if dtype in ivy.function_unsupported_dtypes(ivy.inplace_update):
         return
@@ -1326,7 +1327,12 @@ def test_inplace_update(x_val_and_dtypes, test_flags, on_device):
     if (not test_flags.as_variable and ivy.inplace_arrays_supported()) or (
         test_flags.as_variable and ivy.inplace_variables_supported()
     ):
-        x_inplace = ivy.inplace_update(x, val)
+        if keep_x_dtype:
+            x_dtype = x.dtype
+            x_inplace = ivy.inplace_update(x, val, keep_input_dtype=True)
+            assert x_dtype == x_inplace.dtype
+        else:
+            x_inplace = ivy.inplace_update(x, val)
         assert id(x_inplace) == id(x)
         x = helpers.flatten_and_to_np(ret=x)
         val = helpers.flatten_and_to_np(ret=val)
@@ -1740,18 +1746,21 @@ _composition_1.test_unsupported_devices_and_dtypes = {
             "complex64",
             "complex128",
         ),
+        "paddle": ("uint16", "uint32", "uint64", "bfloat16", "complex64", "complex128"),
     },
     "gpu": {
         "numpy": ivy.all_dtypes,
         "jax": ("complex64", "complex128"),
         "tensorflow": ("complex64", "complex128"),
         "torch": ("complex64", "float16", "uint16", "complex128", "uint64", "uint32"),
+        "paddle": ivy.all_dtypes,
     },
     "tpu": {
         "numpy": ivy.all_dtypes,
         "jax": ivy.all_dtypes,
         "tensorflow": ivy.all_dtypes,
         "torch": ivy.all_dtypes,
+        "paddle": ivy.all_dtypes,
     },
 }
 
@@ -1766,18 +1775,26 @@ _composition_2.test_unsupported_devices_and_dtypes = {
         "jax": ("complex64", "complex128"),
         "tensorflow": ("complex64", "complex128"),
         "torch": ("uint16", "uint32", "uint64", "float16", "complex64", "complex128"),
+        "paddle": (
+            "uint16",
+            "uint32",
+            "uint64",
+            "bfloat16",
+        ),
     },
     "gpu": {
         "numpy": ivy.all_dtypes,
         "jax": ("complex64", "complex128"),
         "tensorflow": ("complex64", "complex128"),
         "torch": ("uint16", "uint64", "uint32", "complex128", "float16", "complex64"),
+        "paddle": ivy.all_dtypes,
     },
     "tpu": {
         "numpy": ivy.all_dtypes,
         "jax": ivy.all_dtypes,
         "tensorflow": ivy.all_dtypes,
         "torch": ivy.all_dtypes,
+        "paddle": ivy.all_dtypes,
     },
 }
 
@@ -1832,7 +1849,7 @@ def test_function_unsupported_devices(func):
 def test_current_backend_str(fw):
     ivy.set_backend(fw)
     assert ivy.current_backend_str() == fw
-    ivy.unset_backend()
+    ivy.previous_backend()
 
 
 # get_min_denominator
@@ -2032,7 +2049,7 @@ def test_assert_supports_inplace(
     ground_truth_backend,
 ):
     dtype, x = x_val_and_dtypes
-    if ivy.current_backend_str() in ["tensorflow", "jax"]:
+    if ivy.current_backend_str() in ["tensorflow", "jax", "paddle"]:
         return
     assume("bfloat16" not in dtype)
     helpers.test_function(
@@ -2110,7 +2127,7 @@ def test_vmap(func, dtype_and_arrays_and_axes, in_axes_as_cont):
     except Exception:
         jax_res = None
 
-    ivy.unset_backend()
+    ivy.previous_backend()
 
     if fw_res is not None and jax_res is not None:
         helpers.value_test(
@@ -2124,3 +2141,80 @@ def test_vmap(func, dtype_and_arrays_and_axes, in_axes_as_cont):
         pass
     else:
         assert False, "One of the results is None while other isn't"
+
+
+@st.composite
+def _isin_data_generation_helper(draw):
+    assume_unique = draw(st.booleans())
+    if assume_unique:
+        dtype_and_x = helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            num_arrays=2,
+            shared_dtype=True,
+        ).filter(lambda x: np.array_equal(x[1][0], np.unique(x[1][0])))
+    else:
+        dtype_and_x = helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            num_arrays=2,
+            shared_dtype=True,
+        )
+    return assume_unique, draw(dtype_and_x)
+
+
+@handle_test(
+    fn_tree="functional.ivy.isin",
+    assume_unique_and_dtype_and_x=_isin_data_generation_helper(),
+    invert=st.booleans(),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_isin(
+    assume_unique_and_dtype_and_x,
+    invert,
+    test_flags,
+    backend_fw,
+    on_device,
+):
+    assume_unique, x_and_dtype = assume_unique_and_dtype_and_x
+    dtypes, values = x_and_dtype
+    elements, test_elements = values
+    helpers.test_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name="isin",
+        ground_truth_backend="numpy",
+        elements=elements,
+        test_elements=test_elements,
+        invert=invert,
+        assume_unique=assume_unique,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.itemsize",
+    x_and_dtype=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    ground_truth_backend="numpy",
+    test_instance_method=st.just(False),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_itemsize(
+    x_and_dtype,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    dtype, x = x_and_dtype
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
+        x=x[0],
+    )
