@@ -9,6 +9,7 @@ from ivy.functional.frontends.numpy.creation_routines.from_existing_data import 
 )
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.func_wrapper import with_supported_dtypes
+from ivy.functional.frontends.torch.func_wrapper import _to_ivy_array
 
 
 class Tensor:
@@ -826,14 +827,12 @@ class Tensor:
         return self.long()
 
     def __getitem__(self, query, /):
-        ret = ivy.get_item(self._ivy_array, query)
+        ivy_args = ivy.nested_map([self, query], _to_ivy_array)
+        ret = ivy.get_item(*ivy_args)
         return torch_frontend.Tensor(ret, _init_overload=True)
 
     def __setitem__(self, key, value):
-        if hasattr(value, "ivy_array"):
-            value = (
-                ivy.to_scalar(value.ivy_array) if value.shape == () else value.ivy_array
-            )
+        key, value = ivy.nested_map([key, value], _to_ivy_array)
         self._ivy_array[key] = value
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
