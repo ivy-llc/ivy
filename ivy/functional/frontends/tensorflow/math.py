@@ -240,6 +240,11 @@ def pow(x, y, name="pow"):
 
 
 @to_ivy_arrays_and_back
+def reciprocal(x, name="reciprocal"):
+    return ivy.reciprocal(x)
+
+
+@to_ivy_arrays_and_back
 def reciprocal_no_nan(x, name="reciprocal_no_nan"):
     return ivy.where(
         x == 0,
