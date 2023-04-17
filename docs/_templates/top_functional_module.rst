@@ -17,7 +17,6 @@
 .. autosummary::
    :toctree: {{name}}
    :template: top_functional_module.rst
-   :hide-table:
    :recursive:
 {% for module in modules %}
    {{ module }}
@@ -40,5 +39,8 @@
 {% for attribute in attributes %}
 .. autoivydata:: {{ fullname }}.{{ attribute }}
 {% endfor %}
+{% if not functions and not classes and not attributes and not modules %}
+There are no functions in this module yet. 🚧
+{% endif %}
 
 {% endblock %}
