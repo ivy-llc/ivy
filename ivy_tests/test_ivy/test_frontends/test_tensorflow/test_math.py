@@ -2303,7 +2303,6 @@ def test_tensorflow_less(
 @handle_frontend_test(
     fn_tree="tensorflow.math.zeta",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         max_num_dims=1,
