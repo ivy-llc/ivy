@@ -18,3 +18,5 @@ from . import sparse_functions
 from .sparse_functions import *
 from . import vision_functions
 from .vision_functions import *
+from . import norms
+from .norms import *

@@ -1157,6 +1157,9 @@ def nested_map(
             x.update(ret)
             return x
         return class_instance(ret)
+    elif isinstance(x, slice):
+        # TODO: add tests for this
+        return slice(*nested_map([x.start, x.stop, x.step], fn))
     return fn(x)
 
 

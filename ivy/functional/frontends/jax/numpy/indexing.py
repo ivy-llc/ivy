@@ -1,3 +1,6 @@
+# global
+import inspect
+
 # local
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import (
@@ -42,6 +45,7 @@ def triu_indices_from(arr, k=0):
     return ivy.triu_indices(arr.shape[-2], arr.shape[-1], k)
 
 
+@to_ivy_arrays_and_back
 def tril_indices_from(arr, k=0):
     return ivy.tril_indices(arr.shape[-2], arr.shape[-1], k)
 
@@ -51,3 +55,28 @@ def tril_indices_from(arr, k=0):
 def unravel_index(indices, shape):
     ret = [x.astype("int64") for x in ivy.unravel_index(indices, shape)]
     return tuple(ret)
+
+
+@to_ivy_arrays_and_back
+def mask_indices(n, mask_func, k=0):
+    mask_func_obj = inspect.unwrap(mask_func)
+    mask_func_name = mask_func_obj.__name__
+    try:
+        ivy_mask_func_obj = getattr(ivy.functional.frontends.jax.numpy, mask_func_name)
+        a = ivy.ones((n, n))
+        mask = ivy_mask_func_obj(a, k=k)
+        indices = ivy.argwhere(mask.ivy_array)
+        return indices[:, 0], indices[:, 1]
+    except AttributeError as e:
+        print(f"Attribute error: {e}")
+
+
+@to_ivy_arrays_and_back
+def diag_indices_from(arr):
+    print(arr)
+    n = arr.shape[0]
+    ndim = ivy.get_num_dims(arr)
+    if not all(arr.shape[i] == n for i in range(ndim)):
+        raise ValueError("All dimensions of input must be of equal length")
+    idx = ivy.arange(n, dtype=int)
+    return (idx,) * ndim
