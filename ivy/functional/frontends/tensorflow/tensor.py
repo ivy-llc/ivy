@@ -3,7 +3,7 @@
 # local
 import ivy
 import ivy.functional.frontends.tensorflow as tf_frontend
-from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_dtype
+from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_dtype, _to_ivy_array
 from ivy.functional.frontends.numpy.creation_routines.from_existing_data import array
 
 
@@ -114,7 +114,8 @@ class EagerTensor:
         return tf_frontend.raw_ops.GreaterEqual(x=self._ivy_array, y=y, name=name)
 
     def __getitem__(self, slice_spec, var=None, name="getitem"):
-        ret = ivy.get_item(self._ivy_array, slice_spec)
+        ivy_args = ivy.nested_map([self, slice_spec], _to_ivy_array)
+        ret = ivy.get_item(*ivy_args)
         return EagerTensor(ret)
 
     def __gt__(self, y, name="gt"):

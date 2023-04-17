@@ -370,3 +370,43 @@ def test_torch_bernoulli(
     for (u, v) in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
+
+
+@handle_frontend_test(
+    fn_tree="torch.randperm",
+    n=st.integers(min_value=0, max_value=10),
+    dtype=helpers.get_dtypes("integer", full=False),
+)
+def test_torch_randperm(
+    *,
+    n,
+    dtype,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+
+    def call():
+
+        return helpers.test_frontend_function(
+            input_dtypes=dtype,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            n=n,
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    for (u, v) in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape    
