@@ -877,7 +877,7 @@ def test_torch_index_reduce(
     frontend,
     test_flags,
 ):
-    input_dtypes, input, indices, source, reduce, axis, batch_dims = params_indices_others
+    input_dtypes, input, indices, axis, batch_dims = params_indices_others
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
@@ -887,9 +887,6 @@ def test_torch_index_reduce(
         input=input,
         dim=axis,
         index=indices,
-        source = source,
-        reduce = reduce,
-        include_self=True,
     )
 
 

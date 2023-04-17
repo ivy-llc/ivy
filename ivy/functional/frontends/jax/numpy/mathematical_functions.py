@@ -12,7 +12,7 @@ def absolute(x):
     return ivy.abs(x)
 
 
-abs = absolute
+#abs = absolute
 
 
 @to_ivy_arrays_and_back
