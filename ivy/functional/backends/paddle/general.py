@@ -317,10 +317,11 @@ def scatter_flat(
         indices = indices.reshape([-1, *indices.shape[2:]])
     for i in range(indices.shape[0]):
         out[indices[i]] = updates[i]
+    updated_indices = paddle.unique(indices)
     if reduction == "sum":
-        out = paddle.sum(out, axis=0)
+        out[updated_indices] = paddle.sum(out[updated_indices], axis=0)
     elif reduction == "mean":
-        out = paddle.mean(out, axis=0)
+        out[updated_indices] = paddle.mean(out[updated_indices], axis=0)
     elif reduction != "none":
         raise ValueError(f"Invalid reduction option: {reduction}")
     if len(updates_shape) > 1:
