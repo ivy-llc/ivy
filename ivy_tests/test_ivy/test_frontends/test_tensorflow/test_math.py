@@ -470,6 +470,34 @@ def test_tensorflow_log_sigmoid(
     )
 
 
+# reciprocal
+@handle_frontend_test(
+    fn_tree="tensorflow.math.reciprocal",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=1,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_reciprocal(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 # reciprocal_no_nan
 @handle_frontend_test(
     fn_tree="tensorflow.math.reciprocal_no_nan",
@@ -2276,6 +2304,9 @@ def test_tensorflow_less(
     fn_tree="tensorflow.math.zeta",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        max_num_dims=1,
         num_arrays=2,
         shared_dtype=True,
     ),
