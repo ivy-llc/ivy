@@ -732,7 +732,7 @@ add_array_specs()
 
 _imported_frameworks_before_compiler = list(sys.modules.keys())
 try:
-    from .compiler._compiler import transpile, compile, unify
+    from .compiler.compiler import transpile, compile, unify
 except:  # noqa: E722
     compile, transpile, unify = None, None, None
 finally:
@@ -1188,6 +1188,7 @@ for backend_framework in _not_imported_backends:
             "import it without setting a backend, ignore if that's intended"
         )
 
+
 downcast_dtypes = False
 upcast_dtypes = False
 crosscast_dtypes = False
@@ -1207,3 +1208,16 @@ def upcast_data_types(val=True):
 def crosscast_data_types(val=True):
     global crosscast_dtypes
     crosscast_dtypes = val
+
+# sub_backends
+from ivy.utils.backend.sub_backend_handler import (
+    set_sub_backend,
+    unset_sub_backend,
+    clear_sub_backends,
+    available_sub_backends,
+)
+
+
+def current_sub_backends():
+    return []
+

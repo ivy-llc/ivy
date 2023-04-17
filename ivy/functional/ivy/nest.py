@@ -807,10 +807,10 @@ def all_nested_indices(
         Whether to also include indices of the nests themselves, not only
         leaves. Default is ``False``.
     _index
-        The indices detected so far. None at the beginning. Used internally, 
+        The indices detected so far. None at the beginning. Used internally,
         do not set manually.
     _base
-        Whether the current function call is the first function call in the 
+        Whether the current function call is the first function call in the
         recursive stack. Used internally, do not set manually.
     extra_nest_types
         Types to recursively check when deciding whether to go deeper into the
@@ -823,9 +823,9 @@ def all_nested_indices(
     -------
     ret
         A set of indices of all elements in nest
-    
-    Both the description and the type hints above assumes an array input 
-    for simplicity, but this function is nestable, and therefore also 
+
+    Both the description and the type hints above assumes an array input
+    for simplicity, but this function is nestable, and therefore also
     accepts :class:ivy.Container instances in place of the arguments.
 
     Examples
@@ -1046,9 +1046,7 @@ def nested_map(
     ret
         x following the applicable of fn to it's nested leaves, or x itself if x is not
         nested.
-
     """
-
     to_ignore = ivy.default(to_ignore, ())
     extra_nest_types = ivy.default(extra_nest_types, ())
     if include_derived is True:
@@ -1132,6 +1130,7 @@ def nested_map(
         ]
         if shallow:
             x[:] = ret_list[:]
+            return x
         return class_instance(ret_list)
     elif (dict_check_fn(x, dict) or isinstance(x, UserDict)) and not isinstance(
         x, to_ignore
@@ -1155,9 +1154,12 @@ def nested_map(
             for k, v in x.items()
         }
         if shallow:
-            x.update(**ret)
+            x.update(ret)
             return x
-        return class_instance(**ret)
+        return class_instance(ret)
+    elif isinstance(x, slice):
+        # TODO: add tests for this
+        return slice(*nested_map([x.start, x.stop, x.step], fn))
     return fn(x)
 
 

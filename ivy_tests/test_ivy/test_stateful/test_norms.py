@@ -11,7 +11,9 @@ from ivy_tests.test_ivy.helpers import handle_method
 
 @handle_method(
     method_tree="LayerNorm.__call__",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"), min_num_dims=2
+    ),
     new_std=st.floats(min_value=0.0, max_value=1.0),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
@@ -37,7 +39,7 @@ def test_layer_norm_layer(
         method_flags=method_flags,
         init_all_as_kwargs_np={
             "normalized_shape": x[0].shape,
-            "epsilon": ivy._MIN_BASE,
+            "eps": ivy._MIN_BASE,
             "elementwise_affine": True,
             "new_std": new_std,
             "device": on_device,

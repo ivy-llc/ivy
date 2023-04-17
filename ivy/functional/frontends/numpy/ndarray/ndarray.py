@@ -16,7 +16,7 @@ class ndarray:
                 ivy.array(shape) if not isinstance(shape, ivy.Array) else shape
             )
         else:
-            self._ivy_array = ivy.empty(shape, dtype=dtype)
+            self._ivy_array = ivy.empty(shape=shape, dtype=dtype)
 
         ivy.utils.assertions.check_elem_in_list(
             order,
@@ -329,6 +329,9 @@ class ndarray:
     def __mul__(self, value, /):
         return np_frontend.multiply(self._ivy_array, value)
 
+    def __rmul__(self, value, /):
+        return np_frontend.multiply(value, self._ivy_array)
+
     def __truediv__(self, value, /):
         return np_frontend.true_divide(self._ivy_array, value)
 
@@ -470,4 +473,4 @@ class ndarray:
         self._ivy_array[key] = value
 
     def __mod__(self, value, /):
-        return np_frontend.mod(self._ivy_array, value, out=self)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+        return np_frontend.mod(self._ivy_array, value, out=self)

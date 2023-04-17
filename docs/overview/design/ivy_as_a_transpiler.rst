@@ -7,7 +7,7 @@ These parts are labelled (a) in the image below.
 Here, we explain the role of the backend-specific frontends in Ivy, and how these enable automatic code conversions between different ML frameworks.
 This part is labelled as (b) in the image below.
 
-The code conversion tools described on this page are works in progress, as indicated by the the construction signs 🚧.
+The code conversion tools described on this page are works in progress, as indicated by the construction signs 🚧.
 This is in keeping with the rest of the documentation.
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/submodule_dependency_graph.png?raw=true
@@ -15,7 +15,7 @@ This is in keeping with the rest of the documentation.
    :width: 100%
 
 Frontend Functional APIs 🚧
-------------------------
+---------------------------
 
 While the backend API, Ivy API and backend handler enable all Ivy code to be framework-agnostic, they do not, for example, enable PyTorch code to be framework agnostic.
 But with frontend APIs, we can also achieve this!
@@ -85,7 +85,7 @@ Let’s look at the NumPy backend code for this Ivy method:
        res = np.eye(depth)[np.array(indices).reshape(-1)]
        return res.reshape(list(indices.shape) + [depth])
 
-By chaining these method together, we can now call :func:`torch.nn.functional.one_hot` using NumPy:
+By chaining these methods together, we can now call :func:`torch.nn.functional.one_hot` using NumPy:
 
 .. code-block:: python
 
@@ -165,7 +165,7 @@ Again, by chaining these methods together, we can now call :func:`tf.math.cumpro
    ret = tf.math.cumprod(x, -1)
 
 Role of the Graph Compiler 🚧
--------------------------
+-----------------------------
 
 The very simple example above worked well, but what about even more complex PyTorch code involving Modules, Optimizers, and other higher level objects? This is where the graph compiler plays a vital role.
 The graph compiler can convert any code into its constituent functions at the functional API level for any ML framework.
@@ -210,7 +210,7 @@ In this case, this means the learnable weights in the Module will be treated as 
 This works fine if we only care about running inference on our graph post-training, but this won’t enable training of the Module in JAX.
 
 Converting Network Models 🚧
--------------------------
+----------------------------
 
 In order to convert a model from PyTorch to JAX, we first must convert the :class:`torch.nn.Module` instance to an :class:`ivy.Module` instance using the method :func:`ivy.to_ivy_module` like so:
 
@@ -255,7 +255,7 @@ To convert this :class:`ivy.Module` instance to a :class:`haiku.Module` instance
 
    net = net.to_haiku_module()
 
-If we want to remove Ivy from the pipeline entirely, we can then train the model in haiku like so:
+If we want to remove Ivy from the pipeline entirely, we can then train the model in Haiku like so:
 
 .. code-block:: python
 
@@ -290,7 +290,7 @@ The same is true for any combination of frameworks, and for any network architec
 
 **Round Up**
 
-Hopefully this has explained how, with the addition of backend-specific frontends, Ivy will be able to easily convert code between different ML frameworks 🙂 works in progress, as indicated by the the construction signs 🚧.
+Hopefully this has explained how, with the addition of backend-specific frontends, Ivy will be able to easily convert code between different ML frameworks 🙂 works in progress, as indicated by the construction signs 🚧.
 This is in keeping with the rest of the documentation.
 
 Please reach out on `discord <https://discord.gg/sXyFF8tDtm>`_ if you have any questions!

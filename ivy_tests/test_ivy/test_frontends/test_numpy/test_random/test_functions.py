@@ -1,5 +1,5 @@
 # global,
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 import numpy as np
 
 # local
@@ -347,5 +347,40 @@ def test_numpy_standard_normal(
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
+        size=size,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.random.standard_gamma",
+    shape_dtypes=helpers.get_dtypes("float", full=False),
+    shape=st.floats(
+        allow_nan=False, allow_infinity=False, width=32, min_value=0, exclude_min=True
+    ),
+    size=st.tuples(
+        st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)
+    ),
+    size_dtypes=helpers.get_dtypes("integer", full=False),
+    test_with_out=st.just(False),
+)
+def test_numpy_standard_gamma(
+    shape,
+    shape_dtypes,
+    size,
+    size_dtypes,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    assume("float16" not in shape_dtypes)
+    helpers.test_frontend_function(
+        input_dtypes=shape_dtypes + size_dtypes,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        shape=shape,
         size=size,
     )

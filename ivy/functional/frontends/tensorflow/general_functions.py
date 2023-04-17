@@ -174,6 +174,21 @@ def shape_n(input, out_type=ivy.int32, name=None):
         return [ivy.array(ivy.shape(i), dtype="int64") for i in input]
 
 
+@to_ivy_arrays_and_back
+def size(input, out_type=ivy.int32, name=None):
+    out_type = to_ivy_dtype(out_type)
+    shape = ivy.shape(input, as_array=True)
+    return ivy.astype(ivy.prod(shape), out_type, copy=False)
+
+
+@to_ivy_arrays_and_back
+def ensure_shape(x, shape, name=None):
+    x = EagerTensor(x)
+    x.set_shape(shape)
+
+    return x
+
+
 @with_unsupported_dtypes({"2.10.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @handle_tf_dtype
 @to_ivy_arrays_and_back
@@ -399,7 +414,7 @@ def tile(input, multiples, name=None):
 
 @to_ivy_arrays_and_back
 def one_hot(
-    indices: ivy.array,
+    indices: ivy.Array,
     depth: int,
     on_value=None,
     off_value=None,
@@ -412,7 +427,7 @@ def one_hot(
 
 
 @to_ivy_arrays_and_back
-def where(condition: ivy.array, x=None, y=None, name=None):
+def where(condition: ivy.Array, x=None, y=None, name=None):
     if x is None and y is None:
         return ivy.argwhere(condition)
     else:
@@ -441,10 +456,23 @@ def repeat(
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @to_ivy_arrays_and_back
-def unstack(value: ivy.array, axis=0, num=None, name=None):
+def unstack(value: ivy.Array, axis=0, num=None, name=None):
     return ivy.unstack(value, axis=axis)
 
 
 @to_ivy_arrays_and_back
 def reverse(tensor, axis, name=None):
     return ivy.flip(tensor, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def norm(tensor, ord="euclidean", axis=None, keepdims=None, name=None):
+    return tf_frontend.linalg.norm(
+        tensor, ord=ord, axis=axis, keepdims=keepdims, name=name
+    )
+
+
+norm.supported_dtypes = (
+    "float32",
+    "float64",
+)
