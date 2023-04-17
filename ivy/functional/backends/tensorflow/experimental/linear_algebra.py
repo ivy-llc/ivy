@@ -198,8 +198,8 @@ def cond(
             "float16",
             "float32",
             "float64",
-            "int32",
-            "int64",
+            "complex64",
+            "complex128",
         )
     },
     backend_version,
