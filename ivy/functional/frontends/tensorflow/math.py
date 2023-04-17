@@ -235,6 +235,11 @@ def pow(x, y, name="pow"):
 
 
 @to_ivy_arrays_and_back
+def reciprocal(x, name="reciprocal"):
+    return ivy.reciprocal(x)
+
+
+@to_ivy_arrays_and_back
 def reciprocal_no_nan(x, name="reciprocal_no_nan"):
     return ivy.where(
         x == 0,
@@ -606,3 +611,14 @@ def xlogy(x, y, name=None):
 @to_ivy_arrays_and_back
 def cosh(x, name=None):
     return ivy.cosh(x)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {
+        "2.11.0 and below": ("float32", "float64"),
+    },
+    "tensorflow",
+)
+def zeta(x, q, name=None):
+    return ivy.zeta(x, q)
