@@ -177,6 +177,8 @@ class ImportTransformer(ast.NodeTransformer):
     def impersonate_import(self, tree: ast.Module, ivy_id=None):
         if self.include_ivy_import:
             if ivy_id is not None:
+                # ast.parse produces a tree with Module tree, using body[0]
+                # we can obtain the specific node that we require.
                 ivy_import_node = ast.parse("import ivy").body[0]
                 common_import_path = (
                     f"ivy.utils.backend.handler."
