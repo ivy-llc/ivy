@@ -473,7 +473,10 @@ def test_tensorflow_log_sigmoid(
 # log1p
 @handle_frontend_test(
     fn_tree="tensorflow.math.log1p",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        safety_factor_scale="log",
+    ),
     test_with_out=st.just(False),
 )
 def test_tensorflow_log1p(
@@ -494,7 +497,7 @@ def test_tensorflow_log1p(
         x=x[0],
     )
 
-  
+
 # reciprocal
 @handle_frontend_test(
     fn_tree="tensorflow.math.reciprocal",
