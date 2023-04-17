@@ -507,7 +507,7 @@ def conv_transpose(
     strides,
     padding,
     dims,
-    data_format="NWC",
+    data_format,
     name=None,
 ):
     return ivy.conv_general_transpose(
