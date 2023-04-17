@@ -1527,6 +1527,54 @@ def test_tensorflow_Reshape(  # NOQA
     )
 
 
+# Reverse
+@st.composite
+def reverse_helper(draw):
+    dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            min_num_dims=1,
+            max_num_dims=8,
+            ret_shape=True,
+        )
+    )
+    axis_dtype, axis = draw(
+        helpers.dtype_and_values(
+            available_dtypes=["bool"],
+            min_num_dims=1,
+            max_num_dims=1,
+            num_arrays=1,
+            shape=(len(shape),),
+        )
+    )
+    return dtype, x, axis_dtype, axis
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Reverse",
+    dtype_x_axis=reverse_helper(),
+)
+def test_tensorflow_Reverse(
+    *,
+    dtype_x_axis,
+    frontend,
+    fn_tree,
+    test_flags,
+    on_device,
+):
+
+    dtype, x, axis_dtype, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype + axis_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensor=x[0],
+        dims=axis[0],
+    )
+
+
 # ZerosLike
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.ZerosLike",
@@ -3750,4 +3798,36 @@ def test_tensorflow_LeakyReLU(
         on_device=on_device,
         features=x[0],
         alpha=alpha,
+    )
+
+
+# Zeta
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Zeta",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        max_num_dims=1,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Zeta(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        q=x[1],
     )
