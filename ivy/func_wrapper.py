@@ -686,7 +686,6 @@ def casting_modes_ops(fn):
 
         args = ivy.nested_map(args, mini_helper)
         kwargs = ivy.nested_map(kwargs, mini_helper)
-        print(args, kwargs)
         return fn(*args, **kwargs)
 
     return method
