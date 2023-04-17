@@ -184,19 +184,6 @@ def log_sigmoid(x, name=None):
     return -ivy.softplus(-x)
 
 
-@with_supported_dtypes(
-    {
-        "2.12.0 and below": (
-            "bfloat16",
-            "float16",
-            "float32",
-            "float64",
-            "complex64",
-            "complex128",
-        )
-    },
-    "tensorflow",
-)
 @to_ivy_arrays_and_back
 def log1p(x, name=None):
     return ivy.log1p(x)
