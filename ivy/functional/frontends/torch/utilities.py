@@ -1,5 +1,6 @@
 import ivy
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
+from ivy.func_wrapper import with_supported_dtypes
 
 
 @to_ivy_arrays_and_back
@@ -13,3 +14,9 @@ def _assert(condition, message):
         raise Exception(message)
     else:
         return True
+
+
+@with_supported_dtypes({"1.11.0 and above": ("int64",)}, "torch")
+@to_ivy_arrays_and_back
+def bincount(x, weights=None, minlength=0):
+    return ivy.bincount(x, weights=weights, minlength=minlength)

@@ -261,3 +261,35 @@ def test_numpy_ogrid(range, class_, method_name):
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_np = helpers.flatten_and_to_np(ret=ret_np)
     helpers.value_test(ret_np_flat=ret, ret_np_from_gt_flat=ret_np, rtol=1e-03)
+
+
+@handle_frontend_test(
+    fn_tree="numpy.geomspace",
+    dtype_start_stop=_get_dtype_and_range(),
+    num=helpers.ints(min_value=5, max_value=50),
+    endpoint=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_geomspace(
+    dtype_start_stop,
+    num,
+    endpoint,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, start, stop = dtype_start_stop
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-1,
+        start=start,
+        stop=stop,
+        num=num,
+        endpoint=endpoint,
+        dtype=input_dtypes[0],
+    )

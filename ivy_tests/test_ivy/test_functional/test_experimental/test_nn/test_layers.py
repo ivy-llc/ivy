@@ -92,12 +92,14 @@ def test_max_pool1d(
     fn_tree="functional.ivy.experimental.avg_pool1d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
     count_include_pad=st.booleans(),
+    ceil_mode=st.booleans(),
     test_gradients=st.just(False),
 )
 def test_avg_pool1d(
     *,
     x_k_s_p,
     count_include_pad,
+    ceil_mode,
     test_flags,
     backend_fw,
     on_device,
@@ -117,6 +119,7 @@ def test_avg_pool1d(
         strides=stride,
         padding=pad,
         count_include_pad=count_include_pad,
+        ceil_mode=ceil_mode,
     )
 
 
@@ -151,14 +154,17 @@ def test_max_pool3d(
 @handle_test(
     fn_tree="functional.ivy.experimental.avg_pool3d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=4),
+    count_include_pad=st.booleans(),
     test_gradients=st.just(False),
 )
 def test_avg_pool3d(
     *,
     x_k_s_p,
+    count_include_pad,
     test_flags,
     backend_fw,
     fn_name,
+    on_device,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
@@ -167,25 +173,32 @@ def test_avg_pool3d(
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-1,
         atol_=1e-1,
         x=x[0],
         kernel=kernel,
         strides=stride,
         padding=pad,
+        count_include_pad=count_include_pad,
     )
 
 
 @handle_test(
     fn_tree="functional.ivy.experimental.avg_pool2d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=4, max_dims=4, min_side=1, max_side=4),
+    count_include_pad=st.booleans(),
+    ceil_mode=st.booleans(),
     test_gradients=st.just(False),
 )
 def test_avg_pool2d(
     *,
     x_k_s_p,
+    count_include_pad,
+    ceil_mode,
     test_flags,
     backend_fw,
+    on_device,
     fn_name,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
@@ -194,6 +207,7 @@ def test_avg_pool2d(
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
+        on_device=on_device,
         fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
@@ -201,6 +215,8 @@ def test_avg_pool2d(
         kernel=kernel,
         strides=stride,
         padding=pad,
+        count_include_pad=count_include_pad,
+        ceil_mode=ceil_mode,
     )
 
 
