@@ -8,7 +8,7 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
     to_ivy_dtype,
 )
 
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 
 
 AddN = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add_n))
@@ -240,6 +240,15 @@ def Reciprocal(*, x, name=None):
 
 
 @to_ivy_arrays_and_back
+def Reverse(*, tensor, dims, name="Reverse"):
+    ret = tensor
+    for dim in enumerate(dims):
+        if dim[1]:
+            ret = ivy.flip(ret, axis=dim[0])
+    return ret
+
+
+@to_ivy_arrays_and_back
 def Invert(*, x, name="Invert"):
     return ivy.bitwise_invert(x)
 
@@ -418,9 +427,7 @@ ShapeN = to_ivy_arrays_and_back(
 )
 
 
-@to_ivy_arrays_and_back
-def Sin(*, x, name="Sin"):
-    return ivy.sin(x)
+Sin = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.sin))
 
 
 @to_ivy_arrays_and_back
@@ -781,3 +788,13 @@ LeakyRelu.supported_dtypes = {
 @to_ivy_arrays_and_back
 def Prod(*, input, axis, keep_dims=False, name="Prod"):
     return ivy.astype(ivy.prod(input, axis=axis, keepdims=keep_dims), input.dtype)
+
+
+Zeta = to_ivy_arrays_and_back(
+    with_supported_dtypes(
+        {
+            "2.11.0 and below": ("float32", "float64"),
+        },
+        "tensorflow",
+    )(map_raw_ops_alias(tf_frontend.math.zeta))
+)
