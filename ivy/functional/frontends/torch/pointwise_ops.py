@@ -513,3 +513,14 @@ def logit(input, eps=None, *, out=None):
     input = ivy.clip(input, lo, hi, out=out)
 
     return ivy.log(ivy.divide(input, ivy.subtract(1, input), out=out), out=out)
+
+
+@to_ivy_arrays_and_back
+def sgn(input, *, out=None):
+    if ivy.is_complex_dtype(input.dtype):
+        input_abs = ivy.abs(input, out=out)
+        return ivy.where(
+            input_abs == 0, 0, ivy.divide(input, input_abs, out=out), out=out
+        )
+    else:
+        return ivy.sign(input, out=out)

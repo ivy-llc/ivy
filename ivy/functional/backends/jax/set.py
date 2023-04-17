@@ -19,7 +19,11 @@ def unique_all(
     )
 
     values, indices, inverse_indices, counts = jnp.unique(
-        x, return_index=True, return_counts=True, return_inverse=True, axis=axis,
+        x,
+        return_index=True,
+        return_counts=True,
+        return_inverse=True,
+        axis=axis,
     )
 
     nan_count = jnp.sum(jnp.isnan(x)).item()
@@ -44,7 +48,10 @@ def unique_all(
         indices = jnp.concatenate((indices[:-1], nan_idx), axis=0).astype(indices.dtype)
 
     return Results(
-        values.astype(x.dtype), indices, inverse_indices, counts,
+        values.astype(x.dtype),
+        indices,
+        inverse_indices,
+        counts,
     )
 
 
