@@ -174,15 +174,15 @@ class ImportTransformer(ast.NodeTransformer):
         else:
             return _parse_relative_fromimport(node)
 
-    def impersonate_import(self, tree: ast.Module, ivy_id=None):
+    def impersonate_import(self, tree: ast.Module, local_ivy_id=None):
         if self.include_ivy_import:
-            if ivy_id is not None:
+            if local_ivy_id is not None:
                 # ast.parse produces a tree with Module tree, using body[0]
                 # we can obtain the specific node that we require.
                 ivy_import_node = ast.parse("import ivy").body[0]
                 common_import_path = (
                     f"ivy.utils.backend.handler."
-                    f"_compiled_backends_ids[{ivy_id}].utils._importlib"
+                    f"_compiled_backends_ids[{local_ivy_id}].utils._importlib"
                 )
                 abs_import_node = ast.parse(
                     f"{importlib_abs_import_fn} "
@@ -249,7 +249,7 @@ class IvyLoader(Loader):
     def __init__(self, filename):
         self.filename = filename
 
-    def exec_module(self, module, ivy_id=None):
+    def exec_module(self, module, local_ivy_id=None):
         if self.filename in _compiled_modules_cache:
             compiled_obj = _compiled_modules_cache[self.filename]
         else:
@@ -259,7 +259,7 @@ class IvyLoader(Loader):
             ast_tree = parse(data)
             transformer = ImportTransformer()
             transformer.visit(ast_tree)
-            transformer.impersonate_import(ast_tree, ivy_id)
+            transformer.impersonate_import(ast_tree, local_ivy_id)
             ast.fix_missing_locations(ast_tree)
             compiled_obj = compile(ast_tree, filename=self.filename, mode="exec")
             _compiled_modules_cache[self.filename] = compiled_obj
