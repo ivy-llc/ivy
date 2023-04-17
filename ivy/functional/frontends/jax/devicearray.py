@@ -55,7 +55,7 @@ class DeviceArray:
         keepdims=False,
     ):
         return jax_frontend.numpy.argmax(
-            self.ivy_array,
+            self,
             axis=axis,
             out=out,
             keepdims=keepdims,
@@ -135,7 +135,7 @@ class DeviceArray:
 
     def __rpow__(self, other):
         other = ivy.asarray(other)
-        return jax_frontend.lax.pow(other, self.ivy_array)
+        return jax_frontend.lax.pow(other, self)
 
     def __and__(self, other):
         return jax_frontend.numpy.bitwise_and(self, other)
