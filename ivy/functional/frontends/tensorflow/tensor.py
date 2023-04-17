@@ -19,9 +19,9 @@ class EagerTensor:
                 "ivy.array", "ivy.frontends.tensorflow.EagerTensor"
             )[:-1]
             + ", shape="
-            + str(self.ivy_array.shape)
+            + str(self.shape)
             + ", dtype="
-            + str(self.ivy_array.dtype)
+            + str(self.dtype)
             + ")"
         )
 
@@ -39,7 +39,7 @@ class EagerTensor:
     @property
     def dtype(self):
         return tf_frontend.DType(
-            tf_frontend.tensorflow_type_to_enum[self.ivy_array.dtype]
+            tf_frontend.tensorflow_type_to_enum[self.dtype]
         )
 
     @property
@@ -50,13 +50,13 @@ class EagerTensor:
     # ---------------- #
 
     def get_shape(self):
-        return tf_frontend.raw_ops.Shape(input=self.ivy_array)
+        return tf_frontend.raw_ops.Shape(input=self)
 
     def set_shape(self, shape):
         if shape is None:
             return
 
-        x_shape = self.ivy_array.shape
+        x_shape = self.shape
         if len(x_shape) != len(shape):
             raise ValueError(
                 f"Tensor's shape {x_shape} is not compatible with supplied shape "
@@ -76,9 +76,9 @@ class EagerTensor:
         return self.__radd__(y)
 
     def __div__(self, y, name="div"):
-        if "int" in self.ivy_array.dtype:
-            return tf_frontend.raw_ops.FloorDiv(x=self.ivy_array, y=y, name=name)
-        ret = tf_frontend.math.divide(self.ivy_array, y, name=name)
+        if "int" in self.dtype:
+            return tf_frontend.raw_ops.FloorDiv(x=self, y=y, name=name)
+        ret = tf_frontend.math.divide(self, y, name=name)
         return tf_frontend.cast(ret, self.dtype)
 
     def __and__(self, y, name="and"):
@@ -104,14 +104,14 @@ class EagerTensor:
 
     def __eq__(self, other):
         return tf_frontend.raw_ops.Equal(
-            x=self.ivy_array, y=other, incompatible_shape_error=False
+            x=self, y=other, incompatible_shape_error=False
         )
 
     def __floordiv__(self, y, name="floordiv"):
-        return tf_frontend.raw_ops.FloorDiv(x=self.ivy_array, y=y, name=name)
+        return tf_frontend.raw_ops.FloorDiv(x=self, y=y, name=name)
 
     def __ge__(self, y, name="ge"):
-        return tf_frontend.raw_ops.GreaterEqual(x=self.ivy_array, y=y, name=name)
+        return tf_frontend.raw_ops.GreaterEqual(x=self, y=y, name=name)
 
     def __getitem__(self, slice_spec, var=None, name="getitem"):
         ivy_args = ivy.nested_map([self, slice_spec], _to_ivy_array)
@@ -119,33 +119,33 @@ class EagerTensor:
         return EagerTensor(ret)
 
     def __gt__(self, y, name="gt"):
-        return tf_frontend.raw_ops.Greater(x=self.ivy_array, y=y, name=name)
+        return tf_frontend.raw_ops.Greater(x=self, y=y, name=name)
 
     def __invert__(self, name="invert"):
-        return tf_frontend.raw_ops.Invert(x=self.ivy_array, name=name)
+        return tf_frontend.raw_ops.Invert(x=self, name=name)
 
     def __le__(self, y, name="le"):
-        return tf_frontend.raw_ops.LessEqual(x=self.ivy_array, y=y, name=name)
+        return tf_frontend.raw_ops.LessEqual(x=self, y=y, name=name)
 
     def __lt__(self, y, name="lt"):
-        return tf_frontend.raw_ops.Less(x=self.ivy_array, y=y, name=name)
+        return tf_frontend.raw_ops.Less(x=self, y=y, name=name)
 
     def __matmul__(self, y, name="matmul"):
         return self.__rmatmul__(y)
 
     def __mul__(self, y, name="mul"):
-        return tf_frontend.math.multiply(self.ivy_array, y, name=name)
+        return tf_frontend.math.multiply(self, y, name=name)
 
     def __mod__(self, y, name="mod"):
-        return tf_frontend.floormod(self.ivy_array, y, name=name)
+        return tf_frontend.floormod(self, y, name=name)
 
     def __ne__(self, other):
         return tf_frontend.raw_ops.NotEqual(
-            x=self.ivy_array, y=other, incompatible_shape_error=False
+            x=self, y=other, incompatible_shape_error=False
         )
 
     def __neg__(self, name="neg"):
-        return tf_frontend.raw_ops.Neg(x=self.ivy_array, name=name)
+        return tf_frontend.raw_ops.Neg(x=self, name=name)
 
     __nonzero__ = __bool__
 
@@ -153,55 +153,55 @@ class EagerTensor:
         return self.__ror__(y)
 
     def __pow__(self, y, name="pow"):
-        return tf_frontend.math.pow(x=self.ivy_array, y=y, name=name)
+        return tf_frontend.math.pow(x=self, y=y, name=name)
 
     def __radd__(self, x, name="radd"):
-        return tf_frontend.math.add(self.ivy_array, x, name=name)
+        return tf_frontend.math.add(self, x, name=name)
 
     def __rand__(self, x, name="rand"):
-        return tf_frontend.math.logical_and(self.ivy_array, x, name=name)
+        return tf_frontend.math.logical_and(self, x, name=name)
 
     def __rfloordiv__(self, x, name="rfloordiv"):
         _, x = tf_frontend.check_tensorflow_casting(
-            self.ivy_array, x.ivy_array if hasattr(x, "ivy_array") else x
+            self, x.ivy_array if hasattr(x, "ivy_array") else x
         )
-        return tf_frontend.raw_ops.FloorDiv(x=x, y=self.ivy_array, name=name)
+        return tf_frontend.raw_ops.FloorDiv(x=x, y=self, name=name)
 
     def __rmatmul__(self, x, name="rmatmul"):
         _, x = tf_frontend.check_tensorflow_casting(
-            self.ivy_array, x.ivy_array if hasattr(x, "ivy_array") else x
+            self, x.ivy_array if hasattr(x, "ivy_array") else x
         )
-        return tf_frontend.raw_ops.MatMul(a=x, b=self.ivy_array, name=name)
+        return tf_frontend.raw_ops.MatMul(a=x, b=self, name=name)
 
     def __rmul__(self, x, name="rmul"):
-        return tf_frontend.raw_ops.Mul(x=self.ivy_array, y=x, name=name)
+        return tf_frontend.raw_ops.Mul(x=self, y=x, name=name)
 
     def __ror__(self, x, name="ror"):
-        return tf_frontend.raw_ops.LogicalOr(x=self.ivy_array, y=x, name=name)
+        return tf_frontend.raw_ops.LogicalOr(x=self, y=x, name=name)
 
     def __rpow__(self, x, name="rpow"):
         _, x = tf_frontend.check_tensorflow_casting(
-            self.ivy_array, x.ivy_array if hasattr(x, "ivy_array") else x
+            self, x.ivy_array if hasattr(x, "ivy_array") else x
         )
-        return tf_frontend.raw_ops.Pow(x=x, y=self.ivy_array, name=name)
+        return tf_frontend.raw_ops.Pow(x=x, y=self, name=name)
 
     def __rsub__(self, x, name="rsub"):
         _, x = tf_frontend.check_tensorflow_casting(
-            self.ivy_array, x.ivy_array if hasattr(x, "ivy_array") else x
+            self, x.ivy_array if hasattr(x, "ivy_array") else x
         )
-        return tf_frontend.math.subtract(x, self.ivy_array, name=name)
+        return tf_frontend.math.subtract(x, self, name=name)
 
     def __rtruediv__(self, x, name="rtruediv"):
         _, x = tf_frontend.check_tensorflow_casting(
-            self.ivy_array, x.ivy_array if hasattr(x, "ivy_array") else x
+            self, x.ivy_array if hasattr(x, "ivy_array") else x
         )
-        return tf_frontend.math.truediv(x, self.ivy_array, name=name)
+        return tf_frontend.math.truediv(x, self, name=name)
 
     def __rxor__(self, x, name="rxor"):
-        return tf_frontend.math.logical_xor(self.ivy_array, x, name=name)
+        return tf_frontend.math.logical_xor(self, x, name=name)
 
     def __sub__(self, y, name="sub"):
-        return tf_frontend.math.subtract(self.ivy_array, y, name=name)
+        return tf_frontend.math.subtract(self, y, name=name)
 
     def __truediv__(self, y, name="truediv"):
         dtype = ivy.dtype(self.ivy_array)
@@ -217,7 +217,7 @@ class EagerTensor:
                 tf_frontend.cast(y, ivy.float64),
                 name=name,
             )
-        return tf_frontend.math.truediv(self.ivy_array, y, name=name)
+        return tf_frontend.math.truediv(self, y, name=name)
 
     def __len__(self):
         return len(self.ivy_array)

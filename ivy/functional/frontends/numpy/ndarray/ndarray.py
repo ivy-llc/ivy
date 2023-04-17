@@ -46,7 +46,7 @@ class ndarray:
 
     @property
     def T(self):
-        return np_frontend.transpose(self.ivy_array)
+        return np_frontend.transpose(self)
 
     @property
     def shape(self):
@@ -54,7 +54,7 @@ class ndarray:
 
     @property
     def dtype(self):
-        return np_frontend.dtype(self.ivy_array.dtype)
+        return np_frontend.dtype(self.dtype)
 
     # Setters #
     # --------#
@@ -80,7 +80,7 @@ class ndarray:
             ret = np_frontend.array(self.ivy_array) if copy else self
 
         dtype = np_frontend.to_ivy_dtype(dtype)
-        if np_frontend.can_cast(ret.ivy_array, dtype, casting=casting):
+        if np_frontend.can_cast(ret, dtype, casting=casting):
             ret.ivy_array = ret.ivy_array.astype(dtype)
         else:
             raise ivy.utils.exceptions.IvyException(
@@ -102,7 +102,7 @@ class ndarray:
         keepdims=False,
     ):
         return np_frontend.argmax(
-            self.ivy_array,
+            self,
             axis=axis,
             out=out,
             keepdims=keepdims,
@@ -115,33 +115,33 @@ class ndarray:
             message="order must be one of 'C', 'F', or 'A'",
         )
         if (order == "A" and self._f_contiguous) or order == "F":
-            return np_frontend.reshape(self.ivy_array, newshape, order="F")
+            return np_frontend.reshape(self, newshape, order="F")
         else:
-            return np_frontend.reshape(self.ivy_array, newshape, order="C")
+            return np_frontend.reshape(self, newshape, order="C")
 
     def resize(self, newshape, /, *, refcheck=True):
-        return np_frontend.resize(self.ivy_array, newshape, refcheck)
+        return np_frontend.resize(self, newshape, refcheck)
 
     def transpose(self, axes, /):
         if axes and isinstance(axes[0], tuple):
             axes = axes[0]
-        return np_frontend.transpose(self.ivy_array, axes=axes)
+        return np_frontend.transpose(self, axes=axes)
 
     def swapaxes(self, axis1, axis2, /):
-        return np_frontend.swapaxes(self.ivy_array, axis1, axis2)
+        return np_frontend.swapaxes(self, axis1, axis2)
 
     def all(self, axis=None, out=None, keepdims=False, *, where=True):
-        return np_frontend.all(self.ivy_array, axis, out, keepdims, where=where)
+        return np_frontend.all(self, axis, out, keepdims, where=where)
 
     def any(self, axis=None, out=None, keepdims=False, *, where=True):
-        return np_frontend.any(self.ivy_array, axis, out, keepdims, where=where)
+        return np_frontend.any(self, axis, out, keepdims, where=where)
 
     def argsort(self, *, axis=-1, kind=None, order=None):
-        return np_frontend.argsort(self.ivy_array, axis=axis, kind=kind, order=order)
+        return np_frontend.argsort(self, axis=axis, kind=kind, order=order)
 
     def mean(self, *, axis=None, dtype=None, out=None, keepdims=False, where=True):
         return np_frontend.mean(
-            self.ivy_array,
+            self,
             axis=axis,
             dtype=dtype,
             out=out,
@@ -151,7 +151,7 @@ class ndarray:
 
     def min(self, *, axis=None, out=None, keepdims=False, initial=None, where=True):
         return np_frontend.amin(
-            self.ivy_array,
+            self,
             axis=axis,
             out=out,
             keepdims=keepdims,
@@ -161,7 +161,7 @@ class ndarray:
 
     def max(self, *, axis=None, out=None, keepdims=False, initial=None, where=True):
         return np_frontend.amax(
-            self.ivy_array,
+            self,
             axis=axis,
             out=out,
             keepdims=keepdims,
@@ -179,7 +179,7 @@ class ndarray:
     ):
 
         return np_frontend.argmin(
-            self.ivy_array,
+            self,
             axis=axis,
             keepdims=keepdims,
             out=out,
@@ -199,7 +199,7 @@ class ndarray:
         subok=True,
     ):
         return np_frontend.clip(
-            self.ivy_array,
+            self,
             min,
             max,
             out=out,
@@ -212,7 +212,7 @@ class ndarray:
 
     def cumprod(self, *, axis=None, dtype=None, out=None):
         return np_frontend.cumprod(
-            self.ivy_array,
+            self,
             axis=axis,
             dtype=dtype,
             out=out,
@@ -220,7 +220,7 @@ class ndarray:
 
     def cumsum(self, *, axis=None, dtype=None, out=None):
         return np_frontend.cumsum(
-            self.ivy_array,
+            self,
             axis=axis,
             dtype=dtype,
             out=out,
@@ -228,22 +228,22 @@ class ndarray:
 
     def diagonal(self, *, offset=0, axis1=0, axis2=1):
         return np_frontend.diagonal(
-            self.ivyArray,
+            self,
             offset=offset,
             axis1=axis1,
             axis2=axis2,
         )
 
     def sort(self, *, axis=-1, kind=None, order=None):
-        return np_frontend.sort(self.ivy_array, axis=axis, kind=kind, order=order)
+        return np_frontend.sort(self, axis=axis, kind=kind, order=order)
 
     def copy(self, order="C"):
-        return np_frontend.copy(self.ivy_array, order=order)
+        return np_frontend.copy(self, order=order)
 
     def nonzero(
         self,
     ):
-        return np_frontend.nonzero(self.ivy_array)[0]
+        return np_frontend.nonzero(self)[0]
 
     def ravel(self, order="C"):
         ivy.utils.assertions.check_elem_in_list(
@@ -252,9 +252,9 @@ class ndarray:
             message="order must be one of 'C', 'F', 'A', or 'K'",
         )
         if (order in ["K", "A"] and self._f_contiguous) or order == "F":
-            return np_frontend.ravel(self.ivy_array, order="F")
+            return np_frontend.ravel(self, order="F")
         else:
-            return np_frontend.ravel(self.ivy_array, order="C")
+            return np_frontend.ravel(self, order="C")
 
     def flatten(self, order="C"):
         ivy.utils.assertions.check_elem_in_list(
@@ -263,27 +263,27 @@ class ndarray:
             message="order must be one of 'C', 'F', 'A', or 'K'",
         )
         if (order in ["K", "A"] and self._f_contiguous) or order == "F":
-            return np_frontend.ravel(self.ivy_array, order="F")
+            return np_frontend.ravel(self, order="F")
         else:
-            return np_frontend.ravel(self.ivy_array, order="C")
+            return np_frontend.ravel(self, order="C")
 
     def fill(self, num):
-        return np_frontend.fill(self.ivy_array, num)
+        return np_frontend.fill(self, num)
 
     def repeat(self, repeats, axis=None):
-        return np_frontend.repeat(self.ivy_array, repeats, axis=axis)
+        return np_frontend.repeat(self, repeats, axis=axis)
 
     def searchsorted(self, v, side="left", sorter=None):
-        return np_frontend.searchsorted(self.ivy_array, v, side=side, sorter=sorter)
+        return np_frontend.searchsorted(self, v, side=side, sorter=sorter)
 
     def squeeze(self, axis=None):
-        return np_frontend.squeeze(self.ivy_array, axis=axis)
+        return np_frontend.squeeze(self, axis=axis)
 
     def std(
         self, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=True
     ):
         return np_frontend.std(
-            self.ivy_array,
+            self,
             axis=axis,
             dtype=dtype,
             out=out,
@@ -293,7 +293,7 @@ class ndarray:
         )
 
     def tobytes(self, order="C") -> bytes:
-        return np_frontend.tobytes(self.data, order=order)
+        return np_frontend.tobytes(self, order=order)
 
     def prod(
         self,
@@ -306,7 +306,7 @@ class ndarray:
         where=True,
     ):
         return np_frontend.prod(
-            self.ivy_array,
+            self,
             axis=axis,
             dtype=dtype,
             keepdims=keepdims,
@@ -316,61 +316,61 @@ class ndarray:
         )
 
     def view(self):
-        return np_frontend.reshape(self.ivy_array, tuple(self.shape))
+        return np_frontend.reshape(self, tuple(self.shape))
 
     def __add__(self, value, /):
-        return np_frontend.add(self.ivy_array, value)
+        return np_frontend.add(self, value)
 
     def __radd__(self, value, /):
-        return np_frontend.add(self.ivy_array, value)
+        return np_frontend.add(self, value)
 
     def __sub__(self, value, /):
-        return np_frontend.subtract(self.ivy_array, value)
+        return np_frontend.subtract(self, value)
 
     def __mul__(self, value, /):
-        return np_frontend.multiply(self.ivy_array, value)
+        return np_frontend.multiply(self, value)
 
     def __rmul__(self, value, /):
-        return np_frontend.multiply(value, self.ivy_array)
+        return np_frontend.multiply(value, self)
 
     def __truediv__(self, value, /):
-        return np_frontend.true_divide(self.ivy_array, value)
+        return np_frontend.true_divide(self, value)
 
     def __floordiv__(self, value, /):
-        return np_frontend.floor_divide(self.ivy_array, value)
+        return np_frontend.floor_divide(self, value)
 
     def __rtruediv__(self, value, /):
-        return np_frontend.true_divide(value, self.ivy_array)
+        return np_frontend.true_divide(value, self)
 
     def __pow__(self, value, /):
-        return np_frontend.power(self.ivy_array, value)
+        return np_frontend.power(self, value)
 
     def __and__(self, value, /):
-        return np_frontend.logical_and(self.ivy_array, value)
+        return np_frontend.logical_and(self, value)
 
     def __or__(self, value, /):
-        return np_frontend.logical_or(self.ivy_array, value)
+        return np_frontend.logical_or(self, value)
 
     def __xor__(self, value, /):
-        return np_frontend.logical_xor(self.ivy_array, value)
+        return np_frontend.logical_xor(self, value)
 
     def __matmul__(self, value, /):
-        return np_frontend.matmul(self.ivy_array, value)
+        return np_frontend.matmul(self, value)
 
     def __copy__(
         self,
     ):
-        return np_frontend.copy(self.ivy_array)
+        return np_frontend.copy(self)
 
     def __neg__(
         self,
     ):
-        return np_frontend.negative(self.ivy_array)
+        return np_frontend.negative(self)
 
     def __pos__(
         self,
     ):
-        return np_frontend.positive(self.ivy_array)
+        return np_frontend.positive(self)
 
     def __bool__(
         self,
@@ -389,25 +389,25 @@ class ndarray:
         return temp != 0
 
     def __ne__(self, value, /):
-        return np_frontend.not_equal(self.ivy_array, value)
+        return np_frontend.not_equal(self, value)
 
     def __len__(self):
         return len(self.ivy_array)
 
     def __eq__(self, value, /):
-        return ivy.array(np_frontend.equal(self.ivy_array, value), dtype=ivy.bool)
+        return ivy.array(np_frontend.equal(self, value), dtype=ivy.bool)
 
     def __ge__(self, value, /):
-        return np_frontend.greater_equal(self.ivy_array, value)
+        return np_frontend.greater_equal(self, value)
 
     def __gt__(self, value, /):
-        return np_frontend.greater(self.ivy_array, value)
+        return np_frontend.greater(self, value)
 
     def __le__(self, value, /):
-        return np_frontend.less_equal(self.ivy_array, value)
+        return np_frontend.less_equal(self, value)
 
     def __lt__(self, value, /):
-        return np_frontend.less(self.ivy_array, value)
+        return np_frontend.less(self, value)
 
     def __int__(
         self,
@@ -423,37 +423,37 @@ class ndarray:
         return key in ivy.reshape(self.ivy_array, -1)
 
     def __iadd__(self, value, /):
-        return np_frontend.add(self.ivy_array, value, out=self)
+        return np_frontend.add(self, value, out=self)
 
     def __isub__(self, value, /):
-        return np_frontend.subtract(self.ivy_array, value, out=self)
+        return np_frontend.subtract(self, value, out=self)
 
     def __imul__(self, value, /):
-        return np_frontend.multiply(self.ivy_array, value, out=self)
+        return np_frontend.multiply(self, value, out=self)
 
     def __itruediv__(self, value, /):
-        return np_frontend.true_divide(self.ivy_array, value, out=self)
+        return np_frontend.true_divide(self, value, out=self)
 
     def __ifloordiv__(self, value, /):
-        return np_frontend.floor_divide(self.ivy_array, value, out=self)
+        return np_frontend.floor_divide(self, value, out=self)
 
     def __ipow__(self, value, /):
-        return np_frontend.power(self.ivy_array, value, out=self)
+        return np_frontend.power(self, value, out=self)
 
     def __iand__(self, value, /):
-        return np_frontend.logical_and(self.ivy_array, value, out=self)
+        return np_frontend.logical_and(self, value, out=self)
 
     def __ior__(self, value, /):
-        return np_frontend.logical_or(self.ivy_array, value, out=self)
+        return np_frontend.logical_or(self, value, out=self)
 
     def __ixor__(self, value, /):
-        return np_frontend.logical_xor(self.ivy_array, value, out=self)
+        return np_frontend.logical_xor(self, value, out=self)
 
     def __imod__(self, value, /):
-        return np_frontend.mod(self.ivy_array, value, out=self)
+        return np_frontend.mod(self, value, out=self)
 
     def __abs__(self):
-        return np_frontend.absolute(self.ivy_array)
+        return np_frontend.absolute(self)
 
     def __array__(self, dtype=None, /):
         if not dtype:
@@ -470,4 +470,4 @@ class ndarray:
         self.ivy_array[key] = value
 
     def __mod__(self, value, /):
-        return np_frontend.mod(self.ivy_array, value, out=self)
+        return np_frontend.mod(self, value, out=self)
