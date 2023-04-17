@@ -10,6 +10,14 @@ from typing import Callable
 import inspect
 
 
+# for casting modes, order is the hierarchy
+casting_modes_dict = {
+    "uint": ["uint8", "uint16", "uint32", "uint64"],
+    "int": ["int8", "int16", "int32", "int64"],
+    "float": ["bfloat16", "float16", "float32", "float64"],
+    "complex": ["complex64", "complex128"],
+}
+
 # for wrapping (sequence matters)
 FN_DECORATORS = [
     "infer_device",
@@ -34,6 +42,166 @@ FN_DECORATORS = [
 
 # Helpers #
 # --------#
+
+
+def caster(dtype, intersect):
+    if not isinstance(dtype, str):
+        dtype = getattr(dtype, "dtype")
+    dtype = ivy.as_ivy_dtype(dtype)
+    if str(dtype) in intersect:
+        # based on upcasting or downcasting do something
+        if ivy.cast_data_types():
+            # all casting types is enabled
+            # check cross_casting
+            dtype = cross_caster(intersect)
+            if dtype:
+                return dtype
+            # check upcasting
+            dtype = upcaster(dtype)
+            if dtype:
+                return dtype
+            # check downcasting
+            dtype = downcaster(dtype)
+            if dtype:
+                return dtype
+        elif ivy.crosscast_dtypes:
+            # check cross_casting
+            dtype = cross_caster(intersect)
+            if dtype:
+                return dtype
+        elif ivy.upcast_dtypes:
+            # check upcasting
+            dtype = upcaster(dtype, intersect)
+            if dtype:
+                return dtype
+        elif ivy.downcast_dtypes:
+            # check downcasting
+            dtype = downcaster(dtype, intersect)
+            if dtype:
+                return dtype
+
+
+def upcaster(dtype, intersect):
+    # upcasting is enabled, we upcast to the highest
+    if "uint" in str(dtype):
+        index = casting_modes_dict["uint"].index(dtype) + 1
+        result = ""
+        while index < len(casting_modes_dict["uint"]):
+            if (
+                casting_modes_dict["uint"][index] in ivy.valid_dtypes
+                and casting_modes_dict["uint"][index] not in intersect
+            ):
+                result = casting_modes_dict["uint"][index]
+                break
+            index += 1
+        return result
+
+    if "int" in dtype:
+        index = casting_modes_dict["int"].index(dtype) + 1
+        result = ""
+        while index < len(casting_modes_dict["int"]):
+            if (
+                casting_modes_dict["int"][index] in ivy.valid_dtypes
+                and casting_modes_dict["int"][index] not in intersect
+            ):
+                result = casting_modes_dict["int"][index]
+                break
+            index += 1
+        return result
+
+    if "float" in dtype:
+        index = casting_modes_dict["float"].index(dtype) + 1
+        result = ""
+        while index < len(casting_modes_dict["float"]):
+            if (
+                casting_modes_dict["float"][index] in ivy.valid_dtypes
+                and casting_modes_dict["float"][index] not in intersect
+            ):
+                result = casting_modes_dict["float"][index]
+                break
+            index += 1
+        return result
+
+    if "complex" in dtype:
+        index = casting_modes_dict["complex"].index(dtype) + 1
+        result = ""
+        while index < len(casting_modes_dict["complex"]):
+            if (
+                casting_modes_dict["complex"][index] in ivy.valid_dtypes
+                and casting_modes_dict["complex"][index] not in intersect
+            ):
+                result = casting_modes_dict["complex"][index]
+                break
+            index += 1
+        return result
+
+
+def downcaster(dtype, intersect):
+    # downcasting is enabled, we upcast to the highest
+    if "uint" in str(dtype):
+        index = casting_modes_dict["uint"].index(dtype) - 1
+        result = ""
+        while index >= 0:
+            if (
+                casting_modes_dict["int"][index] in ivy.valid_dtypes
+                and casting_modes_dict["int"][index] not in intersect
+            ):
+                result = casting_modes_dict["uint"][index]
+                break
+            index -= 1
+        return result
+
+    if "int" in dtype:
+        index = casting_modes_dict["int"].index(dtype) - 1
+        result = ""
+        while index >= 0:
+            if (
+                casting_modes_dict["int"][index] in ivy.valid_dtypes
+                and casting_modes_dict["int"][index] not in intersect
+            ):
+                result = casting_modes_dict["int"][index]
+                break
+            index -= 1
+        return result
+
+    if "float" in dtype:
+        index = casting_modes_dict["float"].index(dtype) - 1
+        result = ""
+        while index >= 0:
+            if (
+                casting_modes_dict["float"][index] in ivy.valid_dtypes
+                and casting_modes_dict["float"][index] not in intersect
+            ):
+                result = casting_modes_dict["float"][index]
+                break
+            index -= 1
+        return result
+
+    if "complex" in dtype:
+        index = casting_modes_dict["complex"].index(dtype) - 1
+        result = ""
+        while index >= 0:
+            if (
+                casting_modes_dict["complex"][index] in ivy.valid_dtypes
+                and casting_modes_dict["complex"][index] not in intersect
+            ):
+                result = casting_modes_dict["complex"][index]
+                break
+            index -= 1
+        return result
+
+
+def cross_caster(intersect):
+    # check if this is a integer unsupported case
+    dtype = ""
+    if intersect == ivy.valid_int_dtypes:
+        # make dtype equal to default float
+        dtype = ivy.default_float_dtype()
+    elif intersect == ivy.valid_float_dtypes:
+        # make dtype equal to default int
+        dtype = ivy.default_int_dtype()
+
+    return str(dtype)
 
 
 def try_array_function_override(func, overloaded_args, types, args, kwargs):
@@ -491,6 +659,38 @@ def infer_dtype(fn: Callable) -> Callable:
     return new_fn
 
 
+def casting_modes_ops(fn):
+    @functools.wraps(fn)
+    def method(*args, **kwargs):
+        # we first check if it has unsupported/supported dtypes uniquely added to it
+        intersect = set(ivy.function_unsupported_dtypes(fn)).difference(
+            set(ivy.invalid_dtypes)
+        )
+        if not intersect:
+            # doesn't have unsupported dtypes specified
+            return fn(*args, **kwargs)
+
+        if "dtype" in kwargs:
+
+            dtype = caster(kwargs["dtype"], intersect)
+            if dtype:
+                kwargs["dtype"] = ivy.as_native_dtype(dtype)
+
+        def mini_helper(x):
+            if not hasattr(x, "dtype"):
+                return x
+            dtype = caster(x, intersect)
+            if dtype:
+                x = ivy.to_native(ivy.astype(x, ivy.as_native_dtype(dtype)))
+            return x
+
+        args = ivy.nested_map(args, mini_helper)
+        kwargs = ivy.nested_map(kwargs, mini_helper)
+        return fn(*args, **kwargs)
+
+    return method
+
+
 def integer_arrays_to_float(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
@@ -920,7 +1120,7 @@ def _dtype_device_wrapper_creator(attrib, t):
                 setattr(func, attrib, val)
                 setattr(func, "dictionary_info", version_dict)
 
-            return func
+            return casting_modes_ops(func)
 
         return _wrapped
 

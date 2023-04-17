@@ -3,6 +3,7 @@
 # local
 import ivy
 import ivy.functional.frontends.numpy as np_frontend
+from ivy.functional.frontends.numpy.func_wrapper import _to_ivy_array
 
 
 class ndarray:
@@ -460,16 +461,12 @@ class ndarray:
         return np_frontend.array(self, dtype=dtype)
 
     def __getitem__(self, key, /):
-        ret = ivy.get_item(self._ivy_array, key)
+        ivy_args = ivy.nested_map([self, key], _to_ivy_array)
+        ret = ivy.get_item(*ivy_args)
         return np_frontend.ndarray(ret, _init_overload=True)
 
     def __setitem__(self, key, value):
-        if hasattr(value, "ivy_array"):
-            value = (
-                ivy.to_scalar(value.ivy_array)
-                if value.shape == ()
-                else ivy.to_list(value)
-            )
+        key, value = ivy.nested_map([key, value], _to_ivy_array)
         self._ivy_array[key] = value
 
     def __mod__(self, value, /):
