@@ -29,7 +29,9 @@ def current_backend_str() -> str:
 
 
 @_scalar_output_to_0d_array
-def get_item(x: np.ndarray, /, query: np.ndarray) -> np.ndarray:
+def get_item(x: np.ndarray, /, query: np.ndarray, *, copy: bool = None) -> np.ndarray:
+    if copy:
+        return x.__getitem__(query).copy()
     return x.__getitem__(query)
 
 
@@ -465,3 +467,7 @@ def isin(
 
 
 isin.support_native_out = True
+
+
+def itemsize(x: np.ndarray) -> int:
+    return x.itemsize

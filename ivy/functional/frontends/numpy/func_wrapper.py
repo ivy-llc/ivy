@@ -361,7 +361,7 @@ def outputs_to_numpy_arrays(fn: Callable) -> Callable:
         # ToDo: Remove this default dtype setting
         #  once frontend specific backend setting is added
         set_default_dtype = False
-        if not ("dtype" in kwargs and ivy.exists(kwargs["dtype"])) and all(
+        if not ("dtype" in kwargs and ivy.exists(kwargs["dtype"])) and any(
             [not (ivy.is_array(i) or hasattr(i, "ivy_array")) for i in args]
         ):
             ivy.set_default_int_dtype(
@@ -490,11 +490,11 @@ def handle_numpy_out(fn: Callable) -> Callable:
             out = args[out_pos]
             args = args[:-1]
         if ivy.exists(out):
-            if not isinstance(out, ndarray):
+            if not ivy.nested_any(out, lambda x: isinstance(x, ndarray)):
                 raise ivy.utils.exceptions.IvyException(
                     "Out argument must be an ivy.frontends.numpy.ndarray object"
                 )
-            return fn(*args, out=out.ivy_array, **kwargs)
+            return fn(*args, out=out, **kwargs)
         return fn(*args, **kwargs)
 
     out_pos = list(inspect.signature(fn).parameters).index("out")

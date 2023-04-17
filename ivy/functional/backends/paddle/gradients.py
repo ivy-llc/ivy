@@ -19,6 +19,9 @@ from ivy.func_wrapper import (
     outputs_to_ivy_arrays,
     inputs_to_native_arrays,
 )
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from . import backend_version
+
 
 
 def variable(x, /):
@@ -85,7 +88,7 @@ def _grad_func(y, xs, retain_grads):
             grads = ivy.nested_map(
                 grads, lambda x: 0 if x is None else x, include_derived=True
             )
-            grads += grads_
+            grads = ivy.add(grads, grads_)
         else:
             grads = grads_ if grads is None else grads
     else:
@@ -108,6 +111,9 @@ def _grad_func(y, xs, retain_grads):
     return grads
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "float16")}}, backend_version
+)
 def execute_with_gradients(
     func, xs, /, *, retain_grads=False, xs_grad_idxs=None, ret_grad_idxs=None
 ):
