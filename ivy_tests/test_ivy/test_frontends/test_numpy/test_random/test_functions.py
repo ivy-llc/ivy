@@ -384,3 +384,39 @@ def test_numpy_standard_gamma(
         shape=shape,
         size=size,
     )
+
+
+# chisquare
+@handle_frontend_test(
+    fn_tree="numpy.random.chisquare",
+    dtypes=helpers.get_dtypes("float", full=False),
+    df=st.floats(
+        min_value=0,
+        exclude_min=True,
+        allow_nan=False,
+        allow_infinity=False,
+        allow_subnormal=False,
+        width=32,
+    ),
+    size=helpers.get_shape(allow_none=True),
+    test_with_out=st.just(False),
+)
+def test_numpy_chisquare(
+    dtypes,
+    df,
+    size,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        df=df,
+        size=size,
+    )
