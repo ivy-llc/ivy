@@ -332,7 +332,7 @@ def test_torch_randn_like(dtype_and_x, dtype, *, frontend, fn_tree, test_flags):
 
 @handle_frontend_test(
     fn_tree="torch.randint_like",
-    dtype=helpers.get_dtypes("integer"),
+    dtype=helpers.get_dtypes("integer", full=False),
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         min_num_dims=1,
@@ -343,7 +343,16 @@ def test_torch_randn_like(dtype_and_x, dtype, *, frontend, fn_tree, test_flags):
     low=helpers.ints(min_value=0, max_value=10),
     high=helpers.ints(min_value=11, max_value=20),
 )
-def test_torch_randint_like(dtype_and_x, low, high, dtype, *, frontend, fn_tree, test_flags):
+def test_torch_randint_like(
+        dtype_and_x,
+        dtype,
+        low,
+        high,
+        *,
+        frontend,
+        fn_tree,
+        test_flags
+):
     input_dtype, input = dtype_and_x
 
     def call():
