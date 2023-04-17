@@ -277,8 +277,14 @@ def Log(*, x, name="Log"):
     return ivy.log(x)
 
 
-Log1p = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.log1p))
-
+Log1p = to_ivy_arrays_and_back(
+    with_unsupported_dtypes(
+        {
+            "2.11.0 and below": ("half"),
+        },
+        "tensorflow",
+    )(map_raw_ops_alias(tf_frontend.math.log1p))
+)
 
 LogicalOr = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.logical_or))
 
