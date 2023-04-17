@@ -118,13 +118,12 @@ class Module(ModuleConverters, ModuleHelpers):
         self._dtype = dtype
         self._args = args
         self._kwargs = kwargs
-        if build_mode != "on_init":
-            return
-        self.build(*args, dynamic_backend=dynamic_backend, **kwargs)
-
         self._module_graph = None
         self._target = None
         self._lazy_compiled = False
+        if build_mode != "on_init":
+            return
+        self.build(*args, dynamic_backend=dynamic_backend, **kwargs)
 
     # Private #
     # --------#
@@ -149,7 +148,7 @@ class Module(ModuleConverters, ModuleHelpers):
 
     def _find_variables(self, /, *, obj=None, _visited=None):
         """
-        Find all interval variables in obj. Return empty Container if obj is None.
+        Find all internal variables in obj. Return empty Container if obj is None.
 
         Parameters
         ----------

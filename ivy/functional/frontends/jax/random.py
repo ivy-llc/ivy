@@ -45,3 +45,20 @@ def _get_seed(key):
 def beta(key, a, b, shape=None, dtype=None):
     seed = _get_seed(key)
     return ivy.beta(a, b, shape=shape, dtype=dtype, seed=seed)
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "0.3.14 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "jax",
+)
+def dirichlet(key, alpha, shape=None, dtype="float32"):
+    seed = _get_seed(key)
+    alpha = ivy.astype(alpha, dtype)
+    return ivy.dirichlet(alpha, size=shape, dtype=dtype, seed=seed)

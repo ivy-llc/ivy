@@ -2,8 +2,12 @@
 	"name": "Ivy GPU Development Environment (build)",
 
 	"build": {
-		"dockerfile": "../../docker/DockerfileGPU",
-		"context": "../.."
+		"dockerfile": "../../docker/DockerfileGPUMultiCuda",
+		"context": "../..",
+		"args": {
+            "IMAGE_NAME": "unifyai/multicuda",
+            "IMAGE_TAG": "base_and_requirements"
+        }
 	},
 
 	"runArgs": ["--gpus","all"],
