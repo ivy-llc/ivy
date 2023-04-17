@@ -221,7 +221,9 @@ def log2(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
     return torch.log2(x, out=out)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, backend_version)
+@with_unsupported_dtypes(
+    {"1.11.0 and below": ("float16", "complex", "half")}, backend_version
+)
 def log1p(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     return torch.log1p(x, out=out)
