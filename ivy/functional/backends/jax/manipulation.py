@@ -42,6 +42,7 @@ def expand_dims(
     x: JaxArray,
     /,
     *,
+    copy: Optional[bool] = None,
     axis: Union[int, Sequence[int]] = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
@@ -56,6 +57,7 @@ def flip(
     x: JaxArray,
     /,
     *,
+    copy: Optional[bool] = None,
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
@@ -63,7 +65,12 @@ def flip(
 
 
 def permute_dims(
-    x: JaxArray, /, axes: Tuple[int, ...], *, out: Optional[JaxArray] = None
+    x: JaxArray,
+    /,
+    axes: Tuple[int, ...],
+    *,
+    copy: Optional[bool] = None,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.transpose(x, axes)
 
@@ -108,6 +115,7 @@ def squeeze(
     /,
     axis: Union[int, Sequence[int]],
     *,
+    copy: Optional[bool] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if x.shape == ():
@@ -139,6 +147,7 @@ def split(
     x: JaxArray,
     /,
     *,
+    copy: Optional[bool] = None,
     num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
     axis: int = 0,
     with_remainder: bool = False,
@@ -238,7 +247,14 @@ def constant_pad(
     return jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
 
 
-def unstack(x: JaxArray, /, *, axis: int = 0, keepdims: bool = False) -> List[JaxArray]:
+def unstack(
+    x: JaxArray,
+    /,
+    *,
+    copy: Optional[bool] = None,
+    axis: int = 0,
+    keepdims: bool = False,
+) -> List[JaxArray]:
     if x.shape == ():
         return [x]
     dim_size = x.shape[axis]
@@ -256,6 +272,12 @@ def zero_pad(
 
 
 def swapaxes(
-    x: JaxArray, axis0: int, axis1: int, /, *, out: Optional[JaxArray] = None
+    x: JaxArray,
+    axis0: int,
+    axis1: int,
+    /,
+    *,
+    copy: Optional[bool] = None,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.swapaxes(x, axis0, axis1)

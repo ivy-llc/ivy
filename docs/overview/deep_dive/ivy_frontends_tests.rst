@@ -1,18 +1,18 @@
 Ivy Frontend Tests
 ==================
 
-.. _`here`: https://lets-unify.ai/ivy/design/ivy_as_a_transpiler.html
+.. _`here`: https://lets-unify.ai/docs/ivy/design/ivy_as_a_transpiler.html
 .. _`ivy frontends tests channel`: https://discord.com/channels/799879767196958751/1028267758028337193
 .. _`ivy frontends tests forum`: https://discord.com/channels/799879767196958751/1028297887605587998
 .. _`test ivy`: https://github.com/unifyai/ivy/tree/db9a22d96efd3820fb289e9997eb41dda6570868/ivy_tests/test_ivy
 .. _`test_frontend_function`: https://github.com/unifyai/ivy/blob/591ac37a664ebdf2ca50a5b0751a3a54ee9d5934/ivy_tests/test_ivy/helpers.py#L1047
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`Function Wrapping`: https://lets-unify.ai/ivy/deep_dive/3_function_wrapping.html
-.. _`open task`: https://lets-unify.ai/ivy/contributing/open_tasks.html#open-tasks
-.. _`Ivy Tests`: https://lets-unify.ai/ivy/deep_dive/ivy_tests.html
+.. _`Function Wrapping`: https://lets-unify.ai/docs/ivy/deep_dive/3_function_wrapping.html
+.. _`open task`: https://lets-unify.ai/docs/ivy/contributing/open_tasks.html#open-tasks
+.. _`Ivy Tests`: https://lets-unify.ai/docs/ivy/deep_dive/ivy_tests.html
 .. _`Function Testing Helpers`: https://github.com/unifyai/ivy/blob/bf0becd459004ae6cffeb3c38c02c94eab5b7721/ivy_tests/test_ivy/helpers/function_testing.py
-.. _`CI Pipeline`: https://lets-unify.ai/ivy/deep_dive/continuous_integration.html#ci-pipeline
-.. _`setting up`: https://lets-unify.ai/ivy/contributing/setting_up.html#setting-up-testing
+.. _`CI Pipeline`: https://lets-unify.ai/docs/ivy/deep_dive/continuous_integration.html#ci-pipeline
+.. _`setting up`: https://lets-unify.ai/docs/ivy/contributing/setting_up.html#setting-up-testing
 
 
 Introduction
@@ -398,7 +398,7 @@ This function requires us to create extra functions for generating :code:`shape`
 
 * We use :func:`helpers.get_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically for this function.
 * Tensorflow's version of :func:`full` is named :func:`Fill` therefore we specify the :code:`fn_tree` argument to be :code:`"Fill"`
-* When running the test there where some small discrepancies between the values so we can use :code:`rtol` to specify the relative tolerance. We specify the `out` flag explicitely.
+* When running the test there were some small discrepancies between the values so we can use :code:`rtol` to specify the relative tolerance. We specify the `out` flag explicitely.
 
 
 **PyTorch**

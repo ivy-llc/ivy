@@ -41,16 +41,12 @@ def random_uniform(
     high = paddle.cast(high, "float32") if isinstance(high, paddle.Tensor) else high
     shape = _check_bounds_and_get_shape(low, high, shape)
     # Set range and seed
-    range = high - low
+    rng = high - low
     if seed:
         _ = paddle.seed(seed)
-    _retval = to_device(
-        paddle.cast(
-            paddle.uniform(shape or [1], min=0.0, max=1.0) * range + low, dtype
-        ),
-        device,
-    )
-    return _retval if shape else _retval.squeeze(axis=0)
+    random_base = paddle.uniform(shape, min=0.0, max=1.0)
+    with ivy.ArrayMode(False):
+        return ivy.add(ivy.multiply(random_base, rng), low).cast(dtype)
 
 
 def random_normal(
@@ -154,7 +150,5 @@ def shuffle(
             shuffled_real = paddle.index_select(x.real(), indices)
             shuffled_imag = paddle.index_select(x.imag(), indices)
             return shuffled_real + 1j * shuffled_imag
-        return paddle.index_select(x.cast(ivy.default_float_dtype()), indices).cast(
-            x.dtype
-        )
+        return paddle.index_select(x.cast("float32"), indices).cast(x.dtype)
     return paddle.index_select(x, indices)

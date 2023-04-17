@@ -11,6 +11,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     integer_arrays_to_float,
     handle_array_like_without_promotion,
+    inputs_to_ivy_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -4235,6 +4236,7 @@ def round(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    decimals: Optional[int] = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Rounds each element ``x_i`` of the input array ``x`` to the nearest
@@ -4258,6 +4260,8 @@ def round(
     ----------
     x
         input array containing elements to round.
+    decimals
+        number of decimal places to round to. Default is ``0``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -4318,7 +4322,7 @@ def round(
         b:ivy.array([-301.,-527.,4.])
     }
     """
-    return ivy.current_backend(x).round(x, out=out)
+    return ivy.current_backend(x).round(x, decimals=decimals, out=out)
 
 
 @handle_array_function
@@ -5446,6 +5450,7 @@ def rad2deg(
     return ivy.current_backend(x).rad2deg(x, out=out)
 
 
+@inputs_to_ivy_arrays
 @handle_array_function
 @handle_out_argument
 @handle_nestable
@@ -5555,3 +5560,44 @@ def isreal(
     }
     """
     return ivy.current_backend(x).isreal(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def fmod(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """Computes the element-wise remainder of divisions of two arrays.
+
+    Parameters
+    ----------
+    x1
+        First input array.
+    x2
+        Second input array
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Array with element-wise remainder of divisions.
+
+    Examples
+    --------
+    >>> x1 = ivy.array([2, 3, 4])
+    >>> x2 = ivy.array([1, 5, 2])
+    >>> ivy.fmod(x1, x2)
+    ivy.array([ 0,  3,  0])
+
+    >>> x1 = ivy.array([ivy.nan, 0, ivy.nan])
+    >>> x2 = ivy.array([0, ivy.nan, ivy.nan])
+    >>> ivy.fmod(x1, x2)
+    ivy.array([ nan,  nan,  nan])
+    """
+    return ivy.current_backend().fmod(x1, x2, out=out)

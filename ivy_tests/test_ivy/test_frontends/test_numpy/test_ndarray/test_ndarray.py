@@ -571,7 +571,8 @@ def test_numpy_instance_min(
         on_device=on_device,
     )
 
-#prod
+
+# prod
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
@@ -594,12 +595,16 @@ def test_numpy_ndarray_prod(
     if ivy.current_backend_str() == "torch":
         assume(not method_flags.as_variable[0])
 
-    where, input_dtypes, method_flags = np_frontend_helpers.handle_where_and_array_bools(
+    (
+        where,
+        input_dtypes,
+        method_flags,
+    ) = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
         test_flags=method_flags,
     )
-    where = ivy.array(where, dtype='bool')
+    where = ivy.array(where, dtype="bool")
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
@@ -608,7 +613,7 @@ def test_numpy_ndarray_prod(
         method_input_dtypes=input_dtypes,
         method_all_as_kwargs_np={
             "axis": axis,
-            "dtype":dtype,
+            "dtype": dtype,
             "keepdims": keep_dims,
             "initial": initial,
             "where": where,
@@ -1179,7 +1184,7 @@ def test_numpy_instance_std(
         on_device=on_device,
     )
 
-    
+
 # fill
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -1215,7 +1220,7 @@ def test_numpy_ndarray_fill(
         on_device=on_device,
     )
 
-    
+
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
@@ -1331,6 +1336,42 @@ def test_numpy_instance_sub__(
     ),
 )
 def test_numpy_instance_mul__(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtypes, xs = dtype_and_x
+
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": xs[0],
+        },
+        method_input_dtypes=input_dtypes,
+        method_all_as_kwargs_np={
+            "value": xs[1],
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__rmul__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+    ),
+)
+def test_numpy_instance_rmul__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2679,7 +2720,7 @@ def test_numpy_instance_view(
         frontend_method_data=frontend_method_data,
         on_device=on_device,
     )
-    
+
 
 # mod
 @handle_frontend_method(

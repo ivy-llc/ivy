@@ -10,11 +10,19 @@ from typing import Callable
 import inspect
 
 
+# for casting modes, order is the hierarchy
+casting_modes_dict = {
+    "uint": ["uint8", "uint16", "uint32", "uint64"],
+    "int": ["int8", "int16", "int32", "int64"],
+    "float": ["bfloat16", "float16", "float32", "float64"],
+    "complex": ["complex64", "complex128"],
+}
+
 # for wrapping (sequence matters)
 FN_DECORATORS = [
-    "handle_array_function",
     "infer_device",
     "infer_dtype",
+    "handle_array_function",
     "integer_arrays_to_float",
     "outputs_to_ivy_arrays",
     "outputs_to_native_arrays",
@@ -34,6 +42,166 @@ FN_DECORATORS = [
 
 # Helpers #
 # --------#
+
+
+def caster(dtype, intersect):
+    if not isinstance(dtype, str):
+        dtype = getattr(dtype, "dtype")
+    dtype = ivy.as_ivy_dtype(dtype)
+    if str(dtype) in intersect:
+        # based on upcasting or downcasting do something
+        if ivy.cast_data_types():
+            # all casting types is enabled
+            # check cross_casting
+            dtype = cross_caster(intersect)
+            if dtype:
+                return dtype
+            # check upcasting
+            dtype = upcaster(dtype)
+            if dtype:
+                return dtype
+            # check downcasting
+            dtype = downcaster(dtype)
+            if dtype:
+                return dtype
+        elif ivy.crosscast_dtypes:
+            # check cross_casting
+            dtype = cross_caster(intersect)
+            if dtype:
+                return dtype
+        elif ivy.upcast_dtypes:
+            # check upcasting
+            dtype = upcaster(dtype, intersect)
+            if dtype:
+                return dtype
+        elif ivy.downcast_dtypes:
+            # check downcasting
+            dtype = downcaster(dtype, intersect)
+            if dtype:
+                return dtype
+
+
+def upcaster(dtype, intersect):
+    # upcasting is enabled, we upcast to the highest
+    if "uint" in str(dtype):
+        index = casting_modes_dict["uint"].index(dtype) + 1
+        result = ""
+        while index < len(casting_modes_dict["uint"]):
+            if (
+                casting_modes_dict["uint"][index] in ivy.valid_dtypes
+                and casting_modes_dict["uint"][index] not in intersect
+            ):
+                result = casting_modes_dict["uint"][index]
+                break
+            index += 1
+        return result
+
+    if "int" in dtype:
+        index = casting_modes_dict["int"].index(dtype) + 1
+        result = ""
+        while index < len(casting_modes_dict["int"]):
+            if (
+                casting_modes_dict["int"][index] in ivy.valid_dtypes
+                and casting_modes_dict["int"][index] not in intersect
+            ):
+                result = casting_modes_dict["int"][index]
+                break
+            index += 1
+        return result
+
+    if "float" in dtype:
+        index = casting_modes_dict["float"].index(dtype) + 1
+        result = ""
+        while index < len(casting_modes_dict["float"]):
+            if (
+                casting_modes_dict["float"][index] in ivy.valid_dtypes
+                and casting_modes_dict["float"][index] not in intersect
+            ):
+                result = casting_modes_dict["float"][index]
+                break
+            index += 1
+        return result
+
+    if "complex" in dtype:
+        index = casting_modes_dict["complex"].index(dtype) + 1
+        result = ""
+        while index < len(casting_modes_dict["complex"]):
+            if (
+                casting_modes_dict["complex"][index] in ivy.valid_dtypes
+                and casting_modes_dict["complex"][index] not in intersect
+            ):
+                result = casting_modes_dict["complex"][index]
+                break
+            index += 1
+        return result
+
+
+def downcaster(dtype, intersect):
+    # downcasting is enabled, we upcast to the highest
+    if "uint" in str(dtype):
+        index = casting_modes_dict["uint"].index(dtype) - 1
+        result = ""
+        while index >= 0:
+            if (
+                casting_modes_dict["int"][index] in ivy.valid_dtypes
+                and casting_modes_dict["int"][index] not in intersect
+            ):
+                result = casting_modes_dict["uint"][index]
+                break
+            index -= 1
+        return result
+
+    if "int" in dtype:
+        index = casting_modes_dict["int"].index(dtype) - 1
+        result = ""
+        while index >= 0:
+            if (
+                casting_modes_dict["int"][index] in ivy.valid_dtypes
+                and casting_modes_dict["int"][index] not in intersect
+            ):
+                result = casting_modes_dict["int"][index]
+                break
+            index -= 1
+        return result
+
+    if "float" in dtype:
+        index = casting_modes_dict["float"].index(dtype) - 1
+        result = ""
+        while index >= 0:
+            if (
+                casting_modes_dict["float"][index] in ivy.valid_dtypes
+                and casting_modes_dict["float"][index] not in intersect
+            ):
+                result = casting_modes_dict["float"][index]
+                break
+            index -= 1
+        return result
+
+    if "complex" in dtype:
+        index = casting_modes_dict["complex"].index(dtype) - 1
+        result = ""
+        while index >= 0:
+            if (
+                casting_modes_dict["complex"][index] in ivy.valid_dtypes
+                and casting_modes_dict["complex"][index] not in intersect
+            ):
+                result = casting_modes_dict["complex"][index]
+                break
+            index -= 1
+        return result
+
+
+def cross_caster(intersect):
+    # check if this is a integer unsupported case
+    dtype = ""
+    if intersect == ivy.valid_int_dtypes:
+        # make dtype equal to default float
+        dtype = ivy.default_float_dtype()
+    elif intersect == ivy.valid_float_dtypes:
+        # make dtype equal to default int
+        dtype = ivy.default_int_dtype()
+
+    return str(dtype)
 
 
 def try_array_function_override(func, overloaded_args, types, args, kwargs):
@@ -80,10 +248,11 @@ def _get_first_array(*args, **kwargs):
 
 def _build_view(original, view, fn, args, kwargs, index=None):
     if ivy.exists(original._base):
-        warnings.warn(
-            "Creating many views will lead to overhead "
-            "when performing inplace updates with this backend"
-        )
+        if ivy.backend in ("jax", "tensorflow"):
+            warnings.warn(
+                "Creating many views will lead to overhead "
+                "when performing inplace updates with this backend"
+            )
         base = original._base
         view._base = base
         view._manipulation_stack = python_copy.copy(original._manipulation_stack)
@@ -92,7 +261,23 @@ def _build_view(original, view, fn, args, kwargs, index=None):
         view._base = base
     base._view_refs.append(weakref.ref(view))
     view._manipulation_stack.append((fn, args[1:], kwargs, index))
+
+    # Handle attributes for torch functions without native view functionality
+    if ivy.exists(original._torch_base):
+        view._torch_base = (
+            original
+            if ivy.exists(original._torch_manipulation)
+            else original._torch_base
+        )
+    else:
+        view._torch_base = base
+    if fn in _torch_non_native_view_functions:
+        view._torch_manipulation = (original, (fn, args[1:], kwargs))
+        view._torch_base._torch_view_refs.append(weakref.ref(view))
     return view
+
+
+_torch_non_native_view_functions = ("flip", "flipud", "rot90", "fliplr")
 
 
 def _check_in_nested_sequence(sequence, value=None, _type=None):
@@ -388,16 +573,16 @@ def handle_view(fn: Callable) -> Callable:
     """
 
     @functools.wraps(fn)
-    def new_fn(*args, copy=None, **kwargs):
+    def new_fn(*args, **kwargs):
         ret = fn(*args, **kwargs)
-        if copy or ivy.backend in ("numpy", "torch") or not ivy.is_ivy_array(args[0]):
+        if ("copy" in kwargs and kwargs["copy"]) or not ivy.is_ivy_array(args[0]):
             return ret
         original = args[0]
-        if isinstance(ret, list):
+        if isinstance(ret, (list, tuple)):
             for i, view in enumerate(ret):
-                ret[i] = _build_view(original, view, fn, args, kwargs, i)
+                ret[i] = _build_view(original, view, fn.__name__, args, kwargs, i)
         else:
-            ret = _build_view(original, ret, fn, args, kwargs, None)
+            ret = _build_view(original, ret, fn.__name__, args, kwargs, None)
         return ret
 
     new_fn.handle_view = True
@@ -420,17 +605,16 @@ def handle_view_indexing(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         ret = fn(*args, **kwargs)
-        if ivy.backend in ("numpy", "torch") or not ivy.is_ivy_array(args[0]):
+        if ("copy" in kwargs and kwargs["copy"]) or not ivy.is_ivy_array(args[0]):
             return ret
-        if kwargs:
-            query = kwargs["query"]
-        else:
-            query = args[1]
+        query = kwargs["query"] if "query" in kwargs else args[1]
         query = (query,) if not isinstance(query, tuple) else query
         if [i for i in query if not isinstance(i, (slice, int))]:
             return ret
         original = args[0]
-        ret = _build_view(original, ret, fn, args, kwargs)
+        # ToDo: Remove hard coding of only function with this wrapper
+        #  Need general way to convert special method to function found in ivy.__dict__
+        ret = _build_view(original, ret, "get_item", args, kwargs)
         return ret
 
     new_fn.handle_view_indexing = True
@@ -473,6 +657,39 @@ def infer_dtype(fn: Callable) -> Callable:
 
     new_fn.infer_dtype = True
     return new_fn
+
+
+def casting_modes_ops(fn):
+    @functools.wraps(fn)
+    def method(*args, **kwargs):
+        # we first check if it has unsupported/supported dtypes uniquely added to it
+        intersect = set(ivy.function_unsupported_dtypes(fn)).difference(
+            set(ivy.invalid_dtypes)
+        )
+        if not intersect:
+            # doesn't have unsupported dtypes specified
+            return fn(*args, **kwargs)
+
+        if "dtype" in kwargs:
+
+            dtype = caster(kwargs["dtype"], intersect)
+            if dtype:
+                kwargs["dtype"] = ivy.as_native_dtype(dtype)
+
+        def mini_helper(x):
+            if not hasattr(x, "dtype"):
+                return x
+            dtype = caster(x, intersect)
+            if dtype:
+                x = ivy.to_native(ivy.astype(x, ivy.as_native_dtype(dtype)))
+            return x
+
+        args = ivy.nested_map(args, mini_helper)
+        kwargs = ivy.nested_map(kwargs, mini_helper)
+        print(args, kwargs)
+        return fn(*args, **kwargs)
+
+    return method
 
 
 def integer_arrays_to_float(fn: Callable) -> Callable:
@@ -589,8 +806,12 @@ def handle_out_argument(fn: Callable) -> Callable:
             if isinstance(ret, (tuple, list)):
                 for i in range(len(ret)):
                     out[i].data = ivy.to_native(ret[i])
+                    if ivy.backend == "torch":
+                        _update_torch_views(out[i])
             else:
                 out.data = ivy.to_native(ret)
+                if ivy.backend == "torch":
+                    _update_torch_views(out)
             return out
         # compute return, and then handle the inplace update explicitly
 
@@ -607,6 +828,35 @@ def handle_out_argument(fn: Callable) -> Callable:
 
     new_fn.handle_out_argument = True
     return new_fn
+
+
+def _update_torch_views(x, visited_view=None):
+    if x._torch_view_refs != []:
+        _update_torch_references(x, visited_view)
+    if ivy.exists(x._torch_manipulation):
+        parent_tensor, fn_args_kwargs = x._torch_manipulation
+        fn, args, kwargs = fn_args_kwargs
+        kwargs["copy"] = True
+        if fn == "rot90":
+            kwargs = kwargs.copy()
+            kwargs["k"] = -kwargs["k"]
+            parent_tensor.data[()] = ivy.__dict__[fn](x, *args, **kwargs).data
+        else:
+            parent_tensor.data[()] = ivy.__dict__[fn](x, *args, **kwargs).data
+    if ivy.exists(x._torch_base):
+        _update_torch_views(x._torch_base, visited_view=x)
+
+
+def _update_torch_references(x, visited_view=None):
+    for ref in x._torch_view_refs:
+        view = ref()
+        if ivy.exists(view) and view is not visited_view:
+            parent_tensor, fn_args_kwargs = view._torch_manipulation
+            fn, args, kwargs = fn_args_kwargs
+            kwargs["copy"] = True
+            view.data[()] = ivy.__dict__[fn](parent_tensor, *args, **kwargs).data
+            if view._torch_view_refs != []:
+                _update_torch_references(view)
 
 
 # Nestable Handling #
@@ -871,7 +1121,7 @@ def _dtype_device_wrapper_creator(attrib, t):
                 setattr(func, attrib, val)
                 setattr(func, "dictionary_info", version_dict)
 
-            return func
+            return casting_modes_ops(func)
 
         return _wrapped
 
@@ -1004,7 +1254,7 @@ class with_unsupported_dtypes(contextlib.ContextDecorator):
             )(func)
 
     def __enter__(self):
-        self.globals = globals_getter_func().copy()  # global snapshot baby
+        self.globals = globals_getter_func().copy()  # global snapshot
 
     def __exit__(self, *exec):
         new_globals = set(globals_getter_func().keys())
@@ -1040,7 +1290,7 @@ class with_supported_dtypes(contextlib.ContextDecorator):
             )(func)
 
     def __enter__(self):
-        self.globals = globals_getter_func().copy()  # global snapshot baby
+        self.globals = globals_getter_func().copy()  # global snapshot
 
     def __exit__(self, *exec):
         new_globals = set(globals_getter_func().keys())
@@ -1076,7 +1326,7 @@ class with_unsupported_devices(contextlib.ContextDecorator):
             )(func)
 
     def __enter__(self):
-        self.globals = globals_getter_func().copy()  # global snapshot baby
+        self.globals = globals_getter_func().copy()  # global snapshot
 
     def __exit__(self, *exec):
         new_globals = set(globals_getter_func().keys())
@@ -1112,7 +1362,7 @@ class with_supported_devices(contextlib.ContextDecorator):
             )(func)
 
     def __enter__(self):
-        self.globals = globals_getter_func().copy()  # global snapshot baby
+        self.globals = globals_getter_func().copy()  # global snapshot
 
     def __exit__(self, *exec):
         new_globals = set(globals_getter_func().keys())
@@ -1173,7 +1423,7 @@ class with_unsupported_device_and_dtypes(contextlib.ContextDecorator):
 
     def __enter__(self):
 
-        self.globals = globals_getter_func().copy()  # global snapshot baby
+        self.globals = globals_getter_func().copy()  # global snapshot
 
     def __exit__(self, *exec):
         new_globals = set(globals_getter_func().keys())
@@ -1233,7 +1483,7 @@ class with_supported_device_and_dtypes(contextlib.ContextDecorator):
             )(func)
 
     def __enter__(self):
-        self.globals = globals_getter_func().copy()  # global snapshot baby
+        self.globals = globals_getter_func().copy()  # global snapshot
 
     def __exit__(self, *exec):
         new_globals = set(globals_getter_func().keys())
@@ -1261,7 +1511,7 @@ class override(contextlib.ContextDecorator):
             return func
 
     def __enter__(self):
-        self.globals = globals_getter_func().copy()  # global snapshot baby
+        self.globals = globals_getter_func().copy()  # global snapshot
 
     def __exit__(self, *exec):
         new_globals = set(globals().keys())
