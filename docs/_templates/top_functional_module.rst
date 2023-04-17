@@ -1,6 +1,7 @@
 {% extends "top_level_module.rst" %}
 
 {% block toctree -%}
+{% if functions %}
 .. autosummary::
    :toctree: {{name}}
    :template: functional_module.rst
@@ -11,7 +12,17 @@
    {{ fullname }}.{{ function }}
    {% endif %}
 {%- endfor %}
-
+{% endif %}
+{% if modules %}
+.. autosummary::
+   :toctree: {{name}}
+   :template: top_functional_module.rst
+   :hide-table:
+   :recursive:
+{% for module in modules %}
+   {{ module }}
+{%- endfor %}
+{% endif %}
 {% endblock %}
 
 {% block options %}
