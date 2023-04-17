@@ -234,7 +234,7 @@ ivy.full()
 ^^^^^^^^^^
 
 Here we are going to look at an example of a function that does not consume an :code:`array`.
-This is the creation function :func:`full`, which takes an array shape as an argument to create an array and filled with elements of a given value.
+This is the creation function :func:`full`, which takes an array shape as an argument to create an array filled with elements of a given value.
 This function requires us to create extra functions for generating :code:`shape` and :code:`fill value`, these use the :code:`shared` hypothesis strategy.
 
 
@@ -583,7 +583,7 @@ Frontend Instance Method Tests
 
 The frontend instance method tests are similar to the frontend function test, but instead of testing the function directly we test the instance method of the frontend class.
 major difference is that we have more flags to pass now, most initialization functions take an array as an input. also some methods may take an array as input,
-for example, :code:`ndarray.__add__` would expect an array as input, despite the :code:`self.array`. and to make our test is **complete** we need to generate seperate flags for each.
+for example, :code:`ndarray.__add__` would expect an array as input, despite the :code:`self.array`. and to make our test **complete** we need to generate seperate flags for each.
 
 **Important Helper Functions**
 
