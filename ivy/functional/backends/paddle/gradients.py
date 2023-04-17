@@ -16,7 +16,7 @@ from ivy.functional.ivy.gradients import (
     _process_func_ret_and_grads,
 )
 from ivy.func_wrapper import (
-    output_to_native_arrays,
+    outputs_to_ivy_arrays,
     inputs_to_native_arrays,
 )
 
@@ -205,77 +205,31 @@ def jac(func: Callable):
     return callback_fn
 
 
-# def grad(f):
-#     if grad.nth == 0:
-#         grad.f_original = f
-#     def _nth_derivative(n):
-#         @output_to_native_arrays
-#         @inputs_to_native_arrays
-#         def _inner(x):
-#             if n == 0:
-#                 ret = grad.f_original(x) if grad.f_original is not None else f(x)
-#                 grad.nth = 0
-#                 return ret
-#             else:
-#                 x = paddle.to_tensor(x, stop_gradient=False)
-#                 y = _nth_derivative(n - 1)(x)
-#                 y.stop_gradient = False
-#
-#                 # Avoid zero gradients setting requires_grads as False
-#                 # if y.requires_grad is False:
-#                 #     y.requires_grad_()
-#
-#                 y_ones = paddle.ones_like(y)
-#                 y_ones.stop_gradient = False
-#
-#
-#                 dy_dx = paddle.grad([y],
-#                                     [x],
-#                                     create_graph=True,
-#                                     grad_outputs=y_ones,
-#                                     allow_unused=True)[0]
-#
-#                 x.stop_gradient = False
-#                 dy_dx.stop_gradient = False
-#                 if dy_dx is None:
-#                     return paddle.zeros_like(y)
-#                 return dy_dx
-#         return _inner
-#
-#     grad.nth += 1
-#
-#     return _nth_derivative(grad.nth)
-#
-#
-# grad.f_original = None
-# grad.nth = 0
-
-
 def grad(f):
     if grad.nth == 0:
         grad.f_original = f
 
     def _nth_derivative(n):
-        @output_to_native_arrays
-        @inputs_to_native_arrays
         def _inner(x):
+            x = ivy.to_native(x)
             if n == 0:
                 x.stop_gradient = False
                 ret = grad.f_original(x) if grad.f_original is not None else f(x)
-                #ret = ivy.to_native(ret)
                 grad.nth = 0
                 return ret
             else:
                 x.stop_gradient = False
-                if n == 2:
-                    d=0
                 y = _nth_derivative(n - 1)(x)
+                y = ivy.to_native(y)
                 y_ones = paddle.ones_like(y)
                 y_ones.stop_gradient = False
                 y.stop_gradient = False
-                dy_dx = paddle.grad(outputs=[y], inputs=[x], create_graph=True, grad_outputs=y_ones, retain_graph=True, allow_unused=True)[0]
-
-
+                dy_dx = paddle.grad(outputs=[y],
+                                    inputs=[x],
+                                    create_graph=True,
+                                    grad_outputs=y_ones,
+                                    retain_graph=True,
+                                    allow_unused=True)[0]
             return dy_dx
         return _inner
 

@@ -8,6 +8,7 @@ from typing import Sequence, Union, Optional, Callable
 
 # local
 import ivy
+from ivy.func_wrapper import outputs_to_ivy_arrays, inputs_to_native_arrays
 from ivy.functional.ivy.gradients import (
     _get_required_float_variables,
     _get_y_and_ret_idxs,
@@ -167,14 +168,14 @@ def jac(func: Callable):
 
     return callback_fn
 
-from ivy import output_to_native_arrays, inputs_to_native_arrays
+
 def grad(f):
 
     if grad.nth == 0:
         grad.f_original = f
 
     def _nth_derivative(n):
-        @output_to_native_arrays
+        @outputs_to_ivy_arrays
         @inputs_to_native_arrays
         def _inner(x):
             if n == 0:

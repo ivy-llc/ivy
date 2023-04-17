@@ -6,6 +6,10 @@ from typing import Optional, Callable, Sequence, Union
 
 # local
 import ivy
+from ivy.func_wrapper import (
+    outputs_to_ivy_arrays,
+    inputs_to_native_arrays,
+)
 from ivy.functional.ivy.gradients import (
     _get_required_float_variables,
     _get_y_and_ret_idxs,
@@ -188,6 +192,8 @@ def grad(f):
     if grad.nth == 0:
         grad.f_original = f
     def _nth_derivative(n):
+        @outputs_to_ivy_arrays
+        @inputs_to_native_arrays
         def _inner(x):
             x.requires_grad_()
             if n == 0:
