@@ -8,6 +8,8 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.test_frontends.test_numpy.test_creation_routines.test_from_shape_or_value import (  # noqa : E501
     _input_fill_and_dtype,
 )
+from ivy.functional.frontends.tensorflow.general_functions import unique_with_counts
+from ivy import array
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _matrix_rank_helper
 
@@ -1616,4 +1618,42 @@ def test_tensorflow_unstack(
         on_device=on_device,
         value=x[0],
         axis=axis,
+    )
+
+
+#unique_with_counts
+@handle_frontend_test(
+    fn_tree="tensorflow.unique_with_counts",
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+        min_axis=-1,
+        max_axis=0,
+    ),
+    return_counts=st.booleans(),
+)
+def test_tensorflow_unique_with_counts(
+    dtype_input_axis,
+    return_counts,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, input, axis = dtype_input_axis
+    x = array(input)
+    unique_vals, counts = ivy.functional.frontends.tensorflow.unique_with_counts(x, return_counts=return_counts, axis=axis)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        values=input[0],
+        axis=axis,
+        return_counts=return_counts,
+        expected_outputs=(unique_vals, counts) if return_counts else unique_vals,
     )
