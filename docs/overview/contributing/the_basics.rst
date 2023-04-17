@@ -399,7 +399,7 @@ With Docker
 
                 pytest ivy_tests/test_ivy/ --no-header --no-summary -q
 
-        #.  Array API Tests:
+        #. Array API Tests:
             #. For a single function: 
 
             .. code-block:: none
