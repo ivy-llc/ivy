@@ -60,6 +60,19 @@ class DeviceArray:
             out=out,
             keepdims=keepdims,
         )
+    
+    def min(
+        self,
+        /,
+        *,
+        axis=None,
+        out=None
+    ):
+        return jax_frontend.numpy.min(
+            self, 
+            axis=axis,
+            out=out
+        )
 
     def __add__(self, other):
         return jax_frontend.numpy.add(self, other)
