@@ -130,6 +130,49 @@ def test_torch_poisson(
         assert u.shape == v.shape
 
 
+# randint
+@handle_frontend_test(
+    fn_tree="torch.randint",
+    low=helpers.ints(min_value=0, max_value=10),
+    high=helpers.ints(min_value=11, max_value=20),
+    size=helpers.get_shape(),
+    dtype=helpers.get_dtypes("integer"),
+)
+def test_torch_randint(
+    *,
+    low,
+    high,
+    size,
+    dtype,
+    frontend,
+    test_flags,
+    fn_tree,
+):
+    def call():
+        helpers.test_frontend_function(
+            input_dtypes=dtype,
+            frontend=frontend,
+            test_values=False,
+            fn_tree=fn_tree,
+            test_flags=test_flags,
+            low=low,
+            high=high,
+            size=size,
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    for (u, v) in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
+
+
 @handle_frontend_test(
     fn_tree="torch.rand",
     dtype=helpers.get_dtypes("float", full=False),
@@ -357,6 +400,45 @@ def test_torch_bernoulli(
             on_device=on_device,
             test_values=False,
             input=probs[0],
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    for (u, v) in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
+
+
+@handle_frontend_test(
+    fn_tree="torch.randperm",
+    n=st.integers(min_value=0, max_value=10),
+    dtype=helpers.get_dtypes("integer", full=False),
+)
+def test_torch_randperm(
+    *,
+    n,
+    dtype,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    def call():
+
+        return helpers.test_frontend_function(
+            input_dtypes=dtype,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            n=n,
         )
 
     ret = call()

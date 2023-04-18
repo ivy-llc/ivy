@@ -400,6 +400,7 @@ def avg_pool3d(
     *,
     data_format: str = "NDHWC",
     count_include_pad: bool = False,
+    ceil_mode: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 3-D avg pool given 5-D input x.
@@ -419,6 +420,8 @@ def avg_pool3d(
         NDHWC" or "NCDHW". Defaults to "NDHWC".
     count_include_pad
         Whether to include padding in the averaging calculation.
+    ceil_mode
+        Whether to use ceil or floor for creating the output shape.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -463,6 +466,7 @@ def avg_pool3d(
         padding,
         data_format=data_format,
         count_include_pad=count_include_pad,
+        ceil_mode=ceil_mode,
         out=out,
     )
 
@@ -1312,7 +1316,8 @@ def interpolate(
         "area",
         "nearest_exact",
         "tf_area",
-        "bicubic_tensorflow" "bicubic",
+        "bicubic_tensorflow",
+        "bicubic",
         "mitchellcubic",
         "lanczos3",
         "lanczos5",

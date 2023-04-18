@@ -50,13 +50,11 @@ class _ArrayWithLayersExperimental(abc.ABC):
         >>> print(x.max_pool1d(2, 2, 'SAME'))
         ivy.array([[[ 4.,  5.,  6.,  7.],
                 [ 8.,  9., 10., 11.]],
-
                [[16., 17., 18., 19.],
                 [20., 21., 22., 23.]]])
         >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
         >>> print(x.max_pool1d(2, 2, 'VALID'))
         ivy.array([[[ 4.,  5.,  6.,  7.]],
-
            [[16., 17., 18., 19.]]])
         """
         return ivy.max_pool1d(
@@ -114,8 +112,6 @@ class _ArrayWithLayersExperimental(abc.ABC):
         ivy.array([[[[ 2,  3],
                  [ 4,  5],
                  [ 4,  5]]],
-
-
                [[[ 8,  9],
                  [10, 11],
                  [10, 11]]]])
@@ -123,12 +119,8 @@ class _ArrayWithLayersExperimental(abc.ABC):
         >>> x = ivy.arange(48.).reshape((2, 4, 3, 2))
         >>> print(x.max_pool2d(3, 1, 'VALID'))
         ivy.array([[[[16, 17]],
-
                 [[22, 23]]],
-
-
                [[[40, 41]],
-
                 [[46, 47]]]])
         """
         return ivy.max_pool2d(
@@ -182,21 +174,11 @@ class _ArrayWithLayersExperimental(abc.ABC):
         >>> x = ivy.arange(48.).reshape((2, 3, 2, 2, 2))
         >>> print(x.max_pool3d(2, 2, 'VALID'))
         ivy.array([[[[[14., 15.]]]],
-
-
-
            [[[[38., 39.]]]]])
         >>> print(x.max_pool3d(2, 2, 'SAME'))
         ivy.array([[[[[14., 15.]]],
-
-
             [[[22., 23.]]]],
-
-
-
            [[[[38., 39.]]],
-
-
             [[[46., 47.]]]]])
         """
         return ivy.max_pool3d(
@@ -257,14 +239,12 @@ class _ArrayWithLayersExperimental(abc.ABC):
         >>> print(x.avg_pool1d(2, 2, 'SAME'))
         ivy.array([[[ 2.,  3.,  4.,  5.],
                 [ 8.,  9., 10., 11.]],
-
                [[14., 15., 16., 17.],
                 [20., 21., 22., 23.]]])
 
         >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
         >>> print(x.avg_pool1d(2, 2, 'VALID'))
         ivy.array([[[ 2.,  3.,  4.,  5.]],
-
                [[14., 15., 16., 17.]]])
         """
         return ivy.avg_pool1d(
@@ -359,6 +339,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         *,
         data_format: str = "NDHWC",
         count_include_pad: bool = False,
+        ceil_mode: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -379,6 +360,8 @@ class _ArrayWithLayersExperimental(abc.ABC):
             NDHWC" or "NCDHW". Defaults to "NDHWC".
         count_include_pad
             Whether to include padding in the averaging calculation.
+        ceil_mode
+            Whether to use ceil or floor for creating the output shape.
         out
             optional output array, for writing the result to. It must have
             a shape that the inputs broadcast to.
@@ -393,21 +376,11 @@ class _ArrayWithLayersExperimental(abc.ABC):
         >>> x = ivy.arange(48.).reshape((2, 3, 2, 2, 2))
         >>> print(x.avg_pool3d(2, 2, 'VALID'))
         ivy.array([[[[[ 7.,  8.]]]],
-
-
-
                [[[[31., 32.]]]]])
         >>> print(x.avg_pool3d(2, 2, 'SAME'))
         ivy.array([[[[[ 7.,  8.]]],
-
-
                 [[[19., 20.]]]],
-
-
-
                [[[[31., 32.]]],
-
-
                 [[[43., 44.]]]]])
         """
         return ivy.avg_pool3d(
@@ -417,6 +390,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
             padding,
             data_format=data_format,
             count_include_pad=count_include_pad,
+            ceil_mode=ceil_mode,
             out=out,
         )
 
