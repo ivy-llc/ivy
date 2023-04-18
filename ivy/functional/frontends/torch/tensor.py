@@ -808,6 +808,15 @@ class Tensor:
     def fmin(self, other):
         return torch_frontend.fmin(self, other)
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, "torch")
+    def trunc(self):
+        return torch_frontend.trunc(self)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, "torch")
+    def trunc_(self):
+        self.ivy_array = self.trunc().ivy_array
+        return self
+
     # Special Methods #
     # -------------------#
 
