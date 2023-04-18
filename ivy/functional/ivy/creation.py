@@ -1302,6 +1302,7 @@ def meshgrid(
     *arrays: Union[ivy.Array, ivy.NativeArray],
     sparse: bool = False,
     indexing: str = "xy",
+    out: Optional(ivy.Array) = None
 ) -> List[ivy.Array]:
     """Returns coordinate matrices from coordinate vectors.
 
@@ -1404,7 +1405,7 @@ def meshgrid(
             [4, 4]])
 
     """
-    return current_backend().meshgrid(*arrays, sparse=sparse, indexing=indexing)
+    return current_backend().meshgrid(*arrays, sparse=sparse, indexing=indexing, out=out)
 
 
 @infer_device
