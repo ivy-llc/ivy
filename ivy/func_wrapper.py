@@ -670,7 +670,7 @@ def casting_modes_ops(fn):
             # doesn't have unsupported dtypes specified
             return fn(*args, **kwargs)
 
-        if "dtype" in kwargs:
+        if "dtype" in kwargs and kwargs["dtype"] is not None:
 
             dtype = caster(kwargs["dtype"], intersect)
             if dtype:
@@ -686,7 +686,6 @@ def casting_modes_ops(fn):
 
         args = ivy.nested_map(args, mini_helper)
         kwargs = ivy.nested_map(kwargs, mini_helper)
-        print(args, kwargs)
         return fn(*args, **kwargs)
 
     return method
