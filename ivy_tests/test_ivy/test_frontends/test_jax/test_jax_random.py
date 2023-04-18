@@ -252,7 +252,6 @@ def test_jax_dirichlet(
         assert u.shape == v.shape
 
 
-
 @handle_frontend_test(
     fn_tree="jax.random.poisson",
     dtype_key=helpers.dtype_and_values(
