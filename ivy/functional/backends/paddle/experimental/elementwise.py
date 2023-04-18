@@ -289,7 +289,7 @@ def signbit(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if not isinstance(x, paddle.Tensor):
-            x = paddle.to_tensor(x)
+        x = paddle.to_tensor(x)
     return paddle.less_equal(x, 0)
 
 
