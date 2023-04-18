@@ -1405,7 +1405,9 @@ def meshgrid(
             [4, 4]])
 
     """
-    return current_backend().meshgrid(*arrays, sparse=sparse, indexing=indexing, out=out)
+    return current_backend().meshgrid(
+        *arrays, sparse=sparse, indexing=indexing, out=out
+    )
 
 
 @infer_device
