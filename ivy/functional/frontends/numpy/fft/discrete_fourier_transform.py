@@ -14,4 +14,4 @@ def ifft(a, n=None, axis=-1, norm=None):
 def hfft(a, n=None, axis=-1, norm=None):
     if norm is None:
         norm = "backward"
-    return ivy.irfft(a.conj(), axis, norm=norm, n=n)
+    return ivy.hfft(a, axis, norm=norm, n=n)
