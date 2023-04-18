@@ -734,7 +734,7 @@ class Tensor:
         return torch_frontend.tensor(ivy.where(condition, self, other))
 
     def clone(self, memory_format=None):
-        return torch_frontend.tensor(ivy.array(self, copy=True))
+        return torch_frontend.tensor(ivy.array(self.ivy_array, copy=True))
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def acosh(self):
