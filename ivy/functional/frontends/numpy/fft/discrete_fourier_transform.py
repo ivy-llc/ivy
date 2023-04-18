@@ -55,7 +55,7 @@ def ifftshift(x, axes=None):
         shift = -(x.shape[axes] // 2)
     else:
         shift = [-(x.shape[ax] // 2) for ax in axes]
-
+        
+    # Change to ivy `numpy.core.roll()` equivalent when available
     return np.roll(x, shift, axes)
-    # ^ Change to ivy `numpy.core.roll()` equivalent when available
     
