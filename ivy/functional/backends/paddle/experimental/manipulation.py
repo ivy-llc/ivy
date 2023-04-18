@@ -321,6 +321,7 @@ def expand(
     else:
         return paddle.expand(x, shape)
 
+
 def concat_from_sequence(
     input_sequence: Union[Tuple[paddle.Tensor], List[paddle.Tensor]],
     /,
