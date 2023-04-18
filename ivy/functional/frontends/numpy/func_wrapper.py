@@ -6,7 +6,6 @@ import platform
 
 # local
 import ivy
-from ivy.functional.frontends.numpy.ndarray.ndarray import ndarray
 import ivy.functional.frontends.numpy as np_frontend
 
 
@@ -263,7 +262,7 @@ def _numpy_frontend_to_ivy(x: Any) -> Any:
 
 def _ivy_to_numpy(x: Any) -> Any:
     if isinstance(x, ivy.Array) or ivy.is_native_array(x):
-        a = ndarray(x, _init_overload=True)
+        a = np_frontend.ndarray(x, _init_overload=True)
         return a
     else:
         return x
@@ -271,7 +270,9 @@ def _ivy_to_numpy(x: Any) -> Any:
 
 def _ivy_to_numpy_order_F(x: Any) -> Any:
     if isinstance(x, ivy.Array) or ivy.is_native_array(x):
-        a = ndarray(0, order="F")  # TODO Find better initialisation workaround
+        a = np_frontend.ndarray(
+            0, order="F"
+        )  # TODO Find better initialisation workaround
         a.ivy_array = x
         return a
     else:
@@ -291,7 +292,7 @@ def _to_ivy_array(x):
 def _check_C_order(x):
     if isinstance(x, ivy.Array):
         return True
-    elif isinstance(x, ndarray):
+    elif isinstance(x, np_frontend.ndarray):
         if x._f_contiguous:
             return False
         else:
@@ -490,7 +491,7 @@ def handle_numpy_out(fn: Callable) -> Callable:
             out = args[out_pos]
             args = args[:-1]
         if ivy.exists(out):
-            if not ivy.nested_any(out, lambda x: isinstance(x, ndarray)):
+            if not ivy.nested_any(out, lambda x: isinstance(x, np_frontend.ndarray)):
                 raise ivy.utils.exceptions.IvyException(
                     "Out argument must be an ivy.frontends.numpy.ndarray object"
                 )
