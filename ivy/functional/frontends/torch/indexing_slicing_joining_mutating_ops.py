@@ -191,6 +191,9 @@ def vstack(tensors, *, out=None):
     return ivy.vstack(tensors, out=out)
 
 
+row_stack = vstack
+
+
 @to_ivy_arrays_and_back
 def split(tensor, split_size_or_sections, dim=0):
     if isinstance(split_size_or_sections, int):
@@ -263,11 +266,6 @@ def vsplit(input, indices_or_sections=None, /, *, indices=None, sections=None):
         indices_or_sections, indices, sections
     )
     return tuple(ivy.vsplit(input, indices_or_sections))
-
-
-@to_ivy_arrays_and_back
-def row_stack(tensors, *, out=None):
-    return ivy.vstack(tensors, out=out)
 
 
 @to_ivy_arrays_and_back
