@@ -188,6 +188,15 @@ def test_histogram_helper(draw):
     )
 
 
+# TODO: - Issue: https://github.com/tensorflow/probability/issues/1712
+#       - Fix: https://github.com/tensorflow/probability/commit/bcca631f01c855425710fe3
+#       b8947192b71e310dd
+#       - Error message from Tensorflow: 'Number of dimensions of `x` and `weights`
+#       must coincide. Found: x has <nd1>, weights has <nd2>'
+#       - Error description: typo that throws unintended exceptions when using both
+#       weights and multiple axis.
+#       - This test is going to be fixed in the next tensorflow_probability release by
+#       the commit when it merges.
 @handle_test(
     fn_tree="functional.ivy.experimental.histogram",
     values=test_histogram_helper(),
