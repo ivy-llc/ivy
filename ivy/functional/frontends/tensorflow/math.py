@@ -611,3 +611,14 @@ def xlogy(x, y, name=None):
 @to_ivy_arrays_and_back
 def cosh(x, name=None):
     return ivy.cosh(x)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {
+        "2.11.0 and below": ("float32", "float64"),
+    },
+    "tensorflow",
+)
+def zeta(x, q, name=None):
+    return ivy.zeta(x, q)
