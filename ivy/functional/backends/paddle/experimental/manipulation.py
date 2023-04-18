@@ -277,7 +277,58 @@ def take_along_axis(
     mode: str = "fill",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if arr.ndim != indices.ndim:
+        raise ivy.utils.exceptions.IvyException(
+            "arr and indices must have the same number of dimensions;"
+            + f" got {arr.ndim} vs {indices.ndim}"
+        )
+    indices = indices.cast("int64")
+    if mode not in ["clip", "fill", "drop"]:
+        raise ValueError(
+            f"Invalid mode '{mode}'. Valid modes are 'clip', 'fill', 'drop'."
+        )
+    arr_shape = arr.shape
+    if axis < 0:
+        axis += arr.ndim
+    if mode == "clip":
+        max_index = arr.shape[axis] - 1
+        with ivy.ArrayMode(False):
+            indices = ivy.clip(indices, 0, max_index)
+    elif mode == "fill" or mode == "drop":
+        if "float" in str(arr.dtype):
+            fill_value = float("nan")
+        elif "uint" in str(arr.dtype):
+            fill_value = paddle.iinfo(arr.dtype).max
+        else:
+            fill_value = -paddle.iinfo(arr.dtype).max - 1
+        with ivy.ArrayMode(False):
+            indices = ivy.where(
+                (indices < 0) | (indices >= arr.shape[axis]), -1, indices
+            )
+            arr_shape = list(arr_shape)
+            arr_shape[axis] = 1
+            fill_arr = ivy.full(arr_shape, fill_value, dtype=arr.dtype)
+            arr = ivy.concat([arr, fill_arr], axis=axis)
+            indices = ivy.where(indices < 0, arr.shape[axis] + indices, indices)
+
+    if arr.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+        paddle.complex64,
+        paddle.complex128,
+        paddle.bool,
+    ]:
+        if paddle.is_complex(arr):
+            return paddle.complex(
+                paddle.take_along_axis(arr.real(), indices, axis),
+                paddle.take_along_axis(arr.imag(), indices, axis),
+            )
+        return paddle.take_along_axis(arr.cast("float32"), indices, axis).cast(
+            arr.dtype
+        )
+    return paddle.take_along_axis(arr, indices, axis)
 
 
 def hsplit(
