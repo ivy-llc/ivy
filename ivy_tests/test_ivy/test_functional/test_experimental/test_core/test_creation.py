@@ -363,3 +363,44 @@ def test_frombuffer(
         offset=offset,
         ground_truth_backend=ground_truth_backend,
     )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.compress",
+    condition=helpers.array_bools(),
+    dtype_and_a=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=1,
+        max_dim_size=5,
+        min_value=0,
+        max_value=10,
+        shared_dtype=True,
+    ),
+    test_gradients=st.just(False),
+    number_positional_args=st.just(1),
+    test_with_out=st.just(False),
+)
+def test_compress(
+    condition,
+    dtype_and_a,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    dtype, a = dtype_and_a
+    helpers.test_function(
+        input_dtypes=a,
+        test_flags=test_flags,
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
+        condition=condition,
+        a=a[0],
+        dtype=dtype[0],
+        device=on_device,
+        ground_truth_backend=ground_truth_backend,
+    )

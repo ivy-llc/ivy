@@ -642,3 +642,63 @@ def frombuffer(
         count=count,
         offset=offset,
     )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+def compress(
+    condition: Union[ivy.Array, ivy.NativeArray],
+    a: Union[ivy.Array, ivy.NativeArray],
+    *,
+    axis: Optional[int] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Return selected slices of an array along given axis.
+
+    Parameters
+    ----------
+    condition
+        Boolean array.
+    a
+        Input array.
+    axis
+        Axis along which to take slices. Default: None.
+        If Default, work along flattened array.
+    out
+        Optional output array, for writing the result to. It must have a shape that
+        the inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        An array with selected slices of a.
+
+    Examples
+    --------
+    >>> x = ivy.array([[1, 2], [3, 4], [5, 6]])
+    >>> condition = ivy.array([0, 1])
+    >>> y = ivy.compress(condition, x, axis=0)
+    >>> print(y)
+    ivy.array([[3, 4]])
+
+    >>> x = ivy.array([[1, 2], [3, 4], [5, 6]])
+    >>> condition = ivy.array([False, True, True])
+    >>> y = ivy.compress(condition, x, axis=0)
+    >>> print(y)
+    ivy.array([[3, 4], [5, 6]])
+    """
+    condition_arr = ivy.asarray(condition).astype(bool)
+    if condition_arr.ndim != 1:
+        raise ValueError("Condition must be a 1D array")
+    if axis is None:
+        arr = ivy.asarray(a).flatten()
+        axis = 0
+    else:
+        arr = ivy.moveaxis(a, axis, 0)
+
+    condition_arr, extra = condition_arr[: arr.shape[0]], condition_arr[arr.shape[0] :]
+    if extra.any():
+        raise ValueError("Condition contains entries that are out of bounds")
+    arr = arr[: condition_arr.shape[0]]
+    return ivy.moveaxis(arr[condition_arr], 0, axis)
