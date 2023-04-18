@@ -214,7 +214,17 @@ def dsplit(
 def atleast_1d(
     *arys: paddle.Tensor, copy: Optional[bool] = None
 ) -> List[paddle.Tensor]:
-    raise IvyNotImplementedException()
+    res = []
+    for ary in arys:
+        ary = ivy.array(ary, copy=copy).data
+        if ary.ndim < 1:
+            with ivy.ArrayMode(False):
+                res.append(ivy.expand_dims(ary, axis=0))
+        else:
+            res.append(ary)
+    if len(res) == 1:
+        return res[0]
+    return res
 
 
 def dstack(
@@ -229,13 +239,33 @@ def dstack(
 def atleast_2d(
     *arys: paddle.Tensor, copy: Optional[bool] = None
 ) -> List[paddle.Tensor]:
-    raise IvyNotImplementedException()
+    res = []
+    for ary in arys:
+        ary = ivy.array(ary, copy=copy).data
+        if ary.ndim < 2:
+            with ivy.ArrayMode(False):
+                res.append(ivy.expand_dims(ary, axis=list(range(2 - ary.ndim))))
+        else:
+            res.append(ary)
+    if len(res) == 1:
+        return res[0]
+    return res
 
 
 def atleast_3d(
     *arys: Union[paddle.Tensor, bool, Number], copy: Optional[bool] = None
 ) -> List[paddle.Tensor]:
-    raise IvyNotImplementedException()
+    res = []
+    for ary in arys:
+        ary = ivy.array(ary, copy=copy).data
+        if ary.ndim < 3:
+            with ivy.ArrayMode(False):
+                res.append(ivy.expand_dims(ary, axis=list(range(3 - ary.ndim))))
+        else:
+            res.append(ary)
+    if len(res) == 1:
+        return res[0]
+    return res
 
 
 def take_along_axis(
