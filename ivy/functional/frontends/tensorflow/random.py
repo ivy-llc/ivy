@@ -38,6 +38,7 @@ def stateless_uniform(
         shape=shape, seed=seed[0] + seed[1], low=minval, high=maxval, dtype=dtype
     )
 
+
 @with_unsupported_dtypes(
     {"2.9.0 and below": ("int8", "int16", "unsigned")}, "tensorflow"
 )
