@@ -387,30 +387,30 @@ def test_numpy_standard_gamma(
 
 
 # chisquare
+# The test values are restricted to (0, 1000] because df<=0 is invalid
+# and very large df can cause problems with type conversions
 @handle_frontend_test(
     fn_tree="numpy.random.chisquare",
     dtypes=helpers.get_dtypes("float", full=False),
     df=st.one_of(
         st.floats(
             min_value=0,
+            max_value=1000,
             exclude_min=True,
-            allow_nan=False,
-            allow_infinity=False,
             allow_subnormal=False,
             width=32,
         ),
-        st.integers(min_value=1),
+        st.integers(min_value=1, max_value=1000),
         st.lists(
             st.one_of(
                 st.floats(
                     min_value=0,
+                    max_value=1000,
                     exclude_min=True,
-                    allow_nan=False,
-                    allow_infinity=False,
                     allow_subnormal=False,
                     width=32,
                 )
-                | st.integers(min_value=1)
+                | st.integers(min_value=1, max_value=1000)
             ),
             min_size=1,
         ),
