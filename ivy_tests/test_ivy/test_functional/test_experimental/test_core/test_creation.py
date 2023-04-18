@@ -393,7 +393,7 @@ def test_compress(
 ):
     dtype, a = dtype_and_a
     helpers.test_function(
-        input_dtypes=a,
+        input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
