@@ -817,6 +817,15 @@ class Tensor:
         self.ivy_array = self.trunc().ivy_array
         return self
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, "torch")
+    def fix(self):
+        return torch_frontend.fix(self)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, "torch")
+    def fix_(self):
+        self.ivy_array = self.fix().ivy_array
+        return self
+
     # Special Methods #
     # -------------------#
 
@@ -931,7 +940,6 @@ class Tensor:
     # Method aliases
     absolute, absolute_ = abs, abs_
     clip, clip_ = clamp, clamp_
-    fix, fix_ = trunc, trunc_
     ndimension = dim
 
     def bitwise_xor(self, other):
