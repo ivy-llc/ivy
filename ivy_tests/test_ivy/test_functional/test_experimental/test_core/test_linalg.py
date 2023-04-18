@@ -614,20 +614,22 @@ def _generate_solve_triangular_dtype_and_arrays(draw):
         )
     )
 
-    lower = draw(st.booleans())
-    transpose = draw(st.booleans())
-    unit_diagonal = draw(st.booleans())
-
-    return input_dtype, [matrix_1[1][0], matrix_2[1][0], lower, transpose, unit_diagonal]
+    return input_dtype, [matrix_1[1][0], matrix_2[1][0]]
 
 @handle_test(
     fn_tree="functional.ivy.experimental.solve_triangular",
     dtype_x=_generate_solve_triangular_dtype_and_arrays(),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
+    lower = draw(st.booleans()),
+    transpose = draw(st.booleans()),
+    unit_diagonal = draw(st.booleans()),
 )
 def test_solve_triangular(
     dtype_x,
+    lower,
+    transpose,
+    unit_diagonal,
     test_flags,
     backend_fw,
     on_device,
@@ -644,9 +646,9 @@ def test_solve_triangular(
         fn_name=fn_name,
         a=x[0],
         b=x[1],
-        lower=x[2],
-        transpose=x[3],
-        unit_diagonal=x[4],
+        lower=lower,
+        transpose=transpose,
+        unit_diagonal=unit_diagonal,
     )
     
 
