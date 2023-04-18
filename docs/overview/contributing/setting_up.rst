@@ -310,39 +310,39 @@ Ubuntu
 #. Install Docker by running the commands below one by one in the Linux terminal.
    You may visit `Docker Ubuntu Installation Page <https://docs.docker.com/engine/install/ubuntu/>`_ for the details.
 
-    .. code-block:: none
+   .. code-block:: none
 
-        sudo apt-get update
+       sudo apt-get update
 
-    .. code-block:: none
+   .. code-block:: none
 
-        sudo apt-get install \
-        ca-certificates \
-        curl \
-        gnupg \
-        lsb-release
+       sudo apt-get install \
+       ca-certificates \
+       curl \
+       gnupg \
+       lsb-release
 
-    .. code-block:: none
+   .. code-block:: none
 
-        sudo mkdir -p /etc/apt/keyrings
+       sudo mkdir -p /etc/apt/keyrings
 
-    .. code-block:: none
+   .. code-block:: none
 
-        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+       curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 
-    .. code-block:: none
+   .. code-block:: none
 
-        echo \
-        "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-        $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+       echo \
+       "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+       $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-    .. code-block:: none
+   .. code-block:: none
 
-        sudo apt-get update
+       sudo apt-get update
 
-    .. code-block:: none
+   .. code-block:: none
 
-        sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+       sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
 #. Get the latest Docker Image for Ivy by:
 
@@ -367,13 +367,13 @@ Ubuntu
 
 This is a common error which you might face. If you are not successfully able to connect docker with Pycharm(point 4a) and your docker is also running, the issue is that you are not able to use your docker socket. So, executing the below two commands should solve this.
     
-    .. code-block:: none
+.. code-block:: none
         
-        sudo chmod a+rwx /var/run/docker.sock
+   sudo chmod a+rwx /var/run/docker.sock
         
-    .. code-block:: none
+.. code-block:: none
     
-        sudo chmod a+rwx /var/run/docker.pid  
+   sudo chmod a+rwx /var/run/docker.pid  
 
 
 For questions, please reach out on `discord`_ in the `docker channel`_!

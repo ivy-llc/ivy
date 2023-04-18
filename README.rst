@@ -773,7 +773,7 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
     import madmom
     import tensorflow as tf
 
-    # transpile madmon from numpy to tensorflow
+    # transpile madmom from numpy to tensorflow
     tf_madmom = ivy.transpile(madmom, source="numpy", to="tensorflow")
 
     # get some arrays

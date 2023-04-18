@@ -1185,7 +1185,7 @@ def _get_clip_inputs(draw):
     )
     x_dtype, x = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float"),
+            available_dtypes=helpers.get_dtypes("numeric"),
             shape=shape,
         )
     )
@@ -1194,13 +1194,13 @@ def _get_clip_inputs(draw):
         max = draw(st.booleans())
         min = draw(
             helpers.array_values(
-                dtype=x_dtype[0], shape=shape, min_value=-25, max_value=0
+                dtype=x_dtype[0], shape=shape, min_value=0, max_value=25
             )
         )
         max = (
             draw(
                 helpers.array_values(
-                    dtype=x_dtype[0], shape=shape, min_value=1, max_value=25
+                    dtype=x_dtype[0], shape=shape, min_value=26, max_value=50
                 )
             )
             if max
@@ -1210,7 +1210,7 @@ def _get_clip_inputs(draw):
         min = None
         max = draw(
             helpers.array_values(
-                dtype=x_dtype[0], shape=shape, min_value=1, max_value=25
+                dtype=x_dtype[0], shape=shape, min_value=26, max_value=50
             )
         )
     return x_dtype, x, min, max
@@ -1219,35 +1219,10 @@ def _get_clip_inputs(draw):
 # clamp
 @handle_frontend_test(
     fn_tree="torch.clamp",
+    aliases=["torch.clip"],
     input_and_ranges=_get_clip_inputs(),
 )
 def test_torch_clamp(
-    *,
-    input_and_ranges,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    x_dtype, x, min, max = input_and_ranges
-    helpers.test_frontend_function(
-        input_dtypes=x_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        input=x[0],
-        min=min,
-        max=max,
-    )
-
-
-# clip
-@handle_frontend_test(
-    fn_tree="torch.clip",
-    input_and_ranges=_get_clip_inputs(),
-)
-def test_torch_clip(
     *,
     input_and_ranges,
     on_device,
@@ -2364,5 +2339,38 @@ def test_torch_logit(
         on_device=on_device,
         input=input[0],
         eps=eps,
+        out=None,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="torch.sgn",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=1,
+        max_dim_size=1,
+        abs_smallest_val=1e-10,
+        min_value=-10,
+        max_value=10,
+    ),
+)
+def test_torch_sgn(
+    *,
+    dtype_and_input,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, input = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input[0],
         out=None,
     )
