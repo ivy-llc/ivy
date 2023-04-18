@@ -5,9 +5,10 @@ import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
-from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_elementwise import (
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_elementwise import (  # noqa
     ldexp_args,
 )
+
 
 # exp
 @handle_frontend_test(
@@ -455,6 +456,41 @@ def test_numpy_logaddexp2(
     ),
 )
 def test_numpy_i0(
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# frexp
+@handle_frontend_test(
+    fn_tree="numpy.frexp",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float32", "float64"],
+        num_arrays=1,
+        shared_dtype=True,
+        min_value=-100,
+        max_value=100,
+        min_num_dims=1,
+        max_num_dims=3,
+    ),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="frexp"
+    ),
+)
+def test_numpy_frexp(
     *,
     dtype_and_x,
     test_flags,

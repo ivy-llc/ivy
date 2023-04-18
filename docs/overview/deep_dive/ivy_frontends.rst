@@ -84,6 +84,16 @@ There are more framework-specific classes we support in the frontends such as Nu
 All these increase the fidelity of our frontends.
 
 
+Writing Frontend Functions
+-------------------
+
+Ideally all frontend functions should call the equivalent ivy function and only be one line long.
+In Ivy we already try to superset the functionality of each framework, meaning that we should not have to deal with implementing extra functionality through the frontends.
+In the case a function is missing some functionality which is needed to match with the frontend framework, it is strongly advised that the backend ivy function is updated to support this.
+The main reason for this policy is because the frontends are strictly composed of ivy functions and any composition of them is bound to be slower than a backend implementation written using native backend framework functions.
+
+Of course the frontends wouldn't be needed if they completely relied on Ivy, so some framework specific nuances will be described below:
+
 **Jax**
 
 JAX has two distinct groups of functions, those in the :mod:`jax.lax` namespace and those in the :mod:`jax.numpy` namespace.
@@ -269,7 +279,9 @@ In order to tackle these variations in behaviour, the :code:`map_raw_ops_alias` 
         else:
             return ivy.astype(ivy.argmax(input, axis=axis), "int64")
 
-This function :func:`argmax` is implemented in the :mod:`tf.math` module of the TensorFlow framework, there exists an identical function in the :mod:`tf.raw_ops` module implemented as :func:`ArgMax`. Both the functions have identical behaviour except for the fact that all arguments are passed as key-word only for :func:`tf.raw_ops.ArgMax`. In some corner cases, arguments are renamed such as :func:`tf.math.argmax`, the :code:`dimension` argument replaces the :code:`axis` argument. 
+This function :func:`argmax` is implemented in the :mod:`tf.math` module of the TensorFlow framework, there exists an identical function in the :mod:`tf.raw_ops` module implemented as :func:`ArgMax`.
+Both the functions have identical behaviour except for the fact that all arguments are passed as key-word only for :func:`tf.raw_ops.ArgMax`.
+In some corner cases, arguments are renamed such as :func:`tf.math.argmax`, the :code:`dimension` argument replaces the :code:`axis` argument.
 Let's see how the :code:`map_raw_ops_alias` decorator can be used to tackle these variations.
 
 .. code-block:: python
@@ -411,7 +423,7 @@ For these reasons, all frontend functions which correspond to functions with lim
 
 .. code-block:: python
 
-   logical_and.supported_dtypes = ("bool",)
+   @with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
 
 The same logic applies to unsupported devices.
 Even if the wrapped Ivy function supports more devices, we should still flag the frontend function supported devices to be the same as those supported by the function in the native framework.

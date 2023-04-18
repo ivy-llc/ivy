@@ -42,15 +42,14 @@ def current_backend_str() -> str:
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
-def get_item(x: paddle.Tensor, query: Union[paddle.Tensor, Tuple]) -> paddle.Tensor:
+def get_item(
+    x: paddle.Tensor, query: Union[paddle.Tensor, Tuple], *, copy: bool = None
+) -> paddle.Tensor:
     # regular queries x[idx_1,idx_2,...,idx_i]
-    if isinstance(query, tuple):
+    if not isinstance(query, paddle.Tensor):
         if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
             return x.cast("float32").__getitem__(query).cast(x.dtype)
         return x.__getitem__(query)
-
-    if not ivy.is_native_array(query):
-        query = paddle.to_tensor(query, dtype="int64")
 
     # masked queries x[bool_1,bool_2,...,bool_i]
     if query.dtype == paddle.bool:
@@ -373,3 +372,7 @@ def isin(
         ivy.equal(ivy.expand_dims(elements, axis=-1), test_elements), axis=-1
     )
     return ivy.reshape(output, input_shape) ^ invert
+
+
+def itemsize(x: paddle.Tensor) -> int:
+    return x.element_size()

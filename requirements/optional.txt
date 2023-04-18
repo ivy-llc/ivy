@@ -17,6 +17,7 @@ torch-scatter # unpinned, mod_name=torch_scatter
 functorch # unpinned, we test for latest version now
 scipy # unpinned
 dm-haiku # unpinned mod_name=haiku
+flax
 pydriller
 tqdm
 coverage
@@ -25,3 +26,4 @@ pandas
 pyspark
 mxnet
 autoflake # for backend generation
+snakeviz # for profiling
