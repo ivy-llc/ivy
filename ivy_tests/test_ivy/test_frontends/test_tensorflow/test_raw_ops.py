@@ -1327,19 +1327,19 @@ def test_tensorflow_FloorMod(  # NOQA
     )
 
 
-#FFT
+# FFT
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.FFT",
     dtype_and_x=helpers.dtype_and_values(
         min_num_dims=1,
         min_dim_size=2,
         small_abs_safety_factor=3,
-        safety_factor_scale='log',
+        safety_factor_scale="log",
         available_dtypes=helpers.get_dtypes("complex"),
-         ),
+    ),
     test_with_out=st.just(False),
 )
-def test_tensorflow_FFT( # NOQA
+def test_tensorflow_FFT(  # NOQA
     *,
     dtype_and_x,
     frontend,
@@ -1354,7 +1354,7 @@ def test_tensorflow_FFT( # NOQA
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x,
+        input=x[0],
     )
 
 

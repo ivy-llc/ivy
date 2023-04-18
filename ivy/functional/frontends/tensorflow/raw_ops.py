@@ -203,8 +203,8 @@ def FloorMod(*, x, y, name="FloorMod"):
 
 
 @to_ivy_arrays_and_back
-def FFT(*, input, name='FFT'):
-    return ivy.astype(ivy.fft(input,-1),ivy.dtype(input[0]))
+def FFT(*, input, name="FFT"):
+    return ivy.astype(ivy.fft(input, -1), input.dtype)
 
 
 @to_ivy_arrays_and_back
