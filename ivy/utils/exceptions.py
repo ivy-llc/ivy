@@ -89,7 +89,7 @@ class IvyNotImplementedException(NotImplementedError):
         super().__init__(message)
 
 
-class IvyError(IndexError, ValueError, AttributeError, IvyException):
+class IvyError(ValueError, AttributeError, IvyException):
     def __init__(self, *messages):
         self._default = [
             "numpy" if ivy.current_backend_str() == "" else ivy.current_backend_str()
@@ -98,6 +98,16 @@ class IvyError(IndexError, ValueError, AttributeError, IvyException):
         for message in messages:
             self._default.append(message)
         super().__init__(self._delimiter.join(self._default))
+
+
+class IvyIndexError(IndexError, IvyException):
+    def __init__(self, message):
+        super().__init__(message)
+
+
+class IvyAttributeError(AttributeError, IvyException):
+    def __init__(self, message):
+        super().__init__(message)
 
 
 def handle_exceptions(fn: Callable) -> Callable:
@@ -123,7 +133,10 @@ def handle_exceptions(fn: Callable) -> Callable:
         # Not to rethrow as IvyBackendException
         except IvyNotImplementedException as e:
             raise e
-        except (IndexError, ValueError, AttributeError) as e:
+        except IndexError as e:
+            _print_traceback_history()
+            raise ivy.utils.exceptions.IvyIndexError(str(e))
+        except (ValueError, AttributeError) as e:
             _print_traceback_history()
             raise ivy.utils.exceptions.IvyError(fn.__name__, str(e))
         except Exception as e:
