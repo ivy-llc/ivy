@@ -647,6 +647,32 @@ def test_tensorflow_expand_dims(
     )
 
 
+# identity_n
+@handle_frontend_test(
+    fn_tree="tensorflow.identity_n",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), max_num_dims=5
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_identity_n(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+    )
+
+
 # Squeeze
 @st.composite
 def _squeeze_helper(draw):
