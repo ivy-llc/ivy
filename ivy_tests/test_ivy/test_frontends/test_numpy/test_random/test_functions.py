@@ -384,3 +384,33 @@ def test_numpy_standard_gamma(
         shape=shape,
         size=size,
     )
+
+@handle_frontend_test(
+    fn_tree="numpy.random.binomial",
+    n=helpers.ints(min_value=2, max_value=10),
+    dtype=helpers.get_dtypes("float", full=False),
+    size=st.tuples(
+        st.integers(min_value=1, max_value=10), st.integers(min_value=2, max_value=2)
+    ),   
+)
+def test_numpy_binomial(
+    n,
+    p,
+    dtype,
+    size,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device, 
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=True,
+        n=n,
+        p=np.array(p,1-p),
+        size=size,
+    )
