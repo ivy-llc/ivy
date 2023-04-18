@@ -621,9 +621,9 @@ def _generate_solve_triangular_dtype_and_arrays(draw):
     dtype_x=_generate_solve_triangular_dtype_and_arrays(),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
-    lower = draw(st.booleans()),
-    transpose = draw(st.booleans()),
-    unit_diagonal = draw(st.booleans()),
+    lower = st.booleans(),
+    transpose = st.booleans(),
+    unit_diagonal = st.booleans(),
 )
 def test_solve_triangular(
     dtype_x,
