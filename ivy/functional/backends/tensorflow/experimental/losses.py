@@ -32,8 +32,8 @@ def ctc_loss(
     ctc_loss = nn.ctc_loss(
         labels=tf.cast(targets, tf.int32),
         logits=log_probs,
-        label_length=tf.cast(target_lengths, tf.int32),
-        logit_length=tf.cast(input_lengths, tf.int32),
+        label_length=tf.cast(target_lengths, tf.int64),
+        logit_length=tf.cast(input_lengths, tf.int64),
         )
     return tf.reduce_mean(ctc_loss)
 
