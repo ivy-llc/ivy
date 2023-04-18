@@ -609,6 +609,7 @@ def array_indices_axis(
     *,
     array_dtypes,
     indices_dtypes=get_dtypes("valid"),
+    values_dtypes=get_dtypes("valid"),
     disable_random_axis=False,
     axis_zero=False,
     allow_inf=False,
@@ -619,6 +620,7 @@ def array_indices_axis(
     first_dimension_only=False,
     indices_same_dims=False,
     valid_bounds=True,
+    values=None,
 ):
     """Generates two arrays x & indices, the values in the indices array are indices
     of the array x. Draws an integers randomly from the minimum and maximum number of
@@ -652,6 +654,8 @@ def array_indices_axis(
         Set x and indices dimensions to be the same
     valid_bounds
         If False, the strategy may produce out-of-bounds indices.
+    values (optional)
+        Custom values array to use instead of randomly generated values. Defaults to None.
 
     Returns
     -------
@@ -780,7 +784,20 @@ def array_indices_axis(
     indices = indices[0]
     if disable_random_axis:
         return [x_dtype, indices_dtype], x, indices
-    return [x_dtype, indices_dtype], x, indices, axis, batch_dims
+
+    if values is not None:
+        values_shape = indices_shape
+        values_dtype, values = draw(
+            dtype_and_values(
+                available_dtypes=values_dtypes,
+                allow_inf=False,
+                shape=values_shape,
+            )
+        )
+        values_dtype = values_dtype[0]
+        values = values[0]
+
+    return [x_dtype, indices_dtype, values_dtype], x, indices, axis, values, batch_dims
 
 
 @st.composite
