@@ -362,6 +362,7 @@ def expand(
 
 expand.support_native_out = False
 
+
 def concat_from_sequence(
     input_sequence: Union[Tuple[np.ndarray], List[np.ndarray]],
     /,
