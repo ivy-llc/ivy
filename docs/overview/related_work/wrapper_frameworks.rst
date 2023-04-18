@@ -65,7 +65,7 @@ There is also no support for some simpler and more common array processing funct
 NeuroPod
 --------
 `Neuropod`_ is a library that provides a uniform interface to run deep learning models from multiple frameworks in C++ and Python.
-Neuropod makes it easy for researchers to build models in a framework of their choosing while also simplifying deployment of these models.
+Neuropod makes it easy for researchers to build models in a framework of their choice while also simplifying deployment of these models.
 It currently supports `TensorFlow`_, `PyTorch`_, `TorchScript`_, and `Keras`_.
 Compared to other wrapper frameworks, NeuroPod is very high level.
 It wraps entire models which have already been trained, in a manner where the interface to these models is unified.
