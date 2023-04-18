@@ -1,7 +1,7 @@
 from ivy.data_classes.container.base import ContainerBase
 from typing import Union, Optional, List, Dict
 import ivy
-
+import numpy as np
 
 class _ContainerWithLossesExperimental(ContainerBase):
     @staticmethod
@@ -137,3 +137,123 @@ class _ContainerWithLossesExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+    
+    
+    @staticmethod
+    def static_ctc_loss(
+        true: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        true_lengths: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        pred_lengths: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        blank: Optional[int] = 0,
+        reduction: str = "mean",
+        zero_infinity: bool = True,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        
+        """
+        ivy.Container method variant of ivy.ctc_loss.
+        This method simply wraps the function, and so the docstring for
+        ivy.ctc_loss also applies to this method with minimal changes.
+        Parameters
+        ----------
+        true: input container of true labels.
+        pred: input container of predicted labels as logits.
+        true_lengths: input container of true label lengths.
+        pred_lengths: input container of predicted label lengths.
+        blank: index of the blank label. Default: 0.
+        reduction: specifies the reduction to apply to the output.
+            Default: "mean". Allowed values: "none", "mean", "sum".
+        out:  optional output array, for writing the result to. It must have
+            a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret: The CTC loss between the given distributions.
+        """
+
+        true = true.astype(ivy.int32)
+        true_lengths = true_lengths.astype(ivy.int64)
+        pred_lengths = pred_lengths.astype(ivy.int64)
+        blank = np.int32(blank)
+
+        return ContainerBase.cont_multi_map_in_function(
+            "static_ctc_loss",
+            true,
+            pred,
+            true_lengths,
+            pred_lengths,
+            blank=blank,
+            reduction=reduction,
+            zero_infinity=zero_infinity,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def ctc_loss(
+        self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        true_lengths: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        pred_lengths: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        blank: Optional[int] = 0,
+        reduction: str = "mean",
+        zero_infinity: bool = True,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container method variant of ivy.ctc_loss.
+        This method simply wraps the function, and so the docstring for
+        ivy.ctc_loss also applies to this method with minimal changes.
+        Parameters
+        ----------
+        self: input container of true labels.
+        pred: input container of predicted labels as logits.
+        true_lengths: input container of true label lengths.
+        pred_lengths: input container of predicted label lengths.
+        blank: index of the blank label. Default: 0.
+        reduction: specifies the reduction to apply to the output.
+            Default: "mean". Allowed values: "none", "mean", "sum".
+        out:  optional output array, for writing the result to. It must have
+            a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret: The CTC loss between the given distributions.
+        """
+
+        self = self.astype(ivy.int32)
+        true_lengths = true_lengths.astype(ivy.int64)
+        pred_lengths = pred_lengths.astype(ivy.int64)
+        blank = np.int32(blank)
+
+        return self.static_ctc_loss(
+            self,
+            pred,
+            true_lengths,
+            pred_lengths,
+            blank=blank,
+            reduction=reduction,
+            zero_infinity=zero_infinity,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
