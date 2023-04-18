@@ -15,6 +15,12 @@ def ctc_loss(
     zero_infinity: Optional[bool] = True,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+
+    targets = targets.astype(np.int32)
+    input_lengths = input_lengths.astype(np.int64)
+    target_lengths = target_lengths.astype(np.int64)
+    blank = np.int32(blank)
+    
     batch_size = log_probs.shape[0]
     max_input_length = log_probs.shape[1]
     num_classes = log_probs.shape[2]
