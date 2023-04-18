@@ -11,6 +11,7 @@ from typing import (
     List,
 )
 from numbers import Number
+import math
 import ivy
 from ivy.func_wrapper import (
     handle_out_argument,
@@ -19,6 +20,7 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_view,
     inputs_to_ivy_arrays,
+    handle_array_function,
 )
 from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
@@ -214,6 +216,16 @@ def moveaxis(
     return ivy.current_backend().moveaxis(a, source, destination, copy=copy, out=out)
 
 
+def _iter_product(*args, repeat=1):
+    # itertools.product
+    pools = [tuple(pool) for pool in args] * repeat
+    result = [[]]
+    for pool in pools:
+        result = [x + [y] for x in result for y in pool]
+    for prod in result:
+        yield tuple(prod)
+
+
 @inputs_to_ivy_arrays
 @handle_exceptions
 def ndenumerate(
@@ -242,16 +254,13 @@ def ndenumerate(
     (1, 1) 4
     """
 
-    def _ndenumerate(input, t=None):
-        if t is None:
-            t = ()
+    def _ndenumerate(input):
         if ivy.is_ivy_array(input) and input.shape == ():
-            input = ivy.to_scalar(input)
-        if not hasattr(input, "__iter__"):
-            yield t, input
+            yield (), ivy.to_scalar(input)
         else:
-            for i, v in enumerate(input):
-                yield from _ndenumerate(v, t + (i,))
+            i = [range(k) for k in input.shape]
+            for idx in _iter_product(*i):
+                yield idx, input[idx]
 
     return _ndenumerate(input)
 
@@ -283,17 +292,7 @@ def ndindex(
     (1, 1)
     """
 
-    def _iter_product(*args, repeat=1):
-        pools = [tuple(pool) for pool in args] * repeat
-        result = [[]]
-        for pool in pools:
-            result = [x + [y] for x in result for y in pool]
-        for prod in result:
-            yield tuple(prod)
-
-    args = []
-    for s in range(len(shape)):
-        args += [range(shape[s])]
+    args = [range(k) for k in shape]
     return _iter_product(*args)
 
 
@@ -1613,3 +1612,104 @@ def expand(
         Output Array
     """
     return ivy.current_backend(x).expand(x, shape, out=out, copy=copy)
+
+
+@inputs_to_ivy_arrays
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
+def as_strided(
+    x: Union[ivy.Array, ivy.NativeArray],
+    shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
+    strides: Sequence[int],
+    /,
+) -> ivy.Array:
+    """
+    Create a copy of the input array with the given shape and strides.
+
+    Parameters
+    ----------
+    x
+        Input Array.
+    shape
+        The shape of the new array.
+    strides
+        The strides of the new array (specified in bytes).
+
+    Returns
+    -------
+    ret
+        Output Array
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, 3, 4, 5, 6])
+    >>> ivy.as_strided(x, (4, 3), (8, 8))
+    ivy.array([[1, 2, 3],
+       [2, 3, 4],
+       [3, 4, 5],
+       [4, 5, 6]])
+    """
+    size = math.prod(shape)
+    itemsize = x.itemsize
+    buffer_size = size * itemsize
+
+    src = memoryview(ivy.to_numpy(x)).cast("b")
+    buffer = bytearray(buffer_size)
+    dst = memoryview(buffer).cast("b")
+
+    for index in ivy.ndindex(shape):
+        src_index = sum(index[i] * min(strides[i], itemsize) for i in range(len(shape)))
+        dst_index = sum(
+            index[i] * math.prod(shape[i + 1 :]) * itemsize for i in range(len(shape))
+        )
+        dst[dst_index : dst_index + itemsize] = src[src_index : src_index + itemsize]
+
+    return ivy.reshape(
+        ivy.frombuffer(buffer, dtype=x.dtype, count=size),
+        shape,
+    )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_function
+def concat_from_sequence(
+    input_sequence: Union[
+        Tuple[Union[ivy.Array, ivy.NativeArray]],
+        List[Union[ivy.Array, ivy.NativeArray]],
+    ],
+    /,
+    *,
+    new_axis: int = 0,
+    axis: int = 0,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Concatenate a sequence of arrays along a new or an existing axis.
+
+    Parameters
+    ----------
+    input_sequence
+        A sequence of arrays.
+    new_axis
+        Insert and concatenate on a new axis or not,
+        default 0 means do not insert new axis.
+        new_axis = 0: concatenate
+        new_axis = 1: stack
+    axis
+        axis along which the arrays will be concatenated.
+
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Output Array
+    """
+    return current_backend(input_sequence).concat_from_sequence(
+        input_sequence, new_axis=new_axis, axis=axis, out=out
+    )
