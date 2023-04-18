@@ -345,3 +345,9 @@ def index_copy(input, dim, index, source, *, out=None):
         res = ivy.flatten(res)
 
     return ivy.swapaxes(res, 0, dim, out=out)
+
+
+@to_ivy_arrays_and_back
+def take(input, index):
+    input = ivy.reshape(input, (-1,))
+    return ivy.gather(input, index, axis=0)
