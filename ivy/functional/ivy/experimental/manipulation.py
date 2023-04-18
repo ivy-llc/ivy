@@ -20,6 +20,7 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_view,
     inputs_to_ivy_arrays,
+    handle_array_function,
 )
 from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
@@ -215,6 +216,16 @@ def moveaxis(
     return ivy.current_backend().moveaxis(a, source, destination, copy=copy, out=out)
 
 
+def _iter_product(*args, repeat=1):
+    # itertools.product
+    pools = [tuple(pool) for pool in args] * repeat
+    result = [[]]
+    for pool in pools:
+        result = [x + [y] for x in result for y in pool]
+    for prod in result:
+        yield tuple(prod)
+
+
 @inputs_to_ivy_arrays
 @handle_exceptions
 def ndenumerate(
@@ -243,16 +254,13 @@ def ndenumerate(
     (1, 1) 4
     """
 
-    def _ndenumerate(input, t=None):
-        if t is None:
-            t = ()
+    def _ndenumerate(input):
         if ivy.is_ivy_array(input) and input.shape == ():
-            input = ivy.to_scalar(input)
-        if not hasattr(input, "__iter__"):
-            yield t, input
+            yield (), ivy.to_scalar(input)
         else:
-            for i, v in enumerate(input):
-                yield from _ndenumerate(v, t + (i,))
+            i = [range(k) for k in input.shape]
+            for idx in _iter_product(*i):
+                yield idx, input[idx]
 
     return _ndenumerate(input)
 
@@ -284,17 +292,7 @@ def ndindex(
     (1, 1)
     """
 
-    def _iter_product(*args, repeat=1):
-        pools = [tuple(pool) for pool in args] * repeat
-        result = [[]]
-        for pool in pools:
-            result = [x + [y] for x in result for y in pool]
-        for prod in result:
-            yield tuple(prod)
-
-    args = []
-    for s in range(len(shape)):
-        args += [range(shape[s])]
+    args = [range(k) for k in shape]
     return _iter_product(*args)
 
 
@@ -1670,4 +1668,48 @@ def as_strided(
     return ivy.reshape(
         ivy.frombuffer(buffer, dtype=x.dtype, count=size),
         shape,
+    )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_function
+def concat_from_sequence(
+    input_sequence: Union[
+        Tuple[Union[ivy.Array, ivy.NativeArray]],
+        List[Union[ivy.Array, ivy.NativeArray]],
+    ],
+    /,
+    *,
+    new_axis: int = 0,
+    axis: int = 0,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Concatenate a sequence of arrays along a new or an existing axis.
+
+    Parameters
+    ----------
+    input_sequence
+        A sequence of arrays.
+    new_axis
+        Insert and concatenate on a new axis or not,
+        default 0 means do not insert new axis.
+        new_axis = 0: concatenate
+        new_axis = 1: stack
+    axis
+        axis along which the arrays will be concatenated.
+
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Output Array
+    """
+    return current_backend(input_sequence).concat_from_sequence(
+        input_sequence, new_axis=new_axis, axis=axis, out=out
     )
