@@ -81,7 +81,7 @@ def test_binary_cross_entropy_with_logits(
 @handle_test(
     fn_tree="functional.ivy.experimental.ctc_loss",
     dtype_and_logits=helpers.dtype_and_values(
-        available_dtypes=[np.float32, np.float64],
+        available_dtypes=["float32", "float64"],
         small_abs_safety_factor=4,
         safety_factor_scale="log",
         max_value=1,
@@ -94,7 +94,7 @@ def test_binary_cross_entropy_with_logits(
     ),
 
     dtype_and_targets=helpers.dtype_and_values(
-        available_dtypes=[np.int32],
+        available_dtypes=["int32"],
         min_value=0,
         max_value=10,
         allow_inf=False,
@@ -105,7 +105,7 @@ def test_binary_cross_entropy_with_logits(
     ),
 
     logit_lengths=helpers.dtype_and_values(
-        available_dtypes=[np.int64],
+        available_dtypes=["int64"],
         min_value=1,
         max_value=100,
         allow_inf=False,
@@ -115,7 +115,7 @@ def test_binary_cross_entropy_with_logits(
 
     ),
     label_lengths=helpers.dtype_and_values(
-        available_dtypes=[np.int64],
+        available_dtypes=["int64"],
         min_value=1,
         max_value=20,
         allow_inf=False,
