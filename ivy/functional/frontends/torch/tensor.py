@@ -931,6 +931,7 @@ class Tensor:
     # Method aliases
     absolute, absolute_ = abs, abs_
     clip, clip_ = clamp, clamp_
+    fix, fix_ = trunc, trunc_
     ndimension = dim
 
     def bitwise_xor(self, other):
