@@ -723,6 +723,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         *,
         data_format: str = "NDHWC",
         count_include_pad: bool = False,
+        ceil_mode: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -748,6 +749,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
             NDHWC" or "NCDHW". Defaults to "NDHWC".
         count_include_pad
             Whether to include padding in the averaging calculation.
+        ceil_mode
+            Whether to use ceil or floor for creating the output shape.
         out
             optional output array, for writing the result to. It must
             have a shape that the inputs broadcast to.
@@ -779,6 +782,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
             padding,
             data_format=data_format,
             count_include_pad=count_include_pad,
+            ceil_mode=ceil_mode,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -795,6 +799,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         *,
         data_format: str = "NDHWC",
         count_include_pad: bool = False,
+        ceil_mode: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -820,6 +825,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
             NDHWC" or "NCDHW". Defaults to "NDHWC".
         count_include_pad
             Whether to include padding in the averaging calculation.
+        ceil_mode
+            Whether to use ceil or floor for creating the output shape.
         out
             optional output array, for writing the result to. It must
             have a shape that the inputs broadcast to.
@@ -850,6 +857,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
             padding,
             data_format=data_format,
             count_include_pad=count_include_pad,
+            ceil_mode=ceil_mode,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

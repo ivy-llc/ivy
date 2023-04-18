@@ -773,9 +773,7 @@ class Tensor:
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def softmax(self, dim=None, dtype=None):
-        return torch_frontend.nn.functional.softmax(
-            self, dim=dim, dtype=dtype
-        )
+        return torch_frontend.nn.functional.softmax(self, dim=dim, dtype=dtype)
 
     def repeat(self, *args, repeats=None):
         if args and repeats:
