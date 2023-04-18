@@ -100,4 +100,13 @@ def standard_gamma(shape, size=None):
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def chisquare(df, size=None):
-    return ivy.gamma(df / 2, 2, shape=size, dtype="float64")
+    df = ivy.array(df)  # scalar ints and floats are also array_like
+    if ivy.any(df <= 0):
+        raise ValueError("df <= 0")
+
+    # ivy.gamma() throws an error if both alpha is an array and a shape is passed
+    # so this part broadcasts df into the shape of `size`` first to keep it happy.
+    if size is not None:
+        df = df * ivy.ones(size)
+
+    return ivy.gamma(df / 2, 2, dtype="float64")

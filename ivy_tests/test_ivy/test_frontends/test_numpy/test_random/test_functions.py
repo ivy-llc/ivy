@@ -390,13 +390,30 @@ def test_numpy_standard_gamma(
 @handle_frontend_test(
     fn_tree="numpy.random.chisquare",
     dtypes=helpers.get_dtypes("float", full=False),
-    df=st.floats(
-        min_value=0,
-        exclude_min=True,
-        allow_nan=False,
-        allow_infinity=False,
-        allow_subnormal=False,
-        width=32,
+    df=st.one_of(
+        st.floats(
+            min_value=0,
+            exclude_min=True,
+            allow_nan=False,
+            allow_infinity=False,
+            allow_subnormal=False,
+            width=32,
+        ),
+        st.integers(min_value=1),
+        st.lists(
+            st.one_of(
+                st.floats(
+                    min_value=0,
+                    exclude_min=True,
+                    allow_nan=False,
+                    allow_infinity=False,
+                    allow_subnormal=False,
+                    width=32,
+                )
+                | st.integers(min_value=1)
+            ),
+            min_size=1,
+        ),
     ),
     size=helpers.get_shape(allow_none=True),
     test_with_out=st.just(False),
@@ -410,6 +427,13 @@ def test_numpy_chisquare(
     fn_tree,
     on_device,
 ):
+    # make sure `size` is something `df` can be broadcast to
+    if (
+        hasattr(df, "__len__")
+        and size is not None
+        and (len(size) == 0 or size[-1] != len(df))
+    ):
+        size = (*size, len(df))
     helpers.test_frontend_function(
         input_dtypes=dtypes,
         frontend=frontend,
