@@ -292,7 +292,7 @@ class ndarray:
         return np_frontend.tobytes(self.data, order=order)
 
     def tolist(self) -> list:
-        return np_frontend.tolist(self._ivy_array)
+        return self._ivy_array.to_list()
 
     def view(self):
         return np_frontend.reshape(self._ivy_array, tuple(self.shape))
