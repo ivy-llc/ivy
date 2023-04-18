@@ -6,6 +6,7 @@ import jax.numpy as jnp
 from jax import jit
 
 import ivy
+import numpy as np
 
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
 
@@ -21,6 +22,12 @@ def ctc_loss(
     zero_infinity: Optional[bool] = True,
     out: Optional[jnp.ndarray] = None,
 ) -> jnp.ndarray:
+
+    targets = targets.astype(jnp.int32)
+    input_lengths = input_lengths.astype(jnp.int64)
+    target_lengths = target_lengths.astype(jnp.int64)
+    blank = np.int32(blank)
+
 
     batch_size = log_probs.shape[0]
     max_input_length = log_probs.shape[1]
