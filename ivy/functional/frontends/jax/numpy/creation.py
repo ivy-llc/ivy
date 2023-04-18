@@ -115,6 +115,8 @@ def identity(n, dtype=None):
 
 @to_ivy_arrays_and_back
 def ndim(a):
+    if not isinstance(a, ivy.Array):
+        return 0
     return ivy.astype(ivy.array(a.ndim), ivy.int64)
 
 
