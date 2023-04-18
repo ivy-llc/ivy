@@ -312,6 +312,7 @@ def avg_pool3d(
     *,
     data_format: str = "NDHWC",
     count_include_pad: bool = False,
+    ceil_mode: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
 
@@ -328,7 +329,9 @@ def avg_pool3d(
     if data_format == "NCDHW":
         x = jnp.transpose(x, (0, 2, 3, 4, 1))
 
-    res = general_pool(x, 0.0, jlax.add, kernel, strides, padding, 3)
+    res = general_pool(
+        x, 0.0, jlax.add, kernel, strides, padding, 3, ceil_mode=ceil_mode
+    )
 
     res = res / general_pool(
         jnp.ones_like(x, dtype=res.dtype),
@@ -339,6 +342,7 @@ def avg_pool3d(
         padding,
         3,
         count_include_pad=count_include_pad,
+        ceil_mode=ceil_mode,
     )
 
     if data_format == "NCDHW":
