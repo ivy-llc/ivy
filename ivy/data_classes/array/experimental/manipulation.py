@@ -878,3 +878,56 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             Output Array
         """
         return ivy.as_strided(self._data, shape, strides)
+
+    @handle_view
+    def concat_from_sequence(
+        self: ivy.Array,
+        /,
+        input_sequence: Union[
+            Tuple[Union[ivy.Array, ivy.NativeArray]],
+            List[Union[ivy.Array, ivy.NativeArray]],
+        ],
+        *,
+        new_axis: int = 0,
+        axis: int = 0,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        This method simply wraps the function, and so the docstring for
+        ivy.concat_from_sequence also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Array input.
+        input_sequence
+            A sequence of arrays.
+        new_axis
+            Insert and concatenate on a new axis or not,
+            default 0 means do not insert new axis.
+            new_axis = 0: concatenate
+            new_axis = 1: stack
+        axis
+            The axis along which the arrays will be concatenated.
+        out
+            Optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Output Array
+        """
+        if new_axis == 0:
+            return ivy.concat_from_sequence(
+                [self._data] + input_sequence, new_axis=new_axis, axis=axis, out=out
+            )
+        elif new_axis == 1:
+            if not isinstance(input_sequence, (tuple, list)):
+                input_sequence = [input_sequence]
+            if isinstance(input_sequence, tuple):
+                input_sequence = (self._data,) + input_sequence
+            else:
+                input_sequence = [self._data] + input_sequence
+            return ivy.concat_from_sequence(
+                input_sequence, new_axis=new_axis, axis=axis, out=out
+            )

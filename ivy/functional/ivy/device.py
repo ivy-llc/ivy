@@ -683,6 +683,7 @@ def tpu_is_available() -> bool:
 
 # Default Device #
 
+
 # noinspection PyShadowingNames
 @handle_exceptions
 def default_device(
@@ -1006,7 +1007,9 @@ def split_func_call(
             max_chunk_size = max_chunk_sizes[shape_key]
         else:
             max_chunk_size = 0
-        max_dim = max([inp.shape[inp_ax] for inp, inp_ax in zip(inputs, input_axes)])
+        max_dim = max(
+            [inp.cont_shape[inp_ax] for inp, inp_ax in zip(inputs, input_axes)]
+        )
         if max_dim > max_chunk_size:
             max_chunk_sizes[shape_key] = max_dim
             max_chunk_size = max_dim
@@ -1094,7 +1097,7 @@ def _is_valid_devices_attributes(fn: Callable) -> bool:
     return True
 
 
-def _get_devices(fn, complement=True):
+def _get_devices(fn: Callable, complement: bool = True) -> Tuple:
     valid_devices = ivy.valid_devices
     invalid_devices = ivy.invalid_devices
     all_devices = ivy.all_devices
@@ -1116,7 +1119,7 @@ def _get_devices(fn, complement=True):
         ("supported_devices", set.intersection, valid_devices),
         ("unsupported_devices", set.difference, invalid_devices),
     ]
-    for (key, merge_fn, base) in basic:
+    for key, merge_fn, base in basic:
         if hasattr(fn, key):
             v = getattr(fn, key)
             if "einops" in fn.__name__ and isinstance(v, dict):

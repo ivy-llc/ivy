@@ -15,6 +15,7 @@ from ivy.utils.backend.sub_backend_handler import _clear_current_sub_backends
 
 backend_stack = []
 compiled_backends = {}
+_compiled_backends_ids = {}
 implicit_backend = "numpy"
 ivy_original_dict = ivy.__dict__.copy()
 ivy_original_fn_dict = dict()
@@ -587,6 +588,7 @@ def with_backend(backend: str, cached: bool = False):
     with _importlib.LocalIvyImporter():
         ivy_pack = _importlib._import_module("ivy")
         ivy_pack._is_local_pkg = True
+        ivy_pack._compiled_id = id(ivy_pack)
         backend_module = _importlib._import_module(
             ivy_pack.utils.backend.handler._backend_dict[backend], ivy_pack.__package__
         )
@@ -600,6 +602,7 @@ def with_backend(backend: str, cached: bool = False):
         ivy_pack.utils.backend._importlib.import_cache = copy.copy(
             _importlib.import_cache
         )
+        _compiled_backends_ids[ivy_pack._compiled_id] = ivy_pack
     try:
         compiled_backends[backend].append(ivy_pack)
     except KeyError:

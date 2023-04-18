@@ -20,6 +20,7 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_view,
     inputs_to_ivy_arrays,
+    handle_array_function,
 )
 from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
@@ -1670,4 +1671,48 @@ def as_strided(
     return ivy.reshape(
         ivy.frombuffer(buffer, dtype=x.dtype, count=size),
         shape,
+    )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_function
+def concat_from_sequence(
+    input_sequence: Union[
+        Tuple[Union[ivy.Array, ivy.NativeArray]],
+        List[Union[ivy.Array, ivy.NativeArray]],
+    ],
+    /,
+    *,
+    new_axis: int = 0,
+    axis: int = 0,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Concatenate a sequence of arrays along a new or an existing axis.
+
+    Parameters
+    ----------
+    input_sequence
+        A sequence of arrays.
+    new_axis
+        Insert and concatenate on a new axis or not,
+        default 0 means do not insert new axis.
+        new_axis = 0: concatenate
+        new_axis = 1: stack
+    axis
+        axis along which the arrays will be concatenated.
+
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Output Array
+    """
+    return current_backend(input_sequence).concat_from_sequence(
+        input_sequence, new_axis=new_axis, axis=axis, out=out
     )

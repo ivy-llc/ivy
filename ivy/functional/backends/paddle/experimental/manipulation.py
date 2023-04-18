@@ -320,3 +320,22 @@ def expand(
         return x_real + 1j * x_imag
     else:
         return paddle.expand(x, shape)
+
+
+def concat_from_sequence(
+    input_sequence: Union[Tuple[paddle.Tensor], List[paddle.Tensor]],
+    /,
+    *,
+    new_axis: int = 0,
+    axis: int = 0,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    is_tuple = type(input_sequence) is tuple
+    if is_tuple:
+        input_sequence = list(input_sequence)
+    if new_axis == 0:
+        ret = paddle.concat(input_sequence, axis=axis)
+        return ret
+    elif new_axis == 1:
+        ret = paddle.stack(input_sequence, axis=axis)
+        return ret
