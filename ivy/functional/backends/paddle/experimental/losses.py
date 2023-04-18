@@ -12,6 +12,7 @@ from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from .. import backend_version
 
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
+import numpy as np
 
 @with_unsupported_dtypes({"1.13.0 and below": ("float16",)}, backend_version)
 
@@ -28,10 +29,10 @@ def ctc_loss(
 
     return F.ctc_loss(
         log_probs=log_probs,
-        labels=targets,
-        input_lengths=input_lengths,
-        label_lengths=target_lengths,
-        blank=blank,
+        labels=paddle.cast(targets, paddle.int32),
+        input_lengths=paddle.cast(input_lengths, paddle.int64),
+        label_lengths=paddle.cast(target_lengths, paddle.int64),
+        blank=np.int32(blank),
         )
 
 
