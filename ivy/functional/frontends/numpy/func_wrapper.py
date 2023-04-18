@@ -270,7 +270,8 @@ def _ivy_to_numpy(x: Any) -> Any:
 
 def _ivy_to_numpy_order_F(x: Any) -> Any:
     if isinstance(x, ivy.Array) or ivy.is_native_array(x):
-        a = np_frontend.ndarray(0, order="F")  # TODO Find better initialisation workaround
+        a = np_frontend.ndarray(0, order="F")  
+        # TODO Find better initialisation workaround
         a.ivy_array = x
         return a
     else:
