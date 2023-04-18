@@ -410,6 +410,7 @@ There are a number of such shell scripts in `ivy/run_tests_CLI`_:
 
 For Windows users, you may need to specify that the shell scripts should be run by :code:`sh`, which comes with Git. In the Terminal, prepend sh to the script commands like so:
 
+
 * To run :code:`run_tests.sh` on Windows, type :code:`sh ./run_tests_CLI/run_tests.sh` in the :code:`/ivy` directory.
   This runs all tests in :code:`ivy/ivy_tests`.
 * To run :code:`test_array_api.sh` on Windows, type :code:`sh ./test_array_api.sh [backend] test_[submodule]`.
