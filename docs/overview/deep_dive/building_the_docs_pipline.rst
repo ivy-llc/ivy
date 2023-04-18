@@ -215,8 +215,7 @@ you can add a template for these stub files using the ``:template:`` option. Whi
 inturn include the ``autosummary`` directive again, recursing on the whole module.
 
 Unfortunately, the original ``autosummary`` extension is very limited, forcing you to
-have a table of contents for each modules, and the customized stub file can't be 
-included, which we needed to discover the modules automatically.
+have a table of contents for each modules.
 
 We'll go through each option or configuration value added to the original ``autosummary``
 
