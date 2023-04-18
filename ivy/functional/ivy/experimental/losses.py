@@ -13,6 +13,11 @@ from ivy.utils.exceptions import handle_exceptions
 from ivy.functional.ivy.losses import _reduce_loss
 from ivy.utils.backend import current_backend
 
+import numpy as np
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_array_function
 @inputs_to_ivy_arrays
 @handle_array_like_without_promotion
 @handle_nestable
@@ -169,6 +174,11 @@ def ctc_loss(
         If the shapes of pred, true, pred_lengths, and true_lengths are not compatible.
     """
     ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
+    
+    targets = targets.astype(ivy.int32)
+    input_lengths = input_lengths.astype(ivy.int64)
+    target_lengths = target_lengths.astype(ivy.int64)
+    blank = np.int32(blank)
 
     return current_backend(log_probs, targets, input_lengths, target_lengths,blank,zero_infinity,reduction,out).ctc_loss(
         log_probs,
