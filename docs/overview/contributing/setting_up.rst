@@ -366,14 +366,6 @@ Ubuntu
 **Docker Connection not Successfull**
 
 This is a common error which you might face. If you are not successfully able to connect docker with Pycharm(point 4a) and your docker is also running, the issue is that you are not able to use your docker socket. So, executing the below two commands should solve this.
-
-    .. code-block:: none
-
-        sudo chmod a+rwx /var/run/docker.sock
-
-    .. code-block:: none
-
-        sudo chmod a+rwx /var/run/docker.pid
     
 .. code-block:: none
         
@@ -471,7 +463,7 @@ For Windows users, you may need to specify that the shell scripts should be run 
 * :code:`test_ivy_nn.sh`, :code:`test_ivy_stateful.sh` are run in a similar manner to :code:`test_ivy_core.sh` on Windows.
   Make sure to check the submodule names in the source code before running.
 
-The above instructions for running tests on Windows assume that you have installed Git and have access to the Git Bash terminal. If you do not have Git Bash, you can download it from the official Git website `<https://git-scm.com/downloads>_`.
+The above instructions for running tests on Windows assume that you have installed Git and have access to the Git Bash terminal. If you do not have Git Bash, you can download it from the `official Git website <https://git-scm.com/downloads>`_.
 
 If you wish to run tests of all submodules of `ivy_core`, `ivy_nn` or `ivy_stateful`, there are :code:`.py` available in :code:`run_tests_CLI`.
 All are run like: :code:`python run_tests_CLI/run_ivy_nn_test.py 1`, where 1 = numpy, 2 = torch, 3 = jax, and 4 = tensorflow.
