@@ -288,7 +288,6 @@ def signbit(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    #raise IvyNotImplementedException()
     if not isinstance(x, paddle.Tensor):
             x = paddle.to_tensor(x)
     return paddle.less_equal(x, 0)
