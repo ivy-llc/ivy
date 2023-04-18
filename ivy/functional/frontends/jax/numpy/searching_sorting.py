@@ -31,6 +31,18 @@ from ivy.utils.exceptions import handle_exceptions
 def argmax(a, axis=None, out=None, keepdims=False):
     return ivy.argmax(a, axis=axis, keepdims=keepdims, out=out, dtype=ivy.int64)
 
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "jax",
+)
+def min(a, axis=None, out=None):
+    return ivy.min(a, axis=axis, out=out)
 
 @to_ivy_arrays_and_back
 def argwhere(a, /, *, size=None, fill_value=None):
