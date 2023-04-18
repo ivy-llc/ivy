@@ -224,9 +224,9 @@ Identity = to_ivy_arrays_and_back(
 )
 
 
-@to_ivy_arrays_and_back
-def IdentityN(*, input, name="IdentityN"):
-    return [ivy.copy_array(x) for x in input]
+IdentityN = to_ivy_arrays_and_back(
+    map_raw_ops_alias(tf_frontend.general_functions.identity_n)
+)
 
 
 @to_ivy_arrays_and_back
