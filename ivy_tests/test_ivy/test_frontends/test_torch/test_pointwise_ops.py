@@ -1692,6 +1692,8 @@ def test_torch_float_power(
     test_flags,
 ):
     input_dtype, x = dtype_and_x
+    # Making sure zero to the power of negative doesn't occur
+    assume(not np.any(np.isclose(x[0], 0)))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
