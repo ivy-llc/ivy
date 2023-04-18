@@ -408,16 +408,6 @@ def xlogy(
         return x * np.log(y)
 
 
-def xlog1py(
-    x: np.ndarray, y: np.ndarray, /, *, out: Optional[np.ndarray] = None
-) -> np.ndarray:
-    x, y = promote_types_of_inputs(x, y)
-    if (x == 0).all():
-        return 0.0
-    else:
-        return x * np.log1p(y)
-
-
 def real(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.real(x)
 
