@@ -15,8 +15,9 @@ class DeviceArray:
 
     def __repr__(self):
         main = (
-            "ivy.frontends.jax.DeviceArray("
-            + str(ivy.to_list(self.ivy_array))
+            str(self.ivy_array.__repr__()).replace(
+                "ivy.array", "ivy.frontends.jax.DeviceArray"
+            )
             + ", dtype="
             + str(self.ivy_array.dtype)
         )
@@ -33,7 +34,7 @@ class DeviceArray:
 
     @property
     def dtype(self):
-        return dtype(self.ivy_array.dtype)
+        return self.ivy_array.dtype
 
     @property
     def shape(self):
