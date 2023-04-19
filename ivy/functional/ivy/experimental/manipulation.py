@@ -218,6 +218,17 @@ def moveaxis(
     return ivy.current_backend().moveaxis(a, source, destination, copy=copy, out=out)
 
 
+def _iter_product(*args, repeat=1):
+    # itertools.product
+    pools = [tuple(pool) for pool in args] * repeat
+    result = [[]]
+    for pool in pools:
+        result = [x + [y] for x in result for y in pool]
+    for prod in result:
+        yield tuple(prod)
+
+
+
 @inputs_to_ivy_arrays
 @handle_exceptions
 def ndenumerate(
@@ -246,16 +257,13 @@ def ndenumerate(
     (1, 1) 4
     """
 
-    def _ndenumerate(input, t=None):
-        if t is None:
-            t = ()
+    def _ndenumerate(input):
         if ivy.is_ivy_array(input) and input.shape == ():
-            input = ivy.to_scalar(input)
-        if not hasattr(input, "__iter__"):
-            yield t, input
+            yield (), ivy.to_scalar(input)
         else:
-            for i, v in enumerate(input):
-                yield from _ndenumerate(v, t + (i,))
+            i = [range(k) for k in input.shape]
+            for idx in _iter_product(*i):
+                yield idx, input[idx]
 
     return _ndenumerate(input)
 
@@ -287,17 +295,7 @@ def ndindex(
     (1, 1)
     """
 
-    def _iter_product(*args, repeat=1):
-        pools = [tuple(pool) for pool in args] * repeat
-        result = [[]]
-        for pool in pools:
-            result = [x + [y] for x in result for y in pool]
-        for prod in result:
-            yield tuple(prod)
-
-    args = []
-    for s in range(len(shape)):
-        args += [range(shape[s])]
+    args = [range(k) for k in shape]
     return _iter_product(*args)
 
 
