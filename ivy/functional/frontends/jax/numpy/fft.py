@@ -1,20 +1,18 @@
-import jax.numpy.fft as jax_fft
-import ivy.numpy as ivy_np
+import ivy
+import jax.numpy as jnp
+from jax.numpy.fft import fft as jax_fft, ifft as jax_ifft
 
-def fft(x):
-    # convert input array to Jax array
-    x_jax = ivy_np.asarray(x)
-    # calculate FFT using Jax
-    y_jax = jax_fft.fft(x_jax)
-    # convert output array to Ivy array
-    y = ivy_np.asarray(y_jax)
-    return y
+# Add JAX NumPy FFT functions to the JAX frontend for Ivy
+ivy.jax_backend.jax_fft = jax_fft
+ivy.jax_backend.jax_ifft = jax_ifft
 
-def ifft(x):
-    # convert input array to Jax array
-    x_jax = ivy_np.asarray(x)
-    # calculate inverse FFT using Jax
-    y_jax = jax_fft.ifft(x_jax)
-    # convert output array to Ivy array
-    y = ivy_np.asarray(y_jax)
-    return y
+# Wrapper functions for the FFT and IFFT functions using Ivy and JAX
+def ivy_fft(x):
+    if ivy.is_numpy(x):
+        return jax_fft(x)
+    return ivy.jax_backend.jax_fft(x)
+
+def ivy_ifft(x):
+    if ivy.is_numpy(x):
+        return jax_ifft(x)
+    return ivy.jax_backend.jax_ifft(x)
