@@ -43,6 +43,7 @@ if "ARRAY_API_TESTS_MODULE" not in os.environ:
 
 def pytest_report_header(config):
     return [
+        f"backend(s): {config.getoption('backend')}",
         f"device: {config.getoption('device')}",
         f"number of Hypothesis examples: {config.getoption('num_examples')}",
     ]

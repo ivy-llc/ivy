@@ -9,6 +9,7 @@ from ivy.functional.frontends.jax.func_wrapper import (
 from ivy.functional.frontends.numpy.func_wrapper import from_zero_dim_arrays_to_scalar
 from typing import Union, Optional
 from ivy.func_wrapper import (
+    with_unsupported_dtypes,
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
@@ -18,8 +19,17 @@ from ivy.utils.exceptions import handle_exceptions
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "jax",
+)
 def argmax(a, axis=None, out=None, keepdims=False):
-    return ivy.argmax(a, axis=axis, keepdims=keepdims, out=out)
+    return ivy.argmax(a, axis=axis, keepdims=keepdims, out=out, dtype=ivy.int64)
 
 
 @to_ivy_arrays_and_back

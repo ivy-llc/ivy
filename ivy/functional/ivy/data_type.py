@@ -997,7 +997,7 @@ def closest_valid_dtype(type: Union[ivy.Dtype, str, None], /) -> Union[ivy.Dtype
     return current_backend(type).closest_valid_dtype(type)
 
 
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
 def default_float_dtype(
@@ -1139,7 +1139,7 @@ def infer_default_dtype(
     return default_dtype
 
 
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_exceptions
 def default_dtype(
     *,
@@ -1199,7 +1199,7 @@ def default_dtype(
     return ivy.as_ivy_dtype(ret)
 
 
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_exceptions
 def default_int_dtype(
     *,
@@ -1308,7 +1308,7 @@ def default_int_dtype(
     return ivy.IntDtype(ivy.as_ivy_dtype(ret))
 
 
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_exceptions
 def default_uint_dtype(
     *,
@@ -1404,7 +1404,7 @@ def default_uint_dtype(
     return ivy.UintDtype(ivy.as_ivy_dtype(ret))
 
 
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
 def default_complex_dtype(
@@ -1907,7 +1907,7 @@ def is_uint_dtype(
     return "uint" in as_ivy_dtype(dtype_in)
 
 
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
 def is_complex_dtype(
@@ -2365,3 +2365,34 @@ def promote_types_of_inputs(
 
     ivy.utils.assertions._check_jax_x64_flag(x1.dtype)
     return ivy.to_native(x1), ivy.to_native(x2)
+
+
+@handle_exceptions
+def is_native_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> bool:
+    """
+    Determines whether the input dtype is a Native dtype.
+
+    Parameters
+    ----------
+    dtype_in
+        Determine whether the input data type is a native data type object.
+
+    Returns
+    -------
+    ret
+        Boolean, whether or not dtype_in is a native data type.
+
+    Examples
+    --------
+    >>> ivy.set_backend('numpy')
+    >>> ivy.is_native_dtype(np.int32)
+    True
+
+    >>> ivy.set_backend('numpy')
+    >>> ivy.is_native_array(ivy.float64)
+    False
+    """
+    try:
+        return current_backend(None).is_native_dtype(dtype_in)
+    except ValueError:
+        return False

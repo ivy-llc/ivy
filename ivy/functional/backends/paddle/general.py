@@ -1,8 +1,6 @@
 """Collection of Paddle general functions, wrapped to fit Ivy syntax and signature."""
 # global
-from functools import reduce
 from numbers import Number
-from operator import mul
 from typing import Optional, Union, Sequence, Callable, List, Tuple
 import paddle
 import numpy as np
@@ -13,7 +11,7 @@ from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
 from . import backend_version
 import multiprocessing as _multiprocessing
-from .elementwise import _elementwise_helper
+
 
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
@@ -44,24 +42,51 @@ def current_backend_str() -> str:
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
-def get_item(x: paddle.Tensor, query: Union[paddle.Tensor, Tuple]) -> paddle.Tensor:
-    if isinstance(query, tuple):
+def get_item(
+    x: paddle.Tensor, query: Union[paddle.Tensor, Tuple], *, copy: bool = None
+) -> paddle.Tensor:
+    # regular queries x[idx_1,idx_2,...,idx_i]
+    if not isinstance(query, paddle.Tensor):
+        if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
+            return x.cast("float32").__getitem__(query).cast(x.dtype)
         return x.__getitem__(query)
 
-    if not ivy.is_native_array(query):
-        query = paddle.to_tensor(query)
-
-    dtype = ivy.dtype(query, as_native=True)
-    x_dtype = ivy.dtype(x, as_native=True)
-
-    if dtype is paddle.bool:
+    # masked queries x[bool_1,bool_2,...,bool_i]
+    if query.dtype == paddle.bool:
+        if x.dtype in [
+            paddle.int8,
+            paddle.int16,
+            paddle.uint8,
+            paddle.float16,
+            paddle.complex64,
+            paddle.complex128,
+            paddle.bool,
+        ]:
+            if paddle.is_complex(x):
+                return paddle.complex(
+                    paddle.masked_select(x.real(), query),
+                    paddle.masked_select(x.imag(), query),
+                )
+            return paddle.masked_select(x.cast("float32"), query).cast(x.dtype)
         return paddle.masked_select(x, query)
 
-    if x_dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
-        ret = paddle.cast(x, "float32").__getitem__(tuple(query))
-        return paddle.cast(ret, x_dtype)
-
-    return x.__getitem__(tuple(query))
+    query = query.cast("int64")
+    # array queries idx = Tensor(idx_1,idx_2,...,idx_i), x[idx]
+    if x.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+        paddle.complex64,
+        paddle.complex128,
+        paddle.bool,
+    ]:
+        if paddle.is_complex(x):
+            return paddle.complex(
+                x.real().__getitem__(query), x.imag().__getitem__(query)
+            )
+        return x.cast("float32").__getitem__(query).cast(x.dtype)
+    return x.__getitem__(query)
 
 
 @with_unsupported_device_and_dtypes(
@@ -91,7 +116,7 @@ def to_numpy(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def to_scalar(x: paddle.Tensor, /) -> Number:
-    if isinstance(x, (Number,complex)):
+    if isinstance(x, (Number, complex)):
         return x
     return x.item()
 
@@ -104,23 +129,7 @@ def to_list(x: paddle.Tensor, /) -> list:
 
 
 @with_unsupported_device_and_dtypes(
-    {
-        "2.4.2 and below": {
-            "cpu": (
-                "uint16",
-                "bfloat16",
-                "int8",
-                "int16",
-                "int32",
-                "int64",
-                "float16",
-                "complex64",
-                "complex128",
-                "bool",
-            )
-        }
-    },
-    backend_version,
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def gather(
     params: paddle.Tensor,
@@ -131,23 +140,55 @@ def gather(
     batch_dims: Optional[int] = 0,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    axis = axis % paddle.Tensor.ndimension(params)
-    batch_dims = batch_dims % paddle.Tensor.ndimension(params)
+    def _gather(params1):
+        with ivy.ArrayMode(False):
+            if batch_dims == 0:
+                result = paddle.gather(
+                    params1, ivy.reshape(indices, shape=[-1]), axis=axis
+                )
+            # inputs are unstacked batch_dims times
+            # because paddle.gather does not support batch_dims
+            else:
+                params1_list = ivy.unstack(params1, axis=0)
+                indices_list = ivy.unstack(indices, axis=0)
+                for b in range(1, batch_dims):
+                    params1_list = [
+                        p2 for p1 in params1_list for p2 in ivy.unstack(p1, axis=0)
+                    ]
+                    indices_list = [
+                        i2 for i1 in indices_list for i2 in ivy.unstack(i1, axis=0)
+                    ]
+                result = []
+                for p, i in zip(params1_list, indices_list):
+                    result.append(
+                        paddle.gather(
+                            p, ivy.reshape(i, shape=[-1]), axis=axis - batch_dims
+                        )
+                    )
+                result = ivy.concat(result, axis=0)
+            new_shape = (
+                params1.shape[:axis]
+                + indices.shape[batch_dims:]
+                + params1.shape[axis + 1 :]
+            )
+            return ivy.reshape(result, shape=new_shape)
+
+    axis = axis % params.ndim
+    batch_dims = batch_dims % params.ndim
     ivy.utils.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
-    if batch_dims == 0:
-        result = paddle.gather(params, paddle.reshape(indices, shape=[-1]), axis=axis)
-    else:
-        params_list = [p for p in params]
-        indices_list = [i for i in indices]
-        for b in range(1, batch_dims):
-            params_list = [p1 for p in params_list for p1 in p]
-            indices_list = [i1 for i in indices_list for i1 in i]
-        result = []
-        for p, i in zip(params_list, indices_list):
-            result.append(paddle.gather(p, paddle.reshape(i, shape=[-1]), axis=axis-batch_dims))
-        result = paddle.concat(result, axis=0)
-    new_shape = params.shape[:axis] + indices.shape[batch_dims:] + params.shape[axis + 1:]
-    return paddle.reshape(result, shape=new_shape)
+    if params.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.float16,
+        paddle.complex64,
+        paddle.complex128,
+        paddle.bool,
+    ]:
+        if paddle.is_complex(params):
+            return paddle.complex(_gather(params.real()), _gather(params.imag()))
+        return _gather(params.cast("float32")).cast(params.dtype)
+    return _gather(params)
+
 
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
@@ -208,6 +249,7 @@ def inplace_increment(
     else:
         x = ivy.Array(x_native)
     return x
+
 
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
@@ -288,7 +330,7 @@ def shape(
     x: paddle.Tensor, /, *, as_array: bool = False
 ) -> Union[ivy.Shape, ivy.Array]:
     if as_array:
-        return ivy.array(paddle.shape(x), dtype=ivy.default_int_dtype())
+        return ivy.array(x.shape, dtype=ivy.default_int_dtype())
     else:
         return ivy.Shape(x.shape)
 
@@ -302,3 +344,35 @@ def vmap(
     out_axes: Optional[int] = 0,
 ) -> Callable:
     raise IvyNotImplementedException()
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
+def isin(
+    elements: paddle.Tensor,
+    test_elements: paddle.Tensor,
+    /,
+    *,
+    assume_unique: Optional[bool] = False,
+    invert: Optional[bool] = False,
+) -> paddle.Tensor:
+    input_shape = elements.shape
+    if elements.ndim == 0:
+        elements = ivy.reshape(elements, [1])
+    if test_elements.ndim == 0:
+        test_elements = ivy.reshape(test_elements, [1])
+    if not assume_unique:
+        test_elements = ivy.unique_values(test_elements)
+
+    elements = elements.reshape([-1])
+    test_elements = test_elements.reshape([-1])
+
+    output = ivy.any(
+        ivy.equal(ivy.expand_dims(elements, axis=-1), test_elements), axis=-1
+    )
+    return ivy.reshape(output, input_shape) ^ invert
+
+
+def itemsize(x: paddle.Tensor) -> int:
+    return x.element_size()

@@ -173,13 +173,13 @@ def matmul(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if transpose_a:
-        x1 = jnp.transpose(x1)
+        x1 = jnp.swapaxes(x1, -1, -2)
     if transpose_b:
-        x2 = jnp.transpose(x2)
+        x2 = jnp.swapaxes(x2, -1, -2)
     if adjoint_a:
-        x1 = jnp.transpose(jnp.conjugate(x1))
+        x1 = jnp.swapaxes(jnp.conjugate(x1), -1, -2)
     if adjoint_b:
-        x2 = jnp.transpose(jnp.conjugate(x2))
+        x2 = jnp.swapaxes(jnp.conjugate(x2), -1, -2)
     return jnp.matmul(x1, x2)
 
 
@@ -298,11 +298,11 @@ def matrix_transpose(
     backend_version,
 )
 def outer(
-        x1: JaxArray,
-        x2: JaxArray,
-        /,
-        *,
-        out: Optional[JaxArray] = None,
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return jnp.outer(x1, x2)

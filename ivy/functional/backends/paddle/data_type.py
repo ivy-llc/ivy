@@ -6,10 +6,9 @@ import numpy as np
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
 from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
 from . import backend_version
-from ivy.utils.exceptions import IvyNotImplementedException
 
 
 ivy_dtype_dict = {
@@ -130,13 +129,11 @@ def astype(
 )
 def broadcast_arrays(*arrays: paddle.Tensor) -> List[paddle.Tensor]:
     if len(arrays) > 1:
-        desired_shape = ivy.broadcast_shapes([arrays[0].shape, arrays[1].shape])
+        desired_shape = ivy.broadcast_shapes(arrays[0].shape, arrays[1].shape)
         if len(arrays) > 2:
             with ivy.ArrayMode(False):
                 for i in range(2, len(arrays)):
-                    desired_shape = ivy.broadcast_shapes(
-                        [desired_shape, arrays[i].shape]
-                    )
+                    desired_shape = ivy.broadcast_shapes(desired_shape, arrays[i].shape)
     else:
         return [arrays[0]]
     result = []
@@ -174,9 +171,7 @@ def broadcast_to(
         paddle.uint8,
         paddle.float16,
     ]:
-        return paddle.broadcast_to(x.cast(ivy.default_float_dtype()), shape).cast(
-            x.dtype
-        )
+        return paddle.broadcast_to(x.cast("float32"), shape).cast(x.dtype)
     elif x.dtype in [paddle.complex64, paddle.complex128]:
         x_real = paddle.broadcast_to(x.real(), shape)
         x_imag = paddle.broadcast_to(x.imag(), shape)
@@ -296,3 +291,10 @@ def dtype_bits(dtype_in: Union[paddle.dtype, str], /) -> int:
         .replace("float", "")
         .replace("complex", "")
     )
+
+
+def is_native_dtype(dtype_in: Union[paddle.dtype, str], /) -> bool:
+    if dtype_in in ivy_dtype_dict:
+        return True
+    else:
+        return False

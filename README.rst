@@ -1,6 +1,6 @@
 
-.. _`Backend Handler`: https://lets-unify.ai/ivy/overview/design/building_blocks.html#backend-handler
-.. _`Backend Functional APIs`: https://lets-unify.ai/ivy/overview/design/building_blocks.html#backend-functional-apis
+.. _`Backend Handler`: https://lets-unify.ai/docs/ivy/overview/design/building_blocks.html#backend-handler
+.. _`Backend Functional APIs`: https://lets-unify.ai/docs/ivy/overview/design/building_blocks.html#backend-functional-apis
 
 .. _`Mechanics`: https://github.com/unifyai/mech
 .. _`Computer Vision`: https://github.com/unifyai/vision
@@ -11,7 +11,7 @@
 .. _`Models`: https://github.com/unifyai/models
 
 .. _`Examples page`: https://lets-unify.ai/demos/
-.. _`open tasks`: https://lets-unify.ai/ivy/overview/contributing/open_tasks.html
+.. _`open tasks`: https://lets-unify.ai/docs/ivy/overview/contributing/open_tasks.html
 
 .. _`Discord`: https://discord.gg/sXyFF8tDtm
 .. _`Twitter`: https://twitter.com/letsunifyai
@@ -34,28 +34,28 @@
     <br/>
     <div align="center">
     <a href="https://github.com/unifyai/ivy/issues">
-        <img style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/issues/unifyai/ivy">
+        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/issues/unifyai/ivy">
     </a>
     <a href="https://github.com/unifyai/ivy/network/members">
-        <img style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/forks/unifyai/ivy">
+        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/forks/unifyai/ivy">
     </a>
     <a href="https://github.com/unifyai/ivy/stargazers">
-        <img style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/stars/unifyai/ivy">
+        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/stars/unifyai/ivy">
     </a>
     <a href="https://github.com/unifyai/ivy/pulls">
-        <img style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg">
+        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg">
     </a>
     <a href="https://pypi.org/project/ivy-core">
-        <img style="padding-right: 4px; padding-bottom: 4px;" src="https://badge.fury.io/py/ivy-core.svg">
+        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://badge.fury.io/py/ivy-core.svg">
     </a>
     <a href="https://github.com/unifyai/ivy/actions?query=workflow%3Adocs">
-        <img style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/ivy/actions/workflows/docs.yml/badge.svg">
+        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/ivy/actions/workflows/docs.yml/badge.svg">
     </a>
     <a href="https://github.com/unifyai/ivy/actions?query=workflow%3Atest-ivy">
-        <img style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/ivy/actions/workflows/test-ivy.yml/badge.svg">
+        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/ivy/actions/workflows/test-ivy.yml/badge.svg">
     </a>
     <a href="https://discord.gg/sXyFF8tDtm">
-        <img style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/discord/799879767196958751?color=blue&label=%20&logo=discord&logoColor=white">
+        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/discord/799879767196958751?color=blue&label=%20&logo=discord&logoColor=white">
     </a>
     </div>
     <br clear="all" />
@@ -63,7 +63,7 @@
 .. raw:: html
 
     <div style="display: block;" align="center">
-    <b><a href="https://lets-unify.ai/">Website</a></b> | <b><a href="https://lets-unify.ai/ivy/">Docs</a></b> | <b><a href="https://lets-unify.ai/demos/">Examples</a></b> | <b><a href="https://lets-unify.ai/ivy/overview/design.html">Design</a></b> | <b><a href="https://lets-unify.ai/ivy/overview/faq.html">FAQ</a></b><br><br>
+    <b><a href="https://lets-unify.ai/">Website</a></b> | <b><a href="https://lets-unify.ai/docs/ivy/">Docs</a></b> | <b><a href="https://lets-unify.ai/demos/">Examples</a></b> | <b><a href="https://lets-unify.ai/docs/ivy/overview/design.html">Design</a></b> | <b><a href="https://lets-unify.ai/docs/ivy/overview/faq.html">FAQ</a></b><br><br>
     
     <b>All of AI, at your fingertips</b>
     
@@ -74,19 +74,19 @@
     <div style="display: block;" align="center">
         <div>
         <a href="https://jax.readthedocs.io">
-            <img width="10%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/jax_logo.png">
+            <img class="dark-light" width="10%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/jax_logo.png">
         </a>
         <img width="1%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
         <a href="https://www.tensorflow.org">
-            <img width="10%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/tensorflow_logo.png">
+            <img class="dark-light" width="10%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/tensorflow_logo.png">
         </a>
         <img width="1%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
         <a href="https://pytorch.org">
-            <img width="10%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/pytorch_logo.png">
+            <img class="dark-light" width="10%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/pytorch_logo.png">
         </a>
         <img width="1%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
         <a href="https://numpy.org">
-            <img width="10%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/numpy_logo.png">
+            <img class="dark-light" width="10%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/numpy_logo.png">
         </a>
         </div>
     </div>
@@ -126,7 +126,7 @@ Ivy as a transpiler
 
 Ivy's transpiler allows you to use code from any other framework (or from any other version of the same framework!) in your own code, by just adding one line of code. Under the hood, Ivy traces a computational graph and leverages the frontends and backends to link one framework to another. 
 
-This way, Ivy makes all ML-related projects available for you, independently of the framework you want to use to research, develop, or deploy systems. Feel free to head over to the docs for the full API reference, but the functions you'd most likely wanto to use are:
+This way, Ivy makes all ML-related projects available for you, independently of the framework you want to use to research, develop, or deploy systems. Feel free to head over to the docs for the full API reference, but the functions you'd most likely want to use are:
 
 .. code-block:: python
 
@@ -172,19 +172,19 @@ These functions can be used eagerly or lazily. If you pass the necessary argumen
     # lazy_graph is now torch code and runs efficiently
     ret = lazy_graph(x1)
 
-If you want to learn more, you can find more information in the `Ivy as a transpiler section of the docs! <https://lets-unify.ai/ivy/overview/design/ivy_as_a_transpiler.html>`_
+If you want to learn more, you can find more information in the `Ivy as a transpiler section of the docs! <https://lets-unify.ai/docs/ivy/overview/design/ivy_as_a_transpiler.html>`_
 
 When should I use Ivy as a transpiler?
 ######################################
 
-If you want to use building blocks published in other frameworks (neural networks, layers, array computing libraries, training pipelines...), you want to integrate code developed in various frameworks, or maybe straight up move code from one framework to another, the transpiler is definitely the tool 🔧 for the job! As the output of transpilation is native code in the target framework, you can use the converted code just as if it was code originally developed in that framework, appliying framework-specific optimizations or tools, instantly exposing your project to all of the unique perks of a different framework.
+If you want to use building blocks published in other frameworks (neural networks, layers, array computing libraries, training pipelines...), you want to integrate code developed in various frameworks, or maybe straight up move code from one framework to another, the transpiler is definitely the tool 🔧 for the job! As the output of transpilation is native code in the target framework, you can use the converted code just as if it was code originally developed in that framework, applying framework-specific optimizations or tools, instantly exposing your project to all of the unique perks of a different framework.
 
 Ivy as a framework
 -------------------
 
-The Ivy framework is built on top of various essential components, mainly the `Backend Handler`_, which manages what framework is being used behind the scenes and the `Backend Functional APIs`_, which provide framework-specific implementations of the Ivy functions. Likewise, classes such as :code:`ivy.Container` or :code:`ivy.Array` are also available, facilitating the use of structured data and array-like objects (learn more about them `here! <https://lets-unify.ai/ivy/overview/design/ivy_as_a_framework.html>`_). 
+The Ivy framework is built on top of various essential components, mainly the `Backend Handler`_, which manages what framework is being used behind the scenes and the `Backend Functional APIs`_, which provide framework-specific implementations of the Ivy functions. Likewise, classes such as :code:`ivy.Container` or :code:`ivy.Array` are also available, facilitating the use of structured data and array-like objects (learn more about them `here! <https://lets-unify.ai/docs/ivy/overview/design/ivy_as_a_framework.html>`_). 
 
-All of the functionalities in Ivy are exposed through the :code:`Ivy functional API` and the :code:`Ivy stateful API`. All functions in the `Functional API <https://lets-unify.ai/ivy/overview/design/building_blocks.html#ivy-functional-api>`_ are **Framework Agnostic Functions**, which mean that we can use them like this:
+All of the functionalities in Ivy are exposed through the :code:`Ivy functional API` and the :code:`Ivy stateful API`. All functions in the `Functional API <https://lets-unify.ai/docs/ivy/overview/design/building_blocks.html#ivy-functional-api>`_ are **Framework Agnostic Functions**, which mean that we can use them like this:
 
 .. code-block:: python
 
@@ -205,7 +205,7 @@ All of the functionalities in Ivy are exposed through the :code:`Ivy functional 
 In the example above we show how Ivy's functions are compatible with tensors from different frameworks.
 This is the same for ALL Ivy functions. They can accept tensors from any framework and return the correct result.
 
-The `Ivy Stateful API <https://lets-unify.ai/ivy/overview/design/ivy_as_a_framework/ivy_stateful_api.html>`_, on the other hand, allows you to define trainable modules and layers, which you can use alone or as a part of any other framework code!
+The `Ivy Stateful API <https://lets-unify.ai/docs/ivy/overview/design/ivy_as_a_framework/ivy_stateful_api.html>`_, on the other hand, allows you to define trainable modules and layers, which you can use alone or as a part of any other framework code!
 
 .. code-block:: python
 
@@ -222,7 +222,7 @@ The `Ivy Stateful API <https://lets-unify.ai/ivy/overview/design/ivy_as_a_framew
             return ivy.sigmoid(self.linear1(x))
 
 
-If we put it all toghether, we'll have something like this. This example uses PyTorch as the backend,
+If we put it all together, we'll have something like this. This example uses PyTorch as the backend,
 but this can easily be changed to your favorite framework, such as TensorFlow, or JAX.
 
 .. code-block:: python
@@ -288,7 +288,7 @@ covering topics like `Mechanics`_, `Computer Vision`_, `Robotics`_, a `Reinforce
     </div>
     <br clear="all" />
 
-As always, you can find more information about `Ivy as a framework in the docs! <https://lets-unify.ai/ivy/overview/design/ivy_as_a_framework.html>`_
+As always, you can find more information about `Ivy as a framework in the docs! <https://lets-unify.ai/docs/ivy/overview/design/ivy_as_a_framework.html>`_
 
 When should I use Ivy as a framework?
 ######################################
@@ -348,7 +348,7 @@ or alternatively, for the last step:
 
     python3 -m pip install --user -e .
 
-If you want to set up testing and various frameworks it's probably best to check out the `Contributing - Setting Up <https://lets-unify.ai/ivy/overview/contributing/setting_up.html#setting-up>`_ page, where OS-specific and IDE-specific instructions and video tutorials to do so are available!
+If you want to set up testing and various frameworks it's probably best to check out the `Contributing - Setting Up <https://lets-unify.ai/docs/ivy/overview/contributing/setting_up.html#setting-up>`_ page, where OS-specific and IDE-specific instructions and video tutorials to do so are available!
 
 
 Using Ivy
@@ -402,13 +402,13 @@ You can find quite a lot more examples in the corresponding section below, but u
 Documentation
 -------------
 
-The `Ivy Docs page <https://lets-unify.ai/ivy/>`_ holds all the relevant information about Ivy's and it's framework API reference. 
+The `Ivy Docs page <https://lets-unify.ai/docs/ivy/>`_ holds all the relevant information about Ivy's and it's framework API reference. 
 
-There, you will find the `Design <https://lets-unify.ai/ivy/overview/design.html>`_ page, which is an user-focused guide about the architecture and the building blocks of Ivy. Likewise, you can take a look at the `Deep dive <https://lets-unify.ai/ivy/overview/deep_dive.html>`_, which is oriented towards potential contributors of the code base and explains the nuances of Ivy in full detail 🔎
+There, you will find the `Design <https://lets-unify.ai/docs/ivy/overview/design.html>`_ page, which is a user-focused guide about the architecture and the building blocks of Ivy. Likewise, you can take a look at the `Deep dive <https://lets-unify.ai/docs/ivy/overview/deep_dive.html>`_, which is oriented towards potential contributors of the code base and explains the nuances of Ivy in full detail 🔎
 
-Another important sections of the docs is `Background <https://lets-unify.ai/ivy/overview/background.html>`_, which contextualises the problem Ivy is trying to solve and the current `ML Explosion <https://lets-unify.ai/ivy/overview/background/ml_explosion.html#ml-explosion>`_, explaining both (1) why is important `to solve this problem <https://lets-unify.ai/ivy/overview/background/why_unify.html#why-unify>`_ and (2) how we are adhering to existing `standards <https://lets-unify.ai/ivy/overview/background/standardization.html#standardization>`_ to make this happen.
+Another important sections of the docs is `Background <https://lets-unify.ai/docs/ivy/overview/background.html>`_, which contextualises the problem Ivy is trying to solve and the current `ML Explosion <https://lets-unify.ai/docs/ivy/overview/background/ml_explosion.html#ml-explosion>`_, explaining both (1) why is important `to solve this problem <https://lets-unify.ai/docs/ivy/overview/background/why_unify.html#why-unify>`_ and (2) how we are adhering to existing `standards <https://lets-unify.ai/docs/ivy/overview/background/standardization.html#standardization>`_ to make this happen.
 
-Lastly, you can also find there the `Related Work <https://lets-unify.ai/ivy/overview/related_work.html>`_ section, which paints a clear picture of the role Ivy plays in the ML stack, comparing it to other existing solutions in terms of functionalities and level.
+Lastly, you can also find there the `Related Work <https://lets-unify.ai/docs/ivy/overview/related_work.html>`_ section, which paints a clear picture of the role Ivy plays in the ML stack, comparing it to other existing solutions in terms of functionalities and level.
 
 
 Examples
@@ -419,7 +419,7 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
 .. raw:: html
 
    <details>
-   <summary><b>I'm using PyTorch&ensp;<img src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/torch_small_logo.png"></b></summary>
+   <summary><b>I'm using PyTorch&ensp;<img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/torch_small_logo.png"></b></summary>
       <blockquote>You can use Ivy to get PyTorch code from:
          <details>
             <summary>Any model</summary>
@@ -623,7 +623,7 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
    </details>
 
    <details>
-   <summary><b>I'm using TensorFlow&ensp;<img src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/tf_small_logo.png"></b></summary>
+   <summary><b>I'm using TensorFlow&ensp;<img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/tf_small_logo.png"></b></summary>
       <blockquote>You can use Ivy to get TensorFlow code from:
          <details>
             <summary>Any model</summary>
@@ -773,7 +773,7 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
     import madmom
     import tensorflow as tf
 
-    # transpile madmon from numpy to tensorflow
+    # transpile madmom from numpy to tensorflow
     tf_madmom = ivy.transpile(madmom, source="numpy", to="tensorflow")
 
     # get some arrays
@@ -834,7 +834,7 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
    </details>
 
    <details>
-   <summary><b>I'm using Jax&ensp;<img src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/jax_small_logo.png"></b></summary>
+   <summary><b>I'm using Jax&ensp;<img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/jax_small_logo.png"></b></summary>
       <blockquote>You can use Ivy to get JAX code from:
          <details>
             <summary>Any model</summary>
@@ -1060,7 +1060,7 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
    </details>
 
    <details>
-   <summary><b>I'm using NumPy&ensp;<img src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/numpy_small_logo.png"></b></summary>
+   <summary><b>I'm using NumPy&ensp;<img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/numpy_small_logo.png"></b></summary>
       <blockquote>You can use Ivy to get NumPy code from:
          <details>
             <summary>Any library</summary>
@@ -1187,7 +1187,7 @@ The `Examples page`_ features a wide range of demos and tutorials showcasing the
      </blockquote>
    </details>
 
-   <h3>I'm using Ivy&ensp;<img style="height: 1.75em; vertical-align:-40%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/ivy_logo_only.png"></h3>
+   <h3>I'm using Ivy&ensp;<img class="dark-light" style="height: 1.75em; vertical-align:-40%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/ivy_logo_only_small.png"></h3>
    
 Or you can use Ivy as a framework, breaking yourself (and your code) free from deciding which community to support, allowing anyone to run your code in their framework of choice!
 
@@ -1404,7 +1404,7 @@ Contributing
 We believe that everyone can contribute and make a difference. Whether it's writing code 💻, fixing bugs 🐛, 
 or simply sharing feedback 💬, your contributions are definitely welcome and appreciated 🙌 
 
-Check out all of our open tasks, and find out more info in our `Contributing guide <https://lets-unify.ai/ivy/overview/contributing.html>`_ in the docs!
+Check out all of our open tasks, and find out more info in our `Contributing guide <https://lets-unify.ai/docs/ivy/overview/contributing.html>`_ in the docs!
 
 Join our amazing community as a code contributor, and help accelerate our journey to unify all ML frameworks!
 

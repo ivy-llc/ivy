@@ -1746,7 +1746,7 @@ _composition_1.test_unsupported_devices_and_dtypes = {
             "complex64",
             "complex128",
         ),
-        "paddle": ("uint16","uint32","uint64","bfloat16",),
+        "paddle": ("uint16", "uint32", "uint64", "bfloat16", "complex64", "complex128"),
     },
     "gpu": {
         "numpy": ivy.all_dtypes,
@@ -1775,7 +1775,12 @@ _composition_2.test_unsupported_devices_and_dtypes = {
         "jax": ("complex64", "complex128"),
         "tensorflow": ("complex64", "complex128"),
         "torch": ("uint16", "uint32", "uint64", "float16", "complex64", "complex128"),
-        "paddle": ("uint16","uint32","uint64","bfloat16",),
+        "paddle": (
+            "uint16",
+            "uint32",
+            "uint64",
+            "bfloat16",
+        ),
     },
     "gpu": {
         "numpy": ivy.all_dtypes,
@@ -2136,3 +2141,80 @@ def test_vmap(func, dtype_and_arrays_and_axes, in_axes_as_cont):
         pass
     else:
         assert False, "One of the results is None while other isn't"
+
+
+@st.composite
+def _isin_data_generation_helper(draw):
+    assume_unique = draw(st.booleans())
+    if assume_unique:
+        dtype_and_x = helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            num_arrays=2,
+            shared_dtype=True,
+        ).filter(lambda x: np.array_equal(x[1][0], np.unique(x[1][0])))
+    else:
+        dtype_and_x = helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            num_arrays=2,
+            shared_dtype=True,
+        )
+    return assume_unique, draw(dtype_and_x)
+
+
+@handle_test(
+    fn_tree="functional.ivy.isin",
+    assume_unique_and_dtype_and_x=_isin_data_generation_helper(),
+    invert=st.booleans(),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_isin(
+    assume_unique_and_dtype_and_x,
+    invert,
+    test_flags,
+    backend_fw,
+    on_device,
+):
+    assume_unique, x_and_dtype = assume_unique_and_dtype_and_x
+    dtypes, values = x_and_dtype
+    elements, test_elements = values
+    helpers.test_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name="isin",
+        ground_truth_backend="numpy",
+        elements=elements,
+        test_elements=test_elements,
+        invert=invert,
+        assume_unique=assume_unique,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.itemsize",
+    x_and_dtype=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    ground_truth_backend="numpy",
+    test_instance_method=st.just(False),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_itemsize(
+    x_and_dtype,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    dtype, x = x_and_dtype
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        ground_truth_backend=ground_truth_backend,
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
+        x=x[0],
+    )

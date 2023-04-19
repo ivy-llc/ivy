@@ -3730,7 +3730,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return _ContainerWithGeneral.static_supports_inplace_updates(
+        return _ContainerWithGeneral._static_supports_inplace_updates(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -3883,7 +3883,7 @@ class _ContainerWithGeneral(ContainerBase):
             c: ivy.array(2)
         }
         """
-        return _ContainerWithGeneral.static_get_num_dims(
+        return _ContainerWithGeneral._static_get_num_dims(
             self,
             as_array=as_array,
             key_chains=key_chains,
@@ -4015,7 +4015,7 @@ class _ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return _ContainerWithGeneral.static_array_equal(
+        return _ContainerWithGeneral._static_array_equal(
             self,
             x,
             key_chains=key_chains,
@@ -4023,3 +4023,146 @@ class _ContainerWithGeneral(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
+
+    @staticmethod
+    def static_isin(
+        element: ivy.Container,
+        test_elements: ivy.Container,
+        /,
+        *,
+        assume_unique: bool = False,
+        invert: bool = False,
+    ) -> ivy.Container:
+        """Container instance method variant of ivy.isin. This method simply
+        wraps the function, and so the docstring for ivy.isin also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        element
+            input container
+        test_elements
+            values against which to test for each input element
+        assume_unique
+            If True, assumes both elements and test_elements contain unique elements,
+            which can speed up the calculation. Default value is False.
+        invert
+            If True, inverts the boolean return array, resulting in True values for
+            elements not in test_elements. Default value is False.
+
+        Returns
+        -------
+        ret
+            output a boolean container of the same shape as elements that is True for
+            elements in test_elements and False otherwise.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=[[10, 7, 4], [3, 2, 1]],\
+                              b=[3, 2, 1, 0])
+        >>> y = ivy.Container(a=[1, 2, 3],\
+                              b=[1, 0, 3])
+        >>> ivy.Container.static_isin(x, y)
+        ivy.Container(a=[[False, False, False], [ True,  True,  True]],\
+                      b=[ True, False,  True])
+
+        >>> ivy.Container.static_isin(x, y, invert=True)
+        ivy.Container(a=[[ True,  True,  True], [False, False, False]],\
+                      b=[False,  True, False])
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "isin", element, test_elements, assume_unique=assume_unique, invert=invert
+        )
+
+    def isin(
+        self: ivy.Container,
+        test_elements: ivy.Container,
+        /,
+        *,
+        assume_unique: bool = False,
+        invert: bool = False,
+    ) -> ivy.Container:
+        """Container instance method variant of ivy.isin. This method simply
+        wraps the function, and so the docstring for ivy.isin also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array
+        test_elements
+            values against which to test for each input element
+        assume_unique
+            If True, assumes both elements and test_elements contain unique elements,
+            which can speed up the calculation. Default value is False.
+        invert
+            If True, inverts the boolean return array, resulting in True values for
+            elements not in test_elements. Default value is False.
+
+        Returns
+        -------
+        ret
+            output a boolean array of the same shape as elements that is True for
+            elements in test_elements and False otherwise.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=[[10, 7, 4], [3, 2, 1]],\
+                                b=[3, 2, 1, 0])
+        >>> y = ivy.Container(a=[1, 2, 3],\
+                                b=[1, 0, 3])
+        >>> x.isin(y)
+        ivy.Container(a=[[False, False, False], [ True,  True,  True]],\
+                        b=[ True, False,  True])
+        """
+        return self.static_isin(
+            self, test_elements, assume_unique=assume_unique, invert=invert
+        )
+
+    @staticmethod
+    def static_itemsize(
+        x: ivy.Container,
+        /,
+    ) -> ivy.Container:
+        """Container instance method variant of ivy.itemsize. This method simply
+        wraps the function, and so the docstring for ivy.isin also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+           The input container.
+
+        Returns
+        -------
+        ret
+            Integers specifying the element size in bytes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1,2,3], dtype=ivy.float64),\
+                                b=ivy.array([1,2,3], dtype=ivy.complex128))
+        >>> ivy.itemsize(x)
+        ivy.Container(a=8, b=16)
+        """
+        return ContainerBase.cont_multi_map_in_function("itemsize", x)
+
+    def itemsize(
+        self: ivy.Container,
+        /,
+    ) -> ivy.Container:
+        """Container instance method variant of ivy.itemsize. This method simply
+        wraps the function, and so the docstring for ivy.isin also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+           The input container.
+
+        Returns
+        -------
+        ret
+            Integers specifying the element size in bytes.
+        """
+        return self.static_itemsize(self)

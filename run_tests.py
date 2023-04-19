@@ -112,8 +112,7 @@ def run_multiversion_testing():
                 ret = os.system(command)
             else:
                 ret = os.system(
-                    f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:base /opt/miniconda/envs/multienv/bin/python docker/multiversion_framework_directory.py backend {backend};/opt/miniconda/envs/multienv/bin/python pytest --tb=short {test} --backend={backend.split("/")[0]}'
-                    # noqa
+                    f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:base /opt/miniconda/envs/multienv/bin/python docker/multiversion_framework_directory.py backend {backend};/opt/miniconda/envs/multienv/bin/python pytest --tb=short {test} --backend={backend.split("/")[0]}'  # noqa
                 )
             if ret != 0:
                 res = make_clickable(run_id, result_config["failure"])
@@ -162,6 +161,7 @@ if __name__ == "__main__":
         f"mongodb+srv://deep-ivy:{mongo_key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa
     )
     db = cluster["Ivy_tests"]
+    db_multi = cluster["Ivy_tests_multi"]
     with open("tests_to_run", "r") as f:
         for line in f:
             test, backend = line.split(",")
@@ -169,27 +169,38 @@ if __name__ == "__main__":
             print(coll, submod, test_fn)
             if with_gpu:
                 ret = os.system(
-                    f'docker run --rm --gpus all --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multicuda:latest python3 -m pytest --tb=short {test} --device=gpu:0 -B={backend}'
-                    # noqa
-                    # noqa
+                    f'docker run --rm --gpus all --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multicuda:base_and_requirements python3 -m pytest --tb=short {test} --device=gpu:0 -B={backend}'  # noqa
                 )
             else:
                 ret = os.system(
-                    f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --tb=short {test} --backend {backend}'
-                    # noqa
-                    # noqa
+                    f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --tb=short {test} --backend {backend}'  # noqa
                 )
             if ret != 0:
                 res = make_clickable(run_id, result_config["failure"])
-                update_individual_test_results(
-                    db[coll[0]], coll[1], submod, backend, test_fn, res
-                )
                 failed = True
             else:
                 res = make_clickable(run_id, result_config["success"])
-                update_individual_test_results(
-                    db[coll[0]], coll[1], submod, backend, test_fn, res
-                )
+            update_individual_test_results(
+                db[coll[0]], coll[1], submod, backend, test_fn, res
+            )
+            frontend_version = None
+            if (
+                coll[0] == "numpy"
+                or coll[0] == "jax"
+                or coll[0] == "tensorflow"
+                or coll[0] == "torch"
+            ):
+                frontend_version = "latest-stable"
+            update_individual_test_results(
+                db_multi[coll[0]],
+                coll[1],
+                submod,
+                backend,
+                test_fn,
+                res,
+                "latest-stable",
+                frontend_version,
+            )
 
     try:
         with open("tests_to_remove", "r") as f:

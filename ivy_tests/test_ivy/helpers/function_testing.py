@@ -1,5 +1,4 @@
 # global
-import os
 import copy
 from typing import Union, List
 import numpy as np
@@ -52,10 +51,6 @@ from ivy.functional.ivy.gradients import _variable
 from ivy.functional.ivy.data_type import _get_function_list, _get_functions_from_string
 from ivy_tests.test_ivy.test_frontends import NativeClass
 from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
-from ivy.functional.frontends.torch.tensor import Tensor as torch_tensor
-from ivy.functional.frontends.tensorflow.tensor import EagerTensor as tf_tensor
-from ivy.functional.frontends.jax.devicearray import DeviceArray
-from ivy.functional.frontends.numpy.ndarray.ndarray import ndarray
 from .assertions import (
     value_test,
     check_unsupported_dtype,
@@ -323,14 +318,14 @@ def test_function(
 
         # Boolean mask for args and kwargs True if an entry's
         # test Array flag is True or test Container flag is true
-        args_instance_mask = array_or_container_mask[:total_num_arrays]
-        kwargs_instance_mask = array_or_container_mask[total_num_arrays:]
+        args_instance_mask = array_or_container_mask[: test_flags.num_positional_args]
+        kwargs_instance_mask = array_or_container_mask[test_flags.num_positional_args :]
 
         if any(args_instance_mask):
             instance, args = _find_instance_in_args(
                 args, arrays_args_indices, args_instance_mask
             )
-        elif any(kwargs_instance_mask):
+        else:
             instance, kwargs = _find_instance_in_args(
                 kwargs, arrays_kwargs_indices, kwargs_instance_mask
             )
@@ -906,7 +901,10 @@ def test_frontend_function(
 
     # assuming value test will be handled manually in the test function
     if not test_values:
-        return ret, frontend_ret
+        return (
+            ivy.nested_map(ret, _frontend_array_to_ivy, include_derived={tuple: True}),
+            frontend_ret,
+        )
 
     if isinstance(rtol, dict):
         rtol = _get_framework_rtol(rtol, ivy.backend)
@@ -1983,7 +1981,7 @@ def get_ret_and_flattened_np_array(fn, *args, test_compile: bool = False, **kwar
     def map_fn(x):
         if _is_frontend_array(x):
             return x.ivy_array
-        elif ivy.is_native_array(x):
+        elif ivy.is_native_array(x) or isinstance(x, np.ndarray):
             return ivy.to_ivy(x)
         return x
 
@@ -2052,12 +2050,7 @@ def gradient_unsupported_dtypes(*, fn):
 
 
 def _is_frontend_array(x):
-    return (
-        isinstance(x, ndarray)
-        or isinstance(x, torch_tensor)
-        or isinstance(x, tf_tensor)
-        or isinstance(x, DeviceArray)
-    )
+    return hasattr(x, "ivy_array")
 
 
 def _frontend_array_to_ivy(x):

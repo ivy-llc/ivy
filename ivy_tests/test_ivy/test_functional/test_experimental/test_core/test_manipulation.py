@@ -1,6 +1,7 @@
 # global
 from hypothesis import strategies as st
 import hypothesis.extra.numpy as nph
+import math
 
 # local
 import numpy as np
@@ -674,6 +675,7 @@ def test_vsplit(
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
+        on_device=on_device,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1014,4 +1016,137 @@ def test_expand(
         on_device=on_device,
         x=x[0],
         shape=shape,
+    )
+
+
+def _factorize(n):
+    factors = []
+    for i in range(2, int(math.sqrt(n)) + 1):
+        if n == 1:
+            break
+        while n % i == 0:
+            factors.append(i)
+            n //= i
+    if n > 1:
+        factors.append(n)
+    return factors
+
+
+@st.composite
+def _get_reshape(draw, shape):
+    size = 1 if len(shape) == 0 else math.prod(shape)
+    new_shape = draw(st.permutations(_factorize(size)))
+    reduct = draw(st.integers(min_value=1, max_value=len(new_shape)))
+    new_shape = (math.prod(new_shape[:reduct]), *new_shape[reduct:])
+    if shape == new_shape:
+        ones = draw(st.integers(min_value=1, max_value=5))
+        new_shape = tuple(draw(st.permutations(new_shape + (1,) * ones)))
+    return new_shape
+
+
+@st.composite
+def _as_strided_helper(draw):
+    dtype, x, x_shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=2,
+            min_dim_size=2,
+            ret_shape=True,
+        )
+    )
+    shape = draw(_get_reshape(x_shape))
+    new_ndim = len(shape)
+    itemsize = x[0].itemsize
+    # the ground truth numpy results for strides greater than itemsize are inconsistent
+    strides = draw(
+        st.lists(
+            st.integers(min_value=1, max_value=itemsize),
+            min_size=new_ndim,
+            max_size=new_ndim,
+        )
+    )
+    return dtype, x, shape, strides
+
+
+@handle_test(
+    fn_tree="as_strided",
+    all_args=_as_strided_helper(),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+    ground_truth_backend="numpy",
+)
+def test_as_strided(
+    *,
+    all_args,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    dtype, x, shape, strides = all_args
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+        shape=shape,
+        strides=strides,
+    )
+
+
+@st.composite
+def _concat_from_sequence_helper(draw):
+    dtypes, arrays, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            num_arrays=helpers.ints(min_value=1, max_value=6),
+            ret_shape=True,
+            min_num_dims=2,
+            min_dim_size=2,
+            shared_dtype=True,
+        )
+    )
+    axis = draw(
+        helpers.get_axis(
+            shape=shape,
+            force_int=True,
+        )
+    )
+    return dtypes, arrays, axis
+
+
+# concat_from_sequence
+@handle_test(
+    fn_tree="functional.ivy.experimental.concat_from_sequence",
+    dtypes_arrays_axis=_concat_from_sequence_helper(),
+    new_axis=st.integers(min_value=0, max_value=1),
+    container_flags=st.just([False]),
+    test_instance_method=st.just(False),
+)
+def test_concat_from_sequence(
+    *,
+    dtypes_arrays_axis,
+    new_axis,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    dtypes, arrays, axis = dtypes_arrays_axis
+
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        input_sequence=arrays,
+        new_axis=new_axis,
+        axis=axis,
     )
