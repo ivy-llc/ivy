@@ -17,9 +17,9 @@ def ctc_loss(
     targets: torch.Tensor,
     input_lengths: torch.Tensor,
     target_lengths: torch.Tensor,
-    blank: int = 0,
-    zero_infinity: bool = True,
-    reduction: str = "mean",
+    blank: Optional[int] = 0,
+    zero_infinity: Optional[bool] = True,
+    reduction: Optional[str] = "mean",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
 
