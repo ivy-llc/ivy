@@ -30,13 +30,12 @@ def ifftshift(x, axes=None):
     fftshift : Shift zero-frequency component to the center of the spectrum.
     Examples
     --------
-    >>> import ivy.functional.frontends.numpy as np_frontend
-    >>> arr = np_frontend.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+    >>> arr = ivy.functional.frontends.numpy.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
     >>> arr
     array([[ 1,  2,  3],
            [ 4,  5,  6],
            [ 7,  8,  9]])
-    >>> np_frontend.ifftshift(arr, axes=(0, 1))
+    >>> ivy.functional.frontends.numpy.ifftshift(arr, axes=(0, 1))
     array([[ 5,  6,  4],
            [ 9,  7,  8],
            [ 3,  1,  2]])
@@ -53,7 +52,5 @@ def ifftshift(x, axes=None):
         shift = -(x.shape[axes] // 2)
     else:
         shift = [-(x.shape[ax] // 2) for ax in axes]
-
-    return ivy.functionals.backends.numpy.manipulation.roll()
 
     return ivy.functional.roll(x, shift, axes)
