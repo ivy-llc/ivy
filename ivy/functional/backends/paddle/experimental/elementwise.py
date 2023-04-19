@@ -282,20 +282,8 @@ def diff(
     return paddle.diff(x, n=n, axis=axis, prepend=prepend, append=append)
 
 
-@with_unsupported_dtypes(
-    {
-        "2.4.2 and below": (
-            "bool",
-            "uint8",
-            "uint16",
-            "uint32",
-            "uint64",
-            "complex64",
-            "complex128",
-            "str",   
-        )
-    },
-    backend_version,
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
 def signbit(
     x: Union[paddle.Tensor, float, int, list, tuple],
