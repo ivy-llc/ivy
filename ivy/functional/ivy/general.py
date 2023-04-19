@@ -1878,7 +1878,7 @@ def einops_rearrange(
     >>> print(x.shape)
     (32, 15, 20, 12)
     """
-    ret = einops.rearrange(x, pattern, **axes_lengths)
+    ret = einops.rearrange(x._data, pattern, **axes_lengths)
     ret = ivy.array(ret, dtype=x.dtype)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
