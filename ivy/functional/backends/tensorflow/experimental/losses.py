@@ -22,13 +22,12 @@ def ctc_loss(
     input_lengths: tf.Tensor,
     target_lengths: tf.Tensor,
     blank: Optional[int] = 0,
-    reduction: Optional[str] = "mean",
     zero_infinity: Optional[bool] = True,
+    reduction: Optional[str] = "mean",
     out: Optional[tf.Tensor] = None,
 ) -> tf.Tensor:
 
 
-    #Compute the CTC loss using the Pytorch implementation
     ctc_loss = nn.ctc_loss(
         labels=tf.cast(targets, tf.int32),
         logits=log_probs,
@@ -36,5 +35,8 @@ def ctc_loss(
         logit_length=tf.cast(input_lengths, tf.int64),
         )
     return tf.reduce_mean(ctc_loss)
+
+
+
 
 
