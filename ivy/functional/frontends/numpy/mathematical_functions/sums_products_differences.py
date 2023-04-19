@@ -28,7 +28,7 @@ def sum(
     if ivy.is_array(where):
         x = ivy.where(where, x, ivy.default(out, ivy.zeros_like(x)), out=out)
     if initial is not None:
-        s = ivy.shape(x, as_array=True)
+        s = ivy.to_list(ivy.shape(x, as_array=True))
         s[axis] = 1
         header = ivy.full(ivy.Shape(tuple(s)), initial)
         if ivy.is_array(where):
