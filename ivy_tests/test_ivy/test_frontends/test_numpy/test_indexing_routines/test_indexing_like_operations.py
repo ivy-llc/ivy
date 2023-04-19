@@ -272,3 +272,33 @@ def test_numpy_fill_diagonal(
         val=val,
         wrap=wrap,
     )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.compress",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="value_shape"),
+    ),
+    condition=st.lists(st.booleans(), min_size=2, max_size=10),
+    test_with_out=st.just(False),
+)
+def test_numpy_compress(
+    *,
+    dtype_value,
+    condition,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, value = dtype_value
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        ary=value[0],
+        condition=condition,
+    )
