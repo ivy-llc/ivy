@@ -931,3 +931,33 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             return ivy.concat_from_sequence(
                 input_sequence, new_axis=new_axis, axis=axis, out=out
             )
+
+    @handle_view
+    def associative_scan(
+        self: ivy.Array,
+        fn: Callable,
+        /,
+        *,
+        reverse: bool = False,
+        axis: int = 0,
+    ) -> ivy.Array:
+        """
+        Perform an associative scan over the given array.
+
+        Parameters
+        ----------
+        self
+            The array to scan over.
+        fn
+            The associative function to apply.
+        reverse
+            Whether to scan in reverse with respect to the given axis.
+        axis
+            The axis to scan over.
+
+        Returns
+        -------
+        ret
+            The result of the scan.
+        """
+        return ivy.associative_scan(self._data, fn, reverse=reverse, axis=axis)
