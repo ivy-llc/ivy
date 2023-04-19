@@ -342,7 +342,7 @@ def test_jax_numpy_sort_complex(
 # where
 @handle_frontend_test(
     fn_tree="jax.numpy.where",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric")),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric"), min_num_dims=1),
     test_with_out=st.just(False),
     native_arrays=st.just(True),
 )
@@ -350,10 +350,6 @@ def test_jax_numpy_where(
     *,
     dtype_and_x,
     frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-    native_array
 ):
     input_dtype, x = dtype_and_x
     x = x[0]
@@ -362,10 +358,7 @@ def test_jax_numpy_where(
     x2 = x * -2
 
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        frontend=frontend,
-        native_array_flags=native_array,
+        input_dtypes=["bool", input_dtype, input_dtype],
         fn_tree=fn_tree,
         on_device=on_device,
         condition=condition,

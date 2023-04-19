@@ -152,8 +152,9 @@ def sort_complex(a):
     return ivy.sort(a)
 
 
-def where(condition, x=None, y=None):
+@to_ivy_arrays_and_back
+def where(condition, x=None, y=None, size=None, fill_value=0):
     if x is not None and y is not None:
-        return ivy.where(condition, x, y)
+        return ivy.where(condition, x, y, size, fill_value)
     else:
         raise ValueError("Both x and y should be given.")
