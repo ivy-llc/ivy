@@ -11,8 +11,8 @@ def ctc_loss(
     input_lengths: np.ndarray,
     target_lengths: Optional[np.ndarray],
     blank: Optional[int] = 0,
-    reduction: Optional[str] = "mean",
     zero_infinity: Optional[bool] = True,
+    reduction: Optional[str] = "mean",
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
 
@@ -20,7 +20,7 @@ def ctc_loss(
     input_lengths = input_lengths.astype(np.int64)
     target_lengths = target_lengths.astype(np.int64)
     blank = np.int32(blank)
-    
+
     batch_size = log_probs.shape[0]
     max_input_length = log_probs.shape[1]
     num_classes = log_probs.shape[2]
@@ -79,4 +79,5 @@ def ctc_loss(
         ctc_loss[b] = -np.log(p)
 
     return ctc_loss
+
 
