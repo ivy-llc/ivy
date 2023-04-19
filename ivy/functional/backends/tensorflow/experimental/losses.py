@@ -22,7 +22,7 @@ def ctc_loss(
     input_lengths: tf.Tensor,
     target_lengths: tf.Tensor,
     blank: Optional[int] = 0,
-    zero_infinity: Optional[bool] = True,
+    zero_infinity: Optional[bool] = False,
     reduction: Optional[str] = "mean",
     out: Optional[tf.Tensor] = None,
 ) -> tf.Tensor:
