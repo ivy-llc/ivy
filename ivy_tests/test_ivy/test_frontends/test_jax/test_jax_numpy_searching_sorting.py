@@ -370,5 +370,5 @@ def test_jax_numpy_where(
         frontend=frontend,
         condition=condition,
         x=x1,
-        y=y1,
+        y=x2,
     )
