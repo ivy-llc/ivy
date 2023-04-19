@@ -39,7 +39,7 @@ class Tensor:
 
     @property
     def device(self):
-        return ivy.dev(self.ivy_array)
+        return self.ivy_array.device
 
     @property
     def dtype(self):
