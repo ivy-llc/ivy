@@ -1,6 +1,5 @@
 # global
 from builtins import slice as py_slice
-import sys
 
 # local
 import ivy
@@ -441,21 +440,6 @@ def roll(input, shift, axis, name=None):
 
 @to_ivy_arrays_and_back
 def unique_with_counts(x, return_counts=False, axis=None):
-    """
-    Return unique values and their counts from an array.
-
-    Args:
-        x (array): Input array.
-        return_counts (bool, optional): If True, also return the number of
-        times each unique value appears. Default is False.
-        axis (int, optional): The axis along which to operate. If None,
-        the entire array is used. Default is None.
-
-    Returns:
-        array: Unique values of the array.
-        array (optional): The number of times each unique
-        value appears in the array (if return_counts=True).
-    """
     x = ivy.array(x)
     unique_vals, inverse_indices, counts = ivy.unique(
         x, return_inverse=True, return_counts=True, axis=axis)
