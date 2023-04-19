@@ -55,12 +55,12 @@ for backend in os.listdir(
 
 def prevent_access_locally(fn):
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _prevent_access_locally(*args, **kwargs):
         if ivy.is_local():
             raise RuntimeError(f"Calling {fn.__name__} is not allowed on this object.")
         return fn(*args, **kwargs)
 
-    return new_fn
+    return _prevent_access_locally
 
 
 @functools.lru_cache
