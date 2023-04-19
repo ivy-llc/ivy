@@ -46,7 +46,6 @@ def test_triu_indices(
     fn_tree="functional.ivy.experimental.vorbis_window",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        max_num_dims=0,
         min_num_dims=1,
         max_num_dims=1,
     ),
