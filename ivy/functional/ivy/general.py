@@ -2020,7 +2020,7 @@ def einops_repeat(
     }
 
     """
-    ret = einops.repeat(x, pattern, **axes_lengths)
+    ret = einops.repeat(x._data, pattern, **axes_lengths)
     ret = ivy.array(ret, dtype=x.dtype)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
