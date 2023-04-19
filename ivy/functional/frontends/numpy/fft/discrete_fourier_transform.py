@@ -1,5 +1,4 @@
 import ivy
-import ivy.functional.frontends.numpy as np_frontend
 import numpy as np
 from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
 
@@ -43,7 +42,7 @@ def ifftshift(x, axes=None):
            [ 9,  7,  8],
            [ 3,  1,  2]])
     """
-    x = np_frontend.asarray(x)
+    x = ivy.functional.frontends.numpy.asarray(x)
     if axes is None:
         axes = tuple(range(x.ndim))
         shift = [-(dim // 2) for dim in x.shape]
