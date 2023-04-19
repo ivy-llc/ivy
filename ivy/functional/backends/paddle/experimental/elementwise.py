@@ -283,15 +283,29 @@ def diff(
     return paddle.diff(x, n=n, axis=axis, prepend=prepend, append=append)
 
 
+@with_unsupported_dtypes(
+    {
+        "2.4.2 and below": (
+            "bool",
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+            "complex64",
+            "complex128",
+            "str",   
+        )
+    },
+    backend_version,
+)
 def signbit(
     x: Union[paddle.Tensor, float, int, list, tuple],
     /,
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if not isinstance(x, paddle.Tensor):
-        x = paddle.to_tensor(x)
-    return paddle.less_equal(x, 0)
+    with ivy.ArrayMode(False):
+        return ivy.less_equal(x, 0)
 
 
 def hypot(
