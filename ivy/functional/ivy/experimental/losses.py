@@ -135,10 +135,10 @@ def ctc_loss(
         log_probs: Union[ivy.Array, ivy.NativeArray],
         targets: Union[ivy.Array, ivy.NativeArray],
         input_lengths: Union[ivy.Array, ivy.NativeArray],
-        target_lengths: Union[ivy.Array, ivy.NativeArray],
-        blank: int = 0,
+        target_lengths: Optional[Union[ivy.Array, ivy.NativeArray]],
+        blank: Optional[int] = 0,
         zero_infinity: bool = True,
-        reduction: str = "mean",
+        reduction: Optional[str] = "mean",
         out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
