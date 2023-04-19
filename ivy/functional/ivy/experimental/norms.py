@@ -147,7 +147,6 @@ def batch_norm(
 
 
 batch_norm.mixed_function = True
-batch_norm.handle_out_in_ivy = True
 
 
 @handle_nestable
@@ -256,7 +255,6 @@ def instance_norm(
 
 
 instance_norm.mixed_function = True
-instance_norm.handle_out_in_ivy = True
 
 
 @to_native_arrays_and_back

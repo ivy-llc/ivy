@@ -1597,7 +1597,6 @@ def _get_size(scale_factor, size, dims, x_shape):
 
 
 interpolate.mixed_function = True
-interpolate.handle_out_in_ivy = True
 
 
 def _output_ceil_shape(w, f, p, s):

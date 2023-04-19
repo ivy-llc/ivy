@@ -5496,7 +5496,6 @@ def trunc_divide(
 
 
 trunc_divide.mixed_function = True
-trunc_divide.handle_out_in_ivy = True
 
 
 @handle_array_function
