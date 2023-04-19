@@ -13,7 +13,6 @@ from .. import backend_version
 
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
 import numpy as np
-
 @with_unsupported_dtypes({"1.13.0 and below": ("float16",)}, backend_version)
 
 def ctc_loss(
@@ -22,8 +21,8 @@ def ctc_loss(
     input_lengths: paddle.Tensor,
     target_lengths: paddle.Tensor,
     blank: Optional[int] = 0,
-    reduction: Optional[str] = "mean",
     zero_infinity: Optional[bool] = True,
+    reduction: Optional[str] = "mean",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
 
@@ -34,5 +33,7 @@ def ctc_loss(
         label_lengths=paddle.cast(target_lengths, paddle.int64),
         blank=np.int32(blank),
         )
+
+
 
 
