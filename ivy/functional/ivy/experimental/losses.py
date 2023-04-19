@@ -137,7 +137,7 @@ def ctc_loss(
         input_lengths: Union[ivy.Array, ivy.NativeArray],
         target_lengths: Optional[Union[ivy.Array, ivy.NativeArray]],
         blank: Optional[int] = 0,
-        zero_infinity: bool = True,
+        zero_infinity: Optional[bool] = True,
         reduction: Optional[str] = "mean",
         out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
