@@ -242,11 +242,11 @@ Windows
    b. Image -> Pull
    c. Image tag -> unifyai/ivy:latest
    d. Select "Next"
-#. The image will start pulling. It will take a respectible amount of time to complete. Once you see "Introspection Completed" message, select "Next". 
+#. The image will start pulling. It will take a respectible amount of time to complete. Once you see "Introspection Completed" message, select "Next".
 #. Another window will appear, at this step select the following:
 
    a. In the left panel select "System Interpreter".
-   b. For Interpreter, select the default option which will be "/usr/bin/python3" the select "Create".   
+   b. For Interpreter, select the default option which will be "/usr/bin/python3" the select "Create".
 #. Opening "Edit Run/Debug configurations" dialog -> "Edit Configurations..." and making sure that "Working directory" is empty in case of getting the "Can't run process: the working directory '\ivy' is invalid, it needs to be an absolute path" error.
 
 Once these steps are finished, your interpreter should be set up correctly!
@@ -310,39 +310,39 @@ Ubuntu
 #. Install Docker by running the commands below one by one in the Linux terminal.
    You may visit `Docker Ubuntu Installation Page <https://docs.docker.com/engine/install/ubuntu/>`_ for the details.
 
-    .. code-block:: none
+   .. code-block:: none
 
-        sudo apt-get update
+       sudo apt-get update
 
-    .. code-block:: none
+   .. code-block:: none
 
-        sudo apt-get install \
-        ca-certificates \
-        curl \
-        gnupg \
-        lsb-release
+       sudo apt-get install \
+       ca-certificates \
+       curl \
+       gnupg \
+       lsb-release
 
-    .. code-block:: none
+   .. code-block:: none
 
-        sudo mkdir -p /etc/apt/keyrings
+       sudo mkdir -p /etc/apt/keyrings
 
-    .. code-block:: none
+   .. code-block:: none
 
-        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+       curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 
-    .. code-block:: none
+   .. code-block:: none
 
-        echo \
-        "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-        $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+       echo \
+       "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+       $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-    .. code-block:: none
+   .. code-block:: none
 
-        sudo apt-get update
+       sudo apt-get update
 
-    .. code-block:: none
+   .. code-block:: none
 
-        sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+       sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
 #. Get the latest Docker Image for Ivy by:
 
@@ -367,13 +367,13 @@ Ubuntu
 
 This is a common error which you might face. If you are not successfully able to connect docker with Pycharm(point 4a) and your docker is also running, the issue is that you are not able to use your docker socket. So, executing the below two commands should solve this.
     
-    .. code-block:: none
+.. code-block:: none
         
-        sudo chmod a+rwx /var/run/docker.sock
+   sudo chmod a+rwx /var/run/docker.sock
         
-    .. code-block:: none
+.. code-block:: none
     
-        sudo chmod a+rwx /var/run/docker.pid  
+   sudo chmod a+rwx /var/run/docker.pid  
 
 
 For questions, please reach out on `discord`_ in the `docker channel`_!
@@ -434,6 +434,8 @@ There are a number of such shell scripts in `ivy/run_tests_CLI`_:
     test_ivy_nn.sh
     test_ivy_stateful.sh
 
+**For Unix-based systems (Linux and macOS):**
+
 * :code:`run_tests.sh` is run by typing :code:`./run_tests_CLI/run_tests.sh` in the :code:`/ivy` directory.
   This runs all tests in :code:`ivy/ivy_tests`.
 * :code:`test_array_api.sh` is run by typing :code:`./test_array_api.sh [backend] test_[submodule]`.
@@ -445,6 +447,23 @@ There are a number of such shell scripts in `ivy/run_tests_CLI`_:
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/setting_up_testing/pycharm_run_array_api_tests.png?raw=true
   :width: 420
+
+
+**For Windows users:**
+
+For Windows users, you may need to specify that the shell scripts should be run by :code:`sh`, which comes with Git. In the Terminal, prepend sh to the script commands like so:
+
+
+* To run :code:`run_tests.sh` on Windows, type :code:`sh ./run_tests_CLI/run_tests.sh` in the :code:`/ivy` directory.
+  This runs all tests in :code:`ivy/ivy_tests`.
+* To run :code:`test_array_api.sh` on Windows, type :code:`sh ./test_array_api.sh [backend] test_[submodule]`.
+  This runs all array-api tests for a certain submodule in a certain backend.
+* To run :code:`test_ivy_core.sh` on Windows, type :code:`sh ./run_tests_CLI/test_ivy_core.sh [backend] test_[submodule]` in the ivy directory.
+  This runs all ivy tests for a certain submodule in a certain backend in :code:`test_ivy/test_functional/test_core`.
+* :code:`test_ivy_nn.sh`, :code:`test_ivy_stateful.sh` are run in a similar manner to :code:`test_ivy_core.sh` on Windows.
+  Make sure to check the submodule names in the source code before running.
+
+The above instructions for running tests on Windows assume that you have installed Git and have access to the Git Bash terminal. If you do not have Git Bash, you can download it from the `official Git website <https://git-scm.com/downloads>`_.
 
 If you wish to run tests of all submodules of `ivy_core`, `ivy_nn` or `ivy_stateful`, there are :code:`.py` available in :code:`run_tests_CLI`.
 All are run like: :code:`python run_tests_CLI/run_ivy_nn_test.py 1`, where 1 = numpy, 2 = torch, 3 = jax, and 4 = tensorflow.

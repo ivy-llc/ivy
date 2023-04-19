@@ -17,7 +17,11 @@ def unique_all(
     )
 
     values, indices, inverse_indices, counts = np.unique(
-        x, return_index=True, return_counts=True, return_inverse=True, axis=axis,
+        x,
+        return_index=True,
+        return_counts=True,
+        return_inverse=True,
+        axis=axis,
     )
 
     nan_count = np.sum(np.isnan(x)).item()
@@ -32,7 +36,10 @@ def unique_all(
         indices = np.concatenate((indices[:-1], nan_idx), axis=0)
 
     return Results(
-        values.astype(x.dtype), indices, inverse_indices, counts,
+        values.astype(x.dtype),
+        indices,
+        inverse_indices,
+        counts,
     )
 
 

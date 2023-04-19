@@ -30,7 +30,11 @@ def unique_all(
         axis = 0
 
     values, inverse_indices, counts = torch.unique(
-        x, sorted=True, return_inverse=True, return_counts=True, dim=axis,
+        x,
+        sorted=True,
+        return_inverse=True,
+        return_counts=True,
+        dim=axis,
     )
 
     unique_nan = torch.isnan(values)
@@ -52,7 +56,10 @@ def unique_all(
         indices = inv_sorted[tot_counts].to(idx_dtype)
 
     return Results(
-        values.to(x.dtype), indices, inverse_indices, counts,
+        values.to(x.dtype),
+        indices,
+        inverse_indices,
+        counts,
     )
 
 
