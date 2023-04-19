@@ -302,3 +302,4 @@ def test_numpy_compress(
         ary=value[0],
         condition=condition,
     )
+    
