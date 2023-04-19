@@ -138,26 +138,23 @@ class _ContainerWithLossesExperimental(ContainerBase):
             out=out,
         )
 
-    
-    
+
     @staticmethod
     def static_ctc_loss(
-        true: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        true_lengths: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        true: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         pred_lengths: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        /,
-        *,
+        true_lengths: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         blank: Optional[int] = 0,
-        reduction: str = "mean",
         zero_infinity: bool = True,
+        reduction: str = "mean",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        
+
         """
         ivy.Container method variant of ivy.ctc_loss.
         This method simply wraps the function, and so the docstring for
@@ -179,20 +176,20 @@ class _ContainerWithLossesExperimental(ContainerBase):
         ret: The CTC loss between the given distributions.
         """
 
-        true = true.astype(ivy.int32)
-        true_lengths = true_lengths.astype(ivy.int64)
-        pred_lengths = pred_lengths.astype(ivy.int64)
-        blank = np.int32(blank)
+        #true = true.astype(ivy.int32)
+        #true_lengths = true_lengths.astype(ivy.int64)
+        #pred_lengths = pred_lengths.astype(ivy.int64)
+        #blank = np.int32(blank)
 
         return ContainerBase.cont_multi_map_in_function(
             "static_ctc_loss",
-            true,
             pred,
-            true_lengths,
+            true,
             pred_lengths,
+            true_lengths,
             blank=blank,
-            reduction=reduction,
             zero_infinity=zero_infinity,
+            reduction=reduction,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -201,15 +198,13 @@ class _ContainerWithLossesExperimental(ContainerBase):
         )
 
     def ctc_loss(
-        self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        true_lengths: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        true: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         pred_lengths: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        /,
-        *,
+        true_lengths: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         blank: Optional[int] = 0,
-        reduction: str = "mean",
         zero_infinity: bool = True,
+        reduction: str = "mean",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -237,23 +232,22 @@ class _ContainerWithLossesExperimental(ContainerBase):
         ret: The CTC loss between the given distributions.
         """
 
-        self = self.astype(ivy.int32)
+        true = true.astype(ivy.int32)
         true_lengths = true_lengths.astype(ivy.int64)
         pred_lengths = pred_lengths.astype(ivy.int64)
         blank = np.int32(blank)
 
-        return self.static_ctc_loss(
-            self,
+        return true.static_ctc_loss(
             pred,
-            true_lengths,
+            true,
             pred_lengths,
+            true_lengths,
             blank=blank,
-            reduction=reduction,
             zero_infinity=zero_infinity,
+            reduction=reduction,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
         )
-
