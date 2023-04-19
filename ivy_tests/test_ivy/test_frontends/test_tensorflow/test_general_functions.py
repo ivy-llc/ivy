@@ -8,8 +8,6 @@ from ivy.functional.frontends.tensorflow.general_functions import _num_to_bit_li
 from ivy_tests.test_ivy.test_frontends.test_numpy.test_creation_routines.test_from_shape_or_value import (  # noqa : E501
     _input_fill_and_dtype,
 )
-<<<<<<< HEAD
-from ivy.functional.frontends.tensorflow.general_functions import unique_with_counts
 from ivy import array
 =======
 from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_tensor import (
