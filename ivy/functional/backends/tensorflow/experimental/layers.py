@@ -214,6 +214,30 @@ def dct(
     return dct_out
 
 
+def idct(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    type: Literal[1, 2, 3, 4] = 2,
+    n: Optional[int] = None,
+    axis: int = -1,
+    norm: Optional[Literal["ortho"]] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> tf.Tensor:
+    if x.dtype not in (tf.float32, tf.float64):
+        x = tf.cast(x, tf.float32)
+    if axis != -1:
+        new_dims = list(range(len(x.shape)))
+        new_dims[axis], new_dims[-1] = new_dims[-1], axis
+        x = tf.transpose(x, new_dims)
+        idct_out = tf.signal.idct(x, type=type, n=n, axis=-1, norm=norm)
+        idct_out = tf.transpose(idct_out, new_dims)
+    else:
+        idct_out = tf.signal.idct(x, type=type, n=n, axis=-1, norm=norm)
+    return idct_out
+
+
+
 def _fft_norm(
     x: Union[tf.Tensor, tf.Variable],
     dim: int,
