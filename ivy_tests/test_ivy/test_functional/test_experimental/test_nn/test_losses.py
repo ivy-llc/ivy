@@ -1,5 +1,5 @@
 # global
-from hypothesis import strategies as st
+from hypothesis import strategies as st, reproduce_failure
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -81,7 +81,7 @@ def test_binary_cross_entropy_with_logits(
 @handle_test(
     fn_tree="functional.ivy.experimental.ctc_loss",
     dtype_and_logits=helpers.dtype_and_values(
-        available_dtypes=["float32", "float64"],
+        available_dtypes= ["float32", "float64"],
         small_abs_safety_factor=4,
         safety_factor_scale="log",
         max_value=1,
@@ -134,8 +134,8 @@ def test_ctc_loss(
         logit_lengths,
         label_lengths,
         blank,
-        reduction,
         zero_infinity,
+        reduction,
         test_flags,
         backend_fw,
         fn_name,
@@ -149,18 +149,19 @@ def test_ctc_loss(
 
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
-        input_dtypes=dtype_and_logits[0] + logits_dtype + targets_dtype + input_lengths_dtype + target_lengths_dtype + [np.int32],
+        input_dtypes=logits_dtype + targets_dtype + input_lengths_dtype + target_lengths_dtype + [np.int32],
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-1,
         atol_=1e-1,
-        targets=targets[0],
         log_probs=logits[0],
+        targets=targets[0],
         input_lengths=input_lengths[0],
         target_lengths=target_lengths[0],
         blank=blank,
-        reduction=reduction,
         zero_infinity=zero_infinity,
+        reduction=reduction,
     )
+
