@@ -8,7 +8,9 @@ from ivy.functional.frontends.tensorflow.general_functions import _num_to_bit_li
 from ivy_tests.test_ivy.test_frontends.test_numpy.test_creation_routines.test_from_shape_or_value import (  # noqa : E501
     _input_fill_and_dtype,
 )
-from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_tensor import _array_and_shape # noqa : E501
+from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_tensor import (
+    _array_and_shape,
+)  # noqa : E501
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _matrix_rank_helper
 from tensorflow import errors as tf_errors
@@ -33,7 +35,7 @@ def _get_clip_inputs(draw):
     max = draw(
         helpers.array_values(dtype=x_dtype[0], shape=shape, min_value=6, max_value=50)
     )
-    
+
     return x_dtype, x, min, max
 
 
@@ -425,11 +427,16 @@ def _x_cast_dtype_shape(draw):
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"), max_num_dims=4
     ),
-    #output_dtype=st.sampled_from(["int32", "int64"]),
+    # output_dtype=st.sampled_from(["int32", "int64"]),
     test_with_out=st.just(False),
 )
 def test_tensorflow_size(
-    *, dtype_and_x, frontend, test_flags, fn_tree, on_device, #output_dtype
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,  # output_dtype
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -439,7 +446,7 @@ def test_tensorflow_size(
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
-        #out_type=output_dtype,
+        # out_type=output_dtype,
     )
 
 
@@ -640,6 +647,32 @@ def test_tensorflow_expand_dims(
     )
 
 
+# identity_n
+@handle_frontend_test(
+    fn_tree="tensorflow.identity_n",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), max_num_dims=5
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_identity_n(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+    )
+
+
 # Squeeze
 @st.composite
 def _squeeze_helper(draw):
@@ -805,10 +838,7 @@ def test_tensorflow_shape_n(
 
 @handle_frontend_test(
     fn_tree="tensorflow.ensure_shape",
-    dtype_and_x=_array_and_shape(
-        min_num_dims=0,
-        max_num_dims=5
-    )
+    dtype_and_x=_array_and_shape(min_num_dims=0, max_num_dims=5),
 )
 def test_tensorflow_ensure_shape(
     *,
@@ -824,7 +854,7 @@ def test_tensorflow_ensure_shape(
         test_flags=test_flags,
         fn_tree=fn_tree,
         x=x[0],
-        shape=x[1]
+        shape=x[1],
     )
 
 

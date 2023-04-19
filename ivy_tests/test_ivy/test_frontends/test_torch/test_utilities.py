@@ -95,5 +95,5 @@ def test_torch_utilities_bincount(
         on_device=on_device,
         x=x[0],
         weights=None,
-        minlength=0
+        minlength=0,
     )
