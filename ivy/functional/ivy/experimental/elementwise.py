@@ -1534,7 +1534,6 @@ def lerp(
 
 
 lerp.mixed_function = True
-lerp.handle_out_in_ivy = True
 
 
 @to_native_arrays_and_back
