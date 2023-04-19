@@ -25,10 +25,11 @@ from ivy.utils.exceptions import handle_exceptions
 
 
 @handle_array_function
+@inputs_to_ivy_arrays
+@handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@inputs_to_ivy_arrays
 def linear(
     x: Union[ivy.Array, ivy.NativeArray],
     weight: Union[ivy.Array, ivy.NativeArray],
