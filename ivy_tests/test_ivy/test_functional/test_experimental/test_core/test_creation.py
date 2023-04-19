@@ -35,9 +35,9 @@ def test_triu_indices(
         fw=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
-        n_rows=x[0],
-        n_cols=x[1],
-        k=x[2],
+        n_rows=x[0][0],
+        n_cols=x[1][0],
+        k=x[2][0],
     )
 
 
