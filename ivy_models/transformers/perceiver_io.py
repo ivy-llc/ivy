@@ -99,15 +99,15 @@ class PerceiverIO(ivy.Module):
         self._get_cross_attn = lambda: PreNorm(
             self._spec.latent_dim, ivy.MultiHeadAttention(
                 self._spec.latent_dim, num_heads=self._spec.num_cross_att_heads, head_dim=self._spec.cross_head_dim,
-                dropout_rate=self._spec.attn_dropout, context_dim=input_dim, device=self._spec.device), context_dim=input_dim, epsilon=1e-5,
+                dropout_rate=self._spec.attn_dropout, context_dim=input_dim, device=self._spec.device), context_dim=input_dim, eps=1e-5,
             device=self._spec.device)
         self._get_latent_attn = lambda: PreNorm(
             self._spec.latent_dim, ivy.MultiHeadAttention(
                 self._spec.latent_dim, num_heads=self._spec.num_self_att_heads, head_dim=self._spec.latent_head_dim,
-                dropout_rate=self._spec.attn_dropout, device=self._spec.device), epsilon=1e-5, device=self._spec.device)
+                dropout_rate=self._spec.attn_dropout, device=self._spec.device), eps=1e-5, device=self._spec.device)
         self._get_fc = lambda: PreNorm(
             self._spec.latent_dim, FeedForward(self._spec.latent_dim, dropout=self._spec.fc_dropout, device=self._spec.device),
-            epsilon=1e-5, device=self._spec.device)
+            eps=1e-5, device=self._spec.device)
 
         self._layers = list()
         if self._spec.weight_tie_layers:
@@ -121,8 +121,8 @@ class PerceiverIO(ivy.Module):
 
         self._decoder_cross_attn = PreNorm(self._spec.queries_dim, ivy.MultiHeadAttention(
             self._spec.queries_dim, num_heads=self._spec.num_cross_att_heads, head_dim=self._spec.latent_dim,
-            context_dim=self._spec.latent_dim), context_dim=self._spec.latent_dim, epsilon=1e-5)
-        self._decoder = PreNorm(self._spec.queries_dim, FeedForward(self._spec.queries_dim, device=self._spec.device), epsilon=1e-5)\
+            context_dim=self._spec.latent_dim), context_dim=self._spec.latent_dim, eps=1e-5)
+        self._decoder = PreNorm(self._spec.queries_dim, FeedForward(self._spec.queries_dim, device=self._spec.device), eps=1e-5)\
             if self._spec.with_decoder else None
 
         self._to_logits = ivy.Linear(self._spec.queries_dim, self._spec.output_dim, device=self._spec.device)\
