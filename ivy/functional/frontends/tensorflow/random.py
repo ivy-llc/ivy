@@ -43,9 +43,5 @@ def stateless_uniform(
     {"2.9.0 and below": ("int8", "int16", "unsigned")}, "tensorflow"
 )
 @to_ivy_arrays_and_back
-def poisson(shape,
-            lam,
-            dtype=ivy.float32,
-            seed=None,
-            name=None):
+def poisson(shape, lam, dtype=ivy.float32, seed=None, name=None):
     return ivy.poisson(shape=shape, lam=lam, dtype=dtype, seed=seed)

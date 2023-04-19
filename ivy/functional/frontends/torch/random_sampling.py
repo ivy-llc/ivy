@@ -191,17 +191,17 @@ def bernoulli(input, *, generator=None, out=None):
 
 @to_ivy_arrays_and_back
 def randperm(
-    n, 
-    *, 
-    generator=None, 
-    out=None, 
-    dtype=ivy.int64, 
-    layout=None, 
-    device=None, 
-    requires_grad=False, 
+    n,
+    *,
+    generator=None,
+    out=None,
+    dtype=ivy.int64,
+    layout=None,
+    device=None,
+    requires_grad=False,
     pin_memory=False
 ):
     arr = ivy.arange(n)
     ret = ivy.shuffle(arr)
-    
+
     return ret

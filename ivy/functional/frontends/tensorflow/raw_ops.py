@@ -203,6 +203,11 @@ def FloorMod(*, x, y, name="FloorMod"):
 
 
 @to_ivy_arrays_and_back
+def FFT(*, input, name="FFT"):
+    return ivy.astype(ivy.fft(input, -1), input.dtype)
+
+
+@to_ivy_arrays_and_back
 def Gather(*, params, indices, validate_indices=None, name="Gather"):
     return ivy.gather(params, indices, axis=0, batch_dims=0)
 
@@ -224,9 +229,9 @@ Identity = to_ivy_arrays_and_back(
 )
 
 
-@to_ivy_arrays_and_back
-def IdentityN(*, input, name="IdentityN"):
-    return [ivy.copy_array(x) for x in input]
+IdentityN = to_ivy_arrays_and_back(
+    map_raw_ops_alias(tf_frontend.general_functions.identity_n)
+)
 
 
 @to_ivy_arrays_and_back
@@ -277,9 +282,7 @@ def Log(*, x, name="Log"):
     return ivy.log(x)
 
 
-@to_ivy_arrays_and_back
-def Log1p(*, x, name="Log1p"):
-    return ivy.log1p(x)
+Log1p = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.log1p))
 
 
 LogicalOr = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.logical_or))

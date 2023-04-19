@@ -339,6 +339,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         *,
         data_format: str = "NDHWC",
         count_include_pad: bool = False,
+        ceil_mode: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -359,6 +360,8 @@ class _ArrayWithLayersExperimental(abc.ABC):
             NDHWC" or "NCDHW". Defaults to "NDHWC".
         count_include_pad
             Whether to include padding in the averaging calculation.
+        ceil_mode
+            Whether to use ceil or floor for creating the output shape.
         out
             optional output array, for writing the result to. It must have
             a shape that the inputs broadcast to.
@@ -387,6 +390,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
             padding,
             data_format=data_format,
             count_include_pad=count_include_pad,
+            ceil_mode=ceil_mode,
             out=out,
         )
 

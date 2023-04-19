@@ -270,8 +270,9 @@ def _ivy_to_numpy(x: Any) -> Any:
 
 def _ivy_to_numpy_order_F(x: Any) -> Any:
     if isinstance(x, ivy.Array) or ivy.is_native_array(x):
-        a = np_frontend.ndarray(0, order="F")  
-        # TODO Find better initialisation workaround
+        a = np_frontend.ndarray(
+            0, order="F"
+        )  # TODO Find better initialisation workaround
         a.ivy_array = x
         return a
     else:
@@ -490,9 +491,7 @@ def handle_numpy_out(fn: Callable) -> Callable:
             out = args[out_pos]
             args = args[:-1]
         if ivy.exists(out):
-            if not ivy.nested_any(
-                    out, lambda x: isinstance(x, np_frontend.ndarray)
-            ):
+            if not ivy.nested_any(out, lambda x: isinstance(x, np_frontend.ndarray)):
                 raise ivy.utils.exceptions.IvyException(
                     "Out argument must be an ivy.frontends.numpy.ndarray object"
                 )
