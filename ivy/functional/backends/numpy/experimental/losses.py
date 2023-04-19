@@ -11,7 +11,7 @@ def ctc_loss(
     input_lengths: np.ndarray,
     target_lengths: Optional[np.ndarray],
     blank: Optional[int] = 0,
-    zero_infinity: Optional[bool] = True,
+    zero_infinity: Optional[bool] = False,
     reduction: Optional[str] = "mean",
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
