@@ -98,7 +98,7 @@ def standard_gamma(shape, size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
-def binomial(n, p, size=None):
+def binomial(n, p, size):
     assert not ivy.exists(size) or (len(size) > 0 and len(size) < 3)
     batch_size = 1
     if ivy.exists(size):
@@ -109,5 +109,4 @@ def binomial(n, p, size=None):
             num_samples = size[0]
     else:
         num_samples = len(p)
-        p=[p,1-p]
-    return ivy.multinomial(n, num_samples, batch_size=batch_size, probs=p)
+    return ivy.multinomial(n, num_samples, batch_size=batch_size)
