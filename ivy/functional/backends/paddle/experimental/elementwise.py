@@ -291,10 +291,6 @@ def signbit(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if isinstance(x, (float, int)):
-        x = ivy.to_tensor(x)
-    elif isinstance(x, (list, tuple)):
-        x = ivy.to_tensor(x, dtype='float32')
     with ivy.ArrayMode(False):
         return ivy.less_equal(x, 0)
 
