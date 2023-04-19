@@ -785,7 +785,9 @@ def array_indices_axis(
     if disable_random_axis:
         return [x_dtype, indices_dtype], x, indices
 
-    if values is not None:
+    if values is None:
+        return [x_dtype, indices_dtype], x, indices, axis, batch_dims
+    else:
         values_shape = indices_shape
         values_dtype, values = draw(
             dtype_and_values(
@@ -796,8 +798,7 @@ def array_indices_axis(
         )
         values_dtype = values_dtype[0]
         values = values[0]
-
-    return [x_dtype, indices_dtype, values_dtype], x, indices, axis, values, batch_dims
+        return [x_dtype, indices_dtype, values_dtype], x, indices, axis, values, batch_dims
 
 
 @st.composite
