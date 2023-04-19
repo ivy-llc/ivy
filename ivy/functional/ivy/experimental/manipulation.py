@@ -1613,7 +1613,7 @@ def expand(
     ret
         Output Array
     """
-    return ivy.current_backend(x).expand(x, shape, out=out)
+    return ivy.current_backend(x).expand(x, shape, out=out, copy=None)
 
 @handle_out_argument
 @handle_nestable
