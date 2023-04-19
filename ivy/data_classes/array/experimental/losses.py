@@ -7,19 +7,16 @@ import ivy
 from ivy import handle_view
 import numpy as np
 
-
 class _ArrayWithLossesExperimental(abc.ABC):
     @handle_view
     def ctc_loss(
-        self : Union[ivy.Array, ivy.NativeArray],
-        pred : Union[ivy.Array, ivy.NativeArray],
+        pred: Union[ivy.Array, ivy.NativeArray],
+        true : Union[ivy.Array, ivy.NativeArray],
+        pred_lengths: Union[ivy.Array, ivy.NativeArray],
         true_lengths : Union[ivy.Array, ivy.NativeArray],
-        pred_lengths : Union[ivy.Array, ivy.NativeArray],
-        /,
-        *,
         blank : Optional[int] = 0,
+        zero_infinity: bool = True,
         reduction : str = "mean",
-        zero_infinity : bool = True,
         out : Optional[ivy.Array] = None,
     ) -> ivy.Array:
 
@@ -55,18 +52,18 @@ class _ArrayWithLossesExperimental(abc.ABC):
         ivy.Array([2.9921765, 2.9650042])
         """
 
-        self = self.astype(ivy.int32)
-        true_lengths = true_lengths.astype(ivy.int64)
-        pred_lengths = pred_lengths.astype(ivy.int64)
-        blank = np.int32(blank)
+        #true = true.astype(ivy.int32)
+        #true_lengths = true_lengths.astype(ivy.int64)
+        #pred_lengths = pred_lengths.astype(ivy.int64)
+        #blank = np.int32(blank)
         return ivy.ctc_loss(
-            self._data,
             pred,
-            true_lengths,
+            true._data,
             pred_lengths,
+            true_lengths,
             blank=blank,
-            reduction=reduction,
             zero_infinity=zero_infinity,
+            reduction=reduction,
             out=out)
 
     
