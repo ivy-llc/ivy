@@ -274,7 +274,7 @@ def test_numpy_fill_diagonal(
     )
 
 @handle_frontend_test(
-    fn_tree="ivy.put_along_axis",
+    fn_tree="numpy.put_along_axis",
     dtype_x_indices_axis=helpers.array_indices_axis(
         array_dtypes=helpers.get_dtypes("numeric"),
         indices_dtypes=["int32", "int64"],
