@@ -16,7 +16,6 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     fn_tree="tensorflow.math.imag",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float_and_complex"),
-        num_arrays=1,
         min_value=-20,
         max_value=20,
     ),
