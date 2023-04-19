@@ -4,9 +4,8 @@ import jax
 import jax.nn
 import jax.numpy as jnp
 from jax import jit
-
-import ivy
 import numpy as np
+import ivy
 
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
 
@@ -18,8 +17,8 @@ def ctc_loss(
     input_lengths: jnp.ndarray,
     target_lengths: Optional[jnp.ndarray],
     blank: int = 0,
-    reduction: str = "mean",
     zero_infinity: Optional[bool] = True,
+    reduction: str = "mean",
     out: Optional[jnp.ndarray] = None,
 ) -> jnp.ndarray:
 
@@ -27,7 +26,6 @@ def ctc_loss(
     input_lengths = input_lengths.astype(jnp.int64)
     target_lengths = target_lengths.astype(jnp.int64)
     blank = np.int32(blank)
-
 
     batch_size = log_probs.shape[0]
     max_input_length = log_probs.shape[1]
@@ -100,4 +98,5 @@ def ctc_loss(
         raise ValueError("reduction must be one of 'mean', 'sum', 'none'")
 
     return loss
+
 
