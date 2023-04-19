@@ -10,9 +10,9 @@ from ivy_tests.test_ivy.helpers import handle_test
 @handle_test(
     fn_tree="functional.ivy.experimental.difference",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=["int32", "int64", "float32", "float64"],
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
-        shared_dtype=False,
+        shared_dtype=True,
         min_num_dims=1,
         max_num_dims=1,
         min_value=-100,

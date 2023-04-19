@@ -31,7 +31,7 @@ class _ArrayWithSetExperimental(abc.ABC):
         Returns
         -------
         ret
-            a container containing the set difference between two containers.
+            a 1D or 2D output array, nativearray, or container, with a numeric data type.
         Examples
         --------
         >>> x = ivy.array([1., 2., 3., 5.])
