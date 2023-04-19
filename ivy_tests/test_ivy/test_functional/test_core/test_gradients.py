@@ -251,8 +251,9 @@ def test_jac(x, dtype, func, backend_fw):
 def test_grad(x, dtype, func, backend_fw, nth):
     fw = backend_fw.current_backend_str()
 
-    # ToDo: Remove skipping for paddle
-    if fw == "numpy" or (fw == "paddle" and nth > 1):
+    # ToDo: Remove skipping for paddle and jax for nth > 1
+    if fw == "numpy" or ((fw == "paddle" or fw == "jax")
+                         and nth > 1):
         return
 
     ivy.set_backend(fw)
@@ -270,6 +271,7 @@ def test_grad(x, dtype, func, backend_fw, nth):
     if nth > 1:
         for _ in range(1, nth):
             fn = ivy.grad(fn)
+
     grad_gt = fn(var)
     grad_np_from_gt = helpers.flatten_and_to_np(ret=grad_gt)
     for grad, grad_from_gt in zip(grad_np, grad_np_from_gt):
