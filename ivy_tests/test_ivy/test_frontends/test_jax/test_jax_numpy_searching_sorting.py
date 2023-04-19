@@ -369,6 +369,6 @@ def test_jax_numpy_where(
         test_flags=test_flags,
         frontend=frontend,
         condition=condition,
-        x=ivy.array(x1, dtype=input_dtype, device=on_device),
-        y=ivy.array(x2, dtype=input_dtype, device=on_device),
+        x=x1,
+        y=y1,
     )
