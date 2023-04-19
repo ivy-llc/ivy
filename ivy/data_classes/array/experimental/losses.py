@@ -15,7 +15,7 @@ class _ArrayWithLossesExperimental(abc.ABC):
         pred_lengths: Union[ivy.Array, ivy.NativeArray],
         true_lengths : Optional[Union[ivy.Array, ivy.NativeArray]],
         blank : Optional[int] = 0,
-        zero_infinity: Optional[bool] = True,
+        zero_infinity: Optional[bool] = False,
         reduction : Optional[str] = "mean",
         out : Optional[ivy.Array] = None,
     ) -> ivy.Array:
