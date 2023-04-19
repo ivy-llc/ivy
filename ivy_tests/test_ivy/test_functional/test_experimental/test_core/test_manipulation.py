@@ -1124,7 +1124,7 @@ def _concat_from_sequence_helper(draw):
     fn_tree="functional.ivy.experimental.concat_from_sequence",
     dtypes_arrays_axis=_concat_from_sequence_helper(),
     new_axis=st.integers(min_value=0, max_value=1),
-    container_flags=st.just([False]), 
+    container_flags=st.just([False]),
     test_instance_method=st.just(False),
 )
 def test_concat_from_sequence(
@@ -1138,7 +1138,7 @@ def test_concat_from_sequence(
     ground_truth_backend,
 ):
     dtypes, arrays, axis = dtypes_arrays_axis
-    
+
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtypes,

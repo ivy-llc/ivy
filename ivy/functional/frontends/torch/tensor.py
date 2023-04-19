@@ -39,7 +39,7 @@ class Tensor:
 
     @property
     def device(self):
-        return ivy.dev(self.ivy_array)
+        return self.ivy_array.device
 
     @property
     def dtype(self):
@@ -734,7 +734,7 @@ class Tensor:
         return torch_frontend.tensor(ivy.where(condition, self, other))
 
     def clone(self, memory_format=None):
-        return torch_frontend.tensor(ivy.array(self, copy=True))
+        return torch_frontend.tensor(ivy.array(self.ivy_array, copy=True))
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def acosh(self):
@@ -773,9 +773,7 @@ class Tensor:
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def softmax(self, dim=None, dtype=None):
-        return torch_frontend.nn.functional.softmax(
-            self, dim=dim, dtype=dtype
-        )
+        return torch_frontend.nn.functional.softmax(self, dim=dim, dtype=dtype)
 
     def repeat(self, *args, repeats=None):
         if args and repeats:
