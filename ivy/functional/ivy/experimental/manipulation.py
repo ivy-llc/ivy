@@ -11,7 +11,6 @@ from typing import (
     List,
 )
 from numbers import Number
-from builtins import slice as py_slice
 from functools import partial
 import math
 import ivy
@@ -1738,7 +1737,7 @@ def _interior_pad(operand, padding_value, padding_config):
             src_indices = ivy.arange(operand.shape[axis])
             dst_indices = src_indices * (interior + 1)
 
-            index_tuple = [py_slice(None)] * operand.ndim
+            index_tuple = [slice(None)] * operand.ndim
             index_tuple[axis] = dst_indices
             new_array = ivy.to_numpy(new_array)
             operand = ivy.to_numpy(operand)
