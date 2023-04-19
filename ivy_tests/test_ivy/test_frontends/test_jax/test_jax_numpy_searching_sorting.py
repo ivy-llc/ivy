@@ -359,6 +359,9 @@ def test_jax_numpy_where(
     x1 = x * 2
     x2 = x * -2
 
+    # Convert input_dtype from list to string
+    input_dtype = input_dtype[0]
+
     helpers.test_frontend_function(
         input_dtypes=["bool", input_dtype, input_dtype],
         fn_tree=fn_tree,
@@ -366,6 +369,6 @@ def test_jax_numpy_where(
         test_flags=test_flags,
         frontend=frontend,
         condition=condition,
-        x=x1,
-        y=x2,
+        x=ivy.array(x1, dtype=input_dtype, device=on_device),
+        y=ivy.array(x2, dtype=input_dtype, device=on_device),
     )
