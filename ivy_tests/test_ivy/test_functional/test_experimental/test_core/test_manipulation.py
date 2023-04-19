@@ -1124,7 +1124,7 @@ def _concat_from_sequence_helper(draw):
     fn_tree="functional.ivy.experimental.concat_from_sequence",
     dtypes_arrays_axis=_concat_from_sequence_helper(),
     new_axis=st.integers(min_value=0, max_value=1),
-    container_flags=st.just([False]), 
+    container_flags=st.just([False]),
     test_instance_method=st.just(False),
 )
 def test_concat_from_sequence(
@@ -1138,7 +1138,7 @@ def test_concat_from_sequence(
     ground_truth_backend,
 ):
     dtypes, arrays, axis = dtypes_arrays_axis
-    
+
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtypes,
@@ -1149,4 +1149,72 @@ def test_concat_from_sequence(
         input_sequence=arrays,
         new_axis=new_axis,
         axis=axis,
+    )
+
+
+@st.composite
+def _associative_scan_helper(draw):
+    input_dtype = draw(
+        st.shared(
+            st.sampled_from(draw(helpers.get_dtypes("float"))),
+            key="shared_dtype",
+        ).filter(lambda _x: "float16" not in _x)
+    )
+    random_size = draw(
+        st.shared(helpers.ints(min_value=1, max_value=5), key="shared_size")
+    )
+    shared_size = draw(
+        st.shared(helpers.ints(min_value=1, max_value=5), key="shared_size")
+    )
+    shape=tuple([random_size, shared_size, shared_size])
+    matrix = draw(
+        helpers.array_values(
+            dtype=input_dtype,
+            shape=shape,
+            min_value=1,
+            max_value=10,
+        )
+    )
+    axis = draw(
+        helpers.get_axis(
+            shape=shape,
+            allow_neg=False,
+            force_int=True,
+        ).filter(lambda _x: _x < len(shape)-2)
+    )
+    return [input_dtype], matrix, axis
+
+
+# associative_scan
+@handle_test(
+    fn_tree="functional.ivy.experimental.associative_scan",
+    dtype_elems_axis=_associative_scan_helper(),
+    fn=st.sampled_from([ivy.matmul, ivy.multiply, ivy.add]),
+    reverse=st.booleans(),
+    test_with_out=st.just(False),
+    ground_truth_backend="jax",
+)
+def test_associative_scan(
+        *,
+        dtype_elems_axis,
+        fn,
+        reverse,
+        fn_name,
+        test_flags,
+        backend_fw,
+        on_device,
+        ground_truth_backend,
+):
+    dtype, elems, axis = dtype_elems_axis
+    helpers.test_function(
+        fn_name=fn_name,
+        test_flags=test_flags,
+        fw=backend_fw,
+        on_device=on_device,
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        elems=elems,
+        fn=fn,
+        reverse=reverse,
+        axis=axis
     )
