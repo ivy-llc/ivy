@@ -49,8 +49,8 @@ def expand_dims(
     try:
         ret = jnp.expand_dims(x, axis)
         return ret
-    except (IndexError, ValueError) as error:
-        raise ivy.utils.exceptions.IvyIndexError(repr(error))
+    except ValueError as error:
+        raise ivy.utils.exceptions.IvyIndexError(str(error))
 
 
 def flip(

@@ -3,6 +3,7 @@ import math
 from numbers import Number
 from typing import Union, Tuple, Optional, List, Sequence
 
+import numpy as np
 import tensorflow as tf
 
 # local
@@ -62,8 +63,8 @@ def expand_dims(
         out_shape = _calculate_out_shape(axis, x.shape)
         ret = tf.reshape(x, shape=out_shape)
         return ret
-    except tf.errors.InvalidArgumentError as error:
-        raise ivy.utils.exceptions.IvyException(repr(error))
+    except (tf.errors.InvalidArgumentError, np.AxisError) as error:
+        raise ivy.utils.exceptions.IvyIndexError(str(error))
 
 
 def flip(
