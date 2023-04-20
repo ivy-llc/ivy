@@ -6,6 +6,9 @@ if __name__ == "__main__":
     with open("tests_to_run", "r") as f:
         for line in f:
             test, backend = line.split(",")
+            print(f"\n{'*' * 100}")
+            print(f"{line[:-1]}")
+            print(f"{'*' * 100}\n")
             ret = os.system(
                 f'docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --tb=short {test} --backend {backend}'  # noqa
             )
