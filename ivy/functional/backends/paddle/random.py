@@ -59,7 +59,13 @@ def random_normal(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if not dtype:
+        dtype = ivy.default_int_dtype()
+    dtype = ivy.as_native_dtype(dtype)
+    if seed:
+        _ = paddle.seed(seed)
+    _retval = to_device(paddle.cast(paddle.randn(shape or [1], dtype), dtype), device)
+    return _retval if shape else _retval.squeeze(axis=0)
 
 
 def multinomial(
