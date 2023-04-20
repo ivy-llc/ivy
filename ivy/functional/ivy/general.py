@@ -1878,7 +1878,7 @@ def einops_rearrange(
     >>> print(x.shape)
     (32, 15, 20, 12)
     """
-    ret = einops.rearrange(x, pattern, **axes_lengths)
+    ret = einops.rearrange(x._data, pattern, **axes_lengths)
     ret = ivy.array(ret, dtype=x.dtype)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -2020,7 +2020,7 @@ def einops_repeat(
     }
 
     """
-    ret = einops.repeat(x, pattern, **axes_lengths)
+    ret = einops.repeat(x._data, pattern, **axes_lengths)
     ret = ivy.array(ret, dtype=x.dtype)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -2635,6 +2635,8 @@ def get_item(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     query: Union[ivy.Array, ivy.NativeArray, Tuple],
+    *,
+    copy: Optional[bool] = None,
 ) -> ivy.Array:
     """
      Gather slices from x according to query array, identical to x[query].
@@ -2665,7 +2667,7 @@ def get_item(
     ivy.array([  4,  -2, -10])
 
     """
-    return current_backend(x).get_item(x, query)
+    return current_backend(x).get_item(x, query, copy=copy)
 
 
 @handle_array_function

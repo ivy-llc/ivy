@@ -200,6 +200,9 @@ def trunc(input, *, out=None):
     return ivy.trunc(input, out=out)
 
 
+fix = trunc
+
+
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def sqrt(input, *, out=None):
@@ -254,7 +257,7 @@ def ceil(input, *, out=None):
     return ivy.ceil(input, out=out)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, "torch")
 @to_ivy_arrays_and_back
 def clamp(input, min=None, max=None, *, out=None):
     ivy.utils.assertions.check_all_or_any_fn(
@@ -265,7 +268,6 @@ def clamp(input, min=None, max=None, *, out=None):
         limit=[1, 2],
         message="at most one of min or max can be None",
     )
-    input = ivy.array(input)
     if min is None:
         return ivy.minimum(input, max, out=out)
     if max is None:
@@ -273,23 +275,7 @@ def clamp(input, min=None, max=None, *, out=None):
     return ivy.clip(input, min, max, out=out)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
-@to_ivy_arrays_and_back
-def clip(input, min=None, max=None, *, out=None):
-    ivy.utils.assertions.check_all_or_any_fn(
-        min,
-        max,
-        fn=ivy.exists,
-        type="any",
-        limit=[1, 2],
-        message="at most one of min or max can be None",
-    )
-    input = ivy.array(input)
-    if min is None:
-        return ivy.minimum(input, max, out=out)
-    if max is None:
-        return ivy.maximum(input, min, out=out)
-    return ivy.clip(input, min, max, out=out)
+clip = clamp
 
 
 @to_ivy_arrays_and_back
@@ -373,6 +359,12 @@ def addcmul(input, tensor1, tensor2, *, value=1, out=None):
 @to_ivy_arrays_and_back
 def pow(input, exponent, *, out=None):
     return ivy.pow(input, exponent, out=out)
+
+
+@to_ivy_arrays_and_back
+def float_power(input, exponent, *, out=None):
+    input, exponent = torch_frontend.promote_types_of_torch_inputs(input, exponent)
+    return ivy.float_power(input, exponent, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -510,3 +502,14 @@ def logit(input, eps=None, *, out=None):
     input = ivy.clip(input, lo, hi, out=out)
 
     return ivy.log(ivy.divide(input, ivy.subtract(1, input), out=out), out=out)
+
+
+@to_ivy_arrays_and_back
+def sgn(input, *, out=None):
+    if ivy.is_complex_dtype(input.dtype):
+        input_abs = ivy.abs(input, out=out)
+        return ivy.where(
+            input_abs == 0, 0, ivy.divide(input, input_abs, out=out), out=out
+        )
+    else:
+        return ivy.sign(input, out=out)
