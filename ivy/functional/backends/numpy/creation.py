@@ -169,7 +169,6 @@ def linspace(
         ans[0] = start
     return _to_device(ans, device=device)
 
-
 def meshgrid(
     *arrays: np.ndarray,
     sparse: bool = False,
@@ -282,3 +281,11 @@ def one_hot(
         res = np.moveaxis(res, -1, axis)
 
     return res
+
+def fromstring(string: str,
+               dtype: Optional[np.dtype] = float,
+               count: Optional[int] = -1,
+               *,
+               sep: Optional[str] = " ",
+               like: Optional[np.ndarray] = None) -> np.ndarray:
+    np.fromstring(string, dtype, count, sep=sep, like=like)

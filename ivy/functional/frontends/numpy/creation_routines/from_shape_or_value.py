@@ -72,3 +72,8 @@ def full_like(a, fill_value, dtype=None, order="K", subok=True, shape=None):
     if shape:
         return ivy.full(shape, fill_value, dtype=dtype)
     return ivy.full_like(a, fill_value, dtype=dtype)
+
+@handle_numpy_dtype
+@outputs_to_numpy_arrays
+def fromstring(string, dtype=float, count=-1, *,sep=" ", like=None):
+    return ivy.fromstring(string, dtype, count, sep=sep, like=like)
