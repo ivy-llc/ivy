@@ -1,6 +1,7 @@
 """Collection of Ivy pooling classes."""
 
 # local
+import ivy
 from ivy.stateful.module import Module
 
 
@@ -48,7 +49,7 @@ class MaxPool2D(Module):
         -------
         The output of the layer.
         """
-        return inputs.max_pool2d(self._kernel_size, self._stride, self._padding)
+        return ivy.max_pool2d(inputs, self._kernel_size, self._stride, self._padding)
 
 
 class AvgPool2D(Module):
@@ -95,4 +96,4 @@ class AvgPool2D(Module):
         -------
         The output of the layer.
         """
-        return inputs.avg_pool2d(self._kernel_size, self._stride, self._padding)
+        return ivy.avg_pool2d(inputs, self._kernel_size, self._stride, self._padding)

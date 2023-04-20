@@ -7,7 +7,7 @@ from ivy_tests.test_ivy.helpers import handle_method
 
 @handle_method(
     method_tree="MaxPool2D.__call__",
-    x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=4),
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=4, max_dims=4, min_side=1, max_side=4),
 )
 def test_layer_maxpool2d_layer(
     *,
@@ -43,7 +43,7 @@ def test_layer_maxpool2d_layer(
 
 @handle_method(
     method_tree="AvgPool2D.__call__",
-    x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=4),
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=4, max_dims=4, min_side=1, max_side=4),
 )
 def test_layer_avgpool2d_layer(
     *,
