@@ -76,6 +76,9 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py extra
           (python run_tests_pr.py; echo $?>exit_code) | tee test_results_1.txt
+          if [ $(cat exit_code) -ne 0 ]; then
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Upload test results
@@ -111,6 +114,9 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           (python run_tests_pr.py; echo $?>exit_code) | tee test_results_2.txt
+          if [ $(cat exit_code) -ne 0 ]; then
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Upload test results
@@ -146,6 +152,9 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           (python run_tests_pr.py; echo $?>exit_code) | tee test_results_3.txt
+          if [ $(cat exit_code) -ne 0 ]; then
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Upload test results
@@ -181,6 +190,9 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           (python run_tests_pr.py; echo $?>exit_code) | tee test_results_4.txt
+          if [ $(cat exit_code) -ne 0 ]; then
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Upload test results
@@ -216,6 +228,9 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           (python run_tests_pr.py; echo $?>exit_code) | tee test_results_5.txt
+          if [ $(cat exit_code) -ne 0 ]; then
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Upload test results
@@ -251,6 +266,9 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           (python run_tests_pr.py; echo $?>exit_code) | tee test_results_6.txt
+          if [ $(cat exit_code) -ne 0 ]; then
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Upload test results
@@ -286,6 +304,9 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           (python run_tests_pr.py; echo $?>exit_code) | tee test_results_7.txt
+          if [ $(cat exit_code) -ne 0 ]; then
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Upload test results
@@ -321,6 +342,9 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           (python run_tests_pr.py; echo $?>exit_code) | tee test_results_8.txt
+          if [ $(cat exit_code) -ne 0 ]; then
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Upload test results
@@ -356,6 +380,9 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           (python run_tests_pr.py; echo $?>exit_code) | tee test_results_9.txt
+          if [ $(cat exit_code) -ne 0 ]; then
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Upload test results
@@ -391,6 +418,9 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           (python run_tests_pr.py; echo $?>exit_code) | tee test_results_10.txt
+          if [ $(cat exit_code) -ne 0 ]; then
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Upload test results
@@ -426,6 +456,9 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           (python run_tests_pr.py; echo $?>exit_code) | tee test_results_11.txt
+          if [ $(cat exit_code) -ne 0 ]; then
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Upload test results
@@ -461,6 +494,9 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           (python run_tests_pr.py; echo $?>exit_code) | tee test_results_12.txt
+          if [ $(cat exit_code) -ne 0 ]; then
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Upload test results
@@ -496,6 +532,9 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           (python run_tests_pr.py; echo $?>exit_code) | tee test_results_13.txt
+          if [ $(cat exit_code) -ne 0 ]; then
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Upload test results
@@ -531,6 +570,9 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           (python run_tests_pr.py; echo $?>exit_code) | tee test_results_14.txt
+          if [ $(cat exit_code) -ne 0 ]; then
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Upload test results
@@ -566,6 +608,9 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           (python run_tests_pr.py; echo $?>exit_code) | tee test_results_15.txt
+          if [ $(cat exit_code) -ne 0 ]; then
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Upload test results
@@ -601,6 +646,9 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           (python run_tests_pr.py; echo $?>exit_code) | tee test_results_16.txt
+          if [ $(cat exit_code) -ne 0 ]; then
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Upload test results
@@ -636,6 +684,9 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           (python run_tests_pr.py; echo $?>exit_code) | tee test_results_17.txt
+          if [ $(cat exit_code) -ne 0 ]; then
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Upload test results
@@ -671,6 +722,9 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           (python run_tests_pr.py; echo $?>exit_code) | tee test_results_18.txt
+          if [ $(cat exit_code) -ne 0 ]; then
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Upload test results
@@ -706,6 +760,9 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           (python run_tests_pr.py; echo $?>exit_code) | tee test_results_19.txt
+          if [ $(cat exit_code) -ne 0 ]; then
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Upload test results
@@ -741,6 +798,9 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           (python run_tests_pr.py; echo $?>exit_code) | tee test_results_20.txt
+          if [ $(cat exit_code) -ne 0 ]; then
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Upload test results
@@ -776,6 +836,9 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           (python run_tests_pr.py; echo $?>exit_code) | tee test_results_21.txt
+          if [ $(cat exit_code) -ne 0 ]; then
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Upload test results
@@ -811,6 +874,9 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           (python run_tests_pr.py; echo $?>exit_code) | tee test_results_22.txt
+          if [ $(cat exit_code) -ne 0 ]; then
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Upload test results
@@ -846,6 +912,9 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           (python run_tests_pr.py; echo $?>exit_code) | tee test_results_23.txt
+          if [ $(cat exit_code) -ne 0 ]; then
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Upload test results
@@ -881,6 +950,9 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           (python run_tests_pr.py; echo $?>exit_code) | tee test_results_24.txt
+          if [ $(cat exit_code) -ne 0 ]; then
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Upload test results
@@ -916,6 +988,9 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           (python run_tests_pr.py; echo $?>exit_code) | tee test_results_25.txt
+          if [ $(cat exit_code) -ne 0 ]; then
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Upload test results
@@ -951,6 +1026,9 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           (python run_tests_pr.py; echo $?>exit_code) | tee test_results_26.txt
+          if [ $(cat exit_code) -ne 0 ]; then
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Upload test results
@@ -986,6 +1064,9 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           (python run_tests_pr.py; echo $?>exit_code) | tee test_results_27.txt
+          if [ $(cat exit_code) -ne 0 ]; then
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Upload test results
@@ -1021,6 +1102,9 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           (python run_tests_pr.py; echo $?>exit_code) | tee test_results_28.txt
+          if [ $(cat exit_code) -ne 0 ]; then
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Upload test results
@@ -1056,6 +1140,9 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           (python run_tests_pr.py; echo $?>exit_code) | tee test_results_29.txt
+          if [ $(cat exit_code) -ne 0 ]; then
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Upload test results
@@ -1091,6 +1178,9 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           (python run_tests_pr.py; echo $?>exit_code) | tee test_results_30.txt
+          if [ $(cat exit_code) -ne 0 ]; then
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Upload test results
@@ -1126,6 +1216,9 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           (python run_tests_pr.py; echo $?>exit_code) | tee test_results_31.txt
+          if [ $(cat exit_code) -ne 0 ]; then
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Upload test results
@@ -1161,6 +1254,9 @@ jobs:
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python determine_tests.py
           (python run_tests_pr.py; echo $?>exit_code) | tee test_results_32.txt
+          if [ $(cat exit_code) -ne 0 ]; then
+            exit 1
+          fi
         continue-on-error: true
 
       - name: Upload test results
