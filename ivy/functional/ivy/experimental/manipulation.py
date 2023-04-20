@@ -21,7 +21,7 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_view,
     inputs_to_ivy_arrays,
-    handle_array_function,
+    handle_array_function, outputs_to_ivy_arrays,
 )
 from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
@@ -1616,6 +1616,7 @@ def expand(
 
 
 @inputs_to_ivy_arrays
+@outputs_to_ivy_arrays
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
