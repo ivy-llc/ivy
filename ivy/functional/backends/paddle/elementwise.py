@@ -17,10 +17,6 @@ def _elementwise_helper(x1, x2):
     return x1, x2, x1.dtype
 
 
-def _complex_modulus(x):
-    return paddle.sqrt(x.real() ** 2 + x.imag() ** 2)
-
-
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
@@ -283,7 +279,7 @@ def sqrt(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
         if paddle.is_complex(x):
             angle = paddle.angle(x)
             result = (paddle.cos(angle / 2) + 1j * paddle.sin(angle / 2)) * paddle.sqrt(
-                _complex_modulus(x)
+                paddle.abs(x)
             )
             return result
         return paddle.sqrt(x.cast("float32")).cast(x.dtype)
@@ -344,7 +340,7 @@ def log1p(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
         paddle.bool,
     ]:
         if paddle.is_complex(x):
-            return paddle.log1p(_complex_modulus(x)) + 1j * paddle.angle(x + 1)
+            return paddle.log1p(paddle.abs(x)) + 1j * paddle.angle(x + 1)
         return paddle.log1p(x.cast("float32")).cast(x.dtype)
     return paddle.log1p(x)
 
@@ -758,7 +754,7 @@ def pow(
     ]:
         if paddle.is_complex(x1):
             # https://math.stackexchange.com/questions/476968/complex-power-of-a-complex-number
-            r = _complex_modulus(x1)
+            r = paddle.abs(x1)
             theta = paddle.angle(x1)
             power = x2 * (paddle.log(r) + 1j * theta)
             result = paddle.exp(power.real()) * (
@@ -779,19 +775,18 @@ def round(
         # this is a logic to mimic np.round behaviour
         # which rounds odd numbers up and even numbers down at limits like 0.5
         eps = 1e-6 * paddle.sign(x)
-        x = ivy.where(
-            remainder(trunc(x), 2.0).astype(
-                bool
-            ),  # check if the integer is even or odd
-            x,
-            x - eps,
-        )
-        ret_dtype = x.dtype
-        factor = paddle.pow(paddle.to_tensor(10), paddle.to_tensor(decimals)).astype(
-            ret_dtype
-        )
-        factor_denom = ivy.where(ivy.isinf(x), 1.0, factor)
-        return paddle.round(x * factor) / ivy.to_native(factor_denom)
+        with ivy.ArrayMode(False):
+            x = ivy.where(
+                remainder(trunc(x), 2.0).astype(
+                    bool
+                ),  # check if the integer is even or odd
+                x,
+                x - eps,
+            )
+            ret_dtype = x.dtype
+            factor = pow(10, decimals).astype(ret_dtype)
+            factor_denom = ivy.where(ivy.isinf(x), 1.0, factor)
+            return divide(paddle.round(multiply(x, factor)), factor_denom)
 
     x, _ = ivy.promote_types_of_inputs(x, x)
     if x.dtype not in [paddle.float32, paddle.float64]:
@@ -921,7 +916,7 @@ def log(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
         paddle.bool,
     ]:
         if paddle.is_complex(x):
-            return paddle.log(_complex_modulus(x)) + 1j * paddle.angle(x)
+            return paddle.log(paddle.abs(x)) + 1j * paddle.angle(x)
         return paddle.log(x.cast("float32")).cast(x.dtype)
     return paddle.log(x)
 

@@ -47,8 +47,8 @@ def _parse_absolute_fromimport(node: ast.ImportFrom):
         value=ast.Call(
             func=ast.Name(id=importlib_from_import_fn, ctx=ast.Load()),
             args=[
-                ast.Constant(value=node.module),
-                ast.Constant(value=None),
+                ast.Constant(value=node.module, kind=None),
+                ast.Constant(value=None, kind=None),
                 ast.Call(
                     func=ast.Name(id="globals", ctx=ast.Load()), args=[], keywords=[]
                 ),
@@ -72,13 +72,13 @@ def _parse_relative_fromimport(node: ast.ImportFrom):
         value=ast.Call(
             func=ast.Name(id=importlib_from_import_fn, ctx=ast.Load()),
             args=[
-                ast.Constant(value=name),
+                ast.Constant(value=name, kind=None),
                 ast.Name(id="__package__", ctx=ast.Load()),
                 ast.Call(
                     func=ast.Name(id="globals", ctx=ast.Load()), args=[], keywords=[]
                 ),
                 _create_list(to_import),
-                ast.Constant(value=node.level),
+                ast.Constant(value=node.level, kind=None),
             ],
             keywords=[],
         ),
@@ -86,7 +86,7 @@ def _parse_relative_fromimport(node: ast.ImportFrom):
 
 
 def _create_list(elements):
-    _elts = [ast.Constant(value=element) for element in elements]
+    _elts = [ast.Constant(value=element, kind=None) for element in elements]
     return ast.List(elts=_elts, ctx=ast.Load())
 
 
@@ -101,7 +101,7 @@ def _create_fromimport_call(name):
     return ast.Call(
         func=ast.Name(id=importlib_from_import_fn, ctx=ast.Load()),
         args=[
-            ast.Constant(value=name),
+            ast.Constant(value=name, kind=None),
         ],
         keywords=[],
     )
@@ -124,8 +124,8 @@ def _parse_import(node: ast.Import):
                 ast.Call(
                     func=ast.Name(id=importlib_abs_import_fn, ctx=ast.Load()),
                     args=[
-                        ast.Constant(value=node.name),
-                        ast.Constant(value=node.asname),
+                        ast.Constant(value=node.name, kind=None),
+                        ast.Constant(value=node.asname, kind=None),
                         ast.Call(
                             func=ast.Name(id="globals", ctx=ast.Load()),
                             args=[],
@@ -180,7 +180,7 @@ class ImportTransformer(ast.NodeTransformer):
                 self.insert_index,
                 ast.ImportFrom(
                     module=importlib_module_path,
-                    names=[ast.alias(name=importlib_from_import_fn)],
+                    names=[ast.alias(name=importlib_from_import_fn, asname=None)],
                     level=0,
                 ),
             )
@@ -188,7 +188,7 @@ class ImportTransformer(ast.NodeTransformer):
                 self.insert_index,
                 ast.ImportFrom(
                     module=importlib_module_path,
-                    names=[ast.alias(name=importlib_abs_import_fn)],
+                    names=[ast.alias(name=importlib_abs_import_fn, asname=None)],
                     level=0,
                 ),
             )

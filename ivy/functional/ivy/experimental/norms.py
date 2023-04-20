@@ -124,7 +124,6 @@ def batch_norm(
          Tuple of arrays containing
           the normalized input, running_mean, and running_variance.
     """
-
     runningmean = mean
     runningvariance = variance
     if training:
