@@ -309,6 +309,7 @@ def avg_pool3d(
     data_format: str = "NDHWC",
     count_include_pad: bool = False,
     ceil_mode: bool = False,
+    divisor_override: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(kernel, int):
@@ -334,10 +335,22 @@ def avg_pool3d(
         manual_padding = True
         padding = "VALID"
 
-    res = tf.nn.avg_pool3d(x, kernel, strides, padding)
+    if divisor_override is not None:
+        # sum pooling then dividing by divisor_override if it is provided
+        res = ivy.conv_general_dilated(
+            x,
+            tf.ones(kernel + [1, x.shape[-1]]),
+            strides,
+            padding,
+            dims=3,
+            feature_group_count=x.shape[-1],
+        )
+        res = res / divisor_override
+    else:
+        res = tf.nn.avg_pool3d(x, kernel, strides, padding)
 
     # removing any manual padding added because of ceil_mode or count_include_pad
-    if (manual_padding and not count_include_pad) or ceil_mode:
+    if (manual_padding and not count_include_pad) or ceil_mode and not divisor_override:
         if not count_include_pad:
             num_padded_values = [
                 tf.convert_to_tensor(
