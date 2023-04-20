@@ -191,8 +191,8 @@ class Dtype(str):
         return can_cast(self, to)
 
 
-class Shape(tuple):
-    def __new__(cls, shape_tup):
+class Shape:
+    def __init__(self, shape_tup):
         valid_types = (int, list, tuple, ivy.Array)
         if len(backend_stack) != 0:
             valid_types += (ivy.NativeShape, ivy.NativeArray)
@@ -202,17 +202,34 @@ class Shape(tuple):
                 current_backend(shape_tup).NativeArray,
             )
         ivy.utils.assertions.check_isinstance(shape_tup, valid_types)
-        if isinstance(shape_tup, int):
-            shape_tup = (shape_tup,)
+        if isinstance(shape_tup, ivy.NativeShape):
+            self._shape = shape_tup
+        elif isinstance(shape_tup, int):
+            self._shape = (shape_tup,)
         elif isinstance(shape_tup, list):
-            shape_tup = tuple(shape_tup)
-        ivy.utils.assertions.check_all(
-            [isinstance(v, int) or ivy.is_int_dtype(v.dtype) for v in shape_tup],
-            "shape must take integers only",
-        )
-        if ivy.shape_array_mode():
-            return ivy.array(shape_tup)
-        return tuple.__new__(cls, shape_tup)
+            self._shape = tuple(shape_tup)
+
+    def __repr__(self):
+        if self._shape is not None:
+            return f"Ivy.Shape{(self._shape)}"
+        else:
+            return "Ivy.Shape(None)"
+
+    def __dir__(self):
+        self._shape.__dir__()
+
+    def __getattribute__(self, item):
+        return super().__getattribute__(item)
+
+    def __getitem__(self, key):
+        if self._shape is not None:
+            return self._shape[key]
+        else:
+            # Some handling, don't know when would this happen
+            return
+
+    def __setattr__(self, key, value):
+        self._shape[key] = value
 
 
 class IntDtype(Dtype):
