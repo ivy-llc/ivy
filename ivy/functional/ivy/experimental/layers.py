@@ -242,6 +242,7 @@ def avg_pool1d(
     data_format: str = "NWC",
     count_include_pad: bool = False,
     ceil_mode: bool = False,
+    division_override: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 1-D avg pool given 3-D input x.
@@ -264,6 +265,9 @@ def avg_pool1d(
         Whether to include padding in the averaging calculation.
     ceil_mode
         Whether to use ceil or floor for creating the output shape.
+    division_override
+        If specified, it will be used as the divisor,
+        otherwise kernel_size will be used.
     out
         optional output array, for writing the result to.
 
@@ -300,6 +304,7 @@ def avg_pool1d(
         data_format=data_format,
         count_include_pad=count_include_pad,
         ceil_mode=ceil_mode,
+        division_override=division_override,
         out=out,
     )
 
@@ -401,6 +406,7 @@ def avg_pool3d(
     data_format: str = "NDHWC",
     count_include_pad: bool = False,
     ceil_mode: bool = False,
+    divisor_override: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 3-D avg pool given 5-D input x.
@@ -422,6 +428,8 @@ def avg_pool3d(
         Whether to include padding in the averaging calculation.
     ceil_mode
         Whether to use ceil or floor for creating the output shape.
+    divisor_override
+        If specified, it will be used as divisor, otherwise kernel_size will be used.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -467,6 +475,7 @@ def avg_pool3d(
         data_format=data_format,
         count_include_pad=count_include_pad,
         ceil_mode=ceil_mode,
+        divisor_override=divisor_override,
         out=out,
     )
 
