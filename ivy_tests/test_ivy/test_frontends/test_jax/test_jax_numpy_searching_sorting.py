@@ -348,16 +348,16 @@ def _searchsorted(draw):
                 "numeric", full=False, key="searchsorted"
             ),
             shape=(draw(st.integers(min_value=1, max_value=10)),),
-            ),
-        )
+        ),
+    )
     dtype_v, v = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes(
                 "numeric", full=False, key="searchsorted"
             ),
             min_num_dims=1,
-            )
         )
+    )
 
     input_dtypes = dtype_x + dtype_v
     xs = x + v
