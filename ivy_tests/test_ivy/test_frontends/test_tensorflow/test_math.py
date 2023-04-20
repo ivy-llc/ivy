@@ -2195,3 +2195,29 @@ def test_tensorflow_less(
         x=x[0],
         y=x[1],
     )
+
+
+# angle
+@handle_frontend_test(
+    fn_tree="tensorflow.math.angle",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_tensorflow_angle(
+    *,
+    dtype_and_input,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+    )
