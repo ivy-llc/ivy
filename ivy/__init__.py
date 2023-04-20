@@ -208,6 +208,8 @@ class Shape:
             self._shape = (shape_tup,)
         elif isinstance(shape_tup, list):
             self._shape = tuple(shape_tup)
+        else:
+            self._shape = None
 
     def __repr__(self):
         if self._shape is not None:
