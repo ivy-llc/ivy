@@ -21,13 +21,12 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_view,
     inputs_to_ivy_arrays,
-    handle_array_function, outputs_to_ivy_arrays,
+    handle_array_function,
 )
 from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
 
 
-@inputs_to_ivy_arrays
 @handle_out_argument
 @handle_view
 @handle_array_like_without_promotion
@@ -953,7 +952,6 @@ def _check_arguments(
     )
 
 
-@inputs_to_ivy_arrays
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
@@ -1199,6 +1197,9 @@ def pad(
                 )
     padded = ivy.array(padded).to_native()
     return padded
+
+
+pad.mixed_function = True
 
 
 @to_native_arrays_and_back
@@ -1615,8 +1616,6 @@ def expand(
     return ivy.current_backend(x).expand(x, shape, out=out, copy=copy)
 
 
-@inputs_to_ivy_arrays
-@outputs_to_ivy_arrays
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
@@ -1671,6 +1670,9 @@ def as_strided(
         ivy.frombuffer(buffer, dtype=x.dtype, count=size),
         shape,
     )
+
+
+as_strided.mixed_function = True
 
 
 @to_native_arrays_and_back
