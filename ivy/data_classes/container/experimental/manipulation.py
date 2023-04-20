@@ -2657,6 +2657,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
     def associative_scan(
         self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         fn: Callable,
