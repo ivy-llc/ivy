@@ -180,10 +180,10 @@ def _get_method_supported_devices_dtypes(
     for the method
     """
     supported_device_dtypes = {}
-    backends = set(get_backends_to_test())
+    backends = get_backends_to_test()
     # In case the ground truth backend is not one of backends that is being tested
-    if ground_truth_backend is not None:
-        backends.add(ground_truth_backend)
+    if ground_truth_backend is not None and ground_truth_backend not in backends:
+        add_backend_to_test(ground_truth_backend)
     for b in backends:  # ToDo can optimize this ?
         ivy.set_backend(b)
         _fn = getattr(class_module.__dict__[class_name], method_name)
@@ -650,6 +650,7 @@ def handle_frontend_method(
     method_name
         Name of the method
     """
+    frontend = init_tree.partition(".")[0]
     split_index = init_tree.rfind(".")
     framework_init_module = init_tree[:split_index]
     ivy_init_module = f"ivy.functional.frontends.{init_tree[:split_index]}"
@@ -677,7 +678,7 @@ def handle_frontend_method(
 
     def test_wrapper(test_fn):
         supported_device_dtypes = _get_method_supported_devices_dtypes(
-            method_name, class_module, class_name
+            method_name, class_module, class_name, frontend
         )
 
         if is_hypothesis_test:
