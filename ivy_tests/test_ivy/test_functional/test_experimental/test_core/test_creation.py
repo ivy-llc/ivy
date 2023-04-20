@@ -240,8 +240,8 @@ def test_hamming_window(
         on_device=on_device,
         window_length=int(x[0]),
         periodic=periodic,
-        alpha=f[0],
-        beta=f[1],
+        alpha=float(f[0]),
+        beta=float(f[1]),
         dtype=dtype[0],
     )
 
