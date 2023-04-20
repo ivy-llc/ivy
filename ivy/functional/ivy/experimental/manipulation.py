@@ -291,7 +291,6 @@ def ndindex(
     (1, 0)
     (1, 1)
     """
-
     args = [range(k) for k in shape]
     return _iter_product(*args)
 
@@ -1773,7 +1772,6 @@ def associative_scan(
     reverse: bool = False,
     axis: int = 0,
 ) -> ivy.Array:
-
     """
     Perform an associative scan over the given array.
 
@@ -1794,7 +1792,6 @@ def associative_scan(
         The result of the scan.
 
     """
-
     elems = [x]
 
     if reverse:
