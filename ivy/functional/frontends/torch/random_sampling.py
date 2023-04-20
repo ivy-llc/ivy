@@ -2,13 +2,6 @@ import ivy
 from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
-try:
-    from torch import Generator
-except ImportError:
-    from types import SimpleNamespace
-
-    Generator = SimpleNamespace
-
 
 def seed() -> int:
     """Returns a 64 bit number used to seed the RNG"""
@@ -17,6 +10,13 @@ def seed() -> int:
 
 @to_ivy_arrays_and_back
 def manual_seed(seed: int):
+    # TODO torch shouldn't be imported in the frontends.
+    try:
+        from torch import Generator
+    except ImportError:
+        from types import SimpleNamespace
+
+        Generator = SimpleNamespace
     ivy.seed(seed_value=seed)
     return Generator().manual_seed(seed)
 
