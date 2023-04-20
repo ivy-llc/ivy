@@ -227,7 +227,6 @@ def _iter_product(*args, repeat=1):
         yield tuple(prod)
 
 
-
 @inputs_to_ivy_arrays
 @handle_exceptions
 def ndenumerate(
@@ -1672,6 +1671,7 @@ def as_strided(
         shape,
     )
 
+
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -1717,11 +1717,11 @@ def concat_from_sequence(
 
 
 def _slice_along_axis(x, start=0, stop=None, stride=1, axis=0):
-  if axis >= 0:
-    slices = [slice(None)] * axis + [slice(start, stop, stride)]
-  else:
-    slices = [Ellipsis, slice(start, stop, stride)] + [slice(None)] * (-1 - axis)
-  return x[tuple(slices)]
+    if axis >= 0:
+        slices = [slice(None)] * axis + [slice(start, stop, stride)]
+    else:
+        slices = [Ellipsis, slice(start, stop, stride)] + [slice(None)] * (-1 - axis)
+    return x[tuple(slices)]
 
 
 def _interior_pad(operand, padding_value, padding_config):
@@ -1749,14 +1749,14 @@ def _interior_pad(operand, padding_value, padding_config):
 
 
 def _interleave(a, b, axis):
-  assert a.shape[axis] == b.shape[axis] or a.shape[axis] == b.shape[axis] + 1
-  a_pad = [(0, 0, 0)] * a.ndim
-  b_pad = [(0, 0, 0)] * b.ndim
-  a_pad[axis] = (0, 1 if a.shape[axis] == b.shape[axis] else 0, 1)
-  b_pad[axis] = (1, 0 if a.shape[axis] == b.shape[axis] else 1, 1)
-  a = _interior_pad(a, 0.0, a_pad)
-  b = _interior_pad(b, 0.0, b_pad)
-  return ivy.add(a, b)
+    assert a.shape[axis] == b.shape[axis] or a.shape[axis] == b.shape[axis] + 1
+    a_pad = [(0, 0, 0)] * a.ndim
+    b_pad = [(0, 0, 0)] * b.ndim
+    a_pad[axis] = (0, 1 if a.shape[axis] == b.shape[axis] else 0, 1)
+    b_pad[axis] = (1, 0 if a.shape[axis] == b.shape[axis] else 1, 1)
+    a = _interior_pad(a, 0.0, a_pad)
+    b = _interior_pad(b, 0.0, b_pad)
+    return ivy.add(a, b)
 
 
 @inputs_to_ivy_arrays
@@ -1812,25 +1812,25 @@ def associative_scan(
             return elems
 
         reduced_elems = _combine(
-          [_slice_along_axis(elem, 0, -1, stride=2, axis=axis) for elem in elems],
-          [_slice_along_axis(elem, 1, None, stride=2, axis=axis) for elem in elems]
+            [_slice_along_axis(elem, 0, -1, stride=2, axis=axis) for elem in elems],
+            [_slice_along_axis(elem, 1, None, stride=2, axis=axis) for elem in elems],
         )
 
         odd_elems = _scan(reduced_elems)
 
         if num_elems % 2 == 0:
-          even_elems = _combine(
-            [_slice_along_axis(e, 0, -1, axis=axis) for e in odd_elems],
-            [_slice_along_axis(e, 2, None, stride=2, axis=axis) for e in elems]
-          )
+            even_elems = _combine(
+                [_slice_along_axis(e, 0, -1, axis=axis) for e in odd_elems],
+                [_slice_along_axis(e, 2, None, stride=2, axis=axis) for e in elems],
+            )
         else:
-          even_elems = _combine(
-            odd_elems,
-            [_slice_along_axis(e, 2, None, stride=2, axis=axis) for e in elems]
-          )
+            even_elems = _combine(
+                odd_elems,
+                [_slice_along_axis(e, 2, None, stride=2, axis=axis) for e in elems],
+            )
         even_elems = [
-          ivy.concat([_slice_along_axis(elem, 0, 1, axis=axis), result], axis=axis)
-          for (elem, result) in zip(elems, even_elems)
+            ivy.concat([_slice_along_axis(elem, 0, 1, axis=axis), result], axis=axis)
+            for (elem, result) in zip(elems, even_elems)
         ]
         return list(map(partial(_interleave, axis=axis), even_elems, odd_elems))
 

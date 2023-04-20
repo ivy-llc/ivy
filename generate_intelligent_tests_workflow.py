@@ -23,8 +23,10 @@ print("        uses: actions/download-artifact@v3")
 print()
 print("      - name: Combine test results")
 print("        run: |")
-print("          find . -name \"test_results_*.txt\" -exec cat {} + > combined_test_results.txt")
-print("          echo \"Test results summary:\"")
+print(
+    '          find . -name "test_results_*.txt" -exec cat {} + > combined_test_results.txt'
+)
+print('          echo "Test results summary:"')
 print("          cat combined_test_results.txt")
 print()
 for i in range(1, total_jobs + 1):
@@ -36,13 +38,15 @@ for i in range(1, total_jobs + 1):
     print("        with:")
     print("          path: ivy")
     print("          persist-credentials: false")
-    print("          submodules: \"recursive\"")
+    print('          submodules: "recursive"')
     print("          fetch-depth: 100")
     print()
     print("      - name: Determine and Run Tests")
     print("        id: tests")
     print("        run: |")
-    print(f"          git clone -b master{i} https://github.com/unifyai/Mapping.git --depth 1")
+    print(
+        f"          git clone -b master{i} https://github.com/unifyai/Mapping.git --depth 1"
+    )
     print("          pip install pydriller")
     print("          cp Mapping/tests.pbz2 ivy/")
     print("          cd ivy")
