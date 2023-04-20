@@ -95,7 +95,8 @@ jobs:
         id: tests
         run: |
           cd ivy
-          (python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}; echo $?>exit_code) | tee test_results_1.txt
+          set -o pipefail
+          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }} | tee test_results_1.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -150,7 +151,8 @@ jobs:
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          (python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}; echo $?>exit_code) | tee test_results_2.txt
+          set -o pipefail
+          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }} | tee test_results_2.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -205,7 +207,8 @@ jobs:
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          (python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}; echo $?>exit_code) | tee test_results_3.txt
+          set -o pipefail
+          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }} | tee test_results_3.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -261,7 +264,8 @@ jobs:
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          (python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}; echo $?>exit_code) | tee test_results_4.txt
+          set -o pipefail
+          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }} | tee test_results_4.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -316,7 +320,8 @@ jobs:
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          (python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}; echo $?>exit_code) | tee test_results_5.txt
+          set -o pipefail
+          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }} | tee test_results_5.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -371,7 +376,8 @@ jobs:
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          (python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}; echo $?>exit_code) | tee test_results_6.txt
+          set -o pipefail
+          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }} | tee test_results_6.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -426,7 +432,8 @@ jobs:
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          (python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}; echo $?>exit_code) | tee test_results_7.txt
+          set -o pipefail
+          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }} | tee test_results_7.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -481,7 +488,8 @@ jobs:
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          (python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}; echo $?>exit_code) | tee test_results_8.txt
+          set -o pipefail
+          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }} | tee test_results_8.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -536,7 +544,8 @@ jobs:
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          (python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}; echo $?>exit_code) | tee test_results_9.txt
+          set -o pipefail
+          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }} | tee test_results_9.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -591,7 +600,8 @@ jobs:
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          (python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}; echo $?>exit_code) | tee test_results_10.txt
+          set -o pipefail
+          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }} | tee test_results_10.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -646,7 +656,8 @@ jobs:
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          (python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}; echo $?>exit_code) | tee test_results_11.txt
+          set -o pipefail
+          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }} | tee test_results_11.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -701,7 +712,8 @@ jobs:
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          (python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}; echo $?>exit_code) | tee test_results_12.txt
+          set -o pipefail
+          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }} | tee test_results_12.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -756,7 +768,8 @@ jobs:
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          (python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}; echo $?>exit_code) | tee test_results_13.txt
+          set -o pipefail
+          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }} | tee test_results_13.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -811,7 +824,8 @@ jobs:
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          (python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}; echo $?>exit_code) | tee test_results_14.txt
+          set -o pipefail
+          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }} | tee test_results_14.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -866,7 +880,8 @@ jobs:
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          (python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}; echo $?>exit_code) | tee test_results_15.txt
+          set -o pipefail
+          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }} | tee test_results_15.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -921,7 +936,8 @@ jobs:
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          (python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}; echo $?>exit_code) | tee test_results_16.txt
+          set -o pipefail
+          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }} | tee test_results_16.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -976,7 +992,8 @@ jobs:
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          (python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}; echo $?>exit_code) | tee test_results_17.txt
+          set -o pipefail
+          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }} | tee test_results_17.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -1031,7 +1048,8 @@ jobs:
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          (python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}; echo $?>exit_code) | tee test_results_18.txt
+          set -o pipefail
+          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }} | tee test_results_18.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -1086,7 +1104,8 @@ jobs:
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          (python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}; echo $?>exit_code) | tee test_results_19.txt
+          set -o pipefail
+          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }} | tee test_results_19.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -1141,7 +1160,8 @@ jobs:
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          (python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}; echo $?>exit_code) | tee test_results_20.txt
+          set -o pipefail
+          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }} | tee test_results_20.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -1196,7 +1216,8 @@ jobs:
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          (python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}; echo $?>exit_code) | tee test_results_21.txt
+          set -o pipefail
+          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }} | tee test_results_21.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -1251,7 +1272,8 @@ jobs:
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          (python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}; echo $?>exit_code) | tee test_results_22.txt
+          set -o pipefail
+          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }} | tee test_results_22.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -1306,7 +1328,8 @@ jobs:
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          (python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}; echo $?>exit_code) | tee test_results_23.txt
+          set -o pipefail
+          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }} | tee test_results_23.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -1361,7 +1384,8 @@ jobs:
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          (python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}; echo $?>exit_code) | tee test_results_24.txt
+          set -o pipefail
+          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }} | tee test_results_24.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -1416,7 +1440,8 @@ jobs:
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          (python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}; echo $?>exit_code) | tee test_results_25.txt
+          set -o pipefail
+          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }} | tee test_results_25.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -1471,7 +1496,8 @@ jobs:
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          (python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}; echo $?>exit_code) | tee test_results_26.txt
+          set -o pipefail
+          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }} | tee test_results_26.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -1526,7 +1552,8 @@ jobs:
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          (python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}; echo $?>exit_code) | tee test_results_27.txt
+          set -o pipefail
+          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }} | tee test_results_27.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -1581,7 +1608,8 @@ jobs:
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          (python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}; echo $?>exit_code) | tee test_results_28.txt
+          set -o pipefail
+          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }} | tee test_results_28.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -1636,7 +1664,8 @@ jobs:
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          (python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}; echo $?>exit_code) | tee test_results_29.txt
+          set -o pipefail
+          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }} | tee test_results_29.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -1691,7 +1720,8 @@ jobs:
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          (python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}; echo $?>exit_code) | tee test_results_30.txt
+          set -o pipefail
+          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }} | tee test_results_30.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -1746,7 +1776,8 @@ jobs:
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          (python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}; echo $?>exit_code) | tee test_results_31.txt
+          set -o pipefail
+          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }} | tee test_results_31.txt
         continue-on-error: true
 
       - name: Upload test results
@@ -1801,7 +1832,8 @@ jobs:
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          (python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}; echo $?>exit_code) | tee test_results_32.txt
+          set -o pipefail
+          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }} | tee test_results_32.txt
         continue-on-error: true
 
       - name: Upload test results
