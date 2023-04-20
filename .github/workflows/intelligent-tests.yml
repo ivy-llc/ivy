@@ -49,6 +49,7 @@ jobs:
 
       - name: Combine test results
         run: |
+          cd ivy
           cat test_results_*.txt > combined_test_results.txt
           echo "Test results summary:"
           cat combined_test_results.txt
