@@ -755,3 +755,58 @@ def test_jax_numpy_single(
         on_device=on_device,
         x=x[0],
     )
+
+
+# double
+@handle_frontend_test(
+    fn_tree="jax.numpy.double",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+)
+def test_jax_numpy_double(
+    dtype_and_x,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.geomspace",
+    dtype_start_stop=_get_dtype_and_range(),
+    num=helpers.ints(min_value=5, max_value=50),
+    endpoint=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_geomspace(
+    dtype_start_stop,
+    num,
+    endpoint,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, start, stop = dtype_start_stop
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-1,
+        start=start,
+        stop=stop,
+        num=num,
+        endpoint=endpoint,
+        dtype=input_dtypes[0],
+    )

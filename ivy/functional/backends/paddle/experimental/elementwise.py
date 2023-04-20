@@ -121,11 +121,14 @@ def copysign(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     with ivy.ArrayMode(False):
-        x2 = ivy.where(ivy.equal(x2, 0), ivy.divide(1, x2), x2)
+        x2 = ivy.where(ivy.equal(x2, paddle.to_tensor(0)), ivy.divide(1, x2), x2)
         signs = ivy.sign(x2)
         return ivy.multiply(ivy.abs(x1), signs)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint8", "int8", "int16", "float16")}}, backend_version
+)
 def nansum(
     x: paddle.Tensor,
     /,
@@ -138,6 +141,9 @@ def nansum(
     return paddle.nansum(x, axis=axis, dtype=dtype, keepdim=keepdims)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("int8", "int16")}}, backend_version
+)
 def gcd(
     x1: Union[paddle.Tensor, int, list, tuple],
     x2: Union[paddle.Tensor, float, list, tuple],
@@ -149,6 +155,9 @@ def gcd(
     return paddle.gcd(x1, x2)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("float16",)}}, backend_version
+)
 def isclose(
     a: paddle.Tensor,
     b: paddle.Tensor,
@@ -246,7 +255,7 @@ def nan_to_num(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "float16")}}, backend_version
 )
 def logaddexp2(
     x1: Union[paddle.Tensor, float, list, tuple],

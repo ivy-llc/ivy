@@ -25,10 +25,11 @@ from ivy.utils.exceptions import handle_exceptions
 
 
 @handle_array_function
+@inputs_to_ivy_arrays
+@handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@inputs_to_ivy_arrays
 def linear(
     x: Union[ivy.Array, ivy.NativeArray],
     weight: Union[ivy.Array, ivy.NativeArray],
@@ -797,7 +798,7 @@ def conv1d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
     strides: Union[int, Tuple[int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NWC",
@@ -1023,7 +1024,7 @@ def conv2d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
     strides: Union[int, Tuple[int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NHWC",
@@ -1407,7 +1408,7 @@ def conv3d(
     x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     strides: Union[int, Tuple[int, int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NDHWC",
@@ -1631,7 +1632,7 @@ def conv_general_dilated(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
     strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     dims: int = 2,
