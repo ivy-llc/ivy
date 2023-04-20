@@ -429,7 +429,6 @@ def test_torch_randperm(
     frontend,
     test_flags,
 ):
-
     def call():
 
         return helpers.test_frontend_function(
@@ -452,4 +451,4 @@ def test_torch_randperm(
     ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
     for (u, v) in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
-        assert u.shape == v.shape    
+        assert u.shape == v.shape

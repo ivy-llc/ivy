@@ -314,6 +314,7 @@ def expand(
             shape[i] = x.shape[i]
     return jnp.broadcast_to(x, tuple(shape))
 
+
 def concat_from_sequence(
     input_sequence: Union[Tuple[JaxArray], List[JaxArray]],
     /,

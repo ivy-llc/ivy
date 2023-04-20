@@ -10,7 +10,6 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     handle_array_function,
-    inputs_to_ivy_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -23,7 +22,6 @@ def _check_valid_dimension_size(std):
 
 
 @handle_array_function
-@inputs_to_ivy_arrays
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions

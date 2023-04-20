@@ -223,6 +223,11 @@ def identity(input, name=None):
     return ivy.copy_array(input)
 
 
+@to_ivy_arrays_and_back
+def identity_n(input, name=None):
+    return [ivy.copy_array(x) for x in input]
+
+
 def stack(values, axis=0, name="stack"):
     return ivy.stack(values, axis=axis)
 
