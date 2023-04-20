@@ -46,7 +46,7 @@ def _arrays_to_float_variables(xs, xs_grad_idxs=None):
             if ivy.is_int_dtype(x.dtype):
                 x = ivy.astype(x, ivy.default_float_dtype())
             elif _is_variable(x):
-                x = stop_gradient(x, preserve_type=False)
+                x = ivy.stop_gradient(x, preserve_type=False)
             return _variable(x)
         return x
 
@@ -387,7 +387,7 @@ def with_grads(*, with_grads: Optional[bool] = None) -> bool:
 @handle_exceptions
 def set_with_grads(with_grads: bool) -> None:
     """
-    This method adds the with_grads component to the global list with_grads_stack
+    Adds the with_grads component to the global list with_grads_stack
 
     Parameters
     ----------
@@ -421,7 +421,7 @@ def set_with_grads(with_grads: bool) -> None:
 @handle_exceptions
 def unset_with_grads() -> None:
     """
-    This method deletes the last with_grads component from the global list
+    Deletes the last with_grads component from the global list
     with_grads_stack
 
     Returns

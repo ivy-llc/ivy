@@ -125,7 +125,7 @@ Our policy on gradients
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 * The gradient API is fully-functional in ivy.
-* There is no explicit Variable class or any public-facing function for adding gradient support to an ivy.Array.
+* There is no explicit variable class or any public-facing function for adding gradient support to an ivy.Array.
 * The gradient functions in ivy implicitly convert all arrays to support gradient computation before computing gradients and detach all arrays after computing gradients.
 * We don't retain any previously tracked computations in arrays by frameworks like torch for e.g. 
 * This makes our gradient API disambiguous, flexible and easy to debug.
@@ -173,3 +173,12 @@ Framework-specific Considerations
 This should have hopefully given you a good feel for how the gradient API is implemented in Ivy.
 
 If you have any questions, please feel free to reach out on `discord`_ in the `gradients channel`_ or in the `gradients forum`_!
+
+
+**Video**
+
+.. raw:: html
+
+    <iframe width="420" height="315"
+    src="https://www.youtube.com/embed/riNddnTgDdk" class="video">
+    </iframe>

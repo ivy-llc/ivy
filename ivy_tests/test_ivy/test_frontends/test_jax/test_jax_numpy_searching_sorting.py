@@ -337,3 +337,40 @@ def test_jax_numpy_sort_complex(
         a=x[0],
         test_values=False,
     )
+
+
+# where
+@handle_frontend_test(
+    fn_tree="jax.numpy.where",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"), min_num_dims=1
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_where(
+    *,
+    dtype_and_x,
+    frontend,
+    fn_tree,
+    on_device,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    x = x[0]
+    condition = x > 0.5
+    x1 = x * 2
+    x2 = x * -2
+
+    # Convert input_dtype from list to string
+    input_dtype = input_dtype[0]
+
+    helpers.test_frontend_function(
+        input_dtypes=["bool", input_dtype, input_dtype],
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_flags=test_flags,
+        frontend=frontend,
+        condition=condition,
+        x=x1,
+        y=x2,
+    )

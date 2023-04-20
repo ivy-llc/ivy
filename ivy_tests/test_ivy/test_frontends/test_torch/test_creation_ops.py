@@ -2,6 +2,7 @@
 import ivy
 from hypothesis import strategies as st, assume
 import math
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -99,6 +100,7 @@ def test_torch_ones_like(
 # ones
 @handle_frontend_test(
     fn_tree="torch.ones",
+    size=helpers.ints(min_value=1, max_value=3),
     shape=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,
@@ -111,18 +113,27 @@ def test_torch_ones_like(
 def test_torch_ones(
     *,
     shape,
+    size,
     dtype,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
+    dims = {}
+    size = (size,)
+    if shape is None:
+        i = 0
+        for x_ in size:
+            dims[f"x{i}"] = x_
+            i += 1
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        **dims,
         size=shape,
         dtype=dtype[0],
         device=on_device,
@@ -132,6 +143,7 @@ def test_torch_ones(
 # zeros
 @handle_frontend_test(
     fn_tree="torch.zeros",
+    size=helpers.ints(min_value=1, max_value=3),
     shape=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,
@@ -143,6 +155,7 @@ def test_torch_ones(
 )
 def test_torch_zeros(
     *,
+    size,
     shape,
     dtype,
     on_device,
@@ -150,11 +163,19 @@ def test_torch_zeros(
     frontend,
     test_flags,
 ):
+    dims = {}
+    size = (size,)
+    if shape is None:
+        i = 0
+        for x_ in size:
+            dims[f"x{i}"] = x_
+            i += 1
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
+        **dims,
         size=shape,
         dtype=dtype[0],
         device=on_device,
@@ -192,6 +213,7 @@ def test_torch_zeros_like(
 # empty
 @handle_frontend_test(
     fn_tree="torch.empty",
+    size=helpers.ints(min_value=1, max_value=3),
     shape=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,
@@ -203,6 +225,7 @@ def test_torch_zeros_like(
 )
 def test_torch_empty(
     *,
+    size,
     shape,
     dtype,
     on_device,
@@ -210,12 +233,20 @@ def test_torch_empty(
     frontend,
     test_flags,
 ):
+    dims = {}
+    size = (size,)
+    if shape is None:
+        i = 0
+        for x_ in size:
+            dims[f"x{i}"] = x_
+            i += 1
     helpers.test_frontend_function(
         input_dtypes=[],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        **dims,
         size=shape,
         dtype=dtype[0],
         test_values=False,
@@ -631,4 +662,75 @@ def test_torch_asarray(
         obj=x[0],
         dtype=dtype[0],
         device=on_device,
+    )
+
+
+# from_dlpack
+@handle_frontend_test(
+    fn_tree="torch.from_dlpack",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
+)
+def test_torch_from_dlpack(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        ext_tensor=x[0],
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+    )
+
+
+@st.composite
+def _get_dtype_buffer_count_offset(draw):
+    dtype, value = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+        )
+    )
+    value = np.array(value)
+    length = value.size
+    value = value.tobytes()
+
+    offset = draw(helpers.ints(min_value=0, max_value=length - 1))
+    count = draw(helpers.ints(min_value=-(2**30), max_value=length - offset))
+    if count == 0:
+        count = -1
+    offset = offset * np.dtype(dtype[0]).itemsize
+
+    return dtype, value, count, offset
+
+
+@handle_frontend_test(
+    fn_tree="torch.frombuffer",
+    dtype_buffer_count_offset=_get_dtype_buffer_count_offset(),
+)
+def test_torch_frombuffer(
+    dtype_buffer_count_offset,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, buffer, count, offset = dtype_buffer_count_offset
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        buffer=buffer,
+        dtype=input_dtype[0],
+        count=count,
+        offset=offset,
     )

@@ -56,7 +56,7 @@ def conv1d(
     x: JaxArray,
     filters: JaxArray,
     strides: Union[int, Tuple[int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NWC",
@@ -65,6 +65,8 @@ def conv1d(
 ) -> JaxArray:
     strides = (strides,) if isinstance(strides, int) else strides
     dilations = (dilations,) if isinstance(dilations, int) else dilations
+    if isinstance(padding, int):
+        padding = [(padding, padding)]
     return jlax.conv_general_dilated(
         x, filters, strides, padding, None, dilations, (data_format, "WIO", data_format)
     )
@@ -107,7 +109,7 @@ def conv2d(
     x: JaxArray,
     filters: JaxArray,
     strides: Union[int, Tuple[int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NHWC",
@@ -116,6 +118,8 @@ def conv2d(
 ) -> JaxArray:
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
+    if isinstance(padding, int):
+        padding = [(padding, padding)] * 2
     return jlax.conv_general_dilated(
         x,
         filters,
@@ -164,7 +168,7 @@ def depthwise_conv2d(
     x: JaxArray,
     filters: JaxArray,
     strides: Union[int, Tuple[int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NHWC",
@@ -174,6 +178,8 @@ def depthwise_conv2d(
     strides = [strides] * 2 if isinstance(strides, int) else strides
     strides = [strides[1], strides[2]] if len(strides) == 4 else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
+    if isinstance(padding, int):
+        padding = [(padding, padding)] * 2
     filters = jnp.squeeze(filters, 3) if filters.ndim == 4 else filters
     cn = filters.shape[-1]
     filters = jnp.expand_dims(filters, -2)
@@ -193,7 +199,7 @@ def conv3d(
     x: JaxArray,
     filters: JaxArray,
     strides: Union[int, Tuple[int, int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NDHWC",
@@ -202,6 +208,8 @@ def conv3d(
 ) -> JaxArray:
     strides = [strides] * 3 if isinstance(strides, int) else strides
     dilations = [dilations] * 3 if isinstance(dilations, int) else dilations
+    if isinstance(padding, int):
+        padding = [(padding, padding)] * 3
     return jlax.conv_general_dilated(
         x,
         filters,
@@ -259,7 +267,7 @@ def conv_general_dilated(
     x: JaxArray,
     filters: JaxArray,
     strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     dims: int = 2,
@@ -273,6 +281,8 @@ def conv_general_dilated(
     strides = [strides] * dims if isinstance(strides, int) else strides
     dilations = [dilations] * dims if isinstance(dilations, int) else dilations
     x_dilations = [x_dilations] * dims if isinstance(x_dilations, int) else x_dilations
+    if isinstance(padding, int):
+        padding = [(padding, padding)] * dims
     filter_df = _get_filter_dataformat(dims)
     if not len(x_dilations) == x_dilations.count(1):
         new_pad = [0] * dims
