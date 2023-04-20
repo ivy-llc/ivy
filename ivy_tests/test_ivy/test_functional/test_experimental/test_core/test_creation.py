@@ -35,9 +35,9 @@ def test_triu_indices(
         fw=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
-        n_rows=x[0][0],
-        n_cols=x[1][0],
-        k=x[2][0],
+        n_rows=int(x[0]),
+        n_cols=int(x[1]),
+        k=int(x[2]),
     )
 
 
@@ -71,7 +71,7 @@ def test_vorbis_window(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        window_length=x[0],
+        window_length=int(x[0]),
         dtype=dtype[0],
     )
 
@@ -108,7 +108,7 @@ def test_hann_window(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        size=x[0],
+        size=int(x[0]),
         periodic=periodic,
         dtype=dtype[0],
     )
@@ -148,7 +148,7 @@ def test_kaiser_window(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        window_length=x[0],
+        window_length=int(x[0]),
         periodic=periodic,
         beta=beta,
         dtype=dtype[0],
@@ -189,7 +189,7 @@ def test_kaiser_bessel_derived_window(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        window_length=x[0],
+        window_length=int(x[0]),
         periodic=periodic,
         beta=beta,
         dtype=dtype[0],
@@ -238,7 +238,7 @@ def test_hamming_window(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        window_length=x[0],
+        window_length=int(x[0]),
         periodic=periodic,
         alpha=f[0],
         beta=f[1],
@@ -277,8 +277,8 @@ def test_tril_indices(
         fw=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
-        n_rows=x[0],
-        n_cols=x[1],
+        n_rows=int(x[0]),
+        n_cols=int(x[1]),
         k=k,
     )
 
@@ -314,7 +314,7 @@ def test_eye_like(
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
-        x=x[0],
+        x=int(x[0]),
         k=k,
         dtype=dtype[0],
         device=on_device,
