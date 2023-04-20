@@ -10,7 +10,6 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     handle_array_function,
-    inputs_to_ivy_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -23,7 +22,6 @@ def _check_valid_dimension_size(std):
 
 
 @handle_array_function
-@inputs_to_ivy_arrays
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
@@ -563,6 +561,7 @@ def cov(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
 ) -> ivy.Array:
     """Computes the covariance of matrix x1, or variables x1 and x2.
+
     Parameters
     ----------
     x1
@@ -596,6 +595,7 @@ def cov(
     out
         optional output array, for writing the result to. It must have a shape that
         the inputs broadcast to.
+
     Returns
     -------
     ret
@@ -604,6 +604,7 @@ def cov(
         floating-point data type determined by Type Promotion Rules and must be
         a square matrix of shape (N, N), where N is the number of variables in the
         input(s).
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.cov.html>`_ # noqa
@@ -611,6 +612,7 @@ def cov(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
+
     Examples
     --------
     With :class:`ivy.Array` input:

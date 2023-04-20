@@ -351,7 +351,6 @@ def dropout(
 @handle_array_function
 @handle_array_like_without_promotion
 @handle_exceptions
-@inputs_to_ivy_arrays
 def scaled_dot_product_attention(
     q: Union[ivy.Array, ivy.NativeArray],
     k: Union[ivy.Array, ivy.NativeArray],
@@ -552,6 +551,9 @@ def scaled_dot_product_attention(
 
     # BS x Q x F
     return ivy.einsum("... q k, ... k f -> ... q f", attn, v, out=out)
+
+
+scaled_dot_product_attention.mixed_function = True
 
 
 @handle_array_function
