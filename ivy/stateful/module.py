@@ -134,7 +134,7 @@ class Module(ModuleConverters, ModuleHelpers):
         as inputs to the call function fn of the module.
         """
 
-        def new_fn(*a, with_grads=None, **kw):
+        def _fn_with_var_arg_wrapper(*a, with_grads=None, **kw):
             with_grads = ivy.with_grads(with_grads=with_grads)
             if "v" in kw.keys():
                 del kw["v"]
@@ -143,8 +143,8 @@ class Module(ModuleConverters, ModuleHelpers):
                 v = v.stop_gradient()
             return fn(*a, **kw, v=v)
 
-        new_fn.wrapped = True
-        return new_fn
+        _fn_with_var_arg_wrapper.wrapped = True
+        return _fn_with_var_arg_wrapper
 
     def _find_variables(self, /, *, obj=None, _visited=None):
         """

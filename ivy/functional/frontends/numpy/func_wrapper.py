@@ -130,7 +130,7 @@ def _assert_no_scalar(args, dtype, none=False):
 
 def handle_numpy_dtype(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, dtype=None, **kwargs):
+    def _handle_numpy_dtype(*args, dtype=None, **kwargs):
         if len(args) > (dtype_pos + 1):
             dtype = args[dtype_pos]
             kwargs = {
@@ -151,13 +151,13 @@ def handle_numpy_dtype(fn: Callable) -> Callable:
         return fn(*args, dtype=np_frontend.to_ivy_dtype(dtype), **kwargs)
 
     dtype_pos = list(inspect.signature(fn).parameters).index("dtype")
-    new_fn.handle_numpy_dtype = True
-    return new_fn
+    _handle_numpy_dtype.handle_numpy_dtype = True
+    return _handle_numpy_dtype
 
 
 def handle_numpy_casting(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, casting="same_kind", dtype=None, **kwargs):
+    def _handle_numpy_casting(*args, casting="same_kind", dtype=None, **kwargs):
         """
         Check numpy casting type.
 
@@ -213,13 +213,13 @@ def handle_numpy_casting(fn: Callable) -> Callable:
 
         return fn(*args, **kwargs)
 
-    new_fn.handle_numpy_casting = True
-    return new_fn
+    _handle_numpy_casting.handle_numpy_casting = True
+    return _handle_numpy_casting
 
 
 def handle_numpy_casting_special(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, casting="same_kind", dtype=None, **kwargs):
+    def _handle_numpy_casting_special(*args, casting="same_kind", dtype=None, **kwargs):
         """
         Check numpy casting type for special cases where output must be type bool.
 
@@ -249,8 +249,8 @@ def handle_numpy_casting_special(fn: Callable) -> Callable:
 
         return fn(*args, **kwargs)
 
-    new_fn.handle_numpy_casting_special = True
-    return new_fn
+    _handle_numpy_casting_special.handle_numpy_casting_special = True
+    return _handle_numpy_casting_special
 
 
 def _numpy_frontend_to_ivy(x: Any) -> Any:
@@ -322,7 +322,7 @@ def _set_order(args, order):
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _inputs_to_ivy_arrays_np(*args, **kwargs):
         """
         Converts all `ndarray` instances in both the positional and keyword
         arguments into `ivy.Array` instances, and then calls the function with the
@@ -346,13 +346,13 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
         )
         return fn(*ivy_args, **ivy_kwargs)
 
-    new_fn.inputs_to_ivy_arrays = True
-    return new_fn
+    _inputs_to_ivy_arrays_np.inputs_to_ivy_arrays = True
+    return _inputs_to_ivy_arrays_np
 
 
 def outputs_to_numpy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, order="K", **kwargs):
+    def _outputs_to_numpy_arrays(*args, order="K", **kwargs):
         """
         Calls the function, and then converts all `ivy.Array` instances returned
         by the function into `ndarray` instances.
@@ -403,8 +403,8 @@ def outputs_to_numpy_arrays(fn: Callable) -> Callable:
         order_pos = list(inspect.signature(fn).parameters).index("order")
     else:
         contains_order = False
-    new_fn.outputs_to_numpy_arrays = True
-    return new_fn
+    _outputs_to_numpy_arrays.outputs_to_numpy_arrays = True
+    return _outputs_to_numpy_arrays
 
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
@@ -417,7 +417,7 @@ def to_ivy_arrays_and_back(fn: Callable) -> Callable:
 
 def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _from_zero_dim_arrays_to_scalar(*args, **kwargs):
         """
         Calls the function, and then converts all 0 dimensional array instances in
         the function to float numbers if out argument is not provided.
@@ -466,13 +466,13 @@ def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
                         )
         return ret
 
-    new_fn.from_zero_dim_arrays_to_scalar = True
-    return new_fn
+    _from_zero_dim_arrays_to_scalar.from_zero_dim_arrays_to_scalar = True
+    return _from_zero_dim_arrays_to_scalar
 
 
 def handle_numpy_out(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, out=None, **kwargs):
+    def _handle_numpy_out(*args, out=None, **kwargs):
         if len(args) > (out_pos + 1):
             out = args[out_pos]
             kwargs = {
@@ -499,5 +499,5 @@ def handle_numpy_out(fn: Callable) -> Callable:
         return fn(*args, **kwargs)
 
     out_pos = list(inspect.signature(fn).parameters).index("out")
-    new_fn.handle_numpy_out = True
-    return new_fn
+    _handle_numpy_out.handle_numpy_out = True
+    return _handle_numpy_out
