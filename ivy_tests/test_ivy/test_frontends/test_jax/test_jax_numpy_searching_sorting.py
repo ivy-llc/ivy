@@ -342,7 +342,9 @@ def test_jax_numpy_sort_complex(
 # where
 @handle_frontend_test(
     fn_tree="jax.numpy.where",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric"), min_num_dims=1),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"), min_num_dims=1
+    ),
     test_with_out=st.just(False),
 )
 def test_jax_numpy_where(
