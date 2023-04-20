@@ -392,7 +392,6 @@ def nanpercentile(
 
 
 @handle_numpy_out
-@handle_numpy_dtype
 @to_ivy_arrays_and_back
 def ptp(a, axis=None, out=None, keepdims=False):
     max_array = ivy.max(a, axis=axis, out=out, keepdims=keepdims)
