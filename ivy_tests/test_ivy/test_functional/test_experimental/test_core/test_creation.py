@@ -376,10 +376,14 @@ def test_frombuffer(
     condition=st.lists(st.booleans(), min_size=2, max_size=10),
     dtype_and_a=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        shape=st.shared(helpers.get_shape(min_num_dims=2), key="value_shape"),
+        shape=st.tuples(
+            st.integers(min_value=2, max_value=10),
+            st.integers(min_value=2, max_value=10),
+        ),
     ),
     test_gradients=st.just(False),
     test_with_out=st.just(False),
+    number_positional_args=st.just(2),
 )
 def test_compress(
     *,

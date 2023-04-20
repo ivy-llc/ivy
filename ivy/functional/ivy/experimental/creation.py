@@ -645,13 +645,11 @@ def frombuffer(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 def compress(
     condition: Union[ivy.Array, ivy.NativeArray],
     a: Union[ivy.Array, ivy.NativeArray],
     *,
     axis: Optional[int] = None,
-    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Return selected slices of an array along given axis.
@@ -665,9 +663,6 @@ def compress(
     axis
         Axis along which to take slices. Default: None.
         If Default, work along flattened array.
-    out
-        Optional output array, for writing the result to. It must have a shape that
-        the inputs broadcast to.
 
     Returns
     -------
@@ -688,8 +683,7 @@ def compress(
     >>> print(y)
     ivy.array([[3, 4], [5, 6]])
     """
-    # condition_arr = ivy.asarray(condition).astype(bool)
-    condition_arr = ivy.asarray(condition).astype(int)
+    condition_arr = ivy.asarray(condition).astype(bool)
     if axis is None:
         arr = ivy.asarray(a).flatten()
         axis = 0
