@@ -893,8 +893,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        This method simply wraps the function, and so the docstring for
-        ivy.concat_from_sequence also applies to this method with minimal changes.
+        Concatenate a sequence of arrays along a new or an existing axis.
 
         Parameters
         ----------
