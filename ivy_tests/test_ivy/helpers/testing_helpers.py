@@ -182,17 +182,16 @@ def _get_method_supported_devices_dtypes(
     """
     supported_device_dtypes = {}
     backends = available_frameworks()
-    for b in backends:  # ToDo can optimize this ?
-        ivy.set_backend(b)
+    for b in backends:
+        local_ivy = ivy.with_backend(b)
         _fn = getattr(class_module.__dict__[class_name], method_name)
-        devices_and_dtypes = ivy.function_supported_devices_and_dtypes(_fn)
+        devices_and_dtypes = local_ivy.function_supported_devices_and_dtypes(_fn)
         organized_dtypes = {}
         for device in devices_and_dtypes.keys():
             organized_dtypes[device] = _partition_dtypes_into_kinds(
-                ivy, devices_and_dtypes[device]
+                local_ivy, devices_and_dtypes[device]
             )
         supported_device_dtypes[b] = organized_dtypes
-        ivy.previous_backend()
     return supported_device_dtypes
 
 
