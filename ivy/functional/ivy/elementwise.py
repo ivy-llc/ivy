@@ -5450,8 +5450,8 @@ def rad2deg(
     return ivy.current_backend(x).rad2deg(x, out=out)
 
 
-@inputs_to_ivy_arrays
 @handle_array_function
+@inputs_to_ivy_arrays
 @handle_out_argument
 @handle_nestable
 @handle_exceptions

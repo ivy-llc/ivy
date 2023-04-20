@@ -571,6 +571,7 @@ def infer_device(fn: Callable) -> Callable:
 
 def handle_out_argument(fn: Callable) -> Callable:
     handle_out_in_backend = hasattr(fn, "support_native_out")
+    handle_out_in_ivy = hasattr(fn, "mixed_function")
 
     @functools.wraps(fn)
     def new_fn(*args, out=None, **kwargs):
@@ -594,8 +595,8 @@ def handle_out_argument(fn: Callable) -> Callable:
             The return of the function, with `out` handled correctly for
             inplace updates.
         """
-        if out is None:
-            return fn(*args, **kwargs)
+        if out is None or handle_out_in_ivy:
+            return fn(*args, out=out, **kwargs)
         if handle_out_in_backend:
             # extract underlying native array for out
             native_out = ivy.to_native(out)
