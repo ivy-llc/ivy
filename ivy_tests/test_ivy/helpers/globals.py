@@ -76,6 +76,8 @@ _imported_backends = {}
 def _import_backend(backend: str):
     if backend in _imported_backends:
         return _imported_backends[backend]
+    if _backends_to_test_lock:
+        raise RuntimeError("Trying to import a backend when it's locked.")
     try:
         imported_backend = importlib.import_module(f"ivy.functional.backends.{backend}")
     except ImportError as e:
