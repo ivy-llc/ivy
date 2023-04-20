@@ -8,6 +8,7 @@ from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 from ivy.functional.frontends.numpy.manipulation_routines import trim_zeros
 from math import factorial
 
+
 # sign
 @to_ivy_arrays_and_back
 def sign(x, /):
@@ -530,7 +531,7 @@ def round(a, decimals=0, out=None):
     factor = ivy.pow(10, decimals)
     a = ivy.multiply(a, factor)
     a = ivy.round(a)
-    a = ivy.divide(a, factor)
+    a = ivy.divide(a, factor, out=out)
     return a
 
 

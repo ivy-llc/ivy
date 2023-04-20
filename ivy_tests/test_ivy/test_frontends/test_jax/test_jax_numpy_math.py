@@ -2555,12 +2555,15 @@ def test_jax_numpy_around(
 # round
 @handle_frontend_test(
     fn_tree="jax.numpy.round",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    test_with_out=st.just(False),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float64"],
+    ),
+    decimals=st.integers(min_value=0, max_value=5),
 )
 def test_jax_numpy_round(
     *,
     dtype_and_x,
+    decimals,
     on_device,
     fn_tree,
     frontend,
@@ -2574,6 +2577,7 @@ def test_jax_numpy_round(
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
+        decimals=decimals,
     )
 
 
