@@ -150,3 +150,8 @@ def flatnonzero(a):
 @to_ivy_arrays_and_back
 def sort_complex(a):
     return ivy.sort(a)
+
+
+@to_ivy_arrays_and_back
+def searchsorted(a, v, side='left', sorter=None, *, method='scan'):
+    return ivy.searchsorted(a, v, side=side, sorter=sorter, ret_dtype='int32')
