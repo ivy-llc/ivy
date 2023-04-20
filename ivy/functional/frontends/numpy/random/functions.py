@@ -109,4 +109,4 @@ def binomial(n, p, size):
             num_samples = size[0]
     else:
         num_samples = len(p)
-    return ivy.multinomial(n, num_samples, batch_size=batch_size)
+    return ivy.multinomial(n, num_samples, batch_size=batch_size,probs=p)

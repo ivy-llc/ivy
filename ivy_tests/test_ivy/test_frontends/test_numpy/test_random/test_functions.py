@@ -417,6 +417,6 @@ def test_numpy_binomial(
         on_device=on_device,
         test_values=False,
         n=n,
-        p=p,
+        p=np.array([p,1-p], dtype=dtype[0]),
         size=size,
     )
