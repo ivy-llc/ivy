@@ -414,7 +414,7 @@ def zeros(
     ivy.array([0., 0., 0., 0., 0.])
     """
     return current_backend().zeros(
-        *size, shape=shape, dtype=dtype, device=device, out=out
+        size, shape=shape, dtype=dtype, device=device, out=out
     )
 
 
@@ -501,7 +501,7 @@ def ones(
     ivy.array([[1.],
            [1., 1., 1., 1., 1.], [1., 1.]])
     """
-    return current_backend().ones(*size, shape, dtype=dtype, device=device, out=out)
+    return current_backend().ones(size, shape, dtype=dtype, device=device, out=out)
 
 
 @infer_device
@@ -986,7 +986,7 @@ def empty(
     instances in place of any of the arguments.
 
     """
-    return current_backend().empty(*size, shape, dtype=dtype, device=device, out=out)
+    return current_backend().empty(size, shape, dtype=dtype, device=device, out=out)
 
 
 @infer_device
@@ -1302,7 +1302,7 @@ def meshgrid(
     *arrays: Union[ivy.Array, ivy.NativeArray],
     sparse: bool = False,
     indexing: str = "xy",
-    out: Optional(ivy.Array) = None
+    out: Optional(ivy.Array) = None,
 ) -> List[ivy.Array]:
     """Returns coordinate matrices from coordinate vectors.
 
