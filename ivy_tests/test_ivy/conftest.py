@@ -68,7 +68,6 @@ def pytest_configure(config):
         backend_strs = available_frameworks
     else:
         backend_strs = raw_value.split(",")
-    test_globals.update_backends_to_test(backend_strs)
 
     # env specification for multiversion backend
     env_val = config.getoption("--env")
@@ -137,6 +136,7 @@ def pytest_configure(config):
 
     # create test configs
     for backend_str in backend_strs:
+        test_globals.add_backend_to_test(backend_str)
         for device in devices:
             if (
                 backend_str in UNSUPPORTED_FRAEMWORK_DEVICES.keys()

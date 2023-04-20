@@ -20,7 +20,8 @@ CURRENT_RUNNING_TEST = _Notsetval
 CURRENT_DEVICE = _Notsetval
 CURRENT_DEVICE_STRIPPED = _Notsetval
 CURRENT_FRONTEND_STR = None
-_backends_to_test = _Notsetval
+_backends_to_test = []
+_backends_to_test_lock = False
 
 
 @dataclass(frozen=True)  # ToDo use kw_only=True when version is updated
@@ -75,7 +76,13 @@ _imported_backends = {}
 def _import_backend(backend: str):
     if backend in _imported_backends:
         return _imported_backends[backend]
-    imported_backend = importlib.import_module(f"ivy.functional.backends.{backend}")
+    try:
+        imported_backend = importlib.import_module(f"ivy.functional.backends.{backend}")
+    except ImportError as e:
+        raise ImportError(
+            f"Trying to run tests using {backend} backend but {backend} backend "
+            "has failed to be imported."
+        ) from e
     if backend == "jax":
         from jax.config import config
 
@@ -196,11 +203,17 @@ def _unset_device():
     CURRENT_DEVICE_STRIPPED = _Notsetval
 
 
-def update_backends_to_test(backends: List[str]):
-    global _backends_to_test
-    if _backends_to_test is not _Notsetval:
-        raise RuntimeError("Modifying backends is not allowed after initliazation")
-    _backends_to_test = backends
+def lock_backends_to_test():
+    global _backends_to_test_lock
+    _backends_to_test_lock = True
+
+
+def add_backend_to_test(backend: str):
+    global _backends_to_test_lock
+    if _backends_to_test_lock:
+        raise RuntimeError("Modifying backends is locked.")
+    _import_backend(backend)
+    _backends_to_test.append(backend)
 
 
 def get_backends_to_test() -> List[str]:

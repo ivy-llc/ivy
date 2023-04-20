@@ -10,7 +10,7 @@ from hypothesis import given, strategies as st
 # local
 import ivy
 from .hypothesis_helpers import number_helpers as nh
-from .globals import TestData, get_backends_to_test
+from .globals import TestData, get_backends_to_test, add_backend_to_test
 from . import test_parameter_flags as pf
 from ivy_tests.test_ivy.helpers.test_parameter_flags import (
     BuiltInstanceStrategy,
@@ -227,10 +227,11 @@ def _get_supported_devices_dtypes(
         if isinstance(getattr(fn_module_, fn_name), fn_module_.ufunc):
             fn_name = "_" + fn_name
 
-    backends = set(get_backends_to_test())
+    backends = get_backends_to_test()
     # In case the ground truth backend is not one of backends that is being tested
-    if ground_truth_backend is not None:
-        backends.add(ground_truth_backend)
+    if ground_truth_backend is not None and ground_truth_backend not in backends:
+        add_backend_to_test(ground_truth_backend)
+
     for b in backends:  # ToDo can optimize this ?
         ivy.set_backend(b)
         _tmp_mod = importlib.import_module(fn_module)
@@ -435,6 +436,7 @@ def handle_frontend_test(
         A search strategy that generates a list of boolean flags for array inputs to
         be frontend array
     """
+    frontend = fn_tree.partition(".")[0]
     fn_tree = "ivy.functional.frontends." + fn_tree
     if aliases is not None:
         for i in range(len(aliases)):
@@ -457,7 +459,9 @@ def handle_frontend_test(
 
     def test_wrapper(test_fn):
         callable_fn, fn_name, fn_mod = _import_fn(fn_tree)
-        supported_device_dtypes = _get_supported_devices_dtypes(fn_name, fn_mod)
+        supported_device_dtypes = _get_supported_devices_dtypes(
+            fn_name, fn_mod, frontend
+        )
 
         # If a test is not a Hypothesis test, we only set the test global data
         if is_hypothesis_test:
