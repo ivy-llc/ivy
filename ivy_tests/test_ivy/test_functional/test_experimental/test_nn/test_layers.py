@@ -151,6 +151,7 @@ def test_avg_pool1d(
     )
 
 
+# avg_pool2d
 @handle_test(
     fn_tree="functional.ivy.experimental.avg_pool2d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=4, max_dims=4, min_side=1, max_side=4),
