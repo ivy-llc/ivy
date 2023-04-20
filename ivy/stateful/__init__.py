@@ -14,5 +14,3 @@ from . import optimizers
 from .optimizers import *
 from . import sequential
 from .sequential import *
-from . import pooling
-from .pooling import *
