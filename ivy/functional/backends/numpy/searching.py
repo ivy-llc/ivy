@@ -68,6 +68,11 @@ def nonzero(
     size: Optional[int] = None,
     fill_value: Number = 0,
 ) -> Union[np.ndarray, Tuple[np.ndarray]]:
+    if len(x.shape) == 0:
+        raise ivy.utils.exceptions.IvyValueError(
+            "Cannot call nonzero on a zero dim array"
+        )
+
     res = np.nonzero(x)
 
     if size is not None:
