@@ -22,3 +22,25 @@ def test_numpy_iftt(dtype_and_x, frontend, test_flags, fn_tree, on_device):
         axis=-1,
         norm=None,
     )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.fft.rfft",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("real_and_complex"), array_api_dtypes=True
+    ),
+)
+def test_numpy_rftt(*, dtype_and_x, frontend, test_flags, fn_tree, on_device):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=True,
+        a=x,
+        n=None,
+        axis=-1,
+        norm="backward",
+    )

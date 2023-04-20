@@ -1781,3 +1781,63 @@ def adaptive_avg_pool2d(
     if squeeze:
         return ivy.squeeze(pooled_output, axis=0)
     return pooled_output
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_exceptions
+def rfft(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: int = -1,
+    norm: str = "backward",
+    n: Optional[Union[int, Tuple[int]]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    r"""Compute the one-dimensional discrete Fourier Transform for real input at least
+    1-D input x.
+
+    Parameters
+    ----------
+    x
+        Input array. If the input a contains an imaginary part, it is silently discarded.
+    axis
+        The dimension over which to compute the RFFT.
+    norm
+        Normalization mode. Default is "backward".
+        Indicates which direction of the forward/backward pair of transforms is scaled 
+        and with what normalization factor.
+        Optional argument, "ortho" or "forward". 
+        "backward" has the direct (forward) transforms unscaled the inverse (backward) 
+        transforms scaled by 1/n.
+        "ortho" both direct and inverse transforms are scaled by 1/sqrt(n).
+        "forward" has the direct transforms scaled by 1/n and the inverse transforms unscaled.
+    n
+        Optional. Number of points along transformation axis in the input to use. If n is smaller 
+        than the length of the input, the input is cropped. If it is larger, the input is padded 
+        with zeros. If n is not given, the length of the input along the axis specified by axis is used.
+    out
+        Optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        Complex Ivyarray. 
+        The truncated or zero-padded input, transformed along the axis indicated by axis, 
+        or the last one if axis is not specified. If n is even, the length of the transformed axis is (n/2)+1. 
+        If n is odd, the length is (n+1)/2.
+
+    Examples
+    --------
+    >>> ivy.fft([0, 1, 0, 0], 0) # 0 is dim should be included in ivy.ftt(x, dim ...)
+    ivy.array([ 1.+0.j,  0.-1.j, -1.+0.j,  0.+1.j]) 
+    >>> ivy.rfft([0, 1, 0, 0])
+    ivy.array([ 1.+0.j,  0.-1.j, -1.+0.j])
+    >>> ivy.rfft([0, 1, 0, 0], norm='ortho', axis=0, n=6)
+    ivy.array([ 0.40824829+0.j        ,  0.20412415-0.35355339j,
+       -0.20412415-0.35355339j, -0.40824829+0.j        ])
+    """
+    return ivy.current_backend(x).rfft(x, axis=axis, norm=norm, n=n, out=out)
