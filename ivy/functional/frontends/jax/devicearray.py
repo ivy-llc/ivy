@@ -15,10 +15,11 @@ class DeviceArray:
 
     def __repr__(self):
         main = (
-            "ivy.frontends.jax.DeviceArray("
-            + str(ivy.to_list(self._ivy_array))
+            str(self.ivy_array.__repr__()).replace(
+                "ivy.array", "ivy.frontends.jax.DeviceArray"
+            )
             + ", dtype="
-            + str(self._ivy_array.dtype)
+            + str(self.ivy_array.dtype)
         )
         if self.weak_type:
             return main + ", weak_type=True)"
@@ -33,15 +34,15 @@ class DeviceArray:
 
     @property
     def dtype(self):
-        return dtype(self._ivy_array.dtype)
+        return self.ivy_array.dtype
 
     @property
     def shape(self):
-        return self._ivy_array.shape
+        return self.ivy_array.shape
 
     @property
     def at(self):
-        return jax_frontend._src.numpy.lax_numpy._IndexUpdateHelper(self._ivy_array)
+        return jax_frontend._src.numpy.lax_numpy._IndexUpdateHelper(self.ivy_array)
 
     # Instance Methods #
     # ---------------- #
@@ -55,7 +56,7 @@ class DeviceArray:
         keepdims=False,
     ):
         return jax_frontend.numpy.argmax(
-            self._ivy_array,
+            self,
             axis=axis,
             out=out,
             keepdims=keepdims,
@@ -135,7 +136,7 @@ class DeviceArray:
 
     def __rpow__(self, other):
         other = ivy.asarray(other)
-        return jax_frontend.lax.pow(other, self._ivy_array)
+        return jax_frontend.lax.pow(other, self)
 
     def __and__(self, other):
         return jax_frontend.numpy.bitwise_and(self, other)

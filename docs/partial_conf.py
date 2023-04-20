@@ -1,11 +1,3 @@
-ivy_toctree_caption_map = {
-    "ivy.functional.ivy": "Functions",
-    "ivy.stateful": "Framework classes",
-    "ivy.nested_array": "Nested array",
-    "ivy.utils": "Utils",
-    "ivy_tests.test_ivy.helpers": "Testing",
-}
-
 discussion_channel_map = {
     "ivy.data_classes.array.array": ["1000042910831620176", "1028296936203235359"],
     "ivy.data_classes.container.container": [
