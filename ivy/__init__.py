@@ -212,10 +212,9 @@ class Shape:
             self._shape = None
 
     def __repr__(self):
-        if self._shape is not None:
-            return f"Ivy.Shape{(self._shape)}"
-        else:
-            return "Ivy.Shape(None)"
+        return (
+            f"Ivy.Shape{self._shape}" if self._shape is not None else "Ivy.Shape(None)"
+        )
 
     def __dir__(self):
         self._shape.__dir__()
@@ -224,14 +223,16 @@ class Shape:
         return super().__getattribute__(item)
 
     def __getitem__(self, key):
-        if self._shape is not None:
-            return self._shape[key]
-        else:
-            # Some handling, don't know when would this happen
-            return
+        return self._shape[key] if self._shape is not None else None
 
     def __setattr__(self, key, value):
-        self._shape[key] = value
+        if self._shape is not None:
+            self._shape[key] = value
+        else:
+            raise TypeError("Shape is None and cannot be modified")
+
+    def __len__(self):
+        return len(self._shape) if self._shape is not None else 0
 
 
 class IntDtype(Dtype):
