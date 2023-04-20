@@ -251,6 +251,10 @@ def row_stack(tup):
 
 
 @to_ivy_arrays_and_back
+def pad(array, pad_width, mode="constant", **kwargs):
+    return ivy.pad(array, pad_width, mode=mode, **kwargs)
+
+
 def hamming(M):
     if M <= 1:
         return ivy.ones([M], dtype=ivy.float64)

@@ -35,9 +35,9 @@ def test_triu_indices(
         fw=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
-        n_rows=x[0],
-        n_cols=x[1],
-        k=x[2],
+        n_rows=x[0][0],
+        n_cols=x[1][0],
+        k=x[2][0],
     )
 
 
@@ -45,9 +45,10 @@ def test_triu_indices(
 @handle_test(
     fn_tree="functional.ivy.experimental.vorbis_window",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
-        max_num_dims=1,
+        available_dtypes=helpers.get_dtypes("integer"),
+        max_num_dims=0,
+        min_value=1,
+        max_value=10,
     ),
     dtype=helpers.get_dtypes("float", full=False),
     test_gradients=st.just(False),
