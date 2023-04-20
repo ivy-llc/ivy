@@ -1952,7 +1952,6 @@ def is_complex_dtype(
     return "complex" in as_ivy_dtype(dtype_in)
 
 
-@inputs_to_ivy_arrays
 @handle_exceptions
 def promote_types(
     type1: Union[ivy.Dtype, ivy.NativeDtype],
@@ -2137,7 +2136,6 @@ def set_default_complex_dtype(complex_dtype: Union[ivy.Dtype, str], /):
     default_complex_dtype_stack.append(complex_dtype)
 
 
-@inputs_to_ivy_arrays
 @handle_exceptions
 def type_promote_arrays(
     x1: Union[ivy.Array, ivy.NativeArray],
@@ -2305,7 +2303,6 @@ def valid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None], /) -> bo
     return ivy.as_ivy_dtype(dtype_in) in ivy.valid_dtypes
 
 
-@inputs_to_ivy_arrays
 @handle_exceptions
 def promote_types_of_inputs(
     x1: Union[ivy.NativeArray, Number, Iterable[Number]],
