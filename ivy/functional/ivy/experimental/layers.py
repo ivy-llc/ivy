@@ -12,6 +12,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
     integer_arrays_to_float,
+    inputs_to_ivy_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -240,6 +241,8 @@ def avg_pool1d(
     *,
     data_format: str = "NWC",
     count_include_pad: bool = False,
+    ceil_mode: bool = False,
+    division_override: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 1-D avg pool given 3-D input x.
@@ -260,6 +263,11 @@ def avg_pool1d(
         NWC" or "NCW". Defaults to "NWC".
     count_include_pad
         Whether to include padding in the averaging calculation.
+    ceil_mode
+        Whether to use ceil or floor for creating the output shape.
+    division_override
+        If specified, it will be used as the divisor,
+        otherwise kernel_size will be used.
     out
         optional output array, for writing the result to.
 
@@ -295,6 +303,8 @@ def avg_pool1d(
         padding,
         data_format=data_format,
         count_include_pad=count_include_pad,
+        ceil_mode=ceil_mode,
+        division_override=division_override,
         out=out,
     )
 
@@ -310,6 +320,8 @@ def avg_pool2d(
     /,
     *,
     data_format: str = "NHWC",
+    count_include_pad: bool = False,
+    ceil_mode: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 2-D average pool given 4-D input x.
@@ -328,6 +340,10 @@ def avg_pool2d(
         indicating the per-dimensio paddings.
     data_format
         NHWC" or "NCHW". Defaults to "NHWC".
+    count_include_pad
+        Whether to include padding in the averaging calculation.
+    ceil_mode
+        Whether to use ceil or floor for creating the output shape.
     out
         optional output array, for writing the result to.
 
@@ -366,7 +382,14 @@ def avg_pool2d(
 
     """
     return ivy.current_backend(x).avg_pool2d(
-        x, kernel, strides, padding, data_format=data_format, out=out
+        x,
+        kernel,
+        strides,
+        padding,
+        data_format=data_format,
+        count_include_pad=count_include_pad,
+        ceil_mode=ceil_mode,
+        out=out,
     )
 
 
@@ -381,6 +404,9 @@ def avg_pool3d(
     /,
     *,
     data_format: str = "NDHWC",
+    count_include_pad: bool = False,
+    ceil_mode: bool = False,
+    divisor_override: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 3-D avg pool given 5-D input x.
@@ -398,6 +424,12 @@ def avg_pool3d(
         paddings.
     data_format
         NDHWC" or "NCDHW". Defaults to "NDHWC".
+    count_include_pad
+        Whether to include padding in the averaging calculation.
+    ceil_mode
+        Whether to use ceil or floor for creating the output shape.
+    divisor_override
+        If specified, it will be used as divisor, otherwise kernel_size will be used.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -436,7 +468,15 @@ def avg_pool3d(
 
     """
     return ivy.current_backend(x).avg_pool3d(
-        x, kernel, strides, padding, data_format=data_format, out=out
+        x,
+        kernel,
+        strides,
+        padding,
+        data_format=data_format,
+        count_include_pad=count_include_pad,
+        ceil_mode=ceil_mode,
+        divisor_override=divisor_override,
+        out=out,
     )
 
 
@@ -791,7 +831,6 @@ def ifft(
     return ivy.current_backend(x).ifft(x, dim, norm=norm, n=n, out=out)
 
 
-@to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -847,6 +886,9 @@ def embedding(
         else:
             ret[i] = weights[x, :]
     return ret
+
+
+embedding.mixed_function = True
 
 
 @to_native_arrays_and_back
@@ -928,7 +970,7 @@ def dft(
     return res
 
 
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -1284,7 +1326,8 @@ def interpolate(
         "area",
         "nearest_exact",
         "tf_area",
-        "bicubic_tensorflow" "bicubic",
+        "bicubic_tensorflow",
+        "bicubic",
         "mitchellcubic",
         "lanczos3",
         "lanczos5",
@@ -1548,6 +1591,9 @@ def interpolate(
     return ivy.astype(ret, ivy.dtype(x), out=out)
 
 
+interpolate.mixed_function = True
+
+
 def _get_size(scale_factor, size, dims, x_shape):
     if scale_factor is not None:
         if isinstance(scale_factor, (float, int)):
@@ -1570,8 +1616,9 @@ def _output_ceil_shape(w, f, p, s):
     return math.ceil((w - f + p) / s) + 1
 
 
-def _padding_ceil_mode(w, f, p, s):
+def _padding_ceil_mode(w, f, p, s, return_added_padding=False):
     remaining_pixels = (w - f + sum(p)) % s
+    added_padding = 0
     if s > 1 and remaining_pixels != 0 and f > 1:
         input_size = w + sum(p)
         # making sure that the remaining pixels are supposed
@@ -1588,10 +1635,13 @@ def _padding_ceil_mode(w, f, p, s):
         # calculating new padding with ceil_output_shape
         new_pad = (output_shape - 1) * s + f - w
         # updating pad_list with new padding by adding it to the end
+        added_padding = new_pad - sum(p)
         p = (
             p[0],
-            p[1] + new_pad - sum(p),
+            p[1] + added_padding,
         )
+    if return_added_padding:
+        return p, added_padding
     return p
 
 
@@ -1639,6 +1689,7 @@ def _mask(vals, length, range_max, dim):
         return vals, length
 
 
+@handle_nestable
 def adaptive_avg_pool1d(
     input: Union[ivy.Array, ivy.NativeArray],
     output_size: int,
@@ -1706,6 +1757,10 @@ def adaptive_avg_pool1d(
     return pooled_output
 
 
+adaptive_avg_pool1d.mixed_function = True
+
+
+@handle_nestable
 def adaptive_avg_pool2d(
     input: Union[ivy.Array, ivy.NativeArray],
     output_size: Union[Sequence[int], int],
@@ -1781,63 +1836,3 @@ def adaptive_avg_pool2d(
     if squeeze:
         return ivy.squeeze(pooled_output, axis=0)
     return pooled_output
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_exceptions
-def rfft(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    axis: int = -1,
-    norm: str = "backward",
-    n: Optional[Union[int, Tuple[int]]] = None,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    r"""Compute the one-dimensional discrete Fourier Transform for real input at least
-    1-D input x.
-
-    Parameters
-    ----------
-    x
-        Input array. If the input a contains an imaginary part, it is silently discarded.
-    axis
-        The dimension over which to compute the RFFT.
-    norm
-        Normalization mode. Default is "backward".
-        Indicates which direction of the forward/backward pair of transforms is scaled 
-        and with what normalization factor.
-        Optional argument, "ortho" or "forward". 
-        "backward" has the direct (forward) transforms unscaled the inverse (backward) 
-        transforms scaled by 1/n.
-        "ortho" both direct and inverse transforms are scaled by 1/sqrt(n).
-        "forward" has the direct transforms scaled by 1/n and the inverse transforms unscaled.
-    n
-        Optional. Number of points along transformation axis in the input to use. If n is smaller 
-        than the length of the input, the input is cropped. If it is larger, the input is padded 
-        with zeros. If n is not given, the length of the input along the axis specified by axis is used.
-    out
-        Optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        Complex Ivyarray. 
-        The truncated or zero-padded input, transformed along the axis indicated by axis, 
-        or the last one if axis is not specified. If n is even, the length of the transformed axis is (n/2)+1. 
-        If n is odd, the length is (n+1)/2.
-
-    Examples
-    --------
-    >>> ivy.fft([0, 1, 0, 0], 0) # 0 is dim should be included in ivy.ftt(x, dim ...)
-    ivy.array([ 1.+0.j,  0.-1.j, -1.+0.j,  0.+1.j]) 
-    >>> ivy.rfft([0, 1, 0, 0])
-    ivy.array([ 1.+0.j,  0.-1.j, -1.+0.j])
-    >>> ivy.rfft([0, 1, 0, 0], norm='ortho', axis=0, n=6)
-    ivy.array([ 0.40824829+0.j        ,  0.20412415-0.35355339j,
-       -0.20412415-0.35355339j, -0.40824829+0.j        ])
-    """
-    return ivy.current_backend(x).rfft(x, axis=axis, norm=norm, n=n, out=out)

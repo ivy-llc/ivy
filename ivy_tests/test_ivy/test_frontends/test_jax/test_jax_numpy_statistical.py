@@ -577,7 +577,6 @@ def test_numpy_nanmin(
     )
     np_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        all_aliases=["numpy.nanmin"],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -846,4 +845,70 @@ def test_jax_numpy_corrcoef(
         x=x[0],
         y=x[1],
         rowvar=rowvar,
+    )
+
+
+# median
+@handle_frontend_test(
+    fn_tree="jax.numpy.median",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        min_value=-(2**10),
+        max_value=2**10,
+        valid_axis=True,
+    ),
+    keepdims=st.booleans(),
+)
+def test_jax_numpy_median(
+    *,
+    dtype_x_axis,
+    keepdims,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        axis=axis,
+        out=None,
+        overwrite_input=False,
+        keepdims=keepdims,
+        atol=1e-3,
+        rtol=1e-3,
+    )
+
+
+# ptp
+@handle_frontend_test(
+    fn_tree="jax.numpy.ptp",
+    dtype_and_x_axis_dtype=_get_castable_dtypes_values(allow_nan=False),
+    keep_dims=st.booleans(),
+)
+def test_jax_numpy_ptp(
+    dtype_and_x_axis_dtype,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    keep_dims,
+):
+    input_dtypes, x, axis, dtype = dtype_and_x_axis_dtype
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        axis=axis,
+        out=None,
+        keepdims=keep_dims,
     )
