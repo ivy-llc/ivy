@@ -35,12 +35,14 @@ def ifftshift(x, axes=None):
     array([[ 1,  2,  3],
            [ 4,  5,  6],
            [ 7,  8,  9]])
-    >>> ivy.functional.frontends.numpy.ifftshift(arr, axes=(0, 1))
+    >>> ivy.functional.frontends.numpy.fft.ifftshift(arr, axes=(0, 1))
     array([[ 5,  6,  4],
            [ 9,  7,  8],
            [ 3,  1,  2]])
     """
-    x = ivy.functional.frontends.numpy.asarray(x)
+
+    x = ivy.asarray(x)
+
     if axes is None:
         axes = tuple(range(x.ndim))
         shift = [-(dim // 2) for dim in x.shape]
@@ -53,4 +55,6 @@ def ifftshift(x, axes=None):
     else:
         shift = [-(x.shape[ax] // 2) for ax in axes]
 
-    return ivy.functional.roll(x, shift, axes)
+    roll = ivy.roll(x, shift, axis=axes)
+
+    return roll
