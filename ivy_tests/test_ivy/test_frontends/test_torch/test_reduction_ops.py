@@ -801,7 +801,7 @@ def test_torch_logsumexp(
     
 @handle_frontend_test(
     fn_tree="torch.mode",
-    dtype_input_axis=helpers.dtype_values_axis(
+    dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=-1,
         valid_axis=True,
@@ -818,7 +818,7 @@ def test_torch_mode(
     frontend,
     test_flags,
 ):
-    input_dtype, x, dim = dtype_input_axis
+    input_dtype, x, dim = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
