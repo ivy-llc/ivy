@@ -1,11 +1,3 @@
-ivy_toctree_caption_map = {
-    "ivy.functional.ivy": "Functions",
-    "ivy.stateful": "Framework classes",
-    "ivy.nested_array": "Nested array",
-    "ivy.utils": "Utils",
-    "ivy_tests.test_ivy.helpers": "Testing",
-}
-
 discussion_channel_map = {
     "ivy.data_classes.array.array": ["1000042910831620176", "1028296936203235359"],
     "ivy.data_classes.container.container": [
@@ -50,3 +42,10 @@ discussion_channel_map = {
 autosummary_generate = ["index.rst"]
 
 skippable_method_attributes = [{"__qualname__": "_wrap_function.<locals>.new_function"}]
+
+# Retrieve html_theme_options from docs/conf.py
+from docs.conf import html_theme_options
+
+html_theme_options["switcher"][
+    "json_url"
+] = "https://lets-unify.ai/docs/versions/ivy.json"

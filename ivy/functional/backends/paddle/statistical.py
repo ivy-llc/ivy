@@ -99,15 +99,15 @@ def mean(
             ret = paddle.mean(x.real(), axis=axis, keepdim=keepdims) + 1j * paddle.mean(
                 x.imag(), axis=axis, keepdim=keepdims
             )
-            if x.ndim == 1 and not keepdims:
+            if ret.ndim == 1 and not keepdims and axis is None:
                 ret = ret.squeeze()
             return ret
         ret = paddle.mean(x.cast("float32"), axis=axis, keepdim=keepdims)
-        if x.ndim == 1 and not keepdims:
+        if ret.ndim == 1 and not keepdims and axis is None:
             ret = ret.squeeze()
         return ret.astype(x.dtype)
     ret = paddle.mean(x, axis=axis, keepdim=keepdims)
-    if x.ndim == 1 and not keepdims:
+    if ret.ndim == 1 and not keepdims and axis is None:
         ret = ret.squeeze()
     return ret
 
@@ -200,7 +200,8 @@ def var(
 # Extra #
 # ----- #
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "uint8", "int16")}},
+    backend_version,
 )
 def cumprod(
     x: paddle.Tensor,
