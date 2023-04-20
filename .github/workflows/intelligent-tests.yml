@@ -155,7 +155,7 @@ jobs:
 
       - name: Output
         run: |
-          echo ivy/test_results_2.txt
+          cat ivy/test_results_2.txt
 
       - name: Upload test results
         uses: actions/upload-artifact@v3
