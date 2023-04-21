@@ -14,6 +14,7 @@ ARG pycon=3.8.10
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
+    apt-get install pip3 &&\
     apt-get install -y libsm6 libxext6 libxrender-dev libgl1-mesa-glx && \
     apt-get install -y python-opengl && \
     apt-get install -y git && \
