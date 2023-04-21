@@ -114,6 +114,20 @@ def test_torch_tensor_property_shape(dtype_x):
     ivy.utils.assertions.check_equal(x.ivy_array.shape, ivy.Shape(shape))
 
 
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("complex", prune_function=False)
+    ),
+)
+def test_torch_tensor_property_imag(
+    dtype_x,
+):
+    _, data = dtype_x
+    x = Tensor(data[0])
+    x.ivy_array = data[0]
+    ivy.utils.assertions.check_equal(x.imag, ivy.imag(data[0]))
+
+
 # chunk
 @pytest.mark.skip("Testing takes a lot of time")
 @handle_frontend_method(
