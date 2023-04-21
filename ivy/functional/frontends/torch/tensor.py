@@ -942,3 +942,11 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def round(self, *, decimals=0):
         return torch_frontend.round(self, decimals=decimals)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def cross(self, other, dim=-1):
+        return torch_frontend.cross(self, other, dim=dim)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+    def det(self):
+        return torch_frontend.det(self)
