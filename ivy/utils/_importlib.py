@@ -7,6 +7,12 @@ from ivy.utils.backend import ast_helpers
 import_cache = {}
 path_hooks = []
 
+# Note that any modules listed as 'to skip' should not depend on the Ivy backend state.
+# If they do, the behavior of ivy.with_backend is undefined and may not function as
+# expected. Import these modules along with Ivy initialization, as the import logic
+# assumes they exist in sys.modules.
+MODULES_TO_SKIP = ["ivy.compiler"]
+
 
 class LocalIvyImporter:
     def __init__(self):
@@ -90,6 +96,15 @@ def _import_module(name, package=None):
         parent_name, _, child_name = absolute_name.rpartition(".")
         parent_module = _import_module(parent_name)
         path = parent_module.__spec__.submodule_search_locations
+
+    # Return the one from global Ivy if the module is marked to skip
+    for module_to_skip in MODULES_TO_SKIP:
+        if absolute_name.startswith(module_to_skip):
+            if path is not None:
+                # Set reference to self in parent, if exist
+                setattr(parent_module, child_name, sys.modules[absolute_name])
+            return sys.modules[absolute_name]
+
     for finder in path_hooks:
         spec = finder.find_spec(absolute_name, path)
         if spec is not None:
