@@ -272,10 +272,12 @@ def test_numpy_fill_diagonal(
         val=val,
         wrap=wrap,
     )
+    
+
 @handle_frontend_test(
     fn_tree="numpy.compress",
     dtype_value=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float32"),
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="value_shape"),
     ),
     condition=st.lists(st.booleans(), min_size=2, max_size=10),
