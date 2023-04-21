@@ -128,8 +128,8 @@ def broadcast_shapes(*shapes):
 
 
 @to_ivy_arrays_and_back
-def broadcast_to(arr, shape):
-    return ivy.broadcast_to(arr, shape)
+def broadcast_to(array, shape):
+    return ivy.broadcast_to(array, shape)
 
 
 @to_ivy_arrays_and_back
@@ -251,6 +251,10 @@ def row_stack(tup):
 
 
 @to_ivy_arrays_and_back
+def pad(array, pad_width, mode="constant", **kwargs):
+    return ivy.pad(array, pad_width, mode=mode, **kwargs)
+
+
 def hamming(M):
     if M <= 1:
         return ivy.ones([M], dtype=ivy.float64)

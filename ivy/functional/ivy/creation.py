@@ -38,7 +38,7 @@ def asarray_handle_nestable(fn: Callable) -> Callable:
     fn_name = fn.__name__
 
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _asarray_handle_nestable(*args, **kwargs):
         """
         Calls `fn` with the *nestable* property of the function correctly handled.
         This means mapping the function to the container leaves if any containers are
@@ -66,8 +66,8 @@ def asarray_handle_nestable(fn: Callable) -> Callable:
         # the passed arguments, returning an ivy or a native array.
         return fn(*args, **kwargs)
 
-    new_fn.handle_nestable = True
-    return new_fn
+    _asarray_handle_nestable.handle_nestable = True
+    return _asarray_handle_nestable
 
 
 def _ivy_to_native(x):
@@ -87,7 +87,7 @@ def _ivy_to_native(x):
 
 def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, dtype=None, **kwargs):
+    def _asarray_to_native_arrays_and_back(*args, dtype=None, **kwargs):
         """
         Wraps `fn` so that input arrays are all converted to `ivy.NativeArray` instances
         and return arrays are all converted to `ivy.Array` instances. This wrapper is
@@ -102,12 +102,12 @@ def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
             dtype = ivy.default_dtype(dtype=dtype, as_native=True)
         return to_ivy(fn(*new_args, dtype=dtype, **kwargs))
 
-    return new_fn
+    return _asarray_to_native_arrays_and_back
 
 
 def asarray_infer_device(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, device=None, **kwargs):
+    def _asarray_infer_device(*args, device=None, **kwargs):
         """
         Determines the correct `device`, and then calls the function with the `device`
         passed explicitly. This wrapper is specifically for the backend implementations
@@ -140,8 +140,8 @@ def asarray_infer_device(fn: Callable) -> Callable:
         # call the function with device provided explicitly
         return fn(*args, device=device, **kwargs)
 
-    new_fn.infer_device = True
-    return new_fn
+    _asarray_infer_device.infer_device = True
+    return _asarray_infer_device
 
 
 # Type hints #
@@ -414,7 +414,7 @@ def zeros(
     ivy.array([0., 0., 0., 0., 0.])
     """
     return current_backend().zeros(
-        *size, shape=shape, dtype=dtype, device=device, out=out
+        size, shape=shape, dtype=dtype, device=device, out=out
     )
 
 
@@ -501,7 +501,7 @@ def ones(
     ivy.array([[1.],
            [1., 1., 1., 1., 1.], [1., 1.]])
     """
-    return current_backend().ones(*size, shape, dtype=dtype, device=device, out=out)
+    return current_backend().ones(size, shape, dtype=dtype, device=device, out=out)
 
 
 @infer_device
@@ -986,7 +986,7 @@ def empty(
     instances in place of any of the arguments.
 
     """
-    return current_backend().empty(*size, shape, dtype=dtype, device=device, out=out)
+    return current_backend().empty(size, shape, dtype=dtype, device=device, out=out)
 
 
 @infer_device
@@ -1302,6 +1302,7 @@ def meshgrid(
     *arrays: Union[ivy.Array, ivy.NativeArray],
     sparse: bool = False,
     indexing: str = "xy",
+    out: Optional(ivy.Array) = None,
 ) -> List[ivy.Array]:
     """Returns coordinate matrices from coordinate vectors.
 
@@ -1404,7 +1405,9 @@ def meshgrid(
             [4, 4]])
 
     """
-    return current_backend().meshgrid(*arrays, sparse=sparse, indexing=indexing)
+    return current_backend().meshgrid(
+        *arrays, sparse=sparse, indexing=indexing, out=out
+    )
 
 
 @infer_device
