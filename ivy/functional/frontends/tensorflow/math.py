@@ -52,7 +52,7 @@ def asinh(x, name="asinh"):
 @handle_tf_dtype
 @to_ivy_arrays_and_back
 def confusion_matrix(
-    labels, predictions, num_classes=None, weights=None, dtype=ivy.int32, name=None
+        labels, predictions, num_classes=None, weights=None, dtype=ivy.int32, name=None
 ):
     labels = ivy.astype(
         ivy.squeeze(ivy.array(labels), axis=None), ivy.int64, copy=False
@@ -245,7 +245,7 @@ def reduce_any(input_tensor, axis=None, keepdims=False, name="reduce_any"):
 
 @to_ivy_arrays_and_back
 def reduce_euclidean_norm(
-    input_tensor, axis=None, keepdims=False, name="reduce_euclidean_norm"
+        input_tensor, axis=None, keepdims=False, name="reduce_euclidean_norm"
 ):
     return ivy.vector_norm(
         input_tensor, axis=axis, keepdims=keepdims, ord=2
@@ -257,14 +257,14 @@ def reduce_logsumexp(input_tensor, axis=None, keepdims=False, name="reduce_logsu
     # stable logsumexp trick
     max_input_tensor = ivy.max(input_tensor, axis=axis, keepdims=True)
     return (
-        ivy.log(
-            ivy.sum(
-                ivy.exp(input_tensor - max_input_tensor),
-                axis=axis,
-                keepdims=keepdims,
+            ivy.log(
+                ivy.sum(
+                    ivy.exp(input_tensor - max_input_tensor),
+                    axis=axis,
+                    keepdims=keepdims,
+                )
             )
-        )
-        + max_input_tensor
+            + max_input_tensor
     ).astype(input_tensor.dtype)
 
 
@@ -332,7 +332,7 @@ def tan(x, name=None):
 
 @to_ivy_arrays_and_back
 def unsorted_segment_mean(
-    data, segment_ids, num_segments, name="unsorted_segment_mean"
+        data, segment_ids, num_segments, name="unsorted_segment_mean"
 ):
     ivy.utils.assertions.check_equal(list(segment_ids.shape), [list(data.shape)[0]])
     x = ivy.zeros(tuple([num_segments] + (list(data.shape))[1:]))
@@ -347,7 +347,7 @@ def unsorted_segment_mean(
 
 @to_ivy_arrays_and_back
 def unsorted_segment_sqrt_n(
-    data, segment_ids, num_segments, name="unsorted_segement_sqrt_n"
+        data, segment_ids, num_segments, name="unsorted_segement_sqrt_n"
 ):
     ivy.utils.assertions.check_equal(list(segment_ids.shape), [list(data.shape)[0]])
     x = ivy.zeros(tuple([num_segments] + (list(data.shape))[1:]))
@@ -506,3 +506,9 @@ def add_n(inputs, name=None):
 @to_ivy_arrays_and_back
 def floormod(x, y, name=None):
     return ivy.remainder(x, y)
+
+
+@to_ivy_arrays_and_back
+def sigmoid(x, name=None):
+    return ivy.sigmoid(x)
+
