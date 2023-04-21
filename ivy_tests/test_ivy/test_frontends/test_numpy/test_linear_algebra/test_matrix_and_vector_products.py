@@ -81,36 +81,37 @@ def test_numpy_inner(
 # cross
 @handle_frontend_test(
     fn_tree="numpy.cross",
-    dtype_x1_x2=helpers.dtype_and_values(
+    dtype_x1_x2_axis=np_frontend_helpers.dtype_value1_value2_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_value=-10,
-        max_value=10,
+        min_num_dims=1,
+        max_num_dims=5,
         min_dim_size=3,
         max_dim_size=3,
-        min_num_dims=1,
-        num_arrays=2,
-        shared_dtype=True,
+        min_value=-1e5,
+        max_value=1e5,
+        abs_smallest_val=0.01,
+        safety_factor_scale="log",
     ),
     test_with_out=st.just(True),
 )
 def test_numpy_cross(
     *,
-    dtype_x1_x2,
+    dtype_x1_x2_axis,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    dtypes, xs = dtype_x1_x2
-    print(f"{xs[0]}\n-\n{xs[1]}")
+    dtypes, x1, x2, axis = dtype_x1_x2_axis
     helpers.test_frontend_function(
         input_dtypes=dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        a=xs[0],
-        b=xs[1],
+        a=x1,
+        b=x2,
+        axis=axis,
     )
 
 
