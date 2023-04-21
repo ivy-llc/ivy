@@ -1,14 +1,11 @@
 import ivy
 import sys
-from pathlib import Path
 from importlib.util import resolve_name, module_from_spec
 from ivy.utils.backend import ast_helpers
 
 
 import_cache = {}
 path_hooks = []
-
-ivy_path_abs = Path(sys.modules["ivy"].__file__).parents[1]
 
 # Note that any modules listed as 'to skip' should not depend on the Ivy backend state.
 # If they do, the behavior of ivy.with_backend is undefined and may not function as
