@@ -57,7 +57,7 @@ RUN pip3 install --no-cache-dir -r optional.txt
 
 COPY run_tests_CLI/test_dependencies.py .
 RUN python3 test_dependencies.py -fp requirements.txt,optional_gpu.txt && \
-    rm -rf requirements.txt && \
-    rm -rf optional.txt && \
-    rm -rf optional_gpu.txt && \
-    rm -rf test_dependencies.py
+#    rm -rf requirements.txt && \
+#    rm -rf optional.txt && \
+#    rm -rf optional_gpu.txt && \
+#    rm -rf test_dependencies.py
