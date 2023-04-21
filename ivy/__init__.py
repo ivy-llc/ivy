@@ -202,7 +202,7 @@ class Shape:
                 current_backend(shape_tup).NativeArray,
             )
         ivy.utils.assertions.check_isinstance(shape_tup, valid_types)
-        if isinstance(shape_tup, ivy.NativeShape):
+        if isinstance(shape_tup, (ivy.NativeShape, tuple)):
             self._shape = shape_tup
         elif isinstance(shape_tup, int):
             self._shape = (shape_tup,)
@@ -212,6 +212,12 @@ class Shape:
             self._shape = None
 
     def __repr__(self):
+        if current_backend_str() == "torch":
+            repr = self._shape.__str__().lstrip("torch.Size([").rstrip("])")
+            repr = repr + "," if self._shape.__len__() == 1 else repr
+            return (
+                f"Ivy.Shape({repr})" if self._shape is not None else "Ivy.Shape(None)"
+            )
         return (
             f"Ivy.Shape{self._shape}" if self._shape is not None else "Ivy.Shape(None)"
         )
@@ -224,12 +230,6 @@ class Shape:
 
     def __getitem__(self, key):
         return self._shape[key] if self._shape is not None else None
-
-    def __setattr__(self, key, value):
-        if self._shape is not None:
-            self._shape[key] = value
-        else:
-            raise TypeError("Shape is None and cannot be modified")
 
     def __len__(self):
         return len(self._shape) if self._shape is not None else 0
