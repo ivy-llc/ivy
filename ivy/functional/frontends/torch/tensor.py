@@ -826,6 +826,10 @@ class Tensor:
     def __pow__(self, exponent):
         return self.pow(exponent)
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
+    def __rpow__(self, other):
+        return torch_frontend.pow(other, self)
+
     def __long__(self, memory_format=None):
         return self.long()
 
@@ -962,3 +966,6 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
     def det(self):
         return torch_frontend.det(self)
+
+    def reciprocal(self):
+        return torch_frontend.reciprocal(self)
