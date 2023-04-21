@@ -15,7 +15,9 @@ def if_else(
     vars: Iterable[Union[ivy.Array, ivy.NativeArray]],
 ) -> Any:
     """
-    This function takes a boolean condition and two functions as input. If the condition is True, the first function is executed and its result is returned. Otherwise, the second function is executed and its result is returned.
+    takes a boolean condition and two functions as input. If the condition is True,
+    the first function is executed and its result is returned. Otherwise, the second
+    function is executed and its result is returned.
 
     Parameters
     ----------
@@ -35,7 +37,6 @@ def if_else(
 
     Examples
     --------
-
     >>> cond = True
     >>> body_fn = lambda x: x + 1
     >>> orelse_fn = lambda x: x - 1
@@ -71,12 +72,14 @@ def while_loop(
     vars: Iterable[Union[ivy.Array, ivy.NativeArray]],
 ) -> Any:
     """
-    This function takes a test function, a body function and a set of variables as input. The body function is executed repeatedly while the test function returns True.
+    takes a test function, a body function and a set of variables as input. The body
+    function is executed repeatedly while the test function returns True.
 
     Parameters
     ----------
     test_fn
-        A callable function that returns a boolean value representing whether the loop should continue.
+        A callable function that returns a boolean value representing whether the
+        loop should continue.
     body_fn
         A callable function to be executed repeatedly while the test function returns True.
     vars
