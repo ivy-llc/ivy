@@ -2,7 +2,9 @@
 import tensorflow as tf
 from typing import Union, Optional, Sequence
 
-import ivy.utils.exceptions
+
+# local
+import ivy
 
 
 def all(
