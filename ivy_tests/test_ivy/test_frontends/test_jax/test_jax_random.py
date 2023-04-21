@@ -308,3 +308,71 @@ def test_jax_poisson(
     for (u, v) in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
+
+
+@st.composite
+def _all_gamma_params(draw):
+    shape=draw(helpers.get_shape(min_dim_size=1, max_dim_size=5, min_num_dims=2, max_num_dims=2) | st.just(None))
+    if shape is None:
+        a=draw(helpers.array_values(
+            min_value=0.0,
+            max_value=100.0,
+            dtype=helpers.get_dtypes("float", full=False),
+            exclude_min=True,
+            shape=helpers.get_shape(min_dim_size=1, max_dim_size=5, min_num_dims=1, max_num_dims=2),
+        ))
+        return a[0], shape
+    a=draw(st.floats(min_value=0, max_value=5, exclude_min=True))
+    return a, shape
+@handle_frontend_test(
+    fn_tree="jax.random.gamma",
+    dtype_key=helpers.dtype_and_values(
+        available_dtypes=["uint32"],
+        min_value=0,
+        max_value=2000,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
+    ),
+    a_shape=_all_gamma_params(),
+    dtype=helpers.get_dtypes("float", full=False),
+    test_with_out=st.just(False),
+)
+def test_jax_gamma(
+    *,
+    dtype_key,
+    a_shape,
+    dtype,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, key = dtype_key
+    a, shape= a_shape
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            key=key[0],
+            a=a,
+            shape=shape,
+            dtype=dtype[0],
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    for (u, v) in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
