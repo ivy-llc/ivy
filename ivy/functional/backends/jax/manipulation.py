@@ -35,7 +35,10 @@ def concat(
                 xs[i] = jnp.ravel(xs[i])
         if is_tuple:
             xs = tuple(xs)
-    return jnp.concatenate(xs, axis)
+    try:
+        return jnp.concatenate(xs, axis)
+    except ValueError as error:
+        raise ivy.utils.exceptions.IvyIndexError(str(error))
 
 
 def expand_dims(

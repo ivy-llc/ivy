@@ -48,7 +48,10 @@ def concat(
         axis = 0
         if is_tuple:
             xs = tuple(xs)
-    return tf.concat(xs, axis)
+    try:
+        return tf.concat(xs, axis)
+    except (tf.errors.InvalidArgumentError, np.AxisError) as error:
+        raise ivy.utils.exceptions.IvyIndexError(str(error))
 
 
 def expand_dims(
