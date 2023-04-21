@@ -199,7 +199,7 @@ def test_jax_numpy_tril_indices(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        n_rows=n_rows,
+        n=n_rows,
         k=k,
     )
 
