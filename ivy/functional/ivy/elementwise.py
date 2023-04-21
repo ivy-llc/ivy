@@ -1832,7 +1832,7 @@ def equal(
 @handle_nestable
 @handle_exceptions
 def exp(
-    x: Union[ivy.Array, ivy.NativeArray],
+    x: Union[ivy.Array, ivy.NativeArray, Number],
     /,
     *,
     out: Optional[ivy.Array] = None,
