@@ -1,6 +1,6 @@
 # global
 from hypothesis import strategies as st
-
+import numpy as np
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -336,6 +336,60 @@ def test_jax_numpy_sort_complex(
         on_device=on_device,
         a=x[0],
         test_values=False,
+    )
+
+
+# searchsorted
+@st.composite
+def _searchsorted(draw):
+    dtype_x, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes(
+                "numeric", full=False, key="searchsorted"
+            ),
+            shape=(draw(st.integers(min_value=1, max_value=10)),),
+        ),
+    )
+    dtype_v, v = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes(
+                "numeric", full=False, key="searchsorted"
+            ),
+            min_num_dims=1,
+        )
+    )
+
+    input_dtypes = dtype_x + dtype_v
+    xs = x + v
+    side = draw(st.sampled_from(["left", "right"]))
+    sorter = None
+    xs[0] = np.sort(xs[0], axis=-1)
+    return input_dtypes, xs, side, sorter
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.searchsorted",
+    dtype_x_v_side_sorter=_searchsorted(),
+    test_with_out=st.just(False),
+)
+def test_numpy_searchsorted(
+    dtype_x_v_side_sorter,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, xs, side, sorter = dtype_x_v_side_sorter
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=xs[0],
+        v=xs[1],
+        side=side,
+        sorter=sorter,
     )
 
 
