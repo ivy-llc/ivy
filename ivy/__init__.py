@@ -1,5 +1,6 @@
 # global
 import copy
+import re
 import warnings
 import builtins
 import numpy as np
@@ -212,14 +213,11 @@ class Shape:
             self._shape = None
 
     def __repr__(self):
-        if current_backend_str() == "torch":
-            repr = self._shape.__str__().lstrip("torch.Size([").rstrip("])")
-            repr = repr + "," if self._shape.__len__() == 1 else repr
-            return (
-                f"Ivy.Shape({repr})" if self._shape is not None else "Ivy.Shape(None)"
-            )
+        pattern = r"\d+(?:,\s*\d+)*"
+        shape_repr = re.findall(pattern, self._shape.__str__())
+        shape_repr = shape_repr[0] + "," if len(shape_repr[0]) == 1 else shape_repr[0]
         return (
-            f"Ivy.Shape{self._shape}" if self._shape is not None else "Ivy.Shape(None)"
+            f"Ivy.Shape({shape_repr})" if self._shape is not None else "Ivy.Shape(None)"
         )
 
     def __dir__(self):
