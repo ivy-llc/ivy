@@ -1,6 +1,6 @@
 import os
 import sys
-from typing import List, Set
+from typing import Set
 from pathlib import Path
 from importlib.util import resolve_name, module_from_spec
 from ivy.utils.backend import ast_helpers
@@ -53,27 +53,6 @@ def _get_modules(absolute_name: str) -> Set[str]:
             modules.add(f"{full_name}.{dir_name}")
 
     return modules
-
-
-def _get_all_modules_to_skip(modules_to_skip: List[str]) -> Set[str]:
-    """Get all modules to skip during the compilation process for ivy.with_backend.
-
-    Parameters
-    ----------
-    modules
-        List of modules to skip
-
-    Returns
-    -------
-        Set of modules to skip
-    """
-    all_modules = set()
-    for module in modules_to_skip:
-        all_modules.update(_get_modules(module))
-    return all_modules
-
-
-_all_modules_to_skip = _get_all_modules_to_skip(MODULES_TO_SKIP)
 
 
 class LocalIvyImporter:
@@ -160,11 +139,12 @@ def _import_module(name, package=None):
         path = parent_module.__spec__.submodule_search_locations
 
     # Return the one from global Ivy if the module is marked to skip
-    if absolute_name in _all_modules_to_skip:
-        if path is not None:
-            # Set reference to self in parent, if exist
-            setattr(parent_module, child_name, sys.modules[absolute_name])
-        return sys.modules[absolute_name]
+    for module_to_skip in MODULES_TO_SKIP:
+        if absolute_name.startswith(module_to_skip):
+            if path is not None:
+                # Set reference to self in parent, if exist
+                setattr(parent_module, child_name, sys.modules[absolute_name])
+            return sys.modules[absolute_name]
 
     for finder in path_hooks:
         spec = finder.find_spec(absolute_name, path)
