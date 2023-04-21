@@ -6624,6 +6624,7 @@ def test_torch_instance_mul(
         on_device=on_device,
     )
 
+
 # trunc
 @handle_frontend_method(
     class_tree=CLASS_TREE,
