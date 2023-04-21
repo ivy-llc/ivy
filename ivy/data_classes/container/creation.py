@@ -125,7 +125,7 @@ class _ContainerWithCreation(ContainerBase):
     ) -> ivy.Container:
         return ContainerBase.cont_multi_map_in_function(
             "zeros",
-            *size,
+            size,
             shape,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -150,7 +150,7 @@ class _ContainerWithCreation(ContainerBase):
     ) -> ivy.Container:
         return ContainerBase.cont_multi_map_in_function(
             "ones",
-            *size,
+            size,
             shape,
             key_chains,
             to_apply,
@@ -175,7 +175,7 @@ class _ContainerWithCreation(ContainerBase):
     ) -> ivy.Container:
         return ContainerBase.cont_multi_map_in_function(
             "empty",
-            *size,
+            size,
             shape,
             key_chains,
             to_apply,

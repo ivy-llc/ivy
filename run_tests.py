@@ -95,20 +95,15 @@ def run_multiversion_testing():
     db = cluster["Ivy_tests_multi"]
     with open("tests_to_run", "r") as f:
         for line in f:
-            print(line)
             test, backend = line.split(",")
             backend = backend.strip("\n")
-            print(test, backend)
             coll, submod, test_fn = get_submodule(test)
-            print(coll, submod, test_fn)
             frontend_version = None
             if ";" in backend:
                 # This is a frontend test
                 backend, frontend = backend.split(";")
-                print(backend, frontend)
                 frontend_version = "/".join(frontend.split("/")[1:])
                 command = f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:base /bin/bash -c "/opt/miniconda/envs/multienv/bin/python docker/multiversion_framework_directory.py {backend} {frontend} numpy/1.23.1; /opt/miniconda/envs/multienv/bin/python -m pytest --tb=short {test} --backend={backend} --frontend={frontend}" '  # noqa
-                print(command)
                 ret = os.system(command)
             else:
                 ret = os.system(
@@ -145,7 +140,6 @@ if __name__ == "__main__":
     gpu_flag = sys.argv[5]
     workflow_id = sys.argv[6]
     if len(sys.argv) > 7:
-        print(f"Job URL available -: {sys.argv}")
         run_id = sys.argv[7]
     else:
         run_id = "https://github.com/unifyai/ivy/actions/runs/" + workflow_id
@@ -166,7 +160,10 @@ if __name__ == "__main__":
         for line in f:
             test, backend = line.split(",")
             coll, submod, test_fn = get_submodule(test)
-            print(coll, submod, test_fn)
+            print(f"\n{'*' * 100}")
+            print(f"{line[:-1]}")
+            print(f"{'*' * 100}\n")
+            sys.stdout.flush()
             if with_gpu:
                 ret = os.system(
                     f'docker run --rm --gpus all --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multicuda:base_and_requirements python3 -m pytest --tb=short {test} --device=gpu:0 -B={backend}'  # noqa
@@ -207,7 +204,6 @@ if __name__ == "__main__":
             for line in f:
                 test, backend = line.split(",")
                 coll, submod, test_fn = get_submodule(test)
-                print(coll, submod, test_fn)
                 remove_from_db(db[coll[0]], coll[1], submod, backend, test_fn)
     except Exception:
         pass

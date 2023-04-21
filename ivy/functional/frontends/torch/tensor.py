@@ -39,7 +39,7 @@ class Tensor:
 
     @property
     def device(self):
-        return ivy.dev(self.ivy_array)
+        return self.ivy_array.device
 
     @property
     def dtype(self):
@@ -734,7 +734,7 @@ class Tensor:
         return torch_frontend.tensor(ivy.where(condition, self, other))
 
     def clone(self, memory_format=None):
-        return torch_frontend.tensor(ivy.array(self, copy=True))
+        return torch_frontend.tensor(ivy.array(self.ivy_array, copy=True))
 
     @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def acosh(self):
@@ -932,9 +932,13 @@ class Tensor:
     def count_nonzero(self, dim):
         return torch_frontend.count_nonzero(self, dim=dim)
 
-    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
     def exp(self):
         return torch_frontend.exp(self)
 
     def mul(self, other):
         return torch_frontend.mul(self, other)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def round(self, *, decimals=0):
+        return torch_frontend.round(self, decimals=decimals)
