@@ -13,7 +13,14 @@ ARG pycon=3.8.10
 #    fi
 
 ENV DEBIAN_FRONTEND=noninteractive
-
+RUN apt-get update && \
+    apt-get install -y libsm6 libxext6 libxrender-dev libgl1-mesa-glx && \
+    apt-get install -y python-opengl && \
+    apt-get install -y git && \
+    apt-get install -y rsync && \
+    apt-get install -y libusb-1.0-0 && \
+    apt-get install -y libglib2.0-0 && \
+    pip3 install setuptools==58.5.3
 # Install miniconda
 ENV CONDA_DIR /opt/miniconda/
 
@@ -56,8 +63,8 @@ COPY requirements/optional_gpu.txt .
 RUN pip3 install --no-cache-dir -r optional.txt
 
 COPY run_tests_CLI/test_dependencies.py .
-RUN python3 test_dependencies.py -fp requirements.txt,optional_gpu.txt 
-#    rm -rf requirements.txt && \
-#    rm -rf optional.txt && \
-#    rm -rf optional_gpu.txt && \
-#    rm -rf test_dependencies.py
+RUN python3 test_dependencies.py -fp requirements.txt,optional_gpu.txt && \
+    rm -rf requirements.txt && \
+    rm -rf optional.txt && \
+    rm -rf optional_gpu.txt && \
+    rm -rf test_dependencies.py
