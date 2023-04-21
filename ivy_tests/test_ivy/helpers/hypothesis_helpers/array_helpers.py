@@ -1166,8 +1166,10 @@ def arrays_for_pooling(
     max_dims,
     min_side,
     max_side,
-    allow_explicit_padding=False,
+    explicit_or_str_padding=False,
+    only_explicit_padding=False,
     return_dilation=False,
+    data_format="channel_last",
 ):
     in_shape = draw(
         nph.array_shapes(
@@ -1183,6 +1185,9 @@ def arrays_for_pooling(
             min_value=-100,
         )
     )
+
+    if not isinstance(data_format, str):
+        data_format = draw(data_format)
     array_dim = x[0].ndim
     if array_dim == 5:
         kernel = draw(
@@ -1210,7 +1215,7 @@ def arrays_for_pooling(
             else:
                 dilations.append(1)
                 new_kernel.append(kernel[i])
-    if allow_explicit_padding:
+    if explicit_or_str_padding or only_explicit_padding:
         padding = []
         for i in range(array_dim - 2):
             max_pad = new_kernel[i] // 2
@@ -1222,10 +1227,16 @@ def arrays_for_pooling(
                     )
                 )
             )
-        padding = draw(st.one_of(st.just(padding), st.sampled_from(["VALID", "SAME"])))
+        if explicit_or_str_padding:
+            padding = draw(
+                st.one_of(st.just(padding), st.sampled_from(["VALID", "SAME"]))
+            )
     else:
         padding = draw(st.sampled_from(["VALID", "SAME"]))
     strides = draw(st.tuples(st.integers(1, min(kernel))))
+    if data_format == "channel_first":
+        dim = len(in_shape)
+        x[0] = np.transpose(x[0], (0, dim - 1, *range(1, dim - 1)))
     if return_dilation:
         return dtype, x, kernel, strides, padding, dilations
     return dtype, x, kernel, strides, padding

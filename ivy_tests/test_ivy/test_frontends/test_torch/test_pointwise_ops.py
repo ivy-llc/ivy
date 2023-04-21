@@ -1173,7 +1173,6 @@ def test_torch_round(
         fn_tree=fn_tree,
         input=x[0],
         decimals=decimals,
-        out=None,
     )
 
 

@@ -41,7 +41,7 @@ def test_max_pool1d(
         max_dims=4,
         min_side=2,
         max_side=4,
-        allow_explicit_padding=True,
+        explicit_or_str_padding=True,
         return_dilation=True,
     ),
     ceil_mode=st.just(True),

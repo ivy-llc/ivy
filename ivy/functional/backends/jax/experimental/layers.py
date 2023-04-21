@@ -91,6 +91,8 @@ def general_pool(
     if isinstance(padding, str):
         pad_list = _pad_str_to_list(inputs, dims, padding, strides, new_window_shape)
     else:
+        if isinstance(padding, int):
+            padding = [(padding,) * 2] * dim
         pad_list = [(0, 0)] + list(padding) + [(0, 0)]
 
     if ceil_mode:
@@ -356,7 +358,7 @@ def avg_pool3d(
     res = res / divisor
 
     if data_format == "NCDHW":
-        res = jnp.transpose(x, (0, 2, 3, 4, 1))
+        res = jnp.transpose(res, (0, 4, 1, 2, 3))
 
     return res
 
