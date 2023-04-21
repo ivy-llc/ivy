@@ -1,3 +1,4 @@
+import ivy
 import sys
 from importlib.util import resolve_name, module_from_spec
 from ivy.utils.backend import ast_helpers
@@ -98,7 +99,10 @@ def _import_module(name, package=None):
         raise ModuleNotFoundError(msg, name=absolute_name)
     module = module_from_spec(spec)
     import_cache[absolute_name] = module
-    spec.loader.exec_module(module)
+    if ivy.is_local():
+        spec.loader.exec_module(module, ivy._compiled_id)
+    else:
+        spec.loader.exec_module(module)
     if path is not None:
         # Set reference to self in parent, if exist
         setattr(parent_module, child_name, module)
