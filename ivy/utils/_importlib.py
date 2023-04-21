@@ -13,7 +13,8 @@ ivy_path_abs = Path(sys.modules["ivy"].__file__).parents[1]
 
 # Note that any modules listed as 'to skip' should not depend on the Ivy backend state.
 # If they do, the behavior of ivy.with_backend is undefined and may not function as
-# Expected.
+# expected. Import these modules along with Ivy initialization, as the import logic
+# assumes they exist in sys.modules.
 MODULES_TO_SKIP = ["ivy.compiler"]
 
 
