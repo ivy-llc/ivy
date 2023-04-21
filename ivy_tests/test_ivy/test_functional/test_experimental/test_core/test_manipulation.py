@@ -1166,7 +1166,7 @@ def _associative_scan_helper(draw):
     shared_size = draw(
         st.shared(helpers.ints(min_value=1, max_value=5), key="shared_size")
     )
-    shape=tuple([random_size, shared_size, shared_size])
+    shape = tuple([random_size, shared_size, shared_size])
     matrix = draw(
         helpers.array_values(
             dtype=input_dtype,
@@ -1180,7 +1180,7 @@ def _associative_scan_helper(draw):
             shape=shape,
             allow_neg=False,
             force_int=True,
-        ).filter(lambda _x: _x < len(shape)-2)
+        ).filter(lambda _x: _x < len(shape) - 2)
     )
     return [input_dtype], matrix, axis
 
@@ -1195,15 +1195,15 @@ def _associative_scan_helper(draw):
     ground_truth_backend="jax",
 )
 def test_associative_scan(
-        *,
-        dtype_elems_axis,
-        fn,
-        reverse,
-        fn_name,
-        test_flags,
-        backend_fw,
-        on_device,
-        ground_truth_backend,
+    *,
+    dtype_elems_axis,
+    fn,
+    reverse,
+    fn_name,
+    test_flags,
+    backend_fw,
+    on_device,
+    ground_truth_backend,
 ):
     dtype, elems, axis = dtype_elems_axis
     helpers.test_function(
@@ -1216,5 +1216,5 @@ def test_associative_scan(
         elems=elems,
         fn=fn,
         reverse=reverse,
-        axis=axis
+        axis=axis,
     )

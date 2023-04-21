@@ -470,7 +470,7 @@ def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     for i in range(2, len(shapes)):
         result = _broadcast_shape(result, shapes[i])
 
-    return result
+    return tuple(result)
 
 
 @with_unsupported_device_and_dtypes(

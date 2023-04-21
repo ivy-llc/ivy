@@ -45,7 +45,7 @@ def _is_valid_dtypes_attributes(fn: Callable) -> bool:
 
 
 def _handle_nestable_dtype_info(fn):
-    def new_fn(type):
+    def _handle_nestable_dtype_info_wrapper(type):
         if isinstance(type, ivy.Container):
             type = type.cont_map(lambda x, kc: fn(x))
             type.__dict__["max"] = type.cont_map(lambda x, kc: x.max)
@@ -53,7 +53,7 @@ def _handle_nestable_dtype_info(fn):
             return type
         return fn(type)
 
-    return new_fn
+    return _handle_nestable_dtype_info_wrapper
 
 
 # Unindent every line in the source such that
