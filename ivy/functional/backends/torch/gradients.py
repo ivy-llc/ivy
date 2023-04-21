@@ -191,6 +191,7 @@ def jac(func: Callable):
 def grad(f):
     if grad.nth == 0:
         grad.f_original = f
+
     def _nth_derivative(n):
         @outputs_to_ivy_arrays
         @inputs_to_native_arrays
@@ -207,14 +208,17 @@ def grad(f):
                 if y.requires_grad is False:
                     y.requires_grad_()
 
-                dy_dx = torch.autograd.grad(y,
-                                            x,
-                                            create_graph=True,
-                                            grad_outputs=torch.ones_like(y),
-                                            allow_unused=True)[0]
+                dy_dx = torch.autograd.grad(
+                    y,
+                    x,
+                    create_graph=True,
+                    grad_outputs=torch.ones_like(y),
+                    allow_unused=True,
+                )[0]
                 if dy_dx is None:
                     return torch.zeros_like(y)
                 return dy_dx
+
         return _inner
 
     grad.nth += 1
