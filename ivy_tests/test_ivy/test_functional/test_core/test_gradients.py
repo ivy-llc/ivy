@@ -245,15 +245,12 @@ def test_jac(x, dtype, func, backend_fw):
 @pytest.mark.parametrize(
     "func", [lambda x: ivy.mean(ivy.square(x)), lambda x: ivy.mean(ivy.cos(x))]
 )
-@pytest.mark.parametrize(
-    "nth", [1, 2, 3]
-)
+@pytest.mark.parametrize("nth", [1, 2, 3])
 def test_grad(x, dtype, func, backend_fw, nth):
     fw = backend_fw.current_backend_str()
 
     # ToDo: Remove skipping for paddle and jax for nth > 1
-    if fw == "numpy" or ((fw == "paddle" or fw == "jax")
-                         and nth > 1):
+    if fw == "numpy" or ((fw == "paddle" or fw == "jax") and nth > 1):
         return
 
     ivy.set_backend(fw)

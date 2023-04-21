@@ -301,7 +301,7 @@ def _get_input_and_new_shape(draw):
     )
     x_dtype, x = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("all"),
+            available_dtypes=helpers.get_dtypes("valid"),
             min_num_dims=2,
             max_num_dims=5,
             min_dim_size=2,
@@ -317,7 +317,7 @@ def _get_input_and_new_shape(draw):
     input_x_shape=_get_input_and_new_shape(),
     test_with_out=st.just(True),
 )
-def test_resize(
+def test_jax_numpy_resize(
     *,
     input_x_shape,
     on_device,
@@ -749,7 +749,7 @@ def test_jax_numpy_broadcast_to(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        arr=x[0],
+        array=x[0],
         shape=shape,
     )
 

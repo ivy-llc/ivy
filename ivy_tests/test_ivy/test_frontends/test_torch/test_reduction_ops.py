@@ -821,7 +821,7 @@ def test_torch_unique(
     test_flags,
 ):
     input_dtypes, x, axis = dtype_x_axis
-    
+
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
