@@ -136,6 +136,7 @@ def broadcast_to(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    ivy.utils.assertions.check_shapes_broadcastable(x.shape, shape)
     if tf.rank(x) > len(shape):
         return tf.broadcast_to(tf.reshape(x, -1), shape)
     return tf.broadcast_to(x, shape)

@@ -125,6 +125,7 @@ def broadcast_to(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    ivy.utils.assertions.check_shapes_broadcastable(x.shape, shape)
     if x.ndim > len(shape):
         return jnp.broadcast_to(x.reshape(-1), shape)
     return jnp.broadcast_to(x, shape)

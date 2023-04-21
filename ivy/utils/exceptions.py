@@ -121,6 +121,11 @@ class IvyValueError(ValueError, IvyException):
         super().__init__(_combine_messages(*messages, include_backend=include_backend))
 
 
+class IvyBroadcastShapeError(IvyException):
+    def __init__(self, *messages, include_backend=False):
+        super().__init__(_combine_messages(*messages, include_backend=include_backend))
+
+
 def handle_exceptions(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
@@ -147,6 +152,11 @@ def handle_exceptions(fn: Callable) -> Callable:
         except IvyError as e:
             _print_traceback_history()
             raise ivy.utils.exceptions.IvyError(
+                fn.__name__, str(e), include_backend=True
+            )
+        except IvyBroadcastShapeError as e:
+            _print_traceback_history()
+            raise ivy.utils.exceptions.IvyBroadcastShapeError(
                 fn.__name__, str(e), include_backend=True
             )
         except IndexError as e:
