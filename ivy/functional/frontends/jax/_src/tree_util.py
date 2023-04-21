@@ -1,5 +1,3 @@
-import ivy
-
 def tree_leaves(tree, is_leaf=None):
     # todo: is_leaf
     if isinstance(tree, (tuple, list)):
@@ -14,12 +12,13 @@ def tree_leaves(tree, is_leaf=None):
         return new_struc
     return [tree]
 
+
 def tree_map(f, tree, *rest, is_leaf=None):
     # todo: is_leaf
     is_tuple = isinstance(tree, tuple)
     if is_tuple:
         tree = list(tree)
-    
+
     if isinstance(tree, list):
         for idx, elem in enumerate(tree):
             curr_r = [r[idx] for r in rest] if rest else []
