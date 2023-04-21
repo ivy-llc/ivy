@@ -41,7 +41,7 @@ def test_max_pool1d(
         max_dims=4,
         min_side=2,
         max_side=4,
-        allow_explicit_padding=True,
+        explicit_or_str_padding=True,
         return_dilation=True,
     ),
     ceil_mode=st.just(True),
@@ -151,11 +151,13 @@ def test_avg_pool1d(
     )
 
 
+# avg_pool2d
 @handle_test(
     fn_tree="functional.ivy.experimental.avg_pool2d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=4, max_dims=4, min_side=1, max_side=4),
     count_include_pad=st.booleans(),
     ceil_mode=st.booleans(),
+    divisor_override=st.one_of(st.none(), st.integers(min_value=1, max_value=4)),
     test_gradients=st.just(False),
 )
 def test_avg_pool2d(
@@ -163,6 +165,7 @@ def test_avg_pool2d(
     x_k_s_p,
     count_include_pad,
     ceil_mode,
+    divisor_override,
     test_flags,
     backend_fw,
     on_device,
@@ -184,6 +187,7 @@ def test_avg_pool2d(
         padding=pad,
         count_include_pad=count_include_pad,
         ceil_mode=ceil_mode,
+        divisor_override=divisor_override,
     )
 
 
@@ -192,6 +196,7 @@ def test_avg_pool2d(
     x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=4),
     count_include_pad=st.booleans(),
     ceil_mode=st.booleans(),
+    divisor_override=st.one_of(st.none(), st.integers(min_value=1, max_value=4)),
     test_gradients=st.just(False),
 )
 def test_avg_pool3d(
@@ -199,6 +204,7 @@ def test_avg_pool3d(
     x_k_s_p,
     count_include_pad,
     ceil_mode,
+    divisor_override,
     test_flags,
     backend_fw,
     fn_name,
@@ -220,6 +226,7 @@ def test_avg_pool3d(
         padding=pad,
         count_include_pad=count_include_pad,
         ceil_mode=ceil_mode,
+        divisor_override=divisor_override,
     )
 
 

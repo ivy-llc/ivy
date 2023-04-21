@@ -91,6 +91,8 @@ def general_pool(
     if isinstance(padding, str):
         pad_list = _pad_str_to_list(inputs, dims, padding, strides, new_window_shape)
     else:
+        if isinstance(padding, int):
+            padding = [(padding,) * 2] * dim
         pad_list = [(0, 0)] + list(padding) + [(0, 0)]
 
     if ceil_mode:
@@ -265,6 +267,7 @@ def avg_pool2d(
     data_format: str = "NHWC",
     count_include_pad: bool = False,
     ceil_mode: bool = False,
+    divisor_override: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
 
@@ -287,17 +290,21 @@ def avg_pool2d(
     div_shape = x.shape[:-1] + (1,)
     if len(div_shape) - 2 == len(kernel):
         div_shape = (1,) + div_shape[1:]
-    res = res / general_pool(
-        jnp.ones(div_shape, dtype=res.dtype),
-        0.0,
-        jlax.add,
-        kernel,
-        strides,
-        padding,
-        2,
-        count_include_pad=count_include_pad,
-        ceil_mode=ceil_mode,
-    )
+    if divisor_override is not None:
+        divisor = divisor_override
+    else:
+        divisor = general_pool(
+            jnp.ones(div_shape, dtype=res.dtype),
+            0.0,
+            jlax.add,
+            kernel,
+            strides,
+            padding,
+            2,
+            count_include_pad=count_include_pad,
+            ceil_mode=ceil_mode,
+        )
+    res = res / divisor
     if data_format == "NCHW":
         return jnp.transpose(res, (0, 3, 1, 2))
     return res
@@ -313,6 +320,7 @@ def avg_pool3d(
     data_format: str = "NDHWC",
     count_include_pad: bool = False,
     ceil_mode: bool = False,
+    divisor_override: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
 
@@ -333,20 +341,24 @@ def avg_pool3d(
         x, 0.0, jlax.add, kernel, strides, padding, 3, ceil_mode=ceil_mode
     )
 
-    res = res / general_pool(
-        jnp.ones_like(x, dtype=res.dtype),
-        0.0,
-        jlax.add,
-        kernel,
-        strides,
-        padding,
-        3,
-        count_include_pad=count_include_pad,
-        ceil_mode=ceil_mode,
-    )
+    if divisor_override is not None:
+        divisor = divisor_override
+    else:
+        divisor = general_pool(
+            jnp.ones_like(x, dtype=res.dtype),
+            0.0,
+            jlax.add,
+            kernel,
+            strides,
+            padding,
+            3,
+            count_include_pad=count_include_pad,
+            ceil_mode=ceil_mode,
+        )
+    res = res / divisor
 
     if data_format == "NCDHW":
-        res = jnp.transpose(x, (0, 2, 3, 4, 1))
+        res = jnp.transpose(res, (0, 4, 1, 2, 3))
 
     return res
 

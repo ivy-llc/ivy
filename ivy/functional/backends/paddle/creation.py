@@ -443,7 +443,11 @@ def meshgrid(
         if indexing == "ij":
             return paddle.meshgrid(*arrays)
         elif indexing == "xy":
-            return paddle.meshgrid(*arrays[::-1])[::-1]
+            with ivy.ArrayMode(False):
+                index_switch = lambda x: ivy.swapaxes(x, 0, 1) if x.ndim > 1 else x
+                arrays = list(map(index_switch, arrays))
+                ret = paddle.meshgrid(*arrays)
+                return list(map(index_switch, ret))
         else:
             raise ValueError(f"indexing must be either 'ij' or 'xy', got {indexing}")
 

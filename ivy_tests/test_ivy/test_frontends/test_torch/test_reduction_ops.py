@@ -797,3 +797,40 @@ def test_torch_logsumexp(
         dim=axis,
         keepdim=keepdims,
     )
+
+
+@handle_frontend_test(
+    fn_tree="torch.unique",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        force_int_axis=True,
+        valid_axis=True,
+    ),
+    return_inverse=st.booleans(),
+    return_counts=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_torch_unique(
+    *,
+    dtype_x_axis,
+    return_inverse,
+    return_counts,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtypes, x, axis = dtype_x_axis
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        sorted=True,
+        return_inverse=return_inverse,
+        return_counts=return_counts,
+        dim=axis,
+    )
