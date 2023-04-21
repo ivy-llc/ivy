@@ -70,6 +70,10 @@ def flipud(m):
 
 @to_ivy_arrays_and_back
 def transpose(a, axes=None):
+    if ivy.isscalar(a):
+        return ivy.array(a)
+    elif a.ndim == 1:
+        return a
     if not axes:
         axes = list(range(len(a.shape)))[::-1]
     if type(axes) is int:
