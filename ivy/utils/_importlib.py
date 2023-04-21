@@ -1,7 +1,5 @@
-import os
 import ivy
 import sys
-from typing import Set
 from pathlib import Path
 from importlib.util import resolve_name, module_from_spec
 from ivy.utils.backend import ast_helpers
@@ -17,44 +15,6 @@ ivy_path_abs = Path(sys.modules["ivy"].__file__).parents[1]
 # expected. Import these modules along with Ivy initialization, as the import logic
 # assumes they exist in sys.modules.
 MODULES_TO_SKIP = ["ivy.compiler"]
-
-
-def _get_modules(absolute_name: str) -> Set[str]:
-    """Get all Ivy modules and sub-packages in a module
-
-    Parameters
-    ----------
-    absolute_name
-        Full absolute name of the module
-
-    Returns
-    -------
-        A set of modules and sub-packages found
-    """
-    if not absolute_name.startswith("ivy."):
-        raise ValueError("Module name must be specified using full namespace.")
-
-    name_to_path = absolute_name.replace(".", os.path.sep)
-    module_path = os.path.join(ivy_path_abs, name_to_path)
-
-    modules = set()
-    modules.add(absolute_name)
-
-    for root, dirs, files in os.walk(module_path):
-        if root.endswith("__"):
-            continue
-        full_name = absolute_name + root[len(module_path) :].replace(os.path.sep, ".")
-        for mod_name in files:
-            if mod_name.startswith("__") or not mod_name.endswith(".py"):
-                continue
-            # [:-3] to to get the module name without .py
-            modules.add(f"{full_name}.{mod_name[:-3]}")
-        for dir_name in dirs:
-            if dir_name.startswith("__"):
-                continue
-            modules.add(f"{full_name}.{dir_name}")
-
-    return modules
 
 
 class LocalIvyImporter:
