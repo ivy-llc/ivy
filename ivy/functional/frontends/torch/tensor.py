@@ -932,7 +932,7 @@ class Tensor:
     def count_nonzero(self, dim):
         return torch_frontend.count_nonzero(self, dim=dim)
 
-    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "torch")
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
     def exp(self):
         return torch_frontend.exp(self)
 
