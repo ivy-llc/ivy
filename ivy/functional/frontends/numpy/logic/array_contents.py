@@ -13,18 +13,14 @@ from ivy.functional.frontends.numpy import promote_types_of_numpy_inputs
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def isneginf(x, out=None):
-    isinf = ivy.isinf(x)
-    neg_sign_bit = ivy.less(x, 0)
-    return ivy.logical_and(isinf, neg_sign_bit, out=out)
+    return ivy.isinf(x, detect_positive=False)
 
 
 @handle_numpy_out
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def isposinf(x, out=None):
-    isinf = ivy.isinf(x)
-    pos_sign_bit = ivy.greater(x, 0)
-    return ivy.logical_and(isinf, pos_sign_bit, out=out)
+    return ivy.isinf(x, detect_negative=False)
 
 
 @inputs_to_ivy_arrays
