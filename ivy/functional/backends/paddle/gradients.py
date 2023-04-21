@@ -229,13 +229,16 @@ def grad(f):
                 y_ones = paddle.ones_like(y)
                 y_ones.stop_gradient = False
                 y.stop_gradient = False
-                dy_dx = paddle.grad(outputs=[y],
-                                    inputs=[x],
-                                    create_graph=True,
-                                    grad_outputs=y_ones,
-                                    retain_graph=True,
-                                    allow_unused=True)[0]
+                dy_dx = paddle.grad(
+                    outputs=[y],
+                    inputs=[x],
+                    create_graph=True,
+                    grad_outputs=y_ones,
+                    retain_graph=True,
+                    allow_unused=True,
+                )[0]
             return dy_dx
+
         return _inner
 
     grad.nth += 1
