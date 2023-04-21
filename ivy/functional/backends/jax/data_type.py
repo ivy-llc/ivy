@@ -111,7 +111,10 @@ def astype(
 
 
 def broadcast_arrays(*arrays: JaxArray) -> List[JaxArray]:
-    return jnp.broadcast_arrays(*arrays)
+    try:
+        return jnp.broadcast_arrays(*arrays)
+    except ValueError as e:
+        raise ivy.utils.exceptions.IvyBroadcastShapeError(str(e))
 
 
 @with_unsupported_dtypes(

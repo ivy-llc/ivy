@@ -87,7 +87,10 @@ def astype(
 
 
 def broadcast_arrays(*arrays: torch.Tensor) -> List[torch.Tensor]:
-    return list(torch.broadcast_tensors(*arrays))
+    try:
+        return list(torch.broadcast_tensors(*arrays))
+    except RuntimeError as e:
+        raise ivy.utils.exceptions.IvyBroadcastShapeError(str(e))
 
 
 @with_unsupported_dtypes(

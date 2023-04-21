@@ -106,7 +106,10 @@ def astype(
 
 
 def broadcast_arrays(*arrays: np.ndarray) -> List[np.ndarray]:
-    return np.broadcast_arrays(*arrays)
+    try:
+        return np.broadcast_arrays(*arrays)
+    except ValueError as e:
+        raise ivy.utils.exceptions.IvyBroadcastShapeError(str(e))
 
 
 @with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
