@@ -136,7 +136,10 @@ def stack(
     axis: int = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.stack(arrays, axis=axis)
+    try:
+        return jnp.stack(arrays, axis=axis)
+    except ValueError as error:
+        raise ivy.utils.exceptions.IvyIndexError(str(error))
 
 
 # Extra #

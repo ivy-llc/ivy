@@ -198,7 +198,10 @@ def stack(
     axis: int = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.stack(arrays, axis)
+    try:
+        return tf.experimental.numpy.stack(arrays, axis)
+    except ValueError as e:
+        raise ivy.utils.exceptions.IvyIndexError(str(e))
 
 
 # Extra #
