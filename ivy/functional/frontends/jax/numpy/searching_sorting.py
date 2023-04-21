@@ -161,12 +161,20 @@ def where(condition, x=None, y=None, size=None, fill_value=0):
 
 
 @to_ivy_arrays_and_back
-def unique(ar, return_index=False, return_inverse=False, return_counts=False, axis=None, *, size=None, fill_value=None):
+def unique(
+    ar,
+    return_index=False,
+    return_inverse=False,
+    return_counts=False,
+    axis=None,
+    *,
+    size=None,
+    fill_value=None,
+):
     uniques = list(ivy.unique_all(ar, axis=axis))
     if size is not None:
         fill_value = fill_value if fill_value is not None else 1  # default fill_value 1
         pad_len = size - len(uniques[0])
-        # if size < length we take the size elements from the uniques
         if pad_len > 0:
             # padding
             num_dims = len(uniques[0].shape) - 1

@@ -397,17 +397,9 @@ def _unique_helper(draw):
 
 
 @handle_frontend_test(
-    fn_tree="jax.numpy.unique",
-    fn_inputs=_unique_helper(),
-    test_with_out=st.just(False)
+    fn_tree="jax.numpy.unique", fn_inputs=_unique_helper(), test_with_out=st.just(False)
 )
-def test_jax_numpy_unique(
-    fn_inputs,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device
-):
+def test_jax_numpy_unique(fn_inputs, frontend, test_flags, fn_tree, on_device):
     arr_dtype, arr, return_index, return_inverse, return_counts, axis = fn_inputs
     helpers.test_frontend_function(
         input_dtypes=arr_dtype,
@@ -421,4 +413,3 @@ def test_jax_numpy_unique(
         return_counts=return_counts,
         axis=axis,
     )
-
