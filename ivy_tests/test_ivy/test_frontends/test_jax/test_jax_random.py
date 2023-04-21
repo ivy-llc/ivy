@@ -312,18 +312,29 @@ def test_jax_poisson(
 
 @st.composite
 def _all_gamma_params(draw):
-    shape=draw(helpers.get_shape(min_dim_size=1, max_dim_size=5, min_num_dims=2, max_num_dims=2) | st.just(None))
+    shape = draw(
+        helpers.get_shape(
+            min_dim_size=1, max_dim_size=5, min_num_dims=2, max_num_dims=2
+        )
+        | st.just(None)
+    )
     if shape is None:
-        a=draw(helpers.array_values(
-            min_value=0.0,
-            max_value=100.0,
-            dtype=helpers.get_dtypes("float", full=False),
-            exclude_min=True,
-            shape=helpers.get_shape(min_dim_size=1, max_dim_size=5, min_num_dims=1, max_num_dims=2),
-        ))
+        a = draw(
+            helpers.array_values(
+                min_value=0.0,
+                max_value=100.0,
+                dtype=helpers.get_dtypes("float", full=False),
+                exclude_min=True,
+                shape=helpers.get_shape(
+                    min_dim_size=1, max_dim_size=5, min_num_dims=1, max_num_dims=2
+                ),
+            )
+        )
         return a[0], shape
-    a=draw(st.floats(min_value=0, max_value=5, exclude_min=True))
+    a = draw(st.floats(min_value=0, max_value=5, exclude_min=True))
     return a, shape
+
+
 @handle_frontend_test(
     fn_tree="jax.random.gamma",
     dtype_key=helpers.dtype_and_values(
@@ -350,7 +361,8 @@ def test_jax_gamma(
     test_flags,
 ):
     input_dtype, key = dtype_key
-    a, shape= a_shape
+    a, shape = a_shape
+
     def call():
         return helpers.test_frontend_function(
             input_dtypes=input_dtype,
