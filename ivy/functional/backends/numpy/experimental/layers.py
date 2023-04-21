@@ -351,6 +351,7 @@ def avg_pool2d(
     data_format: str = "NHWC",
     count_include_pad: bool = False,
     ceil_mode: bool = False,
+    divisor_override: Optional[int] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if isinstance(kernel, int):
@@ -398,8 +399,15 @@ def avg_pool2d(
     )
 
     # B x OH x OW x O
-    res = np.mean(sub_matrices, axis=(3, 4))
-    if (not count_include_pad or ceil_mode) and any(pad_specific):
+    if divisor_override is not None:
+        res = np.sum(sub_matrices, axis=(3, 4)) / divisor_override
+    else:
+        res = np.mean(sub_matrices, axis=(3, 4))
+    if (
+        (not count_include_pad or ceil_mode)
+        and any(pad_specific)
+        and not divisor_override
+    ):
         if not count_include_pad:
             num_padded_values = [
                 np.array(
@@ -450,6 +458,7 @@ def avg_pool3d(
     data_format: str = "NDHWC",
     count_include_pad: bool = False,
     ceil_mode: bool = False,
+    divisor_override: Optional[int] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
 
@@ -502,8 +511,16 @@ def avg_pool3d(
     )
 
     # B x OH x OW x O
-    res = np.mean(sub_matrices, axis=(4, 5, 6))
-    if (not count_include_pad or ceil_mode) and any(pad_specific):
+    if divisor_override is not None:
+        res = np.sum(sub_matrices, axis=(4, 5, 6)) / divisor_override
+    else:
+        res = np.mean(sub_matrices, axis=(4, 5, 6))
+
+    if (
+        (not count_include_pad or ceil_mode)
+        and any(pad_specific)
+        and not divisor_override
+    ):
         if not count_include_pad:
             num_padded_values = [
                 np.array(

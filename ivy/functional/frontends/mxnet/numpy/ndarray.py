@@ -26,7 +26,7 @@ class ndarray:
 
     @property
     def dtype(self):
-        return dtype(self.ivy_array.dtype)
+        return self.ivy_array.dtype
 
     @property
     def shape(self):

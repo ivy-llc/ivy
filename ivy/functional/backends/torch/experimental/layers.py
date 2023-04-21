@@ -303,6 +303,7 @@ def avg_pool2d(
     data_format: str = "NHWC",
     count_include_pad: bool = False,
     ceil_mode: bool = False,
+    divisor_override: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(strides, int):
@@ -324,9 +325,11 @@ def avg_pool2d(
         padding,
         value=0.0,
     )
-    res = torch.nn.functional.avg_pool2d(x, kernel, strides, 0, ceil_mode)
+    res = torch.nn.functional.avg_pool2d(
+        x, kernel, strides, 0, ceil_mode, divisor_override=divisor_override
+    )
 
-    if not count_include_pad and any(pad_specific):
+    if not count_include_pad and any(pad_specific) and not divisor_override:
         num_padded_values = [
             ivy.map(
                 _get_num_padded_values,
@@ -387,6 +390,7 @@ def avg_pool3d(
     data_format: str = "NDHWC",
     count_include_pad: bool = False,
     ceil_mode: bool = False,
+    divisor_override: Optional[int] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if isinstance(strides, int):
@@ -406,9 +410,11 @@ def avg_pool3d(
         padding,
         value=0.0,
     )
-    res = torch.nn.functional.avg_pool3d(x, kernel, strides, 0)
+    res = torch.nn.functional.avg_pool3d(
+        x, kernel, strides, 0, ceil_mode, divisor_override=divisor_override
+    )
 
-    if not count_include_pad and any(pad_specific):
+    if not count_include_pad and any(pad_specific) and not divisor_override:
         num_padded_values = [
             torch.tensor(
                 ivy.map(
