@@ -277,10 +277,10 @@ def test_numpy_fill_diagonal(
 @handle_frontend_test(
     fn_tree="numpy.compress",
     dtype_value=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float32"),
-        shape=st.shared(helpers.get_shape(min_num_dims=2), key="value_shape"),
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.shared(helpers.get_shape(min_num_dims=0), key="value_shape"),
     ),
-    condition=st.lists(st.booleans(), min_size=2, max_size=10),
+    condition=st.lists(st.booleans(), min_size=0, max_size=5),
     test_with_out=st.just(False),
 )
 def test_numpy_compress(
