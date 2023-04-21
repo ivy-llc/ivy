@@ -938,3 +938,7 @@ class Tensor:
 
     def mul(self, other):
         return torch_frontend.mul(self, other)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+    def round(self, *, decimals=0):
+        return torch_frontend.round(self, decimals=decimals)
