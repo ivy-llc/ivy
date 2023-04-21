@@ -3,6 +3,7 @@ import os
 import sys
 import traceback
 from ast import parse
+from string import Template
 from importlib.util import spec_from_file_location
 from importlib.abc import Loader, MetaPathFinder
 
@@ -13,6 +14,11 @@ from importlib.abc import Loader, MetaPathFinder
 importlib_module_path = "ivy.utils._importlib"
 importlib_abs_import_fn = "_absolute_import"
 importlib_from_import_fn = "_from_import"
+_global_import_template = Template(f"from {importlib_module_path} import $name")
+_local_import_template = Template(
+    "$name = "
+    "ivy.utils.backend.handler._compiled_backends_ids[$ivy_id].utils._importlib.$name"
+)
 _unmodified_ivy_path = sys.modules["ivy"].__path__[0].rpartition("/")[0]
 _compiled_modules_cache = {}
 
@@ -151,6 +157,21 @@ def _create_attrs_from_node(node, attrs=()):
     return last_node
 
 
+def _create_node(stmnt: str):
+    """Create an AST node from a given statement.
+
+    Parameters
+    ----------
+    stmnt
+        The statement to be parsed and represented as an AST node.
+
+    Returns
+    -------
+        The resulting AST node representing the given statement.
+    """
+    return ast.parse(stmnt).body[0]
+
+
 # End AST helpers ##############
 
 
@@ -175,43 +196,33 @@ class ImportTransformer(ast.NodeTransformer):
             return _parse_relative_fromimport(node)
 
     def impersonate_import(self, tree: ast.Module, local_ivy_id=None):
-        if self.include_ivy_import:
-            if local_ivy_id is not None:
-                # ast.parse produces a tree with Module tree, using body[0]
-                # we can obtain the specific node that we require.
-                ivy_import_node = ast.parse("import ivy").body[0]
-                common_import_path = (
-                    f"ivy.utils.backend.handler."
-                    f"_compiled_backends_ids[{local_ivy_id}].utils._importlib"
+        if not self.include_ivy_import:
+            return tree
+
+        # Convenient function to insert the parse the AST import statement and insert it
+        insert_import = lambda node: tree.body.insert(
+            self.insert_index, _create_node(node)
+        )
+        if local_ivy_id is None:
+            insert_import(
+                _global_import_template.substitute(name=importlib_abs_import_fn)
+            )
+            insert_import(
+                _global_import_template.substitute(name=importlib_from_import_fn)
+            )
+        else:
+            insert_import(
+                _local_import_template.substitute(
+                    name=importlib_abs_import_fn, ivy_id=local_ivy_id
                 )
-                abs_import_node = ast.parse(
-                    f"{importlib_abs_import_fn} "
-                    f"= {common_import_path}.{importlib_abs_import_fn}"
-                ).body[0]
-                from_import_node = ast.parse(
-                    f"{importlib_from_import_fn} "
-                    f"= {common_import_path}.{importlib_from_import_fn}"
-                ).body[0]
-                tree.body.insert(self.insert_index, from_import_node)
-                tree.body.insert(self.insert_index, abs_import_node)
-                tree.body.insert(self.insert_index, ivy_import_node)
-            else:
-                tree.body.insert(
-                    self.insert_index,
-                    ast.ImportFrom(
-                        module=importlib_module_path,
-                        names=[ast.alias(name=importlib_from_import_fn, asname=None)],
-                        level=0,
-                    ),
+            )
+            insert_import(
+                _local_import_template.substitute(
+                    name=importlib_from_import_fn, ivy_id=local_ivy_id
                 )
-                tree.body.insert(
-                    self.insert_index,
-                    ast.ImportFrom(
-                        module=importlib_module_path,
-                        names=[ast.alias(name=importlib_abs_import_fn, asname=None)],
-                        level=0,
-                    ),
-                )
+            )
+            insert_import("import ivy")
+
         return tree
 
 
