@@ -118,13 +118,12 @@ class Module(ModuleConverters, ModuleHelpers):
         self._dtype = dtype
         self._args = args
         self._kwargs = kwargs
-        if build_mode != "on_init":
-            return
-        self.build(*args, dynamic_backend=dynamic_backend, **kwargs)
-
         self._module_graph = None
         self._target = None
         self._lazy_compiled = False
+        if build_mode != "on_init":
+            return
+        self.build(*args, dynamic_backend=dynamic_backend, **kwargs)
 
     # Private #
     # --------#
@@ -135,7 +134,7 @@ class Module(ModuleConverters, ModuleHelpers):
         as inputs to the call function fn of the module.
         """
 
-        def new_fn(*a, with_grads=None, **kw):
+        def _fn_with_var_arg_wrapper(*a, with_grads=None, **kw):
             with_grads = ivy.with_grads(with_grads=with_grads)
             if "v" in kw.keys():
                 del kw["v"]
@@ -144,12 +143,12 @@ class Module(ModuleConverters, ModuleHelpers):
                 v = v.stop_gradient()
             return fn(*a, **kw, v=v)
 
-        new_fn.wrapped = True
-        return new_fn
+        _fn_with_var_arg_wrapper.wrapped = True
+        return _fn_with_var_arg_wrapper
 
     def _find_variables(self, /, *, obj=None, _visited=None):
         """
-        Find all interval variables in obj. Return empty Container if obj is None.
+        Find all internal variables in obj. Return empty Container if obj is None.
 
         Parameters
         ----------

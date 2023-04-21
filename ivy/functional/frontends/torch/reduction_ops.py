@@ -53,7 +53,7 @@ def sum(input, dim=None, keepdim=False, *, out=None):
 
 
 @to_ivy_arrays_and_back
-def mean(input, dim, keepdim=False, *, out=None):
+def mean(input, dim=None, keepdim=False, *, out=None):
     return ivy.mean(input, axis=dim, keepdims=keepdim, out=out)
 
 
@@ -75,12 +75,12 @@ def median(input, dim=None, keepdim=False, *, out=None):
         result = median_tuple(input, ivy.array(0))
     else:
         sorted_indices = ivy.argsort(input, axis=dim)
-        median_indices = ivy.gather(sorted_indices,
-                                    (sorted_indices.shape[dim] - 1) // 2,
-                                    axis=dim)
-        median_values = ivy.take_along_axis(input,
-                                            ivy.expand_dims(median_indices, axis=dim),
-                                            dim).squeeze(dim)
+        median_indices = ivy.gather(
+            sorted_indices, (sorted_indices.shape[dim] - 1) // 2, axis=dim
+        )
+        median_values = ivy.take_along_axis(
+            input, ivy.expand_dims(median_indices, axis=dim), dim
+        ).squeeze(dim)
 
         if keepdim:
             median_values = ivy.expand_dims(median_values, axis=dim)
@@ -230,3 +230,24 @@ def logsumexp(input, dim, keepdim=False, *, out=None):
         c = ivy.squeeze(c, axis=dim)
     ret = ivy.add(ret, c, out=out)
     return ret
+
+
+@to_ivy_arrays_and_back
+def unique(input, sorted=True, return_inverse=False, return_counts=False, dim=None):
+    results = ivy.unique_all(input, axis=dim)
+
+    fields = ["values"]
+    if return_inverse:
+        fields.append("inverse_indices")
+    if return_counts:
+        fields.append("counts")
+
+    Results = namedtuple("Results", fields)
+
+    values = [results.values]
+    if return_inverse:
+        values.append(results.inverse_indices)
+    if return_counts:
+        values.append(results.counts)
+
+    return Results(*values)
