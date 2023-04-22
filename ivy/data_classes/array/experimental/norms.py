@@ -52,8 +52,7 @@ class _ArrayWithNormsExperimental(abc.ABC):
         momentum: float = 1e-1,
         out: Optional[Tuple[ivy.Array, ivy.Array, ivy.Array]] = None,
     ) -> Tuple[ivy.Array, ivy.Array, ivy.Array]:
-        """
-        ivy.Array instance method variant of ivy.batch_norm. This method
+        """ivy.Array instance method variant of ivy.batch_norm. This method
         simply wraps the function, and so the docstring for ivy.batch_norm
         also applies to this method with minimal changes.
 
