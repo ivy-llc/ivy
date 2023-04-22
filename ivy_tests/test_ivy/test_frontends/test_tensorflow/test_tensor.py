@@ -1352,7 +1352,7 @@ def test_tensorflow_instance_pow(
     init_tree="tensorflow.constant",
     method_name="__getitem__",
     dtype_x_index=helpers.dtype_array_index(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
 def test_tensorflow_instance_getitem(
