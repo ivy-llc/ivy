@@ -438,7 +438,7 @@ class ModuleConverters:
             devices=devices,
             **i_kwargs,
         )
-    
+
     @staticmethod
     def from_paddle_module(
         native_module=None,
@@ -480,9 +480,7 @@ class ModuleConverters:
         """
 
         class PaddleIvyModule(ivy.Module):
-            def __init__(
-                self, *args, native_module, device, devices, **kwargs
-            ):
+            def __init__(self, *args, native_module, device, devices, **kwargs):
                 self._native_module = native_module
                 self._args = args
                 self._kwargs = kwargs
@@ -531,7 +529,6 @@ class ModuleConverters:
             devices=devices,
             **i_kwargs,
         )
-
 
     @staticmethod
     def from_torch_module(
