@@ -1840,7 +1840,6 @@ def one_hot(
         out=out,
     )
 
-
 @infer_device
 @infer_dtype
 @handle_array_function
@@ -1951,4 +1950,64 @@ def logspace(
         dtype=dtype,
         device=device,
         out=out,
+    )
+
+@infer_device
+@infer_dtype
+@handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_nestable
+def fromstring(
+        string: str,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        count: Optional[int] = None,
+        *,
+        sep: Optional[str] = None,
+        like: Optional[Union[ivy.Array, ivy.NativeArray, float]] = None
+)-> ivy.Array:
+    """ A new 1-D array initialized from text data in a string.
+
+    Parameters
+    ----------
+    string
+        A string containing the data.
+    dtype
+        The data type of the array; default: float. For binary input data,
+        the data must be in exactly this format. Most builtin numeric types
+        are supported and extension types may be supported.
+    count
+        Read this number of dtype elements from the data.
+        If this is negative (the default), the count will be determined
+        from the length of the data.
+    sep
+        The string separating numbers in the data; extra whitespace between
+        elements is also ignored.
+    like
+        Reference object to allow the creation of arrays which are not NumPy arrays.
+        If an array-like passed in as like supports the __array_function__ protocol,
+        the result will be defined by it. In this case, it ensures the creation of an
+        array object compatible with that passed in via this argument.
+
+    Returns
+    -------
+    ret
+        Tensor of 1D array from string.
+
+    Functional Examples
+    -------------------
+    >>> ivy.fromstring('1 2', dtype = int, sep = ' ')
+    ivy.array([1, 2])
+
+    >>> ivy.fromstring('1, 2', dtype = int, sep = ',')
+    ivy.array([1, 2])
+    """
+    ivy.set_backend("np")
+    return current_backend(string).fromstring(
+        string,
+        dtype,
+        count,
+        sep=sep,
+        like=like,
     )
