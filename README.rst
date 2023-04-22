@@ -249,8 +249,8 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
     optimizer = ivy.Adam(1e-4)
 
     # generate some random data
-    x = ivy.random.randn(100, 3)
-    y = ivy.random.randn(100, 1)
+    x = ivy.random.randint(100, 3)
+    y = ivy.random.randint(100, 1)
 
     def loss_fn(pred, target):
         return ivy.mean((pred - target)**2)
@@ -267,12 +267,6 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
 
         # print current loss
         print(f'Step: {step:2d} --- Loss: {ivy.to_numpy(loss).item():.5f}')
-
-    for step in range(100):
-        pred = model(x)
-        loss, grads = ivy.execute_with_gradients(lambda v: loss_fn(pred, y), model.v)
-        model.v = optimizer.step(model.v, grads)
-        print('Step: {} --- Loss: {}'.format(step, ivy.to_numpy(loss).item()))
 
     print('Finished training!')
 
