@@ -2,11 +2,18 @@
 from typing import Any
 import itertools
 import string
+import builtins
+import collections
+import ivy.functional.frontends.numpy as ivy_np
 from builtins import slice as py_slice
 
 # local
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
+
+_min = builtins.min
+_slice = builtins.slice
+_max = builtins.max
 
 
 @to_ivy_arrays_and_back
@@ -605,6 +612,147 @@ def top_k(operand, k):
     values, indices = ivy.top_k(operand, k, axis=-1)
     indices = ivy.astype(indices, ivy.int32, copy=False)
     return [values, indices]
+
+
+def _conv_view(lhs, rhs_shape, window_strides, pads, pad_value):
+    def _pad(arr, pads, pad_value):
+        out = ivy.pad(arr, ivy.maximum(0, pads), mode='constant',
+                      constant_values=pad_value).astype(arr.dtype)
+        slices = tuple(_slice(abs(lo) if lo < 0 else 0, hi % dim if hi < 0 else None)
+                       for (lo, hi), dim in zip(pads, arr.shape))
+        return out[slices]
+
+    if (_min(lhs.ndim, len(rhs_shape)) < 2 or lhs.ndim != len(rhs_shape)
+            or lhs.shape[1] != rhs_shape[1]):
+        raise ValueError('Dimension mismatch')
+    if len(window_strides) != len(rhs_shape) - 2:
+        raise ValueError('Wrong number of strides for spatial dimensions')
+    if len(pads) != len(rhs_shape) - 2:
+        raise ValueError('Wrong number of pads for spatial dimensions')
+
+    lhs = _pad(lhs, [(0, 0)] * 2 + list(pads), pad_value)
+    in_shape = lhs.shape[2:]
+    filter_shape = rhs_shape[2:]
+    dim = len(filter_shape)
+
+    out_strides = ivy.multiply(window_strides, lhs.strides[2:])
+    view_strides = lhs.strides[:1] + tuple(out_strides) + lhs.strides[1:]
+
+    out_shape = ivy.floor_divide(
+        ivy.subtract(in_shape, filter_shape), window_strides) + 1
+    view_shape = lhs.shape[:1] + tuple(out_shape) + rhs_shape[1:]
+
+    view = ivy.as_strided(lhs, view_shape, view_strides)
+
+    view_axes = list(range(view.ndim))
+    sum_axes = view_axes[-dim-1:]
+    rhs_axes = [view.ndim] + sum_axes
+    out_axes = [0, view.ndim] + list(range(1, dim+1))
+
+    return view, view_axes, rhs_axes, out_axes
+
+
+def _dilate(operand, factors, fill_value=0):
+    outspace = ivy.add(
+        operand.shape[2:],
+        ivy.multiply(
+           ivy.subtract(factors, 1),
+           ivy.subtract(operand.shape[2:], 1)
+        )
+    )
+    out = ivy.full(operand.shape[:2] + tuple(outspace), fill_value, operand.dtype)
+    lhs_slices = tuple(_slice(None, None, step) for step in factors)
+    out[(_slice(None),) * 2 + lhs_slices] = operand
+    return out
+
+
+def _padtype_to_pads(in_shape, filter_shape, window_strides, padding):
+    if padding.upper() == 'SAME':
+        out_shape = ivy.ceil(ivy.divide(in_shape, window_strides)).astype(int)
+        pad_sizes = [_max((out_size - 1) * stride + filter_size - in_size, 0)
+                     for out_size, stride, filter_size, in_size
+                     in zip(out_shape, window_strides, filter_shape, in_shape)]
+        return [(pad_size // 2, pad_size - pad_size // 2) for pad_size in pad_sizes]
+    else:
+        return [(0, 0)] * len(in_shape)
+
+
+def _get_max_identity(dt):
+    return -ivy.inf if ivy.is_float_dtype(dt) else ivy.iinfo(dt).min
+
+
+def _get_min_identity(dt):
+    return ivy.inf if ivy.is_float_dtype(dt) else ivy.iinfo(dt).max
+
+
+def _identity_getter(op):
+    return lambda dt: ivy.asarray(op.identity, dtype=dt)
+
+
+MonoidRecord = collections.namedtuple('MonoidRecord', ['reducer', 'identity'])
+_monoids = {
+    'max': MonoidRecord(ivy_np.maximum.reduce, _get_max_identity),
+    'min': MonoidRecord(ivy_np.minimum.reduce, _get_min_identity),
+    'add': MonoidRecord(ivy_np.add.reduce, _identity_getter(ivy_np.add)),
+    'mul': MonoidRecord(ivy_np.multiply.reduce, _identity_getter(ivy_np.multiply)),
+    'multiply': MonoidRecord(ivy_np.multiply.reduce,
+                             _identity_getter(ivy_np.multiply)),
+    'logical_and': MonoidRecord(ivy_np.logical_and.reduce,
+                                _identity_getter(ivy_np.logical_and)),
+    'logical_or': MonoidRecord(ivy_np.logical_or.reduce,
+                               _identity_getter(ivy_np.logical_or)),
+}
+
+
+def _make_reducer(py_binop, init_val):
+    def _reducer_from_pyfunc(py_binop, init_val):
+        def _delete(seq, pos):
+            return [i for i, v in enumerate(seq) if i != pos]
+
+        def reducer(operand, axis=0):
+            axis = range(operand.ndim) if axis is None else axis
+            result = ivy.full(_delete(operand.shape, axis), init_val,
+                              dtype=operand.dtype)
+            for idx, _ in ivy.ndenumerate(operand):
+                out_idx = tuple(_delete(idx, axis))
+                result[out_idx] = py_binop(result[out_idx], operand[idx])
+            return result
+
+        return reducer
+
+    monoid_record = _monoids.get(getattr(py_binop, '__name__'))
+    if monoid_record:
+        reducer, monoid_identity = monoid_record
+        if init_val == monoid_identity(ivy.result_type(init_val)):
+            return reducer
+    return _reducer_from_pyfunc(py_binop, init_val)
+
+
+@to_ivy_arrays_and_back
+def reduce_window(
+    operand,
+    init_value,
+    computation,
+    window_dimensions,
+    window_strides,
+    padding,
+    base_dilation=None,
+    window_dilation=None,
+):
+    # ToDo: add support for window_dilation
+    op, dims, strides = operand, window_dimensions, window_strides
+    if isinstance(padding, str):
+        pads = _padtype_to_pads(op.shape, dims, strides, padding)
+    else:
+        pads = padding
+    op = op.reshape((1, 1) + op.shape)
+    if base_dilation:
+        op = _dilate(op, base_dilation, init_value)
+    view = _conv_view(op, (1, 1) + dims, strides, pads,
+                      pad_value=init_value)[0]
+    view = view.reshape(view.shape[1:1 + len(dims)] + (-1,))
+    reducer = _make_reducer(computation, init_value)
+    return reducer(view, axis=-1)
 
 
 @to_ivy_arrays_and_back

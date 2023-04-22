@@ -2443,6 +2443,90 @@ def test_jax_lax_top_k(
     )
 
 
+@st.composite
+def _reduce_window_helper(draw):
+    dtype = draw(helpers.get_dtypes("numeric", full=False))
+    init_value = draw(helpers.array_values(dtype=dtype[0], shape=()))
+
+    def py_func(accumulator, window):
+        sum = 0
+        for w in window:
+            sum += w
+        return accumulator + sum
+
+    if draw(st.booleans()):
+        computation = draw(st.sampled_from(
+            ['max', 'min', 'add', 'mul', 'multiply', 'logical_and', 'logical_or']
+        ))
+    else:
+        computation = py_func
+
+    dtype, operand = draw(
+        helpers.dtype_and_values(
+            dtype=dtype,
+            min_num_dims=1,
+        )
+    )
+    ndim = operand[0].ndim
+    _, others = draw(
+        helpers.dtype_and_values(
+            num_arrays=4,
+            dtype=["int64"] * 4,
+            shape=(ndim,),
+            min_value=1,
+            max_value=3,
+            small_abs_safety_factor=1,
+            large_abs_safety_factor=1,
+        )
+    )
+    others = [other.tolist() for other in others]
+    padding = draw(
+        st.one_of(
+            st.lists(
+                st.tuples(
+                    st.integers(min_value=0, max_value=3),
+                    st.integers(min_value=0, max_value=3),
+                ),
+                min_size=ndim,
+                max_size=ndim,
+            ),
+            st.sampled_from(["SAME", "VALID"]),
+        )
+    )
+    return dtype * 2, operand, init_value, computation, others, padding
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.reduce_window",
+    all_args=_reduce_window_helper(),
+    test_with_out=st.just(False),
+)
+def test_jax_lax_reduce_window(
+    *,
+    all_args,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtypes, operand, init_value, computation, others, padding = all_args
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        operand=operand[0],
+        init_value=init_value,
+        computation=computation,
+        window_dimensions=others[0],
+        window_strides=others[1],
+        padding=padding,
+        base_dilation=others[2],
+        window_dilation=None,
+    )
+
+
 # real
 @handle_frontend_test(
     fn_tree="jax.lax.real",
