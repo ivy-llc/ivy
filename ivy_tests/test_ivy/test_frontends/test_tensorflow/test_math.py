@@ -11,6 +11,37 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
+# imag
+@handle_frontend_test(
+    fn_tree="tensorflow.math.imag",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        min_value=-20,
+        max_value=20,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_imag(
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-2,
+        atol=1e-2,
+        input=x[0],
+    )
+
+
 # accumulate_n
 @handle_frontend_test(
     fn_tree="tensorflow.math.accumulate_n",
@@ -452,6 +483,62 @@ def test_tensorflow_logical_or(
     test_with_out=st.just(False),
 )
 def test_tensorflow_log_sigmoid(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# log1p
+@handle_frontend_test(
+    fn_tree="tensorflow.math.log1p",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        safety_factor_scale="log",
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_log1p(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# reciprocal
+@handle_frontend_test(
+    fn_tree="tensorflow.math.reciprocal",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=1,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_reciprocal(
     *,
     dtype_and_x,
     frontend,
@@ -994,6 +1081,31 @@ def test_tensorflow_erfcinv(
     )
 
 
+# is_inf
+@handle_frontend_test(
+    fn_tree="tensorflow.math.is_inf",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_is_inf(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 # is_non_decreasing
 @handle_frontend_test(
     fn_tree="tensorflow.math.is_non_decreasing",
@@ -1449,6 +1561,31 @@ def test_tensorflow_ceil(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# round
+@handle_frontend_test(
+    fn_tree="tensorflow.math.round",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_round(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
@@ -2218,6 +2355,38 @@ def test_tensorflow_less(
         on_device=on_device,
         x=x[0],
         y=x[1],
+    )
+
+
+# zeta
+@handle_frontend_test(
+    fn_tree="tensorflow.math.zeta",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        max_num_dims=1,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_zeta(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        q=x[1],
     )
 
 

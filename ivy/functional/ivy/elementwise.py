@@ -11,7 +11,6 @@ from ivy.func_wrapper import (
     handle_nestable,
     integer_arrays_to_float,
     handle_array_like_without_promotion,
-    inputs_to_ivy_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -5450,7 +5449,6 @@ def rad2deg(
     return ivy.current_backend(x).rad2deg(x, out=out)
 
 
-@inputs_to_ivy_arrays
 @handle_array_function
 @handle_out_argument
 @handle_nestable

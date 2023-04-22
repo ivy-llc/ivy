@@ -36,11 +36,11 @@ def concat(
         raise ivy.utils.exceptions.IvyException(
             "Tensor list contains more than two dtypes"
         )
-    if dtype == "int16":
-        xs = [array.cast("int32") for array in xs]
+    if dtype == paddle.int16:
+        xs = list(map(lambda x: x.cast("int32"), xs))
         return paddle.concat(xs, axis).cast("int16")
     else:
-        xs = [array.cast(dtype) for array in xs]
+        xs = list(map(lambda x: x.cast(dtype), xs))
         return paddle.concat(xs, axis)
 
 
@@ -211,8 +211,6 @@ def stack(
     axis: int = 0,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    # The input list converted to a tensor to ensure matching dtype of elements.
-    # Because stack function does not support mixed dtypes.
     dtype_list = set(map(lambda x: x.dtype, arrays))
     if len(dtype_list) == 1:
         dtype = dtype_list.pop()

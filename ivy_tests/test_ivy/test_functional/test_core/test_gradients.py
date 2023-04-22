@@ -245,19 +245,30 @@ def test_jac(x, dtype, func, backend_fw):
 @pytest.mark.parametrize(
     "func", [lambda x: ivy.mean(ivy.square(x)), lambda x: ivy.mean(ivy.cos(x))]
 )
-def test_grad(x, dtype, func, backend_fw):
+@pytest.mark.parametrize("nth", [1, 2, 3])
+def test_grad(x, dtype, func, backend_fw, nth):
     fw = backend_fw.current_backend_str()
-    if fw == "numpy":
+
+    # ToDo: Remove skipping for paddle and jax for nth > 1
+    if fw == "numpy" or ((fw == "paddle" or fw == "jax") and nth > 1):
         return
+
     ivy.set_backend(fw)
     var = _variable(ivy.array(x, dtype=dtype))
     fn = ivy.grad(func)
+    if nth > 1:
+        for _ in range(1, nth):
+            fn = ivy.grad(fn)
     grad = fn(var)
     grad_np = helpers.flatten_and_to_np(ret=grad)
     ivy.previous_backend()
     ivy.set_backend("tensorflow")
     var = _variable(ivy.array(x, dtype=dtype))
     fn = ivy.grad(func)
+    if nth > 1:
+        for _ in range(1, nth):
+            fn = ivy.grad(fn)
+
     grad_gt = fn(var)
     grad_np_from_gt = helpers.flatten_and_to_np(ret=grad_gt)
     for grad, grad_from_gt in zip(grad_np, grad_np_from_gt):
