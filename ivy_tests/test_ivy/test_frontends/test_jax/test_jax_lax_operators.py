@@ -2517,3 +2517,29 @@ def test_jax_lax_squeeze(
         array=value[0],
         dimensions=dim,
     )
+
+
+# conj
+@handle_frontend_test(
+    fn_tree="jax.lax.conj",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["complex64"],
+    ),
+)
+def test_jax_lax_conj(
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
