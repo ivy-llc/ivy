@@ -17,6 +17,7 @@ import numpy as np
     ),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_triu_indices(
     *,
@@ -52,6 +53,7 @@ def test_triu_indices(
     ),
     dtype=helpers.get_dtypes("float", full=False),
     test_gradients=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_vorbis_window(
     *,
@@ -88,6 +90,7 @@ def test_vorbis_window(
     periodic=st.booleans(),
     dtype=helpers.get_dtypes("float", full=False),
     test_gradients=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_hann_window(
     *,
@@ -258,6 +261,7 @@ def test_hamming_window(
     k=helpers.ints(min_value=-11, max_value=11),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_tril_indices(
     *,

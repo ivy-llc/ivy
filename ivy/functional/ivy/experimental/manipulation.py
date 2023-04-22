@@ -262,6 +262,7 @@ def ndenumerate(
             for idx in _iter_product(*i):
                 yield idx, input[idx]
 
+    input = ivy.array(input) if not ivy.is_ivy_array(input) else input
     return _ndenumerate(input)
 
 
