@@ -296,28 +296,27 @@ def _mod(
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
 def _modf(
-    x,
-    /,
-    out = None,
-    *,
-    where = True,
-    casting = "same_kind",
-    order = "K",
-    dtype = None,
-    subok = True,
+        x,
+        /,
+        out=None,
+        *,
+        where=True,
+        casting="same_kind",
+        order="K",
+        dtype=None,
+        subok=True,
 ):
-    int_part = ivy.floor(x)
-    frac_part = x - int_part
     if dtype:
-        int_part = ivy.astype(int_part, ivy.as_ivy_dtype(dtype))
-        frac_part = ivy.astype(frac_part, ivy.as_ivy_dtype(dtype))
-    if ivy.is_array(out):
-        ivy.copyto(out, frac_part)
-        frac_part = out
+        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
+
+    integral_part = ivy.floor(x)
+    fractional_part = x - integral_part
+
     if ivy.is_array(where):
-        int_part = ivy.where(where, int_part, ivy.default(out, int_part), out=out)
-        frac_part = ivy.where(where, frac_part, ivy.default(out, frac_part), out=out)
-    return frac_part, int_part
+        integral_part = ivy.where(where, integral_part, ivy.default(out, ivy.zeros_like(integral_part)), out=out)
+        fractional_part = ivy.where(where, fractional_part, ivy.default(out, ivy.zeros_like(fractional_part)), out=out)
+
+    return fractional_part, integral_part
 
 
 @handle_numpy_out

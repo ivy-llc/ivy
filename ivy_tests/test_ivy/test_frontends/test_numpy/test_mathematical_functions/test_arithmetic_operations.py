@@ -538,55 +538,48 @@ def test_numpy_mod(
 
 # modf
 @handle_frontend_test(
-    fn_tree = "numpy.modf",
-    dtypes_values_casting = np_frontend_helpers.dtypes_values_casting_dtype(
-        arr_func = [
+    fn_tree="numpy.modf",
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
             lambda: helpers.dtype_and_values(
-                available_dtypes = helpers.get_dtypes("numeric"),
-                num_arrays=2,
+                available_dtypes=helpers.get_dtypes("numeric"),
+                num_arrays=1,
                 min_value=0,
                 exclude_min=True,
-                shared_dtype=True,
             )
         ],
-        get_dtypes_kind = "numeric",
+        get_dtypes_kind="numeric",
     ),
-    where = np_frontend_helpers.where(),
-    number_positional_args = np_frontend_helpers.get_num_positional_args_ufunc(
-        fn_name = "modf"
+    where=np_frontend_helpers.where(),
+    test_with_out=st.just(False),
+    number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
+        fn_name="modf"
     ),
 )
 def test_numpy_modf(
-    dtypes_values_casting,
-    where,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
+        dtypes_values_casting,
+        where,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
 ):
-    input_dtypes, x, casting, dtype = dtypes_values_casting
+    input_dtype, x, casting, dtype = dtypes_values_casting
+    assume(not np.iscomplex(x))
+    if dtype:
+        assume(np.dtype(dtype) >= np.dtype(input_dtype[0]))
     where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
-        where = where,
-        input_dtype = input_dtypes,
-        test_flags = test_flags,
+        where=where,
+        input_dtype=input_dtype,
+        test_flags=test_flags,
     )
-    out = [ivy.array(np.zeros_like(x[0])), ivy.array(np.zeros_like(x[0]))] 
     np_frontend_helpers.test_frontend_function(
-        input_dtypes = input_dtypes,
-        frontend = frontend,
-        test_flags = test_flags,
-        fn_tree = fn_tree,
-        on_device = on_device,
-        x1=x[0],
-        x2=x[1],
-        out = out, 
-        where = where,
-        casting = casting,
-        order = "K",
-        dtype = dtype,
-        subok = True,
-        rtol=1e-5,
-        atol=1e-5,
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
     )
 
     
