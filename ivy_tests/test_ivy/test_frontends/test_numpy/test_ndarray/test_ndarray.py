@@ -10,6 +10,7 @@ from ivy_tests.test_ivy.helpers import (
     assert_all_close,
 )
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
+from ivy_tests.test_ivy.test_frontends.test_torch.test_tensor import _setitem_helper
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_first_matrix_and_dtype,
     _get_second_matrix_and_dtype,
@@ -2680,6 +2681,37 @@ def test_numpy_instance_getitem(
         init_all_as_kwargs_np={"object": x},
         method_input_dtypes=[input_dtype[1]],
         method_all_as_kwargs_np={"key": index},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# __setitem__
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__setitem__",
+    dtypes_x_index_val=_setitem_helper(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_numpy_instance_setitem(
+    dtypes_x_index_val,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x, index, val = dtypes_x_index_val
+    helpers.test_frontend_method(
+        init_input_dtypes=[input_dtype[0]],
+        init_all_as_kwargs_np={"object": x},
+        method_input_dtypes=[*input_dtype[1:]],
+        method_all_as_kwargs_np={"key": index, "value": val},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
