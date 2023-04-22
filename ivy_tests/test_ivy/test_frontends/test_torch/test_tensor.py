@@ -2166,7 +2166,7 @@ def test_torch_instance_new_tensor(
     init_tree="torch.tensor",
     method_name="__getitem__",
     dtype_x_index=helpers.dtype_array_index(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         allow_neg_step=False,
     ),
 )

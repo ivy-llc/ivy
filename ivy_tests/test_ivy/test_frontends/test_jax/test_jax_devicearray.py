@@ -1390,7 +1390,7 @@ def test_jax_special_rmatmul(
     init_tree="jax.numpy.array",
     method_name="__getitem__",
     dtype_x_index=helpers.dtype_array_index(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
 def test_jax_special_getitem(

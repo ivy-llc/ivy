@@ -2663,7 +2663,7 @@ def test_numpy_instance_tobytes__(
     init_tree="numpy.array",
     method_name="__getitem__",
     dtype_x_index=helpers.dtype_array_index(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
 def test_numpy_instance_getitem(
