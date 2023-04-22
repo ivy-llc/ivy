@@ -153,6 +153,7 @@ class Array(
         )
         self._itemsize = ivy.itemsize(self._data)
         self._dtype = ivy.dtype(self._data)
+        self._shape = self._data.shape
         self._device = ivy.dev(self._data)
         self._dev_str = ivy.as_ivy_dev(self._device)
         self._pre_repr = "ivy.array"
@@ -243,12 +244,12 @@ class Array(
     @property
     def ndim(self) -> int:
         """Number of array dimensions (axes)."""
-        return len(tuple(self._data.shape))
+        return len(tuple(self._shape))
 
     @property
     def shape(self) -> ivy.Shape:
         """Array dimensions."""
-        return ivy.Shape(self._data.shape)
+        return ivy.Shape(self._shape)
 
     @property
     def size(self) -> Optional[int]:
