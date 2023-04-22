@@ -108,10 +108,25 @@ def nanmedian(
     overwrite_input: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if axis is None:
-        return torch.nanmedian(input, keepdim=keepdims, out=out)
+    if out:
+        temp_indices = torch.empty_like(input)
+        temp_out = (out, temp_indices)
     else:
-        return torch.nanmedian(input, dim=axis, keepdim=keepdims, out=out).values
+        temp_out = None
+    if axis is None:
+        return torch.nanmedian(input, keepdim=keepdims, out=temp_out)
+    else:
+        if isinstance(axis, list) or isinstance(axis, tuple):
+            temp = input
+            dimension = len(input.size())
+            for x in axis:
+                axis1 = x
+                for axis2 in range(x + 1, dimension):
+                    temp = torch.transpose(temp, axis1, axis2)
+                    axis1 = axis2
+            temp = torch.flatten(temp, start_dim=dimension - len(axis))
+            return torch.nanmedian(temp, dim=-1, keepdim=keepdims, out=temp_out).values
+        return torch.nanmedian(input, dim=axis, keepdim=keepdims, out=temp_out).values
 
 
 nanmedian.support_native_out = True
