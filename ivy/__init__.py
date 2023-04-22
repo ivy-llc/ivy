@@ -212,13 +212,13 @@ class Shape:
         else:
             self._shape = None
 
-    def __repr__(self):
-        pattern = r"\d+(?:,\s*\d+)*"
-        shape_repr = re.findall(pattern, self._shape.__str__())
-        shape_repr = shape_repr[0] + "," if len(shape_repr[0]) == 1 else shape_repr[0]
-        return (
-            f"Ivy.Shape({shape_repr})" if self._shape is not None else "Ivy.Shape(None)"
-        )
+    # def __repr__(self):
+    #     pattern = r"\d+(?:,\s*\d+)*"
+    #     shape_repr = re.findall(pattern, self._shape.__str__())
+    #     shape_repr = shape_repr[0] + "," if len(shape_repr[0]) == 1 else shape_repr[0]
+    #     return (
+    #         f"Ivy.Shape({shape_repr})" if self._shape is not None else "Ivy.Shape(None)"
+    #     )
 
     def __dir__(self):
         self._shape.__dir__()
