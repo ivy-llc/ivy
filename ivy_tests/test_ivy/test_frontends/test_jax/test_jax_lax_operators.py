@@ -2446,10 +2446,12 @@ def test_jax_lax_top_k(
 @st.composite
 def _reduce_window_helper(draw):
     dtype = draw(helpers.get_dtypes("numeric", full=False))
-    init_value = draw(helpers.array_values(dtype=dtype[0], shape=()))
+    init_value = ivy.to_scalar(draw(helpers.array_values(dtype=dtype[0], shape=())))
 
     def py_func(accumulator, window):
-        sum = 0
+        if not len(window.shape):
+            window = ivy.expand_dims(window, axis=0)
+        sum = ivy.array(0)
         for w in window:
             sum += w
         return accumulator + sum

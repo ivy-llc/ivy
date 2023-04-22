@@ -659,8 +659,10 @@ def _dilate(operand, factors, fill_value=0):
            ivy.subtract(factors, 1),
            ivy.subtract(operand.shape[2:], 1)
         )
+    ).to_list()
+    out = ivy.full((
+            operand.shape[:2] + tuple(outspace)), fill_value, dtype=operand.dtype
     )
-    out = ivy.full(operand.shape[:2] + tuple(outspace), fill_value, operand.dtype)
     lhs_slices = tuple(_slice(None, None, step) for step in factors)
     out[(_slice(None),) * 2 + lhs_slices] = operand
     return out
@@ -707,9 +709,10 @@ _monoids = {
 def _make_reducer(py_binop, init_val):
     def _reducer_from_pyfunc(py_binop, init_val):
         def _delete(seq, pos):
-            return [i for i, v in enumerate(seq) if i != pos]
+            return [v for i, v in enumerate(seq) if i != pos]
 
         def reducer(operand, axis=0):
+            axis = len(operand.shape) + axis if axis < 0 else axis
             axis = range(operand.ndim) if axis is None else axis
             result = ivy.full(_delete(operand.shape, axis), init_val,
                               dtype=operand.dtype)
@@ -748,7 +751,7 @@ def reduce_window(
     op = op.reshape((1, 1) + op.shape)
     if base_dilation:
         op = _dilate(op, base_dilation, init_value)
-    view = _conv_view(op, (1, 1) + dims, strides, pads,
+    view = _conv_view(op, (1, 1) + tuple(dims), strides, pads,
                       pad_value=init_value)[0]
     view = view.reshape(view.shape[1:1 + len(dims)] + (-1,))
     reducer = _make_reducer(computation, init_value)
