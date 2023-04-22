@@ -296,15 +296,15 @@ def _mod(
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
 def _modf(
-        x,
-        /,
-        out=None,
-        *,
-        where=True,
-        casting="same_kind",
-        order="K",
-        dtype=None,
-        subok=True,
+    x,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="K",
+    dtype=None,
+    subok=True,
 ):
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
