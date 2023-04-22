@@ -642,8 +642,7 @@ def _conv_view(lhs, rhs_shape, window_strides, pads, pad_value):
         ivy.subtract(in_shape, filter_shape), window_strides) + 1
     view_shape = lhs.shape[:1] + tuple(out_shape) + rhs_shape[1:]
 
-    # ToDo: add as_strided to ivy experimental
-    view = np.lib.stride_tricks.as_strided(lhs, view_shape, view_strides)
+    view = ivy.as_strided(lhs, view_shape, view_strides)
 
     view_axes = list(range(view.ndim))
     sum_axes = view_axes[-dim-1:]
