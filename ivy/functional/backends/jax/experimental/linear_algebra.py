@@ -1,6 +1,7 @@
 import math
 from typing import Optional, Tuple, Sequence, Union
 import jax.numpy as jnp
+import jax.scipy.linalg as jla
 from ivy.functional.backends.jax import JaxArray
 
 import ivy
@@ -100,7 +101,7 @@ def matrix_exp(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.exp(x)
+    return jla.expm(x)
 
 
 def eig(
@@ -147,3 +148,39 @@ def cond(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.linalg.cond(x, p=p)
+
+
+def cov(
+    x1: JaxArray,
+    x2: JaxArray = None,
+    /,
+    *,
+    rowVar: bool = True,
+    bias: bool = False,
+    ddof: Optional[int] = None,
+    fweights: Optional[JaxArray] = None,
+    aweights: Optional[JaxArray] = None,
+    dtype: Optional[jnp.dtype] = None,
+) -> JaxArray:
+    if not dtype:
+        x1 = jnp.asarray(x1, dtype=jnp.float64)
+
+    if jnp.ndim(x1) > 2:
+        raise ValueError("x1 has more than 2 dimensions")
+
+    if x2 is not None:
+        if jnp.ndim(x2) > 2:
+            raise ValueError("x2 has more than 2 dimensions")
+
+    if fweights is not None:
+        fweights = jnp.asarray(fweights, dtype=jnp.int64)
+
+    return jnp.cov(
+        m=x1,
+        y=x2,
+        rowvar=rowVar,
+        bias=bias,
+        ddof=ddof,
+        fweights=fweights,
+        aweights=aweights,
+    )

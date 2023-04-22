@@ -12,9 +12,9 @@ import inspect
 
 # for wrapping (sequence matters)
 FN_DECORATORS = [
-    "handle_array_function",
     "infer_device",
     "infer_dtype",
+    "handle_array_function",
     "integer_arrays_to_float",
     "outputs_to_ivy_arrays",
     "outputs_to_native_arrays",
@@ -80,10 +80,11 @@ def _get_first_array(*args, **kwargs):
 
 def _build_view(original, view, fn, args, kwargs, index=None):
     if ivy.exists(original._base):
-        warnings.warn(
-            "Creating many views will lead to overhead "
-            "when performing inplace updates with this backend"
-        )
+        if ivy.backend in ("jax", "tensorflow"):
+            warnings.warn(
+                "Creating many views will lead to overhead "
+                "when performing inplace updates with this backend"
+            )
         base = original._base
         view._base = base
         view._manipulation_stack = python_copy.copy(original._manipulation_stack)
@@ -92,7 +93,23 @@ def _build_view(original, view, fn, args, kwargs, index=None):
         view._base = base
     base._view_refs.append(weakref.ref(view))
     view._manipulation_stack.append((fn, args[1:], kwargs, index))
+
+    # Handle attributes for torch functions without native view functionality
+    if ivy.exists(original._torch_base):
+        view._torch_base = (
+            original
+            if ivy.exists(original._torch_manipulation)
+            else original._torch_base
+        )
+    else:
+        view._torch_base = base
+    if fn in _torch_non_native_view_functions:
+        view._torch_manipulation = (original, (fn, args[1:], kwargs))
+        view._torch_base._torch_view_refs.append(weakref.ref(view))
     return view
+
+
+_torch_non_native_view_functions = ("flip", "flipud", "rot90", "fliplr")
 
 
 def _check_in_nested_sequence(sequence, value=None, _type=None):
@@ -126,7 +143,7 @@ def handle_array_function(func):
     """
 
     @functools.wraps(func)
-    def new_func(*args, **kwargs):
+    def _handle_array_function(*args, **kwargs):
         overloaded_types = []
         overloaded_args = []
 
@@ -176,13 +193,13 @@ def handle_array_function(func):
             return value
         return func(*args, **kwargs)
 
-    new_func.handle_array_function = True
-    return new_func
+    _handle_array_function.handle_array_function = True
+    return _handle_array_function
 
 
 def handle_array_like_without_promotion(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _handle_array_like_without_promotion(*args, **kwargs):
         args = list(args)
         num_args = len(args)
         try:
@@ -220,13 +237,13 @@ def handle_array_like_without_promotion(fn: Callable) -> Callable:
 
         return fn(*args, **kwargs)
 
-    new_fn.handle_array_like_without_promotion = True
-    return new_fn
+    _handle_array_like_without_promotion.handle_array_like_without_promotion = True
+    return _handle_array_like_without_promotion
 
 
 def inputs_to_native_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _inputs_to_native_arrays(*args, **kwargs):
         """
         Converts all `ivy.Array` instances in both the positional and keyword arguments
         into `ivy.NativeArray` instances, and then calls the function with the updated
@@ -260,13 +277,13 @@ def inputs_to_native_arrays(fn: Callable) -> Callable:
             new_kwargs["out"] = out
         return fn(*new_args, **new_kwargs)
 
-    new_fn.inputs_to_native_arrays = True
-    return new_fn
+    _inputs_to_native_arrays.inputs_to_native_arrays = True
+    return _inputs_to_native_arrays
 
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _inputs_to_ivy_arrays(*args, **kwargs):
         """
         Converts all `ivy.NativeArray` instances in both the positional and keyword
         arguments into `ivy.Array` instances, and then calls the function with the
@@ -296,13 +313,13 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
             ivy_kwargs["out"] = out
         return fn(*ivy_args, **ivy_kwargs)
 
-    new_fn.inputs_to_ivy_arrays = True
-    return new_fn
+    _inputs_to_ivy_arrays.inputs_to_ivy_arrays = True
+    return _inputs_to_ivy_arrays
 
 
 def outputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _outputs_to_ivy_arrays(*args, **kwargs):
         """
         Calls the function, and then converts all `ivy.NativeArray` instances in
         the function return into `ivy.Array` instances.
@@ -328,8 +345,8 @@ def outputs_to_ivy_arrays(fn: Callable) -> Callable:
             else ret
         )
 
-    new_fn.outputs_to_ivy_arrays = True
-    return new_fn
+    _outputs_to_ivy_arrays.outputs_to_ivy_arrays = True
+    return _outputs_to_ivy_arrays
 
 
 def output_to_native_arrays(fn: Callable) -> Callable:
@@ -351,12 +368,12 @@ def output_to_native_arrays(fn: Callable) -> Callable:
     """
 
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _output_to_native_arrays(*args, **kwargs):
         ret = fn(*args, **kwargs)
         return ivy.to_native(ret, nested=True, include_derived={tuple: True})
 
-    new_fn.outputs_to_native_arrays = True
-    return new_fn
+    _output_to_native_arrays.outputs_to_native_arrays = True
+    return _output_to_native_arrays
 
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
@@ -388,20 +405,20 @@ def handle_view(fn: Callable) -> Callable:
     """
 
     @functools.wraps(fn)
-    def new_fn(*args, copy=None, **kwargs):
+    def _handle_view(*args, **kwargs):
         ret = fn(*args, **kwargs)
-        if copy or ivy.backend in ("numpy", "torch") or not ivy.is_ivy_array(args[0]):
+        if ("copy" in kwargs and kwargs["copy"]) or not ivy.is_ivy_array(args[0]):
             return ret
         original = args[0]
-        if isinstance(ret, list):
+        if isinstance(ret, (list, tuple)):
             for i, view in enumerate(ret):
-                ret[i] = _build_view(original, view, fn, args, kwargs, i)
+                ret[i] = _build_view(original, view, fn.__name__, args, kwargs, i)
         else:
-            ret = _build_view(original, ret, fn, args, kwargs, None)
+            ret = _build_view(original, ret, fn.__name__, args, kwargs, None)
         return ret
 
-    new_fn.handle_view = True
-    return new_fn
+    _handle_view.handle_view = True
+    return _handle_view
 
 
 def handle_view_indexing(fn: Callable) -> Callable:
@@ -418,23 +435,22 @@ def handle_view_indexing(fn: Callable) -> Callable:
     """
 
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _handle_view_indexing(*args, **kwargs):
         ret = fn(*args, **kwargs)
-        if ivy.backend in ("numpy", "torch") or not ivy.is_ivy_array(args[0]):
+        if ("copy" in kwargs and kwargs["copy"]) or not ivy.is_ivy_array(args[0]):
             return ret
-        if kwargs:
-            query = kwargs["query"]
-        else:
-            query = args[1]
+        query = kwargs["query"] if "query" in kwargs else args[1]
         query = (query,) if not isinstance(query, tuple) else query
         if [i for i in query if not isinstance(i, (slice, int))]:
             return ret
         original = args[0]
-        ret = _build_view(original, ret, fn, args, kwargs)
+        # ToDo: Remove hard coding of only function with this wrapper
+        #  Need general way to convert special method to function found in ivy.__dict__
+        ret = _build_view(original, ret, "get_item", args, kwargs)
         return ret
 
-    new_fn.handle_view_indexing = True
-    return new_fn
+    _handle_view_indexing.handle_view_indexing = True
+    return _handle_view_indexing
 
 
 # Data Type Handling #
@@ -443,7 +459,7 @@ def handle_view_indexing(fn: Callable) -> Callable:
 
 def infer_dtype(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, dtype=None, **kwargs):
+    def _infer_dtype(*args, dtype=None, **kwargs):
         """
         Determines the correct `dtype`, and then calls the function with the `dtype`
         passed explicitly.
@@ -471,13 +487,13 @@ def infer_dtype(fn: Callable) -> Callable:
         # call the function with dtype provided explicitly
         return fn(*args, dtype=dtype, **kwargs)
 
-    new_fn.infer_dtype = True
-    return new_fn
+    _infer_dtype.infer_dtype = True
+    return _infer_dtype
 
 
 def integer_arrays_to_float(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _integer_arrays_to_float(*args, **kwargs):
         """
         Promotes all the integer array inputs passed to the function both
         as positional or keyword arguments to the default float dtype.
@@ -508,8 +524,8 @@ def integer_arrays_to_float(fn: Callable) -> Callable:
         kwargs = ivy.nested_map(kwargs, _to_float_array, to_mutable=True)
         return fn(*args, **kwargs)
 
-    new_fn.integer_arrays_to_float = True
-    return new_fn
+    _integer_arrays_to_float.integer_arrays_to_float = True
+    return _integer_arrays_to_float
 
 
 # Device Handling #
@@ -518,7 +534,7 @@ def integer_arrays_to_float(fn: Callable) -> Callable:
 
 def infer_device(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, device=None, **kwargs):
+    def _infer_device(*args, device=None, **kwargs):
         """
         Determines the correct `device`, and then calls the function with the `device`
         passed explicitly.
@@ -545,8 +561,8 @@ def infer_device(fn: Callable) -> Callable:
         # call the function with device provided explicitly
         return fn(*args, device=device, **kwargs)
 
-    new_fn.infer_device = True
-    return new_fn
+    _infer_device.infer_device = True
+    return _infer_device
 
 
 # Inplace Update Handling #
@@ -555,9 +571,10 @@ def infer_device(fn: Callable) -> Callable:
 
 def handle_out_argument(fn: Callable) -> Callable:
     handle_out_in_backend = hasattr(fn, "support_native_out")
+    handle_out_in_ivy = hasattr(fn, "mixed_function")
 
     @functools.wraps(fn)
-    def new_fn(*args, out=None, **kwargs):
+    def _handle_out_argument(*args, out=None, **kwargs):
         """
         Calls `fn` with the `out` argument handled correctly for performing an inplace
         update.
@@ -578,8 +595,8 @@ def handle_out_argument(fn: Callable) -> Callable:
             The return of the function, with `out` handled correctly for
             inplace updates.
         """
-        if out is None:
-            return fn(*args, **kwargs)
+        if out is None or handle_out_in_ivy:
+            return fn(*args, out=out, **kwargs)
         if handle_out_in_backend:
             # extract underlying native array for out
             native_out = ivy.to_native(out)
@@ -589,8 +606,12 @@ def handle_out_argument(fn: Callable) -> Callable:
             if isinstance(ret, (tuple, list)):
                 for i in range(len(ret)):
                     out[i].data = ivy.to_native(ret[i])
+                    if ivy.backend == "torch":
+                        _update_torch_views(out[i])
             else:
                 out.data = ivy.to_native(ret)
+                if ivy.backend == "torch":
+                    _update_torch_views(out)
             return out
         # compute return, and then handle the inplace update explicitly
 
@@ -605,8 +626,37 @@ def handle_out_argument(fn: Callable) -> Callable:
         return ivy.inplace_update(out, ivy.astype(ret, ivy.dtype(out)))
         # return output matches the dtype of the out array to match numpy and torch
 
-    new_fn.handle_out_argument = True
-    return new_fn
+    _handle_out_argument.handle_out_argument = True
+    return _handle_out_argument
+
+
+def _update_torch_views(x, visited_view=None):
+    if x._torch_view_refs != []:
+        _update_torch_references(x, visited_view)
+    if ivy.exists(x._torch_manipulation):
+        parent_tensor, fn_args_kwargs = x._torch_manipulation
+        fn, args, kwargs = fn_args_kwargs
+        kwargs["copy"] = True
+        if fn == "rot90":
+            kwargs = kwargs.copy()
+            kwargs["k"] = -kwargs["k"]
+            parent_tensor.data[()] = ivy.__dict__[fn](x, *args, **kwargs).data
+        else:
+            parent_tensor.data[()] = ivy.__dict__[fn](x, *args, **kwargs).data
+    if ivy.exists(x._torch_base):
+        _update_torch_views(x._torch_base, visited_view=x)
+
+
+def _update_torch_references(x, visited_view=None):
+    for ref in x._torch_view_refs:
+        view = ref()
+        if ivy.exists(view) and view is not visited_view:
+            parent_tensor, fn_args_kwargs = view._torch_manipulation
+            fn, args, kwargs = fn_args_kwargs
+            kwargs["copy"] = True
+            view.data[()] = ivy.__dict__[fn](parent_tensor, *args, **kwargs).data
+            if view._torch_view_refs != []:
+                _update_torch_references(view)
 
 
 # Nestable Handling #
@@ -617,7 +667,7 @@ def handle_nestable(fn: Callable) -> Callable:
     fn_name = fn.__name__
 
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _handle_nestable(*args, **kwargs):
         """
         Calls `fn` with the *nestable* property of the function correctly handled.
         This means mapping the function to the container leaves if any containers are
@@ -638,8 +688,8 @@ def handle_nestable(fn: Callable) -> Callable:
         # if any of the arguments or keyword arguments passed to the function contains
         # a container, get the container's version of the function and call it using
         # the passed arguments.
-        if hasattr(ivy.Container, "static_" + fn_name):
-            cont_fn = getattr(ivy.Container, "static_" + fn_name)
+        if hasattr(ivy.Container, "_static_" + fn_name):
+            cont_fn = getattr(ivy.Container, "_static_" + fn_name)
         else:
             cont_fn = lambda *args, **kwargs: ivy.Container.cont_multi_map_in_function(
                 fn, *args, **kwargs
@@ -654,8 +704,8 @@ def handle_nestable(fn: Callable) -> Callable:
         # the passed arguments, returning an ivy or a native array.
         return fn(*args, **kwargs)
 
-    new_fn.handle_nestable = True
-    return new_fn
+    _handle_nestable.handle_nestable = True
+    return _handle_nestable
 
 
 # Functions #
@@ -898,7 +948,7 @@ def _nest_has_nans(x):
 
 def handle_nans(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _handle_nans(*args, **kwargs):
         """
         Checks for the existence of nans in all arrays in the `args`
         and `kwargs`. The presence of nans is then handled depending
@@ -940,22 +990,22 @@ def handle_nans(fn: Callable) -> Callable:
 
         return fn(*args, **kwargs)
 
-    new_fn.handle_nans = True
-    return new_fn
+    _handle_nans.handle_nans = True
+    return _handle_nans
 
 
 def handle_mixed_function(condition) -> Callable:
     def inner_function(fn):
         @functools.wraps(fn)
-        def new_fn(*args, **kwargs):
-            compos = getattr(new_fn, "compos")
+        def _handle_mixed_function(*args, **kwargs):
+            compos = getattr(_handle_mixed_function, "compos")
             if condition(*args, **kwargs):
                 return fn(*args, **kwargs)
 
             return compos(*args, **kwargs)
 
-        new_fn.handle_mixed_functions = True
-        return new_fn
+        _handle_mixed_function.handle_mixed_functions = True
+        return _handle_mixed_function
 
     return inner_function
 
@@ -1004,7 +1054,7 @@ class with_unsupported_dtypes(contextlib.ContextDecorator):
             )(func)
 
     def __enter__(self):
-        self.globals = globals_getter_func().copy()  # global snapshot baby
+        self.globals = globals_getter_func().copy()  # global snapshot
 
     def __exit__(self, *exec):
         new_globals = set(globals_getter_func().keys())
@@ -1040,7 +1090,7 @@ class with_supported_dtypes(contextlib.ContextDecorator):
             )(func)
 
     def __enter__(self):
-        self.globals = globals_getter_func().copy()  # global snapshot baby
+        self.globals = globals_getter_func().copy()  # global snapshot
 
     def __exit__(self, *exec):
         new_globals = set(globals_getter_func().keys())
@@ -1076,7 +1126,7 @@ class with_unsupported_devices(contextlib.ContextDecorator):
             )(func)
 
     def __enter__(self):
-        self.globals = globals_getter_func().copy()  # global snapshot baby
+        self.globals = globals_getter_func().copy()  # global snapshot
 
     def __exit__(self, *exec):
         new_globals = set(globals_getter_func().keys())
@@ -1112,7 +1162,7 @@ class with_supported_devices(contextlib.ContextDecorator):
             )(func)
 
     def __enter__(self):
-        self.globals = globals_getter_func().copy()  # global snapshot baby
+        self.globals = globals_getter_func().copy()  # global snapshot
 
     def __exit__(self, *exec):
         new_globals = set(globals_getter_func().keys())
@@ -1173,7 +1223,7 @@ class with_unsupported_device_and_dtypes(contextlib.ContextDecorator):
 
     def __enter__(self):
 
-        self.globals = globals_getter_func().copy()  # global snapshot baby
+        self.globals = globals_getter_func().copy()  # global snapshot
 
     def __exit__(self, *exec):
         new_globals = set(globals_getter_func().keys())
@@ -1233,7 +1283,7 @@ class with_supported_device_and_dtypes(contextlib.ContextDecorator):
             )(func)
 
     def __enter__(self):
-        self.globals = globals_getter_func().copy()  # global snapshot baby
+        self.globals = globals_getter_func().copy()  # global snapshot
 
     def __exit__(self, *exec):
         new_globals = set(globals_getter_func().keys())
@@ -1261,7 +1311,7 @@ class override(contextlib.ContextDecorator):
             return func
 
     def __enter__(self):
-        self.globals = globals_getter_func().copy()  # global snapshot baby
+        self.globals = globals_getter_func().copy()  # global snapshot
 
     def __exit__(self, *exec):
         new_globals = set(globals().keys())

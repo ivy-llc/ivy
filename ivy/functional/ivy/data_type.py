@@ -45,7 +45,7 @@ def _is_valid_dtypes_attributes(fn: Callable) -> bool:
 
 
 def _handle_nestable_dtype_info(fn):
-    def new_fn(type):
+    def _handle_nestable_dtype_info_wrapper(type):
         if isinstance(type, ivy.Container):
             type = type.cont_map(lambda x, kc: fn(x))
             type.__dict__["max"] = type.cont_map(lambda x, kc: x.max)
@@ -53,7 +53,7 @@ def _handle_nestable_dtype_info(fn):
             return type
         return fn(type)
 
-    return new_fn
+    return _handle_nestable_dtype_info_wrapper
 
 
 # Unindent every line in the source such that
@@ -219,12 +219,12 @@ Finfo = None
 Iinfo = None
 
 
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
-@handle_array_function
 def astype(
     x: Union[ivy.Array, ivy.NativeArray],
     dtype: Union[ivy.Dtype, ivy.NativeDtype],
@@ -327,10 +327,10 @@ def astype(
     return current_backend(x).astype(x, dtype, copy=copy, out=out)
 
 
+@handle_array_function
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
-@handle_array_function
 def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Array]:
     """Broadcasts one or more arrays against one another.
 
@@ -403,12 +403,12 @@ def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Arr
     return current_backend(arrays[0]).broadcast_arrays(*arrays)
 
 
+@handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
+@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
-@handle_array_like_without_promotion
-@handle_array_function
 def broadcast_to(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -475,10 +475,10 @@ def broadcast_to(
     return current_backend(x).broadcast_to(x, shape, out=out)
 
 
+@handle_array_function
 @inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
-@handle_array_function
 def can_cast(
     from_: Union[ivy.Dtype, ivy.Array, ivy.NativeArray],
     to: ivy.Dtype,
@@ -997,7 +997,7 @@ def closest_valid_dtype(type: Union[ivy.Dtype, str, None], /) -> Union[ivy.Dtype
     return current_backend(type).closest_valid_dtype(type)
 
 
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
 def default_float_dtype(
@@ -1139,7 +1139,7 @@ def infer_default_dtype(
     return default_dtype
 
 
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_exceptions
 def default_dtype(
     *,
@@ -1199,7 +1199,7 @@ def default_dtype(
     return ivy.as_ivy_dtype(ret)
 
 
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_exceptions
 def default_int_dtype(
     *,
@@ -1308,7 +1308,7 @@ def default_int_dtype(
     return ivy.IntDtype(ivy.as_ivy_dtype(ret))
 
 
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_exceptions
 def default_uint_dtype(
     *,
@@ -1404,7 +1404,7 @@ def default_uint_dtype(
     return ivy.UintDtype(ivy.as_ivy_dtype(ret))
 
 
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
 def default_complex_dtype(
@@ -1657,8 +1657,8 @@ def invalid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None], /) -> 
     return ivy.as_ivy_dtype(dtype_in) in ivy.invalid_dtypes
 
 
-@handle_nestable
 @inputs_to_native_arrays
+@handle_nestable
 @handle_exceptions
 def is_bool_dtype(
     dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number],
@@ -1703,8 +1703,8 @@ def is_bool_dtype(
     return "bool" in ivy.as_ivy_dtype(dtype_in)
 
 
-@handle_nestable
 @inputs_to_native_arrays
+@handle_nestable
 @handle_exceptions
 def is_int_dtype(
     dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number],
@@ -1907,7 +1907,7 @@ def is_uint_dtype(
     return "uint" in as_ivy_dtype(dtype_in)
 
 
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
 def is_complex_dtype(
@@ -2365,3 +2365,34 @@ def promote_types_of_inputs(
 
     ivy.utils.assertions._check_jax_x64_flag(x1.dtype)
     return ivy.to_native(x1), ivy.to_native(x2)
+
+
+@handle_exceptions
+def is_native_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> bool:
+    """
+    Determines whether the input dtype is a Native dtype.
+
+    Parameters
+    ----------
+    dtype_in
+        Determine whether the input data type is a native data type object.
+
+    Returns
+    -------
+    ret
+        Boolean, whether or not dtype_in is a native data type.
+
+    Examples
+    --------
+    >>> ivy.set_backend('numpy')
+    >>> ivy.is_native_dtype(np.int32)
+    True
+
+    >>> ivy.set_backend('numpy')
+    >>> ivy.is_native_array(ivy.float64)
+    False
+    """
+    try:
+        return current_backend(None).is_native_dtype(dtype_in)
+    except ValueError:
+        return False

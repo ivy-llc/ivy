@@ -1,4 +1,6 @@
 # global
+
+
 import numpy as np
 from hypothesis import strategies as st
 from typing import Optional
@@ -23,6 +25,7 @@ _dtype_kind_keys = {
     "signed_integer",
     "complex",
     "real_and_complex",
+    "float_and_integer",
     "float_and_complex",
     "bool",
 }
@@ -44,7 +47,7 @@ def _get_type_dict(framework, kind):
     elif kind == "float":
         return framework.valid_float_dtypes
     elif kind == "unsigned":
-        return framework.valid_int_dtypes
+        return framework.valid_uint_dtypes
     elif kind == "signed_integer":
         return tuple(
             set(framework.valid_int_dtypes).difference(framework.valid_uint_dtypes)
@@ -58,6 +61,10 @@ def _get_type_dict(framework, kind):
     elif kind == "float_and_complex":
         return tuple(
             set(framework.valid_float_dtypes).union(framework.valid_complex_dtypes)
+        )
+    elif kind == "float_and_integer":
+        return tuple(
+            set(framework.valid_float_dtypes).union(framework.valid_int_dtypes)
         )
     elif kind == "bool":
         return tuple(
@@ -128,7 +135,17 @@ def get_dtypes(
     if test_globals.CURRENT_FRONTEND is not test_globals._Notsetval or isinstance(
         test_globals.CURRENT_FRONTEND_STR, list
     ):  # NOQA
-        if isinstance(test_globals.CURRENT_FRONTEND_STR, list):
+        # this piece of code below checks if the version of frontend is the same
+        # as backend, i.e eg: --backend=torch/1.13.0 --frontend=torch/1.13.0
+        # in such cases we don't need to use subprocess
+        ver = True
+        if test_globals.CURRENT_FRONTEND():
+            ver = test_globals.CURRENT_FRONTEND().backend_version["version"]
+
+            if isinstance(test_globals.CURRENT_FRONTEND_STR, list):
+                ver = test_globals.CURRENT_FRONTEND_STR[0].split("/")[1] != ver
+
+        if isinstance(test_globals.CURRENT_FRONTEND_STR, list) and ver:
             process = test_globals.CURRENT_FRONTEND_STR[1]
             try:
                 if test_globals.CURRENT_RUNNING_TEST.is_method:

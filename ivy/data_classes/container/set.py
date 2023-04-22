@@ -8,10 +8,11 @@ import ivy
 
 class _ContainerWithSet(ContainerBase):
     @staticmethod
-    def static_unique_all(
+    def _static_unique_all(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
+        axis: Optional[int] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -25,8 +26,10 @@ class _ContainerWithSet(ContainerBase):
         Parameters
         ----------
         x
-            input container. If ``x`` has more than one dimension, the function must
-            flatten ``x`` and return the unique elements of the flattened array.
+            input container.
+        axis
+            the axis to apply unique on. If None, the unique elements of the flattened
+            ``x`` are returned.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -71,6 +74,7 @@ class _ContainerWithSet(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(
             "unique_all",
             x,
+            axis=axis,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -81,6 +85,7 @@ class _ContainerWithSet(ContainerBase):
         self: ivy.Container,
         /,
         *,
+        axis: Optional[int] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -94,9 +99,10 @@ class _ContainerWithSet(ContainerBase):
         Parameters
         ----------
         self
-            input container. If ``x`` has more than one dimension,
-            the function must flatten ``x`` and return the unique elements of the
-            flattened array.
+            input container.
+        axis
+            the axis to apply unique on. If None, the unique elements of the flattened
+            ``x`` are returned.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -138,8 +144,9 @@ class _ContainerWithSet(ContainerBase):
             ]
         }
         """
-        return self.static_unique_all(
+        return self._static_unique_all(
             self,
+            axis=axis,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -147,7 +154,7 @@ class _ContainerWithSet(ContainerBase):
         )
 
     @staticmethod
-    def static_unique_counts(
+    def _static_unique_counts(
         x: ivy.Container,
         /,
         *,
@@ -267,7 +274,7 @@ class _ContainerWithSet(ContainerBase):
             a:[values=ivy.array([0.,1.,2.,3.]),counts=ivy.array([2,2,1,1])],
             b:[values=ivy.array([1,2,3,4]),counts=ivy.array([3,1,2,1])]}
         """
-        return self.static_unique_counts(
+        return self._static_unique_counts(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -276,7 +283,7 @@ class _ContainerWithSet(ContainerBase):
         )
 
     @staticmethod
-    def static_unique_values(
+    def _static_unique_values(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -309,6 +316,7 @@ class _ContainerWithSet(ContainerBase):
         """
         ivy.Container instance method variant of ivy.unique_values.
         This method simply wraps the function and applies it on the container.
+
         Parameters
         ----------
         self : ivy.Container
@@ -326,16 +334,20 @@ class _ContainerWithSet(ContainerBase):
             Default is `False`.
         out : ivy.Container, optional
             The container to return the results in. Default is `None`.
+
         Returns
         -------
         ivy.Container
             The result container with the unique values for each input key-chain.
+
         Raises
         ------
         TypeError
             If the input container is not an instance of ivy.Container.
         ValueError
-        If the key_chains parameter is not None, and it is not a list or a dictionary.
+            If the key_chains parameter is not None, and it is not a
+            list or a dictionary.
+
         Example
         -------
         1. Get the unique values of a container.
@@ -366,7 +378,7 @@ class _ContainerWithSet(ContainerBase):
             'c': [4]
         }
         """
-        return self.static_unique_values(
+        return self._static_unique_values(
             self,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -376,7 +388,7 @@ class _ContainerWithSet(ContainerBase):
         )
 
     @staticmethod
-    def static_unique_inverse(
+    def _static_unique_inverse(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -498,7 +510,7 @@ class _ContainerWithSet(ContainerBase):
         }
 
         """
-        return self.static_unique_inverse(
+        return self._static_unique_inverse(
             self,
             key_chains=key_chains,
             to_apply=to_apply,

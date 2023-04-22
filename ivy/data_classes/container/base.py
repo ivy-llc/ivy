@@ -1136,7 +1136,7 @@ class ContainerBase(dict, abc.ABC):
                 )
             elif isinstance(value, h5py.Dataset):
                 container_dict[key] = ivy.default(ivyh, ivy).array(
-                    list(value[slice_obj])
+                    list(value[slice_obj]), dtype=str(value[slice_obj].dtype)
                 )
             else:
                 raise ivy.utils.exceptions.IvyException(
@@ -1444,7 +1444,6 @@ class ContainerBase(dict, abc.ABC):
         )
 
     def _cont_get_shape(self):
-
         if not len(self.keys()):
             if ivy.exists(self._queues):
                 return [self._queue_load_sizes_cum[-1]]
@@ -1475,7 +1474,6 @@ class ContainerBase(dict, abc.ABC):
         ]
 
     def _cont_get_shapes(self):
-
         return self.cont_map(lambda x, kc: x.shape if hasattr(x, "shape") else None)
 
     def _cont_get_dev(self, as_native=False):
@@ -2875,7 +2873,6 @@ class ContainerBase(dict, abc.ABC):
         return ivy.Container({format_fn(k): v for k, v in self.cont_to_iterator()})
 
     def cont_sort_by_key(self):
-
         new_dict = dict()
         for k, v in self.items():
             if isinstance(v, ivy.Container):
@@ -3104,7 +3101,11 @@ class ContainerBase(dict, abc.ABC):
         return: A deep copy of the container
 
         """
-        return self.cont_map(lambda x, kc: ivy.copy_array(x) if ivy.is_array(x) else x)
+        return self.cont_map(
+            lambda x, kc: ivy.copy_array(x)
+            if ivy.is_array(x) and not isinstance(x, str)
+            else x
+        )
 
     def __deepcopy__(self, memo):
         return self.cont_deep_copy()
@@ -3149,7 +3150,9 @@ class ContainerBase(dict, abc.ABC):
         """
         return_dict = self if inplace else dict()
         for key, value in self.items():
-            this_key_chain = key if key_chain == "" else (key_chain + "/" + key)
+            this_key_chain = (
+                key if key_chain == "" else (str(key_chain) + "/" + str(key))
+            )
             if isinstance(value, ivy.Container):
                 ret = value.cont_map(
                     func,
@@ -3583,7 +3586,6 @@ class ContainerBase(dict, abc.ABC):
             return ivy.Container(self, ivyh=ivy_backend)
 
     def cont_show(self):
-
         print(self)
 
     # noinspection PyUnresolvedReferences
@@ -3669,11 +3671,19 @@ class ContainerBase(dict, abc.ABC):
     # ----------#
 
     def __repr__(self, as_repr=True):
-
         indent_str = " " * self._print_indent
 
         def _align_array(array_str_in):
-            array_str_in_split = array_str_in.split("([")
+            split_phrase_dict = {
+                "": "([",
+                "jax": "([",
+                "numpy": "([",
+                "tensorflow": "([",
+                "torch": "([",
+                "paddle": "])",
+            }
+            split_phrase = split_phrase_dict[self._cont_ivy.current_backend_str()]
+            array_str_in_split = array_str_in.split(split_phrase)
             leading_str_to_keep = array_str_in_split[0].replace("\\n", "")
             indented_key_size = len(leading_str_to_keep.replace('"', "").split(": ")[0])
             indented_key_str = " " * (indented_key_size + 2)
@@ -3699,7 +3709,7 @@ class ContainerBase(dict, abc.ABC):
                     num_extra_dims = i
                     break
             extra_indent = (len(leading_str) + 1 + num_extra_dims) * " "
-            array_str_in = "([".join([leading_str_to_keep, remaining_str])
+            array_str_in = split_phrase.join([leading_str_to_keep, remaining_str])
             uniform_indent_wo_overflow = array_str_in.replace(
                 "\\n[", "\n" + local_indent_str + extra_indent + "["
             )
@@ -4100,34 +4110,53 @@ class ContainerBase(dict, abc.ABC):
 
     def __getstate__(self):
         state_dict = copy.copy(self.__dict__)
-        state_dict["_local_ivy"] = ivy.try_else_none(
-            lambda: state_dict["_local_ivy"].current_backend_str()
+        state_dict["_local_ivy"] = (
+            state_dict["_local_ivy"].current_backend_str()
+            if state_dict["_local_ivy"] is not None
+            else None
         )
         config_in = copy.copy(state_dict["_config_in"])
-        config_in["ivyh"] = ivy.try_else_none(
-            lambda: config_in["ivyh"].current_backend_str()
+        config_in["ivyh"] = (
+            config_in["ivyh"].current_backend_str()
+            if config_in["ivyh"] is not None
+            else None
         )
         state_dict["_config_in"] = config_in
         config = copy.copy(state_dict["_config"])
-        config["ivyh"] = ivy.try_else_none(lambda: config["ivyh"].current_backend_str())
+        config["ivyh"] = (
+            config["ivyh"].current_backend_str() if config["ivyh"] is not None else None
+        )
         state_dict["_config"] = config
         return state_dict
 
     def __setstate__(self, state_dict):
         if "_local_ivy" in state_dict:
             if ivy.exists(state_dict["_local_ivy"]):
-                state_dict["_local_ivy"] = ivy.get_backend(state_dict["_local_ivy"])
+                if len(state_dict["_local_ivy"]) > 0:
+                    state_dict["_local_ivy"] = ivy.with_backend(
+                        state_dict["_local_ivy"], cached=True
+                    )
+                else:
+                    state_dict["_local_ivy"] = ivy
         if "_config_in" in state_dict:
             config_in = copy.copy(state_dict["_config_in"])
             if "ivyh" in config_in:
                 if ivy.exists(config_in["ivyh"]):
-                    config_in["ivyh"] = ivy.get_backend(config_in["ivyh"])
+                    if len(config_in["ivyh"]) > 0:
+                        config_in["ivyh"] = ivy.with_backend(
+                            config_in["ivyh"], cached=True
+                        )
+                    else:
+                        config_in["ivyh"] = ivy
             state_dict["_config_in"] = config_in
         if "_config" in state_dict:
             config = copy.copy(state_dict["_config"])
             if "ivyh" in config:
                 if ivy.exists(config["ivyh"]):
-                    config["ivyh"] = ivy.get_backend(config["ivyh"])
+                    if len(config["ivyh"]) > 0:
+                        config["ivyh"] = ivy.with_backend(config["ivyh"], cached=True)
+                    else:
+                        config["ivyh"] = ivy
             state_dict["_config"] = config
         self.__dict__.update(state_dict)
 
@@ -4138,7 +4167,6 @@ class ContainerBase(dict, abc.ABC):
 
     @property
     def _cont_ivy(self):
-
         return ivy.default(self._local_ivy, ivy)
 
     @_cont_ivy.setter
@@ -4177,17 +4205,14 @@ class ContainerBase(dict, abc.ABC):
 
     @property
     def cont_ivy(self):
-
         return self._cont_ivy
 
     @property
     def cont_config(self):
-
         return self._config
 
     @property
     def cont_max_depth(self):
-
         kcs = [kc for kc in self.cont_to_iterator_keys(include_empty=True)]
         if not kcs:
             return 0

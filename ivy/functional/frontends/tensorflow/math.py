@@ -9,6 +9,15 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
 )
 
 
+@with_supported_dtypes(
+    {"2.9.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def imag(input, name=None):
+    return ivy.imag(input)
+
+
 @to_ivy_arrays_and_back
 def accumulate_n(inputs, input_type=None, shape=None, dtype=None, name=None):
     return ivy.astype(ivy.sum(ivy.array(inputs)), ivy.int64)
@@ -157,6 +166,11 @@ def erfcinv(x, name="erfcinv"):
 
 
 @to_ivy_arrays_and_back
+def is_inf(x, name=None):
+    return ivy.isinf(x)
+
+
+@to_ivy_arrays_and_back
 def is_non_decreasing(x, name="is_non_decreasing"):
     if ivy.array(x).size < 2:
         return ivy.array(True)
@@ -180,6 +194,11 @@ def log_sigmoid(x, name=None):
 
 
 @to_ivy_arrays_and_back
+def log1p(x, name=None):
+    return ivy.log1p(x)
+
+
+@to_ivy_arrays_and_back
 def logical_and(x, y, name="LogicalAnd"):
     return ivy.logical_and(x, y)
 
@@ -187,6 +206,11 @@ def logical_and(x, y, name="LogicalAnd"):
 @to_ivy_arrays_and_back
 def logical_xor(x, y, name="LogicalXor"):
     return ivy.logical_xor(x, y)
+
+
+@to_ivy_arrays_and_back
+def logical_or(x, y, name="logical_or"):
+    return ivy.logical_or(x, y)
 
 
 @to_ivy_arrays_and_back
@@ -222,6 +246,11 @@ def polyval(coeffs, x, name=None):
 def pow(x, y, name="pow"):
     x, y = check_tensorflow_casting(x, y)
     return ivy.pow(x, y)
+
+
+@to_ivy_arrays_and_back
+def reciprocal(x, name="reciprocal"):
+    return ivy.reciprocal(x)
 
 
 @to_ivy_arrays_and_back
@@ -275,6 +304,8 @@ def reduce_max(input_tensor, axis=None, keepdims=False, name="reduce_max"):
 
 @to_ivy_arrays_and_back
 def reduce_mean(input_tensor, axis=None, keepdims=False, name="reduce_mean"):
+    if ivy.exists(axis):
+        axis = ivy.to_list(axis)
     return ivy.mean(input_tensor, axis=axis, keepdims=keepdims)
 
 
@@ -323,6 +354,24 @@ def subtract(x, y, name=None):
 def squared_difference(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return ivy.square(ivy.subtract(x, y))
+
+
+@with_supported_dtypes(
+    {
+        "2.9.0 and below": (
+            "bfloat16",
+            "float16",
+            "float32",
+            "float64",
+            "complex64",
+            "complex128",
+        )
+    },
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def sin(x, name=None):
+    return ivy.sin(x)
 
 
 @to_ivy_arrays_and_back
@@ -403,13 +452,29 @@ def equal(x, y, name=None):
 
 
 @to_ivy_arrays_and_back
+def not_equal(x, y, name=None):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.not_equal(x, y)
+
+
+@to_ivy_arrays_and_back
 def floor(x, name=None):
     return ivy.floor(x)
 
 
 @to_ivy_arrays_and_back
+def floordiv(x, y, name=None):
+    return ivy.floor_divide(x, y)
+
+
+@to_ivy_arrays_and_back
 def ceil(x, name=None):
     return ivy.ceil(x)
+
+
+@to_ivy_arrays_and_back
+def round(x, name=None):
+    return ivy.round(x)
 
 
 @to_ivy_arrays_and_back
@@ -469,6 +534,11 @@ def acos(x, name="acos"):
 
 
 @to_ivy_arrays_and_back
+def acosh(x, name="acosh"):
+    return ivy.acosh(x)
+
+
+@to_ivy_arrays_and_back
 def square(x, name=None):
     return ivy.square(x)
 
@@ -484,6 +554,7 @@ def is_nan(x, name=None):
     },
     "tensorflow",
 )
+@to_ivy_arrays_and_back
 def is_finite(x, name=None):
     return ivy.isfinite(x)
 
@@ -491,6 +562,11 @@ def is_finite(x, name=None):
 @to_ivy_arrays_and_back
 def atan(x, name=None):
     return ivy.atan(x)
+
+
+@to_ivy_arrays_and_back
+def atan2(y, x, name=None):
+    return ivy.atan2(y, x)
 
 
 @to_ivy_arrays_and_back
@@ -509,9 +585,21 @@ def floormod(x, y, name=None):
 
 
 @to_ivy_arrays_and_back
+def less_equal(x, y, name="LessEqual"):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.less_equal(x, y)
+
+
+@to_ivy_arrays_and_back
 def greater(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return ivy.greater(x, y)
+
+
+@to_ivy_arrays_and_back
+def less(x, y, name="None"):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.less(x, y)
 
 
 @to_ivy_arrays_and_back
@@ -522,3 +610,4 @@ def cos(x, name=None):
 @to_ivy_arrays_and_back
 def sinh(x, name=None):
     return ivy.sinh(x)
+

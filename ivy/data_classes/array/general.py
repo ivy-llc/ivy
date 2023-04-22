@@ -510,16 +510,23 @@ class _ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
+        With :class:`ivy.Array` inputs:
+
         >>> x = ivy.array([5,4])
         >>> y = x.einops_repeat('a -> a c', c=3)
         >>> print(y)
-        ivy.array([[5,5,5],[4,4,4]])
+        ivy.array([[5, 5, 5],
+                   [4, 4, 4]])
+
+        With :class:`ivy.Array` inputs:
 
         >>> x = ivy.array([[5,4],
         ...                [2, 3]])
         >>> y = x.einops_repeat('a b ->  a b c', c=3)
         >>> print(y)
-        ivy.array([[5,5,5],[4,4,4]])
+        ivy.array([[[5, 5, 5], [4, 4, 4]], [[2, 2, 2], [3, 3, 3]]])
+        >>> print(y.shape)
+        (2, 2, 3)
 
         """
         return ivy.einops_repeat(self._data, pattern, out=out, **axes_lengths)
@@ -1104,7 +1111,7 @@ class _ArrayWithGeneral(abc.ABC):
             In cases where it should be, backends which do not natively support inplace
             updates will raise an exception.
         keep_input_dtype
-            Whether or not to preserve `x` data type after the update, otherwise `val` 
+            Whether or not to preserve `x` data type after the update, otherwise `val`
             data type will be applied. Defaults to False.
 
         Returns
@@ -1326,3 +1333,50 @@ class _ArrayWithGeneral(abc.ABC):
         ivy.array(3)
         """
         return ivy.get_num_dims(self, as_array=as_array)
+
+    def isin(
+        self: ivy.Array,
+        test_elements: ivy.Array,
+        /,
+        *,
+        assume_unique: bool = False,
+        invert: bool = False,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.isin. This method simply
+        wraps the function, and so the docstring for ivy.isin also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array
+        test_elements
+            values against which to test for each input element
+        assume_unique
+            If True, assumes both elements and test_elements contain unique elements,
+            which can speed up the calculation. Default value is False.
+        invert
+            If True, inverts the boolean return array, resulting in True values for
+            elements not in test_elements. Default value is False.
+
+        Returns
+        -------
+        ret
+            output a boolean array of the same shape as elements that is True for
+            elements in test_elements and False otherwise.
+
+        Examples
+        --------
+        >>> x = ivy.array([[10, 7, 4], [3, 2, 1]])
+        >>> y = ivy.array([1, 2, 3])
+        >>> x.isin(y)
+        ivy.array([[False, False, False], [ True,  True,  True]])
+
+        >>> x = ivy.array([3, 2, 1, 0])
+        >>> y = ivy.array([1, 2, 3])
+        >>> x.isin(y, invert=True)
+        ivy.array([False, False, False,  True])
+        """
+        return ivy.isin(
+            self._data, test_elements, assume_unique=assume_unique, invert=invert
+        )
