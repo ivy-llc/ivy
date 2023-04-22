@@ -684,6 +684,8 @@ def compress(
     ivy.array([[3, 4], [5, 6]])
     """
     condition_arr = ivy.asarray(condition).astype(bool)
+    if condition_arr.ndim != 1:
+        raise ivy.utils.exceptions.IvyException("Condition must be a 1D array")
     if axis is None:
         arr = ivy.asarray(a).flatten()
         axis = 0
@@ -692,6 +694,8 @@ def compress(
 
     condition_arr, extra = condition_arr[: arr.shape[0]], condition_arr[arr.shape[0] :]
     if extra.any():
-        raise ValueError("condition array must be of same length as input array")
+        raise ivy.utils.exceptions.IvyException(
+            "Condition contains entries that are out of bounds"
+        )
     arr = arr[: condition_arr.shape[0]]
     return ivy.moveaxis(arr[condition_arr], 0, axis)
