@@ -243,9 +243,9 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
             x = self.dropout(x, is_training=is_training)
             return x
 
-    ivy.set_framework('torch')  # set backend to PyTorch
+    ivy.set_backend('torch')  # set backend to PyTorch
 
-    model = LinearRegressor(input_dim=3, output_dim=1)
+    model = Regressor(input_dim=3, output_dim=1)
     optimizer = ivy.Adam(1e-4)
 
     # generate some random data
