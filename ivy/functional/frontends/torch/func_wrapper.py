@@ -33,7 +33,7 @@ def _to_ivy_array(x):
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _inputs_to_ivy_arrays_torch(*args, **kwargs):
         """
         Converts all `Tensor` instances in both the positional and keyword
         arguments into `ivy.Array` instances, and then calls the function with the
@@ -55,12 +55,12 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
         )
         return fn(*new_args, **new_kwargs)
 
-    return new_fn
+    return _inputs_to_ivy_arrays_torch
 
 
 def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def outputs_to_frontend_arrays_torch(*args, **kwargs):
         """
         Calls the function, and then converts all `ivy.Array` instances returned
         by the function into `Tensor` instances.
@@ -86,7 +86,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
             ret, nested=True, include_derived={tuple: True}
         )
 
-    return new_fn
+    return outputs_to_frontend_arrays_torch
 
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
@@ -99,10 +99,10 @@ def to_ivy_arrays_and_back(fn: Callable) -> Callable:
 
 def outputs_to_native_arrays(fn: Callable):
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def outputs_to_native_arrays_torch(*args, **kwargs):
         ret = fn(*args, **kwargs)
         if isinstance(ret, torch_frontend.Tensor):
             ret = ret.ivy_array.data
         return ret
 
-    return new_fn
+    return outputs_to_native_arrays_torch
