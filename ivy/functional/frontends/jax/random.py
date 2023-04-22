@@ -5,6 +5,7 @@ from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_jax_dtype,
 )
+import sys
 
 
 @to_ivy_arrays_and_back
@@ -73,3 +74,26 @@ def dirichlet(key, alpha, shape=None, dtype="float32"):
 def poisson(key, lam, shape=None, dtype=None):
     seed = _get_seed(key)
     return ivy.poisson(lam, shape=shape, dtype=dtype, seed=seed)
+
+
+@to_ivy_arrays_and_back
+@handle_jax_dtype
+@with_unsupported_dtypes(
+    {
+        "0.3.14 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "jax",
+)
+def gumbel(key, shape=(), dtype="float64"):
+    seed = _get_seed(key)
+    uniform_x = ivy.random_uniform(
+        low=sys.float_info.min,
+        high=1.0,
+        shape=shape,
+        dtype=dtype,
+        seed=seed,
+    )
+    return -ivy.log(-ivy.log(uniform_x))
