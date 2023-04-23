@@ -1,6 +1,7 @@
 # global
 from hypothesis import strategies as st
 import numpy as np
+
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -427,4 +428,43 @@ def test_jax_numpy_where(
         condition=condition,
         x=x1,
         y=x2,
+    )
+
+
+# unique
+@st.composite
+def _unique_helper(draw):
+    arr_dtype, arr, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes(
+                "numeric", full=False, key="searchsorted"
+            ),
+            min_num_dims=1,
+            min_dim_size=2,
+            ret_shape=True,
+        )
+    )
+    axis = draw(st.sampled_from(list(range(len(shape))) + [None]))
+    return_index = draw(st.booleans())
+    return_inverse = draw(st.booleans())
+    return_counts = draw(st.booleans())
+    return arr_dtype, arr, return_index, return_inverse, return_counts, axis
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.unique", fn_inputs=_unique_helper(), test_with_out=st.just(False)
+)
+def test_jax_numpy_unique(fn_inputs, frontend, test_flags, fn_tree, on_device):
+    arr_dtype, arr, return_index, return_inverse, return_counts, axis = fn_inputs
+    helpers.test_frontend_function(
+        input_dtypes=arr_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        ar=arr[0],
+        return_index=return_index,
+        return_inverse=return_inverse,
+        return_counts=return_counts,
+        axis=axis,
     )

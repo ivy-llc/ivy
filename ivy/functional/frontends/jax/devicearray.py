@@ -173,3 +173,9 @@ class DeviceArray:
 
     def __getitem__(self, idx):
         return self.at[idx].get()
+
+    def __setitem__(self, idx, val):
+        raise ivy.utils.exceptions.IvyException(
+            "ivy.functional.frontends.jax.DeviceArray object "
+            "doesn't support assignment"
+        )
