@@ -570,7 +570,7 @@ def test_numpy_modf(
         assume(np.dtype(dtype) >= np.dtype(input_dtype[0]))
     where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtype,
+        input_dtype=input_dtypes,
         test_flags=test_flags,
     )
     np_frontend_helpers.test_frontend_function(
