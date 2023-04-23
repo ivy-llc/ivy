@@ -123,6 +123,8 @@ class _ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
+        if len(size)!=0:
+            size = size[0] if isinstance(size[0], (tuple, list)) else size
         return ContainerBase.cont_multi_map_in_function(
             "zeros",
             size,
@@ -175,6 +177,8 @@ class _ContainerWithCreation(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     ) -> ivy.Container:
+        if len(size)!=0:
+            size = size[0] if isinstance(size[0], (tuple, list)) else size
         return ContainerBase.cont_multi_map_in_function(
             "empty",
             size,

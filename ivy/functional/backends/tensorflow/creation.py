@@ -148,10 +148,12 @@ def empty(
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if size and shape:
-        raise TypeError("empty() got multiple values for argument 'shape'")
+    if len(size)!=0: 
+        size = size[0] if isinstance(size[0], (tuple, list)) else size
+    if len(size)!=0 and shape:
+        raise TypeError("ones() got multiple values for argument 'shape'")
     if shape is None:
-        shape = size[0] if isinstance(size[0], (tuple, list)) else size
+        shape = size
     with tf.device(device):
         return tf.experimental.numpy.empty(shape, dtype)
 
@@ -377,10 +379,12 @@ def zeros(
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if size and shape:
-        raise TypeError("zeros() got multiple values for argument 'shape'")
+    if len(size)!=0: 
+        size = size[0] if isinstance(size[0], (tuple, list)) else size
+    if len(size)!=0 and shape:
+        raise TypeError("ones() got multiple values for argument 'shape'")
     if shape is None:
-        shape = size[0] if isinstance(size[0], (tuple, list)) else size
+        shape = size
     with tf.device(device):
         return tf.zeros(shape, dtype)
 
