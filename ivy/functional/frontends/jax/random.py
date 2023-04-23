@@ -67,7 +67,7 @@ def dirichlet(key, alpha, shape=None, dtype="float32"):
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def cauchy(key, shape=(), dtype=None):
-    return ivy.random_uniform(shape=shape, dtype=dtype, seed=ivy.to_scalar(key[1]))
+    return ivy.random_cauchy(shape=shape, dtype=dtype, seed=ivy.to_scalar(key[1]))
 
 
 @handle_jax_dtype
