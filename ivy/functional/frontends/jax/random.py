@@ -66,6 +66,12 @@ def dirichlet(key, alpha, shape=None, dtype="float32"):
 
 @handle_jax_dtype
 @to_ivy_arrays_and_back
+def cauchy(key, shape=(), dtype=None):
+    return ivy.random_uniform(shape=shape, dtype=dtype, seed=ivy.to_scalar(key[1]))
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {"0.3.14 and below": ("unsigned", "int8", "int16")},
     "jax",
