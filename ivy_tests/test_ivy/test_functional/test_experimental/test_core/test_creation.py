@@ -17,6 +17,7 @@ import numpy as np
     ),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_triu_indices(
     *,
@@ -35,9 +36,9 @@ def test_triu_indices(
         fw=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
-        n_rows=x[0],
-        n_cols=x[1],
-        k=x[2],
+        n_rows=int(x[0]),
+        n_cols=int(x[1]),
+        k=int(x[2]),
     )
 
 
@@ -45,13 +46,14 @@ def test_triu_indices(
 @handle_test(
     fn_tree="functional.ivy.experimental.vorbis_window",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("integer"),
         max_num_dims=0,
-        min_num_dims=1,
-        max_num_dims=1,
+        min_value=1,
+        max_value=10,
     ),
     dtype=helpers.get_dtypes("float", full=False),
     test_gradients=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_vorbis_window(
     *,
@@ -71,7 +73,7 @@ def test_vorbis_window(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        window_length=x[0],
+        window_length=int(x[0]),
         dtype=dtype[0],
     )
 
@@ -88,6 +90,7 @@ def test_vorbis_window(
     periodic=st.booleans(),
     dtype=helpers.get_dtypes("float", full=False),
     test_gradients=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_hann_window(
     *,
@@ -108,7 +111,7 @@ def test_hann_window(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        size=x[0],
+        size=int(x[0]),
         periodic=periodic,
         dtype=dtype[0],
     )
@@ -148,7 +151,7 @@ def test_kaiser_window(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        window_length=x[0],
+        window_length=int(x[0]),
         periodic=periodic,
         beta=beta,
         dtype=dtype[0],
@@ -189,7 +192,7 @@ def test_kaiser_bessel_derived_window(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        window_length=x[0],
+        window_length=int(x[0]),
         periodic=periodic,
         beta=beta,
         dtype=dtype[0],
@@ -238,10 +241,10 @@ def test_hamming_window(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        window_length=x[0],
+        window_length=int(x[0]),
         periodic=periodic,
-        alpha=f[0],
-        beta=f[1],
+        alpha=float(f[0]),
+        beta=float(f[1]),
         dtype=dtype[0],
     )
 
@@ -258,6 +261,7 @@ def test_hamming_window(
     k=helpers.ints(min_value=-11, max_value=11),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_tril_indices(
     *,
@@ -277,8 +281,8 @@ def test_tril_indices(
         fw=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
-        n_rows=x[0],
-        n_cols=x[1],
+        n_rows=int(x[0]),
+        n_cols=int(x[1]),
         k=k,
     )
 
@@ -314,7 +318,7 @@ def test_eye_like(
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
-        x=x[0],
+        x=int(x[0]),
         k=k,
         dtype=dtype[0],
         device=on_device,

@@ -143,7 +143,7 @@ def handle_array_function(func):
     """
 
     @functools.wraps(func)
-    def new_func(*args, **kwargs):
+    def _handle_array_function(*args, **kwargs):
         overloaded_types = []
         overloaded_args = []
 
@@ -193,13 +193,13 @@ def handle_array_function(func):
             return value
         return func(*args, **kwargs)
 
-    new_func.handle_array_function = True
-    return new_func
+    _handle_array_function.handle_array_function = True
+    return _handle_array_function
 
 
 def handle_array_like_without_promotion(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _handle_array_like_without_promotion(*args, **kwargs):
         args = list(args)
         num_args = len(args)
         try:
@@ -237,13 +237,13 @@ def handle_array_like_without_promotion(fn: Callable) -> Callable:
 
         return fn(*args, **kwargs)
 
-    new_fn.handle_array_like_without_promotion = True
-    return new_fn
+    _handle_array_like_without_promotion.handle_array_like_without_promotion = True
+    return _handle_array_like_without_promotion
 
 
 def inputs_to_native_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _inputs_to_native_arrays(*args, **kwargs):
         """
         Converts all `ivy.Array` instances in both the positional and keyword arguments
         into `ivy.NativeArray` instances, and then calls the function with the updated
@@ -277,13 +277,13 @@ def inputs_to_native_arrays(fn: Callable) -> Callable:
             new_kwargs["out"] = out
         return fn(*new_args, **new_kwargs)
 
-    new_fn.inputs_to_native_arrays = True
-    return new_fn
+    _inputs_to_native_arrays.inputs_to_native_arrays = True
+    return _inputs_to_native_arrays
 
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _inputs_to_ivy_arrays(*args, **kwargs):
         """
         Converts all `ivy.NativeArray` instances in both the positional and keyword
         arguments into `ivy.Array` instances, and then calls the function with the
@@ -313,13 +313,13 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
             ivy_kwargs["out"] = out
         return fn(*ivy_args, **ivy_kwargs)
 
-    new_fn.inputs_to_ivy_arrays = True
-    return new_fn
+    _inputs_to_ivy_arrays.inputs_to_ivy_arrays = True
+    return _inputs_to_ivy_arrays
 
 
 def outputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _outputs_to_ivy_arrays(*args, **kwargs):
         """
         Calls the function, and then converts all `ivy.NativeArray` instances in
         the function return into `ivy.Array` instances.
@@ -345,8 +345,8 @@ def outputs_to_ivy_arrays(fn: Callable) -> Callable:
             else ret
         )
 
-    new_fn.outputs_to_ivy_arrays = True
-    return new_fn
+    _outputs_to_ivy_arrays.outputs_to_ivy_arrays = True
+    return _outputs_to_ivy_arrays
 
 
 def output_to_native_arrays(fn: Callable) -> Callable:
@@ -368,12 +368,12 @@ def output_to_native_arrays(fn: Callable) -> Callable:
     """
 
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _output_to_native_arrays(*args, **kwargs):
         ret = fn(*args, **kwargs)
         return ivy.to_native(ret, nested=True, include_derived={tuple: True})
 
-    new_fn.outputs_to_native_arrays = True
-    return new_fn
+    _output_to_native_arrays.outputs_to_native_arrays = True
+    return _output_to_native_arrays
 
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
@@ -405,7 +405,7 @@ def handle_view(fn: Callable) -> Callable:
     """
 
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _handle_view(*args, **kwargs):
         ret = fn(*args, **kwargs)
         if ("copy" in kwargs and kwargs["copy"]) or not ivy.is_ivy_array(args[0]):
             return ret
@@ -417,8 +417,8 @@ def handle_view(fn: Callable) -> Callable:
             ret = _build_view(original, ret, fn.__name__, args, kwargs, None)
         return ret
 
-    new_fn.handle_view = True
-    return new_fn
+    _handle_view.handle_view = True
+    return _handle_view
 
 
 def handle_view_indexing(fn: Callable) -> Callable:
@@ -435,7 +435,7 @@ def handle_view_indexing(fn: Callable) -> Callable:
     """
 
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _handle_view_indexing(*args, **kwargs):
         ret = fn(*args, **kwargs)
         if ("copy" in kwargs and kwargs["copy"]) or not ivy.is_ivy_array(args[0]):
             return ret
@@ -449,8 +449,8 @@ def handle_view_indexing(fn: Callable) -> Callable:
         ret = _build_view(original, ret, "get_item", args, kwargs)
         return ret
 
-    new_fn.handle_view_indexing = True
-    return new_fn
+    _handle_view_indexing.handle_view_indexing = True
+    return _handle_view_indexing
 
 
 # Data Type Handling #
@@ -459,7 +459,7 @@ def handle_view_indexing(fn: Callable) -> Callable:
 
 def infer_dtype(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, dtype=None, **kwargs):
+    def _infer_dtype(*args, dtype=None, **kwargs):
         """
         Determines the correct `dtype`, and then calls the function with the `dtype`
         passed explicitly.
@@ -487,13 +487,13 @@ def infer_dtype(fn: Callable) -> Callable:
         # call the function with dtype provided explicitly
         return fn(*args, dtype=dtype, **kwargs)
 
-    new_fn.infer_dtype = True
-    return new_fn
+    _infer_dtype.infer_dtype = True
+    return _infer_dtype
 
 
 def integer_arrays_to_float(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _integer_arrays_to_float(*args, **kwargs):
         """
         Promotes all the integer array inputs passed to the function both
         as positional or keyword arguments to the default float dtype.
@@ -524,8 +524,8 @@ def integer_arrays_to_float(fn: Callable) -> Callable:
         kwargs = ivy.nested_map(kwargs, _to_float_array, to_mutable=True)
         return fn(*args, **kwargs)
 
-    new_fn.integer_arrays_to_float = True
-    return new_fn
+    _integer_arrays_to_float.integer_arrays_to_float = True
+    return _integer_arrays_to_float
 
 
 # Device Handling #
@@ -534,7 +534,7 @@ def integer_arrays_to_float(fn: Callable) -> Callable:
 
 def infer_device(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, device=None, **kwargs):
+    def _infer_device(*args, device=None, **kwargs):
         """
         Determines the correct `device`, and then calls the function with the `device`
         passed explicitly.
@@ -561,8 +561,8 @@ def infer_device(fn: Callable) -> Callable:
         # call the function with device provided explicitly
         return fn(*args, device=device, **kwargs)
 
-    new_fn.infer_device = True
-    return new_fn
+    _infer_device.infer_device = True
+    return _infer_device
 
 
 # Inplace Update Handling #
@@ -571,9 +571,10 @@ def infer_device(fn: Callable) -> Callable:
 
 def handle_out_argument(fn: Callable) -> Callable:
     handle_out_in_backend = hasattr(fn, "support_native_out")
+    handle_out_in_ivy = hasattr(fn, "mixed_function")
 
     @functools.wraps(fn)
-    def new_fn(*args, out=None, **kwargs):
+    def _handle_out_argument(*args, out=None, **kwargs):
         """
         Calls `fn` with the `out` argument handled correctly for performing an inplace
         update.
@@ -594,8 +595,8 @@ def handle_out_argument(fn: Callable) -> Callable:
             The return of the function, with `out` handled correctly for
             inplace updates.
         """
-        if out is None:
-            return fn(*args, **kwargs)
+        if out is None or handle_out_in_ivy:
+            return fn(*args, out=out, **kwargs)
         if handle_out_in_backend:
             # extract underlying native array for out
             native_out = ivy.to_native(out)
@@ -625,8 +626,8 @@ def handle_out_argument(fn: Callable) -> Callable:
         return ivy.inplace_update(out, ivy.astype(ret, ivy.dtype(out)))
         # return output matches the dtype of the out array to match numpy and torch
 
-    new_fn.handle_out_argument = True
-    return new_fn
+    _handle_out_argument.handle_out_argument = True
+    return _handle_out_argument
 
 
 def _update_torch_views(x, visited_view=None):
@@ -666,7 +667,7 @@ def handle_nestable(fn: Callable) -> Callable:
     fn_name = fn.__name__
 
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _handle_nestable(*args, **kwargs):
         """
         Calls `fn` with the *nestable* property of the function correctly handled.
         This means mapping the function to the container leaves if any containers are
@@ -703,8 +704,8 @@ def handle_nestable(fn: Callable) -> Callable:
         # the passed arguments, returning an ivy or a native array.
         return fn(*args, **kwargs)
 
-    new_fn.handle_nestable = True
-    return new_fn
+    _handle_nestable.handle_nestable = True
+    return _handle_nestable
 
 
 # Functions #
@@ -947,7 +948,7 @@ def _nest_has_nans(x):
 
 def handle_nans(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def _handle_nans(*args, **kwargs):
         """
         Checks for the existence of nans in all arrays in the `args`
         and `kwargs`. The presence of nans is then handled depending
@@ -989,22 +990,22 @@ def handle_nans(fn: Callable) -> Callable:
 
         return fn(*args, **kwargs)
 
-    new_fn.handle_nans = True
-    return new_fn
+    _handle_nans.handle_nans = True
+    return _handle_nans
 
 
 def handle_mixed_function(condition) -> Callable:
     def inner_function(fn):
         @functools.wraps(fn)
-        def new_fn(*args, **kwargs):
-            compos = getattr(new_fn, "compos")
+        def _handle_mixed_function(*args, **kwargs):
+            compos = getattr(_handle_mixed_function, "compos")
             if condition(*args, **kwargs):
                 return fn(*args, **kwargs)
 
             return compos(*args, **kwargs)
 
-        new_fn.handle_mixed_functions = True
-        return new_fn
+        _handle_mixed_function.handle_mixed_functions = True
+        return _handle_mixed_function
 
     return inner_function
 

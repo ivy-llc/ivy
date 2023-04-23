@@ -8,6 +8,7 @@ from typing import Sequence, Union, Optional, Callable
 
 # local
 import ivy
+from ivy.func_wrapper import outputs_to_ivy_arrays, inputs_to_native_arrays
 from ivy.functional.ivy.gradients import (
     _get_required_float_variables,
     _get_y_and_ret_idxs,
@@ -168,14 +169,32 @@ def jac(func: Callable):
     return callback_fn
 
 
-def grad(func: Callable):
-    grad_fn = lambda x_in: ivy.to_native(func(x_in))
+def grad(f):
 
-    def callback_fn(x_in):
-        with tf.GradientTape() as tape:
-            x_in = ivy.to_native(ivy.array(x_in))
-            tape.watch(x_in)
-            y = grad_fn(x_in)
-        return ivy.to_ivy(tape.gradient(y, x_in))
+    if grad.nth == 0:
+        grad.f_original = f
 
-    return callback_fn
+    def _nth_derivative(n):
+        @outputs_to_ivy_arrays
+        @inputs_to_native_arrays
+        def _inner(x):
+            if n == 0:
+                ret = grad.f_original(x) if grad.f_original is not None else f(x)
+                grad.nth = 0
+                return ret
+            else:
+                with tf.GradientTape() as tape:
+                    tape.watch(x)
+                    y = _nth_derivative(n - 1)(x)
+                    ret = tape.gradient(y, x)
+                return ret
+
+        return _inner
+
+    grad.nth += 1
+
+    return _nth_derivative(grad.nth)
+
+
+grad.f_original = None
+grad.nth = 0

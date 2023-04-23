@@ -11,6 +11,7 @@ from typing import (
     List,
 )
 from numbers import Number
+from functools import partial
 import math
 import ivy
 from ivy.func_wrapper import (
@@ -26,7 +27,6 @@ from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
 
 
-@inputs_to_ivy_arrays
 @handle_out_argument
 @handle_view
 @handle_array_like_without_promotion
@@ -262,6 +262,7 @@ def ndenumerate(
             for idx in _iter_product(*i):
                 yield idx, input[idx]
 
+    input = ivy.array(input) if not ivy.is_ivy_array(input) else input
     return _ndenumerate(input)
 
 
@@ -291,7 +292,6 @@ def ndindex(
     (1, 0)
     (1, 1)
     """
-
     args = [range(k) for k in shape]
     return _iter_product(*args)
 
@@ -952,7 +952,6 @@ def _check_arguments(
     )
 
 
-@inputs_to_ivy_arrays
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
@@ -1198,6 +1197,9 @@ def pad(
                 )
     padded = ivy.array(padded).to_native()
     return padded
+
+
+pad.mixed_function = True
 
 
 @to_native_arrays_and_back
@@ -1614,7 +1616,6 @@ def expand(
     return ivy.current_backend(x).expand(x, shape, out=out, copy=copy)
 
 
-@inputs_to_ivy_arrays
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
@@ -1671,6 +1672,9 @@ def as_strided(
     )
 
 
+as_strided.mixed_function = True
+
+
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
@@ -1713,3 +1717,127 @@ def concat_from_sequence(
     return current_backend(input_sequence).concat_from_sequence(
         input_sequence, new_axis=new_axis, axis=axis, out=out
     )
+
+
+def _slice_along_axis(x, start=0, stop=None, stride=1, axis=0):
+    if axis >= 0:
+        slices = [slice(None)] * axis + [slice(start, stop, stride)]
+    else:
+        slices = [Ellipsis, slice(start, stop, stride)] + [slice(None)] * (-1 - axis)
+    return x[tuple(slices)]
+
+
+def _interior_pad(operand, padding_value, padding_config):
+    pad_width = [(low, high) for low, high, _ in padding_config]
+
+    for axis, (_, _, interior) in enumerate(padding_config):
+        if interior > 0:
+            new_shape = list(operand.shape)
+            new_shape[axis] = new_shape[axis] + (new_shape[axis] - 1) * interior
+
+            new_array = ivy.full(new_shape, padding_value)
+
+            src_indices = ivy.arange(operand.shape[axis])
+            dst_indices = src_indices * (interior + 1)
+
+            index_tuple = [slice(None)] * operand.ndim
+            index_tuple[axis] = dst_indices
+            new_array = ivy.to_numpy(new_array)
+            operand = ivy.to_numpy(operand)
+            new_array[tuple(index_tuple)] = operand
+            operand = new_array
+
+    padded = ivy.constant_pad(operand, pad_width, value=padding_value)
+    return padded
+
+
+def _interleave(a, b, axis):
+    assert a.shape[axis] == b.shape[axis] or a.shape[axis] == b.shape[axis] + 1
+    a_pad = [(0, 0, 0)] * a.ndim
+    b_pad = [(0, 0, 0)] * b.ndim
+    a_pad[axis] = (0, 1 if a.shape[axis] == b.shape[axis] else 0, 1)
+    b_pad[axis] = (1, 0 if a.shape[axis] == b.shape[axis] else 1, 1)
+    a = _interior_pad(a, 0.0, a_pad)
+    b = _interior_pad(b, 0.0, b_pad)
+    return ivy.add(a, b)
+
+
+@inputs_to_ivy_arrays
+@handle_nestable
+@handle_exceptions
+def associative_scan(
+    x: Union[ivy.Array, ivy.NativeArray],
+    fn: Callable,
+    /,
+    *,
+    reverse: bool = False,
+    axis: int = 0,
+) -> ivy.Array:
+    """
+    Perform an associative scan over the given array.
+
+    Parameters
+    ----------
+    x
+        The array to scan over.
+    fn
+        The associative function to apply.
+    reverse
+        Whether to scan in reverse with respect to the given axis.
+    axis
+        The axis to scan over.
+
+    Returns
+    -------
+    ret
+        The result of the scan.
+
+    """
+    elems = [x]
+
+    if reverse:
+        elems = [ivy.flip(elem, axis=[axis]) for elem in elems]
+
+    def _combine(a, b):
+        a = a[0]
+        b = b[0]
+        if a.shape[axis] == 0:
+            return [a]
+        c = fn(a, b)
+        return [c]
+
+    def _scan(elems):
+        num_elems = elems[0].shape[axis]
+
+        if num_elems < 2:
+            return elems
+
+        reduced_elems = _combine(
+            [_slice_along_axis(elem, 0, -1, stride=2, axis=axis) for elem in elems],
+            [_slice_along_axis(elem, 1, None, stride=2, axis=axis) for elem in elems],
+        )
+
+        odd_elems = _scan(reduced_elems)
+
+        if num_elems % 2 == 0:
+            even_elems = _combine(
+                [_slice_along_axis(e, 0, -1, axis=axis) for e in odd_elems],
+                [_slice_along_axis(e, 2, None, stride=2, axis=axis) for e in elems],
+            )
+        else:
+            even_elems = _combine(
+                odd_elems,
+                [_slice_along_axis(e, 2, None, stride=2, axis=axis) for e in elems],
+            )
+        even_elems = [
+            ivy.concat([_slice_along_axis(elem, 0, 1, axis=axis), result], axis=axis)
+            for (elem, result) in zip(elems, even_elems)
+        ]
+        return list(map(partial(_interleave, axis=axis), even_elems, odd_elems))
+
+    scans = _scan(elems)
+
+    if reverse:
+        scans = [ivy.flip(scanned, axis=[axis]) for scanned in scans]
+
+    return ivy.reshape(ivy.asarray(scans), elems[0].shape)
