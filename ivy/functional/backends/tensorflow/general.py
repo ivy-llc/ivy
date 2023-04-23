@@ -12,39 +12,12 @@ import tensorflow as tf
 # local
 import ivy
 from ivy.functional.ivy.gradients import _is_variable
-from ivy.functional.ivy.general import _parse_ellipsis
+from ivy.functional.ivy.general import _parse_ellipsis, _parse_index
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
 _round = round
-
-
-def _parse_index(indices, shape):
-    ind = list()
-    for so in indices:
-        pre = list()
-        for s in so:
-            if s == -1:
-                pre.append(shape[len(pre) :][0] - 1)
-                break
-            pre.append(s.numpy())
-        post = list()
-        for s in reversed(so):
-            if s == -1:
-                break
-            post.append(s.numpy())
-        ind.append(
-            tuple(
-                pre
-                + [
-                    slice(None, None, None)
-                    for _ in range(len(shape) - len(pre) - len(post))
-                ]
-                + list(reversed(post))
-            )
-        )
-    return ind
 
 
 def is_native_array(x, /, *, exclusive=False):
@@ -76,7 +49,7 @@ def current_backend_str() -> str:
 @with_unsupported_dtypes(
     {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
 )
-def get_item(x: tf.Tensor, /, query: tf.Tensor) -> tf.Tensor:
+def get_item(x: tf.Tensor, /, query: tf.Tensor, *, copy: bool = None) -> tf.Tensor:
     if not ivy.is_array(query) and not isinstance(query, np.ndarray):
         return x.__getitem__(query)
     dtype = ivy.dtype(query, as_native=True)
@@ -218,12 +191,14 @@ def inplace_update(
             )
         elif ivy.is_ivy_array(x):
             x.data = val_native
+            # Handle view updates
             if ivy.exists(x._base):
                 base = x._base
                 base_idx = ivy.arange(base.size).reshape(base.shape)
                 for fn, args, kwargs, index in x._manipulation_stack:
-                    base_idx = fn(base_idx, *args, **kwargs)
-                    base_idx = base[index] if ivy.exists(index) else base_idx
+                    kwargs["copy"] = True
+                    base_idx = ivy.__dict__[fn](base_idx, *args, **kwargs)
+                    base_idx = base_idx[index] if ivy.exists(index) else base_idx
                 base_flat = tf.reshape(base.data, -1)
                 base_flat = tf.tensor_scatter_nd_update(
                     base_flat,
@@ -250,7 +225,7 @@ def inplace_update(
 
 def _update_view(view, base):
     for fn, args, kwargs, index in view._manipulation_stack:
-        base = fn(base, *args, **kwargs)
+        base = ivy.__dict__[fn](base, *args, **kwargs)
         base = base[index] if ivy.exists(index) else base
     view.data = base.data
     return view
@@ -493,9 +468,11 @@ def scatter_nd(
     if sum(updates.shape) < sum(expected_shape):
         updates = ivy.broadcast_to(updates, expected_shape)._data
     elif sum(updates.shape) > sum(expected_shape):
-        indices = ivy.broadcast_to(indices, updates.shape[:1] + indices.shape[-1])._data
-    elif updates.shape != expected_shape:
-        updates = ivy.broadcast_to(updates, expected_shape)._data
+        indices_shape = updates.shape[:1] + indices.shape[-1]
+        if sum(indices.shape) < sum(indices_shape):
+            indices = ivy.broadcast_to(indices, indices_shape)._data
+        else:
+            updates = ivy.broadcast_to(updates, expected_shape)._data
     # implementation
     target = out
     target_given = ivy.exists(target)
@@ -694,3 +671,7 @@ def isin(
         tf.equal(tf.expand_dims(elements, -1), test_elements), axis=-1
     )
     return tf.reshape(output, input_shape) ^ invert
+
+
+def itemsize(x: Union[tf.Tensor, tf.Variable]) -> int:
+    return x.dtype.size

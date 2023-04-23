@@ -821,14 +821,14 @@ class _ContainerWithCreationExperimental(ContainerBase):
 
     @staticmethod
     def static_frombuffer(
-            buffer: ivy.Container,
-            dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = float,
-            count: Optional[int] = -1,
-            offset: Optional[int] = 0,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
+        buffer: ivy.Container,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = float,
+        count: Optional[int] = -1,
+        offset: Optional[int] = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.frombuffer. This method simply
@@ -901,14 +901,14 @@ class _ContainerWithCreationExperimental(ContainerBase):
         )
 
     def frombuffer(
-            self: ivy.Container,
-            dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = float,
-            count: Optional[int] = -1,
-            offset: Optional[int] = 0,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
+        self: ivy.Container,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = float,
+        count: Optional[int] = -1,
+        offset: Optional[int] = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.frombuffer. This method

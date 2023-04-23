@@ -1,3 +1,5 @@
+import numpy as np
+
 import ivy
 import pytest
 from unittest.mock import patch
@@ -115,3 +117,31 @@ def test_handle_mixed_function(x, weight, expected):
     with patch(test_fn) as test_mock_function:
         ivy.linear(x, weight)
         assert test_mock_function.called == expected
+
+
+@pytest.mark.parametrize(
+    "array_to_update",
+    [0, 1, 2, 3, 4],
+)
+def test_views(array_to_update):
+    a = ivy.random.random_normal(shape=(6,))
+    a_copy = ivy.copy_array(a)
+    b = a.reshape((2, 3))
+    b_copy = ivy.copy_array(b)
+    c = ivy.flip(b)
+    c_copy = ivy.copy_array(c)
+    d = ivy.rot90(c, k=3)
+    d_copy = ivy.copy_array(d)
+    e = ivy.split(d)
+    e_copy = ivy.copy_array(e[0])
+    array = (a, b, c, d, e)[array_to_update]
+    if array_to_update == 4:
+        for arr in array:
+            arr += 1
+    else:
+        array += 1
+    assert np.allclose(a, a_copy + 1)
+    assert np.allclose(b, b_copy + 1)
+    assert np.allclose(c, c_copy + 1)
+    assert np.allclose(d, d_copy + 1)
+    assert np.allclose(e[0], e_copy + 1)

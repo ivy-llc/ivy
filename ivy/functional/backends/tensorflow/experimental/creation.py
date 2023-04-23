@@ -6,7 +6,7 @@ import tensorflow as tf
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from . import backend_version
 
 # Array API Standard #
@@ -40,6 +40,7 @@ def triu_indices(
     return tuple(tf.convert_to_tensor(ret, dtype=tf.int64))
 
 
+@with_supported_dtypes({"1.11.0 and below": ("int32")}, backend_version)
 def kaiser_window(
     window_length: int,
     periodic: bool = True,
@@ -130,12 +131,14 @@ def frombuffer(
     count: Optional[int] = -1,
     offset: Optional[int] = 0,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if isinstance(buffer, bytearray):
+        buffer = bytes(buffer)
     ret = tf.io.decode_raw(buffer, dtype)
     dtype = tf.dtypes.as_dtype(dtype)
     if offset > 0:
         offset = int(offset / dtype.size)
     if count > -1:
-        ret = ret[offset:offset + count]
+        ret = ret[offset : offset + count]
     else:
         ret = ret[offset:]
 
