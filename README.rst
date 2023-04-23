@@ -249,8 +249,8 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
     optimizer = ivy.Adam(1e-4)
 
     # generate some random data
-    x = ivy.random.randint(100, 3)
-    y = ivy.random.randint(100, 1)
+    x = ivy.random.random_normal(shape=(100, 3))
+    y = ivy.random.random_normal(shape=(100, 1))
 
     def loss_fn(pred, target):
         return ivy.mean((pred - target)**2)
