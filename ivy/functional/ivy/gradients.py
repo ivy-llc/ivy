@@ -304,33 +304,6 @@ def _variable_data(
     return ivy.nested_map(ret, ivy.to_ivy, include_derived=True)
 
 
-# Extra #
-# ------#
-
-with_grads_stack = list()
-
-
-class GradientTracking:
-    """Gradient tracking Context Manager."""
-
-    # noinspection PyShadowingNames
-    def __init__(self, with_grads):
-        self._with_grads = with_grads
-
-    def __enter__(self):
-        set_with_grads(self._with_grads)
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        unset_with_grads()
-        if self and (exc_type is not None):
-            print(exc_tb)
-            raise exc_val
-        return self
-
-
-# Gradient Mode #
-
 # noinspection PyShadowingNames
 @handle_array_function
 @handle_exceptions
