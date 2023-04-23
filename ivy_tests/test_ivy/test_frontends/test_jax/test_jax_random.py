@@ -635,7 +635,7 @@ def test_jax_rademacher(
     shape=helpers.get_shape(),
     dtype=helpers.get_dtypes("integer", full=False),
     minval=st.integers(min_value=-100, max_value=100),
-    maxval=st.integers(min_value=101, max_value=1000)
+    maxval=st.integers(min_value=101, max_value=1000),
 )
 def test_jax_randint(
     *,
@@ -650,6 +650,7 @@ def test_jax_randint(
     test_flags,
 ):
     input_dtype, key = dtype_key
+
     def call():
         return helpers.test_frontend_function(
             input_dtypes=input_dtype,
