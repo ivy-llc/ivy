@@ -501,7 +501,9 @@ def ones(
     ivy.array([[1.],
            [1., 1., 1., 1., 1.], [1., 1.]])
     """
-    return current_backend().ones(size, shape, dtype=dtype, device=device, out=out)
+    if len(size)!=0:
+        size = size[0] if isinstance(size[0], (tuple, list)) else size
+    return current_backend().ones(size, shape=shape, dtype=dtype, device=device, out=out)
 
 
 @infer_device

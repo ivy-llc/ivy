@@ -474,10 +474,12 @@ def ones(
     device: Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if size and shape:
+    if len(size)!=0:
+        size = size[0] if isinstance(size[0], (tuple, list)) else size
+    if len(size)!=0 and shape:
         raise TypeError("ones() got multiple values for argument 'shape'")
     if shape is None:
-        shape = size[0] if isinstance(size[0], (tuple, list)) else size
+        shape = size
     return to_device(paddle.ones(shape=shape).cast(dtype), device)
 
 
