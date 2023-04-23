@@ -402,6 +402,17 @@ def zeros(
 
     Examples
     --------
+    With `Sequence[int]` input:
+    >>> x = ivy.zeros(1,1)
+    >>> print(x)
+    ivy.array([[0.]])
+
+    With :class:`tuple` input:
+    >>> x = ivy.zeros((1,1))
+    >>> print(x)
+    ivy.array([[0.]])
+
+    With :class:`ivy.NativeShape` input:
     >>> shape = (3, 5)
     >>> x = ivy.zeros(shape)
     >>> print(x)
@@ -468,11 +479,23 @@ def ones(
 
     Examples
     --------
+
+    With `Sequence[int]` input:
+
+    >>> x = ivy.ones(1,1)
+    >>> print(x)
+    ivy.array([[1.]])
+
+    With :class:`tuple` input:
+    >>> x = ivy.ones((1,1))
+    >>> print(x)
+    ivy.array([[1.]])
+
     With :class:`ivy.Shape` input:
 
     >>> shape = (2,2)
-    >>> y = ivy.ones(shape)
-    >>> print(y)
+    >>> x = ivy.ones(shape)
+    >>> print(x)
     ivy.array([[1., 1.],
            [1., 1.]])
 
