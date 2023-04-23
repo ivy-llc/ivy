@@ -2206,7 +2206,7 @@ def _setitem_helper(draw, available_dtypes, allow_neg_step=True):
             shape=x[index].shape,
         )
     )
-    return input_dtype+val_dtype, x, index, val[0]
+    return input_dtype + val_dtype, x, index, val[0]
 
 
 # __setitem__
