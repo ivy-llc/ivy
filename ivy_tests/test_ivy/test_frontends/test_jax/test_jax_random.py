@@ -440,4 +440,3 @@ def test_jax_gumbel(
     for (u, v) in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
-        
