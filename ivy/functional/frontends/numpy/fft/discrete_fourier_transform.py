@@ -48,11 +48,10 @@ def ifftshift(x, axes=None):
     if axes is None:
         axes = tuple(range(x.ndim))
         shift = [-(dim // 2) for dim in x.shape]
-    elif isinstance(axes, (int,
-                           type(ivy.uint8),
-                           type(ivy.uint16),
-                           type(ivy.uint32),
-                           type(ivy.uint64))):
+    elif isinstance(
+        axes,
+        (int, type(ivy.uint8), type(ivy.uint16), type(ivy.uint32), type(ivy.uint64)),
+    ):
         shift = -(x.shape[axes] // 2)
     else:
         shift = [-(x.shape[ax] // 2) for ax in axes]

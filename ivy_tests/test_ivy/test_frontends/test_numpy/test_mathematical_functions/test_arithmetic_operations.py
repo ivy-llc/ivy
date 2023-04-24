@@ -557,12 +557,12 @@ def test_numpy_mod(
     ),
 )
 def test_numpy_modf(
-        dtypes_values_casting,
-        where,
-        frontend,
-        test_flags,
-        fn_tree,
-        on_device,
+    dtypes_values_casting,
+    where,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x, casting, dtype = dtypes_values_casting
     assume(not np.iscomplex(x))
@@ -582,7 +582,7 @@ def test_numpy_modf(
         x=x[0],
     )
 
-    
+
 # reciprocal
 @handle_frontend_test(
     fn_tree="numpy.reciprocal",

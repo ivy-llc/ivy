@@ -313,8 +313,18 @@ def _modf(
     fractional_part = x - integral_part
 
     if ivy.is_array(where):
-        integral_part = ivy.where(where, integral_part, ivy.default(out, ivy.zeros_like(integral_part)), out=out)
-        fractional_part = ivy.where(where, fractional_part, ivy.default(out, ivy.zeros_like(fractional_part)), out=out)
+        integral_part = ivy.where(
+            where,
+            integral_part,
+            ivy.default(out, ivy.zeros_like(integral_part)),
+            out=out,
+        )
+        fractional_part = ivy.where(
+            where,
+            fractional_part,
+            ivy.default(out, ivy.zeros_like(fractional_part)),
+            out=out,
+        )
 
     return fractional_part, integral_part
 
