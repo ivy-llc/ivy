@@ -228,12 +228,12 @@ def inplace_decrement(
     val: Union[ivy.Array, paddle.Tensor],
 ) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
-    paddle.assign(x_native - val_native, x_native)
     if ivy.is_ivy_array(x):
-        x.data = x_native
+        target = x.data
     else:
-        x = ivy.Array(x_native)
-    return x
+        target = x
+    with ivy.ArrayMode(False):
+        return paddle.assign(ivy.subtract(x_native, val_native), target)
 
 
 @with_unsupported_device_and_dtypes(
