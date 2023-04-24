@@ -49,7 +49,7 @@ def is_native_array(x, /, *, exclusive=False):
     )
 
 
-def get_item(x: JaxArray, /, query: JaxArray) -> JaxArray:
+def get_item(x: JaxArray, /, query: JaxArray, *, copy: bool = None) -> JaxArray:
     return x.__getitem__(query)
 
 
@@ -216,12 +216,14 @@ def inplace_update(
         (x_native, val_native), _ = ivy.args_to_native(x, val)
         if ivy.is_ivy_array(x):
             x.data = val_native
+            # Handle view updates
             if ivy.exists(x._base):
                 base = x._base
                 base_idx = ivy.arange(base.size).reshape(base.shape)
                 for fn, args, kwargs, index in x._manipulation_stack:
-                    base_idx = fn(base_idx, *args, **kwargs)
-                    base_idx = base[index] if ivy.exists(index) else base_idx
+                    kwargs["copy"] = True
+                    base_idx = ivy.__dict__[fn](base_idx, *args, **kwargs)
+                    base_idx = base_idx[index] if ivy.exists(index) else base_idx
                 base_flat = base.data.flatten()
                 base_flat = base_flat.at[base_idx.data.flatten()].set(
                     val_native.flatten()
@@ -250,7 +252,7 @@ def inplace_update(
 
 def _update_view(view, base):
     for fn, args, kwargs, index in view._manipulation_stack:
-        base = fn(base, *args, **kwargs)
+        base = ivy.__dict__[fn](base, *args, **kwargs)
         base = base[index] if ivy.exists(index) else base
     view.data = base.data
     return view
@@ -323,7 +325,8 @@ def scatter_nd(
 ) -> JaxArray:
     # parse numeric inputs
     if (
-        indices not in [Ellipsis, ()]
+        len(indices) != 0
+        and indices != Ellipsis
         and not (isinstance(indices, Iterable) and Ellipsis in indices)
         and not isinstance(indices, slice)
         and not (
@@ -439,3 +442,7 @@ def isin(
     invert: bool = False,
 ) -> JaxArray:
     return jnp.isin(elements, test_elements, assume_unique=assume_unique, invert=invert)
+
+
+def itemsize(x: JaxArray) -> int:
+    return x.itemsize

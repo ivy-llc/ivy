@@ -45,3 +45,70 @@ def _get_seed(key):
 def beta(key, a, b, shape=None, dtype=None):
     seed = _get_seed(key)
     return ivy.beta(a, b, shape=shape, dtype=dtype, seed=seed)
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "0.3.14 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "jax",
+)
+def dirichlet(key, alpha, shape=None, dtype="float32"):
+    seed = _get_seed(key)
+    alpha = ivy.astype(alpha, dtype)
+    return ivy.dirichlet(alpha, size=shape, dtype=dtype, seed=seed)
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {"0.3.14 and below": ("unsigned", "int8", "int16")},
+    "jax",
+)
+def poisson(key, lam, shape=None, dtype=None):
+    seed = _get_seed(key)
+    return ivy.poisson(lam, shape=shape, dtype=dtype, seed=seed)
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "0.3.14 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "jax",
+)
+def gamma(key, a, shape=None, dtype="float64"):
+    seed = _get_seed(key)
+    return ivy.gamma(a, 1.0, shape=shape, dtype=dtype, seed=seed)
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "0.3.14 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "jax",
+)
+def gumbel(key, shape=(), dtype="float64"):
+    seed = _get_seed(key)
+    uniform_x = ivy.random_uniform(
+        low=0.0,
+        high=1.0,
+        shape=shape,
+        dtype=dtype,
+        seed=seed,
+    )
+    return -ivy.log(-ivy.log(uniform_x))

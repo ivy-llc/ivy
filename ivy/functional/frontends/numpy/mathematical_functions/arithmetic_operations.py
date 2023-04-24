@@ -295,6 +295,45 @@ def _mod(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
+def _modf(
+    x,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="K",
+    dtype=None,
+    subok=True,
+):
+    if dtype:
+        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
+
+    integral_part = ivy.floor(x)
+    fractional_part = x - integral_part
+
+    if ivy.is_array(where):
+        integral_part = ivy.where(
+            where,
+            integral_part,
+            ivy.default(out, ivy.zeros_like(integral_part)),
+            out=out,
+        )
+        fractional_part = ivy.where(
+            where,
+            fractional_part,
+            ivy.default(out, ivy.zeros_like(fractional_part)),
+            out=out,
+        )
+
+    return fractional_part, integral_part
+
+
+@handle_numpy_out
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
 def _fmod(
     x1,
     x2,

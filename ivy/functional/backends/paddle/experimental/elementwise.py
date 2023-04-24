@@ -22,6 +22,15 @@ def lcm(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    x1_dtype = x1.dtype
+    x2_dtype = x2.dtype
+    if (x1_dtype, x2_dtype) == (paddle.int16, paddle.int16):
+        return paddle.cast(
+            paddle.lcm(paddle.cast(x1, paddle.int32), paddle.cast(x2, paddle.int32)),
+            paddle.int16,
+        )
+    elif x1_dtype != x2_dtype:
+        x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return paddle.lcm(x1, x2)
 
 
@@ -112,11 +121,14 @@ def copysign(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     with ivy.ArrayMode(False):
-        x2 = ivy.where(ivy.equal(x2, 0), ivy.divide(1, x2), x2)
+        x2 = ivy.where(ivy.equal(x2, paddle.to_tensor(0)), ivy.divide(1, x2), x2)
         signs = ivy.sign(x2)
         return ivy.multiply(ivy.abs(x1), signs)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint8", "int8", "int16", "float16")}}, backend_version
+)
 def nansum(
     x: paddle.Tensor,
     /,
@@ -129,6 +141,9 @@ def nansum(
     return paddle.nansum(x, axis=axis, dtype=dtype, keepdim=keepdims)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("int8", "int16")}}, backend_version
+)
 def gcd(
     x1: Union[paddle.Tensor, int, list, tuple],
     x2: Union[paddle.Tensor, float, list, tuple],
@@ -140,6 +155,9 @@ def gcd(
     return paddle.gcd(x1, x2)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("float16",)}}, backend_version
+)
 def isclose(
     a: paddle.Tensor,
     b: paddle.Tensor,
@@ -237,7 +255,7 @@ def nan_to_num(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "float16")}}, backend_version
 )
 def logaddexp2(
     x1: Union[paddle.Tensor, float, list, tuple],
@@ -264,13 +282,17 @@ def diff(
     return paddle.diff(x, n=n, axis=axis, prepend=prepend, append=append)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def signbit(
     x: Union[paddle.Tensor, float, int, list, tuple],
     /,
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    with ivy.ArrayMode(False):
+        return ivy.less_equal(x, 0)
 
 
 def hypot(
