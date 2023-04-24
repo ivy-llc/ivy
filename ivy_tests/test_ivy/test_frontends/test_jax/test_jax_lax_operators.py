@@ -2464,13 +2464,8 @@ def _reduce_window_helper(draw):
     else:
         computation = py_func
 
-    dtype, operand = draw(
-        helpers.dtype_and_values(
-            dtype=dtype,
-            min_num_dims=1,
-        )
-    )
-    ndim = operand[0].ndim
+    ndim = draw(st.integers(min_value=1, max_value=4))
+
     _, others = draw(
         helpers.dtype_and_values(
             num_arrays=4,
@@ -2483,6 +2478,19 @@ def _reduce_window_helper(draw):
         )
     )
     others = [other.tolist() for other in others]
+
+    window, dilation = others[0], others[2]
+    op_shape = []
+    for i in range(ndim):
+        min_x = window[i] + (window[i] - 1) * (dilation[i] - 1)
+        op_shape.append(draw(st.integers(min_x, min_x + 1)))
+    dtype, operand = draw(
+        helpers.dtype_and_values(
+            dtype=dtype,
+            shape=op_shape,
+        )
+    )
+
     padding = draw(
         st.one_of(
             st.lists(
