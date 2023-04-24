@@ -424,7 +424,7 @@ def zeros(
     >>> print(x)
     ivy.array([0., 0., 0., 0., 0.])
     """
-    if len(size)!=0:
+    if len(size) != 0:
         size = size[0] if isinstance(size[0], (tuple, list)) else size
     return current_backend().zeros(
         size, shape=shape, dtype=dtype, device=device, out=out
@@ -526,9 +526,11 @@ def ones(
     ivy.array([[1.],
            [1., 1., 1., 1., 1.], [1., 1.]])
     """
-    if len(size)!=0:
+    if len(size) != 0:
         size = size[0] if isinstance(size[0], (tuple, list)) else size
-    return current_backend().ones(size, shape=shape, dtype=dtype, device=device, out=out)
+    return current_backend().ones(
+        size, shape=shape, dtype=dtype, device=device, out=out
+    )
 
 
 @infer_device
@@ -1013,9 +1015,11 @@ def empty(
     instances in place of any of the arguments.
 
     """
-    if len(size)!=0:
+    if len(size) != 0:
         size = size[0] if isinstance(size[0], (tuple, list)) else size
-    return current_backend().empty(size, shape, dtype=dtype, device=device, out=out)
+    return current_backend().empty(
+        size, shape=shape, dtype=dtype, device=device, out=out
+    )
 
 
 @infer_device

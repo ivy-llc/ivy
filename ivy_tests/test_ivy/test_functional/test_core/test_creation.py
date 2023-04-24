@@ -249,7 +249,6 @@ def test_asarray(
     )
 
 
-# empty
 # TODO: Fix container and instance methods
 @handle_test(
     fn_tree="functional.ivy.empty",
@@ -262,7 +261,6 @@ def test_asarray(
         max_dim_size=5,
     ),
     dtype=helpers.get_dtypes("numeric", full=False),
-    container_flags=st.just([False]),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
@@ -588,7 +586,6 @@ def test_meshgrid(
     ),
     dtype=helpers.get_dtypes("numeric", full=False),
     size=helpers.ints(min_value=1, max_value=3),
-    container_flags=st.just([False]),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
@@ -751,7 +748,6 @@ def test_triu(
     ),
     dtype=helpers.get_dtypes("numeric", full=False),
     size=helpers.ints(min_value=1, max_value=3),
-    container_flags=st.just([False]),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
