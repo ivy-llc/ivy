@@ -206,7 +206,7 @@ def jac(func: Callable):
     return callback_fn
 
 
-def grad(f):
+def grad(f, argnums=0):
     if grad.nth == 0:
         grad.f_original = f
 
