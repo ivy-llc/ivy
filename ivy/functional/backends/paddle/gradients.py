@@ -210,7 +210,7 @@ def jac(func: Callable):
     return callback_fn
 
 
-def grad(f):
+def grad(f, argnums=0):
     if grad.nth == 0:
         grad.f_original = f
     # ToDo: Return grads on nth chained calls rather than None. issue with paddle.grad.
