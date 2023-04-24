@@ -390,7 +390,8 @@ def test_jax_gamma(
         assert u.dtype == v.dtype
         assert u.shape == v.shape
 
-#TODO Update the test by fixing the uint32 unsupported problem
+
+# TODO Update the test by fixing the uint32 unsupported problem
 @pytest.mark.xfail
 @handle_frontend_test(
     fn_tree="jax.random.gumbel",
@@ -403,7 +404,7 @@ def test_jax_gamma(
         min_dim_size=2,
         max_dim_size=2,
     ),
-    shape=helpers.get_shape(),
+    shape=helpers.get_shape(allow_none=False),
     dtype=helpers.get_dtypes("float", full=False),
 )
 def test_jax_gumbel(
