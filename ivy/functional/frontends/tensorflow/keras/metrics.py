@@ -294,7 +294,6 @@ def squared_hinge(y_true, y_pred):
 
 @to_ivy_arrays_and_back
 def cosine_similarity(y_true, y_pred):
-
     y_pred = ivy.asarray(y_pred)
     y_true = ivy.asarray(y_true)
 

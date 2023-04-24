@@ -14,7 +14,6 @@ from ivy.functional.frontends.torch.func_wrapper import _to_ivy_array
 
 class Tensor:
     def __init__(self, array, device=None, _init_overload=False):
-
         if _init_overload:
             self._ivy_array = (
                 ivy.array(array) if not isinstance(array, ivy.Array) else array

@@ -880,7 +880,6 @@ def embedding(
         indices = ivy.array(indices, dtype=ivy.int32)
 
     for i, x in ivy.ndenumerate(indices):
-
         if ivy.exists(max_norm):
             ret[i] = ivy.clip_vector_norm(weights[x, :], max_norm)
         else:

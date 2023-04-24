@@ -85,7 +85,7 @@ def main():
             test, backend = line.split(",")
             coll, submod, test_fn = get_submodule(test)
             print(coll, submod, test_fn)
-            command = f'docker run --rm --env IVY_BACKEND={backend} --env ARRAY_API_TESTS_MODULE="ivy" --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest timeout 30m python3 -m pytest {test} -k \\"{k_flag[backend]}\\" --tb=short -vv'
+            command = f'docker run --rm --env IVY_BACKEND={backend} --env ARRAY_API_TESTS_MODULE="ivy" --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest timeout 30m python3 -m pytest {test} -k \\"{k_flag[backend]}\\" --tb=short -vv'  # noqa
             ret = os.system(command)
             if ret != 0:
                 res = make_clickable(run_id, result_config["failure"])

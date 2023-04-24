@@ -170,7 +170,6 @@ def jac(func: Callable):
 
 
 def grad(f, argnums=0):
-
     if grad.nth == 0:
         grad.f_original = f
 
@@ -180,9 +179,11 @@ def grad(f, argnums=0):
         def _inner(*args, **kwargs):
             max_argnum = argnums if isinstance(argnums, int) else max(argnums)
             if max_argnum >= len(args):
-                raise TypeError(f"differentiating with respect to {argnums=} requires at least "
-                                f"{max_argnum + 1} positional arguments to be passed by the caller, "
-                                f"but got only {len(args)} positional arguments.")
+                raise TypeError(
+                    f"differentiating with respect to {argnums=} requires at least "
+                    f"{max_argnum + 1} positional arguments to be passed by the "
+                    f"caller, but got only {len(args)} positional arguments."
+                )
             if isinstance(argnums, int):
                 x = args[argnums]
             elif isinstance(argnums, (tuple, list)):
@@ -190,10 +191,16 @@ def grad(f, argnums=0):
                 for i in argnums:
                     x.append(args[i])
             else:
-                raise TypeError(f"argnums should be passed as int or a list/tuple of ints."
-                                f" Found {type(argnums)}")
+                raise TypeError(
+                    f"argnums should be passed as int or a list/tuple of ints."
+                    f" Found {type(argnums)}"
+                )
             if n == 0:
-                ret = grad.f_original(*args, **kwargs) if grad.f_original is not None else f(*args, **kwargs)
+                ret = (
+                    grad.f_original(*args, **kwargs)
+                    if grad.f_original is not None
+                    else f(*args, **kwargs)
+                )
                 grad.nth = 0
                 return ret
             else:
@@ -202,7 +209,9 @@ def grad(f, argnums=0):
                     y = _nth_derivative(n - 1)(*args, *kwargs)
                     ret = tape.gradient(y, x)
                 return ret
+
         return _inner
+
     grad.nth += 1
 
     return _nth_derivative(grad.nth)
