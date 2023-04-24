@@ -127,6 +127,13 @@ def mod(x1, x2, /):
 
 
 @to_ivy_arrays_and_back
+def modf(x, /, out=None):
+    y1 = ivy.floor(x)
+    y2 = x - y1
+    return y2,y1
+
+
+@to_ivy_arrays_and_back
 def divmod(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return tuple([ivy.floor_divide(x1, x2), ivy.remainder(x1, x2)])
