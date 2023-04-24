@@ -60,6 +60,9 @@ class DeviceArray:
             out=out,
             keepdims=keepdims,
         )
+    
+    def conj(self, /):
+        return jax_frontend.numpy.conj(self._ivy_array)
 
     def conj(self, /):
         return jax_frontend.numpy.conj(self._ivy_array)
