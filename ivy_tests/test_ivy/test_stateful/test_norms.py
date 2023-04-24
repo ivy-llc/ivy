@@ -60,7 +60,9 @@ def test_layer_norm_layer(
     method_tree="BatchNorm2D.__call__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=["float32"],
-        shape=helpers.get_shape(min_num_dims=2, max_num_dims=3, min_dim_size=2, max_dim_size=5),
+        shape=helpers.get_shape(
+            min_num_dims=2, max_num_dims=3, min_dim_size=2, max_dim_size=5
+        ),
     ),
     momentum=st.floats(min_value=0.0, max_value=1.0, exclude_min=True),
     init_with_v=st.booleans(),
@@ -81,16 +83,18 @@ def test_batch_norm_2d_layer(
     method_flags,
 ):
     input_dtype, x = dtype_and_x
-    prints = {
-    "inputs": x,
-    "num_features": x[0].shape[1],
-    "eps": ivy._MIN_BASE,
-    "affine": True,
-    "momentum": momentum,
-    "track_running_stats": True,
-    "device": on_device,
-    "dtype": input_dtype[0],
-    },
+    prints = (
+        {
+            "inputs": x,
+            "num_features": x[0].shape[1],
+            "eps": ivy._MIN_BASE,
+            "affine": True,
+            "momentum": momentum,
+            "track_running_stats": True,
+            "device": on_device,
+            "dtype": input_dtype[0],
+        },
+    )
     print()
     print(prints)
     helpers.test_method(
@@ -101,7 +105,7 @@ def test_batch_norm_2d_layer(
             "num_features": x[0].shape[1],
             "eps": ivy._MIN_BASE,
             "affine": True,
-            "momentum":momentum,
+            "momentum": momentum,
             "track_running_stats": True,
             "device": on_device,
             "dtype": input_dtype[0],
