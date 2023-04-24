@@ -3,7 +3,7 @@
 from functools import reduce
 from numbers import Number
 from operator import mul
-from typing import Optional, Union, Sequence, Callable, List
+from typing import Optional, Union, Sequence, Callable, List, Tuple
 
 try:
     import functorch
@@ -632,3 +632,10 @@ isin.support_native_out = True
 
 def itemsize(x: torch.tensor) -> int:
     return x.element_size()
+
+
+def strides(
+    x: torch.tensor,
+    /,
+) -> Tuple[int]:
+    return x.stride()

@@ -3,7 +3,7 @@ signature.
 """
 
 # global
-from typing import Optional, Union, Sequence, Callable
+from typing import Optional, Union, Sequence, Callable, Tuple
 import numpy as np
 import multiprocessing as _multiprocessing
 from numbers import Number
@@ -675,3 +675,10 @@ def isin(
 
 def itemsize(x: Union[tf.Tensor, tf.Variable]) -> int:
     return x.dtype.size
+
+
+def strides(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+) -> Tuple[int]:
+    return x.numpy().strides
