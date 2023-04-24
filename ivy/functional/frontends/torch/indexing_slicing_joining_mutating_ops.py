@@ -352,6 +352,4 @@ def select(input, dim, index):
     num_dims = ivy.get_num_dims(input)
     slices = [slice(None)] * num_dims
     slices[dim] = index
-    ret = input[tuple(slices)]
-
-    return ret
+    return input[tuple(slices)]
