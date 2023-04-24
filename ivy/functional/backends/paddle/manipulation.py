@@ -345,19 +345,20 @@ def tile(
     x: paddle.Tensor, /, repeats: Sequence[int], *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     if ivy.min(repeats) == 0:
-        # This logic is to mimic other backends behaviour when a 0 in repeat
-        # is received since paddle doesn't natively support it
-        if len(repeats) < x.ndim:
-            shape = x.shape
-            shape[-len(repeat) :] = ivy.multiply(
-                shape[-len(repeat) :], repeats
-            ).to_list()
-        elif len(repeats) > x.ndim:
-            shape = repeats
-            shape[-x.ndim :] = ivy.multiply(shape[-x.ndim :], repeats).to_list()
-        else:
-            shape = ivy.multiply(x.shape, repeats).to_list()
-        return paddle.zeros(shape).cast(x.dtype)
+        with ivy.ArrayMode(False):
+            # This logic is to mimic other backends behaviour when a 0 in repeat
+            # is received since paddle doesn't natively support it
+            if len(repeats) < x.ndim:
+                shape = x.shape
+                shape[-len(repeat) :] = ivy.multiply(
+                    shape[-len(repeat) :], repeats
+                ).to_list()
+            elif len(repeats) > x.ndim:
+                shape = repeats
+                shape[-x.ndim :] = ivy.multiply(shape[-x.ndim :], repeats).to_list()
+            else:
+                shape = ivy.multiply(x.shape, repeats).to_list()
+            return ivy.zeros(shape).cast(x.dtype)
 
     if x.dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
         return paddle.tile(x.cast("float32"), repeats).cast(x.dtype)
