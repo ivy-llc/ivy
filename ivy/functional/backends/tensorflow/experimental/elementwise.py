@@ -578,7 +578,18 @@ def gradient(
         return outvals
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16,")}, backend_version)
+@with_supported_dtypes(
+    {
+        "2.12.0 and below": (
+            "float16",
+            "float32",
+            "float64",
+            "complex64",
+            "complex128",
+        )
+    },
+    backend_version,
+)
 def xlogy(
     x: Union[tf.Tensor, tf.Variable],
     y: Union[tf.Tensor, tf.Variable],

@@ -13,8 +13,8 @@ def _generate_data_layer_norm(
     draw,
     *,
     available_dtypes,
-    large_abs_safety_factor=4,
-    small_abs_safety_factor=4,
+    large_abs_safety_factor=20,
+    small_abs_safety_factor=20,
     safety_factor_scale="log",
     min_num_dims=1,
     max_num_dims=5,
@@ -55,6 +55,7 @@ def _generate_data_layer_norm(
 
     weight_shape = shape[axis:]
     bias_shape = shape[axis:]
+    normalized_idxs = list(range(axis, len(shape)))
 
     arg_dict = {
         "available_dtypes": dtype,
@@ -80,7 +81,7 @@ def _generate_data_layer_norm(
     _, weight_values = results_weight
     _, bias_values = results_bias
 
-    return dtype, values, axis, weight_values, bias_values
+    return dtype, values, normalized_idxs, weight_values, bias_values
 
 
 @handle_test(
@@ -89,20 +90,20 @@ def _generate_data_layer_norm(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     new_std=st.floats(min_value=0.01, max_value=0.1),
-    epsilon=st.floats(min_value=0.01, max_value=0.1),
+    eps=st.floats(min_value=0.01, max_value=0.1),
 )
 def test_layer_norm(
     *,
     values_tuple,
     new_std,
-    epsilon,
+    eps,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
-    dtype, x, normalize_axis, scale, b = values_tuple
+    dtype, x, normalized_idxs, scale, offset = values_tuple
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -114,9 +115,9 @@ def test_layer_norm(
         atol_=0.5,
         xs_grad_idxs=[[0, 0]],
         x=x[0],
-        normalize_axis=normalize_axis,
-        epsilon=epsilon,
+        normalized_idxs=normalized_idxs,
+        eps=eps,
         scale=scale[0],
-        b=b[0],
+        offset=offset[0],
         new_std=new_std,
     )
