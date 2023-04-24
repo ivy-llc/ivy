@@ -34,9 +34,6 @@ class ndarray:
             "ivy.array", "ivy.frontends.numpy.ndarray"
         )
 
-    def __str__(self):
-        return str(self.ivy_array)
-
     # Properties #
     # ---------- #
 
@@ -50,11 +47,11 @@ class ndarray:
 
     @property
     def shape(self):
-        return np_frontend.shape(self)
+        return self.ivy_array.shape
 
     @property
     def dtype(self):
-        return np_frontend.dtype(self.dtype)
+        return self.ivy_array.dtype
 
     # Setters #
     # --------#
@@ -465,7 +462,7 @@ class ndarray:
         ret = ivy.get_item(*ivy_args)
         return np_frontend.ndarray(ret, _init_overload=True)
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key, value, /):
         key, value = ivy.nested_map([key, value], _to_ivy_array)
         self.ivy_array[key] = value
 

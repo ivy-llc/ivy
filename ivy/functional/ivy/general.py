@@ -96,6 +96,33 @@ def _parse_ellipsis(so, ndims):
     )
 
 
+def _parse_index(indices, shape):
+    ind = list()
+    for so in indices:
+        pre = list()
+        for s in so:
+            if s == -1:
+                pre.append(shape[len(pre) :][0] - 1)
+                break
+            pre.append(s.numpy())
+        post = list()
+        for s in reversed(so):
+            if s == -1:
+                break
+            post.append(s.numpy())
+        ind.append(
+            tuple(
+                pre
+                + [
+                    slice(None, None, None)
+                    for _ in range(len(shape) - len(pre) - len(post))
+                ]
+                + list(reversed(post))
+            )
+        )
+    return ind
+
+
 def get_referrers_recursive(
     item, depth=0, max_depth=None, seen_set=None, local_set=None
 ):
@@ -1878,7 +1905,7 @@ def einops_rearrange(
     >>> print(x.shape)
     (32, 15, 20, 12)
     """
-    ret = einops.rearrange(x, pattern, **axes_lengths)
+    ret = einops.rearrange(x._data, pattern, **axes_lengths)
     ret = ivy.array(ret, dtype=x.dtype)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
@@ -2020,7 +2047,7 @@ def einops_repeat(
     }
 
     """
-    ret = einops.repeat(x, pattern, **axes_lengths)
+    ret = einops.repeat(x._data, pattern, **axes_lengths)
     ret = ivy.array(ret, dtype=x.dtype)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
