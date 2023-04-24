@@ -38,7 +38,7 @@ def test_numpy_ifttshift(dtype_and_x, frontend, test_flags, fn_tree, on_device):
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        test_values=False,
-        x=arr,
+        test_values=True,
+        x=arr[0],
         axes=None,
     )
