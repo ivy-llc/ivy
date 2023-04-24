@@ -601,6 +601,7 @@ def with_backend(backend: str, cached: bool = False):
             _importlib.import_cache
         )
         _compiled_backends_ids[ivy_pack._compiled_id] = ivy_pack
+        _importlib._clear_cache()
     try:
         compiled_backends[backend].append(ivy_pack)
     except KeyError:
