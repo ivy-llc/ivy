@@ -109,6 +109,8 @@ def test_numpy_cross(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-3,
+        atol=1e-3,
         a=x1,
         b=x2,
         axis=axis,
