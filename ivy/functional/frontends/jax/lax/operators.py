@@ -616,8 +616,9 @@ def top_k(operand, k):
 
 def _conv_view(lhs, rhs_shape, window_strides, pads, pad_value):
     def _pad(arr, pads, pad_value):
-        out = ivy.pad(arr, ivy.maximum(0, pads), mode='constant',
-                      constant_values=pad_value).astype(arr.dtype)
+        out = ivy.astype(
+            ivy.pad(arr, ivy.maximum(0, pads).to_list(), mode='constant',
+                    constant_values=pad_value), arr.dtype)
         slices = tuple(_slice(abs(lo) if lo < 0 else 0, hi % dim if hi < 0 else None)
                        for (lo, hi), dim in zip(pads, arr.shape))
         return out[slices]
@@ -660,8 +661,10 @@ def _dilate(operand, factors, fill_value=0):
            ivy.subtract(operand.shape[2:], 1)
         )
     ).to_list()
-    out = ivy.full((
-            operand.shape[:2] + tuple(outspace)), fill_value, dtype=operand.dtype
+    out = ivy.full(
+        (operand.shape[:2] + tuple(outspace)),
+        ivy.to_scalar(fill_value),
+        dtype=operand.dtype,
     )
     lhs_slices = tuple(_slice(None, None, step) for step in factors)
     out[(_slice(None),) * 2 + lhs_slices] = operand
@@ -714,8 +717,12 @@ def _make_reducer(py_binop, init_val):
         def reducer(operand, axis=0):
             axis = len(operand.shape) + axis if axis < 0 else axis
             axis = range(operand.ndim) if axis is None else axis
-            result = ivy.full(_delete(operand.shape, axis), init_val,
-                              dtype=operand.dtype)
+            result = ivy.full(
+                _delete(operand.shape, axis),
+                ivy.to_scalar(init_val),
+                dtype=operand.dtype,
+            )
+            operand, result = operand.to_numpy(), result.to_numpy()
             for idx, _ in ivy.ndenumerate(operand):
                 out_idx = tuple(_delete(idx, axis))
                 result[out_idx] = py_binop(result[out_idx], operand[idx])
@@ -755,7 +762,7 @@ def reduce_window(
                       pad_value=init_value)[0]
     view = view.reshape(view.shape[1:1 + len(dims)] + (-1,))
     reducer = _make_reducer(computation, init_value)
-    return reducer(view, axis=-1)
+    return ivy.array(reducer(view, axis=-1))
 
 
 @to_ivy_arrays_and_back
