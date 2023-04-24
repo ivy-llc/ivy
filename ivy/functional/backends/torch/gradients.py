@@ -6,6 +6,10 @@ from typing import Optional, Callable, Sequence, Union
 
 # local
 import ivy
+from ivy.func_wrapper import (
+    outputs_to_ivy_arrays,
+    inputs_to_native_arrays,
+)
 from ivy.functional.ivy.gradients import (
     _get_required_float_variables,
     _get_y_and_ret_idxs,
@@ -184,13 +188,43 @@ def jac(func: Callable):
     return callback_fn
 
 
-def grad(func: Callable):
-    grad_fn = lambda x_in: ivy.to_native(func(x_in))
+def grad(f):
+    if grad.nth == 0:
+        grad.f_original = f
 
-    def callback_fn(x_in):
-        x = ivy.to_native(ivy.array(x_in)).detach()
-        x.requires_grad = True
-        grad_fn(x).backward()
-        return ivy.to_ivy(x.grad)
+    def _nth_derivative(n):
+        @outputs_to_ivy_arrays
+        @inputs_to_native_arrays
+        def _inner(x):
+            x.requires_grad_()
+            if n == 0:
+                ret = grad.f_original(x) if grad.f_original is not None else f(x)
+                grad.nth = 0
+                return ret
+            else:
+                y = _nth_derivative(n - 1)(x)
 
-    return callback_fn
+                # Avoid zero gradients setting requires_grads as False
+                if y.requires_grad is False:
+                    y.requires_grad_()
+
+                dy_dx = torch.autograd.grad(
+                    y,
+                    x,
+                    create_graph=True,
+                    grad_outputs=torch.ones_like(y),
+                    allow_unused=True,
+                )[0]
+                if dy_dx is None:
+                    return torch.zeros_like(y)
+                return dy_dx
+
+        return _inner
+
+    grad.nth += 1
+
+    return _nth_derivative(grad.nth)
+
+
+grad.f_original = None
+grad.nth = 0

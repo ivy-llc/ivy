@@ -262,6 +262,7 @@ def ndenumerate(
             for idx in _iter_product(*i):
                 yield idx, input[idx]
 
+    input = ivy.array(input) if not ivy.is_ivy_array(input) else input
     return _ndenumerate(input)
 
 
@@ -291,7 +292,6 @@ def ndindex(
     (1, 0)
     (1, 1)
     """
-
     args = [range(k) for k in shape]
     return _iter_product(*args)
 
@@ -1773,7 +1773,6 @@ def associative_scan(
     reverse: bool = False,
     axis: int = 0,
 ) -> ivy.Array:
-
     """
     Perform an associative scan over the given array.
 
@@ -1794,7 +1793,6 @@ def associative_scan(
         The result of the scan.
 
     """
-
     elems = [x]
 
     if reverse:

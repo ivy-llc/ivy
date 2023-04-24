@@ -561,6 +561,7 @@ def cov(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
 ) -> ivy.Array:
     """Computes the covariance of matrix x1, or variables x1 and x2.
+
     Parameters
     ----------
     x1
@@ -594,6 +595,7 @@ def cov(
     out
         optional output array, for writing the result to. It must have a shape that
         the inputs broadcast to.
+
     Returns
     -------
     ret
@@ -602,6 +604,7 @@ def cov(
         floating-point data type determined by Type Promotion Rules and must be
         a square matrix of shape (N, N), where N is the number of variables in the
         input(s).
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.cov.html>`_ # noqa
@@ -609,6 +612,7 @@ def cov(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
+
     Examples
     --------
     With :class:`ivy.Array` input:

@@ -463,6 +463,11 @@ def floor(x, name=None):
 
 
 @to_ivy_arrays_and_back
+def floordiv(x, y, name=None):
+    return ivy.floor_divide(x, y)
+
+
+@to_ivy_arrays_and_back
 def ceil(x, name=None):
     return ivy.ceil(x)
 
