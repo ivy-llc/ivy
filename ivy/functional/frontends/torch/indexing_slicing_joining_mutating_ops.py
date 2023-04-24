@@ -345,3 +345,13 @@ def index_copy(input, dim, index, source, *, out=None):
         res = ivy.flatten(res)
 
     return ivy.swapaxes(res, 0, dim, out=out)
+
+
+@to_ivy_arrays_and_back
+def select(input, dim, index):
+    num_dims = ivy.get_num_dims(input)
+    slices = [slice(None)] * num_dims
+    slices[dim] = index
+    ret = input[tuple(slices)]
+
+    return ret
