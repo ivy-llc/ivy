@@ -249,7 +249,7 @@ def test_asarray(
     )
 
 
-# TODO: Fix container and instance methods
+# empty
 @handle_test(
     fn_tree="functional.ivy.empty",
     size=helpers.ints(min_value=1, max_value=3),
@@ -574,7 +574,6 @@ def test_meshgrid(
 
 
 # ones
-# TODO: Fix container and instance methods
 @handle_test(
     fn_tree="functional.ivy.ones",
     shape=helpers.get_shape(
@@ -736,7 +735,6 @@ def test_triu(
 
 
 # zeros
-# TODO: fix container and instance methods
 @handle_test(
     fn_tree="functional.ivy.zeros",
     shape=helpers.get_shape(
