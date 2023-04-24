@@ -222,8 +222,6 @@ def current_backend(*args, **kwargs):
     >>> print(ivy.current_backend(x))
     <module 'ivy.functional.backends.jax' from '/ivy/ivy/functional/backends/jax/__init__.py'>   # noqa
     """
-    if ivy.is_local():
-        return ivy
     global implicit_backend
     # if a global backend has been set with
     # set_backend then this will be returned
@@ -592,7 +590,7 @@ def with_backend(backend: str, cached: bool = False):
         backend_module = _importlib._import_module(
             ivy_pack.utils.backend.handler._backend_dict[backend], ivy_pack.__package__
         )
-        _handle_backend_specific_vars(ivy_pack)
+        _handle_backend_specific_vars(backend_module)
         # We know for sure that the backend stack is empty
         # no need to do backend unsetting
         ivy_pack.utils.backend.handler._set_backend_as_ivy(
