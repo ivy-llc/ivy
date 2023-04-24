@@ -348,10 +348,5 @@ def index_copy(input, dim, index, source, *, out=None):
 
 
 @to_ivy_arrays_and_back
-def select(input, dim, index):
-    num_dims = ivy.get_num_dims(input)
-    slices = [slice(None)] * num_dims
-    slices[dim] = index
-    ret = input[tuple(slices)]
-
-    return ret
+def masked_select(input, mask, out=None):
+    return ivy.flatten(input[mask], out=out)
