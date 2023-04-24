@@ -11,6 +11,7 @@ from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
 from . import backend_version
 import multiprocessing as _multiprocessing
+from ivy.functional.ivy.general import _parse_ellipsis, _parse_index
 
 
 @with_unsupported_device_and_dtypes(
@@ -308,6 +309,53 @@ def scatter_flat(
     raise IvyNotImplementedException()
 
 
+def _scatter_nd_replace(data, indices, updates, reduce):
+    """
+    This is an implementation for scatter_nd using put_along_axis
+    since paddle.scatter_nd only supports "sum" reduction mode
+    """
+    if data.dtype != updates.dtype:
+        data = data.cast(updates.dtype)
+
+    target_idx = paddle.to_tensor([])
+    idx_range = paddle.arange(paddle.prod(paddle.to_tensor(data.shape))).reshape(
+        data.shape
+    )
+
+    for i in indices:
+        target_idx = paddle.concat(
+            [target_idx, ivy.get_item(idx_range, tuple(i)).flatten()], -1
+        )
+
+    target_idx = target_idx.reshape([1] * (data.ndim - 1) + target_idx.shape[-1:])
+
+    if data.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+        paddle.complex64,
+        paddle.complex128,
+        paddle.bool,
+    ]:
+        if paddle.is_complex(data):
+            result_real = paddle.put_along_axis(
+                data.real(), target_idx, updates.real().flatten(), -1, reduce=reduce
+            )
+            result_imag = paddle.put_along_axis(
+                data.imag(), target_idx, updates.imag().flatten(), -1, reduce=reduce
+            )
+            return paddle.complex(result_real, result_imag)
+        return paddle.put_along_axis(
+            data.cast("float32"),
+            target_idx,
+            updates.cast("float32").flatten(),
+            -1,
+            reduce=reduce,
+        ).cast(data.dtype)
+    return paddle.put_along_axis(data, target_idx, updates.flatten(), -1, reduce=reduce)
+
+
 @with_unsupported_device_and_dtypes(
     {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
 )
@@ -320,7 +368,216 @@ def scatter_nd(
     reduction: str = "sum",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    with ivy.ArrayMode(False):
+        if ivy.exists(out) and not isinstance(updates, (Number, list, tuple)):
+            out = (
+                out.cast(updates.dtype)
+                if ivy.dtype_bits(updates.dtype) > ivy.dtype_bits(out.dtype)
+                else out
+            )
+        # handle numeric updates
+        updates = ivy.array(updates)
+        updates = updates.cast(
+            ivy.dtype(out, as_native=True)
+            if ivy.exists(out)
+            else ivy.default_dtype(item=updates),
+        )
+        contains_slices = (
+            any(isinstance(idx, slice) for idx in indices)
+            if isinstance(indices, (tuple, list))
+            else isinstance(indices, slice)
+        )
+
+        # hanle non-tensor indices
+        if len(indices) == 0:
+            return updates
+
+        elif (
+            indices is Ellipsis
+            or (isinstance(indices, tuple) and indices == (Ellipsis,))
+            or (isinstance(indices, slice) and indices == slice(None, None, None))
+        ):
+            if updates.shape == () and ivy.exists(out) and out.shape == ():
+                return updates
+            shape = out.shape if ivy.exists(out) else updates.shape
+            indices = ivy.stack(
+                [
+                    ivy.reshape(value, (-1,))
+                    for value in ivy.meshgrid(*[ivy.arange(shape[0])], indexing="ij")
+                ],
+                axis=-1,
+            )
+        elif isinstance(indices, (tuple, list)) and Ellipsis in indices:
+            shape = (
+                shape
+                if ivy.exists(shape)
+                else out.shape
+                if ivy.exists(out)
+                else updates.shape
+            )
+            indices = _parse_ellipsis(indices, len(shape))
+            indices = ivy.stack(
+                [
+                    ivy.reshape(value, (-1,))
+                    for value in ivy.meshgrid(
+                        *[
+                            ivy.arange(s)
+                            if idx == slice(None, None, None)
+                            else ivy.arange(
+                                ivy.default(idx.start, 0),
+                                ivy.default(idx.stop, shape[0]),
+                                ivy.default(idx.step, 1),
+                            )
+                            if isinstance(idx, slice)
+                            and (idx != slice(None, None, None))
+                            else ivy.array([idx % s])
+                            for s, idx in zip(shape, indices)
+                        ],
+                        indexing="ij",
+                    )
+                ],
+                axis=-1,
+            )
+        elif contains_slices:
+            shape = (
+                shape
+                if ivy.exists(shape)
+                else out.shape
+                if ivy.exists(out)
+                else updates.shape
+            )
+            if isinstance(indices, (tuple, list)):
+                indices = (
+                    _parse_index(indices, len(shape)) if -1 in indices else indices
+                )
+                indices = ivy.stack(
+                    [
+                        ivy.reshape(value, (-1,))
+                        for value in ivy.meshgrid(
+                            *[
+                                ivy.arange(s)
+                                if idx == slice(None, None, None)
+                                else ivy.arange(
+                                    ivy.default(idx.start, 0),
+                                    ivy.default(idx.stop, shape[0]),
+                                    ivy.default(idx.step, 1),
+                                )
+                                if isinstance(idx, slice)
+                                and (idx != slice(None, None, None))
+                                else ivy.array([idx % s])
+                                for s, idx in zip(shape, indices)
+                            ],
+                            indexing="ij",
+                        )
+                    ],
+                    axis=-1,
+                )
+            else:
+                indices = ivy.stack(
+                    [
+                        ivy.reshape(value, (-1,))
+                        for value in ivy.meshgrid(
+                            *[
+                                ivy.arange(
+                                    ivy.default(indices.start, 0),
+                                    ivy.default(indices.stop, shape[0]),
+                                    ivy.default(indices.step, 1),
+                                )
+                            ],
+                            indexing="ij",
+                        )
+                    ],
+                    axis=-1,
+                )
+        else:
+            indices = [[indices]] if isinstance(indices, Number) else indices
+            indices = ivy.array(indices).data
+            if len(indices.shape) < 2:
+                indices = ivy.expand_dims(indices, 0)
+            if ivy.any(indices < 0):
+                shape = list(shape) if ivy.exists(shape) else list(out.shape)
+                indices = _parse_index(indices, shape)
+                indices = [
+                    ivy.stack(
+                        [
+                            ivy.reshape(value, (-1,))
+                            for value in ivy.meshgrid(
+                                *[
+                                    ivy.arange(s)
+                                    if idx == slice(None, None, None)
+                                    else ivy.arange(
+                                        ivy.default(idx.start, 0),
+                                        ivy.ivy.default(idx.stop, shape[0]),
+                                        ivy.default(idx.step, 1),
+                                    )
+                                    if isinstance(idx, slice)
+                                    and idx != slice(None, None, None)
+                                    else ivy.array([idx % s])
+                                    for s, idx in zip(shape, index)
+                                ],
+                                indexing="xy",
+                            )
+                        ],
+                        axis=-1,
+                    )
+                    for index in indices
+                ]
+                indices = ivy.concat(indices, axis=0)
+        # broadcast updates to correct shape
+        shape = list(shape) if shape is not None else None
+        expected_shape = (
+            indices.shape[:-1] + list(out.shape[indices.shape[-1] :])
+            if ivy.exists(out)
+            else indices.shape[:-1] + shape[indices.shape[-1] :]
+        )
+        if sum(updates.shape) < sum(expected_shape):
+            updates = ivy.broadcast_to(updates, expected_shape)
+        elif sum(updates.shape) > sum(expected_shape):
+            indices = ivy.broadcast_to(indices, updates.shape[:1] + indices.shape[-1])
+        elif updates.shape != expected_shape:
+            updates = ivy.broadcast_to(updates, expected_shape)
+        # implementation
+        target = out
+        target_given = ivy.exists(target)
+        if ivy.exists(shape) and ivy.exists(target):
+            ivy.utils.assertions.check_equal(ivy.Shape(target.shape), ivy.Shape(shape))
+        shape = list(shape) if ivy.exists(shape) else out.shape
+        if not target_given:
+            target = ivy.zeros(shape=shape, dtype=updates.dtype)
+            ret = _scatter_nd_replace(target, indices, updates, reduce="assign")
+
+        if reduction == "sum":
+            ret = _scatter_nd_replace(target, indices, updates, reduce="add")
+
+        elif reduction == "min":
+            new_updates = paddle.to_tensor([], dtype=target.dtype)
+            for i in indices:
+                new_updates = ivy.concat(
+                    [new_updates, ivy.get_item(target, tuple(i)).reshape([-1])], axis=-1
+                )
+            new_updates = ivy.minimum(new_updates, updates.reshape([-1]))
+            ret = _scatter_nd_replace(target, indices, new_updates, reduce="assign")
+
+        elif reduction == "max":
+            new_updates = paddle.to_tensor([], dtype=target.dtype)
+            for i in indices:
+                new_updates = ivy.concat(
+                    [new_updates, ivy.get_item(target, tuple(i)).reshape([-1])], axis=-1
+                )
+            new_updates = ivy.maximum(new_updates, updates.reshape([-1]))
+            ret = _scatter_nd_replace(target, indices, new_updates, reduce="assign")
+        elif reduction == "replace":
+            ret = _scatter_nd_replace(target, indices, updates, reduce="assign")
+        else:
+            raise ivy.utils.exceptions.IvyException(
+                'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
+                    reduction
+                )
+            )
+        if ivy.exists(out):
+            return paddle.assign(ret, out.data)
+        else:
+            return ret
 
 
 @with_unsupported_device_and_dtypes(

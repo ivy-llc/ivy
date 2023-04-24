@@ -255,8 +255,7 @@ def nan_to_num(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "float16")}},
-    backend_version
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "float16")}}, backend_version
 )
 def logaddexp2(
     x1: Union[paddle.Tensor, float, list, tuple],
@@ -283,13 +282,17 @@ def diff(
     return paddle.diff(x, n=n, axis=axis, prepend=prepend, append=append)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
+)
 def signbit(
     x: Union[paddle.Tensor, float, int, list, tuple],
     /,
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    with ivy.ArrayMode(False):
+        return ivy.less_equal(x, 0)
 
 
 def hypot(

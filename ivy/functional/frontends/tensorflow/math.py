@@ -9,6 +9,15 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
 )
 
 
+@with_supported_dtypes(
+    {"2.9.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def imag(input, name=None):
+    return ivy.imag(input)
+
+
 @to_ivy_arrays_and_back
 def accumulate_n(inputs, input_type=None, shape=None, dtype=None, name=None):
     return ivy.astype(ivy.sum(ivy.array(inputs)), ivy.int64)
@@ -451,6 +460,11 @@ def not_equal(x, y, name=None):
 @to_ivy_arrays_and_back
 def floor(x, name=None):
     return ivy.floor(x)
+
+
+@to_ivy_arrays_and_back
+def floordiv(x, y, name=None):
+    return ivy.floor_divide(x, y)
 
 
 @to_ivy_arrays_and_back

@@ -250,7 +250,6 @@ def kaiser_window(
 
 
 @infer_dtype
-@inputs_to_ivy_arrays
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -289,10 +288,10 @@ def kaiser_bessel_derived_window(
     >>> ivy.kaiser_bessel_derived_window(5)
     ivy.array([0.00713103, 0.70710677, 0.99997455, 0.99997455, 0.70710677])
 
-    >>> ivy.kaiser_derived_window(5, False)
+    >>> ivy.kaiser_bessel_derived_window(5, False)
     ivy.array([0.00726415, 0.9999736 , 0.9999736 , 0.00726415])
 
-    >>> ivy.kaiser_derived_window(5, False, 5)
+    >>> ivy.kaiser_bessel_derived_window(5, False, 5)
     ivy.array([0.18493208, 0.9827513 , 0.9827513 , 0.18493208])
     """
     window_length = window_length // 2
@@ -315,8 +314,10 @@ def kaiser_bessel_derived_window(
     return ivy.array(dn_low + dn_mid, dtype=dtype, out=out)
 
 
+kaiser_bessel_derived_window.mixed_function = True
+
+
 @infer_dtype
-@inputs_to_ivy_arrays
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -386,6 +387,9 @@ def hamming_window(
                 dtype=dtype,
                 out=out,
             )
+
+
+hamming_window.mixed_function = True
 
 
 @infer_device
@@ -570,7 +574,8 @@ def eye_like(
     }
 
     """
-    cols = 1 if len(x.shape) == 1 else x.shape[-1]
+    dim = len(x.shape)
+    cols = 1 if dim <= 1 else x.shape[-1]
     rows = x.shape[0]
     return ivy.eye(
         rows,
