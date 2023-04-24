@@ -75,8 +75,26 @@ def poisson(key, lam, shape=None, dtype=None):
     return ivy.poisson(lam, shape=shape, dtype=dtype, seed=seed)
 
 
-@to_ivy_arrays_and_back
 @handle_jax_dtype
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "0.3.14 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "jax",
+)
+
+
+def gamma(key, a, shape=None, dtype="float64"):
+    seed = _get_seed(key)
+    return ivy.gamma(a, 1.0, shape=shape, dtype=dtype, seed=seed)
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
         "0.3.14 and below": (

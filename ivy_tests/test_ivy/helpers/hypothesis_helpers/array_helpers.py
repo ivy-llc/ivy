@@ -1,13 +1,14 @@
 # global
 import numpy as np
 import hypothesis.extra.numpy as nph
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 from hypothesis.internal.floats import float_of
 from functools import reduce
 from operator import mul
 
 # local
 import ivy
+import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import get_dtypes
 from . import general_helpers as gh
 from . import dtype_helpers, number_helpers
@@ -1240,3 +1241,62 @@ def arrays_for_pooling(
     if return_dilation:
         return dtype, x, kernel, strides, padding, dilations
     return dtype, x, kernel, strides, padding
+
+
+@st.composite
+def dtype_array_index(
+    draw,
+    *,
+    available_dtypes,
+    min_num_dims=1,
+    max_num_dims=3,
+    min_dim_size=1,
+    max_dim_size=10,
+    allow_slices=True,
+    allow_neg_step=True,
+):
+    dtype = draw(
+        helpers.array_dtypes(
+            num_arrays=1,
+            available_dtypes=available_dtypes,
+        )
+    )
+    dtype.append("int32")
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
+        )
+    )
+    array = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=shape,
+        )
+    )
+    index = ()
+    for s in shape:
+        index_type = st.sampled_from(["int", "ellipsis", "slice"])
+        if not allow_slices or index_type == "int":
+            index += draw(st.integers(min_value=-s + 1, max_value=s - 1))
+        if index_type == "ellipsis" and Ellipsis not in index:
+            index += (Ellipsis,)
+        elif index_type == "slice":
+            start = draw(
+                st.one_of(st.integers(min_value=-s + 1, max_value=s - 1), st.just(None))
+            )
+            end = draw(
+                st.one_of(st.integers(min_value=-s + 1, max_value=s - 1), st.just(None))
+            )
+            true_start = 0 if start is None else s + start if start < 0 else start
+            true_end = s - 1 if end is None else s + end if end < 0 else end
+            if true_start < true_end:
+                step = draw(st.integers(min_value=1, max_value=s))
+            else:
+                if not allow_neg_step:
+                    assume(False)
+                step = draw(st.integers(max_value=-1, min_value=-s))
+            index += (slice(start, end, step),)
+    return dtype, array, index
