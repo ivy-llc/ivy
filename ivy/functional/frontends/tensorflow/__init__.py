@@ -1,4 +1,3 @@
-# flake8: noqa
 # local
 from ivy.utils.exceptions import handle_exceptions
 import ivy
