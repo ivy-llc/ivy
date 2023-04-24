@@ -3,7 +3,6 @@
 # local
 import ivy
 import ivy.functional.frontends.jax as jax_frontend
-from ivy.functional.frontends.numpy import dtype
 
 
 class DeviceArray:
