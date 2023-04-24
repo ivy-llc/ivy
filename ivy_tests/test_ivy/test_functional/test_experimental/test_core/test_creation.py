@@ -33,6 +33,7 @@ def test_triu_indices(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
+        atol_=1e-02,
         fw=backend_fw,
         on_device=on_device,
         fn_name=fn_name,

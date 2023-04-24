@@ -641,3 +641,9 @@ def cosh(x, name=None):
 )
 def zeta(x, q, name=None):
     return ivy.zeta(x, q)
+
+
+@to_ivy_arrays_and_back
+def greater_equal(x, y, name=None):
+    x, y = check_tensorflow_casting(x, y)
+    return ivy.greater_equal(x, y)

@@ -386,8 +386,9 @@ For questions, please reach out on `discord`_ in the `docker channel`_!
     src="https://www.youtube.com/embed/UHeSnZu0pAI" class="video" allowfullscreen="true">
     </iframe>
 
-Setting Up Testing
-******************
+Setting Up Testing in PyCharm
+-----------------------------
+
 There are a couple of options to choose from when running ivy tests in PyCharm.
 To run a single unit test, e.g. `test_abs`, you can avail of the context menu in the PyCharm code editor by pressing the green ▶️ symbol which appears to the left of `def test_abs(`.
 
@@ -469,8 +470,8 @@ If you wish to run tests of all submodules of `ivy_core`, `ivy_nn` or `ivy_state
 All are run like: :code:`python run_tests_CLI/run_ivy_nn_test.py 1`, where 1 = numpy, 2 = torch, 3 = jax, and 4 = tensorflow.
 
 
-More Detailed Hypothesis Logs
-*****************************
+More Detailed Hypothesis Logs in PyCharm
+---------------------------------------
 
 For testing, we use the `Hypothesis <https://hypothesis.readthedocs.io/en/latest/#>`_ module for data generation.
 During testing, if Hypothesis detects an error, it will do its best to find the simplest values that are causing the error.
