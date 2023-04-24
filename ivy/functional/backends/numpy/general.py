@@ -372,7 +372,6 @@ def vmap(
     @ivy.output_to_native_arrays
     @ivy.inputs_to_native_arrays
     def _vmap(*args):
-
         # convert args tuple to list to allow mutability using moveaxis ahead.
         args = list(args)
 

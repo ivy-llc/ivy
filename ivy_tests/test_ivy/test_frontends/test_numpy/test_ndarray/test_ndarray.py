@@ -416,7 +416,6 @@ def test_numpy_ndarray_all(
     frontend,
     on_device,
 ):
-
     input_dtypes, x, axis = dtype_x_axis
     (
         where,

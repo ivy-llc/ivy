@@ -170,7 +170,6 @@ def jac(func: Callable):
 
 
 def grad(f):
-
     if grad.nth == 0:
         grad.f_original = f
 
