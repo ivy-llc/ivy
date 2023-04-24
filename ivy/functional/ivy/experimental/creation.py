@@ -575,8 +575,8 @@ def eye_like(
 
     """
     dim = len(x.shape)
-    cols = 1 if dim <= 1 else x.shape[-1]
-    rows = x.shape[0]
+    cols = dim if dim <= 1 else x.shape[-1]
+    rows = dim if dim < 1 else x.shape[0]
     return ivy.eye(
         rows,
         cols,
