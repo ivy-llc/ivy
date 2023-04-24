@@ -90,7 +90,7 @@ def poisson(key, lam, shape=None, dtype=None):
 def gumbel(key, shape=(), dtype="float64"):
     seed = _get_seed(key)
     uniform_x = ivy.random_uniform(
-        low=sys.float_info.min,
+        low=0.0,
         high=1.0,
         shape=shape,
         dtype=dtype,
