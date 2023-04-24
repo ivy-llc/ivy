@@ -499,6 +499,7 @@ from .linalg.matrix_and_vector_products import (
     # einsum,
     # einsum_path,
     kron,
+    cross,
 )
 
 from .linalg.decompositions import cholesky, qr, svd
