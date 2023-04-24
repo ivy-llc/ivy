@@ -529,6 +529,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations
     _floor_divide,
     _fmod,
     _mod,
+    _modf,
     _multiply,
     _negative,
     _positive,
@@ -636,6 +637,7 @@ float_power = ufunc("_float_power")
 floor_divide = ufunc("_floor_divide")
 fmod = ufunc("_fmod")
 mod = ufunc("_mod")
+modf = ufunc("_modf")
 multiply = ufunc("_multiply")
 negative = ufunc("_negative")
 positive = ufunc("_positive")

@@ -325,7 +325,8 @@ def scatter_nd(
 ) -> JaxArray:
     # parse numeric inputs
     if (
-        indices not in [Ellipsis, ()]
+        len(indices) != 0
+        and indices != Ellipsis
         and not (isinstance(indices, Iterable) and Ellipsis in indices)
         and not isinstance(indices, slice)
         and not (

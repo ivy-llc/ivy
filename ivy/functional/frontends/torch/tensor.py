@@ -800,6 +800,9 @@ class Tensor:
     def unbind(self, dim=0):
         return torch_frontend.unbind(self, dim=dim)
 
+    def remainder(self, other, *, out=None):
+        return torch_frontend.remainder(self, other, out=out)
+
     def bitwise_and_(self, other):
         self.ivy_array = self.bitwise_and(other).ivy_array
 
