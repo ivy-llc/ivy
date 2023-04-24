@@ -648,7 +648,7 @@ jac.computes_gradients = True
 
 
 @handle_exceptions
-def grad(func: Callable) -> Callable:
+def grad(func: Callable, argnums: Union[int, Sequence[int]]=0) -> Callable:
     """Call function func, and return func's gradients.
 
     Parameters
@@ -656,6 +656,8 @@ def grad(func: Callable) -> Callable:
     func
         Function for which we compute the gradients of the output with respect to xs
         input.
+    argnums
+        Indices of the input arrays to compute gradients with respect to. Default is 0.
 
     Returns
     -------
@@ -673,7 +675,7 @@ def grad(func: Callable) -> Callable:
     ...        [0.933, 0.433, 2.07 ]])
 
     """
-    return current_backend(None).grad(func)
+    return current_backend(None).grad(func, argnums=argnums)
 
 
 grad.computes_gradients = True
