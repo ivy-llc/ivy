@@ -125,8 +125,6 @@ def gumbel(key, shape=(), dtype="float64"):
     },
     "jax",
 )
-
-
 def generalized_normal(key, p, shape=(), dtype="float64"):
     seed = _get_seed(key)
     g = ivy.gamma(1 / p, 1.0, shape=shape, dtype=dtype, seed=seed)
