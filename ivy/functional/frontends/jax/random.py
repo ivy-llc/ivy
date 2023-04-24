@@ -5,7 +5,6 @@ from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_jax_dtype,
 )
-import sys
 
 
 @to_ivy_arrays_and_back
