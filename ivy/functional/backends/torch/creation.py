@@ -285,6 +285,7 @@ def full(
     ivy.utils.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     if isinstance(shape, int):
         shape = (shape,)
+    print(shape)
     return torch.full(
         shape,
         fill_value,

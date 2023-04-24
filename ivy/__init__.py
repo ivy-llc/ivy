@@ -205,6 +205,9 @@ class Shape:
         ivy.utils.assertions.check_isinstance(shape_tup, valid_types)
         if isinstance(shape_tup, (ivy.NativeShape, tuple)):
             self._shape = shape_tup
+        elif isinstance(shape_tup, ivy.Array):
+            self._shape = ivy.to_native_shape(shape_tup)
+            print(self._shape)
         elif isinstance(shape_tup, int):
             self._shape = (shape_tup,)
         elif isinstance(shape_tup, list):
@@ -212,13 +215,13 @@ class Shape:
         else:
             self._shape = None
 
-    # def __repr__(self):
-    #     pattern = r"\d+(?:,\s*\d+)*"
-    #     shape_repr = re.findall(pattern, self._shape.__str__())
-    #     shape_repr = shape_repr[0] + "," if len(shape_repr[0]) == 1 else shape_repr[0]
-    #     return (
-    #         f"Ivy.Shape({shape_repr})" if self._shape is not None else "Ivy.Shape(None)"
-    #     )
+    def __repr__(self):
+        pattern = r"\d+(?:,\s*\d+)*"
+        shape_repr = re.findall(pattern, self._shape.__str__())
+        shape_repr = shape_repr[0] + "," if len(shape_repr[0]) == 1 else shape_repr[0]
+        return (
+            f"Ivy.Shape({shape_repr})" if self._shape is not None else "Ivy.Shape(None)"
+        )
 
     def __dir__(self):
         self._shape.__dir__()
@@ -231,6 +234,10 @@ class Shape:
 
     def __len__(self):
         return len(self._shape) if self._shape is not None else 0
+
+    @property
+    def shape(self):
+        return self._shape
 
 
 class IntDtype(Dtype):

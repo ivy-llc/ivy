@@ -10,6 +10,7 @@ from ivy.func_wrapper import (
     handle_array_function,
     inputs_to_ivy_arrays,
     to_native_arrays_and_back,
+    inputs_to_native_shape,
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
@@ -883,6 +884,7 @@ def conv1d(
 
 @handle_array_function
 @to_native_arrays_and_back
+@inputs_to_native_shape
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
@@ -1143,6 +1145,7 @@ def conv2d(
 
 @handle_array_function
 @to_native_arrays_and_back
+@inputs_to_native_shape
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
@@ -1515,6 +1518,7 @@ def conv3d(
 
 @handle_array_function
 @to_native_arrays_and_back
+@inputs_to_native_shape
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
@@ -1698,6 +1702,7 @@ def conv_general_dilated(
 
 @handle_array_function
 @to_native_arrays_and_back
+@inputs_to_native_shape
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
@@ -1769,6 +1774,7 @@ def conv_general_transpose(
     )
 
 
+@inputs_to_native_shape
 @handle_array_function
 @handle_out_argument
 @handle_array_like_without_promotion
