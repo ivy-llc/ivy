@@ -2150,7 +2150,6 @@ def tensorsolve(
     axes: Union[int, Tuple[List[int], List[int]]] = 2,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-
     ndim1 = ivy.get_num_dims(x1)
     ndim2 = ivy.get_num_dims(x2)
 

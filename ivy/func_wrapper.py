@@ -221,7 +221,6 @@ def handle_array_like_without_promotion(fn: Callable) -> Callable:
                     for sq in ["Sequence", "List", "Tuple", "float", "int", "bool"]
                 )
             ):
-
                 if i < num_args:
                     # Fix for ellipsis, slices for numpy's __getitem__
                     # No need to try and convert them into arrays
@@ -788,7 +787,6 @@ def _wrap_function(
 
 # Gets dtype from a version dictionary
 def _dtype_from_version(dic, version):
-
     # if version is a string, it's a frontend function
     if isinstance(version, str):
         version = ivy.functional.frontends.__dict__["versions"][version]
@@ -869,7 +867,6 @@ def _dtype_device_wrapper_creator(attrib, t):
     """
 
     def _wrapper_outer(version_dict, version, exclusive=True):
-
         typesets = {
             "valid": ivy.valid_dtypes,
             "numeric": ivy.valid_numeric_dtypes,
@@ -1222,7 +1219,6 @@ class with_unsupported_device_and_dtypes(contextlib.ContextDecorator):
             )(func)
 
     def __enter__(self):
-
         self.globals = globals_getter_func().copy()  # global snapshot
 
     def __exit__(self, *exec):

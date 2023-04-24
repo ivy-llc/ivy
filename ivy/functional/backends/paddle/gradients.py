@@ -17,10 +17,6 @@ from ivy.functional.ivy.gradients import (
     _set_duplicates,
     _process_func_ret_and_grads,
 )
-from ivy.func_wrapper import (
-    outputs_to_ivy_arrays,
-    inputs_to_native_arrays,
-)
 
 
 def variable(x, /):
@@ -213,6 +209,7 @@ def jac(func: Callable):
 def grad(f, argnums=0):
     if grad.nth == 0:
         grad.f_original = f
+
     # ToDo: Return grads on nth chained calls rather than None. issue with paddle.grad.
     def _nth_derivative(n):
         def _inner(x):

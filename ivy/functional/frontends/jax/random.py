@@ -125,9 +125,19 @@ def gumbel(key, shape=(), dtype="float64"):
     },
     "jax",
 )
+
+
 def generalized_normal(key, p, shape=(), dtype="float64"):
     seed = _get_seed(key)
     g = ivy.gamma(1 / p, 1.0, shape=shape, dtype=dtype, seed=seed)
     b = ivy.bernoulli(ivy.array([0.5]), shape=shape, dtype=dtype, seed=seed)
     r = 2 * b - 1
     return r * g ** (1 / p)
+
+
+def t(key, df, shape=(), dtype="float64"):
+    seed = _get_seed(key)
+    n = ivy.random_normal(shape=shape, dtype=dtype, seed=seed)
+    half_df = df / 2.0
+    g = ivy.gamma(half_df, 1.0, shape=shape, dtype=dtype, seed=seed)
+    return n * ivy.sqrt(ivy.divide(half_df, g))

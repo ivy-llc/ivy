@@ -174,7 +174,6 @@ class ndarray:
         keepdims=False,
         out=None,
     ):
-
         return np_frontend.argmin(
             self,
             axis=axis,

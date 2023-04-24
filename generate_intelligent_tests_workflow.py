@@ -24,7 +24,7 @@ print()
 print("      - name: Combine test results")
 print("        run: |")
 print(
-    '          find . -name "test_results_*.txt" -exec cat {} + > combined_test_results.txt'
+    '          find . -name "test_results_*.txt" -exec cat {} + > combined_test_results.txt'  # noqa
 )
 print('          echo "Test results summary:"')
 print("          cat combined_test_results.txt")
@@ -45,7 +45,7 @@ for i in range(1, total_jobs + 1):
     print("        id: tests")
     print("        run: |")
     print(
-        f"          git clone -b master{i} https://github.com/unifyai/Mapping.git --depth 1"
+        f"          git clone -b master{i} https://github.com/unifyai/Mapping.git --depth 1"  # noqa
     )
     print("          pip install pydriller")
     print("          cp Mapping/tests.pbz2 ivy/")
