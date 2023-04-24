@@ -838,7 +838,7 @@ def test_torch_unique(
  
 @handle_frontend_test(
     fn_tree="torch.mode",
-    dtype_and_x=helpers.dtype_and_values(
+    dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=-1,
         valid_axis=True,
