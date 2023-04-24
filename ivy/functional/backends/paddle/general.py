@@ -389,7 +389,7 @@ def scatter_nd(
         )
 
         # hanle non-tensor indices
-        if len(indices) == 0:
+        if isinstance(indices, (Sequence, paddle.Tensor)) and len(indices) == 0:
             return updates
 
         elif (
