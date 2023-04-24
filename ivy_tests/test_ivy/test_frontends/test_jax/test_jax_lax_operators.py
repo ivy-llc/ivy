@@ -2457,13 +2457,6 @@ def _reduce_window_helper(draw):
             sum += w
         return accumulator + sum
 
-    if draw(st.booleans()):
-        computation = draw(st.sampled_from(
-            ['max', 'min', 'add', 'mul', 'multiply', 'logical_and', 'logical_or']
-        ))
-    else:
-        computation = py_func
-
     ndim = draw(st.integers(min_value=1, max_value=4))
 
     _, others = draw(
@@ -2504,7 +2497,8 @@ def _reduce_window_helper(draw):
             st.sampled_from(["SAME", "VALID"]),
         )
     )
-    return dtype * 2, operand, init_value, computation, others, padding
+
+    return dtype * 2, operand, init_value, py_func, others, padding
 
 
 @handle_frontend_test(

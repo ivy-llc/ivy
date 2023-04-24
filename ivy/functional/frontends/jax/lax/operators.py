@@ -3,9 +3,6 @@ from typing import Any
 import itertools
 import string
 import builtins
-import collections
-import ivy.functional.frontends.numpy as ivy_np
-from builtins import slice as py_slice
 
 # local
 import ivy
@@ -528,7 +525,7 @@ def slice(operand, start_indices, limit_indices, strides=None):
         strides_i = int(strides[i])
         start_i = int(start_indices[i])
         limit_i = int(limit_indices[i])
-        full_slice += (py_slice(start_i, limit_i, strides_i),)
+        full_slice += (_slice(start_i, limit_i, strides_i),)
     ret = operand[full_slice] if full_slice else operand
 
     return ivy.expand_dims(ret)
@@ -682,60 +679,25 @@ def _padtype_to_pads(in_shape, filter_shape, window_strides, padding):
         return [(0, 0)] * len(in_shape)
 
 
-def _get_max_identity(dt):
-    return -ivy.inf if ivy.is_float_dtype(dt) else ivy.iinfo(dt).min
-
-
-def _get_min_identity(dt):
-    return ivy.inf if ivy.is_float_dtype(dt) else ivy.iinfo(dt).max
-
-
-def _identity_getter(op):
-    return lambda dt: ivy.asarray(op.identity, dtype=dt)
-
-
-MonoidRecord = collections.namedtuple('MonoidRecord', ['reducer', 'identity'])
-_monoids = {
-    'max': MonoidRecord(ivy_np.maximum.reduce, _get_max_identity),
-    'min': MonoidRecord(ivy_np.minimum.reduce, _get_min_identity),
-    'add': MonoidRecord(ivy_np.add.reduce, _identity_getter(ivy_np.add)),
-    'mul': MonoidRecord(ivy_np.multiply.reduce, _identity_getter(ivy_np.multiply)),
-    'multiply': MonoidRecord(ivy_np.multiply.reduce,
-                             _identity_getter(ivy_np.multiply)),
-    'logical_and': MonoidRecord(ivy_np.logical_and.reduce,
-                                _identity_getter(ivy_np.logical_and)),
-    'logical_or': MonoidRecord(ivy_np.logical_or.reduce,
-                               _identity_getter(ivy_np.logical_or)),
-}
-
-
 def _make_reducer(py_binop, init_val):
-    def _reducer_from_pyfunc(py_binop, init_val):
-        def _delete(seq, pos):
-            return [v for i, v in enumerate(seq) if i != pos]
+    def _delete(seq, pos):
+        return [v for i, v in enumerate(seq) if i != pos]
 
-        def reducer(operand, axis=0):
-            axis = len(operand.shape) + axis if axis < 0 else axis
-            axis = range(operand.ndim) if axis is None else axis
-            result = ivy.full(
-                _delete(operand.shape, axis),
-                ivy.to_scalar(init_val),
-                dtype=operand.dtype,
-            )
-            operand, result = operand.to_numpy(), result.to_numpy()
-            for idx, _ in ivy.ndenumerate(operand):
-                out_idx = tuple(_delete(idx, axis))
-                result[out_idx] = py_binop(result[out_idx], operand[idx])
-            return result
+    def _reducer(operand, axis=0):
+        axis = len(operand.shape) + axis if axis < 0 else axis
+        axis = range(operand.ndim) if axis is None else axis
+        result = ivy.full(
+            _delete(operand.shape, axis),
+            ivy.to_scalar(init_val),
+            dtype=operand.dtype,
+        )
+        operand, result = operand.to_numpy(), result.to_numpy()
+        for idx, _ in ivy.ndenumerate(operand):
+            out_idx = tuple(_delete(idx, axis))
+            result[out_idx] = py_binop(result[out_idx], operand[idx])
+        return result
 
-        return reducer
-
-    monoid_record = _monoids.get(getattr(py_binop, '__name__'))
-    if monoid_record:
-        reducer, monoid_identity = monoid_record
-        if init_val == monoid_identity(ivy.result_type(init_val)):
-            return reducer
-    return _reducer_from_pyfunc(py_binop, init_val)
+    return _reducer
 
 
 @to_ivy_arrays_and_back
