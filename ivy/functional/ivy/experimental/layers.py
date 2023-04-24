@@ -831,7 +831,6 @@ def ifft(
     return ivy.current_backend(x).ifft(x, dim, norm=norm, n=n, out=out)
 
 
-@inputs_to_ivy_arrays
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -887,6 +886,9 @@ def embedding(
         else:
             ret[i] = weights[x, :]
     return ret
+
+
+embedding.mixed_function = True
 
 
 @to_native_arrays_and_back
@@ -1309,7 +1311,6 @@ def _upsample_bicubic2d_default(
     return result
 
 
-@inputs_to_ivy_arrays
 @handle_out_argument
 @handle_nestable
 def interpolate(
@@ -1590,6 +1591,9 @@ def interpolate(
     return ivy.astype(ret, ivy.dtype(x), out=out)
 
 
+interpolate.mixed_function = True
+
+
 def _get_size(scale_factor, size, dims, x_shape):
     if scale_factor is not None:
         if isinstance(scale_factor, (float, int)):
@@ -1685,7 +1689,7 @@ def _mask(vals, length, range_max, dim):
         return vals, length
 
 
-@inputs_to_ivy_arrays
+@handle_nestable
 def adaptive_avg_pool1d(
     input: Union[ivy.Array, ivy.NativeArray],
     output_size: int,
@@ -1753,7 +1757,10 @@ def adaptive_avg_pool1d(
     return pooled_output
 
 
-@inputs_to_ivy_arrays
+adaptive_avg_pool1d.mixed_function = True
+
+
+@handle_nestable
 def adaptive_avg_pool2d(
     input: Union[ivy.Array, ivy.NativeArray],
     output_size: Union[Sequence[int], int],
@@ -1829,3 +1836,6 @@ def adaptive_avg_pool2d(
     if squeeze:
         return ivy.squeeze(pooled_output, axis=0)
     return pooled_output
+
+
+adaptive_avg_pool2d.mixed_function = True
