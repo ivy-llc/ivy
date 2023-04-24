@@ -4,6 +4,10 @@ repos:
     hooks:
     - id: black
       language_version: python3
+-   repo: https://github.com/PyCQA/autoflake
+    rev: v2.1.1
+    hooks:
+    -   id: autoflake
 -   repo: https://github.com/pycqa/flake8
     rev: 6.0.0
     hooks:
