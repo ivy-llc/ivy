@@ -10,6 +10,7 @@ def ifft(a, n=None, axis=-1, norm=None):
     return ivy.ifft(a, axis, norm=norm, n=n)
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, "numpy")
 @to_ivy_arrays_and_back
 def ifftshift(x, axes=None):
     """
