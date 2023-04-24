@@ -86,8 +86,6 @@ def poisson(key, lam, shape=None, dtype=None):
     },
     "jax",
 )
-
-
 def gamma(key, a, shape=None, dtype="float64"):
     seed = _get_seed(key)
     return ivy.gamma(a, 1.0, shape=shape, dtype=dtype, seed=seed)
